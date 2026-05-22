@@ -30,6 +30,16 @@ export function Dashboard() {
   } = useAgentStore();
   const [showCreate, setShowCreate] = useState(false);
   const [search, setSearch] = useState("");
+  // Which agents have their sub-agent subtree expanded. Empty = all
+  // collapsed, so sub-agents are hidden until a parent is opened.
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+
+  const toggleExpand = (id: string) =>
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
   const [startingAll, setStartingAll] = useState(false);
   const [stoppingAll, setStoppingAll] = useState(false);
   const healthIntervalRef = useRef<ReturnType<typeof setInterval>>(null);
@@ -70,11 +80,22 @@ export function Dashboard() {
     return a.agent.displayName.localeCompare(b.agent.displayName);
   };
 
+  type AgentTreeRow = {
+    managed: ManagedAgent;
+    depth: number;
+    isLast: boolean;
+    parentLines: boolean[];
+    hasChildren: boolean;
+    childCount: number;
+    expanded: boolean;
+  };
+
   // Agents rendered as their ownership tree: each sub-agent sits directly
-  // under its parent with a depth used to indent the row. While searching we
-  // fall back to a flat list of matches — a tree reads wrong when a parent is
+  // under its parent, indented, with file-tree connector lines. A parent's
+  // sub-agents stay hidden until its row is expanded. While searching we fall
+  // back to a flat list of matches — a tree reads wrong when a parent is
   // filtered out from under its child.
-  const agentList: Array<{ managed: ManagedAgent; depth: number }> = (() => {
+  const agentList: AgentTreeRow[] = (() => {
     const all = Object.values(agents);
 
     if (search) {
@@ -83,7 +104,15 @@ export function Dashboard() {
           m.agent.displayName.toLowerCase().includes(search.toLowerCase())
         )
         .sort(sortAgents)
-        .map((managed) => ({ managed, depth: 0 }));
+        .map((managed) => ({
+          managed,
+          depth: 0,
+          isLast: true,
+          parentLines: [],
+          hasChildren: false,
+          childCount: 0,
+          expanded: false,
+        }));
     }
 
     // A sub-agent's ownerId points to another agent in the list; a top-level
@@ -94,25 +123,48 @@ export function Dashboard() {
     for (const m of all) {
       const ownerId = m.agent.ownerId;
       if (ownerId && ids.has(ownerId)) {
-        const kids = childrenOf.get(ownerId) ?? [];
-        kids.push(m);
-        childrenOf.set(ownerId, kids);
+        const arr = childrenOf.get(ownerId);
+        if (arr) arr.push(m);
+        else childrenOf.set(ownerId, [m]);
       } else {
         roots.push(m);
       }
     }
 
-    const flat: Array<{ managed: ManagedAgent; depth: number }> = [];
+    const flat: AgentTreeRow[] = [];
     const seen = new Set<string>();
-    const visit = (m: ManagedAgent, depth: number) => {
+    const visit = (
+      m: ManagedAgent,
+      depth: number,
+      isLast: boolean,
+      parentLines: boolean[]
+    ) => {
       if (seen.has(m.agent.id)) return;
       seen.add(m.agent.id);
-      flat.push({ managed: m, depth });
-      (childrenOf.get(m.agent.id) ?? [])
-        .sort(sortAgents)
-        .forEach((kid) => visit(kid, depth + 1));
+
+      const kids = (childrenOf.get(m.agent.id) ?? []).slice().sort(sortAgents);
+      const expanded = expandedIds.has(m.agent.id);
+
+      flat.push({
+        managed: m,
+        depth,
+        isLast,
+        parentLines,
+        hasChildren: kids.length > 0,
+        childCount: kids.length,
+        expanded,
+      });
+
+      if (expanded && kids.length > 0) {
+        const childLines = depth === 0 ? [] : [...parentLines, !isLast];
+        kids.forEach((kid, j) =>
+          visit(kid, depth + 1, j === kids.length - 1, childLines)
+        );
+      }
     };
-    roots.sort(sortAgents).forEach((r) => visit(r, 0));
+
+    const sortedRoots = roots.slice().sort(sortAgents);
+    sortedRoots.forEach((r, j) => visit(r, 0, j === sortedRoots.length - 1, []));
     return flat;
   })();
 
@@ -284,17 +336,23 @@ export function Dashboard() {
                 <span>Status</span>
                 <span className="text-right">Actions</span>
               </div>
-              {agentList.map(({ managed, depth }) => (
+              {agentList.map((row) => (
                 <AgentRow
-                  key={managed.agent.id}
-                  managed={managed}
-                  depth={depth}
-                  selected={managed.agent.id === selectedAgentId}
+                  key={row.managed.agent.id}
+                  managed={row.managed}
+                  depth={row.depth}
+                  isLast={row.isLast}
+                  parentLines={row.parentLines}
+                  hasChildren={row.hasChildren}
+                  childCount={row.childCount}
+                  expanded={row.expanded}
+                  onToggleExpand={() => toggleExpand(row.managed.agent.id)}
+                  selected={row.managed.agent.id === selectedAgentId}
                   onSelect={() =>
                     selectAgent(
-                      managed.agent.id === selectedAgentId
+                      row.managed.agent.id === selectedAgentId
                         ? null
-                        : managed.agent.id
+                        : row.managed.agent.id
                     )
                   }
                 />

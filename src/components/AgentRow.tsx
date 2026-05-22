@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useAgentStore, type ManagedAgent } from "../stores/agentStore";
 import { formatModelLabel, formatBackendLabel } from "../lib/models";
 import { formatUptime, cn } from "../lib/utils";
-import { Play, Square, RotateCcw, Crown, Cloud, AlertTriangle, Link2 } from "lucide-react";
+import { Play, Square, RotateCcw, Crown, Cloud, AlertTriangle, Link2, ChevronRight, ChevronDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -187,18 +187,84 @@ function HealthHint({
   );
 }
 
+/** Indent width per ownership-tree level, in px. */
+const TREE_INDENT = 22;
+
+/** File-tree connector lines for one row, drawn as a full-row-height overlay.
+ *  `parentLines[i]` draws a vertical continuation in column i; the final
+ *  column is an elbow (├ when the row has siblings below, └ when last).
+ *  `drawStem` adds a line down into this row's own expanded children. */
+function TreeLines({
+  depth,
+  isLast,
+  parentLines,
+  drawStem,
+}: {
+  depth: number;
+  isLast: boolean;
+  parentLines: boolean[];
+  drawStem: boolean;
+}) {
+  if (depth === 0 && !drawStem) return null;
+
+  return (
+    <div className="pointer-events-none absolute inset-y-0 left-4">
+      {Array.from({ length: depth }).map((_, i) => {
+        const x = i * TREE_INDENT + 11;
+        if (i === depth - 1) {
+          return (
+            <Fragment key={i}>
+              <div className="absolute top-0 w-px bg-border" style={{ left: x, height: "50%" }} />
+              {!isLast && (
+                <div className="absolute bottom-0 w-px bg-border" style={{ left: x, top: "50%" }} />
+              )}
+              <div className="absolute h-px bg-border" style={{ left: x, top: "50%", width: 11 }} />
+            </Fragment>
+          );
+        }
+        return parentLines[i] ? (
+          <div key={i} className="absolute inset-y-0 w-px bg-border" style={{ left: x }} />
+        ) : null;
+      })}
+      {drawStem && (
+        <div
+          className="absolute bottom-0 w-px bg-border"
+          style={{ left: depth * TREE_INDENT + 11, top: "50%" }}
+        />
+      )}
+    </div>
+  );
+}
+
 export function AgentRow({
   managed,
   selected,
   onSelect,
   depth = 0,
+  isLast = true,
+  parentLines = [],
+  hasChildren = false,
+  expanded = false,
+  childCount = 0,
+  onToggleExpand,
 }: {
   managed: ManagedAgent;
   selected: boolean;
   onSelect: () => void;
-  /** Nesting depth in the ownership tree — 0 for top-level agents,
-   *  1+ for sub-agents. Indents the name cell so the hierarchy reads. */
+  /** Nesting depth in the ownership tree — 0 for top-level agents, 1+ for
+   *  sub-agents. Drives the connector indent. */
   depth?: number;
+  /** Whether this row is the last child of its parent (└ vs ├). */
+  isLast?: boolean;
+  /** Per ancestor level, whether a vertical continuation line is drawn. */
+  parentLines?: boolean[];
+  /** Whether this agent has sub-agents (shows the expand chevron). */
+  hasChildren?: boolean;
+  /** Whether this agent's sub-agents are currently expanded. */
+  expanded?: boolean;
+  /** Number of direct sub-agents (for the chevron tooltip). */
+  childCount?: number;
+  onToggleExpand?: () => void;
 }) {
   const { startAgent, stopAgent } = useAgentStore();
   const activity = useAgentStore(
@@ -260,18 +326,47 @@ export function AgentRow({
   return (
     <div
       className={cn(
-        "cursor-pointer border-b border-border last:border-b-0 transition-colors",
+        "relative cursor-pointer border-b border-border last:border-b-0 transition-colors",
         selected ? "bg-primary/5" : "hover:bg-muted/50"
       )}
       onClick={onSelect}
     >
+      <TreeLines
+        depth={depth}
+        isLast={isLast}
+        parentLines={parentLines}
+        drawStem={hasChildren && expanded}
+      />
       {/* Main row */}
       <div className="grid grid-cols-[1fr_180px_140px_140px_56px] gap-3 px-4 py-2.5 items-center">
         {/* Agent */}
         <div
           className="flex items-center gap-2.5 min-w-0"
-          style={depth > 0 ? { paddingLeft: depth * 22 } : undefined}
+          style={{ paddingLeft: depth * TREE_INDENT }}
         >
+          {hasChildren ? (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleExpand?.();
+              }}
+              className="flex h-5 w-5 shrink-0 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground"
+              title={
+                expanded
+                  ? "Collapse sub-agents"
+                  : `Expand ${childCount} sub-agent${childCount === 1 ? "" : "s"}`
+              }
+            >
+              {expanded ? (
+                <ChevronDown className="h-3.5 w-3.5" />
+              ) : (
+                <ChevronRight className="h-3.5 w-3.5" />
+              )}
+            </button>
+          ) : (
+            <span className="h-5 w-5 shrink-0" />
+          )}
           <div className="relative shrink-0">
             <Avatar className="h-8 w-8 rounded-lg">
               {managed.agent.avatarUrl && <AvatarImage src={managed.agent.avatarUrl} className="rounded-lg" displaySize={32} />}
