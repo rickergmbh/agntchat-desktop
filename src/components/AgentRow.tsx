@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAgentStore, type ManagedAgent } from "../stores/agentStore";
 import { formatModelLabel, formatBackendLabel } from "../lib/models";
 import { formatUptime, cn } from "../lib/utils";
-import { Play, Square, RotateCcw, Crown, Cloud, AlertTriangle } from "lucide-react";
+import { Play, Square, RotateCcw, Crown, Cloud, AlertTriangle, Link2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -239,6 +239,10 @@ export function AgentRow({
   // place of the play button so the user sees something is wrong without
   // clicking through. `starting` is transient and already reflected in the
   // Status column — not a true blocker.
+  // A spawned sub-agent is started and retired by its parent agent's bridge,
+  // never run from the desktop app — so it intentionally has no local API key
+  // and no run/stop control here.
+  const isSpawned = !!managed.agent.spawn;
   const startBlockedReason: string | null = !managed.apiKey
     ? "No API key — open agent to generate one"
     : null;
@@ -292,6 +296,15 @@ export function AgentRow({
                   )}
                 >
                   {managed.agent.agentType}
+                </Badge>
+              )}
+              {isSpawned && (
+                <Badge
+                  variant="secondary"
+                  className="text-[10px] px-1.5 py-0 flex-shrink-0 bg-primary/10 text-primary border-primary/20"
+                  title={managed.agent.spawn?.purpose || "Spawned sub-agent"}
+                >
+                  Sub-agent
                 </Badge>
               )}
               {isRunning && activity && (
@@ -388,7 +401,22 @@ export function AgentRow({
 
         {/* Actions */}
         <div className="flex justify-end" onClick={(e) => e.stopPropagation()}>
-          {managed.processStatus === "crashed" ? (
+          {isSpawned ? (
+            <TooltipProvider delay={150}>
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <span className="flex h-7 w-7 items-center justify-center text-muted-foreground/50">
+                      <Link2 className="w-4 h-4" />
+                    </span>
+                  }
+                />
+                <TooltipContent side="left" className="text-xs">
+                  Sub-agent — started and retired by its parent agent
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          ) : managed.processStatus === "crashed" ? (
             <Button variant="ghost" size="icon-sm" className="text-warning hover:text-warning/90" onClick={handleToggle} title="Restart">
               <RotateCcw className="w-4 h-4" />
             </Button>

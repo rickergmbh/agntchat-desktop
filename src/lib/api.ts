@@ -1336,6 +1336,16 @@ export interface Agent {
   hostedModel?: string | null;
   hostedLimits?: AgentHostedLimits;
   presence?: "online_local" | "online_hosted" | "offline";
+  /** Present only on ephemeral spawned sub-agents. They are started and
+   *  retired by their parent agent's bridge — not run from the desktop app —
+   *  so the desktop never holds their API key locally. */
+  spawn?: {
+    purpose?: string;
+    runtime?: "local" | "hosted";
+    spawned_at?: string;
+    last_used_at?: string;
+    expires_at?: string;
+  };
 }
 
 export interface AgentHostedLimits {
