@@ -409,6 +409,15 @@ export function AgentRow({
                   Sub-agent
                 </Badge>
               )}
+              {hasChildren && !expanded && (
+                <Badge
+                  variant="secondary"
+                  className="text-[10px] px-1.5 py-0 flex-shrink-0 bg-muted text-muted-foreground border-transparent"
+                  title={`${childCount} sub-agent${childCount === 1 ? "" : "s"} — expand to view`}
+                >
+                  {childCount} sub-agent{childCount === 1 ? "" : "s"}
+                </Badge>
+              )}
               {isRunning && activity && (
                 <span className={cn(
                   "flex items-center gap-1.5 text-[11px] font-medium truncate",
