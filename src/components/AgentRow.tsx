@@ -191,10 +191,14 @@ export function AgentRow({
   managed,
   selected,
   onSelect,
+  depth = 0,
 }: {
   managed: ManagedAgent;
   selected: boolean;
   onSelect: () => void;
+  /** Nesting depth in the ownership tree — 0 for top-level agents,
+   *  1+ for sub-agents. Indents the name cell so the hierarchy reads. */
+  depth?: number;
 }) {
   const { startAgent, stopAgent } = useAgentStore();
   const activity = useAgentStore(
@@ -264,7 +268,10 @@ export function AgentRow({
       {/* Main row */}
       <div className="grid grid-cols-[1fr_180px_140px_140px_56px] gap-3 px-4 py-2.5 items-center">
         {/* Agent */}
-        <div className="flex items-center gap-2.5 min-w-0">
+        <div
+          className="flex items-center gap-2.5 min-w-0"
+          style={depth > 0 ? { paddingLeft: depth * 22 } : undefined}
+        >
           <div className="relative shrink-0">
             <Avatar className="h-8 w-8 rounded-lg">
               {managed.agent.avatarUrl && <AvatarImage src={managed.agent.avatarUrl} className="rounded-lg" displaySize={32} />}

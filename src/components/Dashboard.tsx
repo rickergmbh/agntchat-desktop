@@ -61,21 +61,60 @@ export function Dashboard() {
     };
   }, [fetchAgents, fetchHealth, fetchActivities, refreshProcessStatuses]);
 
-  const agentList = Object.values(agents)
-    .filter((m) =>
-      search
-        ? m.agent.displayName.toLowerCase().includes(search.toLowerCase())
-        : true
-    )
-    .sort((a, b) => {
-      // Orchestrators before other types
-      const aOrch = a.agent.agentType === "orchestrator" ? 0 : 1;
-      const bOrch = b.agent.agentType === "orchestrator" ? 0 : 1;
-      if (aOrch !== bOrch) return aOrch - bOrch;
+  const sortAgents = (a: ManagedAgent, b: ManagedAgent) => {
+    // Orchestrators before other types
+    const aOrch = a.agent.agentType === "orchestrator" ? 0 : 1;
+    const bOrch = b.agent.agentType === "orchestrator" ? 0 : 1;
+    if (aOrch !== bOrch) return aOrch - bOrch;
+    // Alphabetical
+    return a.agent.displayName.localeCompare(b.agent.displayName);
+  };
 
-      // Alphabetical
-      return a.agent.displayName.localeCompare(b.agent.displayName);
-    });
+  // Agents rendered as their ownership tree: each sub-agent sits directly
+  // under its parent with a depth used to indent the row. While searching we
+  // fall back to a flat list of matches — a tree reads wrong when a parent is
+  // filtered out from under its child.
+  const agentList: Array<{ managed: ManagedAgent; depth: number }> = (() => {
+    const all = Object.values(agents);
+
+    if (search) {
+      return all
+        .filter((m) =>
+          m.agent.displayName.toLowerCase().includes(search.toLowerCase())
+        )
+        .sort(sortAgents)
+        .map((managed) => ({ managed, depth: 0 }));
+    }
+
+    // A sub-agent's ownerId points to another agent in the list; a top-level
+    // agent's owner is the human (not present here).
+    const ids = new Set(all.map((m) => m.agent.id));
+    const childrenOf = new Map<string, ManagedAgent[]>();
+    const roots: ManagedAgent[] = [];
+    for (const m of all) {
+      const ownerId = m.agent.ownerId;
+      if (ownerId && ids.has(ownerId)) {
+        const kids = childrenOf.get(ownerId) ?? [];
+        kids.push(m);
+        childrenOf.set(ownerId, kids);
+      } else {
+        roots.push(m);
+      }
+    }
+
+    const flat: Array<{ managed: ManagedAgent; depth: number }> = [];
+    const seen = new Set<string>();
+    const visit = (m: ManagedAgent, depth: number) => {
+      if (seen.has(m.agent.id)) return;
+      seen.add(m.agent.id);
+      flat.push({ managed: m, depth });
+      (childrenOf.get(m.agent.id) ?? [])
+        .sort(sortAgents)
+        .forEach((kid) => visit(kid, depth + 1));
+    };
+    roots.sort(sortAgents).forEach((r) => visit(r, 0));
+    return flat;
+  })();
 
   const selectedAgent = selectedAgentId ? agents[selectedAgentId] : null;
 
@@ -245,10 +284,11 @@ export function Dashboard() {
                 <span>Status</span>
                 <span className="text-right">Actions</span>
               </div>
-              {agentList.map((managed) => (
+              {agentList.map(({ managed, depth }) => (
                 <AgentRow
                   key={managed.agent.id}
                   managed={managed}
+                  depth={depth}
                   selected={managed.agent.id === selectedAgentId}
                   onSelect={() =>
                     selectAgent(
