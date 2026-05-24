@@ -26,6 +26,11 @@ pub enum AgentStatus {
     Stopped,
     Crashed,
     Starting,
+    /// Agent runs on an org host VM, not this device. The desktop
+    /// observes its presence over the WebSocket connection but does
+    /// not own its lifecycle — start_agent intentionally does not
+    /// spawn a local subprocess for these.
+    Remote,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -55,6 +60,13 @@ pub struct StartAgentArgs {
     pub effort: Option<String>,
     pub api_url: Option<String>,
     pub add_dirs: Option<Vec<String>>,
+    /// Server-set runtime. `"local"` (default, today's behavior) spawns
+    /// the bridge on this device. `"org_host"` is owned by a registered
+    /// org host VM; start_agent skips the subprocess entirely and just
+    /// returns a stub AgentProcess in the Remote state. Wake/delivery
+    /// is the backend's job (it broadcasts to the host channel).
+    #[serde(default)]
+    pub runtime: Option<String>,
 }
 
 struct RunningAgent {
@@ -255,10 +267,28 @@ pub fn start_agent(
 ) -> Result<AgentProcess, String> {
     let mut manager = state.lock().map_err(|e| e.to_string())?;
 
-    // Stop existing process if running
+    // Stop existing process if running. We do this *before* the
+    // org_host short-circuit below so that switching an agent from
+    // local → org_host cleanly tears down the local subprocess.
     if let Some(mut existing) = manager.agents.remove(&args.agent_id) {
         mark_offline_sync(&existing.api_url, &existing.agent_id, &existing.api_key);
         graceful_kill(&mut existing.child);
+    }
+
+    // Org-host runtime: the bridge runs on a registered Linux VM, not
+    // here. The backend dispatches messages via the host's WebSocket
+    // channel. The desktop has nothing to spawn — return a Remote
+    // stub so the UI can show "Hosted on <org host>" instead of
+    // tracking a (non-existent) local PID.
+    if args.runtime.as_deref() == Some("org_host") {
+        return Ok(AgentProcess {
+            agent_id: args.agent_id,
+            agent_name: args.agent_name,
+            status: AgentStatus::Remote,
+            uptime_secs: None,
+            exit_code: None,
+            crash_reason: None,
+        });
     }
 
     let bridge_path = find_bridge_script(&app)?;

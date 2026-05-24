@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useAgentStore, type ManagedAgent } from "../stores/agentStore";
+import { useOrgStore } from "../stores/orgStore";
 import {
   deleteAgent,
   deleteAgentPermanently,
@@ -20,6 +21,7 @@ import {
   pauseAgentHosted,
   resumeAgentHosted,
   updateAgentHostedLimits,
+  updateAgentRuntime,
   getListingByAgent,
   createDirectoryListing,
   deleteDirectoryListing,
@@ -96,6 +98,7 @@ import {
   User,
   Share2,
   Globe2,
+  Server,
 } from "lucide-react";
 import {
   Dialog,
@@ -237,6 +240,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
       name: "Operations",
       sections: [
         { value: "pulse", label: "Pulse", icon: HeartPulse },
+        { value: "runtime", label: "Runtime", icon: Server },
         { value: "logs", label: "Logs", icon: ScrollText },
         { value: "health", label: "Health", icon: Activity },
       ],
@@ -1193,6 +1197,12 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
 
         {activeSection === "pulse" && (
           <PulsePanel managed={managed} />
+        )}
+
+        {activeSection === "runtime" && (
+          <div className="flex-1 overflow-y-auto p-5">
+            <RuntimePanel agent={agent} />
+          </div>
         )}
 
         {activeSection === "health" && (
@@ -3008,5 +3018,276 @@ function ComputerUseDepsRow() {
         Install safety features
       </Button>
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Runtime Panel — pick local vs org-host runtime for this agent
+//
+// When set to "org_host" the agent's bridge runs on a registered Linux
+// VM owned by the user's org. The Tauri process_manager skips local
+// subprocess spawn for these agents (see start_agent's runtime branch).
+// ---------------------------------------------------------------------------
+
+function RuntimePanel({ agent }: { agent: Agent }) {
+  const orgStore = useOrgStore();
+  const { organization, hosts, loaded, loading: orgLoading } = orgStore;
+  const fetchCurrentOrg = orgStore.fetchCurrentOrg;
+  const fetchAgents = useAgentStore((s) => s.fetchAgents);
+
+  useEffect(() => {
+    if (!loaded) {
+      void fetchCurrentOrg();
+    }
+  }, [loaded, fetchCurrentOrg]);
+
+  const currentRuntime = agent.runtime ?? "local";
+  const currentPresence = agent.presenceMode ?? "wake_on_demand";
+  const currentIdle = agent.idleTimeoutSeconds ?? 600;
+  const currentHostId = agent.assignedHostId ?? null;
+
+  const [pendingRuntime, setPendingRuntime] = useState<"local" | "org_host">(
+    currentRuntime
+  );
+  const [pendingHostId, setPendingHostId] = useState<string | null>(
+    currentHostId ?? hosts[0]?.id ?? null
+  );
+  const [pendingPresence, setPendingPresence] = useState<
+    "always_on" | "wake_on_demand" | "manual"
+  >(currentPresence);
+  const [pendingIdle, setPendingIdle] = useState<number>(currentIdle);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setPendingRuntime(currentRuntime);
+    setPendingHostId(currentHostId ?? hosts[0]?.id ?? null);
+    setPendingPresence(currentPresence);
+    setPendingIdle(currentIdle);
+  }, [agent.id, currentRuntime, currentHostId, currentPresence, currentIdle, hosts]);
+
+  const canSwitchToOrgHost =
+    organization !== null && hosts.length > 0;
+
+  const dirty =
+    pendingRuntime !== currentRuntime ||
+    (pendingRuntime === "org_host" &&
+      (pendingHostId !== currentHostId ||
+        pendingPresence !== currentPresence ||
+        pendingIdle !== currentIdle));
+
+  const save = async () => {
+    if (!dirty) return;
+    setError(null);
+    setSaving(true);
+    try {
+      await updateAgentRuntime(agent.id, {
+        runtime: pendingRuntime,
+        organizationId:
+          pendingRuntime === "org_host" ? organization?.id ?? null : null,
+        assignedHostId:
+          pendingRuntime === "org_host" ? pendingHostId : null,
+        presenceMode:
+          pendingRuntime === "org_host" ? pendingPresence : undefined,
+        idleTimeoutSeconds:
+          pendingRuntime === "org_host" && pendingPresence === "wake_on_demand"
+            ? pendingIdle
+            : null,
+      });
+      await fetchAgents();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not update runtime");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="space-y-6 max-w-2xl">
+      <div>
+        <h2 className="text-lg font-semibold">Runtime</h2>
+        <p className="text-sm text-muted-foreground mt-1">
+          Decide where this agent's bridge runs. Local keeps it on this
+          machine (today's behavior). Org host runs it on a shared Linux
+          VM your organization administers — the bridge stays alive even
+          when your desktop is closed.
+        </p>
+      </div>
+
+      <div className="space-y-3">
+        <Label className="text-sm font-medium">Where it runs</Label>
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          <RuntimeRadio
+            label="Local (this device)"
+            description="The desktop spawns agent_bridge.py here. Goes offline when the app quits."
+            selected={pendingRuntime === "local"}
+            onClick={() => setPendingRuntime("local")}
+          />
+          <RuntimeRadio
+            label="Org host"
+            description={
+              organization
+                ? `Runs on one of ${organization.name}'s hosts. Survives desktop close.`
+                : "Join an organization first to use this option."
+            }
+            selected={pendingRuntime === "org_host"}
+            onClick={() => canSwitchToOrgHost && setPendingRuntime("org_host")}
+            disabled={!canSwitchToOrgHost}
+          />
+        </div>
+        {orgLoading && !loaded && (
+          <div className="text-xs text-muted-foreground">Loading org…</div>
+        )}
+        {loaded && !organization && (
+          <div className="text-xs text-muted-foreground">
+            You're not in an organization yet. Create one in Settings to enable
+            org hosting.
+          </div>
+        )}
+        {organization && hosts.length === 0 && (
+          <div className="text-xs text-muted-foreground">
+            Your org has no hosts registered. Add one in Org Settings to enable
+            this option.
+          </div>
+        )}
+      </div>
+
+      {pendingRuntime === "org_host" && organization && hosts.length > 0 && (
+        <>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Host</Label>
+            <Select
+              value={pendingHostId ?? undefined}
+              onValueChange={(v) => setPendingHostId(v)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Pick a host" />
+              </SelectTrigger>
+              <SelectContent>
+                {hosts.map((h) => (
+                  <SelectItem key={h.id} value={h.id}>
+                    {h.name}
+                    <span className="ml-2 text-xs text-muted-foreground">
+                      {h.status}
+                      {h.hostname ? ` · ${h.hostname}` : ""}
+                    </span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Presence</Label>
+            <Select
+              value={pendingPresence}
+              onValueChange={(v) =>
+                setPendingPresence(v as typeof pendingPresence)
+              }
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="always_on">
+                  Always on — host keeps the bridge running whenever it's online
+                </SelectItem>
+                <SelectItem value="wake_on_demand">
+                  Wake on demand — bridge spawns when activity arrives, idles after a quiet period
+                </SelectItem>
+                <SelectItem value="manual">
+                  Manual — only spawn when you explicitly start the agent
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {pendingPresence === "wake_on_demand" && (
+            <div className="space-y-2">
+              <Label className="text-sm font-medium" htmlFor="idle-timeout">
+                Idle timeout (seconds)
+              </Label>
+              <Input
+                id="idle-timeout"
+                type="number"
+                min={30}
+                value={pendingIdle}
+                onChange={(e) => {
+                  const n = Number(e.target.value);
+                  if (Number.isFinite(n) && n > 0) setPendingIdle(n);
+                }}
+              />
+              <p className="text-xs text-muted-foreground">
+                How long the bridge will idle (with no stderr activity) before
+                the host stops it. Default 600s.
+              </p>
+            </div>
+          )}
+        </>
+      )}
+
+      {error && (
+        <div className="text-sm text-red-600 dark:text-red-400">{error}</div>
+      )}
+
+      <div className="flex items-center gap-2">
+        <Button onClick={() => void save()} disabled={!dirty || saving}>
+          {saving ? "Saving…" : "Save"}
+        </Button>
+        {dirty && (
+          <Button
+            variant="ghost"
+            onClick={() => {
+              setPendingRuntime(currentRuntime);
+              setPendingHostId(currentHostId ?? hosts[0]?.id ?? null);
+              setPendingPresence(currentPresence);
+              setPendingIdle(currentIdle);
+            }}
+          >
+            Cancel
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function RuntimeRadio({
+  label,
+  description,
+  selected,
+  onClick,
+  disabled,
+}: {
+  label: string;
+  description: string;
+  selected: boolean;
+  onClick: () => void;
+  disabled?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={cn(
+        "rounded-lg border p-3 text-left transition-colors",
+        selected
+          ? "border-primary bg-primary/5"
+          : "border-border hover:bg-accent",
+        disabled && "opacity-50 cursor-not-allowed hover:bg-transparent"
+      )}
+    >
+      <div className="flex items-center gap-2">
+        <div
+          className={cn(
+            "h-3 w-3 rounded-full border",
+            selected ? "border-primary bg-primary" : "border-muted-foreground"
+          )}
+        />
+        <span className="text-sm font-medium">{label}</span>
+      </div>
+      <p className="text-xs text-muted-foreground mt-1.5 ml-5">{description}</p>
+    </button>
   );
 }

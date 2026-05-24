@@ -220,6 +220,124 @@ export async function revertSoulMd(id: string): Promise<Agent> {
   return request<Agent>(`/api/agents/${id}/soul/revert`, { method: "POST" });
 }
 
+export interface AgentRuntimeUpdate {
+  runtime: "local" | "org_host";
+  presenceMode?: "always_on" | "wake_on_demand" | "manual";
+  idleTimeoutSeconds?: number | null;
+  organizationId?: string | null;
+  assignedHostId?: string | null;
+}
+
+export async function updateAgentRuntime(
+  id: string,
+  update: AgentRuntimeUpdate
+): Promise<Agent> {
+  const body = {
+    runtime: update.runtime,
+    presence_mode: update.presenceMode,
+    idle_timeout_seconds: update.idleTimeoutSeconds,
+    organization_id: update.organizationId,
+    assigned_host_id: update.assignedHostId,
+  };
+
+  const res = await request<{ agent: Agent }>(`/api/agents/${id}/runtime`, {
+    method: "PATCH",
+    body: JSON.stringify(body),
+  });
+  return res.agent;
+}
+
+// Organizations
+
+export interface Organization {
+  id: string;
+  name: string;
+  slug: string;
+  ownerHumanId: string;
+  settings?: Record<string, unknown>;
+  insertedAt?: string;
+  updatedAt?: string;
+}
+
+export interface OrganizationHost {
+  id: string;
+  organizationId: string;
+  name: string;
+  status: "registered" | "online" | "offline" | "disabled";
+  lastSeenAt?: string | null;
+  hostname?: string | null;
+  version?: string | null;
+}
+
+export interface OrganizationMembership {
+  id: string;
+  organizationId: string;
+  participantId: string;
+  role: "owner" | "admin" | "member";
+  joinedAt: string;
+  participant?: {
+    id: string;
+    type: string;
+    displayName?: string;
+    avatarUrl?: string;
+  };
+}
+
+export async function listOrganizations(): Promise<Organization[]> {
+  const res = await request<{ organizations: Organization[] }>(
+    "/api/organizations"
+  );
+  return res.organizations;
+}
+
+export async function createOrganization(
+  name: string,
+  slug: string
+): Promise<Organization> {
+  const res = await request<{ organization: Organization }>(
+    "/api/organizations",
+    {
+      method: "POST",
+      body: JSON.stringify({ name, slug }),
+    }
+  );
+  return res.organization;
+}
+
+export async function listOrganizationHosts(
+  orgId: string
+): Promise<OrganizationHost[]> {
+  const res = await request<{ hosts: OrganizationHost[] }>(
+    `/api/organizations/${orgId}/hosts`
+  );
+  return res.hosts;
+}
+
+export interface CreateHostResult {
+  host: OrganizationHost;
+  /** Plaintext API key — shown ONCE on creation. Server only persists the hash. */
+  apiKey: string;
+}
+
+export async function createOrganizationHost(
+  orgId: string,
+  name: string
+): Promise<CreateHostResult> {
+  return request<CreateHostResult>(`/api/organizations/${orgId}/hosts`, {
+    method: "POST",
+    body: JSON.stringify({ name }),
+  });
+}
+
+export async function listOrganizationMembers(
+  orgId: string
+): Promise<OrganizationMembership[]> {
+  const res = await request<{ memberships: OrganizationMembership[] }>(
+    `/api/organizations/${orgId}/members`
+  );
+  return res.memberships;
+}
+
 // Health
 export async function getAgentHealth(): Promise<{ agents: AgentHealth[] }> {
   return request("/api/agents/health");
@@ -1336,6 +1454,15 @@ export interface Agent {
   hostedModel?: string | null;
   hostedLimits?: AgentHostedLimits;
   presence?: "online_local" | "online_hosted" | "offline";
+  /** Org-host runtime routing. `"local"` (default) → desktop spawns
+   *  agent_bridge.py as a subprocess. `"org_host"` → a registered Linux
+   *  host VM runs the bridge; process_manager skips local spawn and
+   *  returns AgentStatus::Remote. Set via PATCH /api/agents/:id/runtime. */
+  runtime?: "local" | "org_host";
+  presenceMode?: "always_on" | "wake_on_demand" | "manual";
+  idleTimeoutSeconds?: number | null;
+  organizationId?: string | null;
+  assignedHostId?: string | null;
   /** Present only on ephemeral spawned sub-agents. They are started and
    *  retired by their parent agent's bridge — not run from the desktop app —
    *  so the desktop never holds their API key locally. */

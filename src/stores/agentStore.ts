@@ -669,6 +669,21 @@ export const useAgentStore = create<AgentState>((set, get) => ({
       );
     }
 
+    // Org-host runtime: the bridge is owned by a remote Linux VM, not
+    // this device. Nothing local to spawn — return early and let the
+    // backend's wake dispatch + presence push handle the agent's
+    // online state. We keep the local processStatus at "stopped" so
+    // the UI doesn't pretend there's a live subprocess here.
+    if (managed.agent.runtime === "org_host") {
+      set({
+        agents: {
+          ...get().agents,
+          [id]: { ...managed, processStatus: "stopped", crashReason: null },
+        },
+      });
+      return;
+    }
+
     set({ agents: { ...get().agents, [id]: { ...managed, processStatus: "starting", crashReason: null } } });
 
     try {
@@ -695,6 +710,13 @@ export const useAgentStore = create<AgentState>((set, get) => ({
             (managed.agent.metadata?.computer_use_allowed_apps as string[] | undefined) || [],
           effort: managed.config.effort || undefined,
           addDirs: managed.config.addDirs.length > 0 ? managed.config.addDirs : undefined,
+          // Org-host agents are owned by a remote Linux VM; the Rust
+          // process_manager short-circuits start_agent when this is
+          // set and returns AgentStatus::Remote without spawning a
+          // local subprocess. Passing the field unconditionally keeps
+          // the wire shape predictable; the default `"local"` matches
+          // today's behavior.
+          runtime: managed.agent.runtime ?? "local",
         },
       });
 
