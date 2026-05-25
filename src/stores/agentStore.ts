@@ -891,7 +891,6 @@ export const useAgentStore = create<AgentState>((set, get) => ({
         const isOnline = Boolean(payload.online);
         const presence = payload.presence as
           | "online_local"
-          | "online_hosted"
           | "offline"
           | undefined;
         set((s) => {

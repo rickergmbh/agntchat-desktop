@@ -1446,14 +1446,7 @@ export interface Agent {
   soulMdInherited?: boolean;
   soulMdSourceName?: string;
   soulMdSourceId?: string;
-  // Hosted execution surface mirrors web/mobile.
-  hostedReady?: boolean;
-  hostedPaused?: boolean;
-  hostedMode?: "local_only" | "auto" | "hosted_only";
-  hostedTargetBackend?: string | null;
-  hostedModel?: string | null;
-  hostedLimits?: AgentHostedLimits;
-  presence?: "online_local" | "online_hosted" | "offline";
+  presence?: "online_local" | "offline";
   /** Org-host runtime routing. `"local"` (default) → desktop spawns
    *  agent_bridge.py as a subprocess. `"org_host"` → a registered Linux
    *  host VM runs the bridge; process_manager skips local spawn and
@@ -1473,26 +1466,6 @@ export interface Agent {
     last_used_at?: string;
     expires_at?: string;
   };
-}
-
-export interface AgentHostedLimits {
-  /** Per-agent override RPM cap (or null to use the platform default). */
-  rpm: number | null;
-  /** Platform default RPM, applied when `rpm` is null. */
-  defaultRpm: number;
-  /** Hard ceiling beyond which the backend rejects writes. */
-  maxRpm: number;
-}
-
-/** Owner-level hosted-execution settings + today's usage.
- *  Powers the daily-token cap UI in Profile. */
-export interface OwnerHostedLimits {
-  dailyTokens: number | null;
-  effectiveDailyTokens: number;
-  defaultDailyTokens: number;
-  usedTokensToday: number;
-  remainingTokensToday: number;
-  resetsAt: string;
 }
 
 // LLM API keys — multi-key, encrypted server-side. Replaces the legacy
@@ -1544,47 +1517,6 @@ export async function setDefaultLlmKey(
 
 export async function deleteLlmKey(id: string): Promise<void> {
   await request(`/api/me/llm-keys/${id}`, { method: "DELETE" });
-}
-
-export async function getMyHostedLimits(): Promise<OwnerHostedLimits> {
-  return request<OwnerHostedLimits>("/api/me/hosted-limits");
-}
-
-export async function updateMyHostedLimits(
-  dailyTokens: number | null
-): Promise<OwnerHostedLimits> {
-  return request<OwnerHostedLimits>("/api/me/hosted-limits", {
-    method: "PATCH",
-    body: JSON.stringify({ dailyTokens }),
-  });
-}
-
-export async function updateAgentHostedLimits(
-  agentId: string,
-  rpm: number | null
-): Promise<{ id: string; hostedLimits: AgentHostedLimits }> {
-  return request<{ id: string; hostedLimits: AgentHostedLimits }>(
-    `/api/agents/${agentId}/hosted/limits`,
-    { method: "PATCH", body: JSON.stringify({ rpm }) }
-  );
-}
-
-export async function pauseAgentHosted(
-  agentId: string
-): Promise<{ id: string; hostedPaused: boolean }> {
-  return request<{ id: string; hostedPaused: boolean }>(
-    `/api/agents/${agentId}/hosted/pause`,
-    { method: "POST" }
-  );
-}
-
-export async function resumeAgentHosted(
-  agentId: string
-): Promise<{ id: string; hostedPaused: boolean }> {
-  return request<{ id: string; hostedPaused: boolean }>(
-    `/api/agents/${agentId}/hosted/resume`,
-    { method: "POST" }
-  );
 }
 
 // Fleet-summary row — comes from the multi-agent /api/agents/health
