@@ -31,25 +31,6 @@ const ACTIVITY_DOT_COLORS = {
   error: "bg-destructive",
 };
 
-// Mirrors the AgentConfig hosted-mode picker labels but truncated for
-// the row's narrow column. "—" when hosted execution isn't applicable
-// (no target backend resolved server-side).
-function hostedModeLabel(
-  mode: "local_only" | "auto" | "hosted_only" | undefined,
-  target: string | null | undefined
-): string {
-  if (!target) return "—";
-  switch (mode ?? "local_only") {
-    case "auto":
-      return "Local + Cloud";
-    case "hosted_only":
-      return "Cloud only";
-    case "local_only":
-    default:
-      return "Local";
-  }
-}
-
 // Small overlay dot on the avatar that mirrors the conversation list
 // pattern. `processStatus === "running"` is locally known the moment
 // the desktop kicks off the agent, so we trust it ahead of the WS
@@ -473,26 +454,19 @@ export function AgentRow({
           )}
         </div>
 
-        {/* Hosted */}
+        {/* Runtime — Local subprocess vs. org-host VM. Lets the user
+            see at a glance whether the agent runs on this device or on
+            a shared org host (set in AgentConfig → Runtime). */}
         <div className="truncate">
-          {managed.agent.hostedTargetBackend && managed.agent.hostedMode === "hosted_only" ? (
+          {managed.agent.runtime === "org_host" ? (
             <Badge
               variant="outline"
               className="border-info/30 text-info bg-info/10 gap-1.5"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-info" />
-              Cloud only
+              Org host
             </Badge>
-          ) : managed.agent.hostedTargetBackend && managed.agent.hostedMode === "auto" ? (
-            <Badge
-              variant="outline"
-              className="border-info/30 text-info bg-info/10 gap-1.5"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-info" />
-              Local + Cloud
-            </Badge>
-          ) : managed.agent.hostedTargetBackend &&
-            (managed.agent.hostedMode ?? "local_only") === "local_only" ? (
+          ) : (
             <Badge
               variant="outline"
               className="border-success/30 text-success bg-success/10 gap-1.5"
@@ -500,10 +474,6 @@ export function AgentRow({
               <span className="w-1.5 h-1.5 rounded-full bg-success" />
               Local
             </Badge>
-          ) : (
-            <span className="text-xs text-muted-foreground">
-              {hostedModeLabel(managed.agent.hostedMode, managed.agent.hostedTargetBackend)}
-            </span>
           )}
         </div>
 
