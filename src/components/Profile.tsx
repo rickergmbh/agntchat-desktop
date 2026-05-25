@@ -2709,8 +2709,17 @@ function OrganizationSection() {
         )}
       </section>
 
-      <Dialog open={hostModalOpen} onOpenChange={setHostModalOpen}>
-        <DialogContent>
+      <Dialog
+        open={hostModalOpen}
+        onOpenChange={(next) => {
+          // While the one-time API key is showing, prevent backdrop /
+          // Esc dismissal — losing the key here means the user has
+          // to delete + recreate the host to recover.
+          if (!next && revealedHostKey) return;
+          setHostModalOpen(next);
+        }}
+      >
+        <DialogContent showCloseButton={!revealedHostKey}>
           <DialogHeader>
             <DialogTitle>
               {revealedHostKey ? "Host API key" : "Register host"}

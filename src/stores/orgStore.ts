@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import * as api from "../lib/api";
+import { useAuthStore } from "./authStore";
 
 interface OrgState {
   /** The user's current org. MVP: one human, one org. */
@@ -31,9 +32,16 @@ export const useOrgStore = create<OrgState>((set, get) => ({
   loaded: false,
 
   fetchCurrentOrg: async () => {
+    // Capture the token now so a logout that fires while we're awaiting
+    // doesn't write the previous user's org into the post-logout store.
+    const startedFor = useAuthStore.getState().token;
+    if (!startedFor) return;
+
     set({ loading: true, error: null });
     try {
       const orgs = await api.listOrganizations();
+      if (useAuthStore.getState().token !== startedFor) return;
+
       const organization = orgs[0] ?? null;
       set({ organization, loaded: true, loading: false });
       if (organization) {
@@ -42,6 +50,7 @@ export const useOrgStore = create<OrgState>((set, get) => ({
         set({ hosts: [] });
       }
     } catch (e) {
+      if (useAuthStore.getState().token !== startedFor) return;
       set({
         loading: false,
         loaded: true,

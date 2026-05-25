@@ -207,7 +207,13 @@ export function Dashboard() {
       m.apiKey &&
       m.agent.runtime !== "org_host"
   );
-  const runningAgents = Object.values(agents).filter(isRunningForUI);
+  // "Stop All" mirrors Start All — only acts on local subprocesses.
+  // stopAgent on an org-host agent is a no-op (the Tauri stop command
+  // returns "not found" and we already skip markAgentOffline), but
+  // including them here lies about the bulk action's scope.
+  const runningAgents = Object.values(agents).filter(
+    (m) => isRunningForUI(m) && m.agent.runtime !== "org_host"
+  );
 
   const handleStartAll = async () => {
     setStartingAll(true);
