@@ -3,6 +3,7 @@ import { useAuthStore } from "../stores/authStore";
 import { useThemeStore, type ThemePreference } from "../stores/themeStore";
 import { isDesignSystemDebugOn, setDesignSystemDebug } from "../lib/designSystemDebug";
 import * as api from "../lib/api";
+import { useOrgStore } from "../stores/orgStore";
 import { cn } from "../lib/utils";
 import { PaymentWalletCard } from "./PaymentWalletCard";
 import { Button } from "@/components/ui/button";
@@ -47,6 +48,8 @@ import {
   Trash2,
   Globe,
   Brain,
+  Building2,
+  Copy as CopyIcon,
   CircleCheck,
   CircleX,
   Info,
@@ -123,6 +126,7 @@ const SECTIONS = [
   { value: "memory", label: "Memory", icon: Brain },
   { value: "llm-keys", label: "LLM Keys", icon: Key },
   { value: "hosted", label: "Cloud", icon: Cloud },
+  { value: "org", label: "Organization", icon: Building2 },
   { value: "connections", label: "Connections", icon: Link2 },
 ] as const;
 
@@ -628,6 +632,12 @@ export function Profile({ onClose }: { onClose: () => void }) {
         {activeSection === "hosted" && (
           <div className="flex-1 overflow-y-auto p-5 space-y-6">
             <HostedExecutionSection />
+          </div>
+        )}
+
+        {activeSection === "org" && (
+          <div className="flex-1 overflow-y-auto p-5 space-y-6">
+            <OrganizationSection />
           </div>
         )}
 
@@ -2425,5 +2435,348 @@ function GoogleServicesDetail({
         </button>
       )}
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Organization Section
+// ---------------------------------------------------------------------------
+//
+// MVP admin surface: see your current org, list members, list registered
+// hosts, register new hosts (with one-time API-key reveal modal). Org
+// owner deletion + member invite happen via REST + curl for now; this
+// section covers the day-zero "stand up an org host" flow.
+
+function OrganizationSection() {
+  const { organization, hosts, loaded, loading, error, fetchCurrentOrg, createOrg, registerHost, fetchHosts } =
+    useOrgStore();
+  const [createOpen, setCreateOpen] = useState(false);
+  const [name, setName] = useState("");
+  const [slug, setSlug] = useState("");
+  const [creating, setCreating] = useState(false);
+  const [createError, setCreateError] = useState<string | null>(null);
+
+  const [hostModalOpen, setHostModalOpen] = useState(false);
+  const [hostName, setHostName] = useState("");
+  const [registeringHost, setRegisteringHost] = useState(false);
+  const [revealedHostKey, setRevealedHostKey] = useState<string | null>(null);
+  const [hostError, setHostError] = useState<string | null>(null);
+
+  const [members, setMembers] = useState<api.OrganizationMembership[]>([]);
+  const [membersLoading, setMembersLoading] = useState(false);
+
+  useEffect(() => {
+    if (!loaded && !loading) void fetchCurrentOrg();
+  }, [loaded, loading, fetchCurrentOrg]);
+
+  useEffect(() => {
+    if (!organization) {
+      setMembers([]);
+      return;
+    }
+    let cancelled = false;
+    setMembersLoading(true);
+    api
+      .listOrganizationMembers(organization.id)
+      .then((rows) => {
+        if (!cancelled) setMembers(rows);
+      })
+      .catch(() => {
+        // Listing members shouldn't block the rest of the section.
+        if (!cancelled) setMembers([]);
+      })
+      .finally(() => {
+        if (!cancelled) setMembersLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [organization]);
+
+  const handleCreate = async () => {
+    setCreateError(null);
+    const trimmedName = name.trim();
+    const trimmedSlug = slug.trim().toLowerCase();
+    if (trimmedName.length === 0 || trimmedSlug.length < 2) {
+      setCreateError("Name and slug (≥ 2 chars) are required.");
+      return;
+    }
+    setCreating(true);
+    try {
+      await createOrg(trimmedName, trimmedSlug);
+      setCreateOpen(false);
+      setName("");
+      setSlug("");
+    } catch (e) {
+      setCreateError(e instanceof Error ? e.message : "Could not create organization");
+    } finally {
+      setCreating(false);
+    }
+  };
+
+  const handleRegisterHost = async () => {
+    setHostError(null);
+    const trimmed = hostName.trim();
+    if (trimmed.length === 0) {
+      setHostError("Host name is required.");
+      return;
+    }
+    setRegisteringHost(true);
+    try {
+      const result = await registerHost(trimmed);
+      setRevealedHostKey(result.apiKey);
+      setHostName("");
+      await fetchHosts();
+    } catch (e) {
+      setHostError(e instanceof Error ? e.message : "Could not register host");
+    } finally {
+      setRegisteringHost(false);
+    }
+  };
+
+  if (!loaded) {
+    return (
+      <section>
+        <SectionHeader
+          title="Organization"
+          subtitle="Loading organization details…"
+        />
+        <div className="flex items-center justify-center py-10">
+          <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+        </div>
+      </section>
+    );
+  }
+
+  if (!organization) {
+    return (
+      <section>
+        <SectionHeader
+          title="Organization"
+          subtitle="Create a shared workspace so your agents can run on a dedicated Linux host instead of your laptop."
+        />
+        {error && (
+          <div className="flex items-start gap-2 text-sm text-destructive bg-destructive/10 border border-destructive/20 px-3 py-2.5 rounded-md mb-4">
+            <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+            <p>{error}</p>
+          </div>
+        )}
+        <Button onClick={() => setCreateOpen(true)}>Create organization</Button>
+
+        <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Create organization</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-3 py-2">
+              <div className="space-y-1">
+                <Label htmlFor="org-name">Name</Label>
+                <Input
+                  id="org-name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Acme, Inc."
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="org-slug">Slug</Label>
+                <Input
+                  id="org-slug"
+                  value={slug}
+                  onChange={(e) => setSlug(e.target.value)}
+                  placeholder="acme"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Lowercase, 2–64 chars, alphanumerics + hyphens.
+                </p>
+              </div>
+              {createError && (
+                <div className="text-sm text-destructive">{createError}</div>
+              )}
+            </div>
+            <DialogFooter>
+              <Button variant="ghost" onClick={() => setCreateOpen(false)} disabled={creating}>
+                Cancel
+              </Button>
+              <Button onClick={() => void handleCreate()} disabled={creating}>
+                {creating ? "Creating…" : "Create"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </section>
+    );
+  }
+
+  return (
+    <>
+      <section>
+        <SectionHeader
+          title={organization.name}
+          subtitle={`Slug: ${organization.slug}`}
+        />
+      </section>
+
+      <section>
+        <SectionHeader title="Hosts" subtitle="Linux VMs that run agent bridges on your org's behalf." />
+        {error && (
+          <div className="flex items-start gap-2 text-sm text-destructive bg-destructive/10 border border-destructive/20 px-3 py-2.5 rounded-md mb-4">
+            <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+            <p>{error}</p>
+          </div>
+        )}
+        {hosts.length === 0 ? (
+          <div className="text-sm text-muted-foreground mb-3">
+            No hosts registered yet. Register one and follow the install steps
+            in <code>host/README.md</code> on your VM.
+          </div>
+        ) : (
+          <ul className="space-y-2 mb-3">
+            {hosts.map((h) => (
+              <li
+                key={h.id}
+                className="flex items-center justify-between rounded-md border border-border px-3 py-2"
+              >
+                <div className="min-w-0">
+                  <div className="font-medium truncate">{h.name}</div>
+                  <div className="text-xs text-muted-foreground">
+                    {h.status}
+                    {h.hostname ? ` · ${h.hostname}` : ""}
+                    {h.version ? ` · v${h.version}` : ""}
+                  </div>
+                </div>
+                <Badge
+                  variant="outline"
+                  className={cn(
+                    "shrink-0",
+                    h.status === "online" && "border-success/30 text-success bg-success/10",
+                    h.status === "offline" && "border-muted text-muted-foreground",
+                    h.status === "disabled" && "border-destructive/30 text-destructive bg-destructive/10"
+                  )}
+                >
+                  {h.status}
+                </Badge>
+              </li>
+            ))}
+          </ul>
+        )}
+        <Button
+          variant="outline"
+          onClick={() => {
+            setHostError(null);
+            setRevealedHostKey(null);
+            setHostName("");
+            setHostModalOpen(true);
+          }}
+        >
+          <Plus className="w-4 h-4" />
+          Register host
+        </Button>
+      </section>
+
+      <section>
+        <SectionHeader title="Members" subtitle="People in this organization." />
+        {membersLoading ? (
+          <div className="flex items-center justify-center py-6">
+            <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+          </div>
+        ) : (
+          <ul className="space-y-2">
+            {members.map((m) => (
+              <li
+                key={m.id}
+                className="flex items-center justify-between rounded-md border border-border px-3 py-2"
+              >
+                <div className="min-w-0 flex items-center gap-2">
+                  <Avatar className="h-7 w-7 rounded-lg">
+                    {m.participant?.avatarUrl && (
+                      <AvatarImage src={m.participant.avatarUrl} className="rounded-lg" />
+                    )}
+                    <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-xs">
+                      {(m.participant?.displayName ?? "?").charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="text-sm truncate">
+                    {m.participant?.displayName ?? m.participantId}
+                  </div>
+                </div>
+                <Badge variant="outline" className="shrink-0">
+                  {m.role}
+                </Badge>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <Dialog open={hostModalOpen} onOpenChange={setHostModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {revealedHostKey ? "Host API key" : "Register host"}
+            </DialogTitle>
+          </DialogHeader>
+
+          {revealedHostKey ? (
+            <div className="space-y-3 py-2">
+              <p className="text-sm">
+                Copy this API key now — it's shown <strong>once</strong>. Paste
+                it into <code>host/scripts/enroll.sh</code> on the VM.
+              </p>
+              <div className="flex items-center gap-2 rounded-md border border-border bg-muted px-2.5 py-2 font-mono text-xs break-all">
+                <span className="flex-1 select-all">{revealedHostKey}</span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => void navigator.clipboard.writeText(revealedHostKey)}
+                >
+                  <CopyIcon className="w-3.5 h-3.5" />
+                </Button>
+              </div>
+              <DialogFooter>
+                <Button
+                  onClick={() => {
+                    setRevealedHostKey(null);
+                    setHostModalOpen(false);
+                  }}
+                >
+                  I've copied it
+                </Button>
+              </DialogFooter>
+            </div>
+          ) : (
+            <div className="space-y-3 py-2">
+              <div className="space-y-1">
+                <Label htmlFor="host-name">Host name</Label>
+                <Input
+                  id="host-name"
+                  value={hostName}
+                  onChange={(e) => setHostName(e.target.value)}
+                  placeholder="vm-01.lan"
+                />
+              </div>
+              {hostError && (
+                <div className="text-sm text-destructive">{hostError}</div>
+              )}
+              <DialogFooter>
+                <Button
+                  variant="ghost"
+                  onClick={() => setHostModalOpen(false)}
+                  disabled={registeringHost}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={() => void handleRegisterHost()}
+                  disabled={registeringHost}
+                >
+                  {registeringHost ? "Registering…" : "Register"}
+                </Button>
+              </DialogFooter>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

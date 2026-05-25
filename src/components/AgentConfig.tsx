@@ -3034,6 +3034,7 @@ function RuntimePanel({ agent }: { agent: Agent }) {
   const { organization, hosts, loaded, loading: orgLoading } = orgStore;
   const fetchCurrentOrg = orgStore.fetchCurrentOrg;
   const fetchAgents = useAgentStore((s) => s.fetchAgents);
+  const stopAgentLocally = useAgentStore((s) => s.stopAgent);
 
   useEffect(() => {
     if (!loaded) {
@@ -3081,6 +3082,25 @@ function RuntimePanel({ agent }: { agent: Agent }) {
     setError(null);
     setSaving(true);
     try {
+      // Flipping local → org_host while a local subprocess is running
+      // would leave an orphan bridge consuming a slot, talking to the
+      // backend in parallel with the host's bridge, and producing
+      // duplicate replies. Stop it before swapping runtimes so the
+      // transition is clean. (markAgentOffline inside stopAgent skips
+      // its API call for runtime=org_host agents, so we do this BEFORE
+      // PATCHing the runtime field.)
+      const flippingToOrgHost =
+        currentRuntime !== "org_host" && pendingRuntime === "org_host";
+
+      if (flippingToOrgHost) {
+        try {
+          await stopAgentLocally(agent.id);
+        } catch {
+          // Best-effort — if the local process was already dead this
+          // is a no-op. The flip still proceeds.
+        }
+      }
+
       await updateAgentRuntime(agent.id, {
         runtime: pendingRuntime,
         organizationId:

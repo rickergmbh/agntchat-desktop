@@ -95,10 +95,12 @@ function StatusBadge({
   status,
   uptimeSecs,
   presence,
+  runtime,
 }: {
   status: string;
   uptimeSecs: number | null;
   presence?: "online_local" | "online_hosted" | "offline";
+  runtime?: "local" | "org_host";
 }) {
   // A `hosted_only` agent will sit at processStatus=stopped on this
   // machine forever — that's by design. Showing "Stopped" implies
@@ -110,6 +112,29 @@ function StatusBadge({
       <Badge variant="outline" className="border-info/30 text-info bg-info/10 gap-1.5">
         <Cloud className="w-3 h-3" />
         Cloud
+      </Badge>
+    );
+  }
+
+  // Org-host runtime: the bridge runs on a remote VM, so processStatus
+  // is always "stopped" on this device. The agent's real online state
+  // comes from the backend's WS presence (presence !== "offline"
+  // means a bridge is connected somewhere). Render an honest "Remote"
+  // badge — "Stopped" would lie about the actual lifecycle.
+  if (runtime === "org_host" && status === "stopped") {
+    const remoteOnline = presence && presence !== "offline";
+    return (
+      <Badge
+        variant="outline"
+        className={cn(
+          "gap-1.5",
+          remoteOnline
+            ? "border-info/30 text-info bg-info/10"
+            : "border-muted text-muted-foreground bg-muted/30"
+        )}
+      >
+        <Cloud className="w-3 h-3" />
+        {remoteOnline ? "Remote · online" : "Remote · offline"}
       </Badge>
     );
   }
@@ -494,6 +519,7 @@ export function AgentRow({
                 status={managed.processStatus}
                 uptimeSecs={liveUptimeSecs}
                 presence={managed.agent.presence}
+                runtime={managed.agent.runtime}
               />
               <HealthHint health={managed.health} processStatus={managed.processStatus} />
               {managed.processStatus === "crashed" && managed.crashReason && (

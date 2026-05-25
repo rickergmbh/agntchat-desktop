@@ -141,7 +141,17 @@ function LeftRail({
   const agentsMap = useAgentStore((s) => s.agents);
   const agentStats = useMemo(() => {
     const all = Object.values(agentsMap);
-    const online = all.filter((m) => m.processStatus === "running").length;
+    const online = all.filter((m) => {
+      // Local-runtime agents are "online" when the local subprocess is
+      // running. Org-host agents have no local process — they're
+      // online when the server-side presence says a bridge (on the VM)
+      // is connected. Without this branch, every org-hosted agent
+      // would silently undercount in the rail's N/M badge.
+      if (m.agent.runtime === "org_host") {
+        return m.agent.presence != null && m.agent.presence !== "offline";
+      }
+      return m.processStatus === "running";
+    }).length;
     return { online, total: all.length };
   }, [agentsMap]);
 

@@ -735,21 +735,31 @@ export const useAgentStore = create<AgentState>((set, get) => ({
   },
 
   stopAgent: async (id) => {
+    const managed = get().agents[id];
+    const isOrgHosted = managed?.agent.runtime === "org_host";
+
     try {
       await invoke("stop_agent", { agentId: id });
     } catch {
-      // Process may already be dead
+      // Process may already be dead — or, for an org-hosted agent,
+      // never existed locally. Tauri returns "not found" which we
+      // intentionally ignore.
     }
 
-    // Mark executors offline immediately so web/mobile apps see the change
-    // without waiting 45-105s for the cleanup worker
-    try {
-      await api.markAgentOffline(id);
-    } catch {
-      // Non-fatal — cleanup worker will handle it eventually
+    if (!isOrgHosted) {
+      // Mark executors offline immediately so web/mobile apps see the
+      // change without waiting 45-105s for the cleanup worker. For
+      // org-hosted agents the remote bridge is still alive and OWNS
+      // its executor registration; force-marking it offline here would
+      // lie about its state and the host's next heartbeat would just
+      // re-register anyway.
+      try {
+        await api.markAgentOffline(id);
+      } catch {
+        // Non-fatal — cleanup worker will handle it eventually
+      }
     }
 
-    const managed = get().agents[id];
     if (managed) {
       set({ agents: { ...get().agents, [id]: { ...managed, processStatus: "stopped", uptimeSecs: null, crashReason: null, startedAt: null, consecutiveBadPolls: 0 } } });
     }

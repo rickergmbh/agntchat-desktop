@@ -185,16 +185,29 @@ export function Dashboard() {
     return () => window.removeEventListener("keydown", onKey);
   }, [drawerOpen, selectAgent]);
 
-  const runningCount = Object.values(agents).filter(
-    (m) => m.processStatus === "running"
-  ).length;
+  // For local-runtime agents "running" tracks the local subprocess.
+  // For org-host runtime there is no local subprocess — the bridge
+  // lives on a registered VM and reports presence via the WS push.
+  // Without the runtime branch every org-hosted agent silently shows
+  // as "stopped" and gets bulk-started, which would no-op locally but
+  // be confusing UX.
+  const isRunningForUI = (m: typeof agents[string]) =>
+    m.agent.runtime === "org_host"
+      ? m.agent.presence != null && m.agent.presence !== "offline"
+      : m.processStatus === "running";
+
+  const runningCount = Object.values(agents).filter(isRunningForUI).length;
   const totalCount = Object.keys(agents).length;
+  // "Start All" only targets locally-runnable agents — flipping an
+  // org-host agent into "starting" here would do nothing useful since
+  // the Tauri command short-circuits to AgentStatus::Remote.
   const stoppedWithKeys = Object.values(agents).filter(
-    (m) => m.processStatus === "stopped" && m.apiKey
+    (m) =>
+      m.processStatus === "stopped" &&
+      m.apiKey &&
+      m.agent.runtime !== "org_host"
   );
-  const runningAgents = Object.values(agents).filter(
-    (m) => m.processStatus === "running"
-  );
+  const runningAgents = Object.values(agents).filter(isRunningForUI);
 
   const handleStartAll = async () => {
     setStartingAll(true);
