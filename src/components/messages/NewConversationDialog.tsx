@@ -14,7 +14,6 @@ import {
   Search,
   Bot,
   Check,
-  Cloud,
   Loader2,
   MessageCircle,
   Users,
@@ -566,9 +565,6 @@ function AgentRow({
           const presence = agent.presence ?? (agent.online ? "online_local" : "offline");
           if (presence === "online_local") {
             return <span className="h-2 w-2 rounded-full bg-success" />;
-          }
-          if (presence === "online_hosted") {
-            return <Cloud className="h-3 w-3 text-sky-500" />;
           }
           return null;
         })()}

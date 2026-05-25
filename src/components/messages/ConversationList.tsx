@@ -2,7 +2,6 @@ import { memo } from "react";
 import { useChatStore } from "../../stores/chatStore";
 import { useAuthStore } from "../../stores/authStore";
 import { usePresenceStore } from "../../stores/presenceStore";
-import { Cloud } from "lucide-react";
 import {
   cn,
   getConversationTitle,
@@ -27,12 +26,6 @@ export function ConversationList() {
   const unreadCounts = useChatStore((s) => s.unreadCounts);
   const setActive = useChatStore((s) => s.setActiveConversation);
   const online = usePresenceStore((s) => s.online);
-  // Per-agent tri-state presence — covers external agents owned by other
-  // users that aren't in our local agents map. The presenceStore handler
-  // routes online_hosted agents OUT of the `online` set, so they only show
-  // up here, which lets us render the cloud icon distinctly from the green
-  // dot regardless of whether we own the agent.
-  const agentPresence = usePresenceStore((s) => s.agentPresence);
   const currentUserId = useAuthStore((s) => s.participant?.id);
 
   if (loading && conversations.length === 0) {
@@ -60,19 +53,13 @@ export function ConversationList() {
   return (
     <div className="flex flex-col gap-0.5 px-2 py-1">
       {conversations.map((conv) => {
-        // Best-available presence across non-self members: bridge
-        // online wins over hosted, hosted wins over offline. The
-        // early-break guarantees we never overwrite online_local
-        // with online_hosted later in the loop.
-        let presence: "online_local" | "online_hosted" | "offline" = "offline";
+        // Any non-self member online → "online_local"; otherwise "offline".
+        let presence: "online_local" | "offline" = "offline";
         for (const m of conv.members ?? []) {
           if (m.participantId === currentUserId) continue;
           if (online.has(m.participantId)) {
             presence = "online_local";
             break;
-          }
-          if (agentPresence[m.participantId] === "online_hosted") {
-            presence = "online_hosted";
           }
         }
         const hasAgent =
@@ -110,7 +97,7 @@ const ConversationItem = memo(function ConversationItem({
   conversation: Conversation;
   isActive: boolean;
   unreadCount: number;
-  presence: "online_local" | "online_hosted" | "offline";
+  presence: "online_local" | "offline";
   hasAgent: boolean;
   currentUserId?: string;
   onClick: () => void;
@@ -166,21 +153,10 @@ const ConversationItem = memo(function ConversationItem({
             {hasAgent && (
               <span
                 className={cn(
-                  "absolute -bottom-0.5 -right-0.5 flex items-center justify-center rounded-full border-2 border-card",
-                  presence === "online_hosted"
-                    ? "h-3.5 w-3.5 bg-sky-500"
-                    : "h-2.5 w-2.5",
-                  presence === "online_local"
-                    ? "bg-success"
-                    : presence === "online_hosted"
-                      ? ""
-                      : "bg-muted-foreground"
+                  "absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-card",
+                  presence === "online_local" ? "bg-success" : "bg-muted-foreground"
                 )}
-              >
-                {presence === "online_hosted" && (
-                  <Cloud className="h-2 w-2 text-white" />
-                )}
-              </span>
+              />
             )}
           </div>
         )}

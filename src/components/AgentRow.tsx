@@ -41,25 +41,14 @@ function PresenceDot({
   online,
 }: {
   processStatus: ManagedAgent["processStatus"];
-  presence: "online_local" | "online_hosted" | "offline" | undefined;
+  presence: "online_local" | "offline" | undefined;
   online: boolean | undefined;
 }) {
   const locallyRunning = processStatus === "running";
-  const effective: "online_local" | "online_hosted" | "offline" =
+  const effective: "online_local" | "offline" =
     locallyRunning
       ? "online_local"
       : presence ?? (online ? "online_local" : "offline");
-
-  if (effective === "online_hosted") {
-    return (
-      <span
-        className="absolute -bottom-0.5 -right-0.5 flex h-3 w-3 items-center justify-center rounded-full border-2 border-card bg-sky-500"
-        aria-label="Cloud"
-      >
-        <Cloud className="h-1.5 w-1.5 text-white" />
-      </span>
-    );
-  }
 
   return (
     <span
@@ -80,23 +69,9 @@ function StatusBadge({
 }: {
   status: string;
   uptimeSecs: number | null;
-  presence?: "online_local" | "online_hosted" | "offline";
+  presence?: "online_local" | "offline";
   runtime?: "local" | "org_host";
 }) {
-  // A `hosted_only` agent will sit at processStatus=stopped on this
-  // machine forever — that's by design. Showing "Stopped" implies
-  // something's broken, when really the agent is happily running
-  // server-side. Override the badge so the desktop owner sees the
-  // honest state.
-  if (status === "stopped" && presence === "online_hosted") {
-    return (
-      <Badge variant="outline" className="border-info/30 text-info bg-info/10 gap-1.5">
-        <Cloud className="w-3 h-3" />
-        Cloud
-      </Badge>
-    );
-  }
-
   // Org-host runtime: the bridge runs on a remote VM, so processStatus
   // is always "stopped" on this device. The agent's real online state
   // comes from the backend's WS presence (presence !== "offline"

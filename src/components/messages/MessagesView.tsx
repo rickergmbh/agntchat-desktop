@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { MessageSquare, ChevronRight, ChevronLeft, SquarePen, Bot, Cloud, RefreshCw } from "lucide-react";
+import { MessageSquare, ChevronRight, ChevronLeft, SquarePen, Bot, RefreshCw } from "lucide-react";
 import { useChatStore } from "../../stores/chatStore";
 import { useAuthStore } from "../../stores/authStore";
 import { usePresenceStore } from "../../stores/presenceStore";
@@ -151,12 +151,6 @@ function ActiveConversation({
   const myId = useAuthStore((s) => s.participant?.id);
 
   const online = usePresenceStore((s) => s.online);
-  // Per-agent tri-state from presenceStore — works for any agent in the
-  // conversation, including hosted_only agents owned by other users that
-  // aren't in our local agents map. The presenceStore handler keeps
-  // hosted-only agents OUT of `online` so a DM with one reads "Hosted"
-  // with a cloud icon, not "Online" with a green dot.
-  const agentPresence = usePresenceStore((s) => s.agentPresence);
 
   // Match web's ChatView header — show a stacked GroupAvatar for group
   // conversations or whenever there's more than one other participant.
@@ -174,33 +168,13 @@ function ActiveConversation({
     otherParticipant?.displayName ||
     (conversation?.type === "group" ? "Group" : "Conversation");
 
-  const dmAgentPresence = useMemo<
-    "online_local" | "online_hosted" | "offline" | null
-  >(() => {
-    if (!conversation) return null;
-    const others = (conversation.members ?? []).filter(
-      (m) => m.participantId !== myId
-    );
-    const isDM = conversation.type === "direct" || others.length === 1;
-    if (!isDM) return null;
-    const partner = others[0]?.participantId;
-    if (!partner) return null;
-    if (online.has(partner)) return "online_local";
-    return agentPresence[partner] ?? "offline";
-  }, [conversation, myId, online, agentPresence]);
-
   const presenceLine = useMemo(() => {
     if (!conversation) return null;
     const members = conversation.members ?? [];
     const others = members.filter((m) => m.participantId !== myId);
-    const onlineCount = others.filter(
-      (m) =>
-        online.has(m.participantId) ||
-        agentPresence[m.participantId] === "online_hosted"
-    ).length;
+    const onlineCount = others.filter((m) => online.has(m.participantId)).length;
     const isDM = conversation.type === "direct" || others.length === 1;
     if (isDM) {
-      if (dmAgentPresence === "online_hosted") return "Cloud";
       return onlineCount > 0 ? "Online" : "Offline";
     }
     if (conversation.type === "channel" || conversation.type === "group") {
@@ -209,7 +183,7 @@ function ActiveConversation({
         : `${others.length + 1} members`;
     }
     return null;
-  }, [conversation, online, agentPresence, dmAgentPresence, myId]);
+  }, [conversation, online, myId]);
 
   // When the active conversation is an agent thread, surface a back-to-parent
   // button so the user can pop out of the thread without scrolling the
@@ -273,9 +247,7 @@ function ActiveConversation({
             <p className="text-sm font-semibold truncate">{headerTitle}</p>
             {presenceLine && (
               <p className="text-[11px] text-muted-foreground flex items-center gap-1">
-                {dmAgentPresence === "online_hosted" ? (
-                  <Cloud className="h-3 w-3 text-sky-500" aria-hidden />
-                ) : presenceLine === "Online" || presenceLine.includes("online ·") ? (
+                {presenceLine === "Online" || presenceLine.includes("online ·") ? (
                   <span className="h-1.5 w-1.5 rounded-full bg-success" />
                 ) : presenceLine === "Offline" ? (
                   <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/40" />

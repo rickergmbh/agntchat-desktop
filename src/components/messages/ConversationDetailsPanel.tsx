@@ -2,9 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useChatStore } from "../../stores/chatStore";
 import { usePresenceStore } from "../../stores/presenceStore";
 import { useAgentStore } from "../../stores/agentStore";
-// usePresenceStore.agentPresence is the source of tri-state presence (covers
-// external agents owned by other users); useAgentStore is still needed for
-// the "add member" picker which lists this user's own agents.
+// useAgentStore is needed for the "add member" picker which lists this user's
+// own agents.
 import { useMemoryStore } from "../../stores/memoryStore";
 import { uploadAvatar } from "../../lib/imageProcessor";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -30,7 +29,6 @@ import {
   ChevronRight,
   Loader2,
   Camera,
-  Cloud,
 } from "lucide-react";
 import { GroupAvatar } from "./GroupAvatar";
 import { cn, getInitials } from "../../lib/utils";
@@ -126,14 +124,8 @@ export function ConversationDetailsPanel({
     () => Object.values(agentsMap).map((m) => m.agent),
     [agentsMap]
   );
-  // Per-agent tri-state presence — works for external agents we don't own.
-  const agentPresence = usePresenceStore((s) => s.agentPresence);
-  const presenceFor = (
-    id: string
-  ): "online_local" | "online_hosted" | "offline" => {
-    if (online.has(id)) return "online_local";
-    return agentPresence[id] ?? "offline";
-  };
+  const presenceFor = (id: string): "online_local" | "offline" =>
+    online.has(id) ? "online_local" : "offline";
 
   const isAdmin = conversation.createdBy === currentUserId;
   const rawMembers = conversation.members ?? [];
@@ -145,9 +137,7 @@ export function ConversationDetailsPanel({
   const members = useMemo(() => {
     const score = (m: ConversationMember): number => {
       if (m.participantId === currentUserId) return 0;
-      const isOnline =
-        online.has(m.participantId) ||
-        agentPresence[m.participantId] === "online_hosted";
+      const isOnline = online.has(m.participantId);
       const isAgent = m.participant?.type === "agent";
       // 1-2: online (human=1, agent=2); 3-4: offline (human=3, agent=4)
       return (isOnline ? 0 : 2) + (isAgent ? 2 : 1);
@@ -160,7 +150,7 @@ export function ConversationDetailsPanel({
       const nb = b.participant?.displayName ?? "";
       return na.localeCompare(nb);
     });
-  }, [rawMembers, currentUserId, online, agentPresence]);
+  }, [rawMembers, currentUserId, online]);
 
   const [editing, setEditing] = useState(false);
   const [titleDraft, setTitleDraft] = useState(conversation.title ?? "");
@@ -500,7 +490,7 @@ function MemberRow({
   onRemove,
 }: {
   member: ConversationMember;
-  presence: "online_local" | "online_hosted" | "offline";
+  presence: "online_local" | "offline";
   isSelf: boolean;
   isAdmin: boolean;
   isConversationCreator: boolean;
@@ -510,7 +500,6 @@ function MemberRow({
   const name = p?.displayName ?? "Unknown";
   const isAgent = p?.type === "agent";
   const isOnline = presence !== "offline";
-  const isHosted = presence === "online_hosted";
 
   return (
     <li className="group flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-muted/50">
@@ -523,16 +512,10 @@ function MemberRow({
         </Avatar>
         <span
           className={cn(
-            "absolute -bottom-0.5 -right-0.5 flex items-center justify-center rounded-full border-2 border-card",
-            isHosted
-              ? "h-3.5 w-3.5 bg-sky-500"
-              : isOnline
-                ? "h-2.5 w-2.5 bg-success"
-                : "h-2.5 w-2.5 bg-muted-foreground/40"
+            "absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-card",
+            isOnline ? "bg-success" : "bg-muted-foreground/40"
           )}
-        >
-          {isHosted && <Cloud className="h-2 w-2 text-white" />}
-        </span>
+        />
       </div>
 
       <div className="min-w-0 flex-1">
@@ -544,7 +527,7 @@ function MemberRow({
           )}
         </div>
         <p className="text-[11px] text-muted-foreground">
-          {isAgent ? "Agent" : "Human"} · {isHosted ? "Cloud" : isOnline ? "Online" : "Offline"}
+          {isAgent ? "Agent" : "Human"} · {isOnline ? "Online" : "Offline"}
         </p>
       </div>
 

@@ -54,7 +54,6 @@ import {
   CircleX,
   Info,
   Calendar,
-  RefreshCw,
   Search,
   Sun,
   Moon,
@@ -2320,5 +2319,154 @@ function OrganizationSection() {
         </DialogContent>
       </Dialog>
     </>
+  );
+}
+
+function SectionHeader({
+  title,
+  subtitle,
+}: {
+  title: string;
+  subtitle?: string;
+}) {
+  return (
+    <div className="mb-4">
+      <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+        {title}
+      </h3>
+      {subtitle && (
+        <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>
+      )}
+    </div>
+  );
+}
+
+function ProviderCard({
+  provider,
+  credential,
+  icon: Icon,
+  isConnecting,
+  onConnectOAuth,
+  onConnectToken,
+  onDisconnect,
+}: {
+  provider: api.ProviderInfo;
+  credential?: api.UserCredential;
+  icon: React.ElementType;
+  isConnecting: boolean;
+  onConnectOAuth: () => void;
+  onConnectToken: () => void;
+  onDisconnect: () => void;
+}) {
+  const isConnected = !!credential;
+  const status = credential?.status;
+  const statusConfig = status ? STATUS_CONFIG[status] : null;
+
+  return (
+    <div
+      className={cn(
+        "rounded-lg border p-3.5 transition-colors",
+        isConnected
+          ? "border-border bg-card"
+          : "border-dashed border-border bg-muted/20"
+      )}
+    >
+      {/* Top row: icon, name, status/action */}
+      <div className="flex items-center gap-3">
+        <div
+          className={cn(
+            "w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0",
+            isConnected ? "bg-primary/10" : "bg-muted"
+          )}
+        >
+          <Icon
+            className={cn(
+              "w-4.5 h-4.5",
+              isConnected ? "text-primary" : "text-muted-foreground"
+            )}
+          />
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <p className="text-sm font-medium truncate">
+              {provider.displayName}
+            </p>
+            {statusConfig && (
+              <Badge
+                variant="outline"
+                className={cn("text-[10px] py-0", statusConfig.className)}
+              >
+                {statusConfig.label}
+              </Badge>
+            )}
+          </div>
+          {provider.description && !isConnected && (
+            <p className="text-xs text-muted-foreground truncate mt-0.5">
+              {provider.description}
+            </p>
+          )}
+          {credential?.providerUid && (
+            <p className="text-xs text-muted-foreground truncate mt-0.5">
+              {credential.providerUid}
+            </p>
+          )}
+        </div>
+
+        <div className="flex items-center gap-1.5 flex-shrink-0">
+          {isConnecting ? (
+            <Button variant="outline" size="sm" disabled>
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              Waiting...
+            </Button>
+          ) : isConnected ? (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onDisconnect}
+              className="text-destructive border-destructive/30 hover:bg-destructive/10 hover:text-destructive/90"
+            >
+              <Unlink className="w-3.5 h-3.5" />
+              Disconnect
+            </Button>
+          ) : provider.type === "oauth2" ? (
+            <Button variant="outline" size="sm" onClick={onConnectOAuth}>
+              <ExternalLink className="w-3.5 h-3.5" />
+              Connect
+            </Button>
+          ) : (
+            <Button variant="outline" size="sm" onClick={onConnectToken}>
+              <Key className="w-3.5 h-3.5" />
+              Add Token
+            </Button>
+          )}
+        </div>
+      </div>
+
+      {/* Google: show services with status */}
+      {credential && provider.name === "google" && (
+        <GoogleServicesDetail
+          credential={credential}
+          onReconnect={onConnectOAuth}
+        />
+      )}
+
+      {/* Non-Google: show raw scopes */}
+      {credential && provider.name !== "google" && credential.scopes.length > 0 && (
+        <div className="mt-2.5 pt-2.5 border-t border-border/50">
+          <div className="flex flex-wrap gap-1">
+            {credential.scopes.map((scope) => (
+              <Badge
+                key={scope}
+                variant="secondary"
+                className="text-[10px] font-normal py-0"
+              >
+                {scope}
+              </Badge>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

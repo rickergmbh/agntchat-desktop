@@ -7,14 +7,12 @@ const AGENT_TYPING_TTL_MS = 30_000;
 interface PresenceState {
   connected: boolean;
   /** Reachable peers — humans currently WS-connected + agents whose bridge
-   *  is online. Hosted-only agents are NOT in this set; consult
-   *  `agentPresence` for their tri-state (online_local | online_hosted). */
+   *  is online. */
   online: Set<string>;
-  /** Per-agent tri-state presence. Populated for both our own agents and
-   *  any external agent we share a conversation with — the backend pushes
-   *  `agent_status_changed` to all conversation peers. Lets us render the
-   *  cloud icon for a hosted_only agent owned by someone else. */
-  agentPresence: Record<string, "online_local" | "online_hosted">;
+  /** Per-agent presence. Populated for both our own agents and any external
+   *  agent we share a conversation with — the backend pushes
+   *  `agent_status_changed` to all conversation peers. */
+  agentPresence: Record<string, "online_local">;
   /** convId → Set of participantIds currently typing */
   typing: Record<string, Set<string>>;
   /** participantId → display name (for rendering "X is typing...") */
@@ -124,39 +122,33 @@ export const usePresenceStore = create<PresenceState>((set) => {
       );
 
       // Agents go online/offline via the user channel — they never show up in
-       // a conversation's presence roster (bridge processes aren't Phoenix
-       // sockets). Without this handler the Chats presence dot is frozen at
-       // whatever state the conversation load initially reported.
-       //
-       // Tri-state: backend sends `presence: "online_local" | "online_hosted"
-       // | "offline"`. Only `online_local` belongs in the `online` set —
-       // hosted-only agents go into `agentPresence` so the UI can pick the
-       // cloud icon instead of the green dot.
+      // a conversation's presence roster (bridge processes aren't Phoenix
+      // sockets). Without this handler the Chats presence dot is frozen at
+      // whatever state the conversation load initially reported.
       unsubs.push(
         ws.on("agent_status_changed", (payload) => {
           const agentId = payload.agentId as string | undefined;
           if (!agentId) return;
           const presence = payload.presence as
             | "online_local"
-            | "online_hosted"
             | "offline"
             | undefined;
           // Fall back to the boolean for older servers that didn't include
-          // the tri-state field — treat any "online" as online_local.
-          const effective: "online_local" | "online_hosted" | "offline" =
+          // the presence field.
+          const effective: "online_local" | "offline" =
             presence ?? (payload.online ? "online_local" : "offline");
 
           set((s) => {
             const wasOnline = s.online.has(agentId);
             const wantOnline = effective === "online_local";
-            const currentHosted = s.agentPresence[agentId];
+            const currentPresence = s.agentPresence[agentId];
 
             const onlineUnchanged = wasOnline === wantOnline;
-            const hostedUnchanged =
+            const presenceUnchanged =
               effective === "offline"
-                ? currentHosted === undefined
-                : currentHosted === effective;
-            if (onlineUnchanged && hostedUnchanged) return s;
+                ? currentPresence === undefined
+                : currentPresence === effective;
+            if (onlineUnchanged && presenceUnchanged) return s;
 
             const nextOnline = onlineUnchanged ? s.online : new Set(s.online);
             if (!onlineUnchanged) {
@@ -164,10 +156,10 @@ export const usePresenceStore = create<PresenceState>((set) => {
               else nextOnline.delete(agentId);
             }
 
-            const nextAgentPresence = hostedUnchanged
+            const nextAgentPresence = presenceUnchanged
               ? s.agentPresence
               : { ...s.agentPresence };
-            if (!hostedUnchanged) {
+            if (!presenceUnchanged) {
               if (effective === "offline") delete nextAgentPresence[agentId];
               else nextAgentPresence[agentId] = effective;
             }
@@ -195,23 +187,14 @@ export const usePresenceStore = create<PresenceState>((set) => {
       // Authoritative snapshot from server on user-channel join. Resets
       // the global online set so peers who went offline during our
       // disconnect are cleared. Subsequent transitions update from there.
-      //
-      // `agentPresences` carries the tri-state for agent peers — humans and
-      // bridge-online agents are in `onlineParticipantIds`; hosted-only
-      // agents only appear in the map (they aren't WS-reachable). Drop
-      // hosted-only ids out of `online` so they show as cloud, not dot.
       unsubs.push(
         ws.on("presence_snapshot", (payload) => {
           const ids = (payload.onlineParticipantIds as string[] | undefined) ?? [];
           const agentPresences =
             (payload.agentPresences as
-              | Record<string, "online_local" | "online_hosted">
+              | Record<string, "online_local">
               | undefined) ?? {};
-          const onlineSet = new Set(ids);
-          for (const [id, presence] of Object.entries(agentPresences)) {
-            if (presence === "online_hosted") onlineSet.delete(id);
-          }
-          set({ online: onlineSet, agentPresence: agentPresences });
+          set({ online: new Set(ids), agentPresence: agentPresences });
         })
       );
 
