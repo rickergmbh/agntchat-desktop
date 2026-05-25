@@ -54,6 +54,7 @@ import {
   CircleX,
   Info,
   Calendar,
+  RefreshCw,
   Search,
   Sun,
   Moon,
@@ -2466,6 +2467,59 @@ function ProviderCard({
             ))}
           </div>
         </div>
+      )}
+    </div>
+  );
+}
+
+function GoogleServicesDetail({
+  credential,
+  onReconnect,
+}: {
+  credential: api.UserCredential;
+  onReconnect: () => void;
+}) {
+  const scopeStr = credential.scopes.join(" ");
+  const services = GOOGLE_SERVICES.map((svc) => ({
+    ...svc,
+    connected: scopeStr.includes(svc.scope),
+  }));
+  const hasMissing = services.some((s) => !s.connected);
+
+  return (
+    <div className="mt-2.5 pt-2.5 border-t border-border/50 space-y-2">
+      <div className="flex flex-wrap gap-x-4 gap-y-1">
+        {services.map((svc) => {
+          const SvcIcon = svc.icon;
+          return (
+            <div key={svc.scope} className="flex items-center gap-1.5">
+              <SvcIcon className={cn(
+                "w-3.5 h-3.5",
+                svc.connected ? "text-success" : "text-muted-foreground/50"
+              )} />
+              <span className={cn(
+                "text-xs",
+                svc.connected ? "text-foreground" : "text-muted-foreground/50 line-through"
+              )}>
+                {svc.label}
+              </span>
+              {svc.connected ? (
+                <Check className="w-3 h-3 text-success" />
+              ) : (
+                <AlertCircle className="w-3 h-3 text-warning" />
+              )}
+            </div>
+          );
+        })}
+      </div>
+      {hasMissing && (
+        <button
+          onClick={onReconnect}
+          className="flex items-center gap-1.5 text-[11px] text-primary hover:underline cursor-pointer"
+        >
+          <RefreshCw className="w-3 h-3" />
+          Reconnect to enable all services
+        </button>
       )}
     </div>
   );

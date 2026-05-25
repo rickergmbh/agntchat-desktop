@@ -1461,7 +1461,7 @@ export interface Agent {
    *  so the desktop never holds their API key locally. */
   spawn?: {
     purpose?: string;
-    runtime?: "local" | "hosted";
+    runtime?: "local";
     spawned_at?: string;
     last_used_at?: string;
     expires_at?: string;
