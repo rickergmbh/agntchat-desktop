@@ -132,7 +132,10 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
     void catalog.ensureLoaded();
   }, [catalog]);
   const PROVIDERS = catalog.providers;
-  const availableModels = catalog.modelsFor(backend);
+  // Filter the model dropdown to only models the bridge's detected CLI
+  // runtime can actually call. Same source of truth as mobile — see
+  // Agentchat.Models cli_connections whitelist on the backend.
+  const availableModels = catalog.modelsForConnection(backend, agent.cliConnection ?? null);
   const currentModelInList = availableModels.some((m) => m.id === model);
   const supportedModes = catalog.supportedModesFor(backend);
   const providerExists = PROVIDERS.some((p) => p.id === backend);
@@ -342,7 +345,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                     value={backend}
                     onValueChange={(val: string | null) => {
                       if (!val) return;
-                      const models = catalog.modelsFor(val);
+                      const models = catalog.modelsForConnection(val, agent.cliConnection ?? null);
                       const modes = catalog.supportedModesFor(val);
                       const updates: Record<string, unknown> = {
                         backend: val,
@@ -396,6 +399,12 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
 
                 <div className="space-y-1.5">
                   <Label className="text-xs">Model</Label>
+                  {agent.runtimeWarning === "model_unavailable" && (
+                    <div className="text-xs rounded-md border border-yellow-500/40 bg-yellow-500/10 text-yellow-700 dark:text-yellow-300 px-2.5 py-2">
+                      The current model isn't available on this agent's runtime
+                      {agent.cliConnection ? ` (${agent.cliConnection})` : ""}. Pick another below.
+                    </div>
+                  )}
                   <Select
                     value={model}
                     onValueChange={(val: string | null) => {
