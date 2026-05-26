@@ -46,10 +46,16 @@ export async function request<T>(
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
-    const err = new Error(body.error || `Request failed: ${res.status}`) as Error & {
+    const message =
+      body?.error?.message ||
+      (typeof body?.error === "string" ? body.error : null) ||
+      `Request failed: ${res.status}`;
+    const err = new Error(message) as Error & {
       status?: number;
+      code?: string;
     };
     err.status = res.status;
+    if (body?.error?.code) err.code = body.error.code;
     throw err;
   }
 
