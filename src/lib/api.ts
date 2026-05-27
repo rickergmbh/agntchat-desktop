@@ -59,6 +59,14 @@ export async function request<T>(
     throw err;
   }
 
+  // 204 No Content (and rare 205) carries no body — calling res.json()
+  // throws SyntaxError, which used to surface as a spurious "request
+  // failed" in callers that just await void DELETEs. Return undefined
+  // and let TypeScript callers treat it as Promise<void>.
+  if (res.status === 204 || res.status === 205) {
+    return undefined as T;
+  }
+
   return res.json();
 }
 
