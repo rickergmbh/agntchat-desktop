@@ -4,11 +4,13 @@ import * as api from "../lib/api";
 export interface CatalogModel {
   id: string;
   label: string;
-  /** Local-CLI-backend models (claude_cli/codex_cli) carry a whitelist of
-   *  runtimes — "anthropic" / "bedrock" / "vertex" — where the underlying
-   *  CLI install can actually call them. Absent on API-backend models;
-   *  the dropdown filter is a no-op there. */
-  cliConnections?: string[];
+  /** CLI-backend models carry per-runtime API IDs:
+   *    { anthropic: "claude-opus-4-7",
+   *      bedrock: "anthropic.claude-opus-4-7",
+   *      vertex: "claude-opus-4-7" }
+   *  Used by the org config UI for picking which runtimes a model is
+   *  available on. The model dropdown is filtered server-side. */
+  runtimes?: Record<string, string>;
 }
 
 export interface CatalogProvider {
@@ -25,12 +27,6 @@ interface ModelCatalogState {
   loading: boolean;
   ensureLoaded: () => Promise<void>;
   modelsFor: (providerId: string) => CatalogModel[];
-  /** Same as modelsFor but filtered to models supported on the given
-   *  CLI runtime. Pass null/undefined to skip filtering. */
-  modelsForConnection: (
-    providerId: string,
-    cliConnection: string | null | undefined,
-  ) => CatalogModel[];
   supportedModesFor: (providerId: string) => string[];
   requiresLlmKey: (providerId: string) => boolean;
   providerLabel: (id: string) => string;
@@ -67,18 +63,6 @@ export const useModelCatalog = create<ModelCatalogState>((set, get) => ({
   modelsFor: (providerId) => {
     const p = get().providers.find((p) => p.id === providerId);
     return p?.models ?? [];
-  },
-
-  modelsForConnection: (providerId, cliConnection) => {
-    const all = get().modelsFor(providerId);
-    if (!cliConnection) return all;
-    return all.filter((m) => {
-      // Models without a whitelist (every API-backend model, plus any
-      // CLI model we forgot to tag) stay — let the runtime call surface
-      // a real error rather than silently hiding the option.
-      if (!m.cliConnections || m.cliConnections.length === 0) return true;
-      return m.cliConnections.includes(cliConnection);
-    });
   },
 
   supportedModesFor: (providerId) => {

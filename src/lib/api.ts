@@ -1472,14 +1472,6 @@ export interface Agent {
     last_used_at?: string;
     expires_at?: string;
   };
-  /** Local-CLI runtime the agent's bridge detected at boot. Filters
-   *  the model picker — Bedrock-routed CLIs can't call Anthropic-direct
-   *  model IDs and vice versa. Null until the bridge has reported in
-   *  (or the agent isn't on a CLI backend). */
-  cliConnection?: "anthropic" | "bedrock" | "vertex" | null;
-  /** Server-computed warning when the saved model isn't supported on
-   *  the current cliConnection. Currently only "model_unavailable". */
-  runtimeWarning?: "model_unavailable" | null;
 }
 
 // LLM API keys — multi-key, encrypted server-side. Replaces the legacy
