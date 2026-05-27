@@ -6,6 +6,7 @@ import * as api from "../lib/api";
 import { useOrgStore } from "../stores/orgStore";
 import { cn } from "../lib/utils";
 import { PaymentWalletCard } from "./PaymentWalletCard";
+import { OrgAdminSections } from "./OrgAdminSections";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -2241,6 +2242,11 @@ function OrganizationSection() {
           </ul>
         )}
       </section>
+
+      {/* Admin-only sections — invitation by email, model catalog
+          override. Members can't see these (the API rejects with 403
+          anyway, but hiding the UI avoids confusing dead controls). */}
+      <OrgAdminSections org={organization} members={members} />
 
       <Dialog
         open={hostModalOpen}

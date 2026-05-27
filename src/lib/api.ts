@@ -344,6 +344,102 @@ export async function listOrganizationMembers(
   return res.memberships;
 }
 
+// --- Org email invites ---
+
+export interface OrganizationInvite {
+  id: string;
+  organizationId: string;
+  email: string;
+  role: "member" | "admin";
+  expiresAt: string;
+  redeemedAt?: string | null;
+  createdByParticipantId: string;
+  insertedAt: string;
+}
+
+export async function listOrganizationInvites(
+  orgId: string
+): Promise<OrganizationInvite[]> {
+  const res = await request<{ invites: OrganizationInvite[] }>(
+    `/api/organizations/${orgId}/invites`
+  );
+  return res.invites;
+}
+
+export async function createOrganizationInvite(
+  orgId: string,
+  email: string,
+  role: "member" | "admin" = "member"
+): Promise<OrganizationInvite> {
+  const res = await request<{ invite: OrganizationInvite }>(
+    `/api/organizations/${orgId}/invites`,
+    {
+      method: "POST",
+      body: JSON.stringify({ email, role }),
+    }
+  );
+  return res.invite;
+}
+
+export async function deleteOrganizationInvite(
+  orgId: string,
+  inviteId: string
+): Promise<void> {
+  await request(`/api/organizations/${orgId}/invites/${inviteId}`, {
+    method: "DELETE",
+  });
+}
+
+// --- Org provider configs (model catalog override) ---
+
+export interface OrganizationProviderConfig {
+  id: string;
+  organizationId: string;
+  providerId: string;
+  enabled: boolean;
+  models: string[];
+  cliConnection?: "anthropic" | "bedrock" | "vertex" | null;
+  insertedAt: string;
+  updatedAt: string;
+}
+
+export async function listOrganizationProviderConfigs(
+  orgId: string
+): Promise<OrganizationProviderConfig[]> {
+  const res = await request<{ configs: OrganizationProviderConfig[] }>(
+    `/api/organizations/${orgId}/provider-configs`
+  );
+  return res.configs;
+}
+
+export async function upsertOrganizationProviderConfig(
+  orgId: string,
+  providerId: string,
+  patch: {
+    enabled?: boolean;
+    models?: string[];
+    cliConnection?: "anthropic" | "bedrock" | "vertex" | null;
+  }
+): Promise<OrganizationProviderConfig> {
+  const res = await request<{ config: OrganizationProviderConfig }>(
+    `/api/organizations/${orgId}/provider-configs/${providerId}`,
+    {
+      method: "PUT",
+      body: JSON.stringify(patch),
+    }
+  );
+  return res.config;
+}
+
+export async function deleteOrganizationProviderConfig(
+  orgId: string,
+  providerId: string
+): Promise<void> {
+  await request(`/api/organizations/${orgId}/provider-configs/${providerId}`, {
+    method: "DELETE",
+  });
+}
+
 // Health
 export async function getAgentHealth(): Promise<{ agents: AgentHealth[] }> {
   return request("/api/agents/health");
