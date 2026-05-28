@@ -3,7 +3,7 @@ import { useAuthStore } from "../stores/authStore";
 import { useThemeStore, type ThemePreference } from "../stores/themeStore";
 import { isDesignSystemDebugOn, setDesignSystemDebug } from "../lib/designSystemDebug";
 import * as api from "../lib/api";
-import { useOrgStore } from "../stores/orgStore";
+import { useActiveWorkspace } from "../stores/workspaceStore";
 import { cn } from "../lib/utils";
 import { PaymentWalletCard } from "./PaymentWalletCard";
 import { OrgAdminSections } from "./OrgAdminSections";
@@ -1982,73 +1982,72 @@ function MemorySection({
 
 
 function OrganizationSection() {
-  const { organization, hosts, loaded, loading, error, fetchCurrentOrg, createOrg, registerHost, fetchHosts } =
-    useOrgStore();
-  const [createOpen, setCreateOpen] = useState(false);
-  const [name, setName] = useState("");
-  const [slug, setSlug] = useState("");
-  const [creating, setCreating] = useState(false);
-  const [createError, setCreateError] = useState<string | null>(null);
+  // The active workspace IS the organization for this section. Personal
+  // workspaces aren't valid host targets (single-user) — we hide the
+  // hosting UI in that case and point at the workspace switcher.
+  const active = useActiveWorkspace();
 
   const [hostModalOpen, setHostModalOpen] = useState(false);
   const [hostName, setHostName] = useState("");
   const [registeringHost, setRegisteringHost] = useState(false);
-  const [revealedHostKey, setRevealedHostKey] = useState<string | null>(null);
+  const [revealedHost, setRevealedHost] = useState<{ id: string; apiKey: string } | null>(null);
   const [hostError, setHostError] = useState<string | null>(null);
+
+  const [hosts, setHosts] = useState<api.OrganizationHost[]>([]);
+  const [hostsLoading, setHostsLoading] = useState(false);
+  const [hostsError, setHostsError] = useState<string | null>(null);
 
   const [members, setMembers] = useState<api.OrganizationMembership[]>([]);
   const [membersLoading, setMembersLoading] = useState(false);
 
+  // Re-fetch hosts + members when the active workspace changes. Cancellation
+  // guard prevents a stale fetch from one workspace overwriting another's
+  // result if the user switches mid-flight.
   useEffect(() => {
-    if (!loaded && !loading) void fetchCurrentOrg();
-  }, [loaded, loading, fetchCurrentOrg]);
-
-  useEffect(() => {
-    if (!organization) {
+    if (!active || active.isPersonal) {
+      setHosts([]);
       setMembers([]);
       return;
     }
     let cancelled = false;
+    setHostsLoading(true);
     setMembersLoading(true);
+    setHostsError(null);
+
     api
-      .listOrganizationMembers(organization.id)
+      .listOrganizationHosts(active.id)
+      .then((rows) => {
+        if (!cancelled) setHosts(rows);
+      })
+      .catch((e) => {
+        if (!cancelled) {
+          setHosts([]);
+          setHostsError(e instanceof Error ? e.message : "Failed to load hosts");
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setHostsLoading(false);
+      });
+
+    api
+      .listOrganizationMembers(active.id)
       .then((rows) => {
         if (!cancelled) setMembers(rows);
       })
       .catch(() => {
-        // Listing members shouldn't block the rest of the section.
         if (!cancelled) setMembers([]);
       })
       .finally(() => {
         if (!cancelled) setMembersLoading(false);
       });
+
     return () => {
       cancelled = true;
     };
-  }, [organization]);
-
-  const handleCreate = async () => {
-    setCreateError(null);
-    const trimmedName = name.trim();
-    const trimmedSlug = slug.trim().toLowerCase();
-    if (trimmedName.length === 0 || trimmedSlug.length < 2) {
-      setCreateError("Name and slug (≥ 2 chars) are required.");
-      return;
-    }
-    setCreating(true);
-    try {
-      await createOrg(trimmedName, trimmedSlug);
-      setCreateOpen(false);
-      setName("");
-      setSlug("");
-    } catch (e) {
-      setCreateError(e instanceof Error ? e.message : "Could not create organization");
-    } finally {
-      setCreating(false);
-    }
-  };
+  }, [active?.id, active?.isPersonal]);
 
   const handleRegisterHost = async () => {
+    if (!active || active.isPersonal) return;
     setHostError(null);
     const trimmed = hostName.trim();
     if (trimmed.length === 0) {
@@ -2057,10 +2056,12 @@ function OrganizationSection() {
     }
     setRegisteringHost(true);
     try {
-      const result = await registerHost(trimmed);
-      setRevealedHostKey(result.apiKey);
+      const result = await api.createOrganizationHost(active.id, trimmed);
+      setRevealedHost({ id: result.host.id, apiKey: result.apiKey });
       setHostName("");
-      await fetchHosts();
+      // Refresh local hosts list so the new entry appears.
+      const rows = await api.listOrganizationHosts(active.id).catch(() => null);
+      if (rows) setHosts(rows);
     } catch (e) {
       setHostError(e instanceof Error ? e.message : "Could not register host");
     } finally {
@@ -2068,13 +2069,10 @@ function OrganizationSection() {
     }
   };
 
-  if (!loaded) {
+  if (!active) {
     return (
       <section>
-        <SectionHeader
-          title="Organization"
-          subtitle="Loading organization details…"
-        />
+        <SectionHeader title="Organization" subtitle="Loading workspace…" />
         <div className="flex items-center justify-center py-10">
           <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
         </div>
@@ -2082,62 +2080,18 @@ function OrganizationSection() {
     );
   }
 
-  if (!organization) {
+  if (active.isPersonal) {
     return (
       <section>
         <SectionHeader
           title="Organization"
-          subtitle="Create a shared workspace so your agents can run on a dedicated Linux host instead of your laptop."
+          subtitle="Create or switch to a shared workspace to register Linux hosts and invite teammates."
         />
-        {error && (
-          <div className="flex items-start gap-2 text-sm text-destructive bg-destructive/10 border border-destructive/20 px-3 py-2.5 rounded-md mb-4">
-            <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-            <p>{error}</p>
-          </div>
-        )}
-        <Button onClick={() => setCreateOpen(true)}>Create organization</Button>
-
-        <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Create organization</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-3 py-2">
-              <div className="space-y-1">
-                <Label htmlFor="org-name">Name</Label>
-                <Input
-                  id="org-name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Acme, Inc."
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="org-slug">Slug</Label>
-                <Input
-                  id="org-slug"
-                  value={slug}
-                  onChange={(e) => setSlug(e.target.value)}
-                  placeholder="acme"
-                />
-                <p className="text-xs text-muted-foreground">
-                  Lowercase, 2–64 chars, alphanumerics + hyphens.
-                </p>
-              </div>
-              {createError && (
-                <div className="text-sm text-destructive">{createError}</div>
-              )}
-            </div>
-            <DialogFooter>
-              <Button variant="ghost" onClick={() => setCreateOpen(false)} disabled={creating}>
-                Cancel
-              </Button>
-              <Button onClick={() => void handleCreate()} disabled={creating}>
-                {creating ? "Creating…" : "Create"}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <div className="text-sm text-muted-foreground rounded-md border border-border bg-muted/30 px-3 py-2.5">
+          You're in your <strong>Personal</strong> workspace. Use the
+          workspace switcher in the sidebar to create or switch to a shared
+          workspace — that's where org hosts and members live.
+        </div>
       </section>
     );
   }
@@ -2146,20 +2100,24 @@ function OrganizationSection() {
     <>
       <section>
         <SectionHeader
-          title={organization.name}
-          subtitle={`Slug: ${organization.slug}`}
+          title={active.name}
+          subtitle={`Slug: ${active.slug}`}
         />
       </section>
 
       <section>
         <SectionHeader title="Hosts" subtitle="Linux VMs that run agent bridges on your org's behalf." />
-        {error && (
+        {hostsError && (
           <div className="flex items-start gap-2 text-sm text-destructive bg-destructive/10 border border-destructive/20 px-3 py-2.5 rounded-md mb-4">
             <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-            <p>{error}</p>
+            <p>{hostsError}</p>
           </div>
         )}
-        {hosts.length === 0 ? (
+        {hostsLoading ? (
+          <div className="flex items-center justify-center py-6">
+            <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+          </div>
+        ) : hosts.length === 0 ? (
           <div className="text-sm text-muted-foreground mb-3">
             No hosts registered yet. Register one and follow the install steps
             in <code>host/README.md</code> on your VM.
@@ -2198,7 +2156,7 @@ function OrganizationSection() {
           variant="outline"
           onClick={() => {
             setHostError(null);
-            setRevealedHostKey(null);
+            setRevealedHost(null);
             setHostName("");
             setHostModalOpen(true);
           }}
@@ -2243,55 +2201,35 @@ function OrganizationSection() {
         )}
       </section>
 
-      {/* Admin-only sections — invitation by email, model catalog
-          override. Members can't see these (the API rejects with 403
-          anyway, but hiding the UI avoids confusing dead controls). */}
-      <OrgAdminSections org={organization} members={members} />
+      {/* Admin-only sections — model catalog override. Invite management
+          lives in the workspace switcher's settings modal now. */}
+      <OrgAdminSections orgId={active.id} members={members} />
 
       <Dialog
         open={hostModalOpen}
         onOpenChange={(next) => {
-          // While the one-time API key is showing, prevent backdrop /
-          // Esc dismissal — losing the key here means the user has
-          // to delete + recreate the host to recover.
-          if (!next && revealedHostKey) return;
+          // While the one-time credentials are showing, prevent backdrop /
+          // Esc dismissal — losing them here means the user has to delete +
+          // recreate the host to recover.
+          if (!next && revealedHost) return;
           setHostModalOpen(next);
         }}
       >
-        <DialogContent showCloseButton={!revealedHostKey}>
+        <DialogContent showCloseButton={!revealedHost}>
           <DialogHeader>
             <DialogTitle>
-              {revealedHostKey ? "Host API key" : "Register host"}
+              {revealedHost ? "Host credentials" : "Register host"}
             </DialogTitle>
           </DialogHeader>
 
-          {revealedHostKey ? (
-            <div className="space-y-3 py-2">
-              <p className="text-sm">
-                Copy this API key now — it's shown <strong>once</strong>. Paste
-                it into <code>host/scripts/enroll.sh</code> on the VM.
-              </p>
-              <div className="flex items-center gap-2 rounded-md border border-border bg-muted px-2.5 py-2 font-mono text-xs break-all">
-                <span className="flex-1 select-all">{revealedHostKey}</span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => void navigator.clipboard.writeText(revealedHostKey)}
-                >
-                  <CopyIcon className="w-3.5 h-3.5" />
-                </Button>
-              </div>
-              <DialogFooter>
-                <Button
-                  onClick={() => {
-                    setRevealedHostKey(null);
-                    setHostModalOpen(false);
-                  }}
-                >
-                  I've copied it
-                </Button>
-              </DialogFooter>
-            </div>
+          {revealedHost ? (
+            <HostCredentialsReveal
+              host={revealedHost}
+              onClose={() => {
+                setRevealedHost(null);
+                setHostModalOpen(false);
+              }}
+            />
           ) : (
             <div className="space-y-3 py-2">
               <div className="space-y-1">
@@ -2326,6 +2264,65 @@ function OrganizationSection() {
         </DialogContent>
       </Dialog>
     </>
+  );
+}
+
+/**
+ * One-time reveal of the host's UUID + API key. Both are required by
+ * the host runtime — the README's env vars are ORG_HOST_ID and
+ * ORG_HOST_API_KEY. Render each with its own copy button plus a
+ * "Copy as .env" button so operators can paste straight into
+ * host/docker/host.env.
+ */
+function HostCredentialsReveal({
+  host,
+  onClose,
+}: {
+  host: { id: string; apiKey: string };
+  onClose: () => void;
+}) {
+  const envBlock = `ORG_HOST_ID=${host.id}\nORG_HOST_API_KEY=${host.apiKey}\n`;
+
+  return (
+    <div className="space-y-3 py-2">
+      <p className="text-sm">
+        Copy these now — the API key is shown <strong>once</strong>. The
+        host runtime needs both as env vars (see <code>host/README.md</code>).
+      </p>
+
+      <CredentialField label="ORG_HOST_ID" value={host.id} />
+      <CredentialField label="ORG_HOST_API_KEY" value={host.apiKey} />
+
+      <DialogFooter className="gap-2 pt-2">
+        <Button
+          variant="outline"
+          onClick={() => void navigator.clipboard.writeText(envBlock)}
+        >
+          <CopyIcon className="w-3.5 h-3.5" />
+          Copy as .env
+        </Button>
+        <Button onClick={onClose}>I&apos;ve copied them</Button>
+      </DialogFooter>
+    </div>
+  );
+}
+
+function CredentialField({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="space-y-1">
+      <Label className="text-xs font-mono">{label}</Label>
+      <div className="flex items-center gap-2 rounded-md border border-border bg-muted px-2.5 py-2 font-mono text-xs break-all">
+        <span className="flex-1 select-all">{value}</span>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => void navigator.clipboard.writeText(value)}
+          aria-label={`Copy ${label}`}
+        >
+          <CopyIcon className="w-3.5 h-3.5" />
+        </Button>
+      </div>
+    </div>
   );
 }
 

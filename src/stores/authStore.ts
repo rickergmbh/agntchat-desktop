@@ -3,7 +3,6 @@ import * as api from "../lib/api";
 import { resetAvatarPolicyCache } from "../lib/imageProcessor";
 import { resetFieldLimitsCache } from "../lib/fieldLimits";
 import { resetAgentTypesCache } from "../lib/agentTypes";
-import { useOrgStore } from "./orgStore";
 
 // Push the device's IANA tz to the backend if it differs from what's stored.
 // Best-effort. Updates the in-memory participant on success so the profile
@@ -103,9 +102,6 @@ export const useAuthStore = create<AuthState>((set) => ({
     resetAvatarPolicyCache();
     resetFieldLimitsCache();
     resetAgentTypesCache();
-    // The org store is per-user; signing in as a different account
-    // shouldn't see the previous user's org until the new fetch lands.
-    useOrgStore.getState().reset();
     localStorage.removeItem("authToken");
     localStorage.removeItem("participant");
     set({ token: null, participant: null });

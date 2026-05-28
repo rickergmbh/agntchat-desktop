@@ -3,7 +3,6 @@ import { Loader2, Trash2 } from "lucide-react";
 
 import * as api from "../lib/api";
 import type {
-  Organization,
   OrganizationMembership,
   OrganizationProviderConfig,
 } from "../lib/api";
@@ -32,7 +31,7 @@ function SectionHeader({ title, subtitle }: { title: string; subtitle?: string }
 }
 
 interface Props {
-  org: Organization;
+  orgId: string;
   members: OrganizationMembership[];
 }
 
@@ -44,7 +43,7 @@ interface Props {
  * — opened from the gear icon in the workspace switcher — so it isn't
  * duplicated here.
  */
-export function OrgAdminSections({ org, members }: Props) {
+export function OrgAdminSections({ orgId, members }: Props) {
   const participantId = useAuthStore((s) => s.participant?.id);
 
   // Compute admin-ness from the members list. The org owner is
@@ -57,7 +56,7 @@ export function OrgAdminSections({ org, members }: Props) {
 
   if (!isAdmin) return null;
 
-  return <ProvidersSection orgId={org.id} />;
+  return <ProvidersSection orgId={orgId} />;
 }
 
 // ---------------------------------------------------------------------------

@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useAgentStore, type ManagedAgent } from "../stores/agentStore";
-import { useOrgStore } from "../stores/orgStore";
+import { useActiveWorkspace } from "../stores/workspaceStore";
+import { listOrganizationHosts, type OrganizationHost } from "../lib/api";
 import {
   deleteAgent,
   deleteAgentPermanently,
@@ -2694,17 +2695,47 @@ function ComputerUseDepsRow() {
 // ---------------------------------------------------------------------------
 
 function RuntimePanel({ agent }: { agent: Agent }) {
-  const orgStore = useOrgStore();
-  const { organization, hosts, loaded, loading: orgLoading } = orgStore;
-  const fetchCurrentOrg = orgStore.fetchCurrentOrg;
+  // Active workspace replaces the old single-org store. Personal
+  // workspaces aren't valid host targets.
+  const active = useActiveWorkspace();
+  const organization = active && !active.isPersonal ? active : null;
+
   const fetchAgents = useAgentStore((s) => s.fetchAgents);
   const stopAgentLocally = useAgentStore((s) => s.stopAgent);
 
+  // Hosts are fetched on demand keyed on the active workspace id.
+  // Cancellation guard so a stale fetch from a previous workspace
+  // doesn't overwrite the new one's result.
+  const [hosts, setHosts] = useState<OrganizationHost[]>([]);
+  const [hostsLoaded, setHostsLoaded] = useState(false);
+  const [hostsLoading, setHostsLoading] = useState(false);
+
   useEffect(() => {
-    if (!loaded) {
-      void fetchCurrentOrg();
+    if (!organization) {
+      setHosts([]);
+      setHostsLoaded(true);
+      return;
     }
-  }, [loaded, fetchCurrentOrg]);
+    let cancelled = false;
+    setHostsLoading(true);
+    setHostsLoaded(false);
+    listOrganizationHosts(organization.id)
+      .then((rows) => {
+        if (!cancelled) setHosts(rows);
+      })
+      .catch(() => {
+        if (!cancelled) setHosts([]);
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setHostsLoading(false);
+          setHostsLoaded(true);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [organization?.id]);
 
   const currentRuntime = agent.runtime ?? "local";
   const currentPresence = agent.presenceMode ?? "wake_on_demand";
@@ -2812,26 +2843,26 @@ function RuntimePanel({ agent }: { agent: Agent }) {
             description={
               organization
                 ? `Runs on one of ${organization.name}'s hosts. Survives desktop close.`
-                : "Join an organization first to use this option."
+                : "Switch to a shared workspace from the workspace switcher to use this option."
             }
             selected={pendingRuntime === "org_host"}
             onClick={() => canSwitchToOrgHost && setPendingRuntime("org_host")}
             disabled={!canSwitchToOrgHost}
           />
         </div>
-        {orgLoading && !loaded && (
-          <div className="text-xs text-muted-foreground">Loading org…</div>
+        {hostsLoading && !hostsLoaded && (
+          <div className="text-xs text-muted-foreground">Loading hosts…</div>
         )}
-        {loaded && !organization && (
+        {!organization && (
           <div className="text-xs text-muted-foreground">
-            You're not in an organization yet. Create one in Settings to enable
-            org hosting.
+            You&apos;re in your Personal workspace. Switch to a shared
+            workspace (sidebar workspace switcher) to enable org hosting.
           </div>
         )}
-        {organization && hosts.length === 0 && (
+        {organization && hostsLoaded && hosts.length === 0 && (
           <div className="text-xs text-muted-foreground">
-            Your org has no hosts registered. Add one in Org Settings to enable
-            this option.
+            Your org has no hosts registered. Add one in Settings → Organization
+            to enable this option.
           </div>
         )}
       </div>
