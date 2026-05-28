@@ -2,12 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { Loader2, Trash2 } from "lucide-react";
 
 import * as api from "../lib/api";
-import type {
-  OrganizationMembership,
-  OrganizationProviderConfig,
-} from "../lib/api";
+import type { OrganizationProviderConfig } from "../lib/api";
 import { useModelCatalog, type CatalogProvider } from "../stores/modelCatalogStore";
-import { useAuthStore } from "../stores/authStore";
 
 import { Button } from "./ui/button";
 import {
@@ -19,51 +15,24 @@ import {
 } from "./ui/select";
 import { Switch } from "./ui/switch";
 
-// Section header is duplicated from Profile.tsx — same shape, kept
-// inline so this component can be moved/shared without imports back.
-function SectionHeader({ title, subtitle }: { title: string; subtitle?: string }) {
-  return (
-    <div className="mb-3">
-      <h3 className="text-base font-semibold">{title}</h3>
-      {subtitle && <p className="text-sm text-muted-foreground mt-0.5">{subtitle}</p>}
-    </div>
-  );
-}
-
 interface Props {
+  /** The workspace whose model catalog overrides we manage. */
   orgId: string;
-  members: OrganizationMembership[];
+  /** Optional subtitle to render above the list. */
+  subtitle?: string;
 }
 
 /**
- * Admin-only management UI for an org: per-provider model catalog
- * overrides. Renders nothing for non-admin members.
+ * Per-org LLM provider catalog override UI. For each provider in the
+ * global catalog, an admin can enable/disable the provider for the
+ * org and pick which subset of models org members can select. CLI
+ * providers (claude_cli, codex_cli) also pick a runtime backend.
  *
- * Invitation management lives in `WorkspaceSettingsModal.InvitesTab`
- * — opened from the gear icon in the workspace switcher — so it isn't
- * duplicated here.
+ * Authorization is enforced by the backend (admin/owner only); the
+ * caller is expected to gate this whole component on role too so we
+ * don't show controls that always 403.
  */
-export function OrgAdminSections({ orgId, members }: Props) {
-  const participantId = useAuthStore((s) => s.participant?.id);
-
-  // Compute admin-ness from the members list. The org owner is
-  // always an admin; explicit admin role also qualifies.
-  const isAdmin = useMemo(() => {
-    if (!participantId) return false;
-    const me = members.find((m) => m.participantId === participantId);
-    return me?.role === "owner" || me?.role === "admin";
-  }, [members, participantId]);
-
-  if (!isAdmin) return null;
-
-  return <ProvidersSection orgId={orgId} />;
-}
-
-// ---------------------------------------------------------------------------
-// Providers (model catalog override)
-// ---------------------------------------------------------------------------
-
-function ProvidersSection({ orgId }: { orgId: string }) {
+export function ProvidersManagement({ orgId, subtitle }: Props) {
   const catalog = useModelCatalog();
   const [configs, setConfigs] = useState<OrganizationProviderConfig[]>([]);
   const [loading, setLoading] = useState(true);
@@ -72,23 +41,27 @@ function ProvidersSection({ orgId }: { orgId: string }) {
     void catalog.ensureLoaded();
   }, [catalog]);
 
-  const refresh = async () => {
-    try {
-      const rows = await api.listOrganizationProviderConfigs(orgId);
-      setConfigs(rows);
-    } catch (e) {
-      setConfigs([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Re-fetch on org change. Cancellation guard prevents a stale fetch
+  // from one workspace overwriting another's results during a switch.
   useEffect(() => {
-    void refresh();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    let cancelled = false;
+    setLoading(true);
+    api
+      .listOrganizationProviderConfigs(orgId)
+      .then((rows) => {
+        if (!cancelled) setConfigs(rows);
+      })
+      .catch(() => {
+        if (!cancelled) setConfigs([]);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [orgId]);
 
-  // Index by providerId for quick lookup.
   const configByProvider = useMemo(() => {
     const map = new Map<string, OrganizationProviderConfig>();
     for (const c of configs) map.set(c.providerId, c);
@@ -129,11 +102,10 @@ function ProvidersSection({ orgId }: { orgId: string }) {
   };
 
   return (
-    <section>
-      <SectionHeader
-        title="LLM providers"
-        subtitle="Choose which providers and models your org members can use. Leave a provider unconfigured to allow the global default list."
-      />
+    <section className="space-y-3">
+      {subtitle && (
+        <p className="text-xs text-muted-foreground">{subtitle}</p>
+      )}
 
       {loading || !catalog.loaded ? (
         <div className="flex items-center justify-center py-6">
@@ -164,10 +136,6 @@ interface ProviderRowProps {
 }
 
 function ProviderRow({ provider, config, onUpsert, onReset }: ProviderRowProps) {
-  // Local UI state mirrors server state but defers writes until the
-  // user toggles a model checkbox or changes the runtime — debounced
-  // to avoid flooding the API. We keep it simple: write on every
-  // change (orgs have <10 providers and admins don't spam-click).
   const isCli = provider.id === "claude_cli" || provider.id === "codex_cli";
   const enabled = config?.enabled ?? true;
   const cliConnection = config?.cliConnection ?? null;

@@ -6,8 +6,9 @@ import { useAuthStore } from "../stores/authStore";
 import { useWorkspaceStore, useWorkspaces } from "../stores/workspaceStore";
 import type { WorkspaceMembership, OrganizationMembership, OrganizationInvite } from "../lib/api";
 import { HostsManagement } from "./HostsManagement";
+import { ProvidersManagement } from "./ProvidersManagement";
 
-type Tab = "general" | "members" | "hosts" | "invites";
+type Tab = "general" | "members" | "hosts" | "models" | "invites";
 
 interface Props {
   workspaceId: string;
@@ -83,6 +84,11 @@ export function WorkspaceSettingsModal({ workspaceId, onClose }: Props) {
             </TabButton>
           )}
           {isAdminOrOwner && (
+            <TabButton active={tab === "models"} onClick={() => setTab("models")}>
+              Models
+            </TabButton>
+          )}
+          {isAdminOrOwner && (
             <TabButton active={tab === "invites"} onClick={() => setTab("invites")}>
               Invites
             </TabButton>
@@ -105,6 +111,12 @@ export function WorkspaceSettingsModal({ workspaceId, onClose }: Props) {
             <HostsManagement
               orgId={workspace.id}
               subtitle="Linux VMs that run agent bridges on this workspace's behalf."
+            />
+          )}
+          {tab === "models" && isAdminOrOwner && (
+            <ProvidersManagement
+              orgId={workspace.id}
+              subtitle="Choose which LLM providers and models this workspace's members can use. Leave a provider unconfigured to allow the global default list."
             />
           )}
           {tab === "invites" && isAdminOrOwner && <InvitesTab workspace={workspace} />}

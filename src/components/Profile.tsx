@@ -3,11 +3,8 @@ import { useAuthStore } from "../stores/authStore";
 import { useThemeStore, type ThemePreference } from "../stores/themeStore";
 import { isDesignSystemDebugOn, setDesignSystemDebug } from "../lib/designSystemDebug";
 import * as api from "../lib/api";
-import { useActiveWorkspace } from "../stores/workspaceStore";
 import { cn } from "../lib/utils";
 import { PaymentWalletCard } from "./PaymentWalletCard";
-import { OrgAdminSections } from "./OrgAdminSections";
-import { HostsManagement } from "./HostsManagement";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -50,7 +47,6 @@ import {
   Trash2,
   Globe,
   Brain,
-  Building2,
   CircleCheck,
   CircleX,
   Info,
@@ -119,14 +115,16 @@ const STATUS_CONFIG: Record<
   },
 };
 
-// Sidebar sections
+// Sidebar sections. Workspace-level config (hosts, models, members,
+// invites) lives in the Workspace settings modal opened from the
+// gear icon in the workspace switcher — Profile is for *user*-level
+// settings only, so we don't have an Organization section here.
 const SECTIONS = [
   { value: "profile", label: "Profile", icon: User },
   { value: "appearance", label: "Appearance", icon: Palette },
   { value: "region", label: "Region", icon: Globe },
   { value: "memory", label: "Memory", icon: Brain },
   { value: "llm-keys", label: "LLM Keys", icon: Key },
-  { value: "org", label: "Organization", icon: Building2 },
   { value: "connections", label: "Connections", icon: Link2 },
 ] as const;
 
@@ -626,12 +624,6 @@ export function Profile({ onClose }: { onClose: () => void }) {
         {activeSection === "llm-keys" && (
           <div className="flex-1 overflow-y-auto p-5 space-y-6">
             <LlmApiKeysSection />
-          </div>
-        )}
-
-        {activeSection === "org" && (
-          <div className="flex-1 overflow-y-auto p-5 space-y-6">
-            <OrganizationSection />
           </div>
         )}
 
@@ -1980,124 +1972,6 @@ function MemorySection({
 // Sub-components
 // ---------------------------------------------------------------------------
 
-
-function OrganizationSection() {
-  // The active workspace IS the organization for this section. Personal
-  // workspaces aren't valid host targets (single-user) — we hide the
-  // hosting UI in that case and point at the workspace switcher.
-  const active = useActiveWorkspace();
-
-  const [members, setMembers] = useState<api.OrganizationMembership[]>([]);
-  const [membersLoading, setMembersLoading] = useState(false);
-
-  useEffect(() => {
-    if (!active || active.isPersonal) {
-      setMembers([]);
-      return;
-    }
-    let cancelled = false;
-    setMembersLoading(true);
-    api
-      .listOrganizationMembers(active.id)
-      .then((rows) => {
-        if (!cancelled) setMembers(rows);
-      })
-      .catch(() => {
-        if (!cancelled) setMembers([]);
-      })
-      .finally(() => {
-        if (!cancelled) setMembersLoading(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [active?.id, active?.isPersonal]);
-
-  if (!active) {
-    return (
-      <section>
-        <SectionHeader title="Organization" subtitle="Loading workspace…" />
-        <div className="flex items-center justify-center py-10">
-          <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
-        </div>
-      </section>
-    );
-  }
-
-  if (active.isPersonal) {
-    return (
-      <section>
-        <SectionHeader
-          title="Organization"
-          subtitle="Create or switch to a shared workspace to register Linux hosts and invite teammates."
-        />
-        <div className="text-sm text-muted-foreground rounded-md border border-border bg-muted/30 px-3 py-2.5">
-          You're in your <strong>Personal</strong> workspace. Use the
-          workspace switcher in the sidebar to create or switch to a shared
-          workspace — that's where org hosts and members live.
-        </div>
-      </section>
-    );
-  }
-
-  return (
-    <>
-      <section>
-        <SectionHeader
-          title={active.name}
-          subtitle={`ID: ${active.id} · Slug: ${active.slug}`}
-        />
-      </section>
-
-      <section>
-        <SectionHeader title="Hosts" subtitle="Linux VMs that run agent bridges on your org's behalf." />
-        {/* HostsManagement is shared with WorkspaceSettingsModal's
-            Hosts tab so the two surfaces don't drift. */}
-        <HostsManagement orgId={active.id} />
-      </section>
-
-      <section>
-        <SectionHeader title="Members" subtitle="People in this organization." />
-        {membersLoading ? (
-          <div className="flex items-center justify-center py-6">
-            <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
-          </div>
-        ) : (
-          <ul className="space-y-2">
-            {members.map((m) => (
-              <li
-                key={m.id}
-                className="flex items-center justify-between rounded-md border border-border px-3 py-2"
-              >
-                <div className="min-w-0 flex items-center gap-2">
-                  <Avatar className="h-7 w-7 rounded-lg">
-                    {m.participant?.avatarUrl && (
-                      <AvatarImage src={m.participant.avatarUrl} className="rounded-lg" />
-                    )}
-                    <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-xs">
-                      {(m.participant?.displayName ?? "?").charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="text-sm truncate">
-                    {m.participant?.displayName ?? m.participantId}
-                  </div>
-                </div>
-                <Badge variant="outline" className="shrink-0">
-                  {m.role}
-                </Badge>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-
-      {/* Admin-only sections — model catalog override. Invite management
-          lives in the workspace switcher's settings modal now. */}
-      <OrgAdminSections orgId={active.id} members={members} />
-    </>
-  );
-}
 
 function SectionHeader({
   title,
