@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { MessageSquare, ChevronRight, ChevronLeft, SquarePen, Bot, RefreshCw } from "lucide-react";
+import { MessageSquare, ChevronRight, ChevronLeft, SquarePen, RefreshCw } from "lucide-react";
+import { WorkspaceSwitcher } from "../WorkspaceSwitcher";
 import { useChatStore } from "../../stores/chatStore";
 import { useAuthStore } from "../../stores/authStore";
 import { usePresenceStore } from "../../stores/presenceStore";
@@ -67,14 +68,11 @@ export function MessagesView() {
         style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
       >
         <div
-          className="h-14 shrink-0 px-4 border-b border-border flex items-center justify-between"
+          className="h-14 shrink-0 px-2 border-b border-border flex items-center gap-2"
           style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
         >
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center shrink-0">
-              <Bot className="w-3.5 h-3.5 text-primary-foreground" />
-            </div>
-            <h2 className="text-sm font-semibold text-foreground">AgentChat</h2>
+          <div className="min-w-0 flex-1">
+            <WorkspaceSwitcher />
           </div>
           <div
             className="flex items-center gap-1"

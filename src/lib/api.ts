@@ -106,6 +106,13 @@ export async function updateProfile(data: {
   });
 }
 
+export async function setActiveOrganization(orgId: string): Promise<Participant> {
+  return request("/api/me/active-organization", {
+    method: "PATCH",
+    body: JSON.stringify({ organizationId: orgId }),
+  });
+}
+
 // Agents
 export async function listAgents(): Promise<{ agents: Agent[] }> {
   return request("/api/agents");
@@ -1041,6 +1048,19 @@ export interface Participant {
   location?: unknown;
   insertedAt?: string;
   metadata?: Record<string, unknown>;
+  /** Slack-style multi-workspace fields. Always present for humans
+   *  after the personal-orgs migration; agents leave them undefined. */
+  organizationId?: string | null;
+  activeOrganizationId?: string | null;
+  organizations?: WorkspaceMembership[];
+}
+
+export interface WorkspaceMembership {
+  id: string;
+  name: string;
+  slug: string;
+  isPersonal: boolean;
+  role: "owner" | "admin" | "member";
 }
 
 // --- Messaging types + endpoints ---
