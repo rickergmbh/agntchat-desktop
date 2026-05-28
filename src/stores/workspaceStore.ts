@@ -21,6 +21,25 @@ interface WorkspaceState {
   switch: (orgId: string) => Promise<void>;
   applyRemoteSwitch: (orgId: string) => Promise<void>;
   initWsListeners: () => () => void;
+
+  // Stage 3 management actions — same shape as web.
+  createWorkspace: (name: string, slug?: string) => Promise<api.Organization>;
+  renameWorkspace: (orgId: string, name: string) => Promise<void>;
+  deleteWorkspace: (orgId: string) => Promise<void>;
+  leaveWorkspace: (orgId: string) => Promise<void>;
+  sendInvite: (
+    orgId: string,
+    email: string,
+    role?: "admin" | "member"
+  ) => Promise<api.OrganizationInvite>;
+  revokeInvite: (orgId: string, inviteId: string) => Promise<void>;
+  removeMember: (orgId: string, participantId: string) => Promise<void>;
+  updateMemberRole: (
+    orgId: string,
+    participantId: string,
+    role: "owner" | "admin" | "member"
+  ) => Promise<void>;
+  refresh: () => Promise<void>;
 }
 
 export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
@@ -87,7 +106,69 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       }
     });
   },
+
+  // --- Workspace management ----------------------------------------
+
+  createWorkspace: async (name, slug) => {
+    const finalSlug = slug ?? deriveSlug(name);
+    const org = await api.createOrganization(name, finalSlug);
+    await get().refresh();
+    await get().switch(org.id);
+    return org;
+  },
+
+  renameWorkspace: async (orgId, name) => {
+    await api.renameOrganization(orgId, name);
+    await get().refresh();
+  },
+
+  deleteWorkspace: async (orgId) => {
+    await api.deleteOrganization(orgId);
+    await get().refresh();
+  },
+
+  leaveWorkspace: async (orgId) => {
+    const participantId = useAuthStore.getState().participant?.id;
+    if (!participantId) throw new Error("Not authenticated");
+    await api.removeOrganizationMember(orgId, participantId);
+    await get().refresh();
+  },
+
+  sendInvite: async (orgId, email, role = "member") => {
+    return api.createOrganizationInvite(orgId, email, role);
+  },
+
+  revokeInvite: async (orgId, inviteId) => {
+    await api.deleteOrganizationInvite(orgId, inviteId);
+  },
+
+  removeMember: async (orgId, participantId) => {
+    await api.removeOrganizationMember(orgId, participantId);
+  },
+
+  updateMemberRole: async (orgId, participantId, role) => {
+    await api.updateOrganizationMemberRole(orgId, participantId, role);
+  },
+
+  refresh: async () => {
+    try {
+      const updated = await api.getProfile();
+      localStorage.setItem("participant", JSON.stringify(updated));
+      useAuthStore.setState({ participant: updated });
+    } catch (e) {
+      set({ lastError: e instanceof Error ? e.message : "Refresh failed" });
+    }
+  },
 }));
+
+function deriveSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 24) || `ws-${Math.random().toString(36).slice(2, 8)}`;
+}
 
 async function refetchOrgScoped() {
   // 1. Stop receiving events for the previous workspace's conv channels.

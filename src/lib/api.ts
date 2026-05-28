@@ -113,6 +113,58 @@ export async function setActiveOrganization(orgId: string): Promise<Participant>
   });
 }
 
+// --- Workspace management (stage 3) ---
+
+export interface PendingWorkspaceInvite {
+  id: string;
+  organizationId: string;
+  organizationName?: string;
+  role: "admin" | "member";
+  expiresAt?: string;
+}
+
+export async function listPendingWorkspaceInvites(): Promise<PendingWorkspaceInvite[]> {
+  const res = await request<{ invites: PendingWorkspaceInvite[] }>(
+    "/api/me/pending-invites"
+  );
+  return res.invites;
+}
+
+export async function acceptPendingWorkspaceInvite(inviteId: string): Promise<void> {
+  await request(`/api/me/pending-invites/${inviteId}/accept`, { method: "POST" });
+}
+
+export async function renameOrganization(orgId: string, name: string): Promise<void> {
+  await request(`/api/organizations/${orgId}`, {
+    method: "PATCH",
+    body: JSON.stringify({ name }),
+  });
+}
+
+export async function deleteOrganization(orgId: string): Promise<void> {
+  await request(`/api/organizations/${orgId}`, { method: "DELETE" });
+}
+
+export async function removeOrganizationMember(
+  orgId: string,
+  participantId: string
+): Promise<void> {
+  await request(`/api/organizations/${orgId}/members/${participantId}`, {
+    method: "DELETE",
+  });
+}
+
+export async function updateOrganizationMemberRole(
+  orgId: string,
+  participantId: string,
+  role: "owner" | "admin" | "member"
+): Promise<void> {
+  await request(`/api/organizations/${orgId}/members/${participantId}`, {
+    method: "PATCH",
+    body: JSON.stringify({ role }),
+  });
+}
+
 // Agents
 export async function listAgents(): Promise<{ agents: Agent[] }> {
   return request("/api/agents");
