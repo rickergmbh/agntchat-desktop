@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import { Loader2, Mail, Trash2, X } from "lucide-react";
+import { Loader2, Trash2 } from "lucide-react";
 
 import * as api from "../lib/api";
 import type {
   Organization,
-  OrganizationInvite,
   OrganizationMembership,
   OrganizationProviderConfig,
 } from "../lib/api";
@@ -12,9 +11,6 @@ import { useModelCatalog, type CatalogProvider } from "../stores/modelCatalogSto
 import { useAuthStore } from "../stores/authStore";
 
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
-import { Badge } from "./ui/badge";
 import {
   Select,
   SelectContent,
@@ -41,11 +37,12 @@ interface Props {
 }
 
 /**
- * Admin-only management UI for an org: pending invites + per-provider
- * model catalog overrides. Renders nothing for non-admin members.
+ * Admin-only management UI for an org: per-provider model catalog
+ * overrides. Renders nothing for non-admin members.
  *
- * Both sections fail silently if the user isn't actually an admin —
- * the backend enforces that, so we just hide the UI as a UX hint.
+ * Invitation management lives in `WorkspaceSettingsModal.InvitesTab`
+ * — opened from the gear icon in the workspace switcher — so it isn't
+ * duplicated here.
  */
 export function OrgAdminSections({ org, members }: Props) {
   const participantId = useAuthStore((s) => s.participant?.id);
@@ -60,156 +57,7 @@ export function OrgAdminSections({ org, members }: Props) {
 
   if (!isAdmin) return null;
 
-  return (
-    <>
-      <InvitesSection orgId={org.id} />
-      <ProvidersSection orgId={org.id} />
-    </>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Invites
-// ---------------------------------------------------------------------------
-
-function InvitesSection({ orgId }: { orgId: string }) {
-  const [invites, setInvites] = useState<OrganizationInvite[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [email, setEmail] = useState("");
-  const [role, setRole] = useState<"member" | "admin">("member");
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const refresh = async () => {
-    try {
-      const rows = await api.listOrganizationInvites(orgId);
-      setInvites(rows);
-    } catch (e) {
-      // Silently ignore — admin permission missing or transient error.
-      // The form below still works; failed listing just shows "no
-      // pending invites".
-      setInvites([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    void refresh();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgId]);
-
-  const submit = async () => {
-    setError(null);
-    const trimmed = email.trim();
-    if (!trimmed) return;
-    setSubmitting(true);
-    try {
-      await api.createOrganizationInvite(orgId, trimmed, role);
-      setEmail("");
-      void refresh();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not send invite");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const revoke = async (inviteId: string) => {
-    try {
-      await api.deleteOrganizationInvite(orgId, inviteId);
-      setInvites((rows) => rows.filter((r) => r.id !== inviteId));
-    } catch (e) {
-      // Toast/inline error would be nicer; keep it quiet for now.
-      console.warn("revoke invite failed", e);
-    }
-  };
-
-  return (
-    <section>
-      <SectionHeader
-        title="Invites"
-        subtitle="Email an invitation to a teammate. They'll get a link that adds them to this organization once they sign in."
-      />
-
-      <div className="space-y-2">
-        <div className="flex items-end gap-2">
-          <div className="flex-1">
-            <Label htmlFor="invite-email" className="text-xs">
-              Email address
-            </Label>
-            <Input
-              id="invite-email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="teammate@example.com"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  void submit();
-                }
-              }}
-            />
-          </div>
-          <div className="w-32">
-            <Label className="text-xs">Role</Label>
-            <Select value={role} onValueChange={(v) => v && setRole(v as "member" | "admin")}>
-              <SelectTrigger className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="member">Member</SelectItem>
-                <SelectItem value="admin">Admin</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <Button onClick={() => void submit()} disabled={submitting || !email.trim()}>
-            {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />}
-            <span className="ml-1.5">Send</span>
-          </Button>
-        </div>
-        {error && <div className="text-sm text-destructive">{error}</div>}
-      </div>
-
-      <div className="mt-4">
-        {loading ? (
-          <div className="flex items-center justify-center py-4">
-            <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
-          </div>
-        ) : invites.length === 0 ? (
-          <p className="text-sm text-muted-foreground py-2">No pending invites.</p>
-        ) : (
-          <ul className="space-y-2">
-            {invites.map((inv) => (
-              <li
-                key={inv.id}
-                className="flex items-center justify-between rounded-md border border-border px-3 py-2"
-              >
-                <div className="min-w-0 flex-1">
-                  <div className="text-sm truncate">{inv.email}</div>
-                  <div className="text-xs text-muted-foreground">
-                    Expires {new Date(inv.expiresAt).toLocaleDateString()}
-                  </div>
-                </div>
-                <Badge variant="outline" className="shrink-0 mr-2">
-                  {inv.role}
-                </Badge>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => void revoke(inv.id)}
-                  title="Revoke invitation"
-                >
-                  <X className="w-4 h-4" />
-                </Button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-    </section>
-  );
+  return <ProvidersSection orgId={org.id} />;
 }
 
 // ---------------------------------------------------------------------------

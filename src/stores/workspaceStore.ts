@@ -135,19 +135,24 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   },
 
   sendInvite: async (orgId, email, role = "member") => {
-    return api.createOrganizationInvite(orgId, email, role);
+    const invite = await api.createOrganizationInvite(orgId, email, role);
+    await get().refresh();
+    return invite;
   },
 
   revokeInvite: async (orgId, inviteId) => {
     await api.deleteOrganizationInvite(orgId, inviteId);
+    await get().refresh();
   },
 
   removeMember: async (orgId, participantId) => {
     await api.removeOrganizationMember(orgId, participantId);
+    await get().refresh();
   },
 
   updateMemberRole: async (orgId, participantId, role) => {
     await api.updateOrganizationMemberRole(orgId, participantId, role);
+    await get().refresh();
   },
 
   refresh: async () => {
@@ -189,6 +194,7 @@ async function refetchOrgScoped() {
     messagesLoading: {},
     hasMore: {},
     drafts: {},
+    replyingTo: {},
     unreadCounts: {},
   });
 

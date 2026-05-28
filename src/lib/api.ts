@@ -348,11 +348,14 @@ export interface OrganizationMembership {
   participantId: string;
   role: "owner" | "admin" | "member";
   joinedAt: string;
+  insertedAt: string;
+  updatedAt?: string;
   participant?: {
     id: string;
     type: string;
     displayName?: string;
     avatarUrl?: string;
+    status?: string;
   };
 }
 
@@ -417,9 +420,9 @@ export interface OrganizationInvite {
   id: string;
   organizationId: string;
   email: string;
-  role: "member" | "admin";
+  role: "admin" | "member";
   expiresAt: string;
-  redeemedAt?: string | null;
+  redeemedAt: string | null;
   createdByParticipantId: string;
   insertedAt: string;
 }
