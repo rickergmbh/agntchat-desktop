@@ -52,6 +52,10 @@ export function WorkspaceSwitcher() {
   const activeName = active?.name ?? "Workspace";
   const activeIsPersonal = active?.isPersonal ?? false;
 
+  const otherWorkspaceAgents = workspaces
+    .filter((w) => w.id !== active?.id)
+    .reduce((sum, w) => sum + (w.agentCount ?? 0), 0);
+
   return (
     <div
       ref={containerRef}
@@ -69,11 +73,19 @@ export function WorkspaceSwitcher() {
         aria-expanded={open}
         title={activeName}
       >
-        {activeIsPersonal ? (
-          <User className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-        ) : (
-          <Building2 className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-        )}
+        <span className="relative shrink-0">
+          {activeIsPersonal ? (
+            <User className="h-3.5 w-3.5 text-muted-foreground" />
+          ) : (
+            <Building2 className="h-3.5 w-3.5 text-muted-foreground" />
+          )}
+          {otherWorkspaceAgents > 0 && (
+            <span
+              className="absolute -right-0.5 -top-0.5 h-1.5 w-1.5 rounded-full bg-primary"
+              title={`${otherWorkspaceAgents} agent${otherWorkspaceAgents === 1 ? "" : "s"} in other workspace${otherWorkspaceAgents === 1 ? "" : "s"}`}
+            />
+          )}
+        </span>
         <span className="min-w-0 flex-1 truncate font-semibold">
           {activeName}
         </span>
@@ -126,6 +138,14 @@ export function WorkspaceSwitcher() {
                     </span>
                   )}
                 </div>
+                {(w.agentCount ?? 0) > 0 && !isActive && (
+                  <span
+                    className="shrink-0 rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground"
+                    title={`${w.agentCount} agent${w.agentCount === 1 ? "" : "s"}`}
+                  >
+                    {w.agentCount}
+                  </span>
+                )}
                 {isPending ? (
                   <Loader2 className="h-3 w-3 shrink-0 animate-spin text-muted-foreground" />
                 ) : isActive ? (

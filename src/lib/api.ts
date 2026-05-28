@@ -1061,6 +1061,9 @@ export interface WorkspaceMembership {
   slug: string;
   isPersonal: boolean;
   role: "owner" | "admin" | "member";
+  /** Count of agents the caller owns in this workspace. Drives the
+   *  "you have N agents working in other workspaces" affordance. */
+  agentCount?: number;
 }
 
 // --- Messaging types + endpoints ---
@@ -1138,6 +1141,9 @@ export type TaskStatus =
 export interface Task {
   id: string;
   conversationId: string;
+  /** Workspace this task lives in. Used to drop WS events whose
+   *  payload doesn't match the user's active workspace. */
+  organizationId?: string | null;
   title: string;
   description?: string;
   status: TaskStatus;

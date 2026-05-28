@@ -3,6 +3,7 @@ import { invoke } from "@tauri-apps/api/core";
 import * as api from "../lib/api";
 import { providerRequiresLlmKey } from "../lib/models";
 import { ws } from "../services/websocket";
+import { useAuthStore } from "./authStore";
 
 interface AgentConfig {
   backend: string;
@@ -925,9 +926,25 @@ export const useAgentStore = create<AgentState>((set, get) => ({
     // in the desktop until the user refreshes.
     unsubs.push(
       ws.on("agent_updated", (payload) => {
-        const incoming = payload as Partial<api.Agent> & { id?: string };
+        const incoming = payload as Partial<api.Agent> & {
+          id?: string;
+          organizationId?: string;
+        };
         const agentId = incoming?.id;
         if (!agentId) return;
+
+        // Slack-style: drop events for agents in a workspace the
+        // user isn't currently active in.
+        const activeOrg =
+          useAuthStore.getState().participant?.activeOrganizationId;
+        if (
+          incoming.organizationId &&
+          activeOrg &&
+          incoming.organizationId !== activeOrg
+        ) {
+          return;
+        }
+
         set((s) => {
           const managed = s.agents[agentId];
           if (!managed) return s;

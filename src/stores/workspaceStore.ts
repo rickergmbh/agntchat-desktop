@@ -5,20 +5,18 @@ import { useAuthStore } from "./authStore";
 import { useChatStore } from "./chatStore";
 import { useAgentStore } from "./agentStore";
 import { useTaskStore } from "./taskStore";
+import { usePresenceStore } from "./presenceStore";
+import { useStreamingStore } from "./streamingStore";
 import type { Participant, WorkspaceMembership } from "../lib/api";
 
 /**
  * Slack-style multi-workspace store. Mirrors the web app's
  * `workspaceStore` so behavior is identical across clients.
- *
- * Source of truth is `authStore.participant.organizations` /
- * `activeOrganizationId`. This store exposes computed selectors plus a
- * `switch(orgId)` action that PATCHes the backend, updates the
- * participant in authStore, and re-fetches org-scoped stores.
  */
 interface WorkspaceState {
   switching: boolean;
   pendingId: string | null;
+  lastError: string | null;
 
   switch: (orgId: string) => Promise<void>;
   applyRemoteSwitch: (orgId: string) => Promise<void>;
@@ -28,23 +26,35 @@ interface WorkspaceState {
 export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   switching: false,
   pendingId: null,
+  lastError: null,
 
   switch: async (orgId) => {
-    if (get().switching) return;
-
     const current = useAuthStore.getState().participant;
     if (current?.activeOrganizationId === orgId) return;
 
-    set({ switching: true, pendingId: orgId });
+    set({ pendingId: orgId, lastError: null });
+
+    if (get().switching) return;
+
+    set({ switching: true });
     try {
-      const updated = await api.setActiveOrganization(orgId);
-      const auth = useAuthStore.getState();
-      if (auth.participant) {
-        const next = { ...auth.participant, ...updated };
-        localStorage.setItem("participant", JSON.stringify(next));
-        useAuthStore.setState({ participant: next });
+      let target = get().pendingId;
+      while (target) {
+        const updated = await api.setActiveOrganization(target);
+        const auth = useAuthStore.getState();
+        if (auth.participant) {
+          const next = { ...auth.participant, ...updated };
+          localStorage.setItem("participant", JSON.stringify(next));
+          useAuthStore.setState({ participant: next });
+        }
+        await refetchOrgScoped();
+
+        const nextTarget = get().pendingId;
+        target = nextTarget && nextTarget !== target ? nextTarget : null;
       }
-      await refetchOrgScoped();
+    } catch (e) {
+      set({ lastError: e instanceof Error ? e.message : "Switch failed" });
+      throw e;
     } finally {
       set({ switching: false, pendingId: null });
     }
@@ -54,13 +64,18 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     const current = useAuthStore.getState().participant;
     if (!current || current.activeOrganizationId === orgId) return;
 
+    set({ switching: true, pendingId: orgId, lastError: null });
     try {
       const updated = await api.getProfile();
       localStorage.setItem("participant", JSON.stringify(updated));
       useAuthStore.setState({ participant: updated });
       await refetchOrgScoped();
-    } catch {
-      /* leave state alone; next manual fetch catches up */
+    } catch (e) {
+      set({
+        lastError: e instanceof Error ? e.message : "Remote switch failed",
+      });
+    } finally {
+      set({ switching: false, pendingId: null });
     }
   },
 
@@ -75,16 +90,45 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
 }));
 
 async function refetchOrgScoped() {
-  // Wipe org-scoped collections so the UI re-keys cleanly. Each store
-  // handles the empty state on its own. Desktop's agentStore uses a
-  // Record (keyed by id) rather than an array — match that shape.
-  useChatStore.setState({ conversations: [] });
+  // 1. Stop receiving events for the previous workspace's conv channels.
+  ws.leaveAllConversations();
+
+  // 2. Wipe org-scoped collections. Desktop's chatStore covers
+  //    conversations + agentConversations + per-conversation message
+  //    caches + drafts + unread + active-id; agentStore is a Record
+  //    keyed by id; taskStore is a flat list. Presence + streaming
+  //    repopulate from new channel events.
+  useChatStore.setState({
+    conversations: [],
+    agentConversations: [],
+    agentConversationsLoaded: false,
+    pendingConversation: null,
+    activeConversationId: null,
+    messages: {},
+    messagesLoading: {},
+    hasMore: {},
+    drafts: {},
+    unreadCounts: {},
+  });
+
   useAgentStore.setState({ agents: {} });
+
   useTaskStore.setState({ tasks: [] });
 
+  usePresenceStore.setState({ online: new Set<string>() });
+  useStreamingStore.setState({ streams: {} });
+
+  // 3. Refetch the current workspace's lists. Agent threads are
+  //    explicitly fetched here (was missed in stage 2's desktop wipe
+  //    — agent threads from the previous workspace lingered in the
+  //    sidebar until manual refresh).
   await Promise.all([
-    useChatStore.getState().fetchConversations(),
-    useAgentStore.getState().fetchAgents(),
+    useChatStore.getState().fetchConversations().catch(() => {}),
+    useChatStore
+      .getState()
+      .fetchAgentConversations()
+      .catch(() => {}),
+    useAgentStore.getState().fetchAgents().catch(() => {}),
   ]);
 }
 

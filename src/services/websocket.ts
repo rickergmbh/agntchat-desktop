@@ -101,6 +101,8 @@ class WebSocketService {
       "task_assigned",
       "task_completed",
       "task_progress",
+      // Slack-style multi-workspace cross-device sync. workspaceStore listens.
+      "active_organization_changed",
     ];
 
     for (const event of userEvents) {
@@ -190,6 +192,19 @@ class WebSocketService {
     if (!channel) return;
     channel.leave();
     this.conversationChannels.delete(conversationId);
+  }
+
+  /**
+   * Leave every conversation channel currently joined. Called by
+   * `workspaceStore.refetchOrgScoped` on workspace switch — without
+   * this, channels for the previous workspace's conversations stay
+   * subscribed and keep pushing new_message events into the wiped
+   * stores (memory leak per switch).
+   */
+  leaveAllConversations() {
+    for (const id of Array.from(this.conversationChannels.keys())) {
+      this.leaveConversation(id);
+    }
   }
 
   // --- Send actions ---

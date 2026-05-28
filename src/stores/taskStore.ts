@@ -2,6 +2,7 @@ import { create } from "zustand";
 import * as api from "../lib/api";
 import type { Task, TaskStatus } from "../lib/api";
 import { ws } from "../services/websocket";
+import { useAuthStore } from "./authStore";
 
 /**
  * Tasks store — the tasks tab's state + the live progress / status that
@@ -202,6 +203,19 @@ export const useTaskStore = create<TaskState>((set) => ({
         ((payload as { task?: Task }).task as Task | undefined) ??
         (payload as unknown as Task);
       if (!task?.id) return;
+
+      // Slack-style: drop tasks in a workspace the user isn't
+      // currently active in.
+      const activeOrg =
+        useAuthStore.getState().participant?.activeOrganizationId;
+      if (
+        task.organizationId &&
+        activeOrg &&
+        task.organizationId !== activeOrg
+      ) {
+        return;
+      }
+
       set((s) => {
         const filtered = s.tasks.filter((t) => t.id !== task.id);
         return { tasks: sortByUpdatedDesc([task, ...filtered]) };
