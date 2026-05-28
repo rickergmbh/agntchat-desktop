@@ -326,6 +326,7 @@ export interface Organization {
   id: string;
   name: string;
   slug: string;
+  isPersonal?: boolean;
   ownerHumanId: string;
   settings?: Record<string, unknown>;
   insertedAt?: string;

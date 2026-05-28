@@ -9,7 +9,6 @@ import { CreateWorkspaceDialog } from "./CreateWorkspaceDialog";
 import { WorkspaceSettingsModal } from "./WorkspaceSettingsModal";
 import { PendingInvitesBanner } from "./PendingInvitesBanner";
 import { cn } from "../lib/utils";
-import type { WorkspaceMembership } from "../lib/api";
 
 /**
  * Top-bar dropdown showing the user's active workspace + a list of all
@@ -29,7 +28,10 @@ export function WorkspaceSwitcher() {
 
   const [open, setOpen] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
-  const [settingsTarget, setSettingsTarget] = useState<WorkspaceMembership | null>(null);
+  // Track only the workspace id; the modal looks up the live workspace
+  // via the store so it auto-closes if the workspace disappears from
+  // `participant.organizations` (deleted, left, etc.).
+  const [settingsTargetId, setSettingsTargetId] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -108,6 +110,7 @@ export function WorkspaceSwitcher() {
           className="absolute left-0 right-0 top-full z-40 mt-1 max-h-[28rem] overflow-y-auto rounded-md border border-border bg-popover py-1 shadow-md"
           role="listbox"
         >
+          <ErrorBanner />
           <PendingInvitesBanner />
 
           {workspaces.map((w) => {
@@ -170,7 +173,7 @@ export function WorkspaceSwitcher() {
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setSettingsTarget(w);
+                      setSettingsTargetId(w.id);
                       setOpen(false);
                     }}
                     className="shrink-0 rounded-sm p-1 text-muted-foreground opacity-0 transition-opacity hover:bg-accent hover:text-foreground group-hover:opacity-100 focus:opacity-100"
@@ -201,12 +204,36 @@ export function WorkspaceSwitcher() {
       )}
 
       {showCreate && <CreateWorkspaceDialog onClose={() => setShowCreate(false)} />}
-      {settingsTarget && (
+      {settingsTargetId && (
         <WorkspaceSettingsModal
-          workspace={settingsTarget}
-          onClose={() => setSettingsTarget(null)}
+          workspaceId={settingsTargetId}
+          onClose={() => setSettingsTargetId(null)}
         />
       )}
+    </div>
+  );
+}
+
+/**
+ * Surfaces workspaceStore.lastError inline at the top of the switcher
+ * dropdown. Without this, errors from `applyRemoteSwitch` (cross-device
+ * switch failed mid-fetch) and `refresh` were written but never read.
+ */
+function ErrorBanner() {
+  const lastError = useWorkspaceStore((s) => s.lastError);
+  if (!lastError) return null;
+
+  return (
+    <div className="flex items-start gap-2 border-b border-border bg-destructive/10 px-3 py-2 text-xs text-destructive">
+      <span className="flex-1">{lastError}</span>
+      <button
+        type="button"
+        onClick={() => useWorkspaceStore.setState({ lastError: null })}
+        aria-label="Dismiss error"
+        className="shrink-0 hover:opacity-70"
+      >
+        ×
+      </button>
     </div>
   );
 }

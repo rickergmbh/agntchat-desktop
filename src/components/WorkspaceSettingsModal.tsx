@@ -3,13 +3,13 @@ import { X, Loader2, Trash2, LogOut, Mail, Crown, Shield, User, Send } from "luc
 import * as api from "../lib/api";
 import { cn, getInitials } from "../lib/utils";
 import { useAuthStore } from "../stores/authStore";
-import { useWorkspaceStore } from "../stores/workspaceStore";
+import { useWorkspaceStore, useWorkspaces } from "../stores/workspaceStore";
 import type { WorkspaceMembership, OrganizationMembership, OrganizationInvite } from "../lib/api";
 
 type Tab = "general" | "members" | "invites";
 
 interface Props {
-  workspace: WorkspaceMembership;
+  workspaceId: string;
   onClose: () => void;
 }
 
@@ -18,9 +18,26 @@ interface Props {
  * non-personal workspace row in the switcher dropdown. Mirrors the
  * web component (`web/src/components/WorkspaceSettingsModal.tsx`)
  * tab-for-tab so behavior stays consistent across clients.
+ *
+ * Subscribes to the live workspace list so the modal auto-closes if
+ * the workspace it's editing disappears (deleted on another device,
+ * caller leaves, etc.). Without that, the modal stays bound to a
+ * stale snapshot and clicking actions runs them against a workspace
+ * the user is no longer in.
  */
-export function WorkspaceSettingsModal({ workspace, onClose }: Props) {
+export function WorkspaceSettingsModal({ workspaceId, onClose }: Props) {
   const [tab, setTab] = useState<Tab>("general");
+  const workspace = useWorkspaces().find((w) => w.id === workspaceId);
+
+  // Auto-close if the workspace disappears from the user's
+  // memberships. useEffect runs after render so the modal will
+  // briefly render the previous snapshot before unmounting — we
+  // tolerate that flicker rather than render undefined state.
+  useEffect(() => {
+    if (!workspace) onClose();
+  }, [workspace, onClose]);
+
+  if (!workspace) return null;
 
   const isOwner = workspace.role === "owner";
   const isAdminOrOwner = workspace.role === "owner" || workspace.role === "admin";

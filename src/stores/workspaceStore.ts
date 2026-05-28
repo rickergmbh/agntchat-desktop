@@ -83,7 +83,11 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     const current = useAuthStore.getState().participant;
     if (!current || current.activeOrganizationId === orgId) return;
 
-    set({ switching: true, pendingId: orgId, lastError: null });
+    // Coalesce against an in-flight switch — see web/store rationale.
+    set({ pendingId: orgId, lastError: null });
+    if (get().switching) return;
+
+    set({ switching: true });
     try {
       const updated = await api.getProfile();
       localStorage.setItem("participant", JSON.stringify(updated));
@@ -123,15 +127,29 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   },
 
   deleteWorkspace: async (orgId) => {
+    const wasActive =
+      useAuthStore.getState().participant?.activeOrganizationId === orgId;
+
     await api.deleteOrganization(orgId);
     await get().refresh();
+
+    // Defensive wipe — backend broadcasts active_organization_changed
+    // but if the WS push is dropped, org-scoped stores would still be
+    // showing the deleted workspace's data.
+    if (wasActive) await refetchOrgScoped();
   },
 
   leaveWorkspace: async (orgId) => {
     const participantId = useAuthStore.getState().participant?.id;
     if (!participantId) throw new Error("Not authenticated");
+
+    const wasActive =
+      useAuthStore.getState().participant?.activeOrganizationId === orgId;
+
     await api.removeOrganizationMember(orgId, participantId);
     await get().refresh();
+
+    if (wasActive) await refetchOrgScoped();
   },
 
   sendInvite: async (orgId, email, role = "member") => {
@@ -156,6 +174,9 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   },
 
   refresh: async () => {
+    // Skip while a switch is in flight — see web/store rationale.
+    if (get().switching) return;
+
     try {
       const updated = await api.getProfile();
       localStorage.setItem("participant", JSON.stringify(updated));
