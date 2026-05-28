@@ -406,6 +406,30 @@ export async function createOrganizationHost(
   });
 }
 
+/**
+ * Mint a fresh API key for an existing host. UUID stays the same;
+ * the old plaintext is invalidated immediately. Caller must hand the
+ * new plaintext to the host operator (re-run enroll.sh / update host.env).
+ */
+export async function regenerateOrganizationHostApiKey(
+  orgId: string,
+  hostId: string
+): Promise<CreateHostResult> {
+  return request<CreateHostResult>(
+    `/api/organizations/${orgId}/hosts/${hostId}/regenerate-key`,
+    { method: "POST" }
+  );
+}
+
+export async function deleteOrganizationHost(
+  orgId: string,
+  hostId: string
+): Promise<void> {
+  await request(`/api/organizations/${orgId}/hosts/${hostId}`, {
+    method: "DELETE",
+  });
+}
+
 export async function listOrganizationMembers(
   orgId: string
 ): Promise<OrganizationMembership[]> {

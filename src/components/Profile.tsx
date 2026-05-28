@@ -2069,6 +2069,48 @@ function OrganizationSection() {
     }
   };
 
+  // Mint a fresh API key for an existing host. UUID stays the same;
+  // the prior plaintext is invalidated immediately. We surface the
+  // new plaintext via the same one-time-reveal dialog used by
+  // Register so the operator can paste it into the host's host.env
+  // and re-run enroll.sh.
+  const handleRegenerateHostKey = async (host: api.OrganizationHost) => {
+    if (!active) return;
+    if (
+      !confirm(
+        `Regenerate API key for "${host.name}"? The current key stops working immediately. ` +
+          `You'll need to update host.env on the VM and restart agentgram-host.`
+      )
+    ) {
+      return;
+    }
+    try {
+      const result = await api.regenerateOrganizationHostApiKey(active.id, host.id);
+      setRevealedHost({ id: result.host.id, apiKey: result.apiKey });
+      setHostModalOpen(true);
+    } catch (e) {
+      setHostsError(e instanceof Error ? e.message : "Could not regenerate key");
+    }
+  };
+
+  const handleDeleteHost = async (host: api.OrganizationHost) => {
+    if (!active) return;
+    if (
+      !confirm(
+        `Delete host "${host.name}"? Any agents assigned to this host will stop ` +
+          `running there. This can't be undone.`
+      )
+    ) {
+      return;
+    }
+    try {
+      await api.deleteOrganizationHost(active.id, host.id);
+      setHosts((prev) => prev.filter((h) => h.id !== host.id));
+    } catch (e) {
+      setHostsError(e instanceof Error ? e.message : "Could not delete host");
+    }
+  };
+
   if (!active) {
     return (
       <section>
@@ -2125,30 +2167,12 @@ function OrganizationSection() {
         ) : (
           <ul className="space-y-2 mb-3">
             {hosts.map((h) => (
-              <li
+              <HostRow
                 key={h.id}
-                className="flex items-center justify-between rounded-md border border-border px-3 py-2"
-              >
-                <div className="min-w-0">
-                  <div className="font-medium truncate">{h.name}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {h.status}
-                    {h.hostname ? ` · ${h.hostname}` : ""}
-                    {h.version ? ` · v${h.version}` : ""}
-                  </div>
-                </div>
-                <Badge
-                  variant="outline"
-                  className={cn(
-                    "shrink-0",
-                    h.status === "online" && "border-success/30 text-success bg-success/10",
-                    h.status === "offline" && "border-muted text-muted-foreground",
-                    h.status === "disabled" && "border-destructive/30 text-destructive bg-destructive/10"
-                  )}
-                >
-                  {h.status}
-                </Badge>
-              </li>
+                host={h}
+                onRegenerate={() => void handleRegenerateHostKey(h)}
+                onDelete={() => void handleDeleteHost(h)}
+              />
             ))}
           </ul>
         )}
@@ -2323,6 +2347,84 @@ function CredentialField({ label, value }: { label: string; value: string }) {
         </Button>
       </div>
     </div>
+  );
+}
+
+/**
+ * One row in the hosts list. Surfaces the UUID inline with a copy
+ * button (the API key is one-time-reveal, but the UUID is not — it
+ * stays needed for host.env after a key rotation), plus per-host
+ * actions: rotate the API key without churning the UUID, or delete
+ * the host record entirely.
+ */
+function HostRow({
+  host,
+  onRegenerate,
+  onDelete,
+}: {
+  host: api.OrganizationHost;
+  onRegenerate: () => void;
+  onDelete: () => void;
+}) {
+  return (
+    <li className="rounded-md border border-border px-3 py-2 space-y-1.5">
+      <div className="flex items-center justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <div className="font-medium truncate">{host.name}</div>
+          <div className="text-xs text-muted-foreground">
+            {host.status}
+            {host.hostname ? ` · ${host.hostname}` : ""}
+            {host.version ? ` · v${host.version}` : ""}
+          </div>
+        </div>
+        <Badge
+          variant="outline"
+          className={cn(
+            "shrink-0",
+            host.status === "online" && "border-success/30 text-success bg-success/10",
+            host.status === "offline" && "border-muted text-muted-foreground",
+            host.status === "disabled" && "border-destructive/30 text-destructive bg-destructive/10"
+          )}
+        >
+          {host.status}
+        </Badge>
+      </div>
+
+      <div className="flex items-center gap-2 rounded-sm bg-muted/50 px-2 py-1 font-mono text-[11px] text-muted-foreground">
+        <span className="text-[10px] uppercase tracking-wide opacity-60">ID</span>
+        <span className="flex-1 truncate select-all">{host.id}</span>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-5 w-5 p-0"
+          onClick={() => void navigator.clipboard.writeText(host.id)}
+          aria-label="Copy host ID"
+        >
+          <CopyIcon className="w-3 h-3" />
+        </Button>
+      </div>
+
+      <div className="flex justify-end gap-1 pt-0.5">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onRegenerate}
+          title="Generate a new API key (UUID stays the same)"
+        >
+          <RefreshCw className="w-3.5 h-3.5" />
+          Rotate key
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onDelete}
+          className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+        >
+          <Trash2 className="w-3.5 h-3.5" />
+          Delete
+        </Button>
+      </div>
+    </li>
   );
 }
 
