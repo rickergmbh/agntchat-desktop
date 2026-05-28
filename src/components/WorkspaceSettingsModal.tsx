@@ -1,12 +1,13 @@
 import { useEffect, useState, useCallback } from "react";
-import { X, Loader2, Trash2, LogOut, Mail, Crown, Shield, User, Send } from "lucide-react";
+import { X, Loader2, Trash2, LogOut, Mail, Crown, Shield, User, Send, Copy as CopyIcon } from "lucide-react";
 import * as api from "../lib/api";
 import { cn, getInitials } from "../lib/utils";
 import { useAuthStore } from "../stores/authStore";
 import { useWorkspaceStore, useWorkspaces } from "../stores/workspaceStore";
 import type { WorkspaceMembership, OrganizationMembership, OrganizationInvite } from "../lib/api";
+import { HostsManagement } from "./HostsManagement";
 
-type Tab = "general" | "members" | "invites";
+type Tab = "general" | "members" | "hosts" | "invites";
 
 interface Props {
   workspaceId: string;
@@ -77,6 +78,11 @@ export function WorkspaceSettingsModal({ workspaceId, onClose }: Props) {
             Members
           </TabButton>
           {isAdminOrOwner && (
+            <TabButton active={tab === "hosts"} onClick={() => setTab("hosts")}>
+              Hosts
+            </TabButton>
+          )}
+          {isAdminOrOwner && (
             <TabButton active={tab === "invites"} onClick={() => setTab("invites")}>
               Invites
             </TabButton>
@@ -94,6 +100,12 @@ export function WorkspaceSettingsModal({ workspaceId, onClose }: Props) {
           )}
           {tab === "members" && (
             <MembersTab workspace={workspace} isOwner={isOwner} isAdminOrOwner={isAdminOrOwner} />
+          )}
+          {tab === "hosts" && isAdminOrOwner && (
+            <HostsManagement
+              orgId={workspace.id}
+              subtitle="Linux VMs that run agent bridges on this workspace's behalf."
+            />
           )}
           {tab === "invites" && isAdminOrOwner && <InvitesTab workspace={workspace} />}
         </div>
@@ -229,6 +241,16 @@ function GeneralTab({
             Only owners and admins can rename the workspace.
           </p>
         )}
+      </section>
+
+      <section className="space-y-2">
+        <label className="text-xs font-medium">Workspace identifiers</label>
+        <ReadOnlyField label="ID" value={workspace.id} />
+        <ReadOnlyField label="Slug" value={workspace.slug} />
+        <p className="text-[11px] text-muted-foreground">
+          The workspace ID is what backend resources reference (agents, hosts,
+          conversations). Slug appears in URLs.
+        </p>
       </section>
 
       {error && (
@@ -407,6 +429,25 @@ function MembersTab({
           </div>
         );
       })}
+    </div>
+  );
+}
+
+function ReadOnlyField({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center gap-2 rounded-md border border-border bg-muted/40 px-2.5 py-1.5 font-mono text-xs">
+      <span className="text-[10px] uppercase tracking-wide text-muted-foreground">
+        {label}
+      </span>
+      <span className="flex-1 truncate select-all">{value}</span>
+      <button
+        type="button"
+        onClick={() => void navigator.clipboard.writeText(value)}
+        aria-label={`Copy ${label}`}
+        className="rounded-sm p-1 text-muted-foreground hover:bg-accent hover:text-foreground"
+      >
+        <CopyIcon className="h-3 w-3" />
+      </button>
     </div>
   );
 }
