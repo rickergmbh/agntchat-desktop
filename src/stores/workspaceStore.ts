@@ -242,8 +242,13 @@ async function refetchOrgScoped() {
 
 // --- Selectors ---------------------------------------------------------
 
+// Stable reference for participants without an `organizations` array —
+// returning a fresh `[]` from the selector each render makes Zustand
+// see a new value every time and triggers an infinite update loop.
+const EMPTY_WORKSPACES: WorkspaceMembership[] = [];
+
 export function useWorkspaces(): WorkspaceMembership[] {
-  return useAuthStore((s) => s.participant?.organizations ?? []);
+  return useAuthStore((s) => s.participant?.organizations ?? EMPTY_WORKSPACES);
 }
 
 export function useActiveWorkspace(): WorkspaceMembership | null {
