@@ -110,7 +110,7 @@ export function WorkspaceSettingsModal({ workspaceId, onClose }: Props) {
           {tab === "hosts" && isAdminOrOwner && (
             <HostsManagement
               orgId={workspace.id}
-              subtitle="Linux VMs that run agent bridges on this workspace's behalf."
+              subtitle="Run agents on a dedicated Linux VM. Setup currently requires access to the Agentgram private host repo — reach out to opt in."
             />
           )}
           {tab === "models" && isAdminOrOwner && (

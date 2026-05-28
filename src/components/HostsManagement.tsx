@@ -151,8 +151,7 @@ export function HostsManagement({ orgId, title, subtitle }: Props) {
         </div>
       ) : hosts.length === 0 ? (
         <div className="text-sm text-muted-foreground mb-3">
-          No hosts registered yet. Register one and follow the install steps
-          in <code>host/README.md</code> on your VM.
+          No hosts registered yet.
         </div>
       ) : (
         <ul className="space-y-2 mb-3">
@@ -325,8 +324,9 @@ function HostCredentialsReveal({
   return (
     <div className="space-y-3 py-2">
       <p className="text-sm">
-        Copy these now — the API key is shown <strong>once</strong>. The
-        host runtime needs both as env vars (see <code>host/README.md</code>).
+        Copy these now — the API key is shown <strong>once</strong>. Set
+        both as env vars on the host VM (<code>ORG_HOST_ID</code> and{" "}
+        <code>ORG_HOST_API_KEY</code>).
       </p>
 
       <CredentialField label="ORG_HOST_ID" value={host.id} />
