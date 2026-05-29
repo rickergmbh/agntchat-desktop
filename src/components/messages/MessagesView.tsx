@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { MessageSquare, ChevronRight, ChevronLeft, SquarePen, RefreshCw } from "lucide-react";
-import { WorkspaceSwitcher } from "../WorkspaceSwitcher";
 import { useChatStore } from "../../stores/chatStore";
 import { useAuthStore } from "../../stores/authStore";
 import { usePresenceStore } from "../../stores/presenceStore";
@@ -67,37 +66,33 @@ export function MessagesView() {
         className="w-80 shrink-0 flex flex-col border-r border-border bg-card"
         style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
       >
+        {/* WorkspaceSwitcher lifted to AppShell's global header so it's
+            reachable from every view (Tasks/Agents/Members/etc. used
+            to lose the active-workspace context). The conversation
+            panel keeps just the refresh + new-chat buttons. */}
         <div
-          className="h-14 shrink-0 px-2 border-b border-border flex items-center gap-2"
-          style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
+          className="h-12 shrink-0 px-2 border-b border-border flex items-center justify-end gap-1"
+          style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
         >
-          <div className="min-w-0 flex-1">
-            <WorkspaceSwitcher />
-          </div>
-          <div
-            className="flex items-center gap-1"
-            style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
+          <button
+            type="button"
+            onClick={handleRefresh}
+            disabled={refreshing}
+            title="Refresh conversations"
+            aria-label="Refresh conversations"
+            className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors disabled:opacity-50"
           >
-            <button
-              type="button"
-              onClick={handleRefresh}
-              disabled={refreshing}
-              title="Refresh conversations"
-              aria-label="Refresh conversations"
-              className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors disabled:opacity-50"
-            >
-              <RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
-            </button>
-            <button
-              type="button"
-              onClick={() => setShowNew(true)}
-              title="New conversation"
-              aria-label="New conversation"
-              className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-            >
-              <SquarePen className="h-4 w-4" />
-            </button>
-          </div>
+            <RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowNew(true)}
+            title="New conversation"
+            aria-label="New conversation"
+            className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+          >
+            <SquarePen className="h-4 w-4" />
+          </button>
         </div>
 
         <div

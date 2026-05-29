@@ -32,6 +32,7 @@ import { TemplatesView } from "./templates/TemplatesView";
 import { CanvasView } from "./canvas/CanvasView";
 import { Profile } from "./Profile";
 import { FriendsView } from "./FriendsView";
+import { WorkspaceSwitcher } from "./WorkspaceSwitcher";
 
 type View = "chat" | "tasks" | "agents" | "friends" | "templates" | "canvas";
 
@@ -68,19 +69,41 @@ export function AppShell() {
         onChange={setView}
         onOpenProfile={() => setShowProfile(true)}
       />
-      {view === "chat" ? (
-        <MessagesView />
-      ) : view === "tasks" ? (
-        <TasksView onOpenConversation={handleOpenConversation} />
-      ) : view === "friends" ? (
-        <FriendsView />
-      ) : view === "templates" ? (
-        <TemplatesView />
-      ) : view === "canvas" ? (
-        <CanvasView />
-      ) : (
-        <Dashboard />
-      )}
+      {/* Single column with a thin global header above the view. The
+          WorkspaceSwitcher used to live only in MessagesView, so
+          Tasks/Agents/Members/etc. lost the active-workspace context.
+          Lifting it here keeps the answer to "which workspace am I
+          in?" reachable from every screen. The drag region is set on
+          the header so the Tauri window remains draggable above the
+          view content. */}
+      <div className="flex flex-1 flex-col overflow-hidden">
+        <header
+          className="flex h-12 shrink-0 items-center gap-2 border-b border-border bg-card px-3"
+          style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
+        >
+          <div
+            className="min-w-0 max-w-xs flex-1"
+            style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
+          >
+            <WorkspaceSwitcher />
+          </div>
+        </header>
+        <div className="flex flex-1 overflow-hidden">
+          {view === "chat" ? (
+            <MessagesView />
+          ) : view === "tasks" ? (
+            <TasksView onOpenConversation={handleOpenConversation} />
+          ) : view === "friends" ? (
+            <FriendsView />
+          ) : view === "templates" ? (
+            <TemplatesView />
+          ) : view === "canvas" ? (
+            <CanvasView />
+          ) : (
+            <Dashboard />
+          )}
+        </div>
+      </div>
 
       {/* Profile drawer — lifted to shell so it's reachable from any view */}
       <div
