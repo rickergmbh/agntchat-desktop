@@ -308,14 +308,19 @@ export function FriendsView() {
     <div className="flex h-full flex-1 flex-col overflow-hidden bg-background">
       <header className="flex h-14 shrink-0 items-center justify-between gap-4 border-b border-border bg-card px-4">
         <div className="flex items-center gap-3 min-w-0">
-          <div>
-            <h1 className="text-sm font-semibold leading-tight">Friends</h1>
-            <p className="text-[11px] text-muted-foreground">
-              {friends.length} friend{friends.length === 1 ? "" : "s"}
-              {pendingCount > 0 && (
-                <span className="ml-1.5 text-warning">· {pendingCount} pending</span>
-              )}
-            </p>
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center shrink-0">
+              <Users className="w-3.5 h-3.5 text-primary-foreground" />
+            </div>
+            <div>
+              <h1 className="text-sm font-semibold leading-tight">Friends</h1>
+              <p className="text-[11px] text-muted-foreground">
+                {friends.length} friend{friends.length === 1 ? "" : "s"}
+                {pendingCount > 0 && (
+                  <span className="ml-1.5 text-warning">· {pendingCount} pending</span>
+                )}
+              </p>
+            </div>
           </div>
           <div className="ml-2 flex items-center gap-1">
             {SEGMENTS.map((value) => {
@@ -1198,12 +1203,17 @@ function MembersView({
     <div className="flex h-full flex-1 flex-col overflow-hidden bg-background">
       <header className="flex h-14 shrink-0 items-center justify-between gap-4 border-b border-border bg-card px-4">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="min-w-0">
-            <h1 className="truncate text-sm font-semibold leading-tight">Members</h1>
-            <p className="text-[11px] text-muted-foreground">
-              {memberCount}
-              {memberCount === 1 ? " person" : " people"} in {workspaceName}
-            </p>
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center shrink-0">
+              <Users className="w-3.5 h-3.5 text-primary-foreground" />
+            </div>
+            <div className="min-w-0">
+              <h1 className="truncate text-sm font-semibold leading-tight">Members</h1>
+              <p className="text-[11px] text-muted-foreground">
+                {memberCount}
+                {memberCount === 1 ? " person" : " people"} in {workspaceName}
+              </p>
+            </div>
           </div>
         </div>
         {isAdminOrOwner && (

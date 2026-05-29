@@ -73,10 +73,15 @@ export function MessagesView() {
             so it still reads as a section header rather than a
             floating button row. */}
         <div
-          className="h-12 shrink-0 px-3 border-b border-border flex items-center justify-between gap-2"
+          className="h-14 shrink-0 px-4 border-b border-border flex items-center justify-between gap-2"
           style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
         >
-          <h2 className="text-sm font-semibold text-foreground">Chats</h2>
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center shrink-0">
+              <MessageSquare className="w-3.5 h-3.5 text-primary-foreground" />
+            </div>
+            <h2 className="text-sm font-semibold text-foreground">Chats</h2>
+          </div>
           <div className="flex items-center gap-1">
             <button
               type="button"
