@@ -69,41 +69,22 @@ export function AppShell() {
         onChange={setView}
         onOpenProfile={() => setShowProfile(true)}
       />
-      {/* Single column with a thin global header above the view. The
-          WorkspaceSwitcher used to live only in MessagesView, so
-          Tasks/Agents/Members/etc. lost the active-workspace context.
-          Lifting it here keeps the answer to "which workspace am I
-          in?" reachable from every screen. The drag region is set on
-          the header so the Tauri window remains draggable above the
-          view content. */}
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <header
-          className="flex h-12 shrink-0 items-center gap-2 border-b border-border bg-card px-3"
-          style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
-        >
-          <div
-            className="min-w-0 max-w-xs flex-1"
-            style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
-          >
-            <WorkspaceSwitcher />
-          </div>
-        </header>
-        <div className="flex flex-1 overflow-hidden">
-          {view === "chat" ? (
-            <MessagesView />
-          ) : view === "tasks" ? (
-            <TasksView onOpenConversation={handleOpenConversation} />
-          ) : view === "friends" ? (
-            <FriendsView />
-          ) : view === "templates" ? (
-            <TemplatesView />
-          ) : view === "canvas" ? (
-            <CanvasView />
-          ) : (
-            <Dashboard />
-          )}
-        </div>
-      </div>
+      {/* WorkspaceSwitcher is mounted at the top of LeftRail (Slack-
+          style tile). The global header is gone — the routed views
+          claim the full vertical space again. */}
+      {view === "chat" ? (
+        <MessagesView />
+      ) : view === "tasks" ? (
+        <TasksView onOpenConversation={handleOpenConversation} />
+      ) : view === "friends" ? (
+        <FriendsView />
+      ) : view === "templates" ? (
+        <TemplatesView />
+      ) : view === "canvas" ? (
+        <CanvasView />
+      ) : (
+        <Dashboard />
+      )}
 
       {/* Profile drawer — lifted to shell so it's reachable from any view */}
       <div
@@ -206,11 +187,16 @@ function LeftRail({
       className="flex flex-col w-14 shrink-0 border-r border-sidebar-border bg-sidebar py-3 items-center justify-between"
       style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
     >
-      {/* Top: main nav */}
+      {/* Top: workspace tile + main nav */}
       <div
         style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
         className="flex flex-col gap-1 items-center"
       >
+        {/* Workspace tile (Slack-style) — clicking opens the dropdown
+            to the right with the full workspaces list. */}
+        <WorkspaceSwitcher />
+        <div className="my-1 h-px w-8 bg-sidebar-border" />
+
         <RailButton
           icon={MessageCircle}
           label="Chat"

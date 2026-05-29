@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { ChevronDown, Check, Loader2, User, Building2, Settings, Plus } from "lucide-react";
+import { Check, Loader2, User, Building2, Settings, Plus } from "lucide-react";
 import {
   useWorkspaceStore,
   useWorkspaces,
@@ -11,13 +11,13 @@ import { PendingInvitesBanner } from "./PendingInvitesBanner";
 import { cn } from "../lib/utils";
 
 /**
- * Top-bar dropdown showing the user's active workspace + a list of all
- * workspaces they're a member of. Click an entry to switch — fires
- * PATCH /api/me/active-organization, wipes and refetches org-scoped
- * stores. Personal is always pinned at the top with a distinct icon.
+ * Compact rounded-square tile (Slack-style) showing the active
+ * workspace's avatar or initials. Mounted at the top of the LeftRail;
+ * clicking opens a dropdown that flies out to the right with the full
+ * workspaces list, pending invites, error banner, and "Create
+ * workspace".
  *
- * Mirrors `web/src/components/WorkspaceSwitcher.tsx` so the two
- * clients render identically.
+ * Mirrors `web/src/components/WorkspaceSwitcher.tsx`.
  */
 export function WorkspaceSwitcher() {
   const workspaces = useWorkspaces();
@@ -50,9 +50,12 @@ export function WorkspaceSwitcher() {
 
   if (workspaces.length === 0) {
     return (
-      <div className="flex items-center gap-2 px-2 py-1.5 text-sm text-muted-foreground">
+      <div
+        className="flex h-9 w-9 items-center justify-center rounded-md bg-muted text-muted-foreground"
+        title="Loading workspace…"
+        style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
+      >
         <Loader2 className="h-3 w-3 animate-spin" />
-        <span>Loading workspace…</span>
       </div>
     );
   }
@@ -74,40 +77,33 @@ export function WorkspaceSwitcher() {
         type="button"
         onClick={() => setOpen((v) => !v)}
         className={cn(
-          "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm transition-colors hover:bg-accent",
-          open && "bg-accent"
+          "relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md border-2 transition-colors",
+          open
+            ? "border-primary"
+            : "border-transparent hover:border-border focus-visible:border-primary"
         )}
         aria-haspopup="listbox"
         aria-expanded={open}
         title={activeName}
       >
-        <span className="relative shrink-0">
-          {activeIsPersonal ? (
-            <User className="h-3.5 w-3.5 text-muted-foreground" />
-          ) : (
-            <Building2 className="h-3.5 w-3.5 text-muted-foreground" />
-          )}
-          {otherWorkspaceAgents > 0 && (
-            <span
-              className="absolute -right-0.5 -top-0.5 h-1.5 w-1.5 rounded-full bg-primary"
-              title={`${otherWorkspaceAgents} agent${otherWorkspaceAgents === 1 ? "" : "s"} in other workspace${otherWorkspaceAgents === 1 ? "" : "s"}`}
-            />
-          )}
-        </span>
-        <span className="min-w-0 flex-1 truncate font-semibold">
-          {activeName}
-        </span>
-        <ChevronDown
-          className={cn(
-            "h-3 w-3 shrink-0 text-muted-foreground transition-transform",
-            open && "rotate-180"
-          )}
+        <WorkspaceAvatar
+          name={activeName}
+          avatarUrl={active?.avatarUrl}
+          isPersonal={activeIsPersonal}
         />
+        {otherWorkspaceAgents > 0 && (
+          <span
+            className="absolute right-0.5 top-0.5 h-1.5 w-1.5 rounded-full bg-primary ring-2 ring-sidebar"
+            title={`${otherWorkspaceAgents} agent${
+              otherWorkspaceAgents === 1 ? "" : "s"
+            } in other workspace${otherWorkspaceAgents === 1 ? "" : "s"}`}
+          />
+        )}
       </button>
 
       {open && (
         <div
-          className="absolute left-0 right-0 top-full z-40 mt-1 max-h-[28rem] overflow-y-auto rounded-md border border-border bg-popover py-1 shadow-md"
+          className="absolute left-full top-0 z-40 ml-2 max-h-[28rem] w-72 overflow-y-auto rounded-md border border-border bg-popover py-1 shadow-md"
           role="listbox"
         >
           <ErrorBanner />
@@ -236,4 +232,53 @@ function ErrorBanner() {
       </button>
     </div>
   );
+}
+
+/**
+ * 36px rounded-square avatar tile. Avatar URL wins; otherwise renders
+ * 1–2 initial characters derived from the workspace name. Personal
+ * workspaces get a subtle user-icon corner so they're recognizable
+ * when the user has multiple workspaces with similar names.
+ */
+function WorkspaceAvatar({
+  name,
+  avatarUrl,
+  isPersonal,
+}: {
+  name: string;
+  avatarUrl?: string | null;
+  isPersonal: boolean;
+}) {
+  if (avatarUrl) {
+    return (
+      <img
+        src={avatarUrl}
+        alt=""
+        className="h-full w-full object-cover"
+        draggable={false}
+      />
+    );
+  }
+  return (
+    <div
+      className={cn(
+        "flex h-full w-full items-center justify-center text-xs font-semibold",
+        isPersonal ? "bg-muted text-muted-foreground" : "bg-primary/15 text-primary"
+      )}
+    >
+      {isPersonal ? <User className="h-4 w-4" /> : workspaceInitials(name)}
+    </div>
+  );
+}
+
+function workspaceInitials(name: string): string {
+  const trimmed = (name ?? "").trim();
+  if (!trimmed) return "?";
+  const words = trimmed.split(/\s+/);
+  const first = words[0] ?? "";
+  const second = words[1];
+  if (second && first) {
+    return (first.charAt(0) + second.charAt(0)).toUpperCase();
+  }
+  return trimmed.slice(0, 2).toUpperCase();
 }

@@ -25,6 +25,8 @@ interface WorkspaceState {
   // Stage 3 management actions — same shape as web.
   createWorkspace: (name: string, slug?: string) => Promise<api.Organization>;
   renameWorkspace: (orgId: string, name: string) => Promise<void>;
+  /** Set or clear the workspace avatar URL. Pass null to remove. */
+  setWorkspaceAvatar: (orgId: string, avatarUrl: string | null) => Promise<void>;
   deleteWorkspace: (orgId: string) => Promise<void>;
   leaveWorkspace: (orgId: string) => Promise<void>;
   sendInvite: (
@@ -119,6 +121,11 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     await get().refresh();
     await get().switch(org.id);
     return org;
+  },
+
+  setWorkspaceAvatar: async (orgId, avatarUrl) => {
+    await api.setOrganizationAvatar(orgId, avatarUrl);
+    await get().refresh();
   },
 
   renameWorkspace: async (orgId, name) => {

@@ -1,7 +1,9 @@
 import { useEffect, useState, useCallback } from "react";
-import { X, Loader2, Trash2, LogOut, Mail, Crown, Shield, User, Send, Copy as CopyIcon } from "lucide-react";
+import { X, Loader2, Trash2, LogOut, Mail, Crown, Shield, User, Send, Copy as CopyIcon, Camera } from "lucide-react";
 import * as api from "../lib/api";
+import { uploadAvatar } from "../lib/imageProcessor";
 import { cn, getInitials } from "../lib/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useAuthStore } from "../stores/authStore";
 import { useWorkspaceStore, useWorkspaces } from "../stores/workspaceStore";
 import type { WorkspaceMembership, OrganizationMembership, OrganizationInvite } from "../lib/api";
@@ -165,6 +167,7 @@ function GeneralTab({
   onClose: () => void;
 }) {
   const renameWorkspace = useWorkspaceStore((s) => s.renameWorkspace);
+  const setWorkspaceAvatar = useWorkspaceStore((s) => s.setWorkspaceAvatar);
   const deleteWorkspace = useWorkspaceStore((s) => s.deleteWorkspace);
   const leaveWorkspace = useWorkspaceStore((s) => s.leaveWorkspace);
 
@@ -173,6 +176,35 @@ function GeneralTab({
   const [destroying, setDestroying] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+
+  async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingAvatar(true);
+    setError(null);
+    try {
+      const url = await uploadAvatar(file, `workspace-avatars/${workspace.id}.jpg`);
+      await setWorkspaceAvatar(workspace.id, url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not upload avatar");
+    } finally {
+      setUploadingAvatar(false);
+      e.target.value = "";
+    }
+  }
+
+  async function handleAvatarRemove() {
+    setUploadingAvatar(true);
+    setError(null);
+    try {
+      await setWorkspaceAvatar(workspace.id, null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not remove avatar");
+    } finally {
+      setUploadingAvatar(false);
+    }
+  }
 
   async function handleSave() {
     if (!name.trim() || name.trim() === workspace.name) return;
@@ -220,6 +252,61 @@ function GeneralTab({
 
   return (
     <div className="space-y-6">
+      {/* Avatar */}
+      <section>
+        <label className="text-xs font-medium">Workspace avatar</label>
+        <div className="mt-1.5 flex items-center gap-3">
+          <div className="relative">
+            <Avatar className="h-14 w-14 rounded-md">
+              {workspace.avatarUrl && (
+                <AvatarImage src={workspace.avatarUrl} alt="" className="rounded-md" />
+              )}
+              <AvatarFallback className="rounded-md text-sm font-semibold">
+                {workspace.name?.slice(0, 2).toUpperCase() || "?"}
+              </AvatarFallback>
+            </Avatar>
+            {isAdminOrOwner && (
+              <label
+                className={cn(
+                  "absolute inset-0 flex cursor-pointer items-center justify-center rounded-md bg-black/50 text-white opacity-0 transition-opacity hover:opacity-100",
+                  uploadingAvatar && "opacity-100"
+                )}
+              >
+                {uploadingAvatar ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Camera className="h-4 w-4" />
+                )}
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  className="hidden"
+                  onChange={handleAvatarChange}
+                  disabled={uploadingAvatar}
+                />
+              </label>
+            )}
+          </div>
+          <div className="flex flex-col gap-1">
+            <p className="text-[11px] text-muted-foreground">
+              {isAdminOrOwner
+                ? "Renders in the sidebar tile. JPEG, PNG, or WebP — square crop recommended."
+                : "Only owners and admins can change the avatar."}
+            </p>
+            {isAdminOrOwner && workspace.avatarUrl && (
+              <button
+                type="button"
+                onClick={() => void handleAvatarRemove()}
+                disabled={uploadingAvatar}
+                className="text-left text-[11px] text-destructive hover:underline disabled:opacity-50"
+              >
+                Remove avatar
+              </button>
+            )}
+          </div>
+        </div>
+      </section>
+
       <section>
         <label htmlFor="ws-rename" className="text-xs font-medium">
           Workspace name

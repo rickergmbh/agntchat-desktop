@@ -141,6 +141,17 @@ export async function renameOrganization(orgId: string, name: string): Promise<v
   });
 }
 
+/** Set or clear the workspace avatar URL. Pass null to remove. */
+export async function setOrganizationAvatar(
+  orgId: string,
+  avatarUrl: string | null
+): Promise<void> {
+  await request(`/api/organizations/${orgId}`, {
+    method: "PATCH",
+    body: JSON.stringify({ avatarUrl }),
+  });
+}
+
 export async function deleteOrganization(orgId: string): Promise<void> {
   await request(`/api/organizations/${orgId}`, { method: "DELETE" });
 }
@@ -327,6 +338,7 @@ export interface Organization {
   id: string;
   name: string;
   slug: string;
+  avatarUrl?: string | null;
   isPersonal?: boolean;
   ownerHumanId: string;
   settings?: Record<string, unknown>;
@@ -1140,6 +1152,9 @@ export interface WorkspaceMembership {
   id: string;
   name: string;
   slug: string;
+  /** Optional workspace avatar — sidebar tile renders it when set;
+   *  falls back to initials of the name otherwise. */
+  avatarUrl?: string | null;
   isPersonal: boolean;
   role: "owner" | "admin" | "member";
   /** Count of agents the caller owns in this workspace. Drives the
