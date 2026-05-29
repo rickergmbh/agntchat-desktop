@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import {
-  Bot,
   LayoutDashboard,
   Lock,
   Search,
@@ -88,7 +87,7 @@ export function CanvasView() {
         >
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center shrink-0">
-              <Bot className="w-3.5 h-3.5 text-primary-foreground" />
+              <LayoutDashboard className="w-3.5 h-3.5 text-primary-foreground" />
             </div>
             <h2 className="text-sm font-semibold text-foreground">Canvases</h2>
           </div>

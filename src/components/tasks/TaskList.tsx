@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Bot, Loader2, Search, Zap } from "lucide-react";
+import { Loader2, Search, Zap } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -118,7 +118,7 @@ export function TaskList() {
       >
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center shrink-0">
-            <Bot className="w-3.5 h-3.5 text-primary-foreground" />
+            <Zap className="w-3.5 h-3.5 text-primary-foreground" />
           </div>
           <h2 className="text-sm font-semibold text-foreground">Tasks</h2>
         </div>

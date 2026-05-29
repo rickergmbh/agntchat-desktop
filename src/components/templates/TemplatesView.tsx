@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import {
-  Bot,
   FileText,
   Lock,
   Search,
@@ -75,7 +74,7 @@ export function TemplatesView() {
         >
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center shrink-0">
-              <Bot className="w-3.5 h-3.5 text-primary-foreground" />
+              <FileText className="w-3.5 h-3.5 text-primary-foreground" />
             </div>
             <h2 className="text-sm font-semibold text-foreground">Templates</h2>
           </div>
