@@ -2065,17 +2065,28 @@ function ProfileSection({
 }) {
   const { fetchAgents } = useAgentStore();
   const limits = useFieldLimits();
+  const activeWorkspace = useActiveWorkspace();
   const [name, setName] = useState(agent.displayName);
   const [desc, setDesc] = useState(agent.description ?? "");
   const [agentType, setAgentType] = useState(agent.agentType || "worker");
   const [caps, setCaps] = useState((agent.capabilities ?? []).join(", "));
   const [wakeUrl, setWakeUrl] = useState((agent as { wakeUrl?: string }).wakeUrl ?? "");
+  // Visibility: "personal" = organizationId null (cross-workspace),
+  // "workspace" = pinned to the user's currently-active workspace.
+  // Backend rejects pinning to any other workspace, so no picker.
+  const [visibility, setVisibility] = useState<"personal" | "workspace">(
+    agent.organizationId ? "workspace" : "personal"
+  );
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [cropImage, setCropImage] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState(false);
+
+  const initialVisibility: "personal" | "workspace" = agent.organizationId
+    ? "workspace"
+    : "personal";
 
   const handleCopyId = useCallback(() => {
     navigator.clipboard.writeText(agent.id);
@@ -2091,12 +2102,14 @@ function ProfileSection({
     setAgentType(agent.agentType || "worker");
     setCaps((agent.capabilities ?? []).join(", "));
     setWakeUrl((agent as { wakeUrl?: string }).wakeUrl ?? "");
+    setVisibility(agent.organizationId ? "workspace" : "personal");
   }, [
     agent.displayName,
     agent.description,
     agent.agentType,
     agent.capabilities,
     (agent as { wakeUrl?: string }).wakeUrl,
+    agent.organizationId,
   ]);
 
   const dirty =
@@ -2104,7 +2117,8 @@ function ProfileSection({
     desc !== (agent.description ?? "") ||
     agentType !== (agent.agentType || "worker") ||
     caps !== (agent.capabilities ?? []).join(", ") ||
-    wakeUrl !== ((agent as { wakeUrl?: string }).wakeUrl ?? "");
+    wakeUrl !== ((agent as { wakeUrl?: string }).wakeUrl ?? "") ||
+    visibility !== initialVisibility;
 
   const handleSave = useCallback(async () => {
     const trimmedName = name.trim();
@@ -2121,12 +2135,25 @@ function ProfileSection({
         .filter(Boolean);
       const trimmedWake = wakeUrl.trim();
       const trimmedDesc = desc.trim();
+
+      // Only send organizationId when the user actually changed visibility
+      // — sending it on every save would either be a no-op or surface
+      // 403 not_active_workspace if the user has switched workspaces
+      // between visits.
+      const visibilityPatch =
+        visibility === initialVisibility
+          ? {}
+          : visibility === "personal"
+          ? { organizationId: null as string | null }
+          : { organizationId: activeWorkspace?.id ?? null };
+
       await updateAgent(agent.id, {
         displayName: trimmedName,
         description: trimmedDesc || null,
         agentType,
         capabilities: trimmedCaps,
         wakeUrl: trimmedWake || null,
+        ...visibilityPatch,
       });
       await fetchAgents();
       setSaved(true);
@@ -2136,7 +2163,7 @@ function ProfileSection({
     } finally {
       setSaving(false);
     }
-  }, [agent.id, name, desc, agentType, caps, wakeUrl, fetchAgents]);
+  }, [agent.id, name, desc, agentType, caps, wakeUrl, visibility, initialVisibility, activeWorkspace?.id, fetchAgents]);
 
   const handleAvatarClick = () => {
     const input = document.createElement("input");
@@ -2280,6 +2307,54 @@ function ProfileSection({
             bridge is offline. Leave blank if you don't run a custom wake
             endpoint.
           </p>
+        </div>
+
+        <div className="space-y-1.5 mt-4">
+          <Label className="text-xs">Visibility</Label>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => setVisibility("personal")}
+              className={cn(
+                "flex flex-col rounded-lg border p-2.5 text-left transition-colors",
+                visibility === "personal"
+                  ? "border-primary bg-primary/5"
+                  : "border-border hover:bg-accent"
+              )}
+            >
+              <span className="text-xs font-medium">Personal</span>
+              <span className="text-[10px] text-muted-foreground">
+                Visible in all your workspaces
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (activeWorkspace && !activeWorkspace.isPersonal) setVisibility("workspace");
+              }}
+              disabled={!activeWorkspace || activeWorkspace.isPersonal}
+              className={cn(
+                "flex flex-col rounded-lg border p-2.5 text-left transition-colors",
+                visibility === "workspace"
+                  ? "border-primary bg-primary/5"
+                  : "border-border hover:bg-accent",
+                (!activeWorkspace || activeWorkspace.isPersonal) &&
+                  "cursor-not-allowed opacity-50"
+              )}
+            >
+              <span className="text-xs font-medium">
+                Pinned to{" "}
+                {activeWorkspace && !activeWorkspace.isPersonal
+                  ? activeWorkspace.name
+                  : "this workspace"}
+              </span>
+              <span className="text-[10px] text-muted-foreground">
+                {activeWorkspace && !activeWorkspace.isPersonal
+                  ? "Only visible in this workspace"
+                  : "Switch to a shared workspace to pin"}
+              </span>
+            </button>
+          </div>
         </div>
 
         {error && (

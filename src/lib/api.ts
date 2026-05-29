@@ -184,6 +184,7 @@ export async function createAgent(data: {
   soulMd?: string;
   modelConfig?: Record<string, unknown>;
   metadata?: Record<string, unknown>;
+  organizationId?: string | null;
 }): Promise<{ agent: Agent; apiKey: string }> {
   // Backend returns flat: { id, displayName, ..., apiKey }
   const resp = await request<Agent & { apiKey: string }>("/api/agents", {

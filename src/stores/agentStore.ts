@@ -226,6 +226,10 @@ interface AgentState {
     /** Pin the agent to a specific saved LLM key. Omit to resolve to the
      *  user's default for the provider at runtime. */
     llmApiKeyId?: string | null;
+    /** Workspace pin. Omit/`null` for personal (cross-workspace, the
+     *  default). A UUID pins to that workspace; backend rejects any
+     *  value other than the caller's currently-active workspace. */
+    organizationId?: string | null;
   }) => Promise<string>;
   regenerateKey: (id: string) => Promise<string>;
   refreshProcessStatuses: () => Promise<boolean>;
@@ -810,9 +814,10 @@ export const useAgentStore = create<AgentState>((set, get) => ({
       llmApiKeyId: selectedKeyId,
       ...apiData
     } = data;
-    // `metadata` (if present in apiData) flows straight through to the
-    // API. Cross-device fields (computer_use_enabled etc.) live there;
-    // the modal composes the right snake_case keys directly.
+    // `metadata` and `organizationId` (if present in apiData) flow
+    // straight through to the API. Cross-device fields
+    // (computer_use_enabled etc.) live in metadata; the modal composes
+    // the right snake_case keys directly.
     const result = await api.createAgent(apiData);
     const config = {
       ...DEFAULT_CONFIG,

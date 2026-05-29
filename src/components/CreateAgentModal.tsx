@@ -15,6 +15,7 @@ import {
   ShieldOff,
 } from "lucide-react";
 import { useAgentStore } from "../stores/agentStore";
+import { useActiveWorkspace } from "../stores/workspaceStore";
 import { useLlmKeyStore } from "../stores/llmKeyStore";
 import { useModelCatalog } from "../stores/modelCatalogStore";
 import { useAgentTypes } from "../lib/agentTypes";
@@ -141,6 +142,11 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   // details
   const [customInstructions, setCustomInstructions] = useState("");
   const [requiresLocation, setRequiresLocation] = useState(false);
+  // visibility — Personal (default) is cross-workspace, Workspace pins
+  // to the user's currently-active workspace. Backend rejects pinning
+  // anywhere else, so there's no picker.
+  const [visibility, setVisibility] = useState<"personal" | "workspace">("personal");
+  const activeWorkspace = useActiveWorkspace();
   // brain — backend / model / execution mode / effort / key / safety
   const [backend, setBackend] = useState("claude_cli");
   const [model, setModel] = useState("");
@@ -384,6 +390,12 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
           ? { metadata: { computer_use_enabled: true } }
           : {}),
         ...(llmApiKeyIdPin ? { llmApiKeyId: llmApiKeyIdPin } : {}),
+        // Workspace pin (only when user explicitly picked it AND we're
+        // in a non-Personal workspace — UI gates the toggle on this
+        // already so backend's not_active_workspace guard shouldn't fire).
+        ...(visibility === "workspace" && activeWorkspace && !activeWorkspace.isPersonal
+          ? { organizationId: activeWorkspace.id }
+          : {}),
       });
       if (newId) await selectAgent(newId);
       onClose();
@@ -1107,6 +1119,55 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                         value="Allowed (configure allowed-app list after creation)"
                       />
                     )}
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Visibility</Label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setVisibility("personal")}
+                        className={cn(
+                          "flex flex-col rounded-lg border p-2.5 text-left transition-colors",
+                          visibility === "personal"
+                            ? "border-primary bg-primary/5"
+                            : "border-border hover:bg-accent"
+                        )}
+                      >
+                        <span className="text-xs font-medium">Personal</span>
+                        <span className="text-[10px] text-text-muted">
+                          Visible in all your workspaces
+                        </span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (activeWorkspace && !activeWorkspace.isPersonal)
+                            setVisibility("workspace");
+                        }}
+                        disabled={!activeWorkspace || activeWorkspace.isPersonal}
+                        className={cn(
+                          "flex flex-col rounded-lg border p-2.5 text-left transition-colors",
+                          visibility === "workspace"
+                            ? "border-primary bg-primary/5"
+                            : "border-border hover:bg-accent",
+                          (!activeWorkspace || activeWorkspace.isPersonal) &&
+                            "cursor-not-allowed opacity-50"
+                        )}
+                      >
+                        <span className="text-xs font-medium">
+                          Pinned to{" "}
+                          {activeWorkspace && !activeWorkspace.isPersonal
+                            ? activeWorkspace.name
+                            : "this workspace"}
+                        </span>
+                        <span className="text-[10px] text-text-muted">
+                          {activeWorkspace && !activeWorkspace.isPersonal
+                            ? "Only visible in this workspace"
+                            : "Switch to a shared workspace to pin"}
+                        </span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
