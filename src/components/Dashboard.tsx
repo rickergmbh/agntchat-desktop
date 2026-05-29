@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useAgentStore, type ManagedAgent } from "../stores/agentStore";
+import { useDirectoryStore } from "../stores/directoryStore";
 import { AgentRow } from "./AgentRow";
 import { AgentConfig } from "./AgentConfig";
 import { CreateAgentModal } from "./CreateAgentModal";
@@ -10,9 +11,352 @@ import {
   Search,
   Play,
   Square,
+  Star,
+  CheckCircle,
+  Clock,
+  Link as LinkIcon,
+  Unlink,
+  Loader2,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import type {
+  AgentConnection,
+  ConnectionMode,
+  DirectoryListing,
+} from "../lib/api";
+
+type Tab = "agents" | "directory";
+
+// ---------------------------------------------------------------------------
+// Directory listing item — single row in the directory list.
+// ---------------------------------------------------------------------------
+function DirectoryItem({
+  listing,
+  connectionStatus,
+  isActive,
+  onClick,
+}: {
+  listing: DirectoryListing;
+  connectionStatus?: "accepted" | "pending";
+  isActive: boolean;
+  onClick: () => void;
+}) {
+  const agent = listing.agent;
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        "flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-accent border-b border-border last:border-b-0",
+        isActive && "bg-accent"
+      )}
+    >
+      <Avatar className="h-10 w-10 shrink-0">
+        {agent?.avatarUrl && <AvatarImage src={agent.avatarUrl} displaySize={40} />}
+        <AvatarFallback className="text-xs">
+          <Bot className="h-4 w-4" />
+        </AvatarFallback>
+      </Avatar>
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-1.5">
+          <span className="truncate text-sm font-medium">{listing.listingName}</span>
+          {listing.verified && (
+            <span className="rounded-full bg-info/10 px-1.5 py-0.5 text-[9px] font-semibold text-info">
+              Verified
+            </span>
+          )}
+          {listing.visibility === "friends_only" && (
+            <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-semibold text-primary">
+              Friends only
+            </span>
+          )}
+          {connectionStatus === "accepted" && (
+            <span className="flex items-center gap-0.5 rounded-full bg-success/15 px-1.5 py-0.5 text-[9px] font-semibold text-success">
+              <CheckCircle className="h-2.5 w-2.5" /> Connected
+            </span>
+          )}
+          {connectionStatus === "pending" && (
+            <span className="flex items-center gap-0.5 rounded-full bg-warning/15 px-1.5 py-0.5 text-[9px] font-semibold text-warning">
+              <Clock className="h-2.5 w-2.5" /> Pending
+            </span>
+          )}
+        </div>
+        {listing.listingDescription && (
+          <p className="mt-0.5 line-clamp-2 text-[11px] text-muted-foreground">
+            {listing.listingDescription}
+          </p>
+        )}
+        <div className="mt-1.5 flex items-center gap-3 text-[10px] text-muted-foreground">
+          {listing.ratingCount > 0 && (
+            <span className="flex items-center gap-0.5">
+              <Star className="h-2.5 w-2.5 fill-yellow-400 text-yellow-400" />
+              {listing.ratingAvg.toFixed(1)} ({listing.ratingCount})
+            </span>
+          )}
+          {listing.monthlyTasksCompleted > 0 && (
+            <span>{listing.monthlyTasksCompleted} tasks/mo</span>
+          )}
+          {listing.categories.length > 0 && (
+            <span className="truncate">{listing.categories.join(", ")}</span>
+          )}
+        </div>
+      </div>
+    </button>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Directory agent detail pane — drawer body that pairs with DirectoryItem.
+// ---------------------------------------------------------------------------
+function DirectoryAgentDetail({
+  listing,
+  connection,
+  onConnect,
+  onDisconnect,
+  onClose,
+}: {
+  listing: DirectoryListing;
+  connection?: AgentConnection;
+  onConnect: (mode?: ConnectionMode) => void | Promise<void>;
+  onDisconnect: () => void;
+  onClose: () => void;
+}) {
+  const agent = listing.agent;
+  const [connecting, setConnecting] = useState(false);
+  const [disconnecting, setDisconnecting] = useState(false);
+  const [chosenMode, setChosenMode] = useState<ConnectionMode>("direct");
+  const allowsEither = listing.connectionMode === "either";
+  const lockedMode =
+    listing.connectionMode === "proxy" || listing.connectionMode === "direct"
+      ? listing.connectionMode
+      : null;
+
+  const handleConnect = useCallback(async () => {
+    setConnecting(true);
+    try {
+      await onConnect(allowsEither ? chosenMode : undefined);
+    } finally {
+      setConnecting(false);
+    }
+  }, [onConnect, allowsEither, chosenMode]);
+
+  const handleDisconnect = useCallback(async () => {
+    if (!confirm("Disconnect from this agent? You'll lose access.")) return;
+    setDisconnecting(true);
+    try {
+      await onDisconnect();
+    } finally {
+      setDisconnecting(false);
+    }
+  }, [onDisconnect]);
+
+  return (
+    <div className="flex h-full flex-col bg-card">
+      <div className="flex items-center gap-3 border-b border-border px-6 py-4">
+        <Avatar className="h-12 w-12">
+          {agent?.avatarUrl && <AvatarImage src={agent.avatarUrl} displaySize={48} />}
+          <AvatarFallback>
+            <Bot className="h-5 w-5" />
+          </AvatarFallback>
+        </Avatar>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <h2 className="truncate text-base font-semibold">{listing.listingName}</h2>
+            {listing.verified && (
+              <span className="rounded-full bg-info/10 px-2 py-0.5 text-[10px] font-semibold text-info">
+                Verified
+              </span>
+            )}
+          </div>
+          {listing.listingDescription && (
+            <p className="line-clamp-2 text-xs text-muted-foreground">
+              {listing.listingDescription}
+            </p>
+          )}
+        </div>
+        <Button variant="ghost" size="sm" onClick={onClose}>
+          Close
+        </Button>
+      </div>
+
+      <ScrollArea className="flex-1 px-6 py-4">
+        <div className="max-w-lg space-y-6">
+          {agent && (
+            <div className="space-y-4">
+              {agent.capabilities && agent.capabilities.length > 0 && (
+                <div className="space-y-1.5">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Capabilities
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {agent.capabilities.map((cap) => (
+                      <span
+                        key={cap}
+                        className="rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary"
+                      >
+                        {cap}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {agent.description && (
+                <div className="space-y-1.5">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    About
+                  </p>
+                  <p className="text-sm text-muted-foreground">{agent.description}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {listing.categories.length > 0 && (
+            <div className="space-y-1.5">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Categories
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {listing.categories.map((cat) => (
+                  <span
+                    key={cat}
+                    className="rounded-full bg-muted px-2 py-0.5 text-[11px] text-muted-foreground"
+                  >
+                    {cat}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {listing.tags.length > 0 && (
+            <div className="space-y-1.5">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Tags
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {listing.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full bg-muted px-2 py-0.5 text-[11px] text-muted-foreground"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {!connection || connection.status === "rejected" || connection.status === "revoked" ? (
+            <div className="space-y-1.5">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Connection
+              </p>
+              {allowsEither ? (
+                <div className="space-y-1.5">
+                  <button
+                    type="button"
+                    onClick={() => setChosenMode("direct")}
+                    className={cn(
+                      "w-full rounded-md border p-2.5 text-left transition-colors",
+                      chosenMode === "direct"
+                        ? "border-primary bg-primary/10"
+                        : "border-border hover:bg-accent"
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        "text-xs font-semibold",
+                        chosenMode === "direct" ? "text-primary" : "text-foreground"
+                      )}
+                    >
+                      Direct
+                    </div>
+                    <div className="mt-0.5 text-[11px] text-muted-foreground">
+                      Runs on the owner's machine. Uses their API credits.
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setChosenMode("proxy")}
+                    className={cn(
+                      "w-full rounded-md border p-2.5 text-left transition-colors",
+                      chosenMode === "proxy"
+                        ? "border-primary bg-primary/10"
+                        : "border-border hover:bg-accent"
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        "text-xs font-semibold",
+                        chosenMode === "proxy" ? "text-primary" : "text-foreground"
+                      )}
+                    >
+                      Proxy
+                    </div>
+                    <div className="mt-0.5 text-[11px] text-muted-foreground">
+                      Clones the agent into your account. Runs on your machine, uses your API keys.
+                    </div>
+                  </button>
+                </div>
+              ) : (
+                <p className="text-xs text-muted-foreground">
+                  {lockedMode === "proxy"
+                    ? "Proxy — a clone will run on your machine using your API keys."
+                    : "Direct — runs on the owner's machine using their API credits."}
+                </p>
+              )}
+            </div>
+          ) : null}
+
+          <div className="flex gap-2">
+            {connection?.status === "accepted" ? (
+              <>
+                <div className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-2 text-xs font-semibold text-success">
+                  <CheckCircle className="h-3.5 w-3.5" />
+                  Connected
+                </div>
+                <button
+                  onClick={handleDisconnect}
+                  disabled={disconnecting}
+                  className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-2 text-xs font-semibold text-destructive transition-opacity hover:opacity-80 disabled:opacity-50"
+                >
+                  {disconnecting ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Unlink className="h-3.5 w-3.5" />
+                  )}
+                  Disconnect
+                </button>
+              </>
+            ) : connection?.status === "pending" ? (
+              <div className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-2 text-xs font-semibold text-muted-foreground">
+                <Clock className="h-3.5 w-3.5" />
+                Pending Approval
+              </div>
+            ) : (
+              <button
+                onClick={handleConnect}
+                disabled={connecting}
+                className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
+              >
+                {connecting ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <LinkIcon className="h-3.5 w-3.5" />
+                )}
+                Connect
+              </button>
+            )}
+          </div>
+        </div>
+      </ScrollArea>
+    </div>
+  );
+}
 
 export function Dashboard() {
   const {
@@ -30,9 +374,30 @@ export function Dashboard() {
   } = useAgentStore();
   const [showCreate, setShowCreate] = useState(false);
   const [search, setSearch] = useState("");
+  const [activeTab, setActiveTab] = useState<Tab>("agents");
   // Which agents have their sub-agent subtree expanded. Empty = all
   // collapsed, so sub-agents are hidden until a parent is opened.
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+
+  // Directory state — mirrors web/src/pages/AgentsPage.tsx exactly so the
+  // two surfaces stay in sync. Listings load lazily on first switch into
+  // the directory tab; connections load up-front so the connected/pending
+  // pills render on agents/directory rows alike.
+  const dirListings = useDirectoryStore((s) => s.listings);
+  const dirLoading = useDirectoryStore((s) => s.loading);
+  const dirLoadingMore = useDirectoryStore((s) => s.loadingMore);
+  const dirHasMore = useDirectoryStore((s) => s.hasMore);
+  const fetchDirectory = useDirectoryStore((s) => s.fetchDirectory);
+  const fetchDirMore = useDirectoryStore((s) => s.fetchMore);
+  const setDirSearch = useDirectoryStore((s) => s.setSearchQuery);
+  const requestConnection = useDirectoryStore((s) => s.requestConnection);
+  const connections = useDirectoryStore((s) => s.connections);
+  const fetchConnections = useDirectoryStore((s) => s.fetchConnections);
+  const revokeConnection = useDirectoryStore((s) => s.revokeConnection);
+
+  const [dirSearch, setDirSearchLocal] = useState("");
+  const [selectedListingId, setSelectedListingId] = useState<string | null>(null);
+  const dirSearchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const toggleExpand = (id: string) =>
     setExpandedIds((prev) => {
@@ -49,6 +414,10 @@ export function Dashboard() {
     fetchAgents();
     fetchHealth();
     fetchActivities();
+    // Connections drive the connected/pending pills in directory rows
+    // and the proxy/direct badge on owned agents. Both tabs render
+    // them, so fetch up-front rather than gating on activeTab.
+    fetchConnections();
 
     // Health + process status: slow (backend REST, ~2-3s on shared-1x).
     // 60s cadence keeps dashboard responsive without burning Fly compute —
@@ -69,7 +438,79 @@ export function Dashboard() {
       if (healthIntervalRef.current) clearInterval(healthIntervalRef.current);
       if (activityIntervalRef.current) clearInterval(activityIntervalRef.current);
     };
-  }, [fetchAgents, fetchHealth, fetchActivities, refreshProcessStatuses]);
+  }, [fetchAgents, fetchHealth, fetchActivities, refreshProcessStatuses, fetchConnections]);
+
+  // Lazy-load directory listings on first switch into the directory tab.
+  useEffect(() => {
+    if (activeTab === "directory" && dirListings.length === 0) {
+      fetchDirectory();
+    }
+  }, [activeTab, dirListings.length, fetchDirectory]);
+
+  const handleDirSearch = useCallback(
+    (text: string) => {
+      setDirSearchLocal(text);
+      if (dirSearchTimer.current) clearTimeout(dirSearchTimer.current);
+      dirSearchTimer.current = setTimeout(() => {
+        setDirSearch(text);
+      }, 400);
+    },
+    [setDirSearch]
+  );
+
+  const handleConnect = useCallback(
+    async (listing: DirectoryListing, mode?: ConnectionMode) => {
+      try {
+        await requestConnection(listing.agentId, mode ? { mode } : undefined);
+      } catch (e) {
+        alert(e instanceof Error ? e.message : "Connection failed");
+      }
+    },
+    [requestConnection]
+  );
+
+  const handleDisconnect = useCallback(
+    async (connectionId: string) => {
+      try {
+        await revokeConnection(connectionId);
+      } catch (e) {
+        alert(e instanceof Error ? e.message : "Disconnect failed");
+      }
+    },
+    [revokeConnection]
+  );
+
+  // Map agent IDs to connection status — pills shown on directory rows.
+  const dirConnectionStatusMap = useMemo(() => {
+    const map = new Map<string, "accepted" | "pending">();
+    for (const conn of connections) {
+      if (conn.status === "accepted" || conn.status === "pending") {
+        map.set(conn.agentId, conn.status);
+      }
+    }
+    return map;
+  }, [connections]);
+
+  const selectedListing = useMemo(
+    () =>
+      selectedListingId
+        ? dirListings.find((l) => l.id === selectedListingId)
+        : undefined,
+    [dirListings, selectedListingId]
+  );
+
+  const selectedListingConnection = useMemo(
+    () =>
+      selectedListing
+        ? connections.find(
+            (c) =>
+              c.agentId === selectedListing.agentId &&
+              c.status !== "revoked" &&
+              c.status !== "rejected"
+          )
+        : undefined,
+    [connections, selectedListing]
+  );
 
   const sortAgents = (a: ManagedAgent, b: ManagedAgent) => {
     // Orchestrators before other types
@@ -246,11 +687,27 @@ export function Dashboard() {
     setStoppingAll(false);
   };
 
+  // Directory drawer mirrors the agent drawer pattern — keeps the
+  // selected listing visible during the slide-out animation so the
+  // panel doesn't go blank when the user clicks "Close".
+  const lastListingRef = useRef<DirectoryListing | null>(null);
+  if (selectedListing) lastListingRef.current = selectedListing;
+  const displayListing = selectedListing || lastListingRef.current;
+  const dirDrawerOpen = !!selectedListing;
+
+  // Activate-count for the Agents pill — excludes deactivated agents.
+  const activeCount = useMemo(
+    () => Object.values(agents).filter((m) => m.agent.status !== "deactivated").length,
+    [agents]
+  );
+
   return (
     <div className="flex-1 flex h-full overflow-hidden bg-background">
       {/* Main content */}
       <main className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
+        {/* Header — pill toggle (Agents | Directory) matches the web app
+            so users see the same surface in both clients. Bulk-action +
+            search controls only show in the Agents tab. */}
         <header
           className="h-14 shrink-0 px-4 flex items-center justify-between border-b border-border bg-card"
           style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
@@ -262,61 +719,101 @@ export function Dashboard() {
             <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center flex-shrink-0">
               <Bot className="w-3.5 h-3.5 text-primary-foreground" />
             </div>
-            <div>
-              <h1 className="text-sm font-semibold text-foreground leading-tight">Agents</h1>
-              <p className="text-[11px] text-muted-foreground">
-                {totalCount} agent{totalCount !== 1 && "s"}
-                {runningCount > 0 && (
-                  <span className="text-success ml-1.5">
-                    · {runningCount} running
-                  </span>
-                )}
-              </p>
-            </div>
+            <button
+              onClick={() => {
+                setActiveTab("agents");
+                setSelectedListingId(null);
+              }}
+              className={cn(
+                "flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm font-medium transition-colors",
+                activeTab === "agents"
+                  ? "bg-accent text-accent-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              Agents
+              <span className="rounded-full bg-muted px-1.5 py-0.5 text-[9px] text-muted-foreground">
+                {activeCount}
+              </span>
+            </button>
+            <button
+              onClick={() => {
+                setActiveTab("directory");
+                selectAgent(null);
+              }}
+              className={cn(
+                "flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm font-medium transition-colors",
+                activeTab === "directory"
+                  ? "bg-accent text-accent-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              Directory
+            </button>
+            {activeTab === "agents" && runningCount > 0 && (
+              <span className="ml-2 text-[11px] text-success">
+                {runningCount} running
+              </span>
+            )}
           </div>
 
           <div
             className="flex items-center gap-2"
             style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
           >
-            <div className="relative">
-              <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2" />
-              <Input
-                type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search agents..."
-                className="h-8 pl-8 w-[180px] text-xs"
-              />
-            </div>
-            {runningCount < totalCount && stoppedWithKeys.length > 0 && (
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={handleStartAll}
-                disabled={startingAll}
-                title={`Start ${stoppedWithKeys.length} stopped agent(s)`}
-              >
-                <Play className="w-3.5 h-3.5" />
-                {startingAll ? "Starting..." : "Start All"}
-              </Button>
+            {activeTab === "agents" ? (
+              <>
+                <div className="relative">
+                  <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2" />
+                  <Input
+                    type="text"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Search agents..."
+                    className="h-8 pl-8 w-[180px] text-xs"
+                  />
+                </div>
+                {runningCount < totalCount && stoppedWithKeys.length > 0 && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={handleStartAll}
+                    disabled={startingAll}
+                    title={`Start ${stoppedWithKeys.length} stopped agent(s)`}
+                  >
+                    <Play className="w-3.5 h-3.5" />
+                    {startingAll ? "Starting..." : "Start All"}
+                  </Button>
+                )}
+                {runningCount > 0 && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={handleStopAll}
+                    disabled={stoppingAll}
+                    title={`Stop ${runningCount} running agent(s)`}
+                  >
+                    <Square className="w-3.5 h-3.5" />
+                    {stoppingAll ? "Stopping..." : "Stop All"}
+                  </Button>
+                )}
+                <Button size="sm" onClick={() => setShowCreate(true)}>
+                  <Plus className="w-3.5 h-3.5" />
+                  New Agent
+                </Button>
+              </>
+            ) : (
+              <div className="relative">
+                <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2" />
+                <Input
+                  type="text"
+                  value={dirSearch}
+                  onChange={(e) => handleDirSearch(e.target.value)}
+                  placeholder="Search directory..."
+                  className="h-8 pl-8 w-[220px] text-xs"
+                />
+              </div>
             )}
-            {runningCount > 0 && (
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={handleStopAll}
-                disabled={stoppingAll}
-                title={`Stop ${runningCount} running agent(s)`}
-              >
-                <Square className="w-3.5 h-3.5" />
-                {stoppingAll ? "Stopping..." : "Stop All"}
-              </Button>
-            )}
-            <Button size="sm" onClick={() => setShowCreate(true)}>
-              <Plus className="w-3.5 h-3.5" />
-              New Agent
-            </Button>
           </div>
         </header>
 
@@ -328,54 +825,96 @@ export function Dashboard() {
             </div>
           )}
 
-          {loading && totalCount === 0 ? (
-            <div className="text-center text-muted-foreground py-20">
-              Loading agents...
-            </div>
-          ) : totalCount === 0 && !error ? (
-            <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
-              <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-3">
-                <Bot className="w-7 h-7 text-primary" />
+          {activeTab === "agents" ? (
+            loading && totalCount === 0 ? (
+              <div className="text-center text-muted-foreground py-20">
+                Loading agents...
               </div>
-              <p className="text-sm font-medium text-foreground">No agents yet</p>
-              <p className="text-xs text-muted-foreground mt-1 mb-4 max-w-xs">
-                Create your first agent to start delegating work.
-              </p>
-              <Button size="sm" onClick={() => setShowCreate(true)}>
-                <Plus className="w-3.5 h-3.5" />
-                Create Agent
-              </Button>
-            </div>
+            ) : totalCount === 0 && !error ? (
+              <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
+                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-3">
+                  <Bot className="w-7 h-7 text-primary" />
+                </div>
+                <p className="text-sm font-medium text-foreground">No agents yet</p>
+                <p className="text-xs text-muted-foreground mt-1 mb-4 max-w-xs">
+                  Create your first agent to start delegating work.
+                </p>
+                <Button size="sm" onClick={() => setShowCreate(true)}>
+                  <Plus className="w-3.5 h-3.5" />
+                  Create Agent
+                </Button>
+              </div>
+            ) : (
+              <div className="flex-1 overflow-y-auto">
+                <div className="sticky top-0 z-10 grid grid-cols-[1fr_180px_140px_140px_56px] gap-3 px-4 py-2 border-b border-border bg-card/95 backdrop-blur text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+                  <span>Agent</span>
+                  <span>Engine</span>
+                  <span>Mode</span>
+                  <span>Status</span>
+                  <span className="text-right">Actions</span>
+                </div>
+                {agentList.map((row) => (
+                  <AgentRow
+                    key={row.managed.agent.id}
+                    managed={row.managed}
+                    depth={row.depth}
+                    isLast={row.isLast}
+                    parentLines={row.parentLines}
+                    hasChildren={row.hasChildren}
+                    childCount={row.childCount}
+                    expanded={row.expanded}
+                    onToggleExpand={() => toggleExpand(row.managed.agent.id)}
+                    selected={row.managed.agent.id === selectedAgentId}
+                    onSelect={() =>
+                      selectAgent(
+                        row.managed.agent.id === selectedAgentId
+                          ? null
+                          : row.managed.agent.id
+                      )
+                    }
+                  />
+                ))}
+              </div>
+            )
           ) : (
             <div className="flex-1 overflow-y-auto">
-              <div className="sticky top-0 z-10 grid grid-cols-[1fr_180px_140px_140px_56px] gap-3 px-4 py-2 border-b border-border bg-card/95 backdrop-blur text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
-                <span>Agent</span>
-                <span>Engine</span>
-                <span>Mode</span>
-                <span>Status</span>
-                <span className="text-right">Actions</span>
-              </div>
-              {agentList.map((row) => (
-                <AgentRow
-                  key={row.managed.agent.id}
-                  managed={row.managed}
-                  depth={row.depth}
-                  isLast={row.isLast}
-                  parentLines={row.parentLines}
-                  hasChildren={row.hasChildren}
-                  childCount={row.childCount}
-                  expanded={row.expanded}
-                  onToggleExpand={() => toggleExpand(row.managed.agent.id)}
-                  selected={row.managed.agent.id === selectedAgentId}
-                  onSelect={() =>
-                    selectAgent(
-                      row.managed.agent.id === selectedAgentId
-                        ? null
-                        : row.managed.agent.id
-                    )
-                  }
-                />
-              ))}
+              {dirLoading && dirListings.length === 0 ? (
+                <div className="flex justify-center py-12">
+                  <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                </div>
+              ) : dirListings.length === 0 ? (
+                <div className="p-8 text-center text-xs text-muted-foreground">
+                  {dirSearch ? "No agents found." : "No agents in the directory yet."}
+                </div>
+              ) : (
+                <>
+                  {dirListings.map((listing) => (
+                    <DirectoryItem
+                      key={listing.id}
+                      listing={listing}
+                      connectionStatus={dirConnectionStatusMap.get(listing.agentId)}
+                      isActive={listing.id === selectedListingId}
+                      onClick={() => setSelectedListingId(listing.id)}
+                    />
+                  ))}
+                  {dirHasMore && dirListings.length > 0 && (
+                    <div className="flex justify-center py-3">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => fetchDirMore()}
+                        disabled={dirLoadingMore}
+                        className="text-xs"
+                      >
+                        {dirLoadingMore ? (
+                          <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                        ) : null}
+                        Load more
+                      </Button>
+                    </div>
+                  )}
+                </>
+              )}
             </div>
           )}
         </div>
@@ -397,6 +936,36 @@ export function Dashboard() {
         )}
       >
         {displayAgent && <AgentConfig managed={displayAgent} />}
+      </div>
+
+      {/* Directory listing detail drawer — same right-edge slide-in. */}
+      <div
+        className={cn(
+          "fixed inset-0 bg-black/20 z-40 transition-opacity duration-200",
+          dirDrawerOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        )}
+        onClick={() => setSelectedListingId(null)}
+      />
+      <div
+        className={cn(
+          "fixed top-0 right-0 h-full w-[640px] max-w-[85vw] bg-card border-l border-border shadow-2xl z-50 overflow-hidden",
+          "transition-transform duration-300 ease-out",
+          dirDrawerOpen ? "translate-x-0" : "translate-x-full"
+        )}
+      >
+        {displayListing && (
+          <DirectoryAgentDetail
+            key={displayListing.id}
+            listing={displayListing}
+            connection={selectedListingConnection}
+            onConnect={(mode) => handleConnect(displayListing, mode)}
+            onDisconnect={() =>
+              selectedListingConnection &&
+              handleDisconnect(selectedListingConnection.id)
+            }
+            onClose={() => setSelectedListingId(null)}
+          />
+        )}
       </div>
 
       {showCreate && (

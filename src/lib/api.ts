@@ -1141,6 +1141,9 @@ export interface Participant {
   location?: unknown;
   insertedAt?: string;
   metadata?: Record<string, unknown>;
+  /** Agent-only: list of capability tags. Backend serializer always
+   *  includes the field for agents — humans get nothing. */
+  capabilities?: string[];
   /** Slack-style multi-workspace fields. Always present for humans
    *  after the personal-orgs migration; agents leave them undefined. */
   organizationId?: string | null;
@@ -1843,6 +1846,9 @@ export interface Routine {
 
 // --- Directory ---
 
+export type ConnectionMode = "direct" | "proxy";
+export type ListingConnectionMode = ConnectionMode | "either";
+
 export interface DirectoryListing {
   id: string;
   agentId: string;
@@ -1857,10 +1863,38 @@ export interface DirectoryListing {
   monthlyTasksCompleted: number;
   avgResponseTimeMs?: number;
   verified: boolean;
+  connectionMode?: ListingConnectionMode;
   agent?: Participant;
   listedAt?: string;
   insertedAt: string;
   updatedAt: string;
+}
+
+export interface AgentConnection {
+  id: string;
+  requesterId: string;
+  agentId: string;
+  ownerId: string;
+  status: "pending" | "accepted" | "rejected" | "revoked";
+  permissions: string[];
+  connectedAt?: string;
+  trustOverride?: number;
+  connectionMode?: ConnectionMode;
+  requester?: Participant;
+  agent?: Participant;
+  owner?: { id: string; displayName: string; avatarUrl?: string };
+  insertedAt: string;
+  updatedAt: string;
+}
+
+export interface AgentRating {
+  id: string;
+  raterId: string;
+  agentId: string;
+  rating: number;
+  review?: string;
+  rater?: Participant;
+  insertedAt: string;
 }
 
 const UUID_RE =
@@ -1888,6 +1922,7 @@ export async function createDirectoryListing(data: {
   visibility?: "public" | "friends_only" | "unlisted";
   categories?: string[];
   tags?: string[];
+  connectionMode?: ListingConnectionMode;
 }): Promise<DirectoryListing> {
   const res = await request<{ listing: DirectoryListing }>("/api/directory", {
     method: "POST",
