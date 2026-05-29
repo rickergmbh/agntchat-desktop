@@ -28,6 +28,9 @@ import { useChatStore } from "../stores/chatStore";
 import { useFriendStore } from "../stores/friendStore";
 import { useNavStore } from "../stores/navStore";
 import { usePresenceStore } from "../stores/presenceStore";
+import { useActiveWorkspace } from "../stores/workspaceStore";
+import { WorkspaceSettingsModal } from "./WorkspaceSettingsModal";
+import type { OrganizationMembership } from "../lib/api";
 
 type Segment = "friends" | "requests" | "sent";
 const SEGMENTS: Segment[] = ["friends", "requests", "sent"];
@@ -286,6 +289,20 @@ export function FriendsView() {
       setBusyId(null);
     }
   };
+
+  // When the user's active workspace is non-personal, swap to the
+  // Members view (workspace memberships, no friend graph). Mirrors
+  // web's FriendsPage behavior — see ARCHITECTURE.md § 17b.
+  const activeWorkspace = useActiveWorkspace();
+  if (activeWorkspace && !activeWorkspace.isPersonal) {
+    return (
+      <MembersView
+        workspaceId={activeWorkspace.id}
+        workspaceName={activeWorkspace.name}
+        callerRole={activeWorkspace.role}
+      />
+    );
+  }
 
   return (
     <div className="flex h-full flex-1 flex-col overflow-hidden bg-background">
@@ -1085,6 +1102,200 @@ function ConnectionCard({
           <Button size="sm" variant="outline" onClick={onRevoke}>Cancel request</Button>
         )}
       </div>
+    </div>
+  );
+}
+
+/**
+ * Workspace-mode replacement for the friends list. Shows org
+ * memberships; tap a row to start/open a 1:1 DM with that member in
+ * the current workspace. Workspace membership doesn't auto-add anyone
+ * to the personal friend graph (orthogonal — see ARCHITECTURE.md
+ * § 17b). Admins/owners get an Invite button that opens the
+ * workspace settings modal so invite writes stay in one place.
+ */
+function MembersView({
+  workspaceId,
+  workspaceName,
+  callerRole,
+}: {
+  workspaceId: string;
+  workspaceName: string;
+  callerRole: "owner" | "admin" | "member";
+}) {
+  const currentUserId = useAuthStore((s) => s.participant?.id);
+  const setView = useNavStore((s) => s.setView);
+  const conversations = useChatStore((s) => s.conversations);
+  const createConversation = useChatStore((s) => s.createConversation);
+  const setActiveConversation = useChatStore((s) => s.setActiveConversation);
+
+  const isAdminOrOwner = callerRole === "owner" || callerRole === "admin";
+
+  const [members, setMembers] = useState<OrganizationMembership[] | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+
+  // Re-fetch on workspace change. Cancellation guard so a stale
+  // result from one workspace can't overwrite another's during a
+  // switch.
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+    api
+      .listOrganizationMembers(workspaceId)
+      .then((rows) => {
+        if (!cancelled) setMembers(rows);
+      })
+      .catch((e) => {
+        if (!cancelled) {
+          setMembers([]);
+          setError(e instanceof Error ? e.message : "Could not load members");
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [workspaceId]);
+
+  const handleMessage = async (member: OrganizationMembership) => {
+    if (member.participantId === currentUserId) return;
+    setBusyId(member.participantId);
+    try {
+      const existing = conversations.find(
+        (c) =>
+          c.type === "direct" &&
+          c.members?.some((m) => m.participantId === member.participantId)
+      );
+      let convId: string;
+      if (existing) {
+        convId = existing.id;
+      } else {
+        const conv = await createConversation({
+          type: "direct",
+          memberIds: [member.participantId],
+        });
+        convId = conv.id;
+      }
+      setActiveConversation(convId);
+      setView("chat");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not start chat");
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const visibleMembers = members ?? [];
+  const memberCount = visibleMembers.length;
+
+  return (
+    <div className="flex h-full flex-1 flex-col overflow-hidden bg-background">
+      <header className="flex h-14 shrink-0 items-center justify-between gap-4 border-b border-border bg-card px-4">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="min-w-0">
+            <h1 className="truncate text-sm font-semibold leading-tight">Members</h1>
+            <p className="text-[11px] text-muted-foreground">
+              {memberCount}
+              {memberCount === 1 ? " person" : " people"} in {workspaceName}
+            </p>
+          </div>
+        </div>
+        {isAdminOrOwner && (
+          <Button variant="outline" size="sm" onClick={() => setSettingsOpen(true)}>
+            <UserPlus className="mr-1 h-3 w-3" />
+            Invite
+          </Button>
+        )}
+      </header>
+
+      {error && (
+        <div className="border-b border-destructive/20 bg-destructive/10 px-4 py-2 text-xs text-destructive">
+          {error}
+        </div>
+      )}
+
+      <div className="flex-1 overflow-y-auto px-4 py-4">
+        {loading && !members ? (
+          <div className="flex items-center gap-2 py-6 text-sm text-muted-foreground">
+            <Loader2 className="h-4 w-4 animate-spin" /> Loading members…
+          </div>
+        ) : memberCount === 0 ? (
+          <div className="rounded-lg border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
+            No members in this workspace yet.
+          </div>
+        ) : (
+          <div className="max-w-3xl space-y-2">
+            {visibleMembers.map((m) => (
+              <MemberRow
+                key={m.participantId}
+                member={m}
+                isSelf={m.participantId === currentUserId}
+                busy={busyId === m.participantId}
+                onMessage={() => handleMessage(m)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {settingsOpen && (
+        <WorkspaceSettingsModal
+          workspaceId={workspaceId}
+          onClose={() => setSettingsOpen(false)}
+        />
+      )}
+    </div>
+  );
+}
+
+function MemberRow({
+  member,
+  isSelf,
+  busy,
+  onMessage,
+}: {
+  member: OrganizationMembership;
+  isSelf: boolean;
+  busy: boolean;
+  onMessage: () => void;
+}) {
+  const p = member.participant;
+  const displayName = p?.displayName ?? "Member";
+  return (
+    <div className="flex items-center gap-3 rounded-lg border border-border bg-card px-3 py-2">
+      <Avatar className="h-9 w-9 shrink-0">
+        {p?.avatarUrl && <AvatarImage src={p.avatarUrl} alt="" />}
+        <AvatarFallback className="text-[11px]">
+          {(displayName.charAt(0) || "?").toUpperCase()}
+        </AvatarFallback>
+      </Avatar>
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-1.5">
+          <span className="truncate text-sm font-medium">{displayName}</span>
+          {isSelf && (
+            <span className="text-[10px] text-muted-foreground">(you)</span>
+          )}
+        </div>
+        <p className="truncate text-[11px] text-muted-foreground capitalize">
+          {member.role}
+        </p>
+      </div>
+      {!isSelf && (
+        <Button size="sm" disabled={busy} onClick={onMessage}>
+          {busy ? (
+            <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+          ) : (
+            <MessageCircle className="mr-1 h-3 w-3" />
+          )}
+          Message
+        </Button>
+      )}
     </div>
   );
 }

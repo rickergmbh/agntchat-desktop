@@ -22,6 +22,7 @@ import { useNavStore } from "../stores/navStore";
 import { usePresenceStore } from "../stores/presenceStore";
 import { useThemeStore } from "../stores/themeStore";
 import { useFriendStore } from "../stores/friendStore";
+import { useActiveWorkspace } from "../stores/workspaceStore";
 import { AgentBusyToast } from "./AgentBusyToast";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dashboard } from "./Dashboard";
@@ -133,6 +134,11 @@ function LeftRail({
   const logout = useAuthStore((s) => s.logout);
   const connected = usePresenceStore((s) => s.connected);
   const pendingFriends = useFriendStore((s) => s.pendingCount);
+  // Same nav slot, label flips: "Friends" in Personal, "Members" in
+  // a shared workspace. The friend-request badge is hidden in
+  // workspace mode since friend connections are personal-graph only.
+  const activeWorkspace = useActiveWorkspace();
+  const isWorkspaceMode = activeWorkspace !== null && !activeWorkspace.isPersonal;
 
   // Agent online/total — "running" is the only fully-up state; "starting"
   // and "stalled" keep a process alive but it's not actually serving, so
@@ -199,10 +205,10 @@ function LeftRail({
         />
         <RailButton
           icon={Users}
-          label="Friends"
+          label={isWorkspaceMode ? "Members" : "Friends"}
           active={view === "friends"}
           onClick={() => onChange("friends")}
-          badge={pendingFriends > 0 ? pendingFriends : undefined}
+          badge={!isWorkspaceMode && pendingFriends > 0 ? pendingFriends : undefined}
         />
         <RailButton
           icon={Bot}
