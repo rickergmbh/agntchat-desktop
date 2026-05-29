@@ -69,30 +69,35 @@ export function MessagesView() {
         {/* WorkspaceSwitcher lifted to AppShell's global header so it's
             reachable from every view (Tasks/Agents/Members/etc. used
             to lose the active-workspace context). The conversation
-            panel keeps just the refresh + new-chat buttons. */}
+            panel keeps a "Chats" label + refresh + new-chat buttons
+            so it still reads as a section header rather than a
+            floating button row. */}
         <div
-          className="h-12 shrink-0 px-2 border-b border-border flex items-center justify-end gap-1"
+          className="h-12 shrink-0 px-3 border-b border-border flex items-center justify-between gap-2"
           style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
         >
-          <button
-            type="button"
-            onClick={handleRefresh}
-            disabled={refreshing}
-            title="Refresh conversations"
-            aria-label="Refresh conversations"
-            className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors disabled:opacity-50"
-          >
-            <RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
-          </button>
-          <button
-            type="button"
-            onClick={() => setShowNew(true)}
-            title="New conversation"
-            aria-label="New conversation"
-            className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-          >
-            <SquarePen className="h-4 w-4" />
-          </button>
+          <h2 className="text-sm font-semibold text-foreground">Chats</h2>
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={handleRefresh}
+              disabled={refreshing}
+              title="Refresh conversations"
+              aria-label="Refresh conversations"
+              className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors disabled:opacity-50"
+            >
+              <RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowNew(true)}
+              title="New conversation"
+              aria-label="New conversation"
+              className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+            >
+              <SquarePen className="h-4 w-4" />
+            </button>
+          </div>
         </div>
 
         <div
