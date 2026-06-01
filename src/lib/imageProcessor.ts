@@ -3,7 +3,7 @@ import { fetchAvatarPolicy, presignAvatarUpload, type AvatarPolicy } from "./api
 const FALLBACK: AvatarPolicy = {
   maxBytes: 750_000,
   targetSize: 512,
-  format: "image/jpeg",
+  format: "image/webp",
   quality: 0.85,
 };
 
@@ -97,8 +97,9 @@ export interface ProcessedAvatar {
 
 /**
  * Center-crop to square, resize to policy.targetSize, encode to policy.format.
- * Pre-fills the canvas white so PNG transparency doesn't render black on
- * JPEG. Retries once at quality 0.7 if the policy quality overshoots maxBytes.
+ * Only when the resolved encode format is JPEG do we pre-fill the canvas white
+ * (JPEG can't carry transparency); WebP/PNG keep their alpha channel.
+ * Retries once at quality 0.7 if the policy quality overshoots maxBytes.
  */
 export async function processAvatarFile(file: File | Blob): Promise<ProcessedAvatar> {
   const policy = await getAvatarPolicy();
@@ -121,8 +122,12 @@ export async function processAvatarFile(file: File | Blob): Promise<ProcessedAva
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("Canvas 2d context unavailable");
 
-  ctx.fillStyle = "#ffffff";
-  ctx.fillRect(0, 0, policy.targetSize, policy.targetSize);
+  // Only JPEG needs the white matte; the resolved `format` may differ from
+  // policy.format if the webview can't encode it (see fallback above).
+  if (format === "image/jpeg") {
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, policy.targetSize, policy.targetSize);
+  }
   ctx.drawImage(source, sx, sy, side, side, 0, 0, policy.targetSize, policy.targetSize);
 
   let blob = await encode(canvas, format, policy.quality);

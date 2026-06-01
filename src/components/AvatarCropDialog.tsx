@@ -41,9 +41,13 @@ async function cropImage(imageSrc: string, pixelCrop: Area): Promise<Blob> {
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("Canvas 2d context unavailable");
 
-  // Flatten alpha to white so PNG sources don't render black on JPEG.
-  ctx.fillStyle = "#ffffff";
-  ctx.fillRect(0, 0, policy.targetSize, policy.targetSize);
+  // Only JPEG needs a white matte (it can't carry alpha); WebP/PNG keep
+  // their transparency. Keys off the resolved `format`, which may have
+  // fallen back to JPEG if the webview can't encode policy.format.
+  if (format === "image/jpeg") {
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, policy.targetSize, policy.targetSize);
+  }
 
   ctx.drawImage(
     image,
