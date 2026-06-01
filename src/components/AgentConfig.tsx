@@ -152,8 +152,6 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
     void catalog.ensureLoaded();
   }, [catalog]);
   const PROVIDERS = catalog.providers;
-  const availableModels = catalog.modelsFor(backend);
-  const currentModelInList = availableModels.some((m) => m.id === model);
   const supportedModes = catalog.supportedModesFor(backend);
   const providerExists = PROVIDERS.some((p) => p.id === backend);
   // CLI connection (auth/runtime) picker — only for CLI backends, which the
@@ -161,6 +159,17 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
   // when nothing is set. API providers return [] so the picker is hidden.
   const cliConnections = catalog.cliConnectionsFor(backend);
   const cliConnection = config.cliConnection || "subscription";
+  // Filter the model list by what the selected connection can actually run.
+  // CLI models carry a `runtimes` map keyed by runtime (anthropic/bedrock/
+  // vertex); a model missing the selected runtime would 400 at call time, so
+  // hide it. subscription + anthropic both use the "anthropic" runtime.
+  // Models with no runtimes map (API backends) are always shown.
+  const connectionRuntime =
+    cliConnection === "subscription" ? "anthropic" : cliConnection;
+  const availableModels = catalog
+    .modelsFor(backend)
+    .filter((m) => !m.runtimes || m.runtimes[connectionRuntime] != null);
+  const currentModelInList = availableModels.some((m) => m.id === model);
 
   const [keyError, setKeyError] = useState<string | null>(null);
   const [confirmingRegen, setConfirmingRegen] = useState(false);
@@ -434,7 +443,21 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                     <Select
                       value={cliConnection}
                       onValueChange={(val: string | null) => {
-                        if (val) updateConfig(agent.id, { cliConnection: val });
+                        if (!val) return;
+                        // Switching connection can change which models are
+                        // valid (e.g. Bedrock offers fewer than Anthropic). If
+                        // the current model isn't available on the new
+                        // connection, re-default to the first one that is, so
+                        // we never leave a model pinned that would 400.
+                        const rt = val === "subscription" ? "anthropic" : val;
+                        const usable = catalog
+                          .modelsFor(backend)
+                          .filter((m) => !m.runtimes || m.runtimes[rt] != null);
+                        const updates: Partial<typeof config> = { cliConnection: val };
+                        if (!usable.some((m) => m.id === model)) {
+                          updates.model = usable[0]?.id || "";
+                        }
+                        updateConfig(agent.id, updates);
                       }}
                     >
                       <SelectTrigger className="w-full">

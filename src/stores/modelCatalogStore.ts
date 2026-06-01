@@ -30,6 +30,15 @@ interface ModelCatalogState {
   loaded: boolean;
   loading: boolean;
   ensureLoaded: () => Promise<void>;
+  /**
+   * Fetch the UNFILTERED global catalog (scope=global). For the org Models
+   * admin UI, which must see every model to build the per-org allow-list —
+   * the cached `providers` here are participant-FILTERED (correct for
+   * agent-config pickers) and would hide any model not already allowed,
+   * making newly-added models impossible to enable. Not cached: always a
+   * fresh fetch so the admin sees the current global set.
+   */
+  fetchGlobalCatalog: () => Promise<CatalogProvider[]>;
   modelsFor: (providerId: string) => CatalogModel[];
   supportedModesFor: (providerId: string) => string[];
   requiresLlmKey: (providerId: string) => boolean;
@@ -63,6 +72,13 @@ export const useModelCatalog = create<ModelCatalogState>((set, get) => ({
         inflight = null;
       });
     return inflight;
+  },
+
+  fetchGlobalCatalog: async () => {
+    const data = await api.request<{ providers: CatalogProvider[] }>(
+      "/api/models/providers?scope=global"
+    );
+    return data.providers ?? [];
   },
 
   modelsFor: (providerId) => {

@@ -35,24 +35,33 @@ interface Props {
 export function ProvidersManagement({ orgId, subtitle }: Props) {
   const catalog = useModelCatalog();
   const [configs, setConfigs] = useState<OrganizationProviderConfig[]>([]);
+  // The GLOBAL (unfiltered) catalog — NOT catalog.providers, which is
+  // participant-filtered to the org's current allow-list and would hide any
+  // model not already enabled (so a newly-released model could never be
+  // turned on). The admin UI must see every model to configure the allow-list.
+  const [globalProviders, setGlobalProviders] = useState<CatalogProvider[]>([]);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    void catalog.ensureLoaded();
-  }, [catalog]);
 
   // Re-fetch on org change. Cancellation guard prevents a stale fetch
   // from one workspace overwriting another's results during a switch.
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    api
-      .listOrganizationProviderConfigs(orgId)
-      .then((rows) => {
-        if (!cancelled) setConfigs(rows);
+    Promise.all([
+      api.listOrganizationProviderConfigs(orgId),
+      catalog.fetchGlobalCatalog(),
+    ])
+      .then(([rows, providers]) => {
+        if (!cancelled) {
+          setConfigs(rows);
+          setGlobalProviders(providers);
+        }
       })
       .catch(() => {
-        if (!cancelled) setConfigs([]);
+        if (!cancelled) {
+          setConfigs([]);
+          setGlobalProviders([]);
+        }
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -60,7 +69,7 @@ export function ProvidersManagement({ orgId, subtitle }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [orgId]);
+  }, [orgId, catalog]);
 
   const configByProvider = useMemo(() => {
     const map = new Map<string, OrganizationProviderConfig>();
@@ -107,13 +116,13 @@ export function ProvidersManagement({ orgId, subtitle }: Props) {
         <p className="text-xs text-muted-foreground">{subtitle}</p>
       )}
 
-      {loading || !catalog.loaded ? (
+      {loading ? (
         <div className="flex items-center justify-center py-6">
           <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
         </div>
       ) : (
         <div className="space-y-3">
-          {catalog.providers.map((provider) => (
+          {globalProviders.map((provider) => (
             <ProviderRow
               key={provider.id}
               provider={provider}
