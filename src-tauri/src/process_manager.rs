@@ -60,6 +60,20 @@ pub struct StartAgentArgs {
     pub effort: Option<String>,
     pub api_url: Option<String>,
     pub add_dirs: Option<Vec<String>>,
+    /// CLI connection (auth/runtime) for local Claude Code / Codex agents:
+    /// `"subscription"` (use the machine's `claude login`, the default),
+    /// `"anthropic"` (Anthropic-direct API key), `"bedrock"` (AWS Bedrock),
+    /// `"vertex"` (GCP Vertex), `"openai"` (Codex direct). Drives which
+    /// `CLAUDE_CODE_USE_*` env we set — and, just as importantly, which we
+    /// UNSET so an ambient/managed env can't override the user's choice.
+    pub cli_connection: Option<String>,
+    /// AWS region for `cli_connection = "bedrock"` (Claude Code requires
+    /// AWS_REGION explicitly; it does not read ~/.aws for this).
+    pub aws_region: Option<String>,
+    /// GCP region + project for `cli_connection = "vertex"`
+    /// (CLOUD_ML_REGION / ANTHROPIC_VERTEX_PROJECT_ID).
+    pub vertex_region: Option<String>,
+    pub vertex_project: Option<String>,
     /// Server-set runtime. `"local"` (default, today's behavior) spawns
     /// the bridge on this device. `"org_host"` is owned by a registered
     /// org host VM; start_agent skips the subprocess entirely and just
@@ -322,6 +336,11 @@ pub fn start_agent(
     if let Some(ref backend) = args.backend {
         cmd.env("MODEL_BACKEND", backend);
     }
+
+    // CLI connection (auth/runtime) for local Claude Code / Codex agents.
+    // This is the env that decides whether the `claude` CLI talks to the
+    // Anthropic API, a subscription login, AWS Bedrock, or GCP Vertex.
+    apply_cli_connection_env(&mut cmd, &args);
 
     if let Some(ref backend) = args.backend {
         cmd.args(["--backend", backend]);
@@ -593,6 +612,75 @@ fn kill_orphan_bridges() {
                 }
             }
         }
+    }
+}
+
+/// Apply the agent's chosen CLI connection (auth/runtime) to the bridge's env.
+///
+/// This is what lets a *local* Claude Code / Codex agent pick how it talks to
+/// the model — subscription login vs Anthropic API vs AWS Bedrock vs GCP
+/// Vertex — instead of silently inheriting whatever the machine's ambient env
+/// happens to dictate.
+///
+/// CRITICAL: the child inherits this process's full environment, so on a
+/// managed machine `CLAUDE_CODE_USE_BEDROCK` (or `_VERTEX`) may already be set
+/// in the ambient env. If the user picks "subscription" or "anthropic" we MUST
+/// actively `env_remove` those, or the Claude CLI would keep routing through
+/// Bedrock and the user's choice would be a no-op. Each connection sets the
+/// vars it owns and removes the ones it doesn't.
+fn apply_cli_connection_env(cmd: &mut Command, args: &StartAgentArgs) {
+    // Only the CLI backends honor these env vars. For API backends
+    // (anthropic/openai/etc.) the connection is meaningless — leave the
+    // env untouched so we don't disturb anything.
+    let is_cli_backend = matches!(
+        args.backend.as_deref(),
+        Some("claude_cli") | Some("codex_cli")
+    );
+    if !is_cli_backend {
+        return;
+    }
+
+    // Default to subscription when unset — the historical behavior, now
+    // explicit. Unknown values are treated as subscription (safe fallback).
+    let connection = args.cli_connection.as_deref().unwrap_or("subscription");
+
+    // The mutually-exclusive provider switches the Claude CLI reads. We always
+    // start by clearing BOTH, then set the one this connection needs. This is
+    // the line that fixes the reported bug on managed/Bedrock machines.
+    cmd.env_remove("CLAUDE_CODE_USE_BEDROCK");
+    cmd.env_remove("CLAUDE_CODE_USE_VERTEX");
+
+    match connection {
+        "bedrock" => {
+            cmd.env("CLAUDE_CODE_USE_BEDROCK", "1");
+            // Claude Code requires AWS_REGION explicitly (it does not read
+            // ~/.aws for the region). Fall back to a sane default so a
+            // misconfigured agent fails with a clear AWS error rather than a
+            // confusing "region unset" one. AWS credentials themselves come
+            // from the machine's default chain (~/.aws, SSO, env), unchanged.
+            let region = args.aws_region.as_deref().unwrap_or("us-east-1");
+            cmd.env("AWS_REGION", region);
+        }
+        "vertex" => {
+            cmd.env("CLAUDE_CODE_USE_VERTEX", "1");
+            if let Some(ref region) = args.vertex_region {
+                if !region.trim().is_empty() {
+                    cmd.env("CLOUD_ML_REGION", region);
+                }
+            }
+            if let Some(ref project) = args.vertex_project {
+                if !project.trim().is_empty() {
+                    cmd.env("ANTHROPIC_VERTEX_PROJECT_ID", project);
+                }
+            }
+        }
+        // "anthropic" (Anthropic-direct API) and "subscription" both leave the
+        // provider switches cleared above. For "anthropic" the API key flows
+        // through the existing `--api-key` arg / bridge env; for
+        // "subscription" the CLI uses the machine's `claude login`. Nothing
+        // more to set — the important work was clearing the Bedrock/Vertex
+        // switches so an ambient value can't hijack the choice.
+        _ => {}
     }
 }
 

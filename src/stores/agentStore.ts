@@ -20,6 +20,19 @@ interface AgentConfig {
   autoStart: boolean;
   /** Directories for CLI tools access — also enables CLI tools (Bash, Read, etc.) */
   addDirs: string[];
+  /**
+   * CLI connection (auth/runtime) for local Claude Code / Codex agents:
+   * "subscription" (the machine's `claude login`, default), "anthropic"
+   * (Anthropic-direct API key), "bedrock" (AWS Bedrock), "vertex" (GCP
+   * Vertex), "openai" (Codex direct). null = subscription. Only meaningful
+   * for CLI backends; the Tauri shell maps it to CLAUDE_CODE_USE_* env.
+   */
+  cliConnection: string | null;
+  /** AWS region for the "bedrock" connection (Claude Code needs it explicitly). */
+  awsRegion: string | null;
+  /** GCP region + project for the "vertex" connection. */
+  vertexRegion: string | null;
+  vertexProject: string | null;
 }
 
 export type ActivityType =
@@ -55,6 +68,14 @@ function parseServerModelConfig(
     "execution_mode",
     "history_limit",
     "effort",
+    "cli_connection",
+    "aws_region",
+    "vertex_region",
+    "vertex_project",
+    // Server-injected for CLI cloud connections; consumed by the bridge via
+    // the agent profile, not the local --model arg, so we don't surface it
+    // in AgentConfig — but list it as "known" so it doesn't warn.
+    "runtime_api_id",
   ]);
 
   const takeString = (key: string, target: keyof AgentConfig) => {
@@ -84,6 +105,10 @@ function parseServerModelConfig(
   takeString("execution_mode", "executionMode");
   takeNumber("history_limit", "historyLimit");
   takeString("effort", "effort");
+  takeString("cli_connection", "cliConnection");
+  takeString("aws_region", "awsRegion");
+  takeString("vertex_region", "vertexRegion");
+  takeString("vertex_project", "vertexProject");
 
   for (const key of Object.keys(mc)) {
     if (!knownKeys.has(key)) {
@@ -255,6 +280,10 @@ const DEFAULT_CONFIG: AgentConfig = {
   autoRestart: true,
   autoStart: false,
   addDirs: [],
+  cliConnection: null,
+  awsRegion: null,
+  vertexRegion: null,
+  vertexProject: null,
 };
 
 // Keys that may exist in older localStorage blobs but are no longer part
@@ -715,6 +744,14 @@ export const useAgentStore = create<AgentState>((set, get) => ({
             (managed.agent.metadata?.computer_use_allowed_apps as string[] | undefined) || [],
           effort: managed.config.effort || undefined,
           addDirs: managed.config.addDirs.length > 0 ? managed.config.addDirs : undefined,
+          // CLI connection (auth/runtime) — the Tauri shell maps this to the
+          // right CLAUDE_CODE_USE_* env (and unsets the others) so a local
+          // Claude Code / Codex agent uses the connection the user picked,
+          // not whatever the machine's ambient env defaults to.
+          cliConnection: managed.config.cliConnection || undefined,
+          awsRegion: managed.config.awsRegion || undefined,
+          vertexRegion: managed.config.vertexRegion || undefined,
+          vertexProject: managed.config.vertexProject || undefined,
           // Org-host agents are owned by a remote Linux VM; the Rust
           // process_manager short-circuits start_agent when this is
           // set and returns AgentStatus::Remote without spawning a
@@ -788,6 +825,14 @@ export const useAgentStore = create<AgentState>((set, get) => ({
       if (partial.executionMode) mcPatch.execution_mode = partial.executionMode;
       if (partial.effort) mcPatch.effort = partial.effort;
       if ("llmApiKeyId" in partial) mcPatch.llm_api_key_id = partial.llmApiKeyId;
+      // CLI connection (auth/runtime) + its cloud region/project. Must persist
+      // server-side so the serializer can resolve runtime_api_id for the
+      // bridge. `"in" partial` semantics so picking "subscription" / clearing
+      // a region writes null rather than being dropped.
+      if ("cliConnection" in partial) mcPatch.cli_connection = partial.cliConnection;
+      if ("awsRegion" in partial) mcPatch.aws_region = partial.awsRegion;
+      if ("vertexRegion" in partial) mcPatch.vertex_region = partial.vertexRegion;
+      if ("vertexProject" in partial) mcPatch.vertex_project = partial.vertexProject;
       if (Object.keys(mcPatch).length > 0) {
         api.updateModelConfig(id, mcPatch).catch((err) =>
           console.warn(`[agentStore] Failed to sync model_config to backend:`, err)

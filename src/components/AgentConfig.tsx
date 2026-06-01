@@ -109,6 +109,25 @@ import { AgentCanvas } from "./AgentCanvas";
 import { AgentRoutines } from "./AgentRoutines";
 import { AvatarCropDialog } from "./AvatarCropDialog";
 
+// Display labels + one-line hints for the CLI connection (auth/runtime)
+// picker. Keys match the catalog's cliConnections values. Kept here (not in
+// the catalog payload) so copy can change without a backend deploy.
+const CLI_CONNECTION_LABELS: Record<string, string> = {
+  subscription: "Subscription / Login",
+  anthropic: "Anthropic API",
+  bedrock: "AWS Bedrock",
+  vertex: "GCP Vertex",
+  openai: "OpenAI API",
+};
+
+const CLI_CONNECTION_HINTS: Record<string, string> = {
+  subscription: "Uses this machine's `claude login` (Pro/Max/Console seat).",
+  anthropic: "Anthropic-direct API. Set the key under API Key below.",
+  bedrock: "Routes through AWS Bedrock using this machine's AWS credentials.",
+  vertex: "Routes through Google Vertex using this machine's gcloud credentials.",
+  openai: "OpenAI-direct API for the Codex CLI.",
+};
+
 export function AgentConfig({ managed }: { managed: ManagedAgent }) {
   const {
     updateConfig,
@@ -137,6 +156,11 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
   const currentModelInList = availableModels.some((m) => m.id === model);
   const supportedModes = catalog.supportedModesFor(backend);
   const providerExists = PROVIDERS.some((p) => p.id === backend);
+  // CLI connection (auth/runtime) picker — only for CLI backends, which the
+  // catalog flags by listing cliConnections. "subscription" is the default
+  // when nothing is set. API providers return [] so the picker is hidden.
+  const cliConnections = catalog.cliConnectionsFor(backend);
+  const cliConnection = config.cliConnection || "subscription";
 
   const [keyError, setKeyError] = useState<string | null>(null);
   const [confirmingRegen, setConfirmingRegen] = useState(false);
@@ -345,6 +369,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                       if (!val) return;
                       const models = catalog.modelsFor(val);
                       const modes = catalog.supportedModesFor(val);
+                      const connections = catalog.cliConnectionsFor(val);
                       const updates: Record<string, unknown> = {
                         backend: val,
                         model: models[0]?.id || "",
@@ -354,6 +379,14 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                         // Restore the user's last named-key choice for this
                         // provider (or null = use provider default).
                         llmApiKeyId: apiKeyByProvider[val] ?? null,
+                        // Reset the CLI connection to the new provider's default
+                        // (its first option), or null for API providers. Don't
+                        // carry a stale "bedrock" choice across a provider switch.
+                        // Clear cloud region/project too.
+                        cliConnection: connections[0] ?? null,
+                        awsRegion: null,
+                        vertexRegion: null,
+                        vertexProject: null,
                       };
                       if (!modes.includes(config.executionMode)) {
                         updates.executionMode = modes[0] || "single_shot";
@@ -394,6 +427,64 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                     </SelectContent>
                   </Select>
                 </div>
+
+                {cliConnections.length > 0 && (
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Connection</Label>
+                    <Select
+                      value={cliConnection}
+                      onValueChange={(val: string | null) => {
+                        if (val) updateConfig(agent.id, { cliConnection: val });
+                      }}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue>
+                          {(val: unknown) => CLI_CONNECTION_LABELS[String(val)] ?? String(val)}
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        {cliConnections.map((c) => (
+                          <SelectItem key={c} value={c}>
+                            {CLI_CONNECTION_LABELS[c] ?? c}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <p className="text-[11px] text-muted-foreground">
+                      {CLI_CONNECTION_HINTS[cliConnection] ?? ""}
+                    </p>
+                    {cliConnection === "bedrock" && (
+                      <Input
+                        value={config.awsRegion || ""}
+                        onChange={(e) =>
+                          updateConfig(agent.id, { awsRegion: e.target.value || null })
+                        }
+                        placeholder="AWS region (e.g. us-east-1)"
+                        className="text-xs"
+                      />
+                    )}
+                    {cliConnection === "vertex" && (
+                      <div className="space-y-1.5">
+                        <Input
+                          value={config.vertexRegion || ""}
+                          onChange={(e) =>
+                            updateConfig(agent.id, { vertexRegion: e.target.value || null })
+                          }
+                          placeholder="Vertex region (e.g. us-east5)"
+                          className="text-xs"
+                        />
+                        <Input
+                          value={config.vertexProject || ""}
+                          onChange={(e) =>
+                            updateConfig(agent.id, { vertexProject: e.target.value || null })
+                          }
+                          placeholder="GCP project ID"
+                          className="text-xs"
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 <div className="space-y-1.5">
                   <Label className="text-xs">Model</Label>

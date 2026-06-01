@@ -19,6 +19,10 @@ export interface CatalogProvider {
   requiresLlmKey: boolean;
   supportedModes: string[];
   models: CatalogModel[];
+  /** Connection (auth/runtime) options for CLI backends — e.g.
+   *  ["subscription", "anthropic", "bedrock", "vertex"]. Absent for
+   *  API providers (their connection is implied by the API key). */
+  cliConnections?: string[];
 }
 
 interface ModelCatalogState {
@@ -29,6 +33,7 @@ interface ModelCatalogState {
   modelsFor: (providerId: string) => CatalogModel[];
   supportedModesFor: (providerId: string) => string[];
   requiresLlmKey: (providerId: string) => boolean;
+  cliConnectionsFor: (providerId: string) => string[];
   providerLabel: (id: string) => string;
 }
 
@@ -73,6 +78,11 @@ export const useModelCatalog = create<ModelCatalogState>((set, get) => ({
   requiresLlmKey: (providerId) => {
     const p = get().providers.find((p) => p.id === providerId);
     return p?.requiresLlmKey ?? true;
+  },
+
+  cliConnectionsFor: (providerId) => {
+    const p = get().providers.find((p) => p.id === providerId);
+    return p?.cliConnections ?? [];
   },
 
   providerLabel: (id) => {
