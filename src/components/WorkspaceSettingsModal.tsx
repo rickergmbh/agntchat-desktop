@@ -252,20 +252,21 @@ function GeneralTab({
 
   return (
     <div className="space-y-6">
-      {/* Avatar */}
-      <section>
-        <label className="text-xs font-medium">Workspace avatar</label>
-        <div className="mt-1.5 flex items-center gap-3">
-          <div className="relative">
-            <Avatar className="h-14 w-14 rounded-md">
-              {workspace.avatarUrl && (
-                <AvatarImage src={workspace.avatarUrl} alt="" className="rounded-md" />
-              )}
-              <AvatarFallback className="rounded-md text-sm font-semibold">
-                {workspace.name?.slice(0, 2).toUpperCase() || "?"}
-              </AvatarFallback>
-            </Avatar>
-            {isAdminOrOwner && (
+      {/* Avatar — only shown to admins/owners who can change it */}
+      {isAdminOrOwner && (
+        <section>
+          <label className="text-xs font-medium">Workspace avatar</label>
+          <div className="mt-1.5 flex items-center gap-3">
+            <div className="relative">
+              <Avatar className="h-14 w-14 rounded-md">
+                {workspace.avatarUrl ? (
+                  <AvatarImage src={workspace.avatarUrl} alt="" className="rounded-md" />
+                ) : (
+                  <AvatarFallback className="rounded-md text-sm font-semibold">
+                    {workspace.name?.slice(0, 2).toUpperCase() || "?"}
+                  </AvatarFallback>
+                )}
+              </Avatar>
               <label
                 className={cn(
                   "absolute inset-0 flex cursor-pointer items-center justify-center rounded-md bg-black/50 text-white opacity-0 transition-opacity hover:opacity-100",
@@ -285,72 +286,65 @@ function GeneralTab({
                   disabled={uploadingAvatar}
                 />
               </label>
-            )}
+            </div>
+            <div className="flex flex-col gap-1">
+              <p className="text-[11px] text-muted-foreground">
+                Renders in the sidebar tile. JPEG, PNG, or WebP — square crop recommended.
+              </p>
+              {workspace.avatarUrl && (
+                <button
+                  type="button"
+                  onClick={() => void handleAvatarRemove()}
+                  disabled={uploadingAvatar}
+                  className="text-left text-[11px] text-destructive hover:underline disabled:opacity-50"
+                >
+                  Remove avatar
+                </button>
+              )}
+            </div>
           </div>
-          <div className="flex flex-col gap-1">
-            <p className="text-[11px] text-muted-foreground">
-              {isAdminOrOwner
-                ? "Renders in the sidebar tile. JPEG, PNG, or WebP — square crop recommended."
-                : "Only owners and admins can change the avatar."}
-            </p>
-            {isAdminOrOwner && workspace.avatarUrl && (
-              <button
-                type="button"
-                onClick={() => void handleAvatarRemove()}
-                disabled={uploadingAvatar}
-                className="text-left text-[11px] text-destructive hover:underline disabled:opacity-50"
-              >
-                Remove avatar
-              </button>
-            )}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      <section>
-        <label htmlFor="ws-rename" className="text-xs font-medium">
-          Workspace name
-        </label>
-        <div className="mt-1.5 flex gap-2">
-          <input
-            id="ws-rename"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            disabled={!isAdminOrOwner}
-            maxLength={100}
-            className="h-9 flex-1 rounded-md border border-border bg-background px-3 text-sm disabled:opacity-50"
-          />
-          <button
-            type="button"
-            onClick={handleSave}
-            disabled={
-              !isAdminOrOwner ||
-              saving ||
-              !name.trim() ||
-              name.trim() === workspace.name
-            }
-            className="flex items-center rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
-          >
-            {saving && <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />}
-            Save
-          </button>
-        </div>
-        {!isAdminOrOwner && (
-          <p className="mt-1 text-[11px] text-muted-foreground">
-            Only owners and admins can rename the workspace.
+      {/* Name — editable for admins/owners only; members don't need the field */}
+      {isAdminOrOwner && (
+        <section>
+          <label htmlFor="ws-rename" className="text-xs font-medium">
+            Workspace name
+          </label>
+          <div className="mt-1.5 flex gap-2">
+            <input
+              id="ws-rename"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              maxLength={100}
+              className="h-9 flex-1 rounded-md border border-border bg-background px-3 text-sm"
+            />
+            <button
+              type="button"
+              onClick={handleSave}
+              disabled={saving || !name.trim() || name.trim() === workspace.name}
+              className="flex items-center rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+            >
+              {saving && <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />}
+              Save
+            </button>
+          </div>
+        </section>
+      )}
+
+      {/* Workspace identifiers — developer info, only relevant to admins/owners */}
+      {isAdminOrOwner && (
+        <section className="space-y-2">
+          <label className="text-xs font-medium">Workspace identifiers</label>
+          <ReadOnlyField label="ID" value={workspace.id} />
+          <ReadOnlyField label="Slug" value={workspace.slug} />
+          <p className="text-[11px] text-muted-foreground">
+            The workspace ID is what backend resources reference (agents, hosts,
+            conversations). Slug appears in URLs.
           </p>
-        )}
-      </section>
-
-      <section className="space-y-2">
-        <label className="text-xs font-medium">Workspace identifiers</label>
-        <ReadOnlyField label="ID" value={workspace.id} />
-        <ReadOnlyField label="Slug" value={workspace.slug} />
-        <p className="text-[11px] text-muted-foreground">
-          The workspace ID is what backend resources reference (agents, hosts,
-          conversations). Slug appears in URLs.
-        </p>
-      </section>
+        </section>
+      )}
 
       {error && (
         <p className="text-xs text-destructive" role="alert">
