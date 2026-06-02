@@ -1217,9 +1217,9 @@ function MembersView({
           </div>
         </div>
         {isAdminOrOwner && (
-          <Button variant="outline" size="sm" onClick={() => setSettingsOpen(true)}>
+          <Button size="sm" onClick={() => setSettingsOpen(true)}>
             <UserPlus className="mr-1 h-3 w-3" />
-            Invite
+            Invite member
           </Button>
         )}
       </header>
