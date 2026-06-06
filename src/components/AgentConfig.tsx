@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useAgentStore, type ManagedAgent } from "../stores/agentStore";
-import { useActiveWorkspace } from "../stores/workspaceStore";
+import { useActiveWorkspace, useWorkspaces } from "../stores/workspaceStore";
 import { listOrganizationHosts, type OrganizationHost } from "../lib/api";
 import {
   deleteAgent,
@@ -1509,7 +1509,13 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
   const [activeStart, setActiveStart] = useState(8);
   const [activeEnd, setActiveEnd] = useState(22);
   const [timezone, setTimezone] = useState("Etc/UTC");
+  // "" = use the backend default (owner's Personal workspace). A workspace
+  // id pins the pulse there. The Select maps "" ↔ a sentinel value since
+  // shadcn Select can't hold an empty-string item value.
+  const [organizationId, setOrganizationId] = useState("");
   const [dirty, setDirty] = useState(false);
+
+  const workspaces = useWorkspaces();
 
   const fetchData = useCallback(async () => {
     try {
@@ -1520,6 +1526,7 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
       setActiveStart(d.pulseConfig?.activeHours?.start ?? 8);
       setActiveEnd(d.pulseConfig?.activeHours?.end ?? 22);
       setTimezone(d.pulseConfig?.timezone ?? "Etc/UTC");
+      setOrganizationId(d.pulseConfig?.organizationId ?? "");
       setDirty(false);
       setLoadError(null);
     } catch (e) {
@@ -1593,6 +1600,8 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
         interval_minutes: parsed,
         active_hours: { start: activeStart, end: activeEnd },
         timezone,
+        // "" clears the override server-side (→ owner's Personal workspace).
+        organization_id: organizationId,
       });
       await fetchData();
       setHbResult("Saved.");
@@ -1763,6 +1772,34 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
               </SelectContent>
             </Select>
           </div>
+
+          {/* Pulse delivery workspace — only meaningful when the owner
+              belongs to more than one workspace. "__personal__" is the
+              Select-safe stand-in for "" (shadcn items can't be empty). */}
+          {workspaces.length > 1 && (
+            <div className="space-y-1.5">
+              <Label className="text-xs">Pulse workspace</Label>
+              <Select
+                value={organizationId || "__personal__"}
+                onValueChange={(v) => {
+                  if (!v) return;
+                  setOrganizationId(v === "__personal__" ? "" : v);
+                  setDirty(true);
+                }}
+              >
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__personal__">Default (your Personal workspace)</SelectItem>
+                  {workspaces.map((w) => (
+                    <SelectItem key={w.id} value={w.id}>{w.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-[11px] text-muted-foreground">
+                Which workspace this agent's pulse alerts post into.
+              </p>
+            </div>
+          )}
         </div>
       </Section>
 

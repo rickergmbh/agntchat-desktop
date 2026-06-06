@@ -599,6 +599,9 @@ export interface PulseConfig {
   activeHours?: { start: number; end: number };
   timezone?: string;
   model?: string | null;
+  // Workspace the pulse posts into. null/absent → the owner's Personal
+  // workspace (backend default). Set to pin pulses to a shared workspace.
+  organizationId?: string | null;
   status?: string;
   lastRunAt?: string | null;
   nextRunAt?: string | null;
@@ -617,7 +620,7 @@ export async function getAgentPulse(id: string): Promise<PulseData> {
 
 export async function updateAgentPulse(
   id: string,
-  data: { pulse_md?: string; interval_minutes?: number; active_hours?: { start: number; end: number }; timezone?: string; model?: string | null }
+  data: { pulse_md?: string; interval_minutes?: number; active_hours?: { start: number; end: number }; timezone?: string; model?: string | null; organization_id?: string | null }
 ): Promise<PulseData> {
   return request(`/api/agents/${id}/pulse`, {
     method: "PATCH",
