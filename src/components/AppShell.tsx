@@ -184,7 +184,7 @@ function LeftRail({
 
   return (
     <nav
-      className="flex flex-col w-14 shrink-0 border-r border-sidebar-border bg-sidebar py-3 items-center justify-between"
+      className="flex flex-col w-14 shrink-0 border-r border-rail-border bg-rail py-3 items-center justify-between"
       style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
     >
       {/* Top: workspace tile + main nav */}
@@ -195,7 +195,7 @@ function LeftRail({
         {/* Workspace tile (Slack-style) — clicking opens the dropdown
             to the right with the full workspaces list. */}
         <WorkspaceSwitcher />
-        <div className="my-1 h-px w-8 bg-sidebar-border" />
+        <div className="my-1 h-px w-8 bg-rail-border" />
 
         <RailButton
           icon={MessageCircle}
@@ -279,7 +279,7 @@ function LeftRail({
           type="button"
           onClick={onOpenProfile}
           title="Profile & Settings"
-          className="flex items-center justify-center w-10 h-10 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+          className="flex items-center justify-center w-10 h-10 rounded-xl text-rail-foreground hover:bg-rail-hover hover:text-rail-accent-foreground transition-colors"
         >
           <Avatar className="h-7 w-7">
             {participant?.avatarUrl ? (
@@ -297,7 +297,7 @@ function LeftRail({
           onClick={handleLogout}
           title="Sign out"
           aria-label="Sign out"
-          className="flex items-center justify-center w-10 h-10 rounded-lg text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
+          className="flex items-center justify-center w-10 h-10 rounded-xl text-rail-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
         >
           <LogOut className="w-4 h-4" />
         </button>
@@ -338,10 +338,10 @@ function RailButton({
       aria-label={label}
       aria-pressed={active}
       className={cn(
-        "relative flex items-center justify-center w-10 h-10 rounded-lg transition-colors",
+        "relative flex items-center justify-center w-10 h-10 rounded-xl transition-all",
         active
-          ? "bg-sidebar-accent text-sidebar-primary"
-          : "text-foreground/80 hover:bg-sidebar-accent/60 hover:text-foreground"
+          ? "bg-rail-accent text-rail-accent-foreground shadow-sm"
+          : "text-rail-foreground hover:bg-rail-hover hover:text-rail-accent-foreground"
       )}
     >
       <Icon className="w-5 h-5" />
@@ -358,8 +358,8 @@ function RailButton({
       {badge === undefined && textBadge && (
         <span
           className={cn(
-            "absolute bottom-0.5 left-1/2 -translate-x-1/2 px-1 rounded-full text-[8px] font-semibold tabular-nums leading-none flex items-center justify-center h-3 bg-background/90 ring-1 ring-border",
-            active ? "text-primary" : "text-muted-foreground"
+            "absolute bottom-0.5 left-1/2 -translate-x-1/2 px-1 rounded-full text-[8px] font-semibold tabular-nums leading-none flex items-center justify-center h-3 bg-rail-accent ring-1 ring-rail-border",
+            active ? "text-rail-accent-foreground" : "text-rail-foreground"
           )}
         >
           {textBadge}

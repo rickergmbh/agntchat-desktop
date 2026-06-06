@@ -65,7 +65,7 @@ export function TemplatesView() {
   return (
     <div className="flex-1 flex h-full overflow-hidden">
       <aside
-        className="w-80 shrink-0 flex flex-col border-r border-border bg-card"
+        className="w-80 shrink-0 flex flex-col border-r border-border bg-surface-elevated"
         style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
       >
         <div
@@ -215,8 +215,8 @@ function TemplateRow({
       type="button"
       onClick={onClick}
       className={cn(
-        "w-full flex items-start gap-2.5 px-3 py-2 text-left transition-colors border-b border-border",
-        active ? "bg-primary/5" : "hover:bg-muted/50"
+        "flex w-[calc(100%-1rem)] mx-2 items-start gap-2.5 rounded-lg px-2.5 py-2 text-left transition-all",
+        active ? "bg-surface-active shadow-sm" : "hover:bg-surface-hover"
       )}
     >
       <FileText className="h-4 w-4 shrink-0 mt-0.5 text-muted-foreground" />

@@ -63,7 +63,7 @@ export function MessagesView() {
   return (
     <div className="flex-1 flex h-full overflow-hidden">
       <aside
-        className="w-80 shrink-0 flex flex-col border-r border-border bg-card"
+        className="w-80 shrink-0 flex flex-col border-r border-border bg-surface-elevated"
         style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
       >
         {/* WorkspaceSwitcher lifted to AppShell's global header so it's

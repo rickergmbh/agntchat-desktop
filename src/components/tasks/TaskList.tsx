@@ -109,7 +109,7 @@ export function TaskList() {
 
   return (
     <aside
-      className="w-80 shrink-0 flex flex-col border-r border-border bg-card"
+      className="w-80 shrink-0 flex flex-col border-r border-border bg-surface-elevated"
       style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
     >
       <div
@@ -167,7 +167,7 @@ export function TaskList() {
         ) : filtered.length === 0 ? (
           <EmptyState hasFilter={filter !== "active" || search.length > 0} />
         ) : (
-          <ul className="flex flex-col">
+          <ul className="flex flex-col gap-0.5 px-2 py-1.5">
             {filtered.map((task) => (
               <TaskRow
                 key={task.id}
@@ -202,8 +202,8 @@ function TaskRow({
         type="button"
         onClick={onClick}
         className={cn(
-          "w-full flex items-start gap-2.5 px-3 py-2.5 text-left border-b border-border transition-colors",
-          active ? "bg-primary/5" : "hover:bg-muted/50"
+          "w-full flex items-start gap-2.5 rounded-lg px-2.5 py-2 text-left transition-all",
+          active ? "bg-surface-active shadow-sm" : "hover:bg-surface-hover"
         )}
       >
         <Avatar className="h-8 w-8 shrink-0 mt-0.5">

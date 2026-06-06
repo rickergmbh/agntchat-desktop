@@ -52,6 +52,15 @@
   --color-sidebar-border: var(--color-sidebar-border);
   --color-sidebar-ring: var(--color-sidebar-ring);
 
+  /* Icon rail (left nav) — a recessed neutral surface with an elevated
+   * pill on the active item. Theme-following; see design-tokens colors.mjs. */
+  --color-rail: var(--color-rail-background);
+  --color-rail-foreground: var(--color-rail-foreground);
+  --color-rail-accent: var(--color-rail-accent);
+  --color-rail-accent-foreground: var(--color-rail-accent-foreground);
+  --color-rail-hover: var(--color-rail-hover);
+  --color-rail-border: var(--color-rail-border);
+
   --color-surface-hover: var(--color-surface-hover);
   --color-surface-active: var(--color-surface-active);
   --color-border-strong: var(--color-border-strong);
@@ -81,6 +90,15 @@
   --radius-2xl: var(--radius-2xl);
   --radius-3xl: var(--radius-3xl);
   --radius-4xl: var(--radius-4xl);
+
+  /* Box-shadow scale → design tokens. Routing `shadow-sm`/`shadow-md`/… through
+   * the token vars (rather than Tailwind's hardcoded defaults) keeps elevation
+   * consistent across themes and makes it debug-aware (⌘⇧D outlines them). */
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-2xl: var(--shadow-2xl);
 
   /* Legacy aliases still used by some components. */
   --color-bg: var(--color-background);

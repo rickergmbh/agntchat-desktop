@@ -605,7 +605,7 @@ function FriendRow({
         }
       }}
       className={cn(
-        "grid cursor-pointer grid-cols-[minmax(0,1.4fr)_minmax(0,2fr)_140px_120px_88px] items-center gap-3 py-2.5 pl-4 pr-6 transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
+        "grid cursor-pointer grid-cols-[minmax(0,1.4fr)_minmax(0,2fr)_140px_120px_88px] items-center gap-3 py-2.5 pl-4 pr-6 transition-colors hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
         divider && "border-b border-border"
       )}
     >
@@ -964,7 +964,7 @@ function FriendProfileBody({
                 return (
                   <div
                     key={listing.id}
-                    className="flex items-center gap-3 rounded-xl border border-border bg-card p-3 transition-colors hover:bg-muted/40"
+                    className="flex items-center gap-3 rounded-xl border border-border bg-card p-3 transition-colors hover:bg-surface-hover"
                   >
                     <Avatar className="h-11 w-11 rounded-lg">
                       {listing.agent?.avatarUrl && (
@@ -1069,7 +1069,7 @@ function ConnectionCard({
 }) {
   const person = otherParticipant(connection, currentUserId);
   return (
-    <div className="rounded-xl border border-border bg-card p-4 transition-colors hover:bg-muted/30">
+    <div className="rounded-xl border border-border bg-card p-4 transition-colors hover:bg-surface-hover">
       <div className="flex items-center gap-3">
         <div className="relative shrink-0">
           <Avatar className="h-11 w-11">

@@ -308,7 +308,7 @@ export function AgentRow({
     <div
       className={cn(
         "relative cursor-pointer border-b border-border last:border-b-0 transition-colors",
-        selected ? "bg-primary/5" : "hover:bg-muted/50"
+        selected ? "bg-surface-active" : "hover:bg-surface-hover"
       )}
       onClick={onSelect}
     >

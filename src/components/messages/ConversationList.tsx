@@ -117,10 +117,10 @@ const ConversationItem = memo(function ConversationItem({
     <button
       onClick={onClick}
       className={cn(
-        "group flex w-full items-center gap-2.5 rounded-md px-2 py-1.5 text-left transition-colors",
+        "group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition-all",
         isActive
-          ? "bg-sidebar-accent text-sidebar-accent-foreground"
-          : "text-foreground/80 hover:bg-sidebar-accent/50",
+          ? "bg-surface-active text-foreground shadow-sm"
+          : "text-foreground/80 hover:bg-surface-hover",
         hasUnread && !isActive && "text-foreground"
       )}
     >

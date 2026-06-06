@@ -93,7 +93,7 @@ export function WorkspaceSwitcher() {
         />
         {otherWorkspaceAgents > 0 && (
           <span
-            className="absolute right-0.5 top-0.5 h-1.5 w-1.5 rounded-full bg-primary ring-2 ring-sidebar"
+            className="absolute right-0.5 top-0.5 h-1.5 w-1.5 rounded-full bg-primary ring-2 ring-rail"
             title={`${otherWorkspaceAgents} agent${
               otherWorkspaceAgents === 1 ? "" : "s"
             } in other workspace${otherWorkspaceAgents === 1 ? "" : "s"}`}

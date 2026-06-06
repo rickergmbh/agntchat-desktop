@@ -49,8 +49,8 @@ function DirectoryItem({
     <button
       onClick={onClick}
       className={cn(
-        "flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-accent border-b border-border last:border-b-0",
-        isActive && "bg-accent"
+        "flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-surface-hover border-b border-border last:border-b-0",
+        isActive && "bg-surface-active"
       )}
     >
       <Avatar className="h-10 w-10 shrink-0">
