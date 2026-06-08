@@ -290,7 +290,7 @@ export function MessageComposer({ conversationId }: { conversationId: string }) 
 
   return (
     <div
-      className="relative border-t border-border bg-card"
+      className="surface-dock relative z-10 bg-card"
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}

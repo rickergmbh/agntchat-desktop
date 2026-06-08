@@ -61,9 +61,13 @@ export function MessagesView() {
   }, [showDetails]);
 
   return (
-    <div className="flex-1 flex h-full overflow-hidden">
+    // Recessed `rail` canvas: the conversation column floats on top of it as an
+    // elevated card. The card's rounded top corners reveal this canvas behind
+    // them, so the seam between the list / details and the thread reads as an
+    // overlap rather than a flat 1px divider.
+    <div className="flex-1 flex h-full overflow-hidden bg-canvas">
       <aside
-        className="w-80 shrink-0 flex flex-col border-r border-border bg-surface-elevated"
+        className="relative z-0 w-80 shrink-0 flex flex-col bg-canvas"
         style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
       >
         {/* WorkspaceSwitcher lifted to AppShell's global header so it's
@@ -113,7 +117,22 @@ export function MessagesView() {
         </div>
       </aside>
 
-      <section className="flex-1 flex flex-col bg-background overflow-hidden">
+      {/* Elevated conversation panel — physically laps 8px over the recessed
+          list to its left (negative margin) and rounds its left corners, so
+          the rounded edge + soft shadow sit *on top of* the list and read as a
+          real overlap. Right edge stays flush — the details pane (when open)
+          stacks on top of it next.
+
+          When the details pane is open it laps 12px over this panel's right
+          edge, so reserve that strip (plus breathing room) with `pr-5` to keep
+          the composer's send button and the Threads / Files chips clear of the
+          overlap. */}
+      <section
+        className={cn(
+          "relative z-10 -ml-2 flex-1 flex flex-col bg-card overflow-hidden surface-panel rounded-l-2xl",
+          activeId && showDetails && "pr-5"
+        )}
+      >
         {activeId ? (
           <ActiveConversation
             conversationId={activeId}

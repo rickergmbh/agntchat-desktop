@@ -6,6 +6,38 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ---------------------------------------------------------------------------
+ * Desktop-local surface overrides (pending promotion to the shared token
+ * source when we port this treatment to web).
+ *
+ * Two distinct recessed roles that previously collided on the same `rail`
+ * token:
+ *   • `rail`   — the left ICON nav. A dark, high-contrast chrome bar (like
+ *                Slack / VS Code's activity bar) so it reads as app chrome and
+ *                stands apart from the content columns. Dark in BOTH themes.
+ *   • `canvas` — the recessed surface BEHIND the conversation columns. The
+ *                white thread / details panels lap over it; its job is to be a
+ *                neutral backdrop the panels' rounded corners reveal. Light
+ *                gray in light mode, near-black in dark.
+ * ------------------------------------------------------------------------- */
+:root, .dark {
+  /* Dark icon rail — same palette in light + dark (it's app chrome). */
+  --color-rail-background: #1A1A1F;
+  --color-rail-foreground: #8E8E99;
+  --color-rail-accent: #2C2C33;
+  --color-rail-accent-foreground: #FFFFFF;
+  --color-rail-hover: #26262C;
+  --color-rail-border: #26262C;
+}
+:root {
+  --color-canvas: #F1F1F4; /* recessed light gray behind the white panels */
+  --color-desk: #E6E6EB;   /* "desk" behind the whole app (inset padding)   */
+}
+.dark {
+  --color-canvas: #0A0A0F; /* recessed near-black, darker than card */
+  --color-desk: #050508;   /* darkest layer, behind everything      */
+}
+
 /*
  * Design tokens live in ./design-tokens/tokens.css (synced from the Agentgram
  * private repo at design-tokens/ — do not edit by hand). App-level CSS and
@@ -60,6 +92,11 @@
   --color-rail-accent-foreground: var(--color-rail-accent-foreground);
   --color-rail-hover: var(--color-rail-hover);
   --color-rail-border: var(--color-rail-border);
+
+  /* Recessed canvas behind the conversation columns (see override block). */
+  --color-canvas: var(--color-canvas);
+  /* "Desk" behind the whole app — shows through the inset window padding. */
+  --color-desk: var(--color-desk);
 
   --color-surface-hover: var(--color-surface-hover);
   --color-surface-active: var(--color-surface-active);
@@ -130,6 +167,55 @@
 #root {
   height: 100vh;
   display: flex;
+}
+
+/* Layered surfaces ----------------------------------------------------------
+ * Major panels (the conversation thread, the input dock) read as elevated
+ * surfaces floating on a recessed `rail` canvas rather than regions split by
+ * a flat 1px divider. The panel's rounded corners reveal the canvas behind
+ * them, so the seam between the list / details and the thread feels like an
+ * overlap. The soft directional shadows do the lifting — no hard border. */
+
+/* Stacking panels — each major column laps over the one to its LEFT. The
+ * conversation thread laps over the list; the details pane laps over the
+ * thread. Each rounds its left corners (revealing the recessed canvas behind)
+ * and casts a soft shadow leftward over its neighbor, so the columns read as a
+ * left-to-right cascade rather than regions split by flat 1px dividers. */
+/* Soft left-only shadow. box-shadow respects border-radius, so the shadow
+ * hugs the rounded corner cleanly. The key is spread (-16) >= blur (16): this
+ * pulls the shadow box in by more than the blur radius on every side, so the
+ * top / bottom / right edges fade to exactly zero at the panel edge — no leak
+ * above the corner (the "wedge") and no concentrated pool at the curve. Only
+ * the x-offset (-8) lets a soft strip escape on the left, where it gradients
+ * over the recessed canvas. Diffuse, borderless. */
+.surface-panel {
+  box-shadow: -8px 0 16px -16px rgba(0, 0, 0, 0.18);
+}
+.dark .surface-panel {
+  box-shadow: -8px 0 16px -16px rgba(0, 0, 0, 0.6);
+}
+
+/* Stronger variant for a white-on-white seam — the details pane laps over the
+ * (also white) conversation, where the faint .surface-panel disappears. Same
+ * leak-free recipe (spread >= blur, so top/bottom/right fade to zero at the
+ * panel edge), but a wider reach and higher opacity so the pane reads as
+ * clearly lifted above the conversation. */
+.surface-panel-strong {
+  box-shadow: -20px 0 30px -28px rgba(0, 0, 0, 0.5);
+}
+.dark .surface-panel-strong {
+  box-shadow: -20px 0 30px -28px rgba(0, 0, 0, 0.85);
+}
+
+/* Input dock — lifts off the message list with a faint hairline + soft upward
+ * shadow instead of a hard top border, so the composer reads as a layer the
+ * messages scroll beneath. */
+.surface-dock {
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 40%, transparent);
+  box-shadow: 0 -8px 20px -16px rgba(0, 0, 0, 0.15);
+}
+.dark .surface-dock {
+  box-shadow: 0 -8px 20px -14px rgba(0, 0, 0, 0.5);
 }
 
 /* Shared input style (legacy — prefer shadcn <Input />) */

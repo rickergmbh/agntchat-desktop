@@ -236,7 +236,7 @@ export function ConversationDetailsPanel({
   );
 
   return (
-    <aside className="flex h-full w-80 shrink-0 flex-col border-l border-border bg-card">
+    <aside className="surface-panel-strong relative z-20 -ml-3 flex h-full w-80 shrink-0 flex-col overflow-hidden rounded-l-lg bg-card">
       {/* Header — h-14 to line up with the sidebar's Messages header and the
           conversation header across the three vertical columns. */}
       <div className="flex h-14 items-center justify-between border-b border-border px-4 shrink-0">

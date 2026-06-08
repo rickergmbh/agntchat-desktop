@@ -63,7 +63,11 @@ export function AppShell() {
   );
 
   return (
-    <div className="flex h-screen w-screen bg-background">
+    // macOS-style inset: the whole app floats on a neutral "desk" with a thin
+    // gutter all around, so nothing runs hard to the window edges. The dark
+    // rail and the content area are separate rounded panels resting on the
+    // desk; the gap between them lets the desk show through.
+    <div className="flex h-screen w-screen gap-1.5 bg-desk p-1.5">
       <LeftRail
         view={view}
         onChange={setView}
@@ -71,20 +75,23 @@ export function AppShell() {
       />
       {/* WorkspaceSwitcher is mounted at the top of LeftRail (Slack-
           style tile). The global header is gone — the routed views
-          claim the full vertical space again. */}
-      {view === "chat" ? (
-        <MessagesView />
-      ) : view === "tasks" ? (
-        <TasksView onOpenConversation={handleOpenConversation} />
-      ) : view === "friends" ? (
-        <FriendsView />
-      ) : view === "templates" ? (
-        <TemplatesView />
-      ) : view === "canvas" ? (
-        <CanvasView />
-      ) : (
-        <Dashboard />
-      )}
+          claim the full vertical space again. The content area is a
+          single rounded panel that clips whatever view is mounted. */}
+      <main className="relative flex flex-1 overflow-hidden rounded-xl bg-background shadow-sm">
+        {view === "chat" ? (
+          <MessagesView />
+        ) : view === "tasks" ? (
+          <TasksView onOpenConversation={handleOpenConversation} />
+        ) : view === "friends" ? (
+          <FriendsView />
+        ) : view === "templates" ? (
+          <TemplatesView />
+        ) : view === "canvas" ? (
+          <CanvasView />
+        ) : (
+          <Dashboard />
+        )}
+      </main>
 
       {/* Profile drawer — lifted to shell so it's reachable from any view */}
       <div
@@ -184,7 +191,7 @@ function LeftRail({
 
   return (
     <nav
-      className="flex flex-col w-14 shrink-0 border-r border-rail-border bg-rail py-3 items-center justify-between"
+      className="flex flex-col w-14 shrink-0 rounded-xl bg-rail py-3 items-center justify-between"
       style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
     >
       {/* Top: workspace tile + main nav */}

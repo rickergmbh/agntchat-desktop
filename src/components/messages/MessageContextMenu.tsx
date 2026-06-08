@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { Reply, Copy, Hash, Trash2 } from "lucide-react";
 import { cn } from "../../lib/utils";
 import type { Message } from "../../lib/api";
@@ -70,7 +71,11 @@ export function MessageContextMenu({
     });
   }
 
-  return (
+  // Portaled to <body> so its `fixed` coordinates resolve against the
+  // viewport. The conversation panel now uses `filter` (drop-shadow), which
+  // would otherwise make this menu's fixed position relative to the panel and
+  // shift it ~one column to the right.
+  return createPortal(
     <div
       ref={ref}
       className="fixed z-50 min-w-[140px] rounded-lg border border-border bg-popover p-1 shadow-lg"
@@ -91,6 +96,7 @@ export function MessageContextMenu({
           {label}
         </button>
       ))}
-    </div>
+    </div>,
+    document.body
   );
 }
