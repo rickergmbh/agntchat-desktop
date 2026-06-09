@@ -239,7 +239,7 @@ export function ConversationDetailsPanel({
     <aside className="surface-panel-strong relative z-20 -ml-3 flex h-full w-80 shrink-0 flex-col overflow-hidden rounded-l-lg bg-card">
       {/* Header — h-14 to line up with the sidebar's Messages header and the
           conversation header across the three vertical columns. */}
-      <div className="flex h-14 items-center justify-between border-b border-border px-4 shrink-0">
+      <div className="relative flex h-14 items-center justify-between px-4 shrink-0 after:absolute after:bottom-0 after:left-4 after:right-4 after:h-px after:bg-border">
         <h3 className="text-sm font-semibold">Details</h3>
         <button
           onClick={onClose}
@@ -270,7 +270,7 @@ export function ConversationDetailsPanel({
         )}
 
         {/* Title section */}
-        <div className="border-b border-border px-4 py-4">
+        <div className="relative px-4 py-4 after:absolute after:bottom-0 after:left-4 after:right-4 after:h-px after:bg-border">
           {editing ? (
             <div className="flex items-center gap-2">
               <input
@@ -413,7 +413,7 @@ export function ConversationDetailsPanel({
         />
 
         {/* Clear chat — local-only (server history stays) */}
-        <div className="border-t border-border px-4 py-3">
+        <div className="relative px-4 py-3 before:absolute before:top-0 before:left-4 before:right-4 before:h-px before:bg-border">
           <button
             onClick={() => {
               if (confirm("Clear messages from this conversation locally? Server history stays intact.")) {
@@ -428,7 +428,7 @@ export function ConversationDetailsPanel({
         </div>
 
         {/* Danger zone */}
-        <div className="border-t border-border px-4 py-3">
+        <div className="relative px-4 py-3 before:absolute before:top-0 before:left-4 before:right-4 before:h-px before:bg-border">
           {danger ? (
             <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3">
               <p className="text-sm font-medium">
@@ -562,7 +562,7 @@ function MemorySection({
       Object.keys(memory.participantsContext ?? {}).length > 0);
 
   return (
-    <div className="border-t border-border">
+    <div className="relative before:absolute before:top-0 before:left-4 before:right-4 before:h-px before:bg-border">
       <div className="flex items-center gap-2 px-4 pt-3 pb-2">
         <Brain className="h-3.5 w-3.5 text-primary" />
         <h4 className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
@@ -681,7 +681,7 @@ function MemorySubsection({
 }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="border-t border-border/50">
+    <div className="relative before:absolute before:top-0 before:left-4 before:right-4 before:h-px before:bg-border/50">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -804,7 +804,7 @@ function AvatarBlock({
   const title = conversation.title || "Group";
 
   return (
-    <div className="flex flex-col items-center border-b border-border py-5">
+    <div className="relative flex flex-col items-center py-5 after:absolute after:bottom-0 after:left-4 after:right-4 after:h-px after:bg-border">
       <div className="relative">
         {hasCustomAvatar ? (
           <Avatar className="h-20 w-20">

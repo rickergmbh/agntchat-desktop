@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { MessageSquare, ChevronRight, ChevronLeft, SquarePen, RefreshCw } from "lucide-react";
+import { useResizableWidth } from "../../hooks/useResizableWidth";
+import { ResizeHandle } from "../ResizeHandle";
 import { useChatStore } from "../../stores/chatStore";
 import { useAuthStore } from "../../stores/authStore";
 import { usePresenceStore } from "../../stores/presenceStore";
@@ -36,6 +38,20 @@ export function MessagesView() {
   const [showNew, setShowNew] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
+  // Resizable conversation-list width.
+  const {
+    width: listWidth,
+    ref: asideRef,
+    resizing,
+    onResizeStart,
+    onResizeReset,
+  } = useResizableWidth({
+    storageKey: "agentchat:listWidth",
+    defaultWidth: 320, // matches the previous fixed w-80
+    min: 240,
+    max: 480,
+  });
+
   const handleRefresh = async () => {
     if (refreshing) return;
     setRefreshing(true);
@@ -65,10 +81,16 @@ export function MessagesView() {
     // elevated card. The card's rounded top corners reveal this canvas behind
     // them, so the seam between the list / details and the thread reads as an
     // overlap rather than a flat 1px divider.
-    <div className="flex-1 flex h-full overflow-hidden bg-canvas">
+    <div className="relative flex-1 flex h-full overflow-hidden bg-canvas">
       <aside
-        className="relative z-0 w-80 shrink-0 flex flex-col bg-canvas"
-        style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
+        ref={asideRef}
+        className="relative z-0 shrink-0 flex flex-col bg-canvas"
+        style={
+          {
+            width: listWidth,
+            WebkitAppRegion: "drag",
+          } as React.CSSProperties
+        }
       >
         {/* WorkspaceSwitcher lifted to AppShell's global header so it's
             reachable from every view (Tasks/Agents/Members/etc. used
@@ -77,7 +99,7 @@ export function MessagesView() {
             so it still reads as a section header rather than a
             floating button row. */}
         <div
-          className="h-14 shrink-0 px-4 border-b border-border flex items-center justify-between gap-2"
+          className="relative h-14 shrink-0 px-4 flex items-center justify-between gap-2 after:absolute after:bottom-0 after:left-4 after:right-4 after:h-px after:bg-border"
           style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
         >
           <div className="flex items-center gap-2">
@@ -116,6 +138,14 @@ export function MessagesView() {
           <ConversationList />
         </div>
       </aside>
+
+      <ResizeHandle
+        left={listWidth}
+        resizing={resizing}
+        onResizeStart={onResizeStart}
+        onResizeReset={onResizeReset}
+        label="Resize conversation list"
+      />
 
       {/* Elevated conversation panel — physically laps 8px over the recessed
           list to its left (negative margin) and rounds its left corners, so
@@ -222,7 +252,7 @@ function ActiveConversation({
   return (
     <>
       <header
-        className="h-14 shrink-0 px-4 border-b border-border bg-card flex items-center gap-3"
+        className="relative h-14 shrink-0 px-4 bg-card flex items-center gap-3 after:absolute after:bottom-0 after:left-4 after:right-4 after:h-px after:bg-border"
         style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
       >
         {isThread && parentId ? (
@@ -278,7 +308,25 @@ function ActiveConversation({
               </p>
             )}
           </div>
-          <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform group-hover/header:text-muted-foreground group-hover/header:translate-x-0.5" />
+          {/* Details toggle affordance — a bordered pill so it reads as a
+              control even at rest (the bare chevron was near-invisible in dark
+              mode). Chevron rotates 180° to point back into the thread when the
+              panel is open. */}
+          <span
+            className={cn(
+              "shrink-0 flex h-7 w-7 items-center justify-center rounded-md border transition-colors",
+              showDetails
+                ? "border-transparent bg-accent text-foreground"
+                : "border-border-strong text-foreground group-hover/header:bg-accent"
+            )}
+          >
+            <ChevronRight
+              className={cn(
+                "h-4 w-4 transition-transform",
+                showDetails && "rotate-180"
+              )}
+            />
+          </span>
         </button>
 
         {conversation && (

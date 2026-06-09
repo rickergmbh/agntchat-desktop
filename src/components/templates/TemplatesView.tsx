@@ -15,6 +15,8 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "../../lib/utils";
 import type { ResponseTemplate } from "../../lib/api";
 import { useTemplateStore } from "../../stores/templateStore";
+import { useResizableWidth } from "../../hooks/useResizableWidth";
+import { ResizeHandle } from "../ResizeHandle";
 import { TemplateEditor, TemplatesEmptyState } from "./TemplateEditor";
 
 const DOCS_URL = "https://github.com/jricker/AgentGram";
@@ -62,11 +64,24 @@ export function TemplatesView() {
     [templates, selectedId]
   );
 
+  const { width, ref, resizing, onResizeStart, onResizeReset } =
+    useResizableWidth({
+      storageKey: "agentchat:templateListWidth",
+      defaultWidth: 320,
+      min: 240,
+      max: 480,
+    });
+
   return (
-    <div className="flex-1 flex h-full overflow-hidden">
+    // Recessed canvas; the editor column floats over the list as a rounded
+    // panel lapping left — same layered overlap as the chat view.
+    <div className="relative flex-1 flex h-full overflow-hidden bg-canvas">
       <aside
-        className="w-80 shrink-0 flex flex-col border-r border-border bg-surface-elevated"
-        style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
+        ref={ref}
+        className="relative z-0 shrink-0 flex flex-col bg-canvas"
+        style={
+          { width, WebkitAppRegion: "drag" } as React.CSSProperties
+        }
       >
         <div
           className="h-14 shrink-0 px-4 border-b border-border flex items-center justify-between"
@@ -163,7 +178,15 @@ export function TemplatesView() {
         </div>
       </aside>
 
-      <section className="flex-1 flex flex-col bg-background overflow-hidden">
+      <ResizeHandle
+        left={width}
+        resizing={resizing}
+        onResizeStart={onResizeStart}
+        onResizeReset={onResizeReset}
+        label="Resize template list"
+      />
+
+      <section className="relative z-10 -ml-2 flex-1 flex flex-col bg-card overflow-hidden surface-panel rounded-l-2xl">
         <header className="px-6 py-3 border-b border-border bg-card flex items-center justify-end gap-2">
           <Button
             size="sm"

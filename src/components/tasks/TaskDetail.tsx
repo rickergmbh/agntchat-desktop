@@ -118,7 +118,7 @@ export function TaskDetail({
   };
 
   return (
-    <section className="flex-1 flex flex-col bg-background overflow-hidden">
+    <div className="flex-1 flex flex-col overflow-hidden">
       <header className="px-6 py-4 border-b border-border bg-card">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0 flex-1">
@@ -367,7 +367,7 @@ export function TaskDetail({
           </Button>
         )}
       </footer>
-    </section>
+    </div>
   );
 }
 

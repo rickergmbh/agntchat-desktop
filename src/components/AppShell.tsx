@@ -191,7 +191,7 @@ function LeftRail({
 
   return (
     <nav
-      className="flex flex-col w-14 shrink-0 rounded-xl bg-rail py-3 items-center justify-between"
+      className="flex flex-col w-14 shrink-0 rounded-xl bg-rail shadow-md py-3 items-center justify-between"
       style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
     >
       {/* Top: workspace tile + main nav */}

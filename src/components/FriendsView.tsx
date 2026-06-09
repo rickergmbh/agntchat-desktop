@@ -146,6 +146,7 @@ export function FriendsView() {
   const [error, setError] = useState<string | null>(null);
   const [selectedConnectionId, setSelectedConnectionId] = useState<string | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchConnections();
@@ -362,6 +363,7 @@ export function FriendsView() {
           <div className="relative">
             <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
             <Input
+              ref={searchInputRef}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search people…"
@@ -418,51 +420,33 @@ export function FriendsView() {
             Loading friends…
           </div>
         ) : currentList.length === 0 ? (
-          <div className="flex flex-1 flex-col items-center justify-center px-8 text-center">
-            <p className="text-sm font-medium text-foreground">
-              {segment === "friends"
-                ? "No friends yet"
-                : segment === "requests"
-                  ? "No friend requests"
-                  : "No sent requests"}
-            </p>
-            <p className="mt-1 max-w-xs text-xs text-muted-foreground">
-              {segment === "friends"
-                ? "Search above to find people and connect."
-                : segment === "requests"
-                  ? "Incoming friend requests will appear here."
-                  : "Requests you've sent will appear here."}
-            </p>
-          </div>
+          <FriendsEmptyState
+            segment={segment}
+            onFindPeople={() => searchInputRef.current?.focus()}
+          />
         ) : segment === "friends" ? (
-          <div className="flex-1 overflow-y-auto">
-            <div className="sticky top-0 z-10 grid grid-cols-[minmax(0,1.4fr)_minmax(0,2fr)_140px_120px_88px] gap-3 border-b border-border bg-card/95 py-2 pl-4 pr-6 text-[10px] font-medium uppercase tracking-wider text-muted-foreground backdrop-blur">
-              <span>Friend</span>
-              <span>About</span>
-              <span>Status</span>
-              <span>Connected</span>
-              <span className="text-right">Actions</span>
+          <div className="flex-1 overflow-y-auto px-4 py-4">
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-3">
+              {currentList.map((connection) => {
+                const person = otherParticipant(connection, currentUserId);
+                return (
+                  <FriendCard
+                    key={connection.id}
+                    connection={connection}
+                    currentUserId={currentUserId}
+                    busy={busyId === connection.id}
+                    online={person?.id ? onlineSet.has(person.id) : false}
+                    onRevoke={() => handleRevoke(connection)}
+                    onMessage={() => handleMessage(connection)}
+                    onOpenProfile={() => setSelectedConnectionId(connection.id)}
+                  />
+                );
+              })}
             </div>
-            {currentList.map((connection, idx) => {
-              const person = otherParticipant(connection, currentUserId);
-              return (
-                <FriendRow
-                  key={connection.id}
-                  connection={connection}
-                  currentUserId={currentUserId}
-                  busy={busyId === connection.id}
-                  online={person?.id ? onlineSet.has(person.id) : false}
-                  divider={idx < currentList.length - 1}
-                  onRevoke={() => handleRevoke(connection)}
-                  onMessage={() => handleMessage(connection)}
-                  onOpenProfile={() => setSelectedConnectionId(connection.id)}
-                />
-              );
-            })}
           </div>
         ) : (
-          <div className="flex-1 overflow-y-auto px-4 py-3">
-            <div className="space-y-2">
+          <div className="flex-1 overflow-y-auto px-4 py-4">
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-3">
               {currentList.map((connection) => (
                 <ConnectionCard
                   key={connection.id}
@@ -566,12 +550,49 @@ function PersonSearchRow({
   );
 }
 
-function FriendRow({
+function FriendsEmptyState({
+  segment,
+  onFindPeople,
+}: {
+  segment: Segment;
+  onFindPeople: () => void;
+}) {
+  const Icon = segment === "requests" ? UserPlus : segment === "sent" ? Clock : Users;
+  const title =
+    segment === "friends"
+      ? "No friends yet"
+      : segment === "requests"
+        ? "No friend requests"
+        : "No sent requests";
+  const body =
+    segment === "friends"
+      ? "Find people by name or email and send them a friend request to start chatting and sharing agents."
+      : segment === "requests"
+        ? "Incoming friend requests will appear here. We'll badge the tab when someone wants to connect."
+        : "Requests you've sent are listed here until they're accepted or declined.";
+
+  return (
+    <div className="flex flex-1 flex-col items-center justify-center px-8 text-center">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+        <Icon className="h-7 w-7" />
+      </div>
+      <p className="mt-4 text-sm font-semibold text-foreground">{title}</p>
+      <p className="mt-1 max-w-sm text-xs leading-relaxed text-muted-foreground">{body}</p>
+      {segment === "friends" && (
+        <Button size="sm" className="mt-4" onClick={onFindPeople}>
+          <UserPlus className="mr-1.5 h-3.5 w-3.5" />
+          Find people
+        </Button>
+      )}
+    </div>
+  );
+}
+
+function FriendCard({
   connection,
   currentUserId,
   busy,
   online,
-  divider,
   onRevoke,
   onMessage,
   onOpenProfile,
@@ -580,7 +601,6 @@ function FriendRow({
   currentUserId?: string;
   busy: boolean;
   online: boolean;
-  divider: boolean;
   onRevoke: () => void;
   onMessage: () => void;
   onOpenProfile: () => void;
@@ -604,83 +624,72 @@ function FriendRow({
           onOpenProfile();
         }
       }}
-      className={cn(
-        "grid cursor-pointer grid-cols-[minmax(0,1.4fr)_minmax(0,2fr)_140px_120px_88px] items-center gap-3 py-2.5 pl-4 pr-6 transition-colors hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
-        divider && "border-b border-border"
-      )}
+      className="group flex cursor-pointer flex-col rounded-xl border border-border bg-card p-4 transition-all hover:border-border-strong hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
-      {/* Friend identity */}
-      <div className="flex min-w-0 items-center gap-2.5">
+      <div className="flex items-start gap-3">
         <div className="relative shrink-0">
-          <Avatar className="h-9 w-9">
-            {person?.avatarUrl && <AvatarImage src={person.avatarUrl} displaySize={36} />}
-            <AvatarFallback className="text-xs font-semibold">
+          <Avatar className="h-11 w-11">
+            {person?.avatarUrl && <AvatarImage src={person.avatarUrl} displaySize={44} />}
+            <AvatarFallback className="text-sm font-semibold">
               {initials(person?.displayName)}
             </AvatarFallback>
           </Avatar>
           {online && (
             <span
-              className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-card bg-success"
+              className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-card bg-success"
               aria-label="Online"
             />
           )}
         </div>
-        <div className="min-w-0 leading-tight">
+        <div className="min-w-0 flex-1 leading-tight">
           <p className="truncate text-sm font-semibold">{person?.displayName ?? "Unknown"}</p>
           <p className="truncate text-[11px] text-muted-foreground">{handle}</p>
+          <div className="mt-1 flex items-center gap-1.5 text-[11px]">
+            <span
+              className={cn(
+                "h-1.5 w-1.5 rounded-full",
+                online ? "bg-success" : "bg-muted-foreground/40"
+              )}
+            />
+            <span className={online ? "font-medium text-success" : "text-muted-foreground"}>
+              {online ? "Online" : "Offline"}
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* About */}
-      <div className="min-w-0">
-        {bio ? (
-          <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">{bio}</p>
-        ) : (
-          <span className="text-xs text-muted-foreground/50">—</span>
-        )}
-      </div>
+      {/* Bio — fixed two-line slot so cards stay the same height */}
+      <p className="mt-3 line-clamp-2 min-h-[2rem] text-xs leading-snug text-muted-foreground">
+        {bio || <span className="text-muted-foreground/40">No bio yet.</span>}
+      </p>
 
-      {/* Status */}
-      <div className="flex items-center gap-1.5 text-xs">
-        <span
-          className={cn(
-            "h-2 w-2 rounded-full",
-            online ? "bg-success" : "bg-muted-foreground/40"
-          )}
-        />
-        <span className={online ? "font-semibold text-success" : "text-muted-foreground"}>
-          {online ? "Online" : "Offline"}
+      <div className="mt-3 flex items-center justify-between gap-2 border-t border-border pt-3">
+        <span className="flex min-w-0 items-center gap-1 text-[11px] text-muted-foreground">
+          <CalendarDays className="h-3 w-3 shrink-0" />
+          <span className="truncate">{connectedAt}</span>
         </span>
-        {person?.timezone && (
-          <span className="truncate text-[10px] text-muted-foreground/70">· {person.timezone}</span>
-        )}
-      </div>
-
-      {/* Connected */}
-      <div className="truncate text-xs text-muted-foreground">{connectedAt}</div>
-
-      {/* Actions */}
-      <div className="flex justify-end gap-2" onClick={(e) => e.stopPropagation()}>
-        {busy ? (
-          <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-        ) : (
-          <>
-            <button
-              onClick={onMessage}
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-foreground text-background transition-opacity hover:opacity-85"
-              title={`Message ${person?.displayName ?? "friend"}`}
-            >
-              <MessageCircle className="h-4 w-4" />
-            </button>
-            <button
-              onClick={onRevoke}
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card transition-colors hover:border-destructive/40 hover:bg-muted"
-              title={`Unfriend ${person?.displayName ?? "friend"}`}
-            >
-              <UserMinus className="h-4 w-4 text-destructive" />
-            </button>
-          </>
-        )}
+        <div className="flex shrink-0 gap-1.5" onClick={(e) => e.stopPropagation()}>
+          {busy ? (
+            <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+          ) : (
+            <>
+              <button
+                onClick={onMessage}
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-foreground text-background transition-opacity hover:opacity-85"
+                title={`Message ${person?.displayName ?? "friend"}`}
+              >
+                <MessageCircle className="h-4 w-4" />
+              </button>
+              <button
+                onClick={onRevoke}
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card transition-colors hover:border-destructive/40 hover:bg-muted"
+                title={`Unfriend ${person?.displayName ?? "friend"}`}
+              >
+                <UserMinus className="h-4 w-4 text-destructive" />
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -1133,6 +1142,7 @@ function MembersView({
   const conversations = useChatStore((s) => s.conversations);
   const createConversation = useChatStore((s) => s.createConversation);
   const setActiveConversation = useChatStore((s) => s.setActiveConversation);
+  const onlineSet = usePresenceStore((s) => s.online);
 
   const isAdminOrOwner = callerRole === "owner" || callerRole === "admin";
 
@@ -1236,16 +1246,25 @@ function MembersView({
             <Loader2 className="h-4 w-4 animate-spin" /> Loading members…
           </div>
         ) : memberCount === 0 ? (
-          <div className="rounded-lg border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
-            No members in this workspace yet.
+          <div className="flex flex-1 flex-col items-center justify-center px-8 py-16 text-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <Users className="h-7 w-7" />
+            </div>
+            <p className="mt-4 text-sm font-semibold text-foreground">No members yet</p>
+            <p className="mt-1 max-w-sm text-xs leading-relaxed text-muted-foreground">
+              {isAdminOrOwner
+                ? "Invite teammates to this workspace to start collaborating."
+                : "This workspace doesn't have any other members yet."}
+            </p>
           </div>
         ) : (
-          <div className="max-w-3xl space-y-2">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-3">
             {visibleMembers.map((m) => (
               <MemberRow
                 key={m.participantId}
                 member={m}
                 isSelf={m.participantId === currentUserId}
+                online={onlineSet.has(m.participantId)}
                 busy={busyId === m.participantId}
                 onMessage={() => handleMessage(m)}
               />
@@ -1267,43 +1286,76 @@ function MembersView({
 function MemberRow({
   member,
   isSelf,
+  online,
   busy,
   onMessage,
 }: {
   member: OrganizationMembership;
   isSelf: boolean;
+  online: boolean;
   busy: boolean;
   onMessage: () => void;
 }) {
   const p = member.participant;
   const displayName = p?.displayName ?? "Member";
+  const roleBadge =
+    member.role === "owner" || member.role === "admin"
+      ? "bg-primary/10 text-primary"
+      : "bg-muted text-muted-foreground";
   return (
-    <div className="flex items-center gap-3 rounded-lg border border-border bg-card px-3 py-2">
-      <Avatar className="h-9 w-9 shrink-0">
-        {p?.avatarUrl && <AvatarImage src={p.avatarUrl} alt="" />}
-        <AvatarFallback className="text-[11px]">
-          {(displayName.charAt(0) || "?").toUpperCase()}
-        </AvatarFallback>
-      </Avatar>
-      <div className="min-w-0 flex-1">
+    <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 transition-all hover:border-border-strong hover:shadow-sm">
+      <div className="relative shrink-0">
+        <Avatar className="h-11 w-11">
+          {p?.avatarUrl && <AvatarImage src={p.avatarUrl} alt="" displaySize={44} />}
+          <AvatarFallback className="text-sm font-semibold">
+            {(displayName.charAt(0) || "?").toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+        {online && <PresenceDot online />}
+      </div>
+      <div className="min-w-0 flex-1 leading-tight">
         <div className="flex items-center gap-1.5">
-          <span className="truncate text-sm font-medium">{displayName}</span>
+          <span className="truncate text-sm font-semibold">{displayName}</span>
           {isSelf && (
             <span className="text-[10px] text-muted-foreground">(you)</span>
           )}
         </div>
-        <p className="truncate text-[11px] text-muted-foreground capitalize">
-          {member.role}
-        </p>
+        <div className="mt-1 flex items-center gap-2">
+          <span
+            className={cn(
+              "inline-block rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide capitalize",
+              roleBadge
+            )}
+          >
+            {member.role}
+          </span>
+          <span className="flex items-center gap-1 text-[11px]">
+            <span
+              className={cn(
+                "h-1.5 w-1.5 rounded-full",
+                online ? "bg-success" : "bg-muted-foreground/40"
+              )}
+            />
+            <span className={online ? "font-medium text-success" : "text-muted-foreground"}>
+              {online ? "Online" : "Offline"}
+            </span>
+          </span>
+        </div>
       </div>
       {!isSelf && (
-        <Button size="sm" disabled={busy} onClick={onMessage}>
+        <Button
+          size="icon"
+          variant="outline"
+          disabled={busy}
+          onClick={onMessage}
+          title={`Message ${displayName}`}
+          className="shrink-0"
+        >
           {busy ? (
-            <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+            <Loader2 className="h-4 w-4 animate-spin" />
           ) : (
-            <MessageCircle className="mr-1 h-3 w-3" />
+            <MessageCircle className="h-4 w-4" />
           )}
-          Message
         </Button>
       )}
     </div>

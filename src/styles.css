@@ -12,28 +12,41 @@
  *
  * Two distinct recessed roles that previously collided on the same `rail`
  * token:
- *   • `rail`   — the left ICON nav. A dark, high-contrast chrome bar (like
- *                Slack / VS Code's activity bar) so it reads as app chrome and
- *                stands apart from the content columns. Dark in BOTH themes.
+ *   • `rail`   — the left ICON nav. A floating chrome pill (like Slack /
+ *                VS Code's activity bar). Light (white) in light mode, dark in
+ *                dark mode — it follows the theme, separated from the content
+ *                by the desk gutter rather than by being a fixed dark slab.
  *   • `canvas` — the recessed surface BEHIND the conversation columns. The
  *                white thread / details panels lap over it; its job is to be a
  *                neutral backdrop the panels' rounded corners reveal. Light
  *                gray in light mode, near-black in dark.
  * ------------------------------------------------------------------------- */
-:root, .dark {
-  /* Dark icon rail — same palette in light + dark (it's app chrome). */
+:root {
+  /* Light icon rail — a white pill on the gray desk. Inactive icons are muted
+   * gray; the active item is a subtle light-gray pressed pill with near-black
+   * icon for contrast. */
+  --color-rail-background: #FFFFFF;
+  --color-rail-foreground: #6E6E80;
+  --color-rail-accent: #EDEDF1;
+  --color-rail-accent-foreground: #0A0A0F;
+  --color-rail-hover: #F1F1F4;
+  --color-rail-border: #E4E4E9;
+
+  --color-canvas: #F9F9F9; /* recessed off-white behind the white panels.
+                              Lighter than surface-hover (#F7F7F9) so list rows
+                              correctly DARKEN on hover rather than lighten;
+                              the panel overlap is carried by the shadow. */
+  --color-desk: #E6E6EB;   /* "desk" behind the whole app (inset padding)   */
+}
+.dark {
+  /* Dark icon rail — high-contrast chrome slab. */
   --color-rail-background: #1A1A1F;
   --color-rail-foreground: #8E8E99;
   --color-rail-accent: #2C2C33;
   --color-rail-accent-foreground: #FFFFFF;
   --color-rail-hover: #26262C;
   --color-rail-border: #26262C;
-}
-:root {
-  --color-canvas: #F1F1F4; /* recessed light gray behind the white panels */
-  --color-desk: #E6E6EB;   /* "desk" behind the whole app (inset padding)   */
-}
-.dark {
+
   --color-canvas: #0A0A0F; /* recessed near-black, darker than card */
   --color-desk: #050508;   /* darkest layer, behind everything      */
 }
@@ -189,10 +202,10 @@
  * the x-offset (-8) lets a soft strip escape on the left, where it gradients
  * over the recessed canvas. Diffuse, borderless. */
 .surface-panel {
-  box-shadow: -8px 0 16px -16px rgba(0, 0, 0, 0.18);
+  box-shadow: -14px 0 22px -20px rgba(0, 0, 0, 0.3);
 }
 .dark .surface-panel {
-  box-shadow: -8px 0 16px -16px rgba(0, 0, 0, 0.6);
+  box-shadow: -14px 0 22px -20px rgba(0, 0, 0, 0.7);
 }
 
 /* Stronger variant for a white-on-white seam — the details pane laps over the

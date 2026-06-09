@@ -61,7 +61,15 @@ const STATUS_COLORS: Record<string, string> = {
   exhausted: "bg-muted text-muted-foreground border-border",
 };
 
-export function TaskList() {
+export function TaskList({
+  width,
+  innerRef,
+}: {
+  /** Resizable width in px (from useResizableWidth). */
+  width?: number;
+  /** Ref to the aside — its left edge is the resize drag origin. */
+  innerRef?: React.RefObject<HTMLElement | null>;
+} = {}) {
   const tasks = useTaskStore((s) => s.tasks);
   const loading = useTaskStore((s) => s.loading);
   const selectedId = useTaskStore((s) => s.selectedTaskId);
@@ -109,8 +117,14 @@ export function TaskList() {
 
   return (
     <aside
-      className="w-80 shrink-0 flex flex-col border-r border-border bg-surface-elevated"
-      style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
+      ref={innerRef}
+      className="relative z-0 shrink-0 flex flex-col bg-canvas"
+      style={
+        {
+          width: width ?? 320,
+          WebkitAppRegion: "drag",
+        } as React.CSSProperties
+      }
     >
       <div
         className="h-14 shrink-0 px-4 border-b border-border flex items-center"
