@@ -715,11 +715,11 @@ export function Dashboard() {
             so users see the same surface in both clients. Bulk-action +
             search controls only show in the Agents tab. */}
         <header
-          className="h-14 shrink-0 pl-4 pr-8 flex items-center justify-between border-b border-border bg-card"
+          className="@container h-14 shrink-0 pl-4 pr-8 flex items-center justify-between border-b border-border bg-card"
           style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
         >
           <div
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 min-w-0"
             style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
           >
             <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center flex-shrink-0">
@@ -757,28 +757,34 @@ export function Dashboard() {
               Directory
             </button>
             {activeTab === "agents" && runningCount > 0 && (
-              <span className="ml-2 text-[11px] text-success">
+              <span className="ml-2 hidden @min-[560px]:inline text-[11px] text-success whitespace-nowrap">
                 {runningCount} running
               </span>
             )}
           </div>
 
           <div
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 shrink-0"
             style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
           >
             {activeTab === "agents" ? (
               <>
+                {/* Search narrows, then collapses to an icon-only trigger as the
+                    header tightens (e.g. detail pane open on a laptop) so it
+                    never crowds the action buttons. */}
                 <div className="relative">
-                  <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2" />
+                  <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                   <Input
                     type="text"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     placeholder="Search agents..."
-                    className="h-8 pl-8 w-[180px] text-xs"
+                    aria-label="Search agents"
+                    className="h-8 pl-8 text-xs w-9 @min-[680px]:w-[120px] @min-[920px]:w-[180px] placeholder:opacity-0 @min-[680px]:placeholder:opacity-100"
                   />
                 </div>
+                {/* Action labels collapse to icon-only when the header is tight;
+                    the `title` tooltips carry the meaning. */}
                 {runningCount < totalCount && stoppedWithKeys.length > 0 && (
                   <Button
                     size="sm"
@@ -788,7 +794,9 @@ export function Dashboard() {
                     title={`Start ${stoppedWithKeys.length} stopped agent(s)`}
                   >
                     <Play className="w-3.5 h-3.5" />
-                    {startingAll ? "Starting..." : "Start All"}
+                    <span className="hidden @min-[820px]:inline">
+                      {startingAll ? "Starting..." : "Start All"}
+                    </span>
                   </Button>
                 )}
                 {runningCount > 0 && (
@@ -800,23 +808,26 @@ export function Dashboard() {
                     title={`Stop ${runningCount} running agent(s)`}
                   >
                     <Square className="w-3.5 h-3.5" />
-                    {stoppingAll ? "Stopping..." : "Stop All"}
+                    <span className="hidden @min-[820px]:inline">
+                      {stoppingAll ? "Stopping..." : "Stop All"}
+                    </span>
                   </Button>
                 )}
-                <Button size="sm" onClick={() => setShowCreate(true)}>
+                <Button size="sm" onClick={() => setShowCreate(true)} title="New Agent">
                   <Plus className="w-3.5 h-3.5" />
-                  New Agent
+                  <span className="hidden @min-[820px]:inline">New Agent</span>
                 </Button>
               </>
             ) : (
               <div className="relative">
-                <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2" />
+                <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <Input
                   type="text"
                   value={dirSearch}
                   onChange={(e) => handleDirSearch(e.target.value)}
                   placeholder="Search directory..."
-                  className="h-8 pl-8 w-[220px] text-xs"
+                  aria-label="Search directory"
+                  className="h-8 pl-8 text-xs w-9 @min-[560px]:w-[160px] @min-[820px]:w-[220px] placeholder:opacity-0 @min-[560px]:placeholder:opacity-100"
                 />
               </div>
             )}
