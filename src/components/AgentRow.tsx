@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useState } from "react";
 import { useAgentStore, type ManagedAgent } from "../stores/agentStore";
 import { formatModelLabel, formatBackendLabel } from "../lib/models";
+import { AGENT_GRID_COLS, AGENT_CELL_ENGINE, AGENT_CELL_MODE } from "./agentTableLayout";
 import { formatUptime, cn } from "../lib/utils";
 import { Play, Square, RotateCcw, Crown, Cloud, AlertTriangle, Link2, ChevronRight, ChevronDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -319,7 +320,7 @@ export function AgentRow({
         drawStem={hasChildren && expanded}
       />
       {/* Main row */}
-      <div className="grid grid-cols-[1fr_180px_140px_140px_56px] gap-3 pl-4 pr-8 py-2.5 items-center">
+      <div className={cn(AGENT_GRID_COLS, "gap-3 pl-4 pr-8 py-2.5 items-center")}>
         {/* Agent */}
         <div
           className="flex items-center gap-2.5 min-w-0"
@@ -421,8 +422,10 @@ export function AgentRow({
           </div>
         </div>
 
-        {/* Engine — backend + model on two lines so the row stays compact */}
-        <div className="min-w-0 leading-tight">
+        {/* Engine — backend + model on two lines so the row stays compact.
+            Hidden when the list is narrow (e.g. detail pane open); the engine
+            is still shown inside the detail pane. */}
+        <div className={cn(AGENT_CELL_ENGINE, "min-w-0 leading-tight")}>
           <div className="text-xs text-foreground/90 truncate">{modelLabel || "—"}</div>
           {backendLabel && (
             <div className="text-[10px] text-muted-foreground truncate">{backendLabel}</div>
@@ -431,8 +434,9 @@ export function AgentRow({
 
         {/* Runtime — Local subprocess vs. org-host VM. Lets the user
             see at a glance whether the agent runs on this device or on
-            a shared org host (set in AgentConfig → Runtime). */}
-        <div className="truncate">
+            a shared org host (set in AgentConfig → Runtime). Drops out
+            first when the list narrows. */}
+        <div className={cn(AGENT_CELL_MODE, "truncate")}>
           {managed.agent.runtime === "org_host" ? (
             <Badge
               variant="outline"

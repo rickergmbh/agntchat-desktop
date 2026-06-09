@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useAgentStore, type ManagedAgent } from "../stores/agentStore";
 import { useDirectoryStore } from "../stores/directoryStore";
 import { AgentRow } from "./AgentRow";
+import { AGENT_GRID_COLS, AGENT_CELL_ENGINE, AGENT_CELL_MODE } from "./agentTableLayout";
 import { AgentConfig } from "./AgentConfig";
 import { CreateAgentModal } from "./CreateAgentModal";
 import { cn } from "../lib/utils";
@@ -850,11 +851,16 @@ export function Dashboard() {
                 </Button>
               </div>
             ) : (
-              <div className="flex-1 overflow-y-auto">
-                <div className="sticky top-0 z-10 grid grid-cols-[1fr_180px_140px_140px_56px] gap-3 pl-4 pr-8 py-2 border-b border-border bg-card/95 backdrop-blur text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+              <div className="@container flex-1 overflow-y-auto">
+                <div
+                  className={cn(
+                    "sticky top-0 z-10 gap-3 pl-4 pr-8 py-2 border-b border-border bg-card/95 backdrop-blur text-[10px] font-medium text-muted-foreground uppercase tracking-wider",
+                    AGENT_GRID_COLS
+                  )}
+                >
                   <span>Agent</span>
-                  <span>Engine</span>
-                  <span>Mode</span>
+                  <span className={AGENT_CELL_ENGINE}>Engine</span>
+                  <span className={AGENT_CELL_MODE}>Mode</span>
                   <span>Status</span>
                   <span className="text-right">Actions</span>
                 </div>
