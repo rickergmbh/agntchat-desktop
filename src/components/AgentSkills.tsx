@@ -165,6 +165,23 @@ export function AgentSkills({ agentId }: AgentSkillsProps) {
         </div>
       ) : (
         <>
+          {/* Action toolbar — kept at the top so the primary actions are
+              reachable without scrolling past the skill list. */}
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" variant="outline" onClick={() => setShowAdd(true)}>
+              <Plus className="w-3.5 h-3.5 mr-1.5" /> Add Skill
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => setShowCreate(true)}>
+              Create New
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => setShowImport(true)}>
+              <Download className="w-3.5 h-3.5 mr-1.5" /> Import
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => setShowInstallShared(true)}>
+              <Link2 className="w-3.5 h-3.5 mr-1.5" /> Install Shared
+            </Button>
+          </div>
+
           {globalSkills.length > 0 && (
             <SkillGroup
               label="Global"
@@ -191,21 +208,6 @@ export function AgentSkills({ agentId }: AgentSkillsProps) {
 
             />
           )}
-
-          <div className="flex gap-2">
-            <Button size="sm" variant="outline" onClick={() => setShowAdd(true)}>
-              <Plus className="w-3.5 h-3.5 mr-1.5" /> Add Skill
-            </Button>
-            <Button size="sm" variant="outline" onClick={() => setShowCreate(true)}>
-              Create New
-            </Button>
-            <Button size="sm" variant="outline" onClick={() => setShowImport(true)}>
-              <Download className="w-3.5 h-3.5 mr-1.5" /> Import
-            </Button>
-            <Button size="sm" variant="outline" onClick={() => setShowInstallShared(true)}>
-              <Link2 className="w-3.5 h-3.5 mr-1.5" /> Install Shared
-            </Button>
-          </div>
         </>
       )}
 

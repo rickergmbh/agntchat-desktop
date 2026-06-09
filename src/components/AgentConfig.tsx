@@ -281,9 +281,11 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
     <div className="flex h-full">
       {/* Vertical icon sidebar */}
       <TooltipProvider delay={300}>
-        <div className="w-12 border-r border-border bg-muted/30 flex flex-col items-center py-3 gap-1 flex-shrink-0">
-          {/* Agent avatar at top */}
-          <div className="mb-2">
+        <div className="w-12 border-r border-border bg-muted/30 flex flex-col items-center flex-shrink-0">
+          {/* Avatar lives in its own h-14 band with a bottom border so the
+              divider lines up continuously with the content panel's
+              AgentHeader divider — no offset across the seam. */}
+          <div className="h-14 shrink-0 flex items-center justify-center border-b border-border w-full">
             <Avatar className="h-8 w-8 rounded-lg">
               {agent.avatarUrl && <AvatarImage src={agent.avatarUrl} className="rounded-lg" />}
               <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-xs font-semibold">
@@ -292,8 +294,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
             </Avatar>
           </div>
 
-          <Separator className="w-6 mb-1" />
-
+          <div className="flex flex-col items-center gap-1 py-3">
           {sectionGroups.map((group, groupIdx) => (
             <div key={group.name} className="flex flex-col items-center gap-1">
               {group.sections.map((section) => (
@@ -328,24 +329,6 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
               )}
             </div>
           ))}
-
-          {/* Close button at bottom */}
-          <div className="mt-auto">
-            <Tooltip>
-              <TooltipTrigger
-                render={
-                  <button
-                    onClick={() => selectAgent(null)}
-                    className="w-8 h-8 rounded-md flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                }
-              />
-              <TooltipContent side="right" className="text-xs">
-                Close
-              </TooltipContent>
-            </Tooltip>
           </div>
         </div>
       </TooltipProvider>
@@ -2591,8 +2574,12 @@ function AgentHeader({
 }: {
   agent: { id: string; displayName: string; avatarUrl?: string; description?: string; agentType?: string };
 }) {
+  const selectAgent = useAgentStore((s) => s.selectAgent);
   return (
-    <div className="px-4 py-3 border-b border-border flex items-center gap-3 flex-shrink-0">
+    // Fixed h-14 (matches every other column header in the app) so the bottom
+    // divider sits at a constant height — with or without a description — and
+    // lines up across the icon sidebar / content panel without an offset.
+    <div className="h-14 shrink-0 px-4 border-b border-border flex items-center gap-3">
       <Avatar className="h-9 w-9 rounded-lg flex-shrink-0">
         {agent.avatarUrl && <AvatarImage src={agent.avatarUrl} className="rounded-lg" />}
         <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-xs font-semibold">
@@ -2607,6 +2594,14 @@ function AgentHeader({
           </p>
         )}
       </div>
+      <button
+        onClick={() => selectAgent(null)}
+        title="Close"
+        aria-label="Close agent details"
+        className="shrink-0 flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+      >
+        <X className="h-4 w-4" />
+      </button>
     </div>
   );
 }

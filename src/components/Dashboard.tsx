@@ -617,14 +617,17 @@ export function Dashboard() {
   const displayAgent = selectedAgent || lastAgentRef.current;
   const drawerOpen = !!selectedAgent;
 
-  // Close drawer on Escape key
+  // Close whichever detail panel is open on Escape. (The panels no longer have
+  // a click-scrim, so Escape is the keyboard exit alongside their close button.)
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && drawerOpen) selectAgent(null);
+      if (e.key !== "Escape") return;
+      if (drawerOpen) selectAgent(null);
+      else if (selectedListingId) setSelectedListingId(null);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [drawerOpen, selectAgent]);
+  }, [drawerOpen, selectAgent, selectedListingId]);
 
   // For local-runtime agents "running" tracks the local subprocess.
   // For org-host runtime there is no local subprocess — the bridge
@@ -702,14 +705,16 @@ export function Dashboard() {
   );
 
   return (
-    <div className="flex-1 flex h-full overflow-hidden bg-background">
-      {/* Main content */}
-      <main className="flex-1 flex flex-col overflow-hidden">
+    <div className="flex-1 flex h-full overflow-hidden bg-canvas">
+      {/* Main content — the agent grid / directory. Reflows (shrinks) when a
+          detail panel opens beside it, rather than being occluded by an
+          overlay drawer. */}
+      <main className="relative z-0 flex-1 flex flex-col overflow-hidden min-w-0 bg-background">
         {/* Header — pill toggle (Agents | Directory) matches the web app
             so users see the same surface in both clients. Bulk-action +
             search controls only show in the Agents tab. */}
         <header
-          className="h-14 shrink-0 px-4 flex items-center justify-between border-b border-border bg-card"
+          className="h-14 shrink-0 pl-4 pr-8 flex items-center justify-between border-b border-border bg-card"
           style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
         >
           <div
@@ -846,7 +851,7 @@ export function Dashboard() {
               </div>
             ) : (
               <div className="flex-1 overflow-y-auto">
-                <div className="sticky top-0 z-10 grid grid-cols-[1fr_180px_140px_140px_56px] gap-3 px-4 py-2 border-b border-border bg-card/95 backdrop-blur text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+                <div className="sticky top-0 z-10 grid grid-cols-[1fr_180px_140px_140px_56px] gap-3 pl-4 pr-8 py-2 border-b border-border bg-card/95 backdrop-blur text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
                   <span>Agent</span>
                   <span>Engine</span>
                   <span>Mode</span>
@@ -920,53 +925,49 @@ export function Dashboard() {
         </div>
       </main>
 
-      {/* Agent detail drawer — overlay from the right */}
-      <div
+      {/* Agent detail panel — laps over the agent area as a rounded panel
+          (like the conversation details pane), animating its width so the grid
+          reflows beside it instead of being occluded by an overlay. Stays
+          mounted (width 0 when closed) so it animates both ways; `displayAgent`
+          keeps content visible through the close transition. */}
+      <aside
+        aria-hidden={!drawerOpen}
         className={cn(
-          "fixed inset-0 bg-black/20 z-40 transition-opacity duration-200",
-          drawerOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-        )}
-        onClick={() => selectAgent(null)}
-      />
-      <div
-        className={cn(
-          "fixed top-0 right-0 h-full w-[800px] max-w-[85vw] bg-card border-l border-border shadow-2xl z-50 overflow-hidden",
-          "transition-transform duration-300 ease-out",
-          drawerOpen ? "translate-x-0" : "translate-x-full"
+          "surface-panel-strong relative z-20 -ml-3 h-full shrink-0 overflow-hidden rounded-l-lg bg-card",
+          "transition-[width] duration-300 ease-out",
+          drawerOpen ? "w-[760px] max-w-[70vw]" : "w-0"
         )}
       >
-        {displayAgent && <AgentConfig managed={displayAgent} />}
-      </div>
+        <div className="h-full w-[760px] max-w-[70vw]">
+          {displayAgent && <AgentConfig managed={displayAgent} />}
+        </div>
+      </aside>
 
-      {/* Directory listing detail drawer — same right-edge slide-in. */}
-      <div
+      {/* Directory listing detail panel — same lapping treatment. */}
+      <aside
+        aria-hidden={!dirDrawerOpen}
         className={cn(
-          "fixed inset-0 bg-black/20 z-40 transition-opacity duration-200",
-          dirDrawerOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-        )}
-        onClick={() => setSelectedListingId(null)}
-      />
-      <div
-        className={cn(
-          "fixed top-0 right-0 h-full w-[640px] max-w-[85vw] bg-card border-l border-border shadow-2xl z-50 overflow-hidden",
-          "transition-transform duration-300 ease-out",
-          dirDrawerOpen ? "translate-x-0" : "translate-x-full"
+          "surface-panel-strong relative z-20 -ml-3 h-full shrink-0 overflow-hidden rounded-l-lg bg-card",
+          "transition-[width] duration-300 ease-out",
+          dirDrawerOpen ? "w-[600px] max-w-[60vw]" : "w-0"
         )}
       >
-        {displayListing && (
-          <DirectoryAgentDetail
-            key={displayListing.id}
-            listing={displayListing}
-            connection={selectedListingConnection}
-            onConnect={(mode) => handleConnect(displayListing, mode)}
-            onDisconnect={() =>
-              selectedListingConnection &&
-              handleDisconnect(selectedListingConnection.id)
-            }
-            onClose={() => setSelectedListingId(null)}
-          />
-        )}
-      </div>
+        <div className="h-full w-[600px] max-w-[60vw]">
+          {displayListing && (
+            <DirectoryAgentDetail
+              key={displayListing.id}
+              listing={displayListing}
+              connection={selectedListingConnection}
+              onConnect={(mode) => handleConnect(displayListing, mode)}
+              onDisconnect={() =>
+                selectedListingConnection &&
+                handleDisconnect(selectedListingConnection.id)
+              }
+              onClose={() => setSelectedListingId(null)}
+            />
+          )}
+        </div>
+      </aside>
 
       {showCreate && (
         <CreateAgentModal onClose={() => setShowCreate(false)} />
