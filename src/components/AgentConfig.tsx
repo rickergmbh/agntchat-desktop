@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useAgentStore, type ManagedAgent } from "../stores/agentStore";
 import { useActiveWorkspace, useWorkspaces } from "../stores/workspaceStore";
+import { WORKSPACES_ENABLED } from "../lib/featureFlags";
 import { listOrganizationHosts, type OrganizationHost } from "../lib/api";
 import {
   deleteAgent,
@@ -1758,8 +1759,10 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
 
           {/* Pulse delivery workspace — only meaningful when the owner
               belongs to more than one workspace. "__personal__" is the
-              Select-safe stand-in for "" (shadcn items can't be empty). */}
-          {workspaces.length > 1 && (
+              Select-safe stand-in for "" (shadcn items can't be empty).
+              Gated off with workspaces; pulse falls back to the owner's
+              Personal workspace (empty organizationId). */}
+          {WORKSPACES_ENABLED && workspaces.length > 1 && (
             <div className="space-y-1.5">
               <Label className="text-xs">Pulse workspace</Label>
               <Select
@@ -2443,6 +2446,7 @@ function ProfileSection({
           </p>
         </div>
 
+        {WORKSPACES_ENABLED && (
         <div className="space-y-1.5 mt-4">
           <Label className="text-xs">Visibility</Label>
           <div className="grid grid-cols-2 gap-2">
@@ -2490,6 +2494,7 @@ function ProfileSection({
             </button>
           </div>
         </div>
+        )}
 
         {error && (
           <p className="text-xs text-destructive mt-2">{error}</p>

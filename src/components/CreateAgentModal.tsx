@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useAgentStore } from "../stores/agentStore";
 import { useActiveWorkspace } from "../stores/workspaceStore";
+import { WORKSPACES_ENABLED } from "../lib/featureFlags";
 import { useLlmKeyStore } from "../stores/llmKeyStore";
 import { useModelCatalog } from "../stores/modelCatalogStore";
 import { useAgentTypes } from "../lib/agentTypes";
@@ -1121,6 +1122,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                     )}
                   </div>
 
+                  {WORKSPACES_ENABLED && (
                   <div className="space-y-1.5">
                     <Label className="text-xs">Visibility</Label>
                     <div className="grid grid-cols-2 gap-2">
@@ -1169,6 +1171,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                       </button>
                     </div>
                   </div>
+                  )}
                 </div>
               )}
 

@@ -33,6 +33,7 @@ import { CanvasView } from "./canvas/CanvasView";
 import { Profile } from "./Profile";
 import { FriendsView } from "./FriendsView";
 import { WorkspaceSwitcher } from "./WorkspaceSwitcher";
+import { WORKSPACES_ENABLED } from "../lib/featureFlags";
 
 type View = "chat" | "tasks" | "agents" | "friends" | "templates" | "canvas";
 
@@ -149,7 +150,11 @@ function LeftRail({
   // a shared workspace. The friend-request badge is hidden in
   // workspace mode since friend connections are personal-graph only.
   const activeWorkspace = useActiveWorkspace();
-  const isWorkspaceMode = activeWorkspace !== null && !activeWorkspace.isPersonal;
+  // Workspaces are gated off for now (see featureFlags). With the flag off
+  // every user is in their Personal workspace, so this stays false and the
+  // Friends rail slot never flips to "Members".
+  const isWorkspaceMode =
+    WORKSPACES_ENABLED && activeWorkspace !== null && !activeWorkspace.isPersonal;
 
   // Agent online/total — "running" is the only fully-up state; "starting"
   // and "stalled" keep a process alive but it's not actually serving, so
@@ -199,9 +204,11 @@ function LeftRail({
         style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
         className="flex flex-col gap-1 items-center"
       >
-        {/* Workspace tile (Slack-style) — clicking opens the dropdown
-            to the right with the full workspaces list. */}
-        <WorkspaceSwitcher />
+        {/* Workspaces gated off: render static app branding in the tile
+            slot instead of the interactive switcher (which owns the
+            dropdown, create, settings gear, and pending-invites banner).
+            Flip WORKSPACES_ENABLED to bring the switcher back. */}
+        {WORKSPACES_ENABLED ? <WorkspaceSwitcher /> : <BrandingTile />}
         <div className="my-1 h-px w-8 bg-rail-border" />
 
         <RailButton
@@ -310,6 +317,22 @@ function LeftRail({
         </button>
       </div>
     </nav>
+  );
+}
+
+/**
+ * Static branding tile shown at the top of the rail while workspaces are
+ * gated off — a non-interactive stand-in for the WorkspaceSwitcher so the
+ * rail keeps its visual anchor without hinting at multiple workspaces.
+ */
+function BrandingTile() {
+  return (
+    <div
+      className="flex h-9 w-9 items-center justify-center rounded-md bg-primary"
+      title="Agentgram"
+    >
+      <Bot className="h-5 w-5 text-primary-foreground" />
+    </div>
   );
 }
 
