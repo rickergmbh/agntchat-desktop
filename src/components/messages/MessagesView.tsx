@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { MessageSquare, ChevronRight, ChevronLeft, SquarePen, RefreshCw } from "lucide-react";
+import { MessageSquare, MessageCircle, ChevronRight, ChevronLeft, SquarePen, RefreshCw } from "lucide-react";
 import { useResizableWidth } from "../../hooks/useResizableWidth";
 import { ResizeHandle } from "../ResizeHandle";
 import { useChatStore } from "../../stores/chatStore";
@@ -104,8 +104,8 @@ export function MessagesView() {
           style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
         >
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center shrink-0">
-              <MessageSquare className="w-3.5 h-3.5 text-primary-foreground" />
+            <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center shrink-0">
+              <MessageCircle className="w-3.5 h-3.5 text-primary-foreground" />
             </div>
             <h2 className="text-sm font-semibold text-foreground">Chats</h2>
           </div>

@@ -722,7 +722,7 @@ export function Dashboard() {
             className="flex items-center gap-2 min-w-0"
             style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
           >
-            <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center flex-shrink-0">
+            <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center flex-shrink-0">
               <Bot className="w-3.5 h-3.5 text-primary-foreground" />
             </div>
             <button

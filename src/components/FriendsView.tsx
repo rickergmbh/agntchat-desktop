@@ -310,7 +310,7 @@ export function FriendsView() {
       <header className="flex h-14 shrink-0 items-center justify-between gap-4 border-b border-border bg-card px-4">
         <div className="flex items-center gap-3 min-w-0">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center shrink-0">
+            <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center shrink-0">
               <Users className="w-3.5 h-3.5 text-primary-foreground" />
             </div>
             <div>
@@ -1214,7 +1214,7 @@ function MembersView({
       <header className="flex h-14 shrink-0 items-center justify-between gap-4 border-b border-border bg-card px-4">
         <div className="flex items-center gap-3 min-w-0">
           <div className="flex items-center gap-2 min-w-0">
-            <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center shrink-0">
+            <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center shrink-0">
               <Users className="w-3.5 h-3.5 text-primary-foreground" />
             </div>
             <div className="min-w-0">

@@ -286,7 +286,7 @@ function LeftRail({
           type="button"
           onClick={onOpenProfile}
           title="Profile & Settings"
-          className="flex items-center justify-center w-10 h-10 rounded-xl text-rail-foreground hover:bg-rail-hover hover:text-rail-accent-foreground transition-colors"
+          className="flex items-center justify-center w-10 h-10 rounded-lg text-rail-foreground hover:bg-rail-hover hover:text-rail-accent-foreground transition-colors"
         >
           <Avatar className="h-7 w-7">
             {participant?.avatarUrl ? (
@@ -304,7 +304,7 @@ function LeftRail({
           onClick={handleLogout}
           title="Sign out"
           aria-label="Sign out"
-          className="flex items-center justify-center w-10 h-10 rounded-xl text-rail-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
+          className="flex items-center justify-center w-10 h-10 rounded-lg text-rail-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
         >
           <LogOut className="w-4 h-4" />
         </button>
@@ -345,7 +345,7 @@ function RailButton({
       aria-label={label}
       aria-pressed={active}
       className={cn(
-        "relative flex items-center justify-center w-10 h-10 rounded-xl transition-all",
+        "relative flex items-center justify-center w-10 h-10 rounded-lg transition-all",
         active
           ? "bg-rail-accent text-rail-accent-foreground shadow-sm"
           : "text-rail-foreground hover:bg-rail-hover hover:text-rail-accent-foreground"
