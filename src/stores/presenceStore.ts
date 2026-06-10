@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { ws } from "../services/websocket";
+import type { AgentActivity } from "../lib/agent-activity";
 
 const HUMAN_TYPING_TTL_MS = 3_000;
 const AGENT_TYPING_TTL_MS = 30_000;
@@ -13,6 +14,11 @@ interface PresenceState {
    *  agent we share a conversation with — the backend pushes
    *  `agent_status_changed` to all conversation peers. */
   agentPresence: Record<string, "online_local">;
+  /** Per-agent live activity (thinking / working / writing / …). Broadcast
+   *  globally via `agent_activity_changed`, so an agent reads as busy on
+   *  every surface even when we're viewing another conversation. Absence =
+   *  idle (fall back to the online/offline dot). */
+  agentActivity: Record<string, AgentActivity>;
   /** convId → Set of participantIds currently typing */
   typing: Record<string, Set<string>>;
   /** participantId → display name (for rendering "X is typing...") */
@@ -80,6 +86,7 @@ export const usePresenceStore = create<PresenceState>((set) => {
     connected: false,
     online: new Set(),
     agentPresence: {},
+    agentActivity: {},
     typing: {},
     typingNames: {},
 
@@ -169,6 +176,26 @@ export const usePresenceStore = create<PresenceState>((set) => {
         })
       );
 
+      // Global agent activity. `activity: null` means the agent went idle —
+      // drop the key so surfaces fall back to the plain online/offline dot.
+      unsubs.push(
+        ws.on("agent_activity_changed", (payload) => {
+          const agentId = payload.agentId as string | undefined;
+          if (!agentId) return;
+          const activity = payload.activity as AgentActivity | null | undefined;
+          set((s) => {
+            if (!activity) {
+              if (s.agentActivity[agentId] === undefined) return s;
+              const next = { ...s.agentActivity };
+              delete next[agentId];
+              return { agentActivity: next };
+            }
+            if (s.agentActivity[agentId] === activity) return s;
+            return { agentActivity: { ...s.agentActivity, [agentId]: activity } };
+          });
+        })
+      );
+
       unsubs.push(
         ws.on("human_status_changed", (payload) => {
           const participantId = payload.participantId as string | undefined;
@@ -194,7 +221,15 @@ export const usePresenceStore = create<PresenceState>((set) => {
             (payload.agentPresences as
               | Record<string, "online_local">
               | undefined) ?? {};
-          set({ online: new Set(ids), agentPresence: agentPresences });
+          const agentActivities =
+            (payload.agentActivities as
+              | Record<string, AgentActivity>
+              | undefined) ?? {};
+          set({
+            online: new Set(ids),
+            agentPresence: agentPresences,
+            agentActivity: agentActivities,
+          });
         })
       );
 

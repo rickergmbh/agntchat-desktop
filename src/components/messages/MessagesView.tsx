@@ -15,6 +15,7 @@ import { ConversationDetailsPanel } from "./ConversationDetailsPanel";
 import { NewConversationDialog } from "./NewConversationDialog";
 import { ChatHeaderMenu } from "./ChatHeaderMenu";
 import { GroupAvatar } from "./GroupAvatar";
+import { AgentActivityIndicator } from "../AgentActivityIndicator";
 import { ThreadsBar } from "./ThreadsBar";
 import { FilesBar } from "./FilesBar";
 
@@ -203,6 +204,7 @@ function ActiveConversation({
   const myId = useAuthStore((s) => s.participant?.id);
 
   const online = usePresenceStore((s) => s.online);
+  const agentActivity = usePresenceStore((s) => s.agentActivity);
 
   // Match web's ChatView header — show a stacked GroupAvatar for group
   // conversations or whenever there's more than one other participant.
@@ -236,6 +238,18 @@ function ActiveConversation({
     }
     return null;
   }, [conversation, online, myId]);
+
+  // Busiest agent member's live activity — shown in the header where the
+  // status normally reads "Online", so the user sees "Thinking…/Working…".
+  const headerActivity = useMemo(
+    () =>
+      otherMembers
+        .map((m) =>
+          m.participant?.type === "agent" ? agentActivity[m.participantId] : undefined
+        )
+        .find(Boolean),
+    [otherMembers, agentActivity]
+  );
 
   // When the active conversation is an agent thread, surface a back-to-parent
   // button so the user can pop out of the thread without scrolling the
@@ -297,7 +311,9 @@ function ActiveConversation({
           )}
           <div className="min-w-0 flex-1">
             <p className="text-sm font-semibold truncate">{headerTitle}</p>
-            {presenceLine && (
+            {headerActivity ? (
+              <AgentActivityIndicator activity={headerActivity} />
+            ) : presenceLine ? (
               <p className="text-[11px] text-muted-foreground flex items-center gap-1">
                 {presenceLine === "Online" || presenceLine.includes("online ·") ? (
                   <span className="h-1.5 w-1.5 rounded-full bg-success" />
@@ -306,7 +322,7 @@ function ActiveConversation({
                 ) : null}
                 {presenceLine}
               </p>
-            )}
+            ) : null}
           </div>
           {/* Details toggle affordance — a bordered pill so it reads as a
               control even at rest (the bare chevron was near-invisible in dark

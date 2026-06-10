@@ -17,6 +17,8 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { GroupAvatar } from "./GroupAvatar";
+import { AgentActivityIndicator } from "../AgentActivityIndicator";
+import type { AgentActivity } from "../../lib/agent-activity";
 import type { Conversation } from "../../lib/api";
 
 export function ConversationList() {
@@ -26,6 +28,7 @@ export function ConversationList() {
   const unreadCounts = useChatStore((s) => s.unreadCounts);
   const setActive = useChatStore((s) => s.setActiveConversation);
   const online = usePresenceStore((s) => s.online);
+  const agentActivity = usePresenceStore((s) => s.agentActivity);
   const currentUserId = useAuthStore((s) => s.participant?.id);
 
   if (loading && conversations.length === 0) {
@@ -68,6 +71,21 @@ export function ConversationList() {
               m.participantId !== currentUserId &&
               m.participant?.type === "agent"
           ) ?? false;
+        // First agent member with a live activity drives the row's
+        // "Thinking…/Working…" line — shows here even when that work is in
+        // a different conversation.
+        let activity: AgentActivity | undefined;
+        if (hasAgent) {
+          for (const m of conv.members ?? []) {
+            if (m.participantId === currentUserId) continue;
+            if (m.participant?.type !== "agent") continue;
+            const a = agentActivity[m.participantId];
+            if (a) {
+              activity = a;
+              break;
+            }
+          }
+        }
         return (
           <ConversationItem
             key={conv.id}
@@ -76,6 +94,7 @@ export function ConversationList() {
             unreadCount={unreadCounts[conv.id] ?? 0}
             presence={presence}
             hasAgent={hasAgent}
+            activity={activity}
             currentUserId={currentUserId}
             onClick={() => setActive(conv.id)}
           />
@@ -91,6 +110,7 @@ const ConversationItem = memo(function ConversationItem({
   unreadCount,
   presence,
   hasAgent,
+  activity,
   currentUserId,
   onClick,
 }: {
@@ -99,6 +119,7 @@ const ConversationItem = memo(function ConversationItem({
   unreadCount: number;
   presence: "online_local" | "offline";
   hasAgent: boolean;
+  activity?: AgentActivity;
   currentUserId?: string;
   onClick: () => void;
 }) {
@@ -154,7 +175,11 @@ const ConversationItem = memo(function ConversationItem({
               <span
                 className={cn(
                   "absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-card",
-                  presence === "online_local" ? "bg-success" : "bg-muted-foreground"
+                  activity
+                    ? "bg-primary animate-pulse"
+                    : presence === "online_local"
+                    ? "bg-success"
+                    : "bg-muted-foreground"
                 )}
               />
             )}
@@ -184,7 +209,9 @@ const ConversationItem = memo(function ConversationItem({
         </div>
 
         <div className="flex items-center gap-1.5 mt-0.5">
-          {(isChannel || isGroup) && (
+          {activity ? (
+            <AgentActivityIndicator activity={activity} />
+          ) : (isChannel || isGroup) && (
             <>
               <span className="flex items-center gap-1 rounded bg-muted px-1.5 py-px text-[10px] font-semibold text-muted-foreground">
                 <Users className="h-2.5 w-2.5" />

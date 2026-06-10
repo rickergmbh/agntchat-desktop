@@ -1,5 +1,7 @@
 import { Fragment, useEffect, useState } from "react";
 import { useAgentStore, type ManagedAgent } from "../stores/agentStore";
+import { usePresenceStore } from "../stores/presenceStore";
+import { AgentActivityIndicator } from "./AgentActivityIndicator";
 import { formatModelLabel, formatBackendLabel } from "../lib/models";
 import { AGENT_GRID_COLS, AGENT_CELL_ENGINE, AGENT_CELL_MODE } from "./agentTableLayout";
 import { formatUptime, cn } from "../lib/utils";
@@ -252,6 +254,13 @@ export function AgentRow({
   const activity = useAgentStore(
     (s) => s.activities[managed.agent.id] ?? null
   );
+  // Global activity broadcast by the backend (thinking/working/writing).
+  // Covers agents that aren't running locally — remote / org-host agents,
+  // and the "busy on a task between streaming bursts" case the local
+  // bridge-log activity misses.
+  const globalActivity = usePresenceStore(
+    (s) => s.agentActivity[managed.agent.id]
+  );
   const [error, setError] = useState<string | null>(null);
 
   const isRunning = managed.processStatus === "running";
@@ -400,7 +409,7 @@ export function AgentRow({
                   {childCount} sub-agent{childCount === 1 ? "" : "s"}
                 </Badge>
               )}
-              {isRunning && activity && (
+              {isRunning && activity ? (
                 <span className={cn(
                   "flex items-center gap-1.5 text-[11px] font-medium truncate",
                   ACTIVITY_COLORS[activity.type]
@@ -412,7 +421,11 @@ export function AgentRow({
                   )} />
                   <span className="truncate">{activity.label}</span>
                 </span>
-              )}
+              ) : globalActivity ? (
+                // Fallback to the server's global activity when there's no
+                // richer local bridge-log activity (remote/org-host agents).
+                <AgentActivityIndicator activity={globalActivity} />
+              ) : null}
             </div>
             {managed.agent.description && (
               <p className="text-xs text-muted-foreground truncate">
