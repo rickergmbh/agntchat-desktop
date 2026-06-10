@@ -798,6 +798,20 @@ export const useChatStore = create<ChatState>((set, get) => ({
       })
     );
 
+    // Cross-device read sync: the user read this conversation on another
+    // device. Zero the local badge so we don't show a false unread signal
+    // for messages they've already consumed elsewhere.
+    unsubs.push(
+      ws.on("conversation_read", (payload) => {
+        const convId = payload.conversationId as string;
+        if (!convId) return;
+        set((s) => {
+          if ((s.unreadCounts[convId] ?? 0) === 0) return s;
+          return { unreadCounts: { ...s.unreadCounts, [convId]: 0 } };
+        });
+      })
+    );
+
     unsubs.push(
       ws.on("new_conversation", (payload) => {
         const conv = payload.conversation as Conversation;

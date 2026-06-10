@@ -103,6 +103,9 @@ class WebSocketService {
       "task_progress",
       // Slack-style multi-workspace cross-device sync. workspaceStore listens.
       "active_organization_changed",
+      // Cross-device read sync: another of the user's devices marked a
+      // conversation read. chatStore zeroes the local unread badge.
+      "conversation_read",
     ];
 
     for (const event of userEvents) {
