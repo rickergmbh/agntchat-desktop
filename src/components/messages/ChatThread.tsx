@@ -408,11 +408,16 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
   );
 
   const scrollRef = useRef<HTMLDivElement>(null);
-  const prevLengthRef = useRef(0);
   const prevConvIdRef = useRef<string | null>(null);
-  const nearBottomRef = useRef(true);
+  // `pinnedRef` is the single source of truth for "stick to the latest
+  // message." It starts true (open at the bottom, like mobile's inverted
+  // list) and releases only when the user scrolls up. Every scroll-to-bottom
+  // path gates on it so we never yank someone reading history.
+  const pinnedRef = useRef(true);
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
   const agentConversationsFetchAttemptedRef = useRef<string | null>(null);
+  // `nearBottom` is UI-only — it drives the "Jump to latest" pill. It mirrors
+  // pinnedRef but lives in state so the button re-renders.
   const [nearBottom, setNearBottom] = useState(true);
   // Pair with `.scrollbar-autohide` CSS: toggled on during active scroll so
   // the thumb is visible while the user's actually moving content, then
@@ -472,52 +477,63 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
     };
   }, [childAgentConversationIds]);
 
-  // Autoscroll — matches web's ChatView behavior:
-  //   - Conversation switch: always jump to bottom (instant).
-  //   - New message while pinned to bottom: smooth scroll down.
-  //   - Streaming chunk while pinned to bottom: smooth scroll down so the
-  //     in-progress bubble stays visible as content grows. Without this,
-  //     the bubble renders off-screen and feels "late" until the final
-  //     message arrives and the messages-length effect fires.
-  // Both branches respect `nearBottom` so a user who scrolled up to read
-  // history isn't yanked back down.
-  useLayoutEffect(() => {
+  // Snap the scroller hard to the bottom. `scrollTop = scrollHeight` is the
+  // only call that reliably reaches the true bottom — a smooth `scrollTo`
+  // can be interrupted by the height still settling, leaving the latest
+  // message stranded above the fold on long threads.
+  const snapToBottom = useCallback(() => {
     const el = scrollRef.current;
-    if (!el) return;
-    const convChanged = prevConvIdRef.current !== conversationId;
-    const newMessages = threadItems.length > prevLengthRef.current;
-    if (convChanged) {
-      el.scrollTop = el.scrollHeight;
-      // Opening a conversation lands the user at the bottom — reset the
-      // pin flag so the height-settle observer keeps it there.
-      setNearBottom(true);
-    } else if ((newMessages || stream) && nearBottom) {
-      el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
-    }
-    prevLengthRef.current = threadItems.length;
-    prevConvIdRef.current = conversationId;
-  }, [conversationId, threadItems.length, nearBottom, stream]);
+    if (el) el.scrollTop = el.scrollHeight;
+  }, []);
 
-  // Mirror `nearBottom` into a ref so the height-settle observer reads the
-  // current value without being re-created on every scroll.
-  useEffect(() => {
-    nearBottomRef.current = nearBottom;
-  }, [nearBottom]);
+  // On conversation switch, re-arm the pin so opening a thread always lands
+  // at the latest message even if the user had scrolled up in the prior one.
+  // Declared before the snap effect so a switch re-arms the pin *before* the
+  // snap runs — otherwise a thread the user had scrolled up in would skip the
+  // post-paint re-snaps below.
+  useLayoutEffect(() => {
+    if (prevConvIdRef.current === conversationId) return;
+    prevConvIdRef.current = conversationId;
+    pinnedRef.current = true;
+    setNearBottom(true);
+  }, [conversationId]);
+
+  // Autoscroll — mimics mobile's inverted list: every thread opens at the
+  // latest message and stays pinned there as content arrives, until the user
+  // scrolls up. We snap synchronously (pre-paint) and again across two
+  // animation frames, because cards and image attachments render with no
+  // reserved height — the list keeps growing for a beat after the first snap.
+  // The ResizeObserver below covers async growth that lands after these
+  // frames (e.g. a slow image). Gated on `pinnedRef` so a user reading
+  // history is never yanked back down.
+  useLayoutEffect(() => {
+    if (!pinnedRef.current) return;
+    snapToBottom();
+    let r2 = 0;
+    const r1 = requestAnimationFrame(() => {
+      snapToBottom();
+      r2 = requestAnimationFrame(snapToBottom);
+    });
+    return () => {
+      cancelAnimationFrame(r1);
+      cancelAnimationFrame(r2);
+    };
+  }, [conversationId, threadItems.length, stream, snapToBottom]);
 
   // Keep the view pinned to the bottom while the message list's height
   // settles. Image attachments fetch their download URL async and render
   // with no reserved height, so a long thread keeps growing for a beat
   // after the one-shot scroll fires — stranding the latest message below
   // the fold. This callback ref wires a ResizeObserver to the message
-  // container that re-snaps to the bottom on every height change, but
-  // only while the user is still pinned there (nearBottomRef).
+  // container that re-snaps on every height change, but only while the user
+  // is still pinned there (pinnedRef).
   const contentRef = useCallback((node: HTMLDivElement | null) => {
     resizeObserverRef.current?.disconnect();
     resizeObserverRef.current = null;
     if (!node) return;
     const observer = new ResizeObserver(() => {
       const el = scrollRef.current;
-      if (el && nearBottomRef.current) el.scrollTop = el.scrollHeight;
+      if (el && pinnedRef.current) el.scrollTop = el.scrollHeight;
     });
     observer.observe(node);
     resizeObserverRef.current = observer;
@@ -526,6 +542,13 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const el = e.currentTarget;
     const distanceFromBottom = el.scrollHeight - el.clientHeight - el.scrollTop;
+    // Release the pin the moment the user scrolls meaningfully up; re-arm it
+    // when they return to within a tight band of the bottom. The 24px band
+    // (vs the larger button threshold) avoids a half-settled mid-load
+    // measurement latching the pin off — the bug that stranded long threads.
+    pinnedRef.current = distanceFromBottom < 24;
+    // The "Jump to latest" pill uses a roomier threshold so it doesn't flash
+    // for a few px of overscroll.
     setNearBottom(distanceFromBottom < SCROLL_BOTTOM_THRESHOLD);
 
     // Pulse the auto-hide scrollbar on for ~800ms of idle after a scroll event.
@@ -546,6 +569,9 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
   const scrollToBottom = () => {
     const el = scrollRef.current;
     if (!el) return;
+    // Re-arm the pin so we stay at the bottom as the thread continues.
+    pinnedRef.current = true;
+    setNearBottom(true);
     el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   };
 
