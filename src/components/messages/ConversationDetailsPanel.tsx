@@ -8,6 +8,7 @@ import { useMemoryStore } from "../../stores/memoryStore";
 import { uploadAvatar } from "../../lib/imageProcessor";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { AgentActivityIndicator } from "../AgentActivityIndicator";
 import {
   X,
   Bot,
@@ -500,6 +501,12 @@ function MemberRow({
   const name = p?.displayName ?? "Unknown";
   const isAgent = p?.type === "agent";
   const isOnline = presence !== "offline";
+  // Live activity (thinking / working / writing) read reactively per row so
+  // the members list reflects what an agent is doing right now, even when
+  // that work is happening in a different conversation.
+  const activity = usePresenceStore((s) =>
+    isAgent ? s.agentActivity[member.participantId] : undefined
+  );
 
   return (
     <li className="group flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-muted/50">
@@ -513,7 +520,11 @@ function MemberRow({
         <span
           className={cn(
             "absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-card",
-            isOnline ? "bg-success" : "bg-muted-foreground/40"
+            activity
+              ? "bg-primary animate-pulse"
+              : isOnline
+              ? "bg-success"
+              : "bg-muted-foreground/40"
           )}
         />
       </div>
@@ -526,9 +537,13 @@ function MemberRow({
             <Crown className="h-3 w-3 text-warning shrink-0" />
           )}
         </div>
-        <p className="text-[11px] text-muted-foreground">
-          {isAgent ? "Agent" : "Human"} · {isOnline ? "Online" : "Offline"}
-        </p>
+        {activity ? (
+          <AgentActivityIndicator activity={activity} />
+        ) : (
+          <p className="text-[11px] text-muted-foreground">
+            {isAgent ? "Agent" : "Human"} · {isOnline ? "Online" : "Offline"}
+          </p>
+        )}
       </div>
 
       {isAdmin && !isSelf && (
