@@ -1,4 +1,4 @@
-import { Brain, Wrench, Pen, Search, Users, Loader2, type LucideIcon } from "lucide-react";
+import { Brain, Wrench, Pen, Search, Users, Activity, type LucideIcon } from "lucide-react";
 
 // Global per-agent activity, broadcast platform-wide via the
 // `agent_activity_changed` user-channel event. Mirrors the backend's
@@ -33,7 +33,7 @@ const ACTIVITY_ICONS: Record<AgentActivity, LucideIcon> = {
   writing: Pen,
   analyzing: Search,
   waiting: Users,
-  working: Loader2,
+  working: Activity,
 };
 
 export function activityLabel(activity: AgentActivity): string {
@@ -41,7 +41,7 @@ export function activityLabel(activity: AgentActivity): string {
 }
 
 export function activityIcon(activity: AgentActivity): LucideIcon {
-  return ACTIVITY_ICONS[activity] ?? Loader2;
+  return ACTIVITY_ICONS[activity] ?? Activity;
 }
 
 // True when the activity represents the agent actively producing output
