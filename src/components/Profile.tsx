@@ -39,7 +39,6 @@ import {
   Loader2,
   AlertCircle,
   ExternalLink,
-  Unlink,
   Eye,
   EyeOff,
   Plus,
@@ -47,9 +46,6 @@ import {
   Trash2,
   Globe,
   Brain,
-  CircleCheck,
-  CircleX,
-  Info,
   Calendar,
   RefreshCw,
   Search,
@@ -644,6 +640,60 @@ export function Profile({ onClose }: { onClose: () => void }) {
 
         {activeSection === "connections" && (
           <div className="flex-1 overflow-y-auto p-5 space-y-6">
+            {/* Custom APIs — listed first so users immediately see they can
+                bring their own service endpoints, not just the built-ins. */}
+            <section>
+              <SectionHeader
+                title="Custom APIs"
+                subtitle="Connect custom service endpoints for agent use"
+              />
+
+              <div className="rounded-xl border border-border bg-card divide-y divide-border overflow-hidden">
+                <button
+                  onClick={openAddCustomApi}
+                  className="w-full flex items-center gap-3 px-4 py-3 text-left text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors cursor-pointer"
+                >
+                  <span className="w-8 h-8 rounded-md border border-dashed border-border flex items-center justify-center flex-shrink-0">
+                    <Plus className="w-4 h-4" />
+                  </span>
+                  <span className="text-sm font-medium">Add Custom API</span>
+                </button>
+                {customApis.map((entry) => (
+                  <div key={entry.id} className="flex items-center gap-3 px-4 py-3">
+                    <div className="w-8 h-8 rounded-md flex items-center justify-center flex-shrink-0 bg-primary/10 border border-primary/20">
+                      <Globe className="w-4 h-4 text-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">
+                        {entry.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground truncate mt-0.5">
+                        {entry.endpoint}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1 flex-shrink-0">
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        className="text-muted-foreground hover:text-foreground"
+                        onClick={() => openEditCustomApi(entry)}
+                      >
+                        <Pencil className="w-3.5 h-3.5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        className="text-muted-foreground hover:text-destructive"
+                        onClick={() => setDeleteCustomApiId(entry.id)}
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
             {/* Connected Accounts */}
             <section>
               <SectionHeader
@@ -687,59 +737,6 @@ export function Profile({ onClose }: { onClose: () => void }) {
                   <PaymentWalletRow />
                 </div>
               )}
-            </section>
-
-            {/* Custom APIs */}
-            <section>
-              <SectionHeader
-                title="Custom APIs"
-                subtitle="Connect custom service endpoints for agent use"
-              />
-
-              <div className="rounded-xl border border-border bg-card divide-y divide-border overflow-hidden">
-                {customApis.map((entry) => (
-                  <div key={entry.id} className="flex items-center gap-3 px-4 py-3">
-                    <div className="w-8 h-8 rounded-md flex items-center justify-center flex-shrink-0 bg-primary/10 border border-primary/20">
-                      <Globe className="w-4 h-4 text-primary" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">
-                        {entry.name}
-                      </p>
-                      <p className="text-xs text-muted-foreground truncate mt-0.5">
-                        {entry.endpoint}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-1 flex-shrink-0">
-                      <Button
-                        variant="ghost"
-                        size="icon-sm"
-                        className="text-muted-foreground hover:text-foreground"
-                        onClick={() => openEditCustomApi(entry)}
-                      >
-                        <Pencil className="w-3.5 h-3.5" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon-sm"
-                        className="text-muted-foreground hover:text-destructive"
-                        onClick={() => setDeleteCustomApiId(entry.id)}
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-                <button
-                  onClick={openAddCustomApi}
-                  className="w-full flex items-center gap-3 px-4 py-3 text-left text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors cursor-pointer"
-                >
-                  <span className="w-8 h-8 rounded-md border border-dashed border-border flex items-center justify-center flex-shrink-0">
-                    <Plus className="w-4 h-4" />
-                  </span>
-                  <span className="text-sm font-medium">Add Custom API</span>
-                </button>
-              </div>
             </section>
           </div>
         )}
@@ -1341,221 +1338,225 @@ function LlmApiKeysSection() {
             const providerKeys = keys.filter((k) => k.provider === provider.id);
 
             return (
-              <div key={provider.id} className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Label className="text-sm font-medium">{provider.label}</Label>
-                    <Badge variant="secondary" className="text-[10px] py-0">
-                      {providerKeys.length} key{providerKeys.length !== 1 ? "s" : ""}
-                    </Badge>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleStartAdd(provider.id)}
-                    className="h-7 text-xs"
-                  >
-                    <Plus className="w-3 h-3" />
-                    Add Key
-                  </Button>
+              <div key={provider.id}>
+                <div className="flex items-center gap-2 mb-2">
+                  <Label className="text-sm font-medium">{provider.label}</Label>
+                  <Badge variant="secondary" className="text-[10px] py-0">
+                    {providerKeys.length} key{providerKeys.length !== 1 ? "s" : ""}
+                  </Badge>
                 </div>
 
-                {/* Add key form */}
-                {adding === provider.id && (
-                  <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 space-y-2">
-                    <div className="space-y-1.5">
-                      <Label className="text-xs">Label</Label>
-                      <Input
-                        value={newLabel}
-                        onChange={(e) => setNewLabel(e.target.value)}
-                        placeholder="e.g. Work, Personal, Project X"
-                        className="text-xs"
-                        autoFocus
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label className="text-xs">API Key</Label>
-                      <Input
-                        type="password"
-                        value={newApiKey}
-                        onChange={(e) => setNewApiKey(e.target.value)}
-                        placeholder={keyPlaceholder(provider.id)}
-                        className="font-mono text-xs"
-                      />
-                    </div>
-                    <div className="flex gap-2 pt-1">
-                      <Button
-                        size="sm"
-                        onClick={handleConfirmAdd}
-                        disabled={!newApiKey.trim() || busy === "adding"}
-                        className="h-7 text-xs"
-                      >
-                        {busy === "adding" ? (
-                          <Loader2 className="w-3 h-3 animate-spin" />
-                        ) : (
-                          <Check className="w-3 h-3" />
-                        )}
-                        Add
-                      </Button>
-                      <Button size="sm" variant="ghost" onClick={() => setAdding(null)} className="h-7 text-xs">
-                        Cancel
-                      </Button>
-                    </div>
-                  </div>
-                )}
-
-                {/* Key list */}
-                {providerKeys.length === 0 && adding !== provider.id && (
-                  <p className="text-xs text-muted-foreground pl-1">No keys configured</p>
-                )}
-
-                {providerKeys.map((key) => {
-                  const isDefault = key.isDefault;
-                  const isEditing = editing === key.id;
-                  const isSaved = saved === key.id;
-                  const isBusy = busy === key.id;
-
-                  if (isEditing) {
-                    return (
-                      <div key={key.id} className="rounded-lg border border-primary/30 bg-primary/5 p-3 space-y-2">
-                        <div className="space-y-1.5">
-                          <Label className="text-xs">Label</Label>
-                          <Input
-                            value={editLabel}
-                            onChange={(e) => setEditLabel(e.target.value)}
-                            className="text-xs"
-                            autoFocus
-                          />
-                        </div>
-                        <div className="space-y-1.5">
-                          <Label className="text-xs">Rotate API key (optional)</Label>
-                          <Input
-                            type="password"
-                            value={editApiKey}
-                            onChange={(e) => setEditApiKey(e.target.value)}
-                            placeholder={`${keyPlaceholder(provider.id)} — leave blank to keep current`}
-                            className="font-mono text-xs"
-                          />
-                          <p className="text-[11px] text-muted-foreground">
-                            Stored encrypted on the backend. We never display the value back.
-                          </p>
-                        </div>
-                        <div className="flex gap-2 pt-1">
-                          <Button
-                            size="sm"
-                            onClick={handleConfirmEdit}
-                            disabled={isBusy}
-                            className="h-7 text-xs"
-                          >
-                            {isBusy ? (
-                              <Loader2 className="w-3 h-3 animate-spin" />
-                            ) : (
-                              <Check className="w-3 h-3" />
-                            )}
-                            Save
-                          </Button>
-                          <Button size="sm" variant="ghost" onClick={() => setEditing(null)} className="h-7 text-xs">
-                            Cancel
-                          </Button>
-                        </div>
+                <div className="rounded-xl border border-border bg-card divide-y divide-border overflow-hidden">
+                  {/* Add key form */}
+                  {adding === provider.id && (
+                    <div className="px-4 py-3 bg-primary/5 space-y-2">
+                      <div className="space-y-1.5">
+                        <Label className="text-xs">Label</Label>
+                        <Input
+                          value={newLabel}
+                          onChange={(e) => setNewLabel(e.target.value)}
+                          placeholder="e.g. Work, Personal, Project X"
+                          className="text-xs"
+                          autoFocus
+                        />
                       </div>
-                    );
-                  }
-
-                  return (
-                    <div
-                      key={key.id}
-                      className={cn(
-                        "rounded-lg border p-3 transition-colors",
-                        isDefault ? "border-primary/30 bg-primary/5" : "border-border bg-card"
-                      )}
-                    >
-                      <div className="flex items-center gap-2">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm font-medium truncate">{key.label}</span>
-                            {isDefault && (
-                              <Badge variant="secondary" className="text-[10px] py-0 bg-primary/10 text-primary">
-                                Default
-                              </Badge>
-                            )}
-                            {key.status === "revoked" && (
-                              <Badge variant="secondary" className="text-[10px] py-0 bg-destructive/10 text-destructive">
-                                Revoked
-                              </Badge>
-                            )}
-                            {isSaved && (
-                              <Badge variant="secondary" className="text-[10px] py-0">
-                                <Check className="w-3 h-3 mr-0.5" />
-                                Saved
-                              </Badge>
-                            )}
-                          </div>
-                          <p className="text-[11px] text-muted-foreground mt-1">
-                            Stored encrypted on the backend. Rotate to update.
-                          </p>
-                        </div>
-
-                        <div className="flex items-center gap-1 flex-shrink-0">
-                          {!isDefault && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleSetDefault(provider.id, key.id)}
-                              disabled={isBusy}
-                              className="h-7 text-xs text-muted-foreground"
-                              title="Set as default"
-                            >
-                              {isBusy ? <Loader2 className="w-3 h-3 animate-spin" /> : "Set Default"}
-                            </Button>
-                          )}
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7 text-muted-foreground hover:text-foreground"
-                            onClick={() => handleStartEdit(key)}
-                            disabled={isBusy}
-                            title="Edit / rotate"
-                          >
-                            <Pencil className="w-3 h-3" />
-                          </Button>
-                          {confirmDelete === key.id ? (
-                            <div className="flex items-center gap-1">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-7 text-xs text-destructive hover:text-destructive/90"
-                                onClick={() => handleDelete(key.id)}
-                                disabled={isBusy}
-                              >
-                                {isBusy ? <Loader2 className="w-3 h-3 animate-spin" /> : "Confirm"}
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-7 text-xs"
-                                onClick={() => setConfirmDelete(null)}
-                              >
-                                Cancel
-                              </Button>
-                            </div>
+                      <div className="space-y-1.5">
+                        <Label className="text-xs">API Key</Label>
+                        <Input
+                          type="password"
+                          value={newApiKey}
+                          onChange={(e) => setNewApiKey(e.target.value)}
+                          placeholder={keyPlaceholder(provider.id)}
+                          className="font-mono text-xs"
+                        />
+                      </div>
+                      <div className="flex gap-2 pt-1">
+                        <Button
+                          size="sm"
+                          onClick={handleConfirmAdd}
+                          disabled={!newApiKey.trim() || busy === "adding"}
+                          className="h-7 text-xs"
+                        >
+                          {busy === "adding" ? (
+                            <Loader2 className="w-3 h-3 animate-spin" />
                           ) : (
+                            <Check className="w-3 h-3" />
+                          )}
+                          Add
+                        </Button>
+                        <Button size="sm" variant="ghost" onClick={() => setAdding(null)} className="h-7 text-xs">
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
+                  {providerKeys.map((key) => {
+                    const isDefault = key.isDefault;
+                    const isEditing = editing === key.id;
+                    const isSaved = saved === key.id;
+                    const isBusy = busy === key.id;
+
+                    if (isEditing) {
+                      return (
+                        <div key={key.id} className="px-4 py-3 bg-primary/5 space-y-2">
+                          <div className="space-y-1.5">
+                            <Label className="text-xs">Label</Label>
+                            <Input
+                              value={editLabel}
+                              onChange={(e) => setEditLabel(e.target.value)}
+                              className="text-xs"
+                              autoFocus
+                            />
+                          </div>
+                          <div className="space-y-1.5">
+                            <Label className="text-xs">Rotate API key (optional)</Label>
+                            <Input
+                              type="password"
+                              value={editApiKey}
+                              onChange={(e) => setEditApiKey(e.target.value)}
+                              placeholder={`${keyPlaceholder(provider.id)} — leave blank to keep current`}
+                              className="font-mono text-xs"
+                            />
+                            <p className="text-[11px] text-muted-foreground">
+                              Stored encrypted on the backend. We never display the value back.
+                            </p>
+                          </div>
+                          <div className="flex gap-2 pt-1">
+                            <Button
+                              size="sm"
+                              onClick={handleConfirmEdit}
+                              disabled={isBusy}
+                              className="h-7 text-xs"
+                            >
+                              {isBusy ? (
+                                <Loader2 className="w-3 h-3 animate-spin" />
+                              ) : (
+                                <Check className="w-3 h-3" />
+                              )}
+                              Save
+                            </Button>
+                            <Button size="sm" variant="ghost" onClick={() => setEditing(null)} className="h-7 text-xs">
+                              Cancel
+                            </Button>
+                          </div>
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <div key={key.id} className="px-4 py-3">
+                        <div className="flex items-center gap-3">
+                          <div
+                            className={cn(
+                              "w-8 h-8 rounded-md flex items-center justify-center flex-shrink-0 border",
+                              isDefault
+                                ? "bg-primary/10 border-primary/20 text-primary"
+                                : "bg-muted border-transparent text-muted-foreground"
+                            )}
+                          >
+                            <Key className="w-4 h-4" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-medium truncate">{key.label}</span>
+                              {isDefault && (
+                                <Badge variant="secondary" className="text-[10px] py-0 bg-primary/10 text-primary">
+                                  Default
+                                </Badge>
+                              )}
+                              {key.status === "revoked" && (
+                                <Badge variant="secondary" className="text-[10px] py-0 bg-destructive/10 text-destructive">
+                                  Revoked
+                                </Badge>
+                              )}
+                              {isSaved && (
+                                <Badge variant="secondary" className="text-[10px] py-0">
+                                  <Check className="w-3 h-3 mr-0.5" />
+                                  Saved
+                                </Badge>
+                              )}
+                            </div>
+                            <p className="text-xs text-muted-foreground truncate mt-0.5">
+                              Stored encrypted on the backend. Rotate to update.
+                            </p>
+                          </div>
+
+                          <div className="flex items-center gap-1 flex-shrink-0">
+                            {!isDefault && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleSetDefault(provider.id, key.id)}
+                                disabled={isBusy}
+                                className="h-7 text-xs text-muted-foreground"
+                                title="Set as default"
+                              >
+                                {isBusy ? <Loader2 className="w-3 h-3 animate-spin" /> : "Set Default"}
+                              </Button>
+                            )}
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-7 w-7 text-muted-foreground hover:text-destructive/90"
-                              onClick={() => setConfirmDelete(key.id)}
+                              className="h-7 w-7 text-muted-foreground hover:text-foreground"
+                              onClick={() => handleStartEdit(key)}
                               disabled={isBusy}
-                              title="Delete"
+                              title="Edit / rotate"
                             >
-                              <Trash2 className="w-3 h-3" />
+                              <Pencil className="w-3 h-3" />
                             </Button>
-                          )}
+                            {confirmDelete === key.id ? (
+                              <div className="flex items-center gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-7 text-xs text-destructive hover:text-destructive/90"
+                                  onClick={() => handleDelete(key.id)}
+                                  disabled={isBusy}
+                                >
+                                  {isBusy ? <Loader2 className="w-3 h-3 animate-spin" /> : "Confirm"}
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-7 text-xs"
+                                  onClick={() => setConfirmDelete(null)}
+                                >
+                                  Cancel
+                                </Button>
+                              </div>
+                            ) : (
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-7 w-7 text-muted-foreground hover:text-destructive/90"
+                                onClick={() => setConfirmDelete(key.id)}
+                                disabled={isBusy}
+                                title="Delete"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </Button>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+
+                  {adding !== provider.id && (
+                    <button
+                      onClick={() => handleStartAdd(provider.id)}
+                      className="w-full flex items-center gap-3 px-4 py-3 text-left text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors cursor-pointer"
+                    >
+                      <span className="w-8 h-8 rounded-md border border-dashed border-border flex items-center justify-center flex-shrink-0">
+                        <Plus className="w-4 h-4" />
+                      </span>
+                      <span className="text-sm font-medium">
+                        Add {provider.label} Key
+                      </span>
+                    </button>
+                  )}
+                </div>
               </div>
             );
           })
@@ -1631,294 +1632,158 @@ function MemorySection({
 
   return (
     <>
-      {/* Explainer */}
       <section>
         <SectionHeader
           title="Semantic Memory"
-          subtitle="How your agents remember and recall information"
+          subtitle="Agents store memories as they learn about you — preferences, facts, decisions. An embedding provider lets them recall by meaning, so asking about scheduling meetings can surface a note like prefers mornings before 10am."
         />
 
-        <div className="rounded-lg border border-border bg-card p-4 space-y-3">
-          <div className="flex items-start gap-3">
-            <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-              <Brain className="w-4.5 h-4.5 text-primary" />
-            </div>
-            <div className="space-y-1.5">
-              <p className="text-sm font-medium">How it works</p>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Your agents store memories as they learn about you — preferences,
-                facts, decisions. Semantic memory uses AI embeddings to understand
-                the <em>meaning</em> of those memories, not just keywords.
-              </p>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                This means when you ask about "scheduling meetings", your agent
-                can recall "prefers mornings before 10am" — even though those
-                phrases share no words.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Status */}
-      <section>
-        <SectionHeader title="Status" />
-
-        <div
-          className={cn(
-            "rounded-lg border p-3.5 flex items-center gap-3",
-            isConnected
-              ? "border-border bg-card"
-              : hasIssue
-                ? "border-destructive/30 bg-destructive/5"
-                : "border-dashed border-border bg-muted/20"
-          )}
-        >
-          {isConnected ? (
-            <CircleCheck className="w-5 h-5 text-success flex-shrink-0" />
-          ) : hasIssue ? (
-            <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0" />
-          ) : (
-            <CircleX className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-          )}
-
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium">
-              {isConnected
-                ? "Semantic memory is active"
-                : hasIssue
-                  ? "Semantic memory has an issue"
-                  : "Semantic memory is not configured"}
-            </p>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              {isConnected
-                ? "Agents are using AI embeddings for smarter memory recall."
-                : hasIssue
-                  ? isRevoked
-                    ? "Your OpenAI API key was revoked — it may be invalid or out of funds."
-                    : "Your OpenAI API key failed. Check your account balance or replace the key."
-                  : "Without an embedding provider, agents use keyword-only search to recall memories. This works but misses semantically related memories."}
-            </p>
-          </div>
-
-          {isConnected && (
-            <Badge
-              variant="outline"
-              className="border-success/30 text-success bg-success/10 text-[10px] py-0 flex-shrink-0"
-            >
-              Active
-            </Badge>
-          )}
-          {hasIssue && (
-            <Badge
-              variant="outline"
-              className="border-destructive/30 text-destructive bg-destructive/10 text-[10px] py-0 flex-shrink-0"
-            >
-              {isRevoked ? "Revoked" : "Failed"}
-            </Badge>
-          )}
-        </div>
-      </section>
-
-      {/* API Key Setup */}
-      <section>
-        <SectionHeader
-          title="Embedding Provider"
-          subtitle="Provide an API key to enable semantic memory"
-        />
-
-        {/* Info callout */}
-        <div className="flex items-start gap-2 text-xs text-muted-foreground bg-muted/30 border border-border px-3 py-2.5 rounded-md mb-4">
-          <Info className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
-          <div className="space-y-1">
-            <p>
-              Semantic memory requires an embedding model to convert text into
-              vectors. We use OpenAI's <code className="text-[11px] bg-muted px-1 rounded">text-embedding-3-small</code> — it costs
-              about <strong>$0.02 per million tokens</strong> (thousands of
-              memories for less than a penny).
-            </p>
-            <p>
-              Your key is encrypted at rest and never shared. Each user provides
-              their own key so costs scale with your usage, not ours.
-            </p>
-          </div>
-        </div>
-
-        {/* Connected state */}
-        {isConnected && (
-          <div className="rounded-lg border border-border bg-card p-3.5">
+        <div className="rounded-xl border border-border bg-card divide-y divide-border overflow-hidden">
+          {/* OpenAI API key — the embedding provider, and the section's
+              status in one row: connected, broken, or not yet set up. */}
+          <div className="px-4 py-3">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <Key className="w-4.5 h-4.5 text-primary" />
+              <div
+                className={cn(
+                  "w-8 h-8 rounded-md flex items-center justify-center flex-shrink-0 border",
+                  isConnected
+                    ? "bg-primary/10 border-primary/20 text-primary"
+                    : "bg-muted border-transparent text-muted-foreground"
+                )}
+              >
+                <Brain className="w-4 h-4" />
               </div>
+
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium">OpenAI API Key</p>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  Connected
-                  {openaiCred?.lastUsedAt &&
-                    ` · Last used ${new Date(openaiCred.lastUsedAt).toLocaleDateString()}`}
+                <p className="text-sm font-medium truncate">OpenAI API Key</p>
+                {isConnected ? (
+                  <p className="flex items-center gap-1.5 text-xs text-muted-foreground truncate mt-0.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-success flex-shrink-0" />
+                    <span className="truncate">
+                      Active — agents recall memories by meaning
+                      {openaiCred?.lastUsedAt &&
+                        ` · Last used ${new Date(openaiCred.lastUsedAt).toLocaleDateString()}`}
+                    </span>
+                  </p>
+                ) : hasIssue ? (
+                  <p className="flex items-center gap-1.5 text-xs text-destructive truncate mt-0.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-destructive flex-shrink-0" />
+                    <span className="truncate">
+                      {isRevoked
+                        ? "Key revoked — it may be invalid or out of funds. Enter a new one below."
+                        : "Key failed — check your account balance or enter a new one below."}
+                    </span>
+                  </p>
+                ) : (
+                  <p className="text-xs text-muted-foreground truncate mt-0.5">
+                    Not configured — agents fall back to keyword-only recall
+                  </p>
+                )}
+              </div>
+
+              {isConnected && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="flex-shrink-0 text-muted-foreground hover:text-destructive"
+                  onClick={() => setConfirmDisconnect(true)}
+                >
+                  Remove
+                </Button>
+              )}
+            </div>
+
+            {/* Key entry — shown whenever there's no working key */}
+            {!isConnected && (
+              <div className="ml-11 mt-2.5 space-y-1.5">
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <Input
+                      type={showKey ? "text" : "password"}
+                      value={apiKey}
+                      onChange={(e) => {
+                        setApiKey(e.target.value);
+                        setError(null);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && apiKey.trim()) handleSaveKey();
+                      }}
+                      placeholder="sk-proj-..."
+                      className="pr-8"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowKey(!showKey)}
+                      aria-label={showKey ? "Hide API key" : "Show API key"}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    >
+                      {showKey ? (
+                        <EyeOff className="w-3.5 h-3.5" />
+                      ) : (
+                        <Eye className="w-3.5 h-3.5" />
+                      )}
+                    </button>
+                  </div>
+                  <Button
+                    size="sm"
+                    onClick={handleSaveKey}
+                    disabled={!apiKey.trim() || saving}
+                  >
+                    {saving ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    ) : saved ? (
+                      <Check className="w-3.5 h-3.5" />
+                    ) : (
+                      "Save"
+                    )}
+                  </Button>
+                </div>
+                <p className="text-[11px] text-muted-foreground">
+                  Uses <code className="bg-muted px-1 rounded">text-embedding-3-small</code> —
+                  about $0.02 per million tokens. Encrypted at rest, never shared.
+                  Get your key at{" "}
+                  <button
+                    onClick={() =>
+                      openExternal("https://platform.openai.com/api-keys")
+                    }
+                    className="text-primary hover:underline"
+                  >
+                    platform.openai.com/api-keys
+                  </button>
                 </p>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setConfirmDisconnect(true)}
-                className="text-destructive border-destructive/30 hover:bg-destructive/10 hover:text-destructive/90"
-              >
-                <Unlink className="w-3.5 h-3.5" />
-                Remove
-              </Button>
-            </div>
-          </div>
-        )}
+            )}
 
-        {/* Error state — allow re-entering key */}
-        {hasIssue && (
-          <div className="space-y-3">
-            <div className="flex items-start gap-2 text-sm text-destructive bg-destructive/10 border border-destructive/20 px-3 py-2.5 rounded-md">
-              <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-              <p className="text-xs">
-                {isRevoked
-                  ? "Your API key was invalid, revoked, or your OpenAI account is out of funds. Please enter a new key."
-                  : "Your API key encountered an error. Try replacing it with a new one."}
+            {error && (
+              <p className="ml-11 mt-1 flex items-center gap-1 text-[11px] text-destructive">
+                <AlertCircle className="w-3 h-3" />
+                {error}
+              </p>
+            )}
+            {saved && !isConnected && (
+              <p className="ml-11 mt-1 flex items-center gap-1 text-[11px] text-success">
+                <Check className="w-3 h-3" />
+                API key saved — semantic memory is now active.
+              </p>
+            )}
+          </div>
+
+          {/* Local embedding model — not yet available */}
+          <div className="px-4 py-3 flex items-center gap-3">
+            <div className="w-8 h-8 rounded-md flex items-center justify-center flex-shrink-0 bg-muted border border-transparent text-muted-foreground">
+              <Database className="w-4 h-4" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium truncate">
+                Local Embedding Model
+              </p>
+              <p className="text-xs text-muted-foreground truncate mt-0.5">
+                Runs entirely on your machine — no API key, no data leaving your device
               </p>
             </div>
-
-            <div className="space-y-2">
-              <Label className="text-xs">New OpenAI API Key</Label>
-              <div className="flex gap-2">
-                <div className="relative flex-1">
-                  <Input
-                    type={showKey ? "text" : "password"}
-                    value={apiKey}
-                    onChange={(e) => {
-                      setApiKey(e.target.value);
-                      setError(null);
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && apiKey.trim()) handleSaveKey();
-                    }}
-                    placeholder="sk-proj-..."
-                    className="pr-8"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowKey(!showKey)}
-                    aria-label={showKey ? "Hide API key" : "Show API key"}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  >
-                    {showKey ? (
-                      <EyeOff className="w-3.5 h-3.5" />
-                    ) : (
-                      <Eye className="w-3.5 h-3.5" />
-                    )}
-                  </button>
-                </div>
-                <Button
-                  size="sm"
-                  onClick={handleSaveKey}
-                  disabled={!apiKey.trim() || saving}
-                >
-                  {saving ? (
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  ) : saved ? (
-                    <Check className="w-3.5 h-3.5" />
-                  ) : (
-                    "Save"
-                  )}
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Not connected — setup form */}
-        {!isConnected && !hasIssue && (
-          <div className="space-y-2">
-            <Label className="text-xs">OpenAI API Key</Label>
-            <div className="flex gap-2">
-              <div className="relative flex-1">
-                <Input
-                  type={showKey ? "text" : "password"}
-                  value={apiKey}
-                  onChange={(e) => {
-                    setApiKey(e.target.value);
-                    setError(null);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && apiKey.trim()) handleSaveKey();
-                  }}
-                  placeholder="sk-proj-..."
-                  className="pr-8"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowKey(!showKey)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                >
-                  {showKey ? (
-                    <EyeOff className="w-3.5 h-3.5" />
-                  ) : (
-                    <Eye className="w-3.5 h-3.5" />
-                  )}
-                </button>
-              </div>
-              <Button
-                size="sm"
-                onClick={handleSaveKey}
-                disabled={!apiKey.trim() || saving}
-              >
-                {saving ? (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                ) : saved ? (
-                  <Check className="w-3.5 h-3.5" />
-                ) : (
-                  "Save"
-                )}
-              </Button>
-            </div>
-            <p className="text-[11px] text-muted-foreground">
-              Get your key at{" "}
-              <button
-                onClick={() =>
-                  openExternal("https://platform.openai.com/api-keys")
-                }
-                className="text-primary hover:underline"
-              >
-                platform.openai.com/api-keys
-              </button>
-            </p>
-          </div>
-        )}
-
-        {error && <p className="text-xs text-destructive mt-2">{error}</p>}
-        {saved && !isConnected && (
-          <p className="text-xs text-success mt-2">
-            API key saved — semantic memory is now active.
-          </p>
-        )}
-      </section>
-
-      {/* Local LLM Alternative */}
-      <section>
-        <SectionHeader title="Alternative: Local Embedding Model" />
-
-        <div className="rounded-lg border border-dashed border-border bg-muted/20 p-4">
-          <div className="flex items-start gap-3">
-            <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center flex-shrink-0 mt-0.5">
-              <Database className="w-4.5 h-4.5 text-muted-foreground" />
-            </div>
-            <div className="space-y-1.5">
-              <p className="text-sm font-medium text-muted-foreground">
-                Coming soon
-              </p>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                We're working on support for local embedding models that run
-                entirely on your machine — no API key, no cost, no data leaving
-                your device. This will use lightweight models like
-                all-MiniLM-L6-v2 (~80MB) for comparable quality.
-              </p>
-            </div>
+            <Badge variant="secondary" className="text-[10px] py-0 flex-shrink-0">
+              Coming soon
+            </Badge>
           </div>
         </div>
       </section>
