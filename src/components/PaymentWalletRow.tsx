@@ -22,7 +22,7 @@ import {
  *
  * OAuth device flow: Connect → backend returns a short code + verification
  * URL → we open the URL and poll until the human approves in Stripe Link.
- * Rendered inside the Connected Accounts section.
+ * Rendered as a row inside the Connected Accounts list container.
  */
 
 interface WalletStatus {
@@ -46,7 +46,7 @@ function openExternal(url: string) {
   });
 }
 
-export function PaymentWalletCard() {
+export function PaymentWalletRow() {
   const [status, setStatus] = useState<WalletStatus | null>(null);
   const [device, setDevice] = useState<DeviceInfo | null>(null);
   const [connecting, setConnecting] = useState(false);
@@ -166,41 +166,38 @@ export function PaymentWalletCard() {
 
   return (
     <>
-      {error && (
-        <div className="flex items-start gap-2 text-sm text-destructive bg-destructive/10 border border-destructive/20 px-3 py-2.5 rounded-md mb-2">
-          <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-          <span className="text-xs">{error}</span>
-        </div>
-      )}
-
-      <div
-        className={cn(
-          "rounded-lg border p-3.5 transition-colors",
-          isConnected ? "border-border bg-card" : "border-dashed border-border bg-muted/20"
-        )}
-      >
+      <div className="px-4 py-3">
         <div className="flex items-center gap-3">
           <div
             className={cn(
-              "w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0",
-              isConnected ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
+              "w-8 h-8 rounded-md flex items-center justify-center flex-shrink-0 border",
+              isConnected
+                ? "bg-primary/10 border-primary/20 text-primary"
+                : "bg-muted border-transparent text-muted-foreground"
             )}
           >
-            <Wallet className="w-4.5 h-4.5" />
+            <Wallet className="w-4 h-4" />
           </div>
 
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium truncate">Payment Wallet</p>
-            <p className="text-xs text-muted-foreground truncate">
-              Agents request payments from your Stripe Link wallet — you approve each one
-            </p>
+            {isConnected ? (
+              <p className="flex items-center gap-1.5 text-xs text-muted-foreground truncate mt-0.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-success flex-shrink-0" />
+                <span className="truncate">
+                  Connected
+                  <span className="text-muted-foreground"> · Stripe Link</span>
+                </span>
+              </p>
+            ) : (
+              <p className="text-xs text-muted-foreground truncate mt-0.5">
+                Agents request payments from your Stripe Link wallet — you approve each one
+              </p>
+            )}
           </div>
 
           {isConnected ? (
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <span className="inline-flex items-center rounded-md border border-success/30 bg-success/10 px-2 py-0.5 text-xs text-success">
-                Connected
-              </span>
+            <div className="flex items-center gap-1.5 flex-shrink-0">
               {confirmingDisconnect ? (
                 <>
                   <Button
@@ -223,8 +220,9 @@ export function PaymentWalletCard() {
                 </>
               ) : (
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
+                  className="text-muted-foreground hover:text-destructive"
                   onClick={() => setConfirmingDisconnect(true)}
                 >
                   Disconnect
@@ -233,20 +231,33 @@ export function PaymentWalletCard() {
             </div>
           ) : (
             <Button
+              variant="outline"
               size="sm"
               className="flex-shrink-0"
               onClick={handleConnect}
               disabled={connecting || !!device}
             >
-              {connecting && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+              {connecting ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <ExternalLink className="w-3.5 h-3.5" />
+              )}
               Connect
             </Button>
           )}
         </div>
 
         {isConnected && status && !status.hasPaymentMethod && (
-          <p className="mt-2 text-xs text-warning">
+          <p className="ml-11 mt-1 flex items-center gap-1 text-[11px] text-warning">
+            <AlertCircle className="w-3 h-3" />
             No payment method was found in this wallet.
+          </p>
+        )}
+
+        {error && (
+          <p className="ml-11 mt-1 flex items-center gap-1 text-[11px] text-destructive">
+            <AlertCircle className="w-3 h-3" />
+            {error}
           </p>
         )}
       </div>

@@ -4,7 +4,7 @@ import { useThemeStore, type ThemePreference } from "../stores/themeStore";
 import { isDesignSystemDebugOn, setDesignSystemDebug } from "../lib/designSystemDebug";
 import * as api from "../lib/api";
 import { cn } from "../lib/utils";
-import { PaymentWalletCard } from "./PaymentWalletCard";
+import { PaymentWalletRow } from "./PaymentWalletRow";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -97,23 +97,27 @@ type CredentialStatus = api.UserCredential["status"];
 
 const STATUS_CONFIG: Record<
   CredentialStatus,
-  { label: string; className: string }
+  { label: string; dot: string; text: string }
 > = {
   active: {
     label: "Connected",
-    className: "border-success/30 text-success bg-success/10",
+    dot: "bg-success",
+    text: "text-muted-foreground",
   },
   expired: {
     label: "Expired",
-    className: "border-warning/30 text-warning bg-warning/10",
+    dot: "bg-warning",
+    text: "text-warning",
   },
   revoked: {
     label: "Revoked",
-    className: "border-destructive/30 text-destructive bg-destructive/10",
+    dot: "bg-destructive",
+    text: "text-destructive",
   },
   refresh_failed: {
-    label: "Refresh Failed",
-    className: "border-destructive/30 text-destructive bg-destructive/10",
+    label: "Refresh failed",
+    dot: "bg-destructive",
+    text: "text-destructive",
   },
 };
 
@@ -658,22 +662,15 @@ export function Profile({ onClose }: { onClose: () => void }) {
                 <div className="flex items-center justify-center py-10">
                   <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
                 </div>
-              ) : standardProviders.length === 0 && customApis.length === 0 ? (
-                <div className="rounded-md border border-dashed border-border p-6 text-center">
-                  <Link2 className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-                  <p className="text-sm text-muted-foreground">
-                    No integration providers available
-                  </p>
-                </div>
               ) : (
-                <div className="space-y-2">
+                <div className="rounded-xl border border-border bg-card divide-y divide-border overflow-hidden">
                   {standardProviders.map((provider) => {
                     const credential = getCredentialForProvider(provider.name);
                     const isConnecting = connectingProvider === provider.name;
                     const Icon = getProviderIcon(provider.name);
 
                     return (
-                      <ProviderCard
+                      <ProviderRow
                         key={provider.name}
                         provider={provider}
                         credential={credential}
@@ -687,14 +684,10 @@ export function Profile({ onClose }: { onClose: () => void }) {
                       />
                     );
                   })}
+                  <PaymentWalletRow />
                 </div>
               )}
-              <div className="mt-2">
-                <PaymentWalletCard />
-              </div>
             </section>
-
-            <Separator />
 
             {/* Custom APIs */}
             <section>
@@ -703,57 +696,50 @@ export function Profile({ onClose }: { onClose: () => void }) {
                 subtitle="Connect custom service endpoints for agent use"
               />
 
-              {customApis.length > 0 && (
-                <div className="space-y-2 mb-3">
-                  {customApis.map((entry) => (
-                    <div
-                      key={entry.id}
-                      className="rounded-lg border border-border bg-card p-3.5"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 bg-primary/10">
-                          <Globe className="w-4.5 h-4.5 text-primary" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium truncate">
-                            {entry.name}
-                          </p>
-                          <p className="text-xs text-muted-foreground truncate mt-0.5">
-                            {entry.endpoint}
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-1 flex-shrink-0">
-                          <Button
-                            variant="ghost"
-                            size="icon-sm"
-                            onClick={() => openEditCustomApi(entry)}
-                          >
-                            <Pencil className="w-3.5 h-3.5" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon-sm"
-                            className="text-destructive hover:text-destructive/90"
-                            onClick={() => setDeleteCustomApiId(entry.id)}
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </Button>
-                        </div>
-                      </div>
+              <div className="rounded-xl border border-border bg-card divide-y divide-border overflow-hidden">
+                {customApis.map((entry) => (
+                  <div key={entry.id} className="flex items-center gap-3 px-4 py-3">
+                    <div className="w-8 h-8 rounded-md flex items-center justify-center flex-shrink-0 bg-primary/10 border border-primary/20">
+                      <Globe className="w-4 h-4 text-primary" />
                     </div>
-                  ))}
-                </div>
-              )}
-
-              <Button
-                variant="outline"
-                size="sm"
-                className="w-full"
-                onClick={openAddCustomApi}
-              >
-                <Plus className="w-3.5 h-3.5" />
-                Add Custom API
-              </Button>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">
+                        {entry.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground truncate mt-0.5">
+                        {entry.endpoint}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1 flex-shrink-0">
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        className="text-muted-foreground hover:text-foreground"
+                        onClick={() => openEditCustomApi(entry)}
+                      >
+                        <Pencil className="w-3.5 h-3.5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        className="text-muted-foreground hover:text-destructive"
+                        onClick={() => setDeleteCustomApiId(entry.id)}
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+                <button
+                  onClick={openAddCustomApi}
+                  className="w-full flex items-center gap-3 px-4 py-3 text-left text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors cursor-pointer"
+                >
+                  <span className="w-8 h-8 rounded-md border border-dashed border-border flex items-center justify-center flex-shrink-0">
+                    <Plus className="w-4 h-4" />
+                  </span>
+                  <span className="text-sm font-medium">Add Custom API</span>
+                </button>
+              </div>
             </section>
           </div>
         )}
@@ -2036,7 +2022,7 @@ function SectionHeader({
   );
 }
 
-function ProviderCard({
+function ProviderRow({
   provider,
   credential,
   icon: Icon,
@@ -2057,53 +2043,56 @@ function ProviderCard({
   const status = credential?.status;
   const statusConfig = status ? STATUS_CONFIG[status] : null;
 
+  // Strip OAuth URL prefixes so token scopes read as "repo, gist" instead of
+  // full https://... identifiers.
+  const shortScopes = credential?.scopes
+    .map((s) => s.split("/").pop() || s)
+    .join(", ");
+
   return (
-    <div
-      className={cn(
-        "rounded-lg border p-3.5 transition-colors",
-        isConnected
-          ? "border-border bg-card"
-          : "border-dashed border-border bg-muted/20"
-      )}
-    >
-      {/* Top row: icon, name, status/action */}
+    <div className="px-4 py-3">
       <div className="flex items-center gap-3">
         <div
           className={cn(
-            "w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0",
-            isConnected ? "bg-primary/10" : "bg-muted"
+            "w-8 h-8 rounded-md flex items-center justify-center flex-shrink-0 border",
+            isConnected
+              ? "bg-primary/10 border-primary/20 text-primary"
+              : "bg-muted border-transparent text-muted-foreground"
           )}
         >
-          <Icon
-            className={cn(
-              "w-4.5 h-4.5",
-              isConnected ? "text-primary" : "text-muted-foreground"
-            )}
-          />
+          <Icon className="w-4 h-4" />
         </div>
 
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <p className="text-sm font-medium truncate">
-              {provider.displayName}
-            </p>
-            {statusConfig && (
-              <Badge
-                variant="outline"
-                className={cn("text-[10px] py-0", statusConfig.className)}
-              >
+          <p className="text-sm font-medium truncate">
+            {provider.displayName}
+          </p>
+          {statusConfig ? (
+            <p
+              className={cn(
+                "flex items-center gap-1.5 text-xs truncate mt-0.5",
+                statusConfig.text
+              )}
+            >
+              <span
+                className={cn(
+                  "w-1.5 h-1.5 rounded-full flex-shrink-0",
+                  statusConfig.dot
+                )}
+              />
+              <span className="truncate">
                 {statusConfig.label}
-              </Badge>
-            )}
-          </div>
-          {provider.description && !isConnected && (
-            <p className="text-xs text-muted-foreground truncate mt-0.5">
-              {provider.description}
+                {credential?.providerUid && (
+                  <span className="text-muted-foreground">
+                    {" · "}
+                    {credential.providerUid}
+                  </span>
+                )}
+              </span>
             </p>
-          )}
-          {credential?.providerUid && (
+          ) : (
             <p className="text-xs text-muted-foreground truncate mt-0.5">
-              {credential.providerUid}
+              {provider.description || "Not connected"}
             </p>
           )}
         </div>
@@ -2116,12 +2105,11 @@ function ProviderCard({
             </Button>
           ) : isConnected ? (
             <Button
-              variant="outline"
+              variant="ghost"
               size="sm"
               onClick={onDisconnect}
-              className="text-destructive border-destructive/30 hover:bg-destructive/10 hover:text-destructive/90"
+              className="text-muted-foreground hover:text-destructive"
             >
-              <Unlink className="w-3.5 h-3.5" />
               Disconnect
             </Button>
           ) : provider.type === "oauth2" ? (
@@ -2132,13 +2120,13 @@ function ProviderCard({
           ) : (
             <Button variant="outline" size="sm" onClick={onConnectToken}>
               <Key className="w-3.5 h-3.5" />
-              Add Token
+              Connect
             </Button>
           )}
         </div>
       </div>
 
-      {/* Google: show services with status */}
+      {/* Google: per-service pills derived from granted scopes */}
       {credential && provider.name === "google" && (
         <GoogleServicesDetail
           credential={credential}
@@ -2146,21 +2134,11 @@ function ProviderCard({
         />
       )}
 
-      {/* Non-Google: show raw scopes */}
+      {/* Non-Google: compact scope summary */}
       {credential && provider.name !== "google" && credential.scopes.length > 0 && (
-        <div className="mt-2.5 pt-2.5 border-t border-border/50">
-          <div className="flex flex-wrap gap-1">
-            {credential.scopes.map((scope) => (
-              <Badge
-                key={scope}
-                variant="secondary"
-                className="text-[10px] font-normal py-0"
-              >
-                {scope}
-              </Badge>
-            ))}
-          </div>
-        </div>
+        <p className="ml-11 mt-1 text-[11px] text-muted-foreground truncate">
+          Scopes: {shortScopes}
+        </p>
       )}
     </div>
   );
@@ -2181,35 +2159,33 @@ function GoogleServicesDetail({
   const hasMissing = services.some((s) => !s.connected);
 
   return (
-    <div className="mt-2.5 pt-2.5 border-t border-border/50 space-y-2">
-      <div className="flex flex-wrap gap-x-4 gap-y-1">
-        {services.map((svc) => {
-          const SvcIcon = svc.icon;
-          return (
-            <div key={svc.scope} className="flex items-center gap-1.5">
-              <SvcIcon className={cn(
-                "w-3.5 h-3.5",
-                svc.connected ? "text-success" : "text-muted-foreground/50"
-              )} />
-              <span className={cn(
-                "text-xs",
-                svc.connected ? "text-foreground" : "text-muted-foreground/50 line-through"
-              )}>
-                {svc.label}
-              </span>
-              {svc.connected ? (
-                <Check className="w-3 h-3 text-success" />
-              ) : (
-                <AlertCircle className="w-3 h-3 text-warning" />
-              )}
-            </div>
-          );
-        })}
-      </div>
+    <div className="ml-11 mt-2 flex flex-wrap items-center gap-1.5">
+      {services.map((svc) => {
+        const SvcIcon = svc.icon;
+        return (
+          <span
+            key={svc.scope}
+            className={cn(
+              "inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-[11px] border",
+              svc.connected
+                ? "bg-muted/60 border-transparent text-foreground"
+                : "border-dashed border-border text-muted-foreground/60"
+            )}
+          >
+            <SvcIcon className="w-3 h-3" />
+            {svc.label}
+            {svc.connected ? (
+              <Check className="w-3 h-3 text-success" />
+            ) : (
+              <AlertCircle className="w-3 h-3 text-warning" />
+            )}
+          </span>
+        );
+      })}
       {hasMissing && (
         <button
           onClick={onReconnect}
-          className="flex items-center gap-1.5 text-[11px] text-primary hover:underline cursor-pointer"
+          className="flex items-center gap-1 text-[11px] text-primary hover:underline cursor-pointer"
         >
           <RefreshCw className="w-3 h-3" />
           Reconnect to enable all services
