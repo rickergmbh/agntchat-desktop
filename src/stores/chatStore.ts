@@ -375,6 +375,9 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
   stopAgents: async (conversationId) => {
     await api.stopConversationAgents(conversationId);
+    // The backend broadcasts `cancelled` for every active stream, but clear
+    // locally too so the bubble drops the instant the request resolves.
+    useStreamingStore.getState().clearStream(conversationId);
   },
 
   leaveConversation: async (conversationId, participantId) => {

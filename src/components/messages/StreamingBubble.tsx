@@ -1,4 +1,4 @@
-import { Bot, Brain, Wrench, Pen, Search, Clock, Users } from "lucide-react";
+import { Bot, Brain, Wrench, Pen, Search, Clock, Users, Loader2, Square } from "lucide-react";
 import type { ActiveStream, StreamPhase } from "../../lib/api";
 import { cn } from "../../lib/utils";
 
@@ -20,7 +20,17 @@ const phaseLabels: Record<StreamPhase, string> = {
   waiting: "Waiting for turn...",
 };
 
-export function StreamingBubble({ stream }: { stream: ActiveStream }) {
+export function StreamingBubble({
+  stream,
+  onStop,
+  stopping,
+}: {
+  stream: ActiveStream;
+  /** When set, renders a stop button beside the bubble. Stops ALL agents in
+   *  the conversation (server semantics of /stop-agents), not just this one. */
+  onStop?: () => void;
+  stopping?: boolean;
+}) {
   const Icon = phaseIcons[stream.phase] ?? Brain;
   const label = stream.phaseDetail ?? phaseLabels[stream.phase] ?? "Working...";
   const animated = stream.phase !== "queued" && stream.phase !== "waiting";
@@ -75,6 +85,29 @@ export function StreamingBubble({ stream }: { stream: ActiveStream }) {
           )}
         </div>
       </div>
+
+      {onStop && (
+        <button
+          type="button"
+          onClick={stopping ? undefined : onStop}
+          disabled={stopping}
+          title="Stop agents"
+          aria-label="Stop agents"
+          className={cn(
+            "self-end mb-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full",
+            "border border-border bg-card text-muted-foreground shadow-sm transition-colors",
+            stopping
+              ? "cursor-not-allowed opacity-60"
+              : "hover:border-destructive/40 hover:bg-destructive/10 hover:text-destructive"
+          )}
+        >
+          {stopping ? (
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          ) : (
+            <Square className="h-3 w-3 fill-current" />
+          )}
+        </button>
+      )}
     </div>
   );
 }

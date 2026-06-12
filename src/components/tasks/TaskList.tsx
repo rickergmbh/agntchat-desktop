@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Loader2, Search, Zap } from "lucide-react";
+import { Loader2, Search, Square, Zap } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -197,6 +197,13 @@ export function TaskList({
   );
 }
 
+const ACTIVE_ROW_STATUSES = new Set<TaskStatus>([
+  "pending",
+  "accepted",
+  "in_progress",
+  "blocked",
+]);
+
 function TaskRow({
   task,
   active,
@@ -209,9 +216,26 @@ function TaskRow({
   const assignee = task.assignees?.[0];
   const name = assignee?.displayName ?? "Unassigned";
   const statusClass = STATUS_COLORS[task.status] ?? STATUS_COLORS.cancelled;
+  const updateTaskStatus = useTaskStore((s) => s.updateTaskStatus);
+  const [stopping, setStopping] = useState(false);
+  const stoppable = ACTIVE_ROW_STATUSES.has(task.status);
+
+  const handleStop = async () => {
+    if (!confirm(`Stop "${task.title}"?`)) return;
+    setStopping(true);
+    try {
+      await updateTaskStatus(task.id, "cancelled");
+    } catch (e) {
+      console.warn("[tasks] stop from list failed", e);
+    } finally {
+      setStopping(false);
+    }
+  };
 
   return (
-    <li>
+    // The stop control is a SIBLING of the row button (absolutely positioned)
+    // — a button nested inside a button is invalid HTML and breaks clicks.
+    <li className="relative group">
       <button
         type="button"
         onClick={onClick}
@@ -231,8 +255,15 @@ function TaskRow({
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2">
-            <p className="truncate text-sm font-medium">{task.title}</p>
-            <span className="shrink-0 text-[10px] text-muted-foreground">
+            <p className={cn("truncate text-sm font-medium", stoppable && "group-hover:pr-6")}>
+              {task.title}
+            </p>
+            <span
+              className={cn(
+                "shrink-0 text-[10px] text-muted-foreground",
+                stoppable && "group-hover:opacity-0"
+              )}
+            >
               {formatRelativeShort(task.updatedAt)}
             </span>
           </div>
@@ -251,6 +282,29 @@ function TaskRow({
           </div>
         </div>
       </button>
+
+      {stoppable && (
+        <button
+          type="button"
+          onClick={stopping ? undefined : handleStop}
+          disabled={stopping}
+          title="Stop task"
+          aria-label="Stop task"
+          className={cn(
+            "absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full",
+            "border border-border bg-card text-muted-foreground shadow-sm transition-all",
+            stopping
+              ? "opacity-60 cursor-not-allowed"
+              : "opacity-0 group-hover:opacity-100 hover:border-destructive/40 hover:bg-destructive/10 hover:text-destructive"
+          )}
+        >
+          {stopping ? (
+            <Loader2 className="h-3 w-3 animate-spin" />
+          ) : (
+            <Square className="h-2.5 w-2.5 fill-current" />
+          )}
+        </button>
+      )}
     </li>
   );
 }

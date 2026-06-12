@@ -373,12 +373,25 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
   const agentConversations = useChatStore((s) => s.agentConversations);
   const setReplyingTo = useChatStore((s) => s.setReplyingTo);
   const deleteMessage = useChatStore((s) => s.deleteMessage);
+  const stopAgents = useChatStore((s) => s.stopAgents);
   const firstUnreadId = useChatStore((s) => s.firstUnreadIds[conversationId]);
   const myId = useAuthStore((s) => s.participant?.id);
 
   const typingIds = usePresenceStore((s) => s.typing[conversationId]);
   const typingNames = usePresenceStore((s) => s.typingNames);
   const stream = useStreamingStore((s) => s.streams[conversationId]);
+  const [stoppingAgents, setStoppingAgents] = useState(false);
+
+  const handleStopAgents = useCallback(async () => {
+    setStoppingAgents(true);
+    try {
+      await stopAgents(conversationId);
+    } catch (e) {
+      console.warn("[chat] stopAgents failed", e);
+    } finally {
+      setStoppingAgents(false);
+    }
+  }, [stopAgents, conversationId]);
 
   const childAgentConversations = useMemo(
     () =>
@@ -666,7 +679,13 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
                 </Fragment>
               );
             })}
-            {stream && <StreamingBubble stream={stream} />}
+            {stream && (
+              <StreamingBubble
+                stream={stream}
+                onStop={handleStopAgents}
+                stopping={stoppingAgents}
+              />
+            )}
           </div>
         )}
       </div>

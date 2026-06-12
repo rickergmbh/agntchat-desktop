@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {
+  Ban,
   CheckCircle,
   XCircle,
   Clock,
@@ -10,6 +11,7 @@ import {
   Check,
   X,
   Loader2,
+  Square,
 } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { getMessagePayload } from "../../lib/api";
@@ -128,6 +130,23 @@ export function TaskRequestMessage({ message }: { message: Message }) {
   const isComplete = status === "complete";
   const isFailed =
     status === "failed" || status === "declined" || status === "rejected";
+  const isCancelled = status === "cancelled" || status === "exhausted";
+
+  const updateTaskStatus = useTaskStore((s) => s.updateTaskStatus);
+  const [stopping, setStopping] = useState(false);
+
+  const handleStop = async () => {
+    if (!taskId) return;
+    if (!confirm(`Stop "${title}"?`)) return;
+    setStopping(true);
+    try {
+      await updateTaskStatus(taskId, "cancelled");
+    } catch (e) {
+      console.warn("[tasks] stop from card failed", e);
+    } finally {
+      setStopping(false);
+    }
+  };
 
   if (isWorking) {
     return (
@@ -151,10 +170,49 @@ export function TaskRequestMessage({ message }: { message: Message }) {
             {status !== "pending" && (
               <Loader2 className="h-4 w-4 animate-spin text-primary" />
             )}
+            {taskId && (
+              <button
+                type="button"
+                onClick={stopping ? undefined : handleStop}
+                disabled={stopping}
+                title="Stop task"
+                aria-label="Stop task"
+                className={cn(
+                  "flex h-7 w-7 shrink-0 items-center justify-center rounded-full",
+                  "border border-border text-muted-foreground transition-colors",
+                  stopping
+                    ? "cursor-not-allowed opacity-60"
+                    : "hover:border-destructive/40 hover:bg-destructive/10 hover:text-destructive"
+                )}
+              >
+                {stopping ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <Square className="h-3 w-3 fill-current" />
+                )}
+              </button>
+            )}
           </div>
           <p className="mt-2 text-sm font-semibold leading-snug">{title}</p>
 
           {taskId && <LiveSteps taskId={taskId} />}
+        </div>
+      </div>
+    );
+  }
+
+  if (isCancelled) {
+    return (
+      <div className="overflow-hidden rounded-xl border border-border bg-muted/30">
+        <div className="flex items-center gap-2.5 p-3">
+          <AgentAvatar name={agentName} avatarUrl={avatarUrl} />
+          <div className="min-w-0 flex-1">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+              {status === "exhausted" ? "Task Exhausted" : "Task Stopped"}
+            </span>
+            <p className="mt-0.5 truncate text-sm font-semibold">{title}</p>
+          </div>
+          <Ban className="h-5 w-5 shrink-0 text-muted-foreground" />
         </div>
       </div>
     );
