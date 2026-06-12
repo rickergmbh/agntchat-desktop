@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import type { Conversation } from "../../lib/api";
 import { cn, formatConversationTime } from "../../lib/utils";
-import { isResolvedThread, threadTopic } from "../../lib/thread-selectors";
+import { isResolvedThread, threadStatus, threadTopic } from "../../lib/thread-selectors";
 import { useAuthStore } from "../../stores/authStore";
 import { useChatStore } from "../../stores/chatStore";
 import { useNavStore } from "../../stores/navStore";
@@ -59,6 +59,14 @@ export function AgentConversationCard({
       ? "Open to view"
       : "No messages yet";
 
+  // The pill is the only resolution signal in the timeline (there is no
+  // separate "Thread resolved" card), so spell the terminal state out.
+  const statusLabel = resolved
+    ? threadStatus(conversation) === "abandoned"
+      ? "Abandoned"
+      : "Resolved"
+    : null;
+
   const open = () => {
     setActiveConversation(conversation.id);
     setView("chat");
@@ -109,6 +117,7 @@ export function AgentConversationCard({
             ) : null}
           </span>
           <span className="truncate text-[11px] text-muted-foreground">
+            {statusLabel ? `${statusLabel} · ` : ""}
             {subtitle ? `${subtitle} · ` : ""}
             {messageCountLabel}
             {" · "}

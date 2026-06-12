@@ -163,6 +163,11 @@ function consolidate(messages: Message[]): Message[] {
       if (type === "StatusUpdate" || type === "status_update") {
         try {
           const data = JSON.parse(msg.content) as Record<string, unknown>;
+          // thread_completed has no card of its own — the inline thread
+          // pill (AgentConversationCard) flips to resolved instead
+          // (chatStore patches thread_status on arrival). Filter here so
+          // MessageBubble doesn't render an empty avatar/name scaffold.
+          if (data.type === "thread_completed") return false;
           const suTaskId = data.task_id as string | undefined;
           const raw = (data.lifecycle_type ?? data.type ?? data.status) as
             | string

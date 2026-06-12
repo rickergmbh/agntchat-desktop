@@ -774,77 +774,6 @@ function LifecycleCard({
  *  human as a read-only observer on join — without this affordance the
  *  work conv is only discoverable via the SubConversationList accordion
  *  or the busy-redirect alert. */
-function ThreadCompletedCard({ payload }: { payload: StatusPayload }) {
-  const setActiveConversation = useChatStore((s) => s.setActiveConversation);
-  const summary = typeof payload.summary === "string" ? payload.summary.trim() : "";
-  const topic = typeof payload.topic === "string" ? payload.topic.trim() : "";
-  const outcome = typeof payload.outcome === "string" ? payload.outcome : "resolved";
-  const threadId = typeof payload.thread_id === "string" ? payload.thread_id : undefined;
-
-  const labelMap: Record<string, string> = {
-    resolved: "Thread resolved",
-    agreed: "Thread resolved",
-    blocked: "Thread blocked",
-    deferred: "Thread deferred",
-    abandoned: "Thread abandoned",
-  };
-  const label = labelMap[outcome] ?? "Thread resolved";
-
-  const isWarning = outcome === "blocked";
-  const isAbandoned = outcome === "abandoned";
-
-  const accentText = isWarning
-    ? "text-warning"
-    : isAbandoned
-    ? "text-muted-foreground"
-    : "text-success";
-  const borderClass = isWarning
-    ? "border-warning/30 hover:bg-warning/5"
-    : isAbandoned
-    ? "border-border hover:bg-muted/40"
-    : "border-success/30 hover:bg-success/5";
-
-  // Match the layout shape of the task lifecycle cards (LifecycleCard /
-  // CompletionCard): `my-2 w-full` outer wrapper, full-content-width
-  // inner card. Earlier this card used `flex justify-start px-4 py-0.5`
-  // + `max-w-2xl sm:w-[82%]`, which left 18% dead space on the right
-  // and the card didn't line up with task cards or the agent-name/model
-  // strip in the conversation area.
-  return (
-    <div className="my-2 w-full">
-      <button
-        type="button"
-        onClick={() => {
-          if (threadId) setActiveConversation(threadId);
-        }}
-        disabled={!threadId}
-        className={cn(
-          "group w-full rounded-lg border bg-card px-3 py-2 text-left transition-colors",
-          borderClass,
-          !threadId && "cursor-default"
-        )}
-      >
-        <div className="flex items-center gap-1.5">
-          <CheckCircle className={cn("h-3.5 w-3.5 shrink-0", accentText)} />
-          <span className={cn("shrink-0 text-xs font-semibold", accentText)}>
-            {label}
-          </span>
-          {topic ? (
-            <span className="min-w-0 truncate text-xs font-medium text-foreground">
-              · {topic}
-            </span>
-          ) : null}
-        </div>
-        {summary ? (
-          <p className="mt-1 text-xs text-muted-foreground line-clamp-3">
-            {summary}
-          </p>
-        ) : null}
-      </button>
-    </div>
-  );
-}
-
 function WorkRoomLink({ workConversationId }: { workConversationId: string }) {
   const setActiveConversation = useChatStore((s) => s.setActiveConversation);
   const setView = useNavStore((s) => s.setView);
@@ -889,11 +818,13 @@ export function StatusUpdateMessage({ message }: { message: Message }) {
   if (liveMeta?.agentAvatarUrl) enriched.agent_avatar_url = liveMeta.agentAvatarUrl;
 
   // thread_completed: a side agent thread was resolved (or auto-abandoned
-  // by the idle sweeper). Distinct from task lifecycle cards — carries
-  // thread_id + topic + goal + outcome rather than task_id. Rendered up
-  // front so it doesn't fall through the task-specific pipeline below.
+  // by the idle sweeper). Not rendered as its own card — the inline thread
+  // pill (AgentConversationCard) flips to its resolved state instead
+  // (chatStore patches thread_status when this message arrives). The
+  // message itself stays in the timeline data because agents consume it
+  // as the resolution artifact in recent_messages.
   if (payload.type === "thread_completed") {
-    return <ThreadCompletedCard payload={payload} />;
+    return null;
   }
 
   // task_request_failed: backend rejected the agent's create_task call.

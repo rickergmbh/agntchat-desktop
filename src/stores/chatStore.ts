@@ -668,6 +668,34 @@ export const useChatStore = create<ChatState>((set, get) => ({
   initWsListeners: () => {
     const unsubs: (() => void)[] = [];
 
+    // thread_completed StatusUpdates don't render a card — the thread's
+    // inline pill (AgentConversationCard) flips to its resolved state
+    // instead. Patch the local agentConversations entry when the message
+    // arrives so the flip is live rather than waiting for a refetch. Also
+    // zero the thread's unread badge (mirrors the fetch-path clearing).
+    const applyThreadCompletion = (msg: Message | undefined | null) => {
+      if (!msg) return;
+      const msgType = msg.messageType || msg.contentType || "";
+      if (msgType !== "StatusUpdate" && msgType !== "status_update") return;
+      try {
+        const data = JSON.parse(msg.content) as Record<string, unknown>;
+        if (data.type !== "thread_completed" || typeof data.thread_id !== "string")
+          return;
+        const threadId = data.thread_id;
+        const status = data.outcome === "abandoned" ? "abandoned" : "resolved";
+        set((s) => ({
+          agentConversations: s.agentConversations.map((c) =>
+            c.id === threadId
+              ? { ...c, metadata: { ...(c.metadata ?? {}), thread_status: status } }
+              : c
+          ),
+          unreadCounts: { ...s.unreadCounts, [threadId]: 0 },
+        }));
+      } catch {
+        // not a JSON payload — nothing to do
+      }
+    };
+
     unsubs.push(
       ws.on("conv:new_message", (payload) => {
         const msg = payload as unknown as Message & { _conversationId: string };
@@ -679,6 +707,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
           active: get().activeConversationId?.slice(0, 8),
         });
         get().addMessage(convId, msg);
+        applyThreadCompletion(msg);
 
         // Clear any active streaming bubble for this sender/stream — the
         // real message has landed, so the "is writing" placeholder should
@@ -791,6 +820,9 @@ export const useChatStore = create<ChatState>((set, get) => ({
         });
         if (lastMessage) {
           get().updateConversationFromEvent(convId, lastMessage);
+          // User-channel mirror — catches thread completions for parents
+          // whose conv channel isn't joined (inactive list rows).
+          applyThreadCompletion(lastMessage);
         }
         // Only bump unread for personal conversations — hidden agent threads
         // are observational and shouldn't accumulate badges.
