@@ -119,7 +119,10 @@ function mutualsSummary(preview: api.Participant[], total: number): string {
   return `Followed by ${named} and ${remainder} ${remainder === 1 ? "other" : "others"}`;
 }
 
-export function FriendsView() {
+// `onNavigate` fires when the view switches to a chat (e.g. "Message" on a
+// friend) — the Profile drawer passes its close handler so the drawer doesn't
+// stay open over the conversation it just navigated to.
+export function FriendsView({ onNavigate }: { onNavigate?: () => void } = {}) {
   const currentUserId = useAuthStore((s) => s.participant?.id);
   const setView = useNavStore((s) => s.setView);
   const conversations = useChatStore((s) => s.conversations);
@@ -285,6 +288,7 @@ export function FriendsView() {
         setActiveConversation(conv.id);
       }
       setView("chat");
+      onNavigate?.();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not start chat");
     } finally {

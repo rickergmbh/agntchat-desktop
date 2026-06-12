@@ -97,9 +97,15 @@ export async function getProfile(): Promise<Participant> {
   return request("/api/me");
 }
 
+// Backend returns the serialized participant directly (participant_self),
+// not wrapped in { participant }. `tagline` lives in metadata (140-char cap
+// server-side); `description` is the longer free-form bio.
 export async function updateProfile(data: {
   displayName?: string;
-}): Promise<{ participant: Participant }> {
+  description?: string;
+  tagline?: string;
+  avatarUrl?: string;
+}): Promise<Participant> {
   return request("/api/me", {
     method: "PATCH",
     body: JSON.stringify(data),

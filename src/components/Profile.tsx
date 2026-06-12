@@ -29,6 +29,8 @@ import {
   X,
   LogOut,
   User,
+  Users,
+  Camera,
   Link2,
   Mail,
   Github,
@@ -55,6 +57,10 @@ import {
   Palette,
 } from "lucide-react";
 import { deviceTimezone, filterTimezones, formatTimezoneLabel } from "../lib/timezones";
+import { getInitials } from "../lib/utils";
+import { uploadAvatar } from "../lib/imageProcessor";
+import { FriendsView } from "./FriendsView";
+import { Textarea } from "@/components/ui/textarea";
 import { open as tauriOpen } from "@tauri-apps/plugin-shell";
 import { PROVIDERS } from "../lib/models";
 import { useLlmKeyStore, type LlmApiKey as LlmApiKeyEntry } from "../stores/llmKeyStore";
@@ -125,6 +131,7 @@ const STATUS_CONFIG: Record<
 // WORKSPACES_ENABLED is flipped back on.
 const SECTIONS = [
   { value: "profile", label: "Profile", icon: User },
+  { value: "friends", label: "Friends", icon: Users },
   { value: "appearance", label: "Appearance", icon: Palette },
   { value: "region", label: "Region", icon: Globe },
   { value: "memory", label: "Memory", icon: Brain },
@@ -169,12 +176,22 @@ export function Profile({ onClose }: { onClose: () => void }) {
   const [activeSection, setActiveSection] = useState<SectionValue>("profile");
 
   // ---- Profile editing state ----
+  const storedTagline =
+    typeof participant?.metadata?.tagline === "string"
+      ? (participant.metadata.tagline as string)
+      : "";
+  const storedDescription = participant?.description ?? "";
+
   const [displayName, setDisplayName] = useState(
     participant?.displayName ?? ""
   );
-  const [savingName, setSavingName] = useState(false);
-  const [nameError, setNameError] = useState<string | null>(null);
-  const [nameSaved, setNameSaved] = useState(false);
+  const [tagline, setTagline] = useState(storedTagline);
+  const [description, setDescription] = useState(storedDescription);
+  const [savingProfile, setSavingProfile] = useState(false);
+  const [profileError, setProfileError] = useState<string | null>(null);
+  const [profileSaved, setProfileSaved] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [avatarError, setAvatarError] = useState<string | null>(null);
 
   // ---- Integration state ----
   const [providers, setProviders] = useState<api.ProviderInfo[]>([]);
@@ -248,43 +265,85 @@ export function Profile({ onClose }: { onClose: () => void }) {
     };
   }, []);
 
-  // Sync displayName when participant changes
+  // Sync editable fields when the participant refreshes (e.g. background
+  // fetchProfile after restoreSession, or another device's edit landing).
   useEffect(() => {
     if (participant?.displayName) {
       setDisplayName(participant.displayName);
     }
   }, [participant?.displayName]);
 
+  useEffect(() => {
+    setTagline(storedTagline);
+  }, [storedTagline]);
+
+  useEffect(() => {
+    setDescription(storedDescription);
+  }, [storedDescription]);
+
   // ---- Handlers ----
 
-  const handleSaveName = async () => {
-    const trimmed = displayName.trim();
-    if (!trimmed || trimmed === participant?.displayName) return;
+  // PATCH /api/me returns the full participant_self payload — persist it the
+  // same way fetchProfile does so every consumer (rail avatar, friends cards)
+  // sees the update without a reload.
+  const persistParticipant = (updated: api.Participant) => {
+    localStorage.setItem("participant", JSON.stringify(updated));
+    useAuthStore.setState({ participant: updated });
+  };
 
-    setSavingName(true);
-    setNameError(null);
-    setNameSaved(false);
+  const profileDirty =
+    !!participant &&
+    displayName.trim() !== "" &&
+    (displayName.trim() !== participant.displayName ||
+      tagline.trim() !== storedTagline ||
+      description.trim() !== storedDescription);
+
+  const handleSaveProfile = async () => {
+    if (!participant || !profileDirty) return;
+
+    const body: Parameters<typeof api.updateProfile>[0] = {};
+    const trimmedName = displayName.trim();
+    if (trimmedName !== participant.displayName) body.displayName = trimmedName;
+    // Tagline/description send even when empty — clearing is a valid edit.
+    if (tagline.trim() !== storedTagline) body.tagline = tagline.trim();
+    if (description.trim() !== storedDescription) body.description = description.trim();
+
+    setSavingProfile(true);
+    setProfileError(null);
+    setProfileSaved(false);
     try {
-      const result = await api.updateProfile({ displayName: trimmed });
-      const stored = localStorage.getItem("participant");
-      if (stored) {
-        try {
-          const p = JSON.parse(stored);
-          p.displayName = result.participant.displayName;
-          localStorage.setItem("participant", JSON.stringify(p));
-        } catch {
-          // ignore parse errors
-        }
-      }
-      useAuthStore.getState().restoreSession();
-      setNameSaved(true);
-      setTimeout(() => setNameSaved(false), 2000);
+      const updated = await api.updateProfile(body);
+      persistParticipant(updated);
+      setProfileSaved(true);
+      setTimeout(() => setProfileSaved(false), 2000);
     } catch (e) {
-      setNameError(
-        e instanceof Error ? e.message : "Failed to update display name"
+      setProfileError(
+        e instanceof Error ? e.message : "Failed to update profile"
       );
     } finally {
-      setSavingName(false);
+      setSavingProfile(false);
+    }
+  };
+
+  const handleAvatarChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file || !participant) return;
+
+    setUploadingAvatar(true);
+    setAvatarError(null);
+    try {
+      const newUrl = await uploadAvatar(file, `avatars/${participant.id}`);
+      const updated = await api.updateProfile({ avatarUrl: newUrl });
+      persistParticipant(updated);
+    } catch (err) {
+      setAvatarError(
+        err instanceof Error ? err.message : "Failed to upload avatar"
+      );
+    } finally {
+      setUploadingAvatar(false);
+      e.target.value = "";
     }
   };
 
@@ -438,10 +497,6 @@ export function Profile({ onClose }: { onClose: () => void }) {
     return credentials.find((c) => c.provider === providerName);
   }
 
-  const nameChanged =
-    displayName.trim() !== "" &&
-    displayName.trim() !== participant?.displayName;
-
   // Filter out "custom" provider from the backend list (we manage it ourselves).
   // Also exclude LLM-key providers — they live in the dedicated LLM Keys tab
   // so users have a single home for them. Connections is for service
@@ -536,44 +591,125 @@ export function Profile({ onClose }: { onClose: () => void }) {
         {/* Section content */}
         {activeSection === "profile" && (
           <div className="flex-1 overflow-y-auto p-5 space-y-6">
+            {/* Avatar + identity header */}
+            <div className="flex items-center gap-4">
+              <div className="relative group">
+                <Avatar className="h-16 w-16">
+                  {participant?.avatarUrl && (
+                    <AvatarImage src={participant.avatarUrl} />
+                  )}
+                  <AvatarFallback className="text-lg bg-primary/10 text-primary">
+                    {getInitials(participant?.displayName)}
+                  </AvatarFallback>
+                </Avatar>
+                <label
+                  className={cn(
+                    "absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-black/50 text-white opacity-0 transition-opacity group-hover:opacity-100",
+                    uploadingAvatar && "opacity-100"
+                  )}
+                >
+                  {uploadingAvatar ? (
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                  ) : (
+                    <Camera className="h-5 w-5" />
+                  )}
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    className="hidden"
+                    onChange={handleAvatarChange}
+                    disabled={uploadingAvatar}
+                  />
+                </label>
+              </div>
+              <div className="min-w-0">
+                <h3 className="text-base font-semibold truncate">
+                  {participant?.displayName}
+                </h3>
+                <p className="text-sm text-muted-foreground truncate">
+                  {participant?.email ?? ""}
+                </p>
+              </div>
+            </div>
+            {avatarError && (
+              <p className="text-xs text-destructive">{avatarError}</p>
+            )}
+
             {/* Display name */}
             <div className="space-y-1.5">
               <Label className="text-xs">Display Name</Label>
-              <div className="flex gap-2">
-                <Input
-                  value={displayName}
-                  onChange={(e) => {
-                    setDisplayName(e.target.value);
-                    setNameError(null);
-                    setNameSaved(false);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && nameChanged) handleSaveName();
-                  }}
-                  placeholder="Your display name"
-                  className="flex-1"
-                />
-                <Button
-                  size="sm"
-                  onClick={handleSaveName}
-                  disabled={!nameChanged || savingName}
-                >
-                  {savingName ? (
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  ) : nameSaved ? (
-                    <Check className="w-3.5 h-3.5" />
-                  ) : (
-                    "Save"
-                  )}
-                </Button>
-              </div>
-              {nameError && (
-                <p className="text-xs text-destructive">{nameError}</p>
-              )}
-              {nameSaved && (
-                <p className="text-xs text-success">Name updated</p>
-              )}
+              <Input
+                value={displayName}
+                onChange={(e) => {
+                  setDisplayName(e.target.value);
+                  setProfileError(null);
+                  setProfileSaved(false);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && profileDirty) handleSaveProfile();
+                }}
+                placeholder="Your display name"
+              />
             </div>
+
+            {/* Tagline — short one-liner shown on friend cards */}
+            <div className="space-y-1.5">
+              <Label className="text-xs">Tagline</Label>
+              <Input
+                value={tagline}
+                maxLength={140}
+                onChange={(e) => {
+                  setTagline(e.target.value);
+                  setProfileError(null);
+                  setProfileSaved(false);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && profileDirty) handleSaveProfile();
+                }}
+                placeholder="A short line about you"
+              />
+              <p className="text-[10px] text-muted-foreground">
+                {tagline.length}/140 — shown on your friend card
+              </p>
+            </div>
+
+            {/* Description — longer bio */}
+            <div className="space-y-1.5">
+              <Label className="text-xs">About</Label>
+              <Textarea
+                value={description}
+                rows={3}
+                maxLength={500}
+                onChange={(e) => {
+                  setDescription(e.target.value);
+                  setProfileError(null);
+                  setProfileSaved(false);
+                }}
+                placeholder="Tell others a bit about yourself..."
+                className="resize-none"
+              />
+              <p className="text-[10px] text-muted-foreground">
+                {description.length}/500
+              </p>
+            </div>
+
+            {profileError && (
+              <p className="text-xs text-destructive">{profileError}</p>
+            )}
+
+            <Button
+              size="sm"
+              onClick={handleSaveProfile}
+              disabled={!profileDirty || savingProfile}
+            >
+              {savingProfile ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : profileSaved ? (
+                <Check className="w-3.5 h-3.5" />
+              ) : (
+                "Save Changes"
+              )}
+            </Button>
 
             {/* Email (read-only) */}
             <div className="space-y-1.5">
@@ -596,6 +732,14 @@ export function Profile({ onClose }: { onClose: () => void }) {
               <LogOut className="w-3.5 h-3.5" />
               Sign Out
             </Button>
+          </div>
+        )}
+
+        {activeSection === "friends" && (
+          // FriendsView manages its own header/scroll — give it the full
+          // section area (no p-5 wrapper like the other sections).
+          <div className="flex flex-1 min-h-0 overflow-hidden">
+            <FriendsView onNavigate={onClose} />
           </div>
         )}
 
