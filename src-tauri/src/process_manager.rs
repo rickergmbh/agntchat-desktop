@@ -691,11 +691,27 @@ fn apply_cli_connection_env(cmd: &mut Command, args: &StartAgentArgs) {
 fn ensure_venv(bridge_dir: &std::path::Path) -> Result<String, String> {
     let venv_dir = bridge_dir.join("venv");
 
-    let (venv_python, system_python) = if cfg!(target_os = "windows") {
-        (venv_dir.join("Scripts").join("python.exe"), "python")
+    let (venv_python, venv_pip, system_python) = if cfg!(target_os = "windows") {
+        (
+            venv_dir.join("Scripts").join("python.exe"),
+            venv_dir.join("Scripts").join("pip.exe"),
+            "python",
+        )
     } else {
-        (venv_dir.join("bin").join("python3"), "python3")
+        (
+            venv_dir.join("bin").join("python3"),
+            venv_dir.join("bin").join("pip3"),
+            "python3",
+        )
     };
+
+    // A venv with python but no pip means a previous creation attempt died
+    // partway through (e.g. ensurepip failure) — wipe it and start over.
+    if venv_python.exists() && !venv_pip.exists() {
+        eprintln!("[ProcessManager] Removing broken venv at {:?}", venv_dir);
+        std::fs::remove_dir_all(&venv_dir)
+            .map_err(|e| format!("Failed to remove broken venv at {:?}: {}", venv_dir, e))?;
+    }
 
     // Create venv if it doesn't exist
     if !venv_python.exists() {
@@ -954,6 +970,13 @@ pub fn install_computer_use_deps(app: tauri::AppHandle) -> Result<(), String> {
     Ok(())
 }
 
+/// Stringify a path, stripping Windows verbatim (`\\?\`) prefixes.
+/// Python's venv/ensurepip/pip cannot handle extended-length paths, so every
+/// path we hand to a Python subprocess must be a plain drive-letter path.
+fn plain_path(p: &std::path::Path) -> String {
+    dunce::simplified(p).to_string_lossy().to_string()
+}
+
 fn find_bridge_script(app: &tauri::AppHandle) -> Result<String, String> {
     use tauri::Manager;
 
@@ -965,7 +988,7 @@ fn find_bridge_script(app: &tauri::AppHandle) -> Result<String, String> {
             .join("bridge")
             .join("agent_bridge.py");
         if path.exists() {
-            return Ok(path.to_string_lossy().to_string());
+            return Ok(plain_path(&path));
         }
     }
 
@@ -974,7 +997,7 @@ fn find_bridge_script(app: &tauri::AppHandle) -> Result<String, String> {
         for ancestor in exe.ancestors().skip(1) {
             let candidate = ancestor.join("bridge").join("agent_bridge.py");
             if candidate.exists() {
-                return Ok(candidate.to_string_lossy().to_string());
+                return Ok(plain_path(&candidate));
             }
         }
     }
@@ -984,7 +1007,7 @@ fn find_bridge_script(app: &tauri::AppHandle) -> Result<String, String> {
         for ancestor in cwd.ancestors() {
             let candidate = ancestor.join("bridge").join("agent_bridge.py");
             if candidate.exists() {
-                return Ok(candidate.to_string_lossy().to_string());
+                return Ok(plain_path(&candidate));
             }
         }
     }
