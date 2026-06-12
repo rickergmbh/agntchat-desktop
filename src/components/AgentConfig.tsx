@@ -121,6 +121,12 @@ const CLI_CONNECTION_LABELS: Record<string, string> = {
   openai: "OpenAI API",
 };
 
+// Computer-use safety deps (pyobjc/Quartz) only exist on macOS — the
+// install can never succeed elsewhere, so the deps row and the auto-install
+// kick are gated on this. WKWebView (Mac) reports "Macintosh"; WebView2
+// (Windows) reports "Windows NT".
+const IS_MACOS = navigator.userAgent.includes("Macintosh");
+
 const CLI_CONNECTION_HINTS: Record<string, string> = {
   subscription: "Uses this machine's `claude login` (Pro/Max/Console seat).",
   anthropic: "Anthropic-direct API. Set the key under API Key below.",
@@ -773,9 +779,16 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                       anytime. If the agent is currently running, restart it
                       after changing this for the new policy to take effect.
                     </p>
-                    {agent.metadata?.computer_use_enabled === true && (
-                      <ComputerUseDepsRow />
-                    )}
+                    {agent.metadata?.computer_use_enabled === true &&
+                      (IS_MACOS ? (
+                        <ComputerUseDepsRow />
+                      ) : (
+                        <p className="text-xs text-muted-foreground mt-2">
+                          Safety features (real perm probe, Quartz drivers,
+                          terminal redaction) are macOS-only and unavailable
+                          on this machine.
+                        </p>
+                      ))}
                   </div>
                   <Switch
                     checked={agent.metadata?.computer_use_enabled === true}
@@ -798,7 +811,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                       // row reflects reality, and offer the install if
                       // they're missing. Background install — never blocks
                       // the toggle.
-                      if (v) {
+                      if (v && IS_MACOS) {
                         await refreshComputerUseDepsStatus();
                         const s = useAgentStore.getState().computerUseDeps;
                         if (s.state === "not_installed") {

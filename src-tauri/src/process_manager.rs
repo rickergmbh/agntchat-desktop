@@ -868,6 +868,15 @@ pub fn get_computer_use_deps_status() -> DepsStatus {
 
 #[tauri::command]
 pub fn install_computer_use_deps(app: tauri::AppHandle) -> Result<(), String> {
+    // pyobjc / Quartz have no wheels outside macOS — the install can never
+    // succeed elsewhere, so fail fast with a real explanation instead of a
+    // pip resolution error.
+    if !cfg!(target_os = "macos") {
+        return Err(
+            "Computer-use safety features (pyobjc/Quartz) are macOS-only and cannot be installed on this platform.".to_string(),
+        );
+    }
+
     // Refuse to start a second install if one is already running.
     {
         let mut s = deps_status()
@@ -881,18 +890,8 @@ pub fn install_computer_use_deps(app: tauri::AppHandle) -> Result<(), String> {
         s.log_tail.clear();
     }
 
-    let python = bridge_venv_python(&app)?;
-    if !python.exists() {
-        let mut s = deps_status().lock().unwrap();
-        s.state = "failed".to_string();
-        s.error = Some(format!(
-            "venv python missing at {}; start an agent once first so Tauri creates the venv",
-            python.display()
-        ));
-        return Err(s.error.clone().unwrap_or_default());
-    }
-
-    let req_file = bridge_dir_for(&app)?.join("requirements-computer-use.txt");
+    let bridge_dir = bridge_dir_for(&app)?;
+    let req_file = bridge_dir.join("requirements-computer-use.txt");
     if !req_file.exists() {
         let mut s = deps_status().lock().unwrap();
         s.state = "failed".to_string();
@@ -907,6 +906,21 @@ pub fn install_computer_use_deps(app: tauri::AppHandle) -> Result<(), String> {
     // UI behind it) doesn't block. Status updates land in `deps_status`
     // and the frontend polls via get_computer_use_deps_status.
     std::thread::spawn(move || {
+        // ensure_venv both creates the venv on first use and wipes/recreates
+        // a half-built one (python.exe present, pip missing — the ensurepip
+        // failure mode). Running `python -m pip` against such a venv is what
+        // used to surface as "No module named pip" in the UI.
+        let python = match ensure_venv(&bridge_dir) {
+            Ok(p) => p,
+            Err(e) => {
+                if let Ok(mut s) = deps_status().lock() {
+                    s.state = "failed".to_string();
+                    s.error = Some(e.clone());
+                }
+                eprintln!("[ProcessManager] venv setup failed: {}", e);
+                return;
+            }
+        };
         eprintln!(
             "[ProcessManager] installing computer-use deps via pip from {}",
             req_file.display()
