@@ -29,6 +29,7 @@ export function ConversationList() {
   const setActive = useChatStore((s) => s.setActiveConversation);
   const online = usePresenceStore((s) => s.online);
   const agentActivity = usePresenceStore((s) => s.agentActivity);
+  const agentActivityConvs = usePresenceStore((s) => s.agentActivityConvs);
   const currentUserId = useAuthStore((s) => s.participant?.id);
 
   if (loading && conversations.length === 0) {
@@ -71,16 +72,18 @@ export function ConversationList() {
               m.participantId !== currentUserId &&
               m.participant?.type === "agent"
           ) ?? false;
-        // First agent member with a live activity drives the row's
-        // "Thinking…/Working…" line — shows here even when that work is in
-        // a different conversation.
+        // First agent member whose activity originates in THIS conversation
+        // drives the row's "Thinking…/Working…" line. The backend scopes
+        // each activity to the conversations the work lives in, so an agent
+        // working in one DM doesn't light up every row it's a member of.
         let activity: AgentActivity | undefined;
         if (hasAgent) {
           for (const m of conv.members ?? []) {
             if (m.participantId === currentUserId) continue;
             if (m.participant?.type !== "agent") continue;
             const a = agentActivity[m.participantId];
-            if (a) {
+            const convs = agentActivityConvs[m.participantId] ?? [];
+            if (a && convs.includes(conv.id)) {
               activity = a;
               break;
             }

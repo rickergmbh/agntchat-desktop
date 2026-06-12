@@ -19,6 +19,11 @@ interface PresenceState {
    *  every surface even when we're viewing another conversation. Absence =
    *  idle (fall back to the online/offline dot). */
   agentActivity: Record<string, AgentActivity>;
+  /** Conversations each agent's activity originates in (live streams' +
+   *  active tasks' conversations). The conversation LIST scopes its
+   *  "Thinking…/Working…" line to these rows; agent-centric surfaces
+   *  (rail, header, details panel) keep using the global agentActivity. */
+  agentActivityConvs: Record<string, string[]>;
   /** convId → Set of participantIds currently typing */
   typing: Record<string, Set<string>>;
   /** participantId → display name (for rendering "X is typing...") */
@@ -87,6 +92,7 @@ export const usePresenceStore = create<PresenceState>((set) => {
     online: new Set(),
     agentPresence: {},
     agentActivity: {},
+    agentActivityConvs: {},
     typing: {},
     typingNames: {},
 
@@ -178,20 +184,32 @@ export const usePresenceStore = create<PresenceState>((set) => {
 
       // Global agent activity. `activity: null` means the agent went idle —
       // drop the key so surfaces fall back to the plain online/offline dot.
+      // `conversationIds` scopes the conversation-list line to the rows the
+      // work actually lives in.
       unsubs.push(
         ws.on("agent_activity_changed", (payload) => {
           const agentId = payload.agentId as string | undefined;
           if (!agentId) return;
           const activity = payload.activity as AgentActivity | null | undefined;
+          const convs = (payload.conversationIds as string[] | undefined) ?? [];
           set((s) => {
             if (!activity) {
               if (s.agentActivity[agentId] === undefined) return s;
               const next = { ...s.agentActivity };
               delete next[agentId];
-              return { agentActivity: next };
+              const nextConvs = { ...s.agentActivityConvs };
+              delete nextConvs[agentId];
+              return { agentActivity: next, agentActivityConvs: nextConvs };
             }
-            if (s.agentActivity[agentId] === activity) return s;
-            return { agentActivity: { ...s.agentActivity, [agentId]: activity } };
+            const currentConvs = s.agentActivityConvs[agentId] ?? [];
+            const convsUnchanged =
+              convs.length === currentConvs.length &&
+              convs.every((id) => currentConvs.includes(id));
+            if (s.agentActivity[agentId] === activity && convsUnchanged) return s;
+            return {
+              agentActivity: { ...s.agentActivity, [agentId]: activity },
+              agentActivityConvs: { ...s.agentActivityConvs, [agentId]: convs },
+            };
           });
         })
       );
@@ -223,12 +241,22 @@ export const usePresenceStore = create<PresenceState>((set) => {
               | undefined) ?? {};
           const agentActivities =
             (payload.agentActivities as
-              | Record<string, AgentActivity>
+              | Record<
+                  string,
+                  { activity: AgentActivity; conversationIds?: string[] }
+                >
               | undefined) ?? {};
+          const activity: Record<string, AgentActivity> = {};
+          const activityConvs: Record<string, string[]> = {};
+          for (const [agentId, entry] of Object.entries(agentActivities)) {
+            activity[agentId] = entry.activity;
+            activityConvs[agentId] = entry.conversationIds ?? [];
+          }
           set({
             online: new Set(ids),
             agentPresence: agentPresences,
-            agentActivity: agentActivities,
+            agentActivity: activity,
+            agentActivityConvs: activityConvs,
           });
         })
       );
