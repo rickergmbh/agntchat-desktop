@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Paperclip, Send, X, Image as ImageIcon, FileIcon, Loader2 } from "lucide-react";
 import {
   COMPOSER_PLACEHOLDER,
@@ -153,14 +153,34 @@ export function MessageComposer({ conversationId }: { conversationId: string }) 
   // Keep `overflow-y: hidden` while content still fits — prevents WebKit from
   // reserving a scrollbar gutter on a single-line composer. Only flip to
   // `auto` once the textarea hits its cap and actual scrolling is needed.
-  useEffect(() => {
+  const resizeTextarea = useCallback(() => {
     const el = textareaRef.current;
     if (!el) return;
     el.style.height = "auto";
     const next = Math.min(el.scrollHeight, MAX_HEIGHT);
     el.style.height = `${next}px`;
     el.style.overflowY = next >= MAX_HEIGHT ? "auto" : "hidden";
-  }, [draft]);
+  }, []);
+
+  useEffect(resizeTextarea, [draft, resizeTextarea]);
+
+  // scrollHeight depends on the textarea's width (wrapping), so a height
+  // measured in a narrow window goes stale when the window grows. Re-measure
+  // on width changes only — reacting to height would feed back into the
+  // observer, since the resize itself changes the height.
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    let lastWidth = el.clientWidth;
+    const observer = new ResizeObserver(() => {
+      const width = el.clientWidth;
+      if (width === lastWidth) return;
+      lastWidth = width;
+      resizeTextarea();
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [resizeTextarea]);
 
   // Refocus when switching conversations or starting a reply
   useEffect(() => {
