@@ -25,6 +25,7 @@ import { useNavStore } from "../../stores/navStore";
 import { useChatStore } from "../../stores/chatStore";
 import { useAgentStore } from "../../stores/agentStore";
 import { MarkdownContent } from "./MarkdownContent";
+import { StopTaskButton } from "./StopTaskButton";
 
 /**
  * Renders task-lifecycle status messages that the backend emits as
@@ -302,6 +303,9 @@ function WorkingCard({
               <p className="text-xs text-muted-foreground">is working on this</p>
             </div>
             <Loader2 className="h-4 w-4 animate-spin text-primary" />
+            {payload.task_id && (
+              <StopTaskButton taskId={payload.task_id} title={title} />
+            )}
           </div>
 
           <p className="mt-3 text-sm font-semibold leading-snug text-foreground">
@@ -719,6 +723,14 @@ function LifecycleCard({
 
   const Icon = c.Icon;
 
+  // Assigned / accepted / self-assigned cards represent a task that is in
+  // flight (or about to be) — offer the stop control on all of them.
+  const stoppable =
+    lifecycle === "task_delegated" ||
+    lifecycle === "task_self_assigned" ||
+    lifecycle === "task_accepted" ||
+    lifecycle === "task_in_progress";
+
   return (
     <div className="my-2 w-full">
       <div
@@ -744,6 +756,9 @@ function LifecycleCard({
             <p className="mt-0.5 text-xs text-muted-foreground">{c.meta}</p>
           </div>
           <Icon className={cn("h-5 w-5 shrink-0", c.iconColor)} />
+          {stoppable && payload.task_id && (
+            <StopTaskButton taskId={payload.task_id} title={title} />
+          )}
         </div>
         {payload.task_id && <CopyableTaskId taskId={payload.task_id} />}
         {payload.work_conversation_id && (

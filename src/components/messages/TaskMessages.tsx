@@ -11,13 +11,13 @@ import {
   Check,
   X,
   Loader2,
-  Square,
 } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { getMessagePayload } from "../../lib/api";
 import type { Message } from "../../lib/api";
 import { MarkdownContent } from "./MarkdownContent";
 import { useTaskStore } from "../../stores/taskStore";
+import { StopTaskButton } from "./StopTaskButton";
 
 /**
  * Task message renderers ported from web/src/components/messages/TaskMessages.tsx.
@@ -132,22 +132,6 @@ export function TaskRequestMessage({ message }: { message: Message }) {
     status === "failed" || status === "declined" || status === "rejected";
   const isCancelled = status === "cancelled" || status === "exhausted";
 
-  const updateTaskStatus = useTaskStore((s) => s.updateTaskStatus);
-  const [stopping, setStopping] = useState(false);
-
-  const handleStop = async () => {
-    if (!taskId) return;
-    if (!confirm(`Stop "${title}"?`)) return;
-    setStopping(true);
-    try {
-      await updateTaskStatus(taskId, "cancelled");
-    } catch (e) {
-      console.warn("[tasks] stop from card failed", e);
-    } finally {
-      setStopping(false);
-    }
-  };
-
   if (isWorking) {
     return (
       <div className="overflow-hidden rounded-xl border border-border bg-card">
@@ -170,28 +154,7 @@ export function TaskRequestMessage({ message }: { message: Message }) {
             {status !== "pending" && (
               <Loader2 className="h-4 w-4 animate-spin text-primary" />
             )}
-            {taskId && (
-              <button
-                type="button"
-                onClick={stopping ? undefined : handleStop}
-                disabled={stopping}
-                title="Stop task"
-                aria-label="Stop task"
-                className={cn(
-                  "flex h-7 w-7 shrink-0 items-center justify-center rounded-full",
-                  "border border-border text-muted-foreground transition-colors",
-                  stopping
-                    ? "cursor-not-allowed opacity-60"
-                    : "hover:border-destructive/40 hover:bg-destructive/10 hover:text-destructive"
-                )}
-              >
-                {stopping ? (
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                ) : (
-                  <Square className="h-3 w-3 fill-current" />
-                )}
-              </button>
-            )}
+            {taskId && <StopTaskButton taskId={taskId} title={title} />}
           </div>
           <p className="mt-2 text-sm font-semibold leading-snug">{title}</p>
 
