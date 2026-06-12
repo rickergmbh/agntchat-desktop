@@ -839,8 +839,16 @@ pub fn check_computer_use_deps(app: tauri::AppHandle) -> bool {
         Ok(p) if p.exists() => p,
         _ => return false,
     };
+    // macOS: the optional pyobjc+Pillow extras. Windows: the driver is
+    // ctypes (stdlib) + Pillow, which requirements.txt installs into the
+    // venv on win32 — so PIL.ImageGrab importing IS "fully equipped".
+    let probe = if cfg!(target_os = "macos") {
+        "import Quartz; import PIL"
+    } else {
+        "import PIL.ImageGrab"
+    };
     let ok = Command::new(&python)
-        .args(["-c", "import Quartz; import PIL"])
+        .args(["-c", probe])
         .output()
         .map(|o| o.status.success())
         .unwrap_or(false);
@@ -868,12 +876,12 @@ pub fn get_computer_use_deps_status() -> DepsStatus {
 
 #[tauri::command]
 pub fn install_computer_use_deps(app: tauri::AppHandle) -> Result<(), String> {
-    // pyobjc / Quartz have no wheels outside macOS — the install can never
-    // succeed elsewhere, so fail fast with a real explanation instead of a
-    // pip resolution error.
+    // There is nothing to install outside macOS: the Windows driver is
+    // stdlib ctypes + Pillow, and Pillow ships via requirements.txt's
+    // win32 marker on the normal agent-start path.
     if !cfg!(target_os = "macos") {
         return Err(
-            "Computer-use safety features (pyobjc/Quartz) are macOS-only and cannot be installed on this platform.".to_string(),
+            "Nothing to install: computer-use safety features are built into the Windows driver (Pillow ships with the bridge runtime).".to_string(),
         );
     }
 

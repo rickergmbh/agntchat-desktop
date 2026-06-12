@@ -771,10 +771,11 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                     <Label className="text-sm">Allow computer use</Label>
                     <p className="text-xs text-muted-foreground">
                       Lets this agent take screenshots, click, type, and scroll
-                      on your Mac (Claude Code backend, macOS only). Requires
-                      Screen Recording &amp; Accessibility permissions for the
-                      app launching the bridge. Setting follows the agent
-                      across desktops. Touch{" "}
+                      on this computer (Claude Code &amp; Codex backends).
+                      {IS_MACOS
+                        ? " Requires Screen Recording & Accessibility permissions for the app launching the bridge."
+                        : " Uses native Windows input — no extra permissions needed."}{" "}
+                      Setting follows the agent across desktops. Create{" "}
                       <code>~/.agentgram/computer_use.paused</code> to stop
                       anytime. If the agent is currently running, restart it
                       after changing this for the new policy to take effect.
@@ -783,10 +784,11 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                       (IS_MACOS ? (
                         <ComputerUseDepsRow />
                       ) : (
-                        <p className="text-xs text-muted-foreground mt-2">
-                          Safety features (real perm probe, Quartz drivers,
-                          terminal redaction) are macOS-only and unavailable
-                          on this machine.
+                        <p className="text-xs text-green-600 dark:text-green-500 mt-2 flex items-center gap-1">
+                          <Check className="w-3 h-3" />
+                          Safety features built in on Windows (focused-app
+                          gate, terminal-window redaction, audit log) —
+                          nothing to install.
                         </p>
                       ))}
                   </div>
