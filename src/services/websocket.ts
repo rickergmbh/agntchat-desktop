@@ -102,6 +102,9 @@ class WebSocketService {
       "task_assigned",
       "task_completed",
       "task_progress",
+      // Date reminders — platform-elevated notification, not a chat message.
+      // ReminderToast listens and raises a native OS notification.
+      "reminder_fired",
       // Slack-style multi-workspace cross-device sync. workspaceStore listens.
       "active_organization_changed",
       // Cross-device read sync: another of the user's devices marked a

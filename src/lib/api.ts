@@ -70,6 +70,18 @@ export async function request<T>(
   return res.json();
 }
 
+// Reminders
+/** Re-arm a fired date reminder `minutes` from now (human owner action). */
+export async function snoozeReminder(
+  reminderId: string,
+  minutes = 60
+): Promise<void> {
+  await request(`/api/reminders/${reminderId}/snooze`, {
+    method: "POST",
+    body: JSON.stringify({ minutes }),
+  });
+}
+
 // Auth
 export async function login(
   email: string,

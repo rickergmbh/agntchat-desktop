@@ -24,6 +24,7 @@ import { useThemeStore } from "../stores/themeStore";
 import { useFriendStore } from "../stores/friendStore";
 import { useActiveWorkspace } from "../stores/workspaceStore";
 import { AgentBusyToast } from "./AgentBusyToast";
+import { ReminderToast } from "./ReminderToast";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dashboard } from "./Dashboard";
 import { MessagesView } from "./messages/MessagesView";
@@ -113,6 +114,7 @@ export function AppShell() {
       </div>
 
       <AgentBusyToast />
+      <ReminderToast />
     </div>
   );
 }
