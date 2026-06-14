@@ -372,6 +372,23 @@ export interface OrganizationHost {
   lastSeenAt?: string | null;
   hostname?: string | null;
   version?: string | null;
+  /** Number of agent bridges the host reported running in its last heartbeat. */
+  agentCount?: number;
+  /** Agent ids currently running on the host (from the last heartbeat). */
+  runningAgentIds?: string[];
+  /** Short git sha of the repo checkout the host is running. */
+  hostGitSha?: string | null;
+  capabilities?: Record<string, unknown>;
+}
+
+/** One agent that runs on a host, with its resolved human owner. */
+export interface HostAgent {
+  id: string;
+  display_name: string;
+  presence_mode: string;
+  assigned_host_id: string | null;
+  running: boolean;
+  owner: { id: string; display_name: string; type: string } | null;
 }
 
 export interface OrganizationMembership {
@@ -459,6 +476,114 @@ export async function deleteOrganizationHost(
   await request(`/api/organizations/${orgId}/hosts/${hostId}`, {
     method: "DELETE",
   });
+}
+
+/**
+ * Fleet snapshot for an org: every host plus whether the org has a Claude
+ * CLI subscription seat configured (drives the "Connect Anthropic" badge).
+ */
+export async function listOrganizationHostFleet(
+  orgId: string
+): Promise<{ hosts: OrganizationHost[]; anthropicConnected: boolean }> {
+  const res = await request<{
+    hosts: OrganizationHost[];
+    anthropicConnected: boolean;
+  }>(`/api/organizations/${orgId}/hosts`);
+  return { hosts: res.hosts, anthropicConnected: !!res.anthropicConnected };
+}
+
+/** Agents running on a host, each with its resolved human owner. */
+export async function listHostAgents(
+  orgId: string,
+  hostId: string
+): Promise<HostAgent[]> {
+  const res = await request<{ agents: HostAgent[] }>(
+    `/api/organizations/${orgId}/hosts/${hostId}/agents`
+  );
+  return res.agents;
+}
+
+/** Ask a host to git-pull the latest code + deps and restart its unit. */
+export async function updateOrganizationHost(
+  orgId: string,
+  hostId: string
+): Promise<void> {
+  await request(`/api/organizations/${orgId}/hosts/${hostId}/update`, {
+    method: "POST",
+  });
+}
+
+/** Ask a host to restart its systemd unit (no code pull). */
+export async function restartOrganizationHost(
+  orgId: string,
+  hostId: string
+): Promise<void> {
+  await request(`/api/organizations/${orgId}/hosts/${hostId}/restart`, {
+    method: "POST",
+  });
+}
+
+/**
+ * Store the org-wide Claude CLI subscription token (from `claude
+ * setup-token`). The backend encrypts it and pushes it to every host so
+ * their `claude_cli` agents authenticate without a manual `claude /login`.
+ */
+export async function setOrganizationAnthropicToken(
+  orgId: string,
+  token: string
+): Promise<void> {
+  await request(`/api/organizations/${orgId}/anthropic-token`, {
+    method: "POST",
+    body: JSON.stringify({ token }),
+  });
+}
+
+// --- Host auto-provisioning (Hostinger) ---
+
+export interface ProvisioningOption {
+  id: number | string;
+  name?: string;
+  [key: string]: unknown;
+}
+
+export interface ProvisioningCatalog {
+  available: boolean;
+  dataCenters: ProvisioningOption[];
+  templates: ProvisioningOption[];
+  plans: ProvisioningOption[];
+}
+
+/** Fetch data centers / OS templates / VPS plans to drive the provision wizard. */
+export async function getProvisioningCatalog(
+  orgId: string
+): Promise<ProvisioningCatalog> {
+  return request<ProvisioningCatalog>(
+    `/api/organizations/${orgId}/provisioning/catalog`
+  );
+}
+
+/** Spin up a brand-new host VM that self-installs + enrolls. */
+export async function provisionHost(
+  orgId: string,
+  params: {
+    name: string;
+    itemId: string;
+    dataCenterId: number | string;
+    templateId: number | string;
+  }
+): Promise<{ host: OrganizationHost; vmId: string }> {
+  return request<{ host: OrganizationHost; vmId: string }>(
+    `/api/organizations/${orgId}/hosts/provision`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        name: params.name,
+        itemId: params.itemId,
+        dataCenterId: params.dataCenterId,
+        templateId: params.templateId,
+      }),
+    }
+  );
 }
 
 export async function listOrganizationMembers(

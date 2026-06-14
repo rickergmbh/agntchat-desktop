@@ -1,6 +1,13 @@
 import { create } from "zustand";
 
-export type View = "chat" | "tasks" | "agents" | "friends" | "templates" | "canvas";
+export type View =
+  | "chat"
+  | "tasks"
+  | "agents"
+  | "friends"
+  | "templates"
+  | "canvas"
+  | "fleet";
 
 interface NavState {
   view: View;

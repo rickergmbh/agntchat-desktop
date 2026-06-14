@@ -110,6 +110,9 @@ class WebSocketService {
       // Cross-device read sync: another of the user's devices marked a
       // conversation read. chatStore zeroes the local unread badge.
       "conversation_read",
+      // Org-host fleet: a bridge changed state on a VM (running/stopped/
+      // crashed/idled). FleetView listens to live-update agent counts.
+      "host_agent_status",
     ];
 
     for (const event of userEvents) {

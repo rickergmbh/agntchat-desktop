@@ -6,6 +6,7 @@ import {
   Zap,
   FileText,
   LayoutDashboard,
+  Server,
   Users,
   Sun,
   Moon,
@@ -33,10 +34,18 @@ import { TemplatesView } from "./templates/TemplatesView";
 import { CanvasView } from "./canvas/CanvasView";
 import { Profile } from "./Profile";
 import { FriendsView } from "./FriendsView";
+import { FleetView } from "./FleetView";
 import { WorkspaceSwitcher } from "./WorkspaceSwitcher";
 import { WORKSPACES_ENABLED } from "../lib/featureFlags";
 
-type View = "chat" | "tasks" | "agents" | "friends" | "templates" | "canvas";
+type View =
+  | "chat"
+  | "tasks"
+  | "agents"
+  | "friends"
+  | "templates"
+  | "canvas"
+  | "fleet";
 
 export function AppShell() {
   const view = useNavStore((s) => s.view);
@@ -90,6 +99,8 @@ export function AppShell() {
           <TemplatesView />
         ) : view === "canvas" ? (
           <CanvasView />
+        ) : view === "fleet" ? (
+          <FleetView />
         ) : (
           <Dashboard />
         )}
@@ -265,6 +276,12 @@ function LeftRail({
           label="Canvas"
           active={view === "canvas"}
           onClick={() => onChange("canvas")}
+        />
+        <RailButton
+          icon={Server}
+          label="Fleet"
+          active={view === "fleet"}
+          onClick={() => onChange("fleet")}
         />
       </div>
 
