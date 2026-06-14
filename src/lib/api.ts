@@ -379,6 +379,12 @@ export interface OrganizationHost {
   /** Short git sha of the repo checkout the host is running. */
   hostGitSha?: string | null;
   capabilities?: Record<string, unknown>;
+  /** SSH management-plane connection details. */
+  sshHost?: string | null;
+  sshPort?: number | null;
+  sshUser?: string | null;
+  bootstrappedAt?: string | null;
+  provider?: string | null;
 }
 
 /** One agent that runs on a host, with its resolved human owner. */
@@ -389,6 +395,24 @@ export interface HostAgent {
   assigned_host_id: string | null;
   running: boolean;
   owner: { id: string; display_name: string; type: string } | null;
+}
+
+export type HostOpKind =
+  | "bootstrap"
+  | "update"
+  | "restart"
+  | "set_token"
+  | "probe";
+
+/** One SSH management operation against a host. */
+export interface HostOperation {
+  id: string;
+  hostId: string;
+  kind: HostOpKind;
+  status: "pending" | "running" | "ok" | "failed";
+  output?: string | null;
+  insertedAt: string;
+  finishedAt?: string | null;
 }
 
 export interface OrganizationMembership {
@@ -503,24 +527,82 @@ export async function listHostAgents(
   return res.agents;
 }
 
-/** Ask a host to git-pull the latest code + deps and restart its unit. */
+/**
+ * Register a bring-your-own host the backend reaches over SSH. Mints a managed
+ * keypair; returns the host + the public key to authorize on the machine.
+ */
+export async function connectHost(
+  orgId: string,
+  params: { name: string; sshHost: string; sshPort?: number; sshUser?: string }
+): Promise<{ host: OrganizationHost; publicKey: string }> {
+  return request<{ host: OrganizationHost; publicKey: string }>(
+    `/api/organizations/${orgId}/hosts/connect`,
+    { method: "POST", body: JSON.stringify(params) }
+  );
+}
+
+/** The host's authorized_keys public line (to install on the machine). */
+export async function getHostPublicKey(
+  orgId: string,
+  hostId: string
+): Promise<string> {
+  const res = await request<{ publicKey: string }>(
+    `/api/organizations/${orgId}/hosts/${hostId}/public-key`
+  );
+  return res.publicKey;
+}
+
+/** Run an SSH management op (bootstrap/update/restart/set_token/probe). */
+export async function runHostOp(
+  orgId: string,
+  hostId: string,
+  kind: HostOpKind
+): Promise<HostOperation> {
+  const res = await request<{ operation: HostOperation }>(
+    `/api/organizations/${orgId}/hosts/${hostId}/operations`,
+    { method: "POST", body: JSON.stringify({ kind }) }
+  );
+  return res.operation;
+}
+
+/** Recent SSH ops for a host, newest first. */
+export async function listHostOperations(
+  orgId: string,
+  hostId: string
+): Promise<HostOperation[]> {
+  const res = await request<{ operations: HostOperation[] }>(
+    `/api/organizations/${orgId}/hosts/${hostId}/operations`
+  );
+  return res.operations;
+}
+
+/** Update a host's SSH connection details. */
+export async function updateHostConnection(
+  orgId: string,
+  hostId: string,
+  params: { name?: string; sshHost?: string; sshPort?: number; sshUser?: string }
+): Promise<OrganizationHost> {
+  const res = await request<{ host: OrganizationHost }>(
+    `/api/organizations/${orgId}/hosts/${hostId}`,
+    { method: "PATCH", body: JSON.stringify(params) }
+  );
+  return res.host;
+}
+
+/** Convenience: enqueue an `update` op (git-pull + restart over SSH). */
 export async function updateOrganizationHost(
   orgId: string,
   hostId: string
-): Promise<void> {
-  await request(`/api/organizations/${orgId}/hosts/${hostId}/update`, {
-    method: "POST",
-  });
+): Promise<HostOperation> {
+  return runHostOp(orgId, hostId, "update");
 }
 
-/** Ask a host to restart its systemd unit (no code pull). */
+/** Convenience: enqueue a `restart` op. */
 export async function restartOrganizationHost(
   orgId: string,
   hostId: string
-): Promise<void> {
-  await request(`/api/organizations/${orgId}/hosts/${hostId}/restart`, {
-    method: "POST",
-  });
+): Promise<HostOperation> {
+  return runHostOp(orgId, hostId, "restart");
 }
 
 /**
@@ -562,7 +644,10 @@ export async function getProvisioningCatalog(
   );
 }
 
-/** Spin up a brand-new host VM that self-installs + enrolls. */
+/**
+ * Spin up a brand-new Hostinger VM. Returns immediately with the host record;
+ * the VM provisions, self-bootstraps over SSH, and comes online asynchronously.
+ */
 export async function provisionHost(
   orgId: string,
   params: {
@@ -571,8 +656,8 @@ export async function provisionHost(
     dataCenterId: number | string;
     templateId: number | string;
   }
-): Promise<{ host: OrganizationHost; vmId: string }> {
-  return request<{ host: OrganizationHost; vmId: string }>(
+): Promise<{ host: OrganizationHost }> {
+  return request<{ host: OrganizationHost }>(
     `/api/organizations/${orgId}/hosts/provision`,
     {
       method: "POST",

@@ -1,18 +1,19 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  Activity,
   AlertCircle,
   ChevronDown,
   ChevronRight,
   Cloud,
   Copy as CopyIcon,
   DownloadCloud,
-  KeyRound,
   Loader2,
   Plus,
   RefreshCw,
   RotateCw,
   Server,
   ShieldCheck,
+  Terminal,
   Trash2,
 } from "lucide-react";
 import * as api from "../lib/api";
@@ -35,13 +36,10 @@ import {
 } from "@/components/ui/dialog";
 
 /**
- * Fleet management for org hosts (the Linux VMs that run agent bridges).
- *
- * Shows every host with live status + agents-per-machine grouped by owner,
- * and exposes the remote-control actions that previously required SSH:
- * update-and-restart, restart, rotate key, delete, register a new host,
- * and connect the org's Claude CLI subscription seat. All authorization is
- * enforced server-side (admin-only writes); we just render + call the API.
+ * Fleet management for org hosts. Management flows over SSH (the backend
+ * connects out to each box to bootstrap/update/restart/etc), so it works for
+ * Hostinger VMs and any bring-your-own Linux machine. Live agent counts still
+ * come from the host's WebSocket heartbeat.
  */
 export function FleetView() {
   const participant = useAuthStore((s) => s.participant);
@@ -56,7 +54,7 @@ export function FleetView() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [registerOpen, setRegisterOpen] = useState(false);
+  const [connectOpen, setConnectOpen] = useState(false);
   const [anthropicOpen, setAnthropicOpen] = useState(false);
   const [provisionOpen, setProvisionOpen] = useState(false);
 
@@ -72,7 +70,6 @@ export function FleetView() {
     }
   }, [orgId]);
 
-  // Initial load + poll for fresh heartbeat-driven status/last-seen.
   useEffect(() => {
     if (!orgId) return;
     let cancelled = false;
@@ -87,8 +84,6 @@ export function FleetView() {
     };
   }, [orgId, refresh]);
 
-  // Live nudge: a bridge changed state on some VM → re-pull the fleet so
-  // running counts update without waiting for the poll tick.
   useEffect(() => {
     const off = ws.on("host_agent_status", () => void refresh());
     return off;
@@ -110,7 +105,7 @@ export function FleetView() {
           <div>
             <h1 className="text-base font-semibold leading-none">Fleet</h1>
             <p className="mt-1 text-xs text-muted-foreground">
-              Org hosts running your agents — manage, update, and monitor.
+              Org hosts running your agents — managed over SSH.
             </p>
           </div>
         </div>
@@ -132,7 +127,7 @@ export function FleetView() {
             <Cloud className="h-3.5 w-3.5" />
             Spin up VM
           </Button>
-          <Button size="sm" onClick={() => setRegisterOpen(true)}>
+          <Button size="sm" onClick={() => setConnectOpen(true)}>
             <Plus className="h-3.5 w-3.5" />
             Add host
           </Button>
@@ -153,8 +148,8 @@ export function FleetView() {
           </div>
         ) : hosts.length === 0 ? (
           <div className="rounded-lg border border-dashed border-border py-12 text-center text-sm text-muted-foreground">
-            No hosts yet. Click <span className="font-medium">Add host</span> to
-            register a VM.
+            No hosts yet. <span className="font-medium">Add host</span> to connect
+            a machine over SSH, or <span className="font-medium">Spin up VM</span>.
           </div>
         ) : (
           <ul className="space-y-3">
@@ -170,11 +165,11 @@ export function FleetView() {
         )}
       </div>
 
-      <RegisterHostDialog
+      <ConnectHostDialog
         orgId={orgId}
-        open={registerOpen}
-        onOpenChange={setRegisterOpen}
-        onRegistered={() => void refresh()}
+        open={connectOpen}
+        onOpenChange={setConnectOpen}
+        onChanged={() => void refresh()}
       />
       <ConnectAnthropicDialog
         orgId={orgId}
@@ -220,86 +215,46 @@ function HostCard({
   const [expanded, setExpanded] = useState(false);
   const [agents, setAgents] = useState<api.HostAgent[] | null>(null);
   const [agentsError, setAgentsError] = useState<string | null>(null);
-  const [busy, setBusy] = useState<null | "update" | "restart" | "rotate" | "delete">(
-    null
-  );
-  const [revealed, setRevealed] = useState<{ id: string; apiKey: string } | null>(
-    null
-  );
+  const [ops, setOps] = useState<api.HostOperation[]>([]);
+  const [busy, setBusy] = useState<api.HostOpKind | "delete" | null>(null);
 
-  const loadAgents = useCallback(async () => {
+  const loadDetail = useCallback(async () => {
     try {
-      const rows = await api.listHostAgents(orgId, host.id);
-      setAgents(rows);
+      const [a, o] = await Promise.all([
+        api.listHostAgents(orgId, host.id),
+        api.listHostOperations(orgId, host.id),
+      ]);
+      setAgents(a);
+      setOps(o);
       setAgentsError(null);
     } catch (e) {
-      setAgentsError(e instanceof Error ? e.message : "Failed to load agents");
+      setAgentsError(e instanceof Error ? e.message : "Failed to load host detail");
     }
   }, [orgId, host.id]);
 
   useEffect(() => {
-    if (expanded && agents === null) void loadAgents();
-  }, [expanded, agents, loadAgents]);
+    if (expanded) void loadDetail();
+  }, [expanded, loadDetail]);
 
   const runningCount = host.agentCount ?? host.runningAgentIds?.length ?? 0;
+  const bootstrapped = !!host.bootstrappedAt;
 
-  const handleUpdate = async () => {
-    if (
-      !confirm(
-        `Update "${host.name}"? It will pull the latest code, refresh deps, and ` +
-          `restart — bridges briefly drop while it comes back up.`
-      )
-    )
-      return;
-    setBusy("update");
+  const op = async (kind: api.HostOpKind, confirmMsg?: string) => {
+    if (confirmMsg && !confirm(confirmMsg)) return;
+    setBusy(kind);
     try {
-      await api.updateOrganizationHost(orgId, host.id);
+      await api.runHostOp(orgId, host.id, kind);
+      if (!expanded) setExpanded(true);
+      await loadDetail();
     } catch (e) {
-      alert(e instanceof Error ? e.message : "Update failed");
-    } finally {
-      setBusy(null);
-    }
-  };
-
-  const handleRestart = async () => {
-    if (!confirm(`Restart "${host.name}"? Bridges drop briefly while it restarts.`))
-      return;
-    setBusy("restart");
-    try {
-      await api.restartOrganizationHost(orgId, host.id);
-    } catch (e) {
-      alert(e instanceof Error ? e.message : "Restart failed");
-    } finally {
-      setBusy(null);
-    }
-  };
-
-  const handleRotate = async () => {
-    if (
-      !confirm(
-        `Regenerate API key for "${host.name}"? The current key stops working ` +
-          `immediately; re-run enroll.sh on the VM with the new key.`
-      )
-    )
-      return;
-    setBusy("rotate");
-    try {
-      const result = await api.regenerateOrganizationHostApiKey(orgId, host.id);
-      setRevealed({ id: result.host.id, apiKey: result.apiKey });
-    } catch (e) {
-      alert(e instanceof Error ? e.message : "Could not rotate key");
+      alert(e instanceof Error ? e.message : "Operation failed");
     } finally {
       setBusy(null);
     }
   };
 
   const handleDelete = async () => {
-    if (
-      !confirm(
-        `Delete host "${host.name}"? Agents assigned here stop running on it. ` +
-          `This can't be undone.`
-      )
-    )
+    if (!confirm(`Delete host "${host.name}"? Agents assigned here stop running on it.`))
       return;
     setBusy("delete");
     try {
@@ -341,10 +296,15 @@ function HostCard({
               >
                 {host.status}
               </Badge>
+              {!bootstrapped && (
+                <Badge variant="outline" className="shrink-0 border-amber-500/30 text-amber-600">
+                  not bootstrapped
+                </Badge>
+              )}
             </div>
             <div className="mt-0.5 truncate text-xs text-muted-foreground">
               {runningCount} agent{runningCount === 1 ? "" : "s"} running
-              {host.hostname ? ` · ${host.hostname}` : ""}
+              {host.sshHost ? ` · ${host.sshUser || "root"}@${host.sshHost}` : " · no SSH target"}
               {host.version ? ` · v${host.version}` : ""}
               {host.hostGitSha ? ` · ${host.hostGitSha}` : ""}
               {` · seen ${relativeAge(host.lastSeenAt)}`}
@@ -353,11 +313,27 @@ function HostCard({
         </button>
 
         <div className="flex shrink-0 items-center gap-1">
+          {!bootstrapped && host.sshHost && (
+            <Button
+              variant="default"
+              size="sm"
+              onClick={() => void op("bootstrap")}
+              disabled={busy !== null}
+              title="Install the runtime over SSH"
+            >
+              {busy === "bootstrap" ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <DownloadCloud className="h-3.5 w-3.5" />
+              )}
+              Bootstrap
+            </Button>
+          )}
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => void handleUpdate()}
-            disabled={busy !== null}
+            onClick={() => void op("update", `Update "${host.name}"? Pulls latest + restarts.`)}
+            disabled={busy !== null || !host.sshHost}
             title="Pull latest code + restart"
           >
             {busy === "update" ? (
@@ -370,8 +346,8 @@ function HostCard({
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => void handleRestart()}
-            disabled={busy !== null}
+            onClick={() => void op("restart", `Restart "${host.name}"?`)}
+            disabled={busy !== null || !host.sshHost}
             title="Restart the host service"
           >
             {busy === "restart" ? (
@@ -384,11 +360,15 @@ function HostCard({
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => void handleRotate()}
-            disabled={busy !== null}
-            title="Generate a new API key"
+            onClick={() => void op("probe")}
+            disabled={busy !== null || !host.sshHost}
+            title="Probe status over SSH"
           >
-            <KeyRound className="h-3.5 w-3.5" />
+            {busy === "probe" ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Activity className="h-3.5 w-3.5" />
+            )}
           </Button>
           <Button
             variant="ghost"
@@ -404,34 +384,11 @@ function HostCard({
       </div>
 
       {expanded && (
-        <div className="border-t border-border px-4 py-3">
+        <div className="space-y-4 border-t border-border px-4 py-3">
           <HostAgentList agents={agents} error={agentsError} />
+          <HostOpLog ops={ops} />
         </div>
       )}
-
-      <Dialog
-        open={revealed !== null}
-        onOpenChange={(next) => {
-          if (!next) setRevealed(null);
-        }}
-      >
-        <DialogContent showCloseButton={false}>
-          <DialogHeader>
-            <DialogTitle>New host credentials</DialogTitle>
-            <DialogDescription>
-              Copy these now — the API key is shown once. Re-run{" "}
-              <code>enroll.sh</code> on the VM with the new value.
-            </DialogDescription>
-          </DialogHeader>
-          {revealed && (
-            <CredentialReveal
-              hostId={revealed.id}
-              apiKey={revealed.apiKey}
-              onClose={() => setRevealed(null)}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
     </li>
   );
 }
@@ -445,10 +402,7 @@ function HostAgentList({
 }) {
   const grouped = useMemo(() => {
     if (!agents) return [];
-    const byOwner = new Map<
-      string,
-      { ownerName: string; agents: api.HostAgent[] }
-    >();
+    const byOwner = new Map<string, { ownerName: string; agents: api.HostAgent[] }>();
     for (const a of agents) {
       const key = a.owner?.id ?? "unknown";
       const name = a.owner?.display_name ?? "Unknown owner";
@@ -460,29 +414,21 @@ function HostAgentList({
     );
   }, [agents]);
 
-  if (error) {
-    return <p className="text-sm text-destructive">{error}</p>;
-  }
-  if (agents === null) {
+  if (error) return <p className="text-sm text-destructive">{error}</p>;
+  if (agents === null)
     return (
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
         <Loader2 className="h-3.5 w-3.5 animate-spin" /> Loading agents…
       </div>
     );
-  }
-  if (agents.length === 0) {
-    return (
-      <p className="text-sm text-muted-foreground">
-        No agents assigned to this host.
-      </p>
-    );
-  }
+  if (agents.length === 0)
+    return <p className="text-sm text-muted-foreground">No agents assigned to this host.</p>;
 
   return (
     <div className="space-y-3">
       <p className="text-xs text-muted-foreground">
-        {agents.length} agent{agents.length === 1 ? "" : "s"} across{" "}
-        {grouped.length} owner{grouped.length === 1 ? "" : "s"}
+        {agents.length} agent{agents.length === 1 ? "" : "s"} across {grouped.length} owner
+        {grouped.length === 1 ? "" : "s"}
       </p>
       {grouped.map((g) => (
         <div key={g.ownerName}>
@@ -497,9 +443,7 @@ function HostAgentList({
               >
                 <span className="truncate">{a.display_name}</span>
                 <span className="flex shrink-0 items-center gap-2">
-                  <span className="text-xs text-muted-foreground">
-                    {a.presence_mode}
-                  </span>
+                  <span className="text-xs text-muted-foreground">{a.presence_mode}</span>
                   <span
                     className={cn(
                       "h-2 w-2 rounded-full",
@@ -517,46 +461,119 @@ function HostAgentList({
   );
 }
 
-function RegisterHostDialog({
+function HostOpLog({ ops }: { ops: api.HostOperation[] }) {
+  const [openId, setOpenId] = useState<string | null>(null);
+
+  if (ops.length === 0) return null;
+
+  return (
+    <div>
+      <div className="mb-1 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+        <Terminal className="h-3 w-3" /> Recent operations
+      </div>
+      <ul className="space-y-1">
+        {ops.map((o) => (
+          <li key={o.id} className="rounded-sm bg-muted/40 text-sm">
+            <button
+              type="button"
+              onClick={() => setOpenId((id) => (id === o.id ? null : o.id))}
+              className="flex w-full items-center justify-between gap-2 px-2.5 py-1.5 text-left"
+            >
+              <span className="flex items-center gap-2">
+                <span
+                  className={cn(
+                    "h-2 w-2 rounded-full",
+                    o.status === "ok" && "bg-success",
+                    o.status === "failed" && "bg-destructive",
+                    (o.status === "pending" || o.status === "running") &&
+                      "bg-amber-500 animate-pulse"
+                  )}
+                />
+                <span className="font-medium">{o.kind}</span>
+                <span className="text-xs text-muted-foreground">{o.status}</span>
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {relativeAge(o.insertedAt)}
+              </span>
+            </button>
+            {openId === o.id && o.output && (
+              <pre className="max-h-60 overflow-auto whitespace-pre-wrap break-all border-t border-border px-2.5 py-2 font-mono text-[11px] text-muted-foreground">
+                {o.output}
+              </pre>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function ConnectHostDialog({
   orgId,
   open,
   onOpenChange,
-  onRegistered,
+  onChanged,
 }: {
   orgId: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onRegistered: () => void;
+  onChanged: () => void;
 }) {
   const [name, setName] = useState("");
+  const [sshHost, setSshHost] = useState("");
+  const [sshUser, setSshUser] = useState("root");
+  const [sshPort, setSshPort] = useState("22");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [revealed, setRevealed] = useState<{ id: string; apiKey: string } | null>(
+  const [created, setCreated] = useState<{ hostId: string; publicKey: string } | null>(
     null
   );
+  const [bootstrapping, setBootstrapping] = useState(false);
 
   const reset = () => {
     setName("");
+    setSshHost("");
+    setSshUser("root");
+    setSshPort("22");
     setError(null);
-    setRevealed(null);
+    setCreated(null);
   };
 
-  const handleRegister = async () => {
-    const trimmed = name.trim();
-    if (!trimmed) {
-      setError("Host name is required.");
+  const handleConnect = async () => {
+    if (!name.trim() || !sshHost.trim()) {
+      setError("Name and SSH host are required.");
       return;
     }
     setSubmitting(true);
     setError(null);
     try {
-      const result = await api.createOrganizationHost(orgId, trimmed);
-      setRevealed({ id: result.host.id, apiKey: result.apiKey });
-      onRegistered();
+      const res = await api.connectHost(orgId, {
+        name: name.trim(),
+        sshHost: sshHost.trim(),
+        sshUser: sshUser.trim() || "root",
+        sshPort: Number(sshPort) || 22,
+      });
+      setCreated({ hostId: res.host.id, publicKey: res.publicKey });
+      onChanged();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not register host");
+      setError(e instanceof Error ? e.message : "Could not connect host");
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleBootstrap = async () => {
+    if (!created) return;
+    setBootstrapping(true);
+    try {
+      await api.runHostOp(orgId, created.hostId, "bootstrap");
+      onChanged();
+      reset();
+      onOpenChange(false);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Bootstrap failed");
+    } finally {
+      setBootstrapping(false);
     }
   };
 
@@ -564,42 +581,84 @@ function RegisterHostDialog({
     <Dialog
       open={open}
       onOpenChange={(next) => {
-        // Don't let the one-time key be dismissed by accident.
-        if (!next && revealed) return;
         if (!next) reset();
         onOpenChange(next);
       }}
     >
-      <DialogContent showCloseButton={!revealed}>
+      <DialogContent>
         <DialogHeader>
-          <DialogTitle>{revealed ? "Host credentials" : "Add host"}</DialogTitle>
-          {!revealed && (
-            <DialogDescription>
-              Registers a VM. You'll get a one-time ID + API key to enroll it
-              with <code>enroll.sh</code>.
-            </DialogDescription>
-          )}
+          <DialogTitle>{created ? "Authorize + bootstrap" : "Add host"}</DialogTitle>
+          <DialogDescription>
+            {created
+              ? "Add this key to the machine, then bootstrap to install the runtime over SSH."
+              : "Connect a Linux machine the backend manages over SSH."}
+          </DialogDescription>
         </DialogHeader>
 
-        {revealed ? (
-          <CredentialReveal
-            hostId={revealed.id}
-            apiKey={revealed.apiKey}
-            onClose={() => {
-              reset();
-              onOpenChange(false);
-            }}
-          />
+        {created ? (
+          <div className="space-y-3 py-1">
+            <p className="text-sm">
+              On the host, append this to{" "}
+              <code>~/.ssh/authorized_keys</code> for the{" "}
+              <code>{sshUser || "root"}</code> user:
+            </p>
+            <CopyField label="Public key" value={created.publicKey} mono />
+            {error && <p className="text-sm text-destructive">{error}</p>}
+            <DialogFooter>
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  reset();
+                  onOpenChange(false);
+                }}
+                disabled={bootstrapping}
+              >
+                Later
+              </Button>
+              <Button onClick={() => void handleBootstrap()} disabled={bootstrapping}>
+                {bootstrapping ? "Bootstrapping…" : "Bootstrap now"}
+              </Button>
+            </DialogFooter>
+          </div>
         ) : (
           <div className="space-y-3 py-1">
             <div className="space-y-1">
-              <Label htmlFor="fleet-host-name">Host name</Label>
+              <Label htmlFor="ch-name">Name</Label>
               <Input
-                id="fleet-host-name"
+                id="ch-name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="vm-01.lan"
+                placeholder="agent-host-1"
               />
+            </div>
+            <div className="grid grid-cols-[1fr_auto_auto] gap-2">
+              <div className="space-y-1">
+                <Label htmlFor="ch-host">SSH host / IP</Label>
+                <Input
+                  id="ch-host"
+                  value={sshHost}
+                  onChange={(e) => setSshHost(e.target.value)}
+                  placeholder="203.0.113.10"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="ch-user">User</Label>
+                <Input
+                  id="ch-user"
+                  value={sshUser}
+                  onChange={(e) => setSshUser(e.target.value)}
+                  className="w-24"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="ch-port">Port</Label>
+                <Input
+                  id="ch-port"
+                  value={sshPort}
+                  onChange={(e) => setSshPort(e.target.value)}
+                  className="w-16"
+                />
+              </div>
             </div>
             {error && <p className="text-sm text-destructive">{error}</p>}
             <DialogFooter>
@@ -613,8 +672,8 @@ function RegisterHostDialog({
               >
                 Cancel
               </Button>
-              <Button onClick={() => void handleRegister()} disabled={submitting}>
-                {submitting ? "Registering…" : "Register"}
+              <Button onClick={() => void handleConnect()} disabled={submitting}>
+                {submitting ? "Connecting…" : "Continue"}
               </Button>
             </DialogFooter>
           </div>
@@ -684,8 +743,8 @@ function ConnectAnthropicDialog({
         {done ? (
           <div className="space-y-3 py-1">
             <p className="text-sm">
-              Token stored and pushed to your hosts. New bridge runs will use it
-              automatically.
+              Token stored. A `set_token` op was sent to each bootstrapped host;
+              new bridge runs use it automatically.
             </p>
             <DialogFooter>
               <Button onClick={() => onOpenChange(false)}>Done</Button>
@@ -697,7 +756,7 @@ function ConnectAnthropicDialog({
               <li>
                 On any machine with a browser, run{" "}
                 <code className="text-foreground">claude setup-token</code> and
-                authorize in your browser.
+                authorize.
               </li>
               <li>Copy the long-lived token it prints (valid ~1 year).</li>
               <li>Paste it below.</li>
@@ -715,11 +774,7 @@ function ConnectAnthropicDialog({
             </div>
             {error && <p className="text-sm text-destructive">{error}</p>}
             <DialogFooter>
-              <Button
-                variant="ghost"
-                onClick={() => onOpenChange(false)}
-                disabled={submitting}
-              >
+              <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={submitting}>
                 Cancel
               </Button>
               <Button onClick={() => void handleSave()} disabled={submitting}>
@@ -762,14 +817,11 @@ function ProvisionDialog({
     api
       .getProvisioningCatalog(orgId)
       .then((c) => {
-        if (cancelled) return;
-        setCatalog(c);
+        if (!cancelled) setCatalog(c);
       })
       .catch((e) => {
         if (!cancelled)
-          setError(
-            e instanceof Error ? e.message : "Could not load provisioning options"
-          );
+          setError(e instanceof Error ? e.message : "Could not load provisioning options");
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -779,8 +831,7 @@ function ProvisionDialog({
     };
   }, [open, orgId]);
 
-  const optLabel = (o: api.ProvisioningOption) =>
-    String(o.name ?? o.id);
+  const optLabel = (o: api.ProvisioningOption) => String(o.name ?? o.id);
 
   const handleProvision = async () => {
     if (!name.trim() || !dataCenterId || !templateId || !itemId) {
@@ -790,12 +841,7 @@ function ProvisionDialog({
     setSubmitting(true);
     setError(null);
     try {
-      await api.provisionHost(orgId, {
-        name: name.trim(),
-        itemId,
-        dataCenterId,
-        templateId,
-      });
+      await api.provisionHost(orgId, { name: name.trim(), itemId, dataCenterId, templateId });
       onProvisioned();
       onOpenChange(false);
     } catch (e) {
@@ -811,8 +857,8 @@ function ProvisionDialog({
         <DialogHeader>
           <DialogTitle>Spin up a new VM</DialogTitle>
           <DialogDescription>
-            Provisions a Hostinger VPS that auto-installs the host runtime and
-            enrolls itself — it shows up here as online when ready.
+            Provisions a Hostinger VPS with our SSH key, then bootstraps it over
+            SSH — it shows up here and comes online on its own.
           </DialogDescription>
         </DialogHeader>
 
@@ -841,7 +887,6 @@ function ProvisionDialog({
                 placeholder="agent-host-2"
               />
             </div>
-
             <ProvisionSelect
               id="prov-dc"
               label="Data center"
@@ -866,14 +911,9 @@ function ProvisionDialog({
               options={catalog?.plans ?? []}
               optLabel={optLabel}
             />
-
             {error && <p className="text-sm text-destructive">{error}</p>}
             <DialogFooter>
-              <Button
-                variant="ghost"
-                onClick={() => onOpenChange(false)}
-                disabled={submitting}
-              >
+              <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={submitting}>
                 Cancel
               </Button>
               <Button onClick={() => void handleProvision()} disabled={submitting}>
@@ -922,39 +962,24 @@ function ProvisionSelect({
   );
 }
 
-function CredentialReveal({
-  hostId,
-  apiKey,
-  onClose,
+function CopyField({
+  label,
+  value,
+  mono,
 }: {
-  hostId: string;
-  apiKey: string;
-  onClose: () => void;
+  label: string;
+  value: string;
+  mono?: boolean;
 }) {
-  const envBlock = `ORG_HOST_ID=${hostId}\nORG_HOST_API_KEY=${apiKey}\n`;
-  return (
-    <div className="space-y-3 py-1">
-      <CredentialField label="ORG_HOST_ID" value={hostId} />
-      <CredentialField label="ORG_HOST_API_KEY" value={apiKey} />
-      <DialogFooter className="gap-2 pt-1">
-        <Button
-          variant="outline"
-          onClick={() => void navigator.clipboard.writeText(envBlock)}
-        >
-          <CopyIcon className="h-3.5 w-3.5" />
-          Copy as .env
-        </Button>
-        <Button onClick={onClose}>I've copied them</Button>
-      </DialogFooter>
-    </div>
-  );
-}
-
-function CredentialField({ label, value }: { label: string; value: string }) {
   return (
     <div className="space-y-1">
-      <Label className="font-mono text-xs">{label}</Label>
-      <div className="flex items-center gap-2 rounded-md border border-border bg-muted px-2.5 py-2 font-mono text-xs break-all">
+      <Label className="text-xs">{label}</Label>
+      <div
+        className={cn(
+          "flex items-center gap-2 rounded-md border border-border bg-muted px-2.5 py-2 text-xs break-all",
+          mono && "font-mono"
+        )}
+      >
         <span className="flex-1 select-all">{value}</span>
         <Button
           variant="ghost"
