@@ -304,9 +304,15 @@ export function AgentRow({
   // never run from the desktop app — so it intentionally has no local API key
   // and no run/stop control here.
   const isSpawned = !!managed.agent.spawn;
-  const startBlockedReason: string | null = !managed.apiKey
-    ? "No API key — open agent to generate one"
-    : null;
+  // An org-host agent's bridge runs on the shared org VM, not this desktop —
+  // so there's no local subprocess to start/stop and no local API key to
+  // generate. The Actions cell shows a passive "managed on org host" hint
+  // instead of a play button or the (always-missing) API-key warning.
+  const isOrgHost = managed.agent.runtime === "org_host";
+  const startBlockedReason: string | null =
+    isOrgHost || managed.apiKey
+      ? null
+      : "No API key — open agent to generate one";
   const canStart =
     startBlockedReason === null && managed.processStatus !== "starting";
   const modelLabel =
@@ -512,6 +518,21 @@ export function AgentRow({
                 />
                 <TooltipContent side="left" className="text-xs">
                   Sub-agent — started and retired by its parent agent
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          ) : isOrgHost ? (
+            <TooltipProvider delay={150}>
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <span className="flex h-7 w-7 items-center justify-center text-muted-foreground/50">
+                      <Cloud className="w-4 h-4" />
+                    </span>
+                  }
+                />
+                <TooltipContent side="left" className="text-xs">
+                  Runs on the org host — started and stopped there, not from this device
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
