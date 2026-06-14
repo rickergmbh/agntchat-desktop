@@ -7,6 +7,7 @@ import {
   FileText,
   LayoutDashboard,
   Server,
+  ShieldHalf,
   Users,
   Sun,
   Moon,
@@ -35,6 +36,7 @@ import { CanvasView } from "./canvas/CanvasView";
 import { Profile } from "./Profile";
 import { FriendsView } from "./FriendsView";
 import { FleetView } from "./FleetView";
+import { PlatformView } from "./PlatformView";
 import { WorkspaceSwitcher } from "./WorkspaceSwitcher";
 import { WORKSPACES_ENABLED } from "../lib/featureFlags";
 
@@ -45,7 +47,8 @@ type View =
   | "friends"
   | "templates"
   | "canvas"
-  | "fleet";
+  | "fleet"
+  | "platform";
 
 export function AppShell() {
   const view = useNavStore((s) => s.view);
@@ -101,6 +104,8 @@ export function AppShell() {
           <CanvasView />
         ) : view === "fleet" ? (
           <FleetView />
+        ) : view === "platform" ? (
+          <PlatformView />
         ) : (
           <Dashboard />
         )}
@@ -283,6 +288,14 @@ function LeftRail({
           active={view === "fleet"}
           onClick={() => onChange("fleet")}
         />
+        {participant?.platformAdmin && (
+          <RailButton
+            icon={ShieldHalf}
+            label="Platform"
+            active={view === "platform"}
+            onClick={() => onChange("platform")}
+          />
+        )}
       </div>
 
       {/* Bottom: connectivity + utilities + profile + logout */}

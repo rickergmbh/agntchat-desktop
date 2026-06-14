@@ -7,7 +7,8 @@ export type View =
   | "friends"
   | "templates"
   | "canvas"
-  | "fleet";
+  | "fleet"
+  | "platform";
 
 interface NavState {
   view: View;

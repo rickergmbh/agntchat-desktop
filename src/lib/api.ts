@@ -385,6 +385,8 @@ export interface OrganizationHost {
   sshUser?: string | null;
   bootstrappedAt?: string | null;
   provider?: string | null;
+  /** Shared (multi-tenant) host: accepts agents pinned from any org. */
+  shared?: boolean;
 }
 
 /** One agent that runs on a host, with its resolved human owner. */
@@ -642,6 +644,118 @@ export async function getProvisioningCatalog(
   return request<ProvisioningCatalog>(
     `/api/organizations/${orgId}/provisioning/catalog`
   );
+}
+
+// --- Platform admin (operator console) ---
+
+export interface PlatformStats {
+  users: number;
+  agents: number;
+  organizations: number;
+  payingUsers: number;
+  hostsByStatus: Record<string, number>;
+}
+
+export interface AdminUser {
+  id: string;
+  displayName: string;
+  email?: string | null;
+  orgName?: string | null;
+  agentCount: number;
+  allocatedHostIds: string[];
+  subscription?: { plan?: string; status?: string } | null;
+}
+
+export interface AdminUserDetail {
+  id: string;
+  displayName: string;
+  email?: string | null;
+  subscription?: { plan?: string; status?: string } | null;
+  agents: Array<{
+    id: string;
+    displayName: string;
+    runtime: string;
+    presenceMode?: string;
+    assignedHostId?: string | null;
+    organizationId?: string | null;
+  }>;
+}
+
+export async function getAdminStats(): Promise<PlatformStats> {
+  const res = await request<{ stats: PlatformStats }>("/api/admin/stats");
+  return res.stats;
+}
+
+export async function listAdminHosts(): Promise<
+  Array<OrganizationHost & { orgName?: string | null }>
+> {
+  const res = await request<{ hosts: Array<OrganizationHost & { orgName?: string | null }> }>(
+    "/api/admin/hosts"
+  );
+  return res.hosts;
+}
+
+export async function listAdminUsers(search?: string): Promise<AdminUser[]> {
+  const qs = search ? `?search=${encodeURIComponent(search)}` : "";
+  const res = await request<{ users: AdminUser[] }>(`/api/admin/users${qs}`);
+  return res.users;
+}
+
+export async function getAdminUser(userId: string): Promise<AdminUserDetail> {
+  const res = await request<{ user: AdminUserDetail }>(`/api/admin/users/${userId}`);
+  return res.user;
+}
+
+export async function allocateUserToHost(
+  userId: string,
+  hostId: string
+): Promise<{ allocated: number; total: number }> {
+  return request(`/api/admin/users/${userId}/allocate`, {
+    method: "POST",
+    body: JSON.stringify({ hostId }),
+  });
+}
+
+export async function deallocateUser(
+  userId: string
+): Promise<{ deallocated: number }> {
+  return request(`/api/admin/users/${userId}/deallocate`, { method: "POST" });
+}
+
+export async function setHostShared(
+  hostId: string,
+  shared: boolean
+): Promise<OrganizationHost> {
+  const res = await request<{ host: OrganizationHost }>(
+    `/api/admin/hosts/${hostId}/shared`,
+    { method: "PATCH", body: JSON.stringify({ shared }) }
+  );
+  return res.host;
+}
+
+export async function getAdminProvisioningCatalog(): Promise<{
+  dataCenters: ProvisioningOption[];
+  templates: ProvisioningOption[];
+  plans: ProvisioningOption[];
+}> {
+  return request("/api/admin/provisioning/catalog");
+}
+
+export async function adminProvision(params: {
+  name: string;
+  itemId: string;
+  dataCenterId: number | string;
+  templateId: number | string;
+}): Promise<{ host: OrganizationHost }> {
+  return request("/api/admin/provision", {
+    method: "POST",
+    body: JSON.stringify({
+      name: params.name,
+      itemId: params.itemId,
+      dataCenterId: params.dataCenterId,
+      templateId: params.templateId,
+    }),
+  });
 }
 
 /**
@@ -1380,6 +1494,23 @@ export interface Participant {
   organizationId?: string | null;
   activeOrganizationId?: string | null;
   organizations?: WorkspaceMembership[];
+  /** True when this human is a platform super-admin (env allowlist). Gates the
+   *  desktop operator console; the backend enforces every /api/admin call. */
+  platformAdmin?: boolean;
+  /** Stripe Billing subscription summary, or null when not subscribed. */
+  subscription?: { plan?: string; status?: string } | null;
+}
+
+/** Start a Stripe subscription Checkout; returns a URL to open in a browser. */
+export async function startBillingCheckout(): Promise<string> {
+  const res = await request<{ url: string }>("/api/billing/checkout", { method: "POST" });
+  return res.url;
+}
+
+/** Open the Stripe Billing Portal (manage/cancel); returns a URL. */
+export async function openBillingPortal(): Promise<string> {
+  const res = await request<{ url: string }>("/api/billing/portal", { method: "POST" });
+  return res.url;
 }
 
 export interface WorkspaceMembership {
