@@ -733,6 +733,18 @@ export async function setHostShared(
   return res.host;
 }
 
+/** Rename (or otherwise update) a host as a platform admin. */
+export async function updateAdminHost(
+  hostId: string,
+  attrs: { name?: string; shared?: boolean }
+): Promise<OrganizationHost> {
+  const res = await request<{ host: OrganizationHost }>(
+    `/api/admin/hosts/${hostId}`,
+    { method: "PATCH", body: JSON.stringify(attrs) }
+  );
+  return res.host;
+}
+
 export async function getAdminProvisioningCatalog(): Promise<{
   dataCenters: ProvisioningOption[];
   templates: ProvisioningOption[];

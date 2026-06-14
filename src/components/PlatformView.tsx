@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   AlertCircle,
+  Check,
   Cloud,
   Loader2,
+  Pencil,
   RefreshCw,
   Search,
   ShieldHalf,
+  X,
 } from "lucide-react";
 import * as api from "../lib/api";
 import { cn } from "../lib/utils";
@@ -144,17 +147,6 @@ function HostsTab() {
     void refresh();
   }, [refresh]);
 
-  const toggleShared = async (h: api.OrganizationHost, next: boolean) => {
-    // optimistic
-    setHosts((prev) => prev.map((x) => (x.id === h.id ? { ...x, shared: next } : x)));
-    try {
-      await api.setHostShared(h.id, next);
-    } catch (e) {
-      void refresh();
-      alert(e instanceof Error ? e.message : "Could not update host");
-    }
-  };
-
   if (error) return <ErrorBox message={error} />;
   if (loading)
     return (
@@ -168,40 +160,129 @@ function HostsTab() {
   return (
     <ul className="space-y-2">
       {hosts.map((h) => (
-        <li
-          key={h.id}
-          className="flex items-center justify-between gap-3 rounded-lg border border-border px-4 py-3"
-        >
-          <div className="min-w-0">
-            <div className="flex items-center gap-2">
-              <span className="truncate font-medium">{h.name}</span>
+        <AdminHostRow key={h.id} host={h} onChanged={refresh} />
+      ))}
+    </ul>
+  );
+}
+
+function AdminHostRow({
+  host,
+  onChanged,
+}: {
+  host: api.OrganizationHost & { orgName?: string | null };
+  onChanged: () => Promise<void> | void;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [name, setName] = useState(host.name);
+  const [busy, setBusy] = useState(false);
+  const [shared, setShared] = useState(!!host.shared);
+
+  const save = async () => {
+    const trimmed = name.trim();
+    if (!trimmed || trimmed === host.name) {
+      setEditing(false);
+      setName(host.name);
+      return;
+    }
+    setBusy(true);
+    try {
+      await api.updateAdminHost(host.id, { name: trimmed });
+      setEditing(false);
+      await onChanged();
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "Could not rename host");
+      setName(host.name);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const toggleShared = async (next: boolean) => {
+    setShared(next); // optimistic
+    try {
+      await api.setHostShared(host.id, next);
+    } catch (e) {
+      setShared(!next);
+      alert(e instanceof Error ? e.message : "Could not update host");
+    }
+  };
+
+  return (
+    <li className="flex items-center justify-between gap-3 rounded-lg border border-border px-4 py-3">
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-2">
+          {editing ? (
+            <>
+              <Input
+                value={name}
+                autoFocus
+                disabled={busy}
+                onChange={(e) => setName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") void save();
+                  if (e.key === "Escape") {
+                    setName(host.name);
+                    setEditing(false);
+                  }
+                }}
+                className="h-7 max-w-[16rem]"
+              />
+              <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => void save()} disabled={busy}>
+                <Check className="h-3.5 w-3.5" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-7 w-7 p-0"
+                onClick={() => {
+                  setName(host.name);
+                  setEditing(false);
+                }}
+                disabled={busy}
+              >
+                <X className="h-3.5 w-3.5" />
+              </Button>
+            </>
+          ) : (
+            <>
+              <span className="truncate font-medium">{host.name}</span>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-6 w-6 p-0 text-muted-foreground"
+                onClick={() => setEditing(true)}
+                title="Rename host"
+              >
+                <Pencil className="h-3 w-3" />
+              </Button>
               <Badge
                 variant="outline"
                 className={cn(
-                  h.status === "online" && "border-success/30 bg-success/10 text-success",
-                  h.status === "offline" && "border-muted text-muted-foreground"
+                  host.status === "online" && "border-success/30 bg-success/10 text-success",
+                  host.status === "offline" && "border-muted text-muted-foreground"
                 )}
               >
-                {h.status}
+                {host.status}
               </Badge>
-              {h.shared && (
+              {shared && (
                 <Badge variant="outline" className="border-primary/30 text-primary">
                   shared
                 </Badge>
               )}
-            </div>
-            <div className="mt-0.5 truncate text-xs text-muted-foreground">
-              {h.orgName ?? "—"} · {h.agentCount ?? 0} agents
-              {h.sshHost ? ` · ${h.sshHost}` : ""}
-            </div>
-          </div>
-          <label className="flex shrink-0 items-center gap-2 text-xs text-muted-foreground">
-            Shared
-            <Switch checked={!!h.shared} onCheckedChange={(v) => void toggleShared(h, v)} />
-          </label>
-        </li>
-      ))}
-    </ul>
+            </>
+          )}
+        </div>
+        <div className="mt-0.5 truncate text-xs text-muted-foreground">
+          {host.orgName ?? "—"} · {host.agentCount ?? 0} agents
+          {host.sshHost ? ` · ${host.sshHost}` : ""}
+        </div>
+      </div>
+      <label className="flex shrink-0 items-center gap-2 text-xs text-muted-foreground">
+        Shared
+        <Switch checked={shared} onCheckedChange={(v) => void toggleShared(v)} />
+      </label>
+    </li>
   );
 }
 
