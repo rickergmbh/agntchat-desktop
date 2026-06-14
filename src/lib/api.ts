@@ -1528,6 +1528,9 @@ export interface Participant {
   platformAdmin?: boolean;
   /** Stripe Billing subscription summary, or null when not subscribed. */
   subscription?: { plan?: string; status?: string } | null;
+  /** For paying users: the host new agents should default to running on
+   *  ("hosted" runtime). Null when the user has no host available. */
+  hostedHostId?: string | null;
 }
 
 /** Start a Stripe subscription Checkout; returns a URL to open in a browser. */

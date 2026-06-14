@@ -15,7 +15,9 @@ import {
   ShieldOff,
 } from "lucide-react";
 import { useAgentStore } from "../stores/agentStore";
+import { useAuthStore } from "../stores/authStore";
 import { useActiveWorkspace } from "../stores/workspaceStore";
+import { updateAgentRuntime } from "../lib/api";
 import { WORKSPACES_ENABLED } from "../lib/featureFlags";
 import { useLlmKeyStore } from "../stores/llmKeyStore";
 import { useModelCatalog } from "../stores/modelCatalogStore";
@@ -162,6 +164,18 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   // for this agent only, "<existing-id>" = pin to a saved non-default
   // key. Reset to "__default__" whenever the backend flips.
   const [keySelection, setKeySelection] = useState<string>("__default__");
+
+  // Hosting — for plan users we default new agents to "hosted" (always-on,
+  // runs on their host using the plan's shared brain) so they can create and
+  // start talking with zero setup. Advanced users switch to "local".
+  const participant = useAuthStore((s) => s.participant);
+  const subStatus = participant?.subscription?.status;
+  const isPlan = subStatus === "active" || subStatus === "trialing";
+  const hostedHostId = participant?.hostedHostId ?? null;
+  const canHost = isPlan && !!hostedHostId;
+  const [hosting, setHosting] = useState<"hosted" | "local">(
+    canHost ? "hosted" : "local"
+  );
 
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -322,13 +336,23 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
       setStepIndex(0);
       return;
     }
-    if (showApiKeyInput && !apiKey.trim()) {
+    // Hosted agents use the host's shared brain — no API key to enter.
+    if (hosting === "local" && showApiKeyInput && !apiKey.trim()) {
       setError("API key is required for this provider");
       return;
     }
     setCreating(true);
     setError(null);
     try {
+      // Hosted agents run on the org host with its shared Claude seat, so we
+      // pin sensible defaults (claude_cli) and skip per-agent key handling.
+      const hosted = hosting === "hosted";
+      const effBackend = hosted ? "claude_cli" : backend;
+      const effModel = hosted
+        ? catalog.modelsFor("claude_cli")[0]?.id ?? model
+        : model;
+      const effExecutionMode = hosted ? "tool_use" : executionMode;
+
       // Resolve the key choice:
       //   * No default exists + key entered → save it AS the default.
       //   * Default exists + custom key entered → save as a non-default
@@ -336,25 +360,27 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
       //   * "__default__" → use the provider default (no pin).
       //   * "<id>" → pin to an existing saved key.
       let llmApiKeyIdPin: string | null = null;
-      if (apiKey.trim() && needsApiKey) {
-        const provider = PROVIDERS.find((p) => p.id === backend);
-        const label = `${provider?.label || backend} Key`;
-        try {
-          const newId = await llmKeyStore.addKey(backend, label, apiKey.trim(), {
-            makeDefault: !hasDefaultKey,
-          });
-          if (hasDefaultKey) llmApiKeyIdPin = newId;
-        } catch (e) {
-          setError(e instanceof Error ? e.message : "Failed to save the API key");
-          setCreating(false);
-          return;
+      if (!hosted) {
+        if (apiKey.trim() && needsApiKey) {
+          const provider = PROVIDERS.find((p) => p.id === backend);
+          const label = `${provider?.label || backend} Key`;
+          try {
+            const newId = await llmKeyStore.addKey(backend, label, apiKey.trim(), {
+              makeDefault: !hasDefaultKey,
+            });
+            if (hasDefaultKey) llmApiKeyIdPin = newId;
+          } catch (e) {
+            setError(e instanceof Error ? e.message : "Failed to save the API key");
+            setCreating(false);
+            return;
+          }
+        } else if (
+          keySelection !== "__default__" &&
+          keySelection !== "__custom__"
+        ) {
+          // User picked an existing non-default saved key — pin to it.
+          llmApiKeyIdPin = keySelection;
         }
-      } else if (
-        keySelection !== "__default__" &&
-        keySelection !== "__custom__"
-      ) {
-        // User picked an existing non-default saved key — pin to it.
-        llmApiKeyIdPin = keySelection;
       }
 
       const allSpecialtiesList = [...specialties, ...customSpecialties];
@@ -379,15 +405,16 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
         ...(avatarUrl ? { avatarUrl } : {}),
         ...(requiresLocation ? { requiresLocation: true } : {}),
         ...(soulMd ? { soulMd } : {}),
-        ...(backend ? { backend } : {}),
-        ...(model ? { model } : {}),
-        ...(executionMode ? { executionMode } : {}),
-        ...(effort ? { effort } : {}),
-        ...(skipPermissions ? { dangerouslySkipPermissions: true } : {}),
+        ...(effBackend ? { backend: effBackend } : {}),
+        ...(effModel ? { model: effModel } : {}),
+        ...(effExecutionMode ? { executionMode: effExecutionMode } : {}),
+        // Local-only brain knobs — hosted agents use the host's shared seat.
+        ...(!hosted && effort ? { effort } : {}),
+        ...(!hosted && skipPermissions ? { dangerouslySkipPermissions: true } : {}),
         // computer-use lives in agent.metadata (snake_case, backend-merged)
         // so it follows the agent across desktops. Allow-list is left
         // empty at create time — user can fill it in AgentConfig after.
-        ...(computerUseEnabled
+        ...(!hosted && computerUseEnabled
           ? { metadata: { computer_use_enabled: true } }
           : {}),
         ...(llmApiKeyIdPin ? { llmApiKeyId: llmApiKeyIdPin } : {}),
@@ -398,6 +425,22 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
           ? { organizationId: activeWorkspace.id }
           : {}),
       });
+
+      // Hosted: dedicate the agent to the user's host so it's always on.
+      // Non-fatal — if it fails the agent still exists (just local for now).
+      if (newId && hosted && hostedHostId) {
+        try {
+          await updateAgentRuntime(newId, {
+            runtime: "org_host",
+            organizationId: participant?.organizationId ?? activeWorkspace?.id ?? null,
+            assignedHostId: hostedHostId,
+            presenceMode: "always_on",
+          });
+        } catch {
+          // leave as local; user can fix in the agent's Runtime settings
+        }
+      }
+
       if (newId) await selectAgent(newId);
       onClose();
     } catch (err) {
@@ -432,6 +475,12 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     createAgent,
     selectAgent,
     onClose,
+    hosting,
+    hostedHostId,
+    participant,
+    catalog,
+    activeWorkspace,
+    visibility,
   ]);
 
   const initials = displayName
@@ -803,6 +852,56 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
 
               {step === "brain" && (
                 <div className="space-y-4">
+                  {canHost && (
+                    <div className="space-y-2">
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setHosting("hosted")}
+                          className={cn(
+                            "rounded-lg border p-3 text-left transition-colors",
+                            hosting === "hosted"
+                              ? "border-primary ring-1 ring-primary"
+                              : "border-border hover:border-foreground/30"
+                          )}
+                        >
+                          <div className="text-sm font-medium">☁️ Hosted</div>
+                          <div className="mt-0.5 text-xs text-text-muted">
+                            Always on, powered by your plan. No setup.
+                          </div>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setHosting("local")}
+                          className={cn(
+                            "rounded-lg border p-3 text-left transition-colors",
+                            hosting === "local"
+                              ? "border-primary ring-1 ring-primary"
+                              : "border-border hover:border-foreground/30"
+                          )}
+                        >
+                          <div className="text-sm font-medium">
+                            Local{" "}
+                            <span className="text-text-muted">(advanced)</span>
+                          </div>
+                          <div className="mt-0.5 text-xs text-text-muted">
+                            Runs on this machine; pick your own model.
+                          </div>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {hosting === "hosted" && (
+                    <div className="rounded-lg border border-border bg-muted/40 p-3 text-sm text-text-muted">
+                      Your agent runs always-on in the cloud using your plan's
+                      shared brain — nothing else to set up. You can switch it to
+                      a custom local model anytime in the agent's settings.
+                    </div>
+                  )}
+
+                  {hosting === "local" && (
+                  <>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1.5">
                       <Label>Provider</Label>
@@ -1022,6 +1121,8 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                         </p>
                       </div>
                     </label>
+                  )}
+                  </>
                   )}
                 </div>
               )}
