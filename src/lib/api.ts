@@ -722,6 +722,23 @@ export async function deallocateUser(
   return request(`/api/admin/users/${userId}/deallocate`, { method: "POST" });
 }
 
+/** Manually grant/update a user's plan (no Stripe needed). */
+export async function setUserPlan(
+  userId: string,
+  plan: string,
+  status = "active"
+): Promise<void> {
+  await request(`/api/admin/users/${userId}/subscription`, {
+    method: "POST",
+    body: JSON.stringify({ plan, status }),
+  });
+}
+
+/** Remove a user's manual plan. */
+export async function clearUserPlan(userId: string): Promise<void> {
+  await request(`/api/admin/users/${userId}/subscription`, { method: "DELETE" });
+}
+
 export async function setHostShared(
   hostId: string,
   shared: boolean

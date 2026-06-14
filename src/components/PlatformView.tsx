@@ -293,6 +293,7 @@ function UsersTab() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [allocating, setAllocating] = useState<api.AdminUser | null>(null);
+  const [planning, setPlanning] = useState<api.AdminUser | null>(null);
 
   const refresh = useCallback(async (q?: string) => {
     setLoading(true);
@@ -375,6 +376,9 @@ function UsersTab() {
                       : "—"}
                   </td>
                   <td className="px-3 py-2 text-right">
+                    <Button variant="ghost" size="sm" onClick={() => setPlanning(u)}>
+                      Plan
+                    </Button>
                     <Button variant="ghost" size="sm" onClick={() => setAllocating(u)}>
                       Allocate
                     </Button>
@@ -402,7 +406,115 @@ function UsersTab() {
           void refresh(search);
         }}
       />
+      <SetPlanDialog
+        user={planning}
+        onOpenChange={(o) => !o && setPlanning(null)}
+        onDone={() => {
+          setPlanning(null);
+          void refresh(search);
+        }}
+      />
     </div>
+  );
+}
+
+function SetPlanDialog({
+  user,
+  onOpenChange,
+  onDone,
+}: {
+  user: api.AdminUser | null;
+  onOpenChange: (open: boolean) => void;
+  onDone: () => void;
+}) {
+  const [plan, setPlan] = useState("comp");
+  const [status, setStatus] = useState("active");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Seed from the user's current plan when the dialog opens.
+  useEffect(() => {
+    if (user) {
+      setPlan(user.subscription?.plan ?? "comp");
+      setStatus(user.subscription?.status ?? "active");
+      setError(null);
+    }
+  }, [user]);
+
+  const save = async () => {
+    if (!user) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await api.setUserPlan(user.id, plan.trim() || "comp", status);
+      onDone();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not set plan");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const clear = async () => {
+    if (!user) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await api.clearUserPlan(user.id);
+      onDone();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not clear plan");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <Dialog open={!!user} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Plan — {user?.displayName}</DialogTitle>
+          <DialogDescription>
+            Manually set a plan (no Stripe needed). When Stripe billing is live,
+            its webhook updates this same record.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-3 py-1">
+          <div className="space-y-1">
+            <Label htmlFor="plan-name">Plan</Label>
+            <Input
+              id="plan-name"
+              value={plan}
+              onChange={(e) => setPlan(e.target.value)}
+              placeholder="comp / pro / founder…"
+            />
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="plan-status">Status</Label>
+            <select
+              id="plan-status"
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            >
+              <option value="active">active (paying)</option>
+              <option value="trialing">trialing (paying)</option>
+              <option value="past_due">past_due</option>
+              <option value="canceled">canceled</option>
+            </select>
+          </div>
+          {error && <p className="text-sm text-destructive">{error}</p>}
+          <DialogFooter className="justify-between">
+            <Button variant="ghost" onClick={() => void clear()} disabled={busy}>
+              Clear plan
+            </Button>
+            <Button onClick={() => void save()} disabled={busy}>
+              {busy ? "Saving…" : "Save"}
+            </Button>
+          </DialogFooter>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 
