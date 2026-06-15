@@ -575,6 +575,21 @@ function HostOpLog({ ops }: { ops: api.HostOperation[] }) {
   );
 }
 
+/**
+ * Clean a pasted SSH host into a bare host/IP. Operators often paste a whole
+ * `ssh root@1.2.3.4` command or a `host:port` — the backend connects to this
+ * verbatim, so strip the `ssh ` prefix, any `user@`, a trailing `:port`, and
+ * anything after whitespace.
+ */
+function normalizeSshHost(input: string): string {
+  let h = input.trim().replace(/^ssh\s+/i, "");
+  if (h.includes("@")) h = h.slice(h.lastIndexOf("@") + 1);
+  h = h.split(/\s+/)[0] ?? "";
+  // Strip a trailing :port (but leave IPv6 colons alone — those have >1 colon).
+  if ((h.match(/:/g) ?? []).length === 1) h = h.replace(/:\d+$/, "");
+  return h;
+}
+
 function ConnectHostDialog({
   orgId,
   open,
@@ -607,7 +622,8 @@ function ConnectHostDialog({
   };
 
   const handleConnect = async () => {
-    if (!name.trim() || !sshHost.trim()) {
+    const host = normalizeSshHost(sshHost);
+    if (!name.trim() || !host) {
       setError("Name and SSH host are required.");
       return;
     }
@@ -616,7 +632,7 @@ function ConnectHostDialog({
     try {
       const res = await api.connectHost(orgId, {
         name: name.trim(),
-        sshHost: sshHost.trim(),
+        sshHost: host,
         sshUser: sshUser.trim() || "root",
         sshPort: Number(sshPort) || 22,
       });
@@ -705,7 +721,7 @@ function ConnectHostDialog({
                   id="ch-host"
                   value={sshHost}
                   onChange={(e) => setSshHost(e.target.value)}
-                  placeholder="203.0.113.10"
+                  placeholder="203.0.113.10 (IP only — no 'ssh' or user@)"
                 />
               </div>
               <div className="space-y-1">
