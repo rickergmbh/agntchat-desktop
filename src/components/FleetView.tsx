@@ -7,6 +7,7 @@ import {
   Cloud,
   Copy as CopyIcon,
   DownloadCloud,
+  KeyRound,
   Loader2,
   Plus,
   RefreshCw,
@@ -217,6 +218,8 @@ function HostCard({
   const [agentsError, setAgentsError] = useState<string | null>(null);
   const [ops, setOps] = useState<api.HostOperation[]>([]);
   const [busy, setBusy] = useState<api.HostOpKind | "delete" | null>(null);
+  const [keyOpen, setKeyOpen] = useState(false);
+  const [pubKey, setPubKey] = useState<string | null>(null);
 
   const loadDetail = useCallback(async () => {
     try {
@@ -250,6 +253,16 @@ function HostCard({
       alert(e instanceof Error ? e.message : "Operation failed");
     } finally {
       setBusy(null);
+    }
+  };
+
+  const showKey = async () => {
+    setKeyOpen(true);
+    if (pubKey) return;
+    try {
+      setPubKey(await api.getHostPublicKey(orgId, host.id));
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "Could not load public key");
     }
   };
 
@@ -313,6 +326,18 @@ function HostCard({
         </button>
 
         <div className="flex shrink-0 items-center gap-1">
+          {!bootstrapped && host.sshHost && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => void showKey()}
+              disabled={busy !== null}
+              title="Show the SSH public key to authorize on the host"
+            >
+              <KeyRound className="h-3.5 w-3.5" />
+              Key
+            </Button>
+          )}
           {!bootstrapped && host.sshHost && (
             <Button
               variant="default"
@@ -389,6 +414,48 @@ function HostCard({
           <HostOpLog ops={ops} />
         </div>
       )}
+
+      <Dialog open={keyOpen} onOpenChange={setKeyOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Authorize "{host.name}"</DialogTitle>
+            <DialogDescription>
+              AgentGram connects to your VM over SSH using its own key — not your root password.
+              Add this public key to {host.sshUser || "root"}@{host.sshHost}, then bootstrap.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 py-1">
+            {pubKey ? (
+              <>
+                <CopyField label="Public key" value={pubKey} mono />
+                <CopyField
+                  label={`Run this on the host (ssh ${host.sshUser || "root"}@${host.sshHost})`}
+                  value={`mkdir -p ~/.ssh && echo '${pubKey}' >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys`}
+                  mono
+                />
+                <p className="text-xs text-muted-foreground">
+                  Bootstrap needs Ubuntu 22.04+/Debian 12 with outbound internet (GitHub + PyPI).
+                </p>
+              </>
+            ) : (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" /> Loading key…
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button
+              onClick={() => {
+                setKeyOpen(false);
+                void op("bootstrap");
+              }}
+              disabled={busy !== null || !pubKey}
+            >
+              Bootstrap now
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </li>
   );
 }
