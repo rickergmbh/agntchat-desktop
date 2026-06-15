@@ -748,10 +748,8 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                   <div className="flex-1">
                     <Label className="text-sm">Skip permissions</Label>
                     <p className="text-xs text-muted-foreground">
-                      Claude Code &amp; OpenAI Codex. Combine with{" "}
-                      <em>Allow computer use</em> only when you fully trust
-                      the agent — together they give it unprompted access
-                      to your files and your desktop.
+                      Lets Claude Code &amp; Codex act without per-action
+                      approval. Enable only for agents you fully trust.
                     </p>
                   </div>
                   <Switch
@@ -768,15 +766,12 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                   <div className="flex-1">
                     <Label className="text-sm">Allow computer use</Label>
                     <p className="text-xs text-muted-foreground">
-                      Lets this agent take screenshots, click, type, and scroll
-                      on this computer (Claude Code &amp; Codex backends).
+                      Lets this agent control the computer — screenshots,
+                      clicks, typing (Claude Code &amp; Codex).
                       {IS_MACOS
-                        ? " Requires Screen Recording & Accessibility permissions for the app launching the bridge."
-                        : " Uses native Windows input — no extra permissions needed."}{" "}
-                      Setting follows the agent across desktops. Create{" "}
-                      <code>~/.agentgram/computer_use.paused</code> to stop
-                      anytime. If the agent is currently running, restart it
-                      after changing this for the new policy to take effect.
+                        ? " Needs Screen Recording & Accessibility permissions."
+                        : " Uses native Windows input."}{" "}
+                      Restart the agent after changing.
                     </p>
                     {agent.metadata?.computer_use_enabled === true &&
                       (IS_MACOS ? (
@@ -3055,24 +3050,12 @@ function RuntimePanel({ agent }: { agent: Agent }) {
   };
 
   return (
-    <div className="space-y-6 max-w-2xl">
-      <div>
-        <h2 className="text-lg font-semibold">Runtime</h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          Decide where this agent runs. <span className="font-medium">Local</span>{" "}
-          keeps it on this machine — it goes offline when you quit the app.{" "}
-          <span className="font-medium">Hosted</span> runs it on always-on
-          infrastructure included with your subscription, so your agent stays
-          connected and keeps working even when your desktop is closed.
-        </p>
-      </div>
-
+    <Section title="Runtime">
       <div className="space-y-3">
-        <Label className="text-sm font-medium">Where it runs</Label>
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           <RuntimeRadio
-            label="Local (this device)"
-            description="The desktop spawns agent_bridge.py here. Goes offline when the app quits."
+            label="Local"
+            description="Runs on this machine — offline when you quit the app."
             selected={pendingRuntime === "local"}
             onClick={() => setPendingRuntime("local")}
           />
@@ -3080,128 +3063,112 @@ function RuntimePanel({ agent }: { agent: Agent }) {
             label="Hosted"
             description={
               organization
-                ? "Always-on, included with your subscription — stays connected even when your desktop is closed."
-                : "Switch to a shared workspace from the workspace switcher to use this option."
+                ? "Always-on, included with your subscription — stays connected when your desktop is closed."
+                : "Available in a shared workspace."
             }
             selected={pendingRuntime === "org_host"}
             onClick={() => canSwitchToOrgHost && setPendingRuntime("org_host")}
             disabled={!canSwitchToOrgHost}
           />
         </div>
+
         {hostsLoading && !hostsLoaded && (
-          <div className="text-xs text-muted-foreground">Loading hosts…</div>
+          <p className="text-xs text-muted-foreground">Loading hosts…</p>
         )}
         {!organization && (
-          <div className="text-xs text-muted-foreground">
-            You&apos;re in your Personal workspace. Switch to a shared
-            workspace (sidebar workspace switcher) to run agents Hosted.
-          </div>
+          <p className="text-xs text-muted-foreground">
+            You&apos;re in your Personal workspace — switch to a shared workspace to run Hosted.
+          </p>
         )}
         {organization && hostsLoaded && hosts.length === 0 && (
-          <div className="text-xs text-muted-foreground">
-            Your org has no hosts registered. Add one in Settings → Organization
-            to enable this option.
-          </div>
+          <p className="text-xs text-muted-foreground">
+            No hosts in this workspace yet — add one in Settings → Organization.
+          </p>
         )}
-      </div>
 
-      {pendingRuntime === "org_host" && organization && hosts.length > 0 && (
-        <>
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Host</Label>
-            <Select
-              value={pendingHostId ?? undefined}
-              onValueChange={(v) => setPendingHostId(v)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Pick a host" />
-              </SelectTrigger>
-              <SelectContent>
-                {hosts.map((h) => (
-                  <SelectItem key={h.id} value={h.id}>
-                    {h.name}
-                    <span className="ml-2 text-xs text-muted-foreground">
-                      {h.status}
-                      {h.hostname ? ` · ${h.hostname}` : ""}
-                    </span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Presence</Label>
-            <Select
-              value={pendingPresence}
-              onValueChange={(v) =>
-                setPendingPresence(v as typeof pendingPresence)
-              }
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="always_on">
-                  Always on — host keeps the bridge running whenever it's online
-                </SelectItem>
-                <SelectItem value="wake_on_demand">
-                  Wake on demand — bridge spawns when activity arrives, idles after a quiet period
-                </SelectItem>
-                <SelectItem value="manual">
-                  Manual — only spawn when you explicitly start the agent
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {pendingPresence === "wake_on_demand" && (
-            <div className="space-y-2">
-              <Label className="text-sm font-medium" htmlFor="idle-timeout">
-                Idle timeout (seconds)
-              </Label>
-              <Input
-                id="idle-timeout"
-                type="number"
-                min={30}
-                value={pendingIdle}
-                onChange={(e) => {
-                  const n = Number(e.target.value);
-                  if (Number.isFinite(n) && n > 0) setPendingIdle(n);
-                }}
-              />
-              <p className="text-xs text-muted-foreground">
-                How long the bridge will idle (with no stderr activity) before
-                the host stops it. Default 600s.
-              </p>
+        {pendingRuntime === "org_host" && organization && hosts.length > 0 && (
+          <>
+            <div className="space-y-1.5">
+              <Label className="text-xs">Host</Label>
+              <Select value={pendingHostId ?? undefined} onValueChange={(v) => setPendingHostId(v)}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Pick a host" />
+                </SelectTrigger>
+                <SelectContent>
+                  {hosts.map((h) => (
+                    <SelectItem key={h.id} value={h.id}>
+                      {h.name}
+                      <span className="ml-2 text-xs text-muted-foreground">
+                        {h.status}
+                        {h.hostname ? ` · ${h.hostname}` : ""}
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-          )}
-        </>
-      )}
 
-      {error && (
-        <div className="text-sm text-red-600 dark:text-red-400">{error}</div>
-      )}
+            <div className="space-y-1.5">
+              <Label className="text-xs">Presence</Label>
+              <Select
+                value={pendingPresence}
+                onValueChange={(v) => setPendingPresence(v as typeof pendingPresence)}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="always_on">Always on</SelectItem>
+                  <SelectItem value="wake_on_demand">Wake on demand</SelectItem>
+                  <SelectItem value="manual">Manual</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
-      <div className="flex items-center gap-2">
-        <Button onClick={() => void save()} disabled={!dirty || saving}>
-          {saving ? "Saving…" : "Save"}
-        </Button>
+            {pendingPresence === "wake_on_demand" && (
+              <div className="space-y-1.5">
+                <Label className="text-xs" htmlFor="idle-timeout">
+                  Idle timeout (seconds)
+                </Label>
+                <Input
+                  id="idle-timeout"
+                  type="number"
+                  min={30}
+                  value={pendingIdle}
+                  onChange={(e) => {
+                    const n = Number(e.target.value);
+                    if (Number.isFinite(n) && n > 0) setPendingIdle(n);
+                  }}
+                  placeholder="600"
+                />
+              </div>
+            )}
+          </>
+        )}
+
+        {error && <p className="text-xs text-destructive">{error}</p>}
+
         {dirty && (
-          <Button
-            variant="ghost"
-            onClick={() => {
-              setPendingRuntime(currentRuntime);
-              setPendingHostId(currentHostId ?? hosts[0]?.id ?? null);
-              setPendingPresence(currentPresence);
-              setPendingIdle(currentIdle);
-            }}
-          >
-            Cancel
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button size="sm" onClick={() => void save()} disabled={saving}>
+              {saving ? "Saving…" : "Save"}
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setPendingRuntime(currentRuntime);
+                setPendingHostId(currentHostId ?? hosts[0]?.id ?? null);
+                setPendingPresence(currentPresence);
+                setPendingIdle(currentIdle);
+              }}
+            >
+              Cancel
+            </Button>
+          </div>
         )}
       </div>
-    </div>
+    </Section>
   );
 }
 
