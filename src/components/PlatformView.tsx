@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import * as api from "../lib/api";
 import { cn } from "../lib/utils";
+import { useModelCatalog, type CatalogProvider } from "../stores/modelCatalogStore";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -93,6 +94,49 @@ function runtimeLabel(runtime?: string): string {
   if (runtime === "org_host") return "Hosted";
   if (runtime === "local") return "Local";
   return runtime ?? "—";
+}
+
+/** Estimated USD cost: "$12.40", "$0.03", or "—" when unpriced/zero. */
+function fmtUsd(n?: number | null): string {
+  if (n == null) return "—";
+  if (n === 0) return "$0";
+  if (n < 0.01) return "<$0.01";
+  return `$${n.toFixed(2)}`;
+}
+
+/** Tiny inline sparkline of a daily-token series. */
+function Sparkline({ values, className }: { values?: number[]; className?: string }) {
+  if (!values || values.length < 2 || values.every((v) => v === 0)) {
+    return <span className="text-xs text-muted-foreground">—</span>;
+  }
+  const w = 64;
+  const h = 18;
+  const max = Math.max(...values, 1);
+  const step = w / (values.length - 1);
+  const points = values
+    .map((v, i) => `${(i * step).toFixed(1)},${(h - (v / max) * h).toFixed(1)}`)
+    .join(" ");
+
+  return (
+    <svg
+      width={w}
+      height={h}
+      viewBox={`0 0 ${w} ${h}`}
+      className={cn("overflow-visible", className)}
+      preserveAspectRatio="none"
+      aria-hidden
+    >
+      <polyline
+        points={points}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.25}
+        className="text-primary"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
 }
 
 function ErrorBox({ message }: { message: string }) {
@@ -341,6 +385,8 @@ function HostDetailDialog({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [busyAgent, setBusyAgent] = useState<string | null>(null);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [bulkBusy, setBulkBusy] = useState(false);
 
   const load = useCallback(async (hostId: string) => {
     setLoading(true);
@@ -356,8 +402,33 @@ function HostDetailDialog({
 
   useEffect(() => {
     if (host) void load(host.id);
-    else setDetail(null);
+    else {
+      setDetail(null);
+      setSelected(new Set());
+    }
   }, [host, load]);
+
+  const toggleSelect = (id: string) =>
+    setSelected((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+
+  const bulkMove = async (target: string) => {
+    if (!target || selected.size === 0) return;
+    setBulkBusy(true);
+    try {
+      await api.bulkReassignAgents([...selected], target === "local" ? null : target);
+      setSelected(new Set());
+      if (host) await load(host.id);
+      await onChanged();
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "Bulk move failed");
+    } finally {
+      setBulkBusy(false);
+    }
+  };
 
   // Other hosts an agent can move to (any host except this one).
   const moveTargets = useMemo(
@@ -421,16 +492,17 @@ function HostDetailDialog({
                   {detail.users.map((u) => (
                     <li
                       key={u.id}
-                      className="flex items-center justify-between rounded-md border border-border px-3 py-1.5 text-sm"
+                      className="flex items-center justify-between gap-3 rounded-md border border-border px-3 py-1.5 text-sm"
                     >
-                      <span className="min-w-0 truncate">
+                      <span className="min-w-0 flex-1 truncate">
                         {u.displayName ?? u.email ?? u.id.slice(0, 8)}
                         <span className="ml-2 text-xs text-muted-foreground">
                           {u.agentCount} agent{u.agentCount === 1 ? "" : "s"}
                         </span>
                       </span>
+                      <Sparkline values={u.series} />
                       <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
-                        {fmtTokens(u.tokens?.totalTokens)} tok
+                        {fmtTokens(u.tokens?.totalTokens)} tok · {fmtUsd(u.tokens?.costUsd)}
                       </span>
                     </li>
                   ))}
@@ -439,8 +511,29 @@ function HostDetailDialog({
             </section>
 
             <section>
-              <div className="mb-2 text-xs font-medium text-muted-foreground">
-                Agents ({detail.agents.length})
+              <div className="mb-2 flex items-center justify-between">
+                <div className="text-xs font-medium text-muted-foreground">
+                  Agents ({detail.agents.length})
+                </div>
+                {selected.size > 0 && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-muted-foreground">{selected.size} selected</span>
+                    <select
+                      value=""
+                      disabled={bulkBusy}
+                      onChange={(e) => void bulkMove(e.target.value)}
+                      className="h-8 rounded-md border border-input bg-transparent px-2 text-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                    >
+                      <option value="">Move selected to…</option>
+                      <option value="local">Local (off host)</option>
+                      {moveTargets.map((h) => (
+                        <option key={h.id} value={h.id}>
+                          {h.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
               </div>
               {detail.agents.length === 0 ? (
                 <p className="text-sm text-muted-foreground">No agents pinned to this host.</p>
@@ -449,10 +542,13 @@ function HostDetailDialog({
                   <table className="w-full text-sm">
                     <thead className="bg-muted/50 text-left text-xs text-muted-foreground">
                       <tr>
+                        <th className="w-8 px-3 py-2" />
                         <th className="px-3 py-2 font-medium">Agent</th>
                         <th className="px-3 py-2 font-medium">Owner</th>
                         <th className="px-3 py-2 font-medium">Model</th>
                         <th className="px-3 py-2 font-medium">Tokens (30d)</th>
+                        <th className="px-3 py-2 font-medium">Cost</th>
+                        <th className="px-3 py-2 font-medium">Trend</th>
                         <th className="px-3 py-2 font-medium">Move to</th>
                         <th className="px-3 py-2" />
                       </tr>
@@ -460,6 +556,14 @@ function HostDetailDialog({
                     <tbody>
                       {detail.agents.map((a) => (
                         <tr key={a.id} className="border-t border-border">
+                          <td className="px-3 py-2">
+                            <input
+                              type="checkbox"
+                              checked={selected.has(a.id)}
+                              onChange={() => toggleSelect(a.id)}
+                              className="h-3.5 w-3.5 accent-primary"
+                            />
+                          </td>
                           <td className="px-3 py-2">
                             <div className="flex items-center gap-1.5 font-medium">
                               <span
@@ -477,6 +581,12 @@ function HostDetailDialog({
                           </td>
                           <td className="px-3 py-2 text-xs text-muted-foreground">{a.model ?? "—"}</td>
                           <td className="px-3 py-2 tabular-nums">{fmtTokens(a.tokens?.totalTokens)}</td>
+                          <td className="px-3 py-2 tabular-nums text-muted-foreground">
+                            {fmtUsd(a.tokens?.costUsd)}
+                          </td>
+                          <td className="px-3 py-2">
+                            <Sparkline values={a.series} />
+                          </td>
                           <td className="px-3 py-2">
                             <select
                               value=""
@@ -732,6 +842,8 @@ function UserDetailDialog({
                     <th className="px-3 py-2 font-medium">Model</th>
                     <th className="px-3 py-2 font-medium">Connection</th>
                     <th className="px-3 py-2 font-medium">Tokens (30d)</th>
+                    <th className="px-3 py-2 font-medium">Cost</th>
+                    <th className="px-3 py-2 font-medium">Trend</th>
                     <th className="px-3 py-2" />
                   </tr>
                 </thead>
@@ -747,6 +859,12 @@ function UserDetailDialog({
                           : ""}
                       </td>
                       <td className="px-3 py-2 tabular-nums">{fmtTokens(a.tokens?.totalTokens)}</td>
+                      <td className="px-3 py-2 tabular-nums text-muted-foreground">
+                        {fmtUsd(a.tokens?.costUsd)}
+                      </td>
+                      <td className="px-3 py-2">
+                        <Sparkline values={a.series} />
+                      </td>
                       <td className="px-3 py-2 text-right">
                         <Button variant="ghost" size="sm" onClick={() => setManaging(a)}>
                           Manage
@@ -756,7 +874,7 @@ function UserDetailDialog({
                   ))}
                   {detail.agents.length === 0 && (
                     <tr>
-                      <td colSpan={5} className="px-3 py-6 text-center text-muted-foreground">
+                      <td colSpan={7} className="px-3 py-6 text-center text-muted-foreground">
                         No agents.
                       </td>
                     </tr>
@@ -781,7 +899,7 @@ function UserDetailDialog({
   );
 }
 
-/** Adjust one agent: model, connection (local/hosted host), and reset. */
+/** Adjust one agent: model (from the backend catalog), connection, reset. */
 function AgentManageDialog({
   agent,
   hosts,
@@ -793,32 +911,55 @@ function AgentManageDialog({
   onOpenChange: (open: boolean) => void;
   onDone: () => void;
 }) {
+  const fetchGlobalCatalog = useModelCatalog((s) => s.fetchGlobalCatalog);
+  const [providers, setProviders] = useState<CatalogProvider[]>([]);
+
   const [model, setModel] = useState("");
-  const [backend, setBackend] = useState("");
+  const [backend, setBackend] = useState(""); // "" = keep current
   // Connection: "local" or a host id.
   const [connection, setConnection] = useState("local");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const mcBackend = (agent?.modelConfig?.backend as string) || "";
+  const mcModel = (agent?.modelConfig?.model as string) || agent?.model || "";
+
   useEffect(() => {
-    if (agent) {
-      const mc = (agent.modelConfig ?? {}) as Record<string, unknown>;
-      setModel(typeof mc.model === "string" ? mc.model : agent.model ?? "");
-      setBackend(typeof mc.backend === "string" ? mc.backend : "");
-      setConnection(agent.runtime === "org_host" && agent.assignedHostId ? agent.assignedHostId : "local");
-      setError(null);
+    if (!agent) return;
+    setModel(mcModel);
+    setBackend("");
+    setConnection(
+      agent.runtime === "org_host" && agent.assignedHostId ? agent.assignedHostId : "local"
+    );
+    setError(null);
+    // Admin manages agents across orgs — fetch the unfiltered global catalog so
+    // every model the backend accepts is selectable (the single source of truth).
+    void fetchGlobalCatalog().then(setProviders).catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [agent, fetchGlobalCatalog]);
+
+  // Which provider's models to list: the explicit pick, else the agent's
+  // current backend. Models come straight from the backend catalog.
+  const effectiveBackend = backend || mcBackend;
+  const catalogModels = useMemo(
+    () => providers.find((p) => p.id === effectiveBackend)?.models ?? [],
+    [providers, effectiveBackend]
+  );
+  // Keep the agent's current model selectable even if it's not in the list.
+  const modelOptions = useMemo(() => {
+    const opts = catalogModels.map((m) => ({ id: m.id, label: m.label }));
+    if (model && !opts.some((o) => o.id === model)) {
+      return [{ id: model, label: `${model} (current)` }, ...opts];
     }
-  }, [agent]);
+    return opts;
+  }, [catalogModels, model]);
 
   // Hosted targets: agent's own-org hosts + any shared host (matches the
   // backend's host-eligibility — admin reassign carries the shared bypass).
   const hostOptions = useMemo(
     () =>
       hosts.filter(
-        (h) =>
-          h.status === "online" ||
-          h.status === "offline" ||
-          h.id === agent?.assignedHostId
+        (h) => h.status === "online" || h.status === "offline" || h.id === agent?.assignedHostId
       ),
     [hosts, agent]
   );
@@ -828,16 +969,11 @@ function AgentManageDialog({
     setBusy(true);
     setError(null);
     try {
-      const mc = (agent.modelConfig ?? {}) as Record<string, unknown>;
-      // Model config: only PATCH when something changed.
-      const newModel = model.trim();
-      const newBackend = backend.trim();
-      if (newModel !== (mc.model ?? "") || newBackend !== (mc.backend ?? "")) {
-        const cfg: Record<string, unknown> = {};
-        if (newModel) cfg.model = newModel;
-        if (newBackend) cfg.backend = newBackend;
-        if (Object.keys(cfg).length) await api.updateAdminAgent(agent.id, cfg);
-      }
+      // Model config: only PATCH when the model or backend actually changed.
+      const cfg: Record<string, unknown> = {};
+      if (model && model !== mcModel) cfg.model = model;
+      if (backend && backend !== mcBackend) cfg.backend = backend;
+      if (Object.keys(cfg).length) await api.updateAdminAgent(agent.id, cfg);
 
       // Connection: reassign when it changed.
       const currentConn =
@@ -876,39 +1012,61 @@ function AgentManageDialog({
     }
   };
 
+  const byModel = agent?.tokens?.byModel ?? [];
+
   return (
     <Dialog open={!!agent} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Manage — {agent?.displayName}</DialogTitle>
           <DialogDescription>
-            Change the model or where this agent runs, or reset it if it's stuck.
+            Change the model or where this agent runs, or reset it if it's stuck. Models come from
+            the platform catalog.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-3 py-1">
-          <div className="space-y-1">
-            <Label htmlFor="agent-model">Model</Label>
-            <Input
-              id="agent-model"
-              value={model}
-              onChange={(e) => setModel(e.target.value)}
-              placeholder="claude-sonnet-4-5 / gpt-4o…"
-            />
-          </div>
           <div className="space-y-1">
             <Label htmlFor="agent-backend">Backend</Label>
             <select
               id="agent-backend"
               value={backend}
-              onChange={(e) => setBackend(e.target.value)}
+              onChange={(e) => {
+                const b = e.target.value;
+                setBackend(b);
+                // Default to the new backend's first model if the current one
+                // isn't offered there.
+                const models = providers.find((p) => p.id === b)?.models ?? [];
+                if (b && !models.some((m) => m.id === model)) {
+                  setModel(models[0]?.id ?? "");
+                }
+              }}
               className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             >
-              <option value="">(unchanged)</option>
-              <option value="anthropic">anthropic</option>
-              <option value="openai">openai</option>
-              <option value="claude_cli">claude_cli</option>
-              <option value="codex_cli">codex_cli</option>
-              <option value="openclaw">openclaw</option>
+              <option value="">
+                {mcBackend ? `Keep current (${mcBackend})` : "Keep current"}
+              </option>
+              {providers.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="agent-model">Model</Label>
+            <select
+              id="agent-model"
+              value={model}
+              onChange={(e) => setModel(e.target.value)}
+              disabled={modelOptions.length === 0}
+              className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:opacity-50"
+            >
+              {modelOptions.length === 0 && <option value="">Pick a backend first…</option>}
+              {modelOptions.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.label}
+                </option>
+              ))}
             </select>
           </div>
           <div className="space-y-1">
@@ -932,6 +1090,26 @@ function AgentManageDialog({
               ))}
             </select>
           </div>
+
+          {byModel.length > 0 && (
+            <div className="space-y-1">
+              <Label className="text-xs text-muted-foreground">Usage by model (30d)</Label>
+              <ul className="rounded-md border border-border text-xs">
+                {byModel.map((m) => (
+                  <li
+                    key={m.model}
+                    className="flex items-center justify-between border-b border-border px-3 py-1.5 last:border-b-0"
+                  >
+                    <span className="truncate">{m.model}</span>
+                    <span className="shrink-0 tabular-nums text-muted-foreground">
+                      {fmtTokens(m.totalTokens)} · {fmtUsd(m.costUsd)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           {error && <p className="text-sm text-destructive">{error}</p>}
           <DialogFooter className="justify-between">
             <Button variant="ghost" onClick={() => void reset()} disabled={busy}>

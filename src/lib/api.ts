@@ -656,6 +656,18 @@ export interface PlatformStats {
   hostsByStatus: Record<string, number>;
 }
 
+/** Per-model token totals + estimated cost (costUsd null when unpriced). */
+export interface ModelTokenTotals {
+  model: string;
+  inputTokens: number;
+  outputTokens: number;
+  cacheCreationInputTokens: number;
+  cacheReadInputTokens: number;
+  requests: number;
+  totalTokens: number;
+  costUsd: number | null;
+}
+
 /** Trailing-30-day token totals (camelCase, summed server-side). */
 export interface TokenTotals {
   inputTokens: number;
@@ -664,6 +676,8 @@ export interface TokenTotals {
   cacheReadInputTokens: number;
   requests: number;
   totalTokens: number;
+  costUsd: number | null;
+  byModel: ModelTokenTotals[];
 }
 
 export interface AdminUser {
@@ -688,6 +702,8 @@ export interface AdminAgent {
   model?: string | null;
   modelConfig?: Record<string, unknown>;
   tokens?: TokenTotals;
+  /** Daily total-token series (oldest→newest) for a sparkline. */
+  series?: number[];
 }
 
 export interface AdminUserDetail {
@@ -713,6 +729,7 @@ export interface AdminHostDetail {
     ownerEmail?: string | null;
     running: boolean;
     tokens?: TokenTotals;
+    series?: number[];
   }>;
   users: Array<{
     id: string;
@@ -720,6 +737,7 @@ export interface AdminHostDetail {
     email?: string | null;
     agentCount: number;
     tokens?: TokenTotals;
+    series?: number[];
   }>;
 }
 
@@ -828,6 +846,17 @@ export async function updateAdminAgent(
   return request(`/api/admin/agents/${agentId}`, {
     method: "PATCH",
     body: JSON.stringify({ modelConfig }),
+  });
+}
+
+/** Move several agents at once (rebalance off an overloaded host). */
+export async function bulkReassignAgents(
+  agentIds: string[],
+  hostId: string | null
+): Promise<{ moved: number; total: number }> {
+  return request(`/api/admin/agents/bulk-reassign`, {
+    method: "POST",
+    body: JSON.stringify({ agentIds, hostId }),
   });
 }
 
