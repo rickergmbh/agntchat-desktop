@@ -656,6 +656,16 @@ export interface PlatformStats {
   hostsByStatus: Record<string, number>;
 }
 
+/** Trailing-30-day token totals (camelCase, summed server-side). */
+export interface TokenTotals {
+  inputTokens: number;
+  outputTokens: number;
+  cacheCreationInputTokens: number;
+  cacheReadInputTokens: number;
+  requests: number;
+  totalTokens: number;
+}
+
 export interface AdminUser {
   id: string;
   displayName: string;
@@ -664,6 +674,20 @@ export interface AdminUser {
   agentCount: number;
   allocatedHostIds: string[];
   subscription?: { plan?: string; status?: string } | null;
+  tokens?: TokenTotals;
+}
+
+export interface AdminAgent {
+  id: string;
+  displayName: string;
+  status?: string;
+  runtime: string;
+  presenceMode?: string;
+  assignedHostId?: string | null;
+  organizationId?: string | null;
+  model?: string | null;
+  modelConfig?: Record<string, unknown>;
+  tokens?: TokenTotals;
 }
 
 export interface AdminUserDetail {
@@ -671,13 +695,31 @@ export interface AdminUserDetail {
   displayName: string;
   email?: string | null;
   subscription?: { plan?: string; status?: string } | null;
+  agents: AdminAgent[];
+}
+
+/** One host's residents (agents pinned to it + their owners), with token totals. */
+export interface AdminHostDetail {
+  host: OrganizationHost & { orgName?: string | null };
   agents: Array<{
     id: string;
     displayName: string;
+    status?: string;
     runtime: string;
     presenceMode?: string;
-    assignedHostId?: string | null;
-    organizationId?: string | null;
+    model?: string | null;
+    ownerId: string;
+    ownerName?: string | null;
+    ownerEmail?: string | null;
+    running: boolean;
+    tokens?: TokenTotals;
+  }>;
+  users: Array<{
+    id: string;
+    displayName?: string | null;
+    email?: string | null;
+    agentCount: number;
+    tokens?: TokenTotals;
   }>;
 }
 
@@ -760,6 +802,40 @@ export async function updateAdminHost(
     { method: "PATCH", body: JSON.stringify(attrs) }
   );
   return res.host;
+}
+
+/** One host's residents: agents pinned to it + their owners + token totals. */
+export async function getAdminHost(hostId: string): Promise<AdminHostDetail> {
+  return request(`/api/admin/hosts/${hostId}`);
+}
+
+/** Move one agent to a host (rebalance), or pass null/"local" to unpin it. */
+export async function reassignAgent(
+  agentId: string,
+  hostId: string | null
+): Promise<{ agent: Participant }> {
+  return request(`/api/admin/agents/${agentId}/reassign`, {
+    method: "POST",
+    body: JSON.stringify({ hostId }),
+  });
+}
+
+/** Adjust an agent's model config (model/backend/connection). */
+export async function updateAdminAgent(
+  agentId: string,
+  modelConfig: Record<string, unknown>
+): Promise<{ agent: Participant }> {
+  return request(`/api/admin/agents/${agentId}`, {
+    method: "PATCH",
+    body: JSON.stringify({ modelConfig }),
+  });
+}
+
+/** Reset a stuck agent (stop+respawn on its host for hosted agents). */
+export async function resetAgent(
+  agentId: string
+): Promise<{ reset: boolean; via?: string; reason?: string; hostId?: string }> {
+  return request(`/api/admin/agents/${agentId}/reset`, { method: "POST" });
 }
 
 export async function getAdminProvisioningCatalog(): Promise<{
