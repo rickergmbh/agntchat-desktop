@@ -255,7 +255,10 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
     },
     {
       name: "Model",
-      sections: [{ value: "config", label: "Model", icon: Settings2 }],
+      sections: [
+        { value: "config", label: "Model", icon: Settings2 },
+        { value: "runtime", label: "Runtime", icon: Server },
+      ],
     },
     {
       name: "Capabilities",
@@ -277,7 +280,6 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
       name: "Operations",
       sections: [
         { value: "pulse", label: "Pulse", icon: HeartPulse },
-        { value: "runtime", label: "Runtime", icon: Server },
         { value: "logs", label: "Logs", icon: ScrollText },
         { value: "health", label: "Health", icon: Activity },
       ],
