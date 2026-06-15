@@ -464,7 +464,7 @@ function HostDetailDialog({
 
   return (
     <Dialog open={!!host} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl">
+      <DialogContent className="sm:max-w-5xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Server className="h-4 w-4" /> {host?.name}
@@ -819,7 +819,7 @@ function UserDetailDialog({
 
   return (
     <Dialog open={!!user} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl">
+      <DialogContent className="sm:max-w-4xl">
         <DialogHeader>
           <DialogTitle>Agents — {user?.displayName}</DialogTitle>
           <DialogDescription>
