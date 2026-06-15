@@ -462,7 +462,7 @@ export function AgentRow({
               className="border-info/30 text-info bg-info/10 gap-1.5"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-info" />
-              Org host
+              Hosted
             </Badge>
           ) : (
             <Badge

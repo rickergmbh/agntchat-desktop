@@ -3063,10 +3063,11 @@ function RuntimePanel({ agent }: { agent: Agent }) {
       <div>
         <h2 className="text-lg font-semibold">Runtime</h2>
         <p className="text-sm text-muted-foreground mt-1">
-          Decide where this agent's bridge runs. Local keeps it on this
-          machine (today's behavior). Org host runs it on a shared Linux
-          VM your organization administers — the bridge stays alive even
-          when your desktop is closed.
+          Decide where this agent runs. <span className="font-medium">Local</span>{" "}
+          keeps it on this machine — it goes offline when you quit the app.{" "}
+          <span className="font-medium">Hosted</span> runs it on always-on
+          infrastructure included with your subscription, so your agent stays
+          connected and keeps working even when your desktop is closed.
         </p>
       </div>
 
@@ -3080,10 +3081,10 @@ function RuntimePanel({ agent }: { agent: Agent }) {
             onClick={() => setPendingRuntime("local")}
           />
           <RuntimeRadio
-            label="Org host"
+            label="Hosted"
             description={
               organization
-                ? `Runs on one of ${organization.name}'s hosts. Survives desktop close.`
+                ? "Always-on, included with your subscription — stays connected even when your desktop is closed."
                 : "Switch to a shared workspace from the workspace switcher to use this option."
             }
             selected={pendingRuntime === "org_host"}
@@ -3097,7 +3098,7 @@ function RuntimePanel({ agent }: { agent: Agent }) {
         {!organization && (
           <div className="text-xs text-muted-foreground">
             You&apos;re in your Personal workspace. Switch to a shared
-            workspace (sidebar workspace switcher) to enable org hosting.
+            workspace (sidebar workspace switcher) to run agents Hosted.
           </div>
         )}
         {organization && hostsLoaded && hosts.length === 0 && (
