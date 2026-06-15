@@ -385,8 +385,21 @@ export interface OrganizationHost {
   sshUser?: string | null;
   bootstrappedAt?: string | null;
   provider?: string | null;
+  /** Provider VM id this host runs on (e.g. the Hostinger VM). */
+  providerVmId?: string | null;
+  datacenter?: string | null;
   /** Shared (multi-tenant) host: accepts agents pinned from any org. */
   shared?: boolean;
+}
+
+/** An existing provider (Hostinger) VM the operator can register a host on. */
+export interface ProviderVm {
+  id: string;
+  hostname?: string | null;
+  ipv4?: string | null;
+  state?: string | null;
+  plan?: string | null;
+  datacenter?: string | null;
 }
 
 /** One agent that runs on a host, with its resolved human owner. */
@@ -535,12 +548,29 @@ export async function listHostAgents(
  */
 export async function connectHost(
   orgId: string,
-  params: { name: string; sshHost: string; sshPort?: number; sshUser?: string }
+  params: {
+    name: string;
+    sshHost: string;
+    sshPort?: number;
+    sshUser?: string;
+    // Set when the operator picked an existing provider VM (carries provenance).
+    provider?: string;
+    providerVmId?: string;
+    datacenter?: string | null;
+  }
 ): Promise<{ host: OrganizationHost; publicKey: string }> {
   return request<{ host: OrganizationHost; publicKey: string }>(
     `/api/organizations/${orgId}/hosts/connect`,
     { method: "POST", body: JSON.stringify(params) }
   );
+}
+
+/** Existing provider (Hostinger) VMs the operator can register a host on. */
+export async function listProviderVms(orgId: string): Promise<ProviderVm[]> {
+  const res = await request<{ vms: ProviderVm[] }>(
+    `/api/organizations/${orgId}/provisioning/vms`
+  );
+  return res.vms ?? [];
 }
 
 /** The host's authorized_keys public line (to install on the machine). */

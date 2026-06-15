@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Activity,
   AlertCircle,
+  Check,
   ChevronDown,
   ChevronRight,
   Cloud,
@@ -9,6 +10,7 @@ import {
   DownloadCloud,
   KeyRound,
   Loader2,
+  Pencil,
   Plus,
   RefreshCw,
   RotateCw,
@@ -16,6 +18,7 @@ import {
   ShieldCheck,
   Terminal,
   Trash2,
+  X,
 } from "lucide-react";
 import * as api from "../lib/api";
 import { cn } from "../lib/utils";
@@ -220,6 +223,9 @@ function HostCard({
   const [busy, setBusy] = useState<api.HostOpKind | "delete" | null>(null);
   const [keyOpen, setKeyOpen] = useState(false);
   const [pubKey, setPubKey] = useState<string | null>(null);
+  const [editing, setEditing] = useState(false);
+  const [nameInput, setNameInput] = useState(host.name);
+  const [renameBusy, setRenameBusy] = useState(false);
 
   const loadDetail = useCallback(async () => {
     try {
@@ -256,6 +262,26 @@ function HostCard({
     }
   };
 
+  const rename = async () => {
+    const trimmed = nameInput.trim();
+    if (!trimmed || trimmed === host.name) {
+      setEditing(false);
+      setNameInput(host.name);
+      return;
+    }
+    setRenameBusy(true);
+    try {
+      await api.updateHostConnection(orgId, host.id, { name: trimmed });
+      setEditing(false);
+      onChanged();
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "Could not rename host");
+      setNameInput(host.name);
+    } finally {
+      setRenameBusy(false);
+    }
+  };
+
   const showKey = async () => {
     setKeyOpen(true);
     if (pubKey) return;
@@ -286,44 +312,114 @@ function HostCard({
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}
-          className="flex min-w-0 flex-1 items-center gap-3 text-left"
+          className="flex-shrink-0 text-muted-foreground"
+          aria-label={expanded ? "Collapse" : "Expand"}
         >
           {expanded ? (
-            <ChevronDown className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
+            <ChevronDown className="h-4 w-4" />
           ) : (
-            <ChevronRight className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
+            <ChevronRight className="h-4 w-4" />
           )}
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2">
-              <span className="truncate font-medium">{host.name}</span>
-              <Badge
-                variant="outline"
-                className={cn(
-                  "shrink-0",
-                  host.status === "online" &&
-                    "border-success/30 bg-success/10 text-success",
-                  host.status === "offline" && "border-muted text-muted-foreground",
-                  host.status === "disabled" &&
-                    "border-destructive/30 bg-destructive/10 text-destructive"
-                )}
-              >
-                {host.status}
-              </Badge>
-              {!bootstrapped && (
-                <Badge variant="outline" className="shrink-0 border-amber-500/30 text-amber-600">
-                  not bootstrapped
-                </Badge>
-              )}
-            </div>
-            <div className="mt-0.5 truncate text-xs text-muted-foreground">
-              {runningCount} agent{runningCount === 1 ? "" : "s"} running
-              {host.sshHost ? ` · ${host.sshUser || "root"}@${host.sshHost}` : " · no SSH target"}
-              {host.version ? ` · v${host.version}` : ""}
-              {host.hostGitSha ? ` · ${host.hostGitSha}` : ""}
-              {` · seen ${relativeAge(host.lastSeenAt)}`}
-            </div>
-          </div>
         </button>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            {editing ? (
+              <>
+                <Input
+                  value={nameInput}
+                  autoFocus
+                  disabled={renameBusy}
+                  onChange={(e) => setNameInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") void rename();
+                    if (e.key === "Escape") {
+                      setNameInput(host.name);
+                      setEditing(false);
+                    }
+                  }}
+                  className="h-7 max-w-[16rem]"
+                />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 w-7 p-0"
+                  onClick={() => void rename()}
+                  disabled={renameBusy}
+                >
+                  <Check className="h-3.5 w-3.5" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 w-7 p-0"
+                  onClick={() => {
+                    setNameInput(host.name);
+                    setEditing(false);
+                  }}
+                  disabled={renameBusy}
+                >
+                  <X className="h-3.5 w-3.5" />
+                </Button>
+              </>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setExpanded((v) => !v)}
+                  className="truncate text-left font-medium"
+                >
+                  {host.name}
+                </button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-6 w-6 shrink-0 p-0 text-muted-foreground"
+                  onClick={() => {
+                    setNameInput(host.name);
+                    setEditing(true);
+                  }}
+                  title="Rename host"
+                >
+                  <Pencil className="h-3 w-3" />
+                </Button>
+                <Badge
+                  variant="outline"
+                  className={cn(
+                    "shrink-0",
+                    host.status === "online" &&
+                      "border-success/30 bg-success/10 text-success",
+                    host.status === "offline" && "border-muted text-muted-foreground",
+                    host.status === "disabled" &&
+                      "border-destructive/30 bg-destructive/10 text-destructive"
+                  )}
+                >
+                  {host.status}
+                </Badge>
+                {!bootstrapped && (
+                  <Badge variant="outline" className="shrink-0 border-amber-500/30 text-amber-600">
+                    not bootstrapped
+                  </Badge>
+                )}
+              </>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={() => setExpanded((v) => !v)}
+            className="mt-0.5 block w-full truncate text-left text-xs text-muted-foreground"
+          >
+            {runningCount} agent{runningCount === 1 ? "" : "s"} running
+            {host.sshHost ? ` · ${host.sshUser || "root"}@${host.sshHost}` : " · no SSH target"}
+            {host.provider
+              ? ` · ${host.provider}${host.providerVmId ? ` vm ${host.providerVmId}` : ""}${
+                  host.datacenter ? ` (${host.datacenter})` : ""
+                }`
+              : ""}
+            {host.version ? ` · v${host.version}` : ""}
+            {host.hostGitSha ? ` · ${host.hostGitSha}` : ""}
+            {` · seen ${relativeAge(host.lastSeenAt)}`}
+          </button>
+        </div>
 
         <div className="flex shrink-0 items-center gap-1">
           {!bootstrapped && host.sshHost && (
@@ -611,12 +707,29 @@ function ConnectHostDialog({
     null
   );
   const [bootstrapping, setBootstrapping] = useState(false);
+  const [vms, setVms] = useState<api.ProviderVm[]>([]);
+  const [selectedVmId, setSelectedVmId] = useState("");
+
+  // Existing provider VMs the operator can pick from (best-effort: empty when
+  // provisioning isn't configured — manual IP entry still works).
+  useEffect(() => {
+    if (!open) return;
+    let cancelled = false;
+    api
+      .listProviderVms(orgId)
+      .then((list) => !cancelled && setVms(list))
+      .catch(() => !cancelled && setVms([]));
+    return () => {
+      cancelled = true;
+    };
+  }, [open, orgId]);
 
   const reset = () => {
     setName("");
     setSshHost("");
     setSshUser("root");
     setSshPort("22");
+    setSelectedVmId("");
     setError(null);
     setCreated(null);
   };
@@ -629,12 +742,17 @@ function ConnectHostDialog({
     }
     setSubmitting(true);
     setError(null);
+    const vm = vms.find((v) => v.id === selectedVmId);
     try {
       const res = await api.connectHost(orgId, {
         name: name.trim(),
         sshHost: host,
         sshUser: sshUser.trim() || "root",
         sshPort: Number(sshPort) || 22,
+        // Carry VM provenance so the host card shows the association + metrics work.
+        ...(vm
+          ? { provider: "hostinger", providerVmId: vm.id, datacenter: vm.datacenter ?? null }
+          : {}),
       });
       setCreated({ hostId: res.host.id, publicKey: res.publicKey });
       onChanged();
@@ -705,6 +823,34 @@ function ConnectHostDialog({
           </div>
         ) : (
           <div className="space-y-3 py-1">
+            {vms.length > 0 && (
+              <div className="space-y-1">
+                <Label htmlFor="ch-vm">Virtual machine</Label>
+                <select
+                  id="ch-vm"
+                  value={selectedVmId}
+                  onChange={(e) => {
+                    const id = e.target.value;
+                    setSelectedVmId(id);
+                    const vm = vms.find((v) => v.id === id);
+                    if (vm?.ipv4) setSshHost(vm.ipv4);
+                  }}
+                  className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                >
+                  <option value="">Enter a host manually…</option>
+                  {vms.map((v) => (
+                    <option key={v.id} value={v.id}>
+                      {v.hostname || v.id}
+                      {v.ipv4 ? ` — ${v.ipv4}` : ""}
+                      {v.state ? ` (${v.state})` : ""}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-xs text-muted-foreground">
+                  Pick one of your Hostinger VMs to auto-fill its IP, or enter a host manually.
+                </p>
+              </div>
+            )}
             <div className="space-y-1">
               <Label htmlFor="ch-name">Name</Label>
               <Input
