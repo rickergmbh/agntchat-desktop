@@ -387,6 +387,7 @@ function HostDetailDialog({
   const [busyAgent, setBusyAgent] = useState<string | null>(null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [bulkBusy, setBulkBusy] = useState(false);
+  const [ownerFilter, setOwnerFilter] = useState<string>(""); // "" = all owners
 
   const load = useCallback(async (hostId: string) => {
     setLoading(true);
@@ -405,13 +406,31 @@ function HostDetailDialog({
     else {
       setDetail(null);
       setSelected(new Set());
+      setOwnerFilter("");
     }
   }, [host, load]);
+
+  // Agents shown after the owner filter; selection/select-all operate on these.
+  const visibleAgents = useMemo(
+    () =>
+      (detail?.agents ?? []).filter((a) => !ownerFilter || a.ownerId === ownerFilter),
+    [detail, ownerFilter]
+  );
+  const allVisibleSelected =
+    visibleAgents.length > 0 && visibleAgents.every((a) => selected.has(a.id));
 
   const toggleSelect = (id: string) =>
     setSelected((prev) => {
       const next = new Set(prev);
       next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+
+  const toggleSelectAllVisible = () =>
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (allVisibleSelected) visibleAgents.forEach((a) => next.delete(a.id));
+      else visibleAgents.forEach((a) => next.add(a.id));
       return next;
     });
 
@@ -511,9 +530,26 @@ function HostDetailDialog({
             </section>
 
             <section>
-              <div className="mb-2 flex items-center justify-between">
-                <div className="text-xs font-medium text-muted-foreground">
-                  Agents ({detail.agents.length})
+              <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium text-muted-foreground">
+                    Agents ({visibleAgents.length}
+                    {ownerFilter ? ` of ${detail.agents.length}` : ""})
+                  </span>
+                  {detail.users.length > 1 && (
+                    <select
+                      value={ownerFilter}
+                      onChange={(e) => setOwnerFilter(e.target.value)}
+                      className="h-8 rounded-md border border-input bg-transparent px-2 text-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                    >
+                      <option value="">All owners</option>
+                      {detail.users.map((u) => (
+                        <option key={u.id} value={u.id}>
+                          {u.displayName ?? u.email ?? u.id.slice(0, 8)} ({u.agentCount})
+                        </option>
+                      ))}
+                    </select>
+                  )}
                 </div>
                 {selected.size > 0 && (
                   <div className="flex items-center gap-2">
@@ -535,14 +571,26 @@ function HostDetailDialog({
                   </div>
                 )}
               </div>
-              {detail.agents.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No agents pinned to this host.</p>
+              {visibleAgents.length === 0 ? (
+                <p className="text-sm text-muted-foreground">
+                  {detail.agents.length === 0
+                    ? "No agents pinned to this host."
+                    : "No agents for this owner."}
+                </p>
               ) : (
                 <div className="overflow-x-auto rounded-lg border border-border">
                   <table className="w-full text-sm">
                     <thead className="bg-muted/50 text-left text-xs text-muted-foreground">
                       <tr>
-                        <th className="w-8 px-3 py-2" />
+                        <th className="w-8 px-3 py-2">
+                          <input
+                            type="checkbox"
+                            checked={allVisibleSelected}
+                            onChange={toggleSelectAllVisible}
+                            className="h-3.5 w-3.5 accent-primary"
+                            title="Select all shown"
+                          />
+                        </th>
                         <th className="px-3 py-2 font-medium">Agent</th>
                         <th className="px-3 py-2 font-medium">Owner</th>
                         <th className="px-3 py-2 font-medium">Model</th>
@@ -554,7 +602,7 @@ function HostDetailDialog({
                       </tr>
                     </thead>
                     <tbody>
-                      {detail.agents.map((a) => (
+                      {visibleAgents.map((a) => (
                         <tr key={a.id} className="border-t border-border">
                           <td className="px-3 py-2">
                             <input
