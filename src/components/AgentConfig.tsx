@@ -96,7 +96,6 @@ import {
   User,
   Share2,
   Globe2,
-  Server,
 } from "lucide-react";
 import {
   Dialog,
@@ -255,10 +254,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
     },
     {
       name: "Model",
-      sections: [
-        { value: "config", label: "Model", icon: Settings2 },
-        { value: "runtime", label: "Runtime", icon: Server },
-      ],
+      sections: [{ value: "config", label: "Model", icon: Settings2 }],
     },
     {
       name: "Capabilities",
@@ -1076,6 +1072,10 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
               </Section>
             )}
 
+            {/* Runtime — where this agent runs (Local vs Hosted), kept with the
+                model config so everything about how the agent runs is in one place. */}
+            <RuntimePanel agent={agent} />
+
             {/* Danger Zone */}
             <DangerZone agent={agent} onDeleted={() => selectAgent(null)} />
           </div>
@@ -1152,12 +1152,6 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
 
         {activeSection === "pulse" && (
           <PulsePanel managed={managed} />
-        )}
-
-        {activeSection === "runtime" && (
-          <div className="flex-1 overflow-y-auto p-5">
-            <RuntimePanel agent={agent} />
-          </div>
         )}
 
         {activeSection === "health" && (
