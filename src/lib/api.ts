@@ -323,6 +323,21 @@ export async function revertSoulMd(id: string): Promise<Agent> {
   return request<Agent>(`/api/agents/${id}/soul/revert`, { method: "POST" });
 }
 
+/**
+ * Ask the backend to rewrite the agent's soul.md from a natural-language
+ * description of the changes. Returns the proposed markdown — it is NOT saved;
+ * the caller reviews it and persists via `updateSoulMd`.
+ */
+export async function reviseSoulMd(
+  id: string,
+  instruction: string
+): Promise<{ soulMd: string }> {
+  return request(`/api/agents/${id}/soul/revise`, {
+    method: "POST",
+    body: JSON.stringify({ instruction }),
+  });
+}
+
 export interface AgentRuntimeUpdate {
   runtime: "local" | "org_host";
   presenceMode?: "always_on" | "wake_on_demand" | "manual";
