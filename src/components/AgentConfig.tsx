@@ -21,6 +21,7 @@ import {
   enableAgentPulse,
   disableAgentPulse,
   triggerAgentPulse,
+  revisePulseMd,
   updateAgentRuntime,
   getAgentRuntimeOptions,
   type AgentRuntimeOptions,
@@ -72,6 +73,7 @@ import {
   ScrollText,
   Activity,
   Sparkles,
+  CornerDownLeft,
   FileText,
   Copy,
   Eye,
@@ -1618,6 +1620,12 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
   const [organizationId, setOrganizationId] = useState("");
   const [dirty, setDirty] = useState(false);
 
+  // AI "describe the idea" field for authoring/reassessing the checklist.
+  const [pulseIdea, setPulseIdea] = useState("");
+  const [revising, setRevising] = useState(false);
+  // True once an AI proposal has been loaded into the checklist but not saved.
+  const [proposed, setProposed] = useState(false);
+
   const workspaces = useWorkspaces();
 
   const fetchData = useCallback(async () => {
@@ -1631,6 +1639,7 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
       setTimezone(d.pulseConfig?.timezone ?? "Etc/UTC");
       setOrganizationId(d.pulseConfig?.organizationId ?? "");
       setDirty(false);
+      setProposed(false);
       setLoadError(null);
     } catch (e) {
       // 404 means the agent simply has no pulse row yet — that's a
@@ -1731,6 +1740,26 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
       );
     }
     setActionLoading(null);
+  };
+
+  const handleRevise = async () => {
+    const trimmed = pulseIdea.trim();
+    if (!trimmed || revising) return;
+    setRevising(true);
+    setHbError(null);
+    setHbResult(null);
+    try {
+      const { pulseMd: proposedMd } = await revisePulseMd(managed.agent.id, trimmed);
+      setPulseMd(proposedMd);
+      setDirty(true);
+      setProposed(true);
+      setPulseIdea("");
+    } catch (e) {
+      setHbError(
+        e instanceof Error ? e.message : "Failed to generate checklist."
+      );
+    }
+    setRevising(false);
   };
 
   const formatTime = (iso: string | null | undefined) => {
@@ -1914,10 +1943,57 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
         <p className="text-xs text-muted-foreground mb-2">
           What should the agent evaluate on each pulse? The agent will message you only if something needs attention.
         </p>
+
+        {/* AI authoring field — describe the idea and let the model build a
+            robust checklist. Always visible at the top; just start typing. */}
+        <div className="mb-3 rounded-lg border border-primary/40 bg-primary/5 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/40 transition-colors">
+          <div className="flex items-start gap-2 px-3 py-2.5">
+            <Sparkles className="mt-1.5 h-4 w-4 shrink-0 text-primary" />
+            <textarea
+              className="min-h-0 w-full resize-none border-0 bg-transparent p-0 text-sm focus:outline-none focus:ring-0"
+              rows={2}
+              value={pulseIdea}
+              disabled={revising}
+              placeholder={`Describe the idea and the action you want — e.g. "watch ${managed.agent.displayName || "this agent"}'s calendar and remind me to prep an hour before meetings". The model writes a robust checklist.`}
+              onChange={(e) => setPulseIdea(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleRevise();
+                }
+              }}
+            />
+          </div>
+          <div className="flex items-center justify-between border-t border-primary/15 px-3 py-1.5">
+            <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
+              <CornerDownLeft className="h-3 w-3" />
+              Enter to generate · Shift+Enter for a new line · review below before saving
+            </span>
+            <Button size="sm" onClick={handleRevise} disabled={revising || !pulseIdea.trim()}>
+              {revising ? (
+                <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+              ) : (
+                <Sparkles className="w-3.5 h-3.5 mr-1.5" />
+              )}
+              {revising ? "Generating..." : "Generate"}
+            </Button>
+          </div>
+        </div>
+
+        {proposed && (
+          <div className="mb-2 flex items-start gap-2.5 rounded-md bg-primary/10 px-3 py-2.5 text-xs text-primary">
+            <Sparkles className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+            <p>
+              AI-proposed checklist loaded below. Review and edit as needed, then{" "}
+              <span className="font-semibold">Save Changes</span> to apply.
+            </p>
+          </div>
+        )}
+
         <textarea
           className="w-full min-h-[200px] rounded-md border border-input bg-background px-3 py-2 text-sm font-mono resize-y focus:outline-none focus:ring-1 focus:ring-ring"
           value={pulseMd}
-          onChange={(e) => { setPulseMd(e.target.value); setDirty(true); }}
+          onChange={(e) => { setPulseMd(e.target.value); setDirty(true); setProposed(false); }}
           placeholder="e.g., Check if any reminders are due..."
         />
       </Section>

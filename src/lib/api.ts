@@ -1188,6 +1188,21 @@ export async function triggerAgentPulse(id: string): Promise<{ message: string }
   return request(`/api/agents/${id}/pulse/trigger`, { method: "POST" });
 }
 
+/**
+ * Ask the backend to author/reassess the agent's pulse checklist from a
+ * natural-language idea. Returns the proposed pulse_md — it is NOT saved; the
+ * caller reviews it and persists via `updateAgentPulse`.
+ */
+export async function revisePulseMd(
+  id: string,
+  instruction: string
+): Promise<{ pulseMd: string }> {
+  return request(`/api/agents/${id}/pulse/revise`, {
+    method: "POST",
+    body: JSON.stringify({ instruction }),
+  });
+}
+
 // Invites
 export async function getInviteInfo(
   code: string
