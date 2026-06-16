@@ -3,7 +3,7 @@ import { useAgentStore } from "../stores/agentStore";
 import { updateSoulMd, revertSoulMd, reviseSoulMd } from "../lib/api";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Save, Link, RotateCcw, Loader2, Sparkles, X } from "lucide-react";
+import { Save, Link, RotateCcw, Loader2, Sparkles, CornerDownLeft } from "lucide-react";
 
 interface SoulEditorProps {
   agentId: string;
@@ -18,8 +18,7 @@ export function SoulEditor({ agentId }: SoulEditorProps) {
   const [dirty, setDirty] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // AI "describe your changes" panel
-  const [showRevise, setShowRevise] = useState(false);
+  // AI "describe a change" field
   const [instruction, setInstruction] = useState("");
   const [revising, setRevising] = useState(false);
   // True once an AI proposal has been loaded into the editor but not yet saved.
@@ -27,6 +26,7 @@ export function SoulEditor({ agentId }: SoulEditorProps) {
 
   const isClone = !!agent?.soulMdSourceName;
   const isInherited = !!agent?.soulMdInherited;
+  const agentName = agent?.displayName?.trim();
 
   useEffect(() => {
     if (agent?.soulMd != null) {
@@ -59,7 +59,7 @@ export function SoulEditor({ agentId }: SoulEditorProps) {
 
   const handleRevise = async () => {
     const trimmed = instruction.trim();
-    if (!trimmed) return;
+    if (!trimmed || revising) return;
     setRevising(true);
     setError(null);
     try {
@@ -67,7 +67,6 @@ export function SoulEditor({ agentId }: SoulEditorProps) {
       setContent(soulMd);
       setDirty(true);
       setProposed(true);
-      setShowRevise(false);
       setInstruction("");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to generate update");
@@ -92,7 +91,7 @@ export function SoulEditor({ agentId }: SoulEditorProps) {
   }, [agentId, refreshAgent]);
 
   return (
-    <div className="flex flex-col h-full p-4 gap-2">
+    <div className="flex flex-col h-full p-4 gap-3">
       <div className="space-y-1">
         <h3 className="text-sm font-semibold">Soul</h3>
         <p className="text-xs text-muted-foreground leading-relaxed">
@@ -103,6 +102,50 @@ export function SoulEditor({ agentId }: SoulEditorProps) {
           plain language, as if briefing a new teammate.
         </p>
       </div>
+
+      {/* AI revision field — always visible at the top; just start typing. */}
+      <div className="rounded-lg border border-primary/40 bg-primary/5 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/40 transition-colors">
+        <div className="flex items-start gap-2 px-3 py-2.5">
+          <Sparkles className="mt-1.5 h-4 w-4 shrink-0 text-primary" />
+          <Textarea
+            value={instruction}
+            onChange={(e) => setInstruction(e.target.value)}
+            placeholder={
+              agentName
+                ? `Describe a change to ${agentName}'s soul — e.g. make the tone more playful, or add that they're an expert in tax law…`
+                : "Describe a change to this agent's soul — e.g. make the tone more playful, or add an area of expertise…"
+            }
+            rows={2}
+            disabled={revising}
+            className="min-h-0 resize-none border-0 bg-transparent p-0 text-sm shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleRevise();
+              }
+            }}
+          />
+        </div>
+        <div className="flex items-center justify-between border-t border-primary/15 px-3 py-1.5">
+          <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
+            <CornerDownLeft className="h-3 w-3" />
+            Enter to generate · Shift+Enter for a new line · review below before saving
+          </span>
+          <Button
+            size="sm"
+            onClick={handleRevise}
+            disabled={revising || !instruction.trim()}
+          >
+            {revising ? (
+              <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+            ) : (
+              <Sparkles className="w-3.5 h-3.5 mr-1.5" />
+            )}
+            {revising ? "Generating..." : "Generate"}
+          </Button>
+        </div>
+      </div>
+
       {isClone && (
         <div
           className={`flex items-start gap-2.5 rounded-md px-3 py-2.5 text-xs ${
@@ -137,54 +180,6 @@ export function SoulEditor({ agentId }: SoulEditorProps) {
         </div>
       )}
 
-      {showRevise ? (
-        <div className="flex flex-col gap-2 rounded-md border border-primary/40 bg-primary/5 p-3">
-          <div className="flex items-center justify-between">
-            <span className="flex items-center gap-1.5 text-xs font-semibold text-primary">
-              <Sparkles className="h-3.5 w-3.5" />
-              Describe your changes
-            </span>
-            <button
-              onClick={() => {
-                setShowRevise(false);
-                setInstruction("");
-              }}
-              className="text-muted-foreground hover:text-foreground transition-colors"
-              aria-label="Cancel"
-            >
-              <X className="h-3.5 w-3.5" />
-            </button>
-          </div>
-          <Textarea
-            value={instruction}
-            onChange={(e) => setInstruction(e.target.value)}
-            placeholder="e.g. Make her tone more playful, and add that she's an expert in tax law."
-            className="text-sm resize-none"
-            rows={3}
-            autoFocus
-            onKeyDown={(e) => {
-              if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
-                e.preventDefault();
-                handleRevise();
-              }
-            }}
-          />
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] text-muted-foreground">
-              The proposed soul will load below for you to review before saving.
-            </span>
-            <Button size="sm" onClick={handleRevise} disabled={revising || !instruction.trim()}>
-              {revising ? (
-                <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
-              ) : (
-                <Sparkles className="w-3.5 h-3.5 mr-1.5" />
-              )}
-              {revising ? "Generating..." : "Generate"}
-            </Button>
-          </div>
-        </div>
-      ) : null}
-
       {proposed && (
         <div className="flex items-start gap-2.5 rounded-md bg-primary/10 px-3 py-2.5 text-xs text-primary">
           <Sparkles className="mt-0.5 h-3.5 w-3.5 shrink-0" />
@@ -202,21 +197,7 @@ export function SoulEditor({ agentId }: SoulEditorProps) {
         className="flex-1 font-mono text-sm resize-none"
       />
       {error && <p className="text-xs text-destructive">{error}</p>}
-      <div className="flex justify-end gap-2">
-        {!showRevise && (
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => {
-              setShowRevise(true);
-              setError(null);
-            }}
-            disabled={saving || revising}
-          >
-            <Sparkles className="w-3.5 h-3.5 mr-1.5" />
-            Update with AI
-          </Button>
-        )}
+      <div className="flex justify-end">
         <Button size="sm" onClick={handleSave} disabled={saving || !dirty}>
           <Save className="w-3.5 h-3.5 mr-1.5" />
           {saving ? "Saving..." : "Save"}
