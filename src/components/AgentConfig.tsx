@@ -427,6 +427,11 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
 
         {activeSection === "config" && (
           <div className="flex-1 overflow-y-auto p-5 space-y-6">
+            {/* Runtime — where this agent runs (Local vs Hosted). Shown first
+                because it gates the rest: hosted agents inherit the host's
+                provider/connection, so the LLM Provider section below adapts. */}
+            <RuntimePanel agent={agent} />
+
             {/* LLM Provider — Primary section */}
             <Section title="LLM Provider">
               <div className="space-y-3">
@@ -1163,10 +1168,6 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                 </div>
               </Section>
             )}
-
-            {/* Runtime — where this agent runs (Local vs Hosted), kept with the
-                model config so everything about how the agent runs is in one place. */}
-            <RuntimePanel agent={agent} />
 
             {/* Danger Zone */}
             <DangerZone agent={agent} onDeleted={() => selectAgent(null)} />
