@@ -63,6 +63,16 @@ export function SoulEditor({ agentId }: SoulEditorProps) {
 
   return (
     <div className="flex flex-col h-full p-4 gap-2">
+      <div className="space-y-1">
+        <h3 className="text-sm font-semibold">Soul</h3>
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          The soul is this agent&apos;s core identity — its system prompt. Written
+          in Markdown, it defines who the agent is, how it speaks, what it cares
+          about, and the rules it follows. It&apos;s sent to the model on every
+          message and task, so it shapes everything the agent does. Write it in
+          plain language, as if briefing a new teammate.
+        </p>
+      </div>
       {isClone && (
         <div
           className={`flex items-start gap-2.5 rounded-md px-3 py-2.5 text-xs ${

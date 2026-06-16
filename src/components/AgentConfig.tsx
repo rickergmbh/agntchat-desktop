@@ -99,6 +99,9 @@ import {
   User,
   Share2,
   Globe2,
+  ChevronDown,
+  Cloud,
+  Laptop,
 } from "lucide-react";
 import {
   Dialog,
@@ -432,8 +435,12 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                 provider/connection, so the LLM Provider section below adapts. */}
             <RuntimePanel agent={agent} />
 
-            {/* LLM Provider — Primary section */}
-            <Section title="LLM Provider">
+            {/* Model group — provider, mode, and effort are one decision
+                ("how does this agent think?"), so they're clustered tightly
+                with no per-control titles. */}
+            <div className="space-y-3">
+            {/* LLM Provider */}
+            <div>
               <div className="space-y-3">
                 {/* Hosted agents run under the host's seat — the provider and
                     connection are set on the runtime side, not here. We show
@@ -729,10 +736,10 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                     retired. Run-mode placement is now Local-vs-Org-host,
                     set in the Runtime tab. */}
               </div>
-            </Section>
+            </div>
 
             {/* Execution Mode */}
-            <Section title="Execution Mode">
+            <div>
               <div className="space-y-2">
                 <div className="flex items-center gap-1.5">
                   <Label className="text-xs">Mode</Label>
@@ -791,11 +798,11 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                   </p>
                 )}
               </div>
-            </Section>
+            </div>
 
             {/* Effort Level (Claude CLI only) */}
             {config.backend === "claude_cli" && (
-              <Section title="Effort Level">
+              <div>
                 <div className="space-y-2">
                   <div className="flex items-center gap-1.5">
                     <Label className="text-xs">Effort</Label>
@@ -840,10 +847,16 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                       : "Default reasoning depth — thorough and careful."}
                   </p>
                 </div>
-              </Section>
+              </div>
             )}
+            </div>
 
-            {/* Behavior */}
+            {/* Behavior — both controls are local-only. Skip permissions is
+                forced on for hosted agents (the org-host always passes
+                --dangerously-skip-permissions; see host/supervisor.py) and
+                auto-restart is managed by the host supervisor, so the whole
+                section is hidden when the agent runs hosted. */}
+            {!isHosted && (
             <Section title="Behavior">
               <div className="space-y-3">
                 <div className="flex items-start justify-between gap-3">
@@ -864,61 +877,6 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                   />
                 </div>
 
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1">
-                    <Label className="text-sm">Allow computer use</Label>
-                    <p className="text-xs text-muted-foreground">
-                      Lets this agent control the computer — screenshots,
-                      clicks, typing (Claude Code &amp; Codex).
-                      {IS_MACOS
-                        ? " Needs Screen Recording & Accessibility permissions."
-                        : " Uses native Windows input."}{" "}
-                      Restart the agent after changing.
-                    </p>
-                    {agent.metadata?.computer_use_enabled === true &&
-                      (IS_MACOS ? (
-                        <ComputerUseDepsRow />
-                      ) : (
-                        <p className="text-xs text-green-600 dark:text-green-500 mt-2 flex items-center gap-1">
-                          <Check className="w-3 h-3" />
-                          Safety features built in on Windows (focused-app
-                          gate, terminal-window redaction, audit log) —
-                          nothing to install.
-                        </p>
-                      ))}
-                  </div>
-                  <Switch
-                    checked={agent.metadata?.computer_use_enabled === true}
-                    onCheckedChange={async (v) => {
-                      // Backend `Agentchat.Accounts.merge_metadata_patch`
-                      // shallow-merges this patch with the existing
-                      // metadata, so we send ONLY the keys we're changing.
-                      // Spreading `agent.metadata` here would clobber any
-                      // concurrent writes from another tab.
-                      // When turning OFF, also clear the allow-list so the
-                      // UI doesn't quietly retain a stale policy that
-                      // re-applies when the toggle is flipped back on.
-                      const patch: Record<string, unknown> = {
-                        computer_use_enabled: v,
-                      };
-                      if (!v) patch.computer_use_allowed_apps = [];
-                      await updateAgent(agent.id, { metadata: patch });
-                      await fetchAgents();
-                      // When turning ON, recheck deps so the inline status
-                      // row reflects reality, and offer the install if
-                      // they're missing. Background install — never blocks
-                      // the toggle.
-                      if (v && IS_MACOS) {
-                        await refreshComputerUseDepsStatus();
-                        const s = useAgentStore.getState().computerUseDeps;
-                        if (s.state === "not_installed") {
-                          void installComputerUseDeps();
-                        }
-                      }
-                    }}
-                  />
-                </div>
-
                 <div className="flex items-center justify-between">
                   <Label className="text-sm">Auto-restart on crash or stall</Label>
                   <Switch
@@ -928,39 +886,14 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                     }
                   />
                 </div>
-
-                <div className="flex items-center justify-between">
-                  <Label className="text-sm">Start on app launch</Label>
-                  <Switch
-                    checked={config.autoStart}
-                    onCheckedChange={(v) =>
-                      updateConfig(agent.id, { autoStart: v })
-                    }
-                  />
-                </div>
-
-                <div className="flex items-start justify-between gap-3 pt-1">
-                  <div className="flex-1">
-                    <Label className="text-sm">Auto-inject API documentation</Label>
-                    <p className="text-xs text-muted-foreground">
-                      Attach relevant API doc snippets from Context Hub to every task this agent receives. Off by default — enable if your agent calls external APIs.
-                    </p>
-                  </div>
-                  <Switch
-                    checked={(agent.metadata as Record<string, unknown> | undefined)?.auto_doc_injection === true}
-                    onCheckedChange={async (v) => {
-                      await updateAgent(agent.id, {
-                        metadata: { ...(agent.metadata || {}), auto_doc_injection: v },
-                      });
-                      await fetchAgents();
-                    }}
-                  />
-                </div>
-
               </div>
             </Section>
+            )}
 
-            {/* Agent API Key */}
+            {/* Agent API Key — only needed to run the agent from this machine
+                (local runtime). Hosted agents authenticate to the backend via
+                a host-minted delegation token, so the key is irrelevant. */}
+            {!isHosted && (
             <Section title="Agent API Key">
               {apiKey ? (
                 <>
@@ -1054,117 +987,199 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                 </div>
               )}
             </Section>
+            )}
 
 
-            {/* Computer-Use Allowed Apps (visible only when computer use is on) */}
-            {config.backend === "claude_cli" &&
-              agent.metadata?.computer_use_enabled === true && (
-                <Section title="Computer-use allowed apps">
-                  <p className="text-xs text-muted-foreground mb-2">
-                    Optional. When empty, the agent can interact with any app
-                    except the hardcoded deny list (1Password, Keychain, etc).
-                    When non-empty, the agent is restricted to these apps —
-                    anything else is refused. Match is case-insensitive
-                    substring against the focused application name. Restart
-                    the agent after editing for changes to take effect.
+            {/* Local runtime settings — only meaningful when the agent runs on
+                this machine. Hosted agents run on the org host, which has no
+                desktop launch lifecycle, no local computer to drive, and no
+                access to this machine's folders, so the whole group is hidden
+                and reappears together when you switch the runtime to Local. */}
+            {!isHosted && (
+              <Section title="Local runtime settings">
+                <div className="space-y-4">
+                  <p className="text-xs text-muted-foreground">
+                    These apply only while this agent runs on your machine (Local
+                    runtime).
                   </p>
-                  <div className="space-y-1.5">
-                    {((agent.metadata?.computer_use_allowed_apps as string[] | undefined) || []).map(
-                      (app, i) => (
+
+                  {/* Allow computer use */}
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1">
+                      <Label className="text-sm">Allow computer use</Label>
+                      <p className="text-xs text-muted-foreground">
+                        Lets this agent control the computer — screenshots,
+                        clicks, typing (Claude Code &amp; Codex).
+                        {IS_MACOS
+                          ? " Needs Screen Recording & Accessibility permissions."
+                          : " Uses native Windows input."}{" "}
+                        Restart the agent after changing.
+                      </p>
+                      {agent.metadata?.computer_use_enabled === true &&
+                        (IS_MACOS ? (
+                          <ComputerUseDepsRow />
+                        ) : (
+                          <p className="text-xs text-green-600 dark:text-green-500 mt-2 flex items-center gap-1">
+                            <Check className="w-3 h-3" />
+                            Safety features built in on Windows (focused-app
+                            gate, terminal-window redaction, audit log) —
+                            nothing to install.
+                          </p>
+                        ))}
+                    </div>
+                    <Switch
+                      checked={agent.metadata?.computer_use_enabled === true}
+                      onCheckedChange={async (v) => {
+                        // Backend `Agentchat.Accounts.merge_metadata_patch`
+                        // shallow-merges this patch with the existing
+                        // metadata, so we send ONLY the keys we're changing.
+                        // Spreading `agent.metadata` here would clobber any
+                        // concurrent writes from another tab.
+                        // When turning OFF, also clear the allow-list so the
+                        // UI doesn't quietly retain a stale policy that
+                        // re-applies when the toggle is flipped back on.
+                        const patch: Record<string, unknown> = {
+                          computer_use_enabled: v,
+                        };
+                        if (!v) patch.computer_use_allowed_apps = [];
+                        await updateAgent(agent.id, { metadata: patch });
+                        await fetchAgents();
+                        // When turning ON, recheck deps so the inline status
+                        // row reflects reality, and offer the install if
+                        // they're missing. Background install — never blocks
+                        // the toggle.
+                        if (v && IS_MACOS) {
+                          await refreshComputerUseDepsStatus();
+                          const s = useAgentStore.getState().computerUseDeps;
+                          if (s.state === "not_installed") {
+                            void installComputerUseDeps();
+                          }
+                        }
+                      }}
+                    />
+                  </div>
+
+                  {/* Computer-use allowed apps (only when computer use is on) */}
+                  {config.backend === "claude_cli" &&
+                    agent.metadata?.computer_use_enabled === true && (
+                      <div className="space-y-1.5 rounded-lg border border-border p-3">
+                        <Label className="text-xs">Allowed apps</Label>
+                        <p className="text-xs text-muted-foreground">
+                          Optional. When empty, the agent can interact with any app
+                          except the hardcoded deny list (1Password, Keychain, etc).
+                          When non-empty, the agent is restricted to these apps —
+                          anything else is refused. Match is case-insensitive
+                          substring against the focused application name. Restart
+                          the agent after editing for changes to take effect.
+                        </p>
+                        {((agent.metadata?.computer_use_allowed_apps as string[] | undefined) || []).map(
+                          (app, i) => (
+                            <div key={i} className="flex items-center gap-2">
+                              <ShieldOff className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+                              <span className="text-xs font-mono truncate flex-1">{app}</span>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6 flex-shrink-0 text-muted-foreground hover:text-destructive/90"
+                                onClick={async () => {
+                                  const current = (agent.metadata?.computer_use_allowed_apps as string[] | undefined) || [];
+                                  const updated = current.filter((_, j) => j !== i);
+                                  // Backend merges shallow — send only the key
+                                  // we're changing.
+                                  await updateAgent(agent.id, {
+                                    metadata: { computer_use_allowed_apps: updated },
+                                  });
+                                  await fetchAgents();
+                                }}
+                              >
+                                <X className="w-3 h-3" />
+                              </Button>
+                            </div>
+                          ),
+                        )}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full"
+                          onClick={async () => {
+                            const name = window.prompt(
+                              "App name to allow (e.g. 'Safari', 'Calculator'). " +
+                              "Match is case-insensitive substring.",
+                            );
+                            if (!name?.trim()) return;
+                            const current = (agent.metadata?.computer_use_allowed_apps as string[] | undefined) || [];
+                            await updateAgent(agent.id, {
+                              metadata: { computer_use_allowed_apps: [...current, name.trim()] },
+                            });
+                            await fetchAgents();
+                          }}
+                        >
+                          <ShieldOff className="w-3.5 h-3.5 mr-1.5" />
+                          Add allowed app
+                        </Button>
+                      </div>
+                    )}
+
+                  {/* Start on app launch */}
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm">Start on app launch</Label>
+                    <Switch
+                      checked={config.autoStart}
+                      onCheckedChange={(v) =>
+                        updateConfig(agent.id, { autoStart: v })
+                      }
+                    />
+                  </div>
+
+                  {/* Working Directories (Claude CLI only) */}
+                  {config.backend === "claude_cli" && (
+                    <div className="space-y-1.5">
+                      <Label className="text-xs">Working directories</Label>
+                      <p className="text-xs text-muted-foreground">
+                        Directories this agent can access. Adding directories also enables CLI tools
+                        (Bash, Read, Edit, Web) alongside AgentGram tools.
+                      </p>
+                      {config.addDirs.map((dir, i) => (
                         <div key={i} className="flex items-center gap-2">
-                          <ShieldOff className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
-                          <span className="text-xs font-mono truncate flex-1">{app}</span>
+                          <FolderOpen className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+                          <span className="text-xs font-mono truncate flex-1">{dir}</span>
                           <Button
                             variant="ghost"
                             size="icon"
                             className="h-6 w-6 flex-shrink-0 text-muted-foreground hover:text-destructive/90"
-                            onClick={async () => {
-                              const current = (agent.metadata?.computer_use_allowed_apps as string[] | undefined) || [];
-                              const updated = current.filter((_, j) => j !== i);
-                              // Backend merges shallow — send only the key
-                              // we're changing.
-                              await updateAgent(agent.id, {
-                                metadata: { computer_use_allowed_apps: updated },
-                              });
-                              await fetchAgents();
+                            onClick={() => {
+                              const updated = config.addDirs.filter((_, j) => j !== i);
+                              updateConfig(agent.id, { addDirs: updated });
                             }}
                           >
                             <X className="w-3 h-3" />
                           </Button>
                         </div>
-                      ),
-                    )}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full"
-                      onClick={async () => {
-                        const name = window.prompt(
-                          "App name to allow (e.g. 'Safari', 'Calculator'). " +
-                          "Match is case-insensitive substring.",
-                        );
-                        if (!name?.trim()) return;
-                        const current = (agent.metadata?.computer_use_allowed_apps as string[] | undefined) || [];
-                        await updateAgent(agent.id, {
-                          metadata: { computer_use_allowed_apps: [...current, name.trim()] },
-                        });
-                        await fetchAgents();
-                      }}
-                    >
-                      <ShieldOff className="w-3.5 h-3.5 mr-1.5" />
-                      Add allowed app
-                    </Button>
-                  </div>
-                </Section>
-              )}
-
-            {/* Working Directories (Claude CLI only) */}
-            {config.backend === "claude_cli" && (
-              <Section title="Working Directories">
-                <p className="text-xs text-muted-foreground mb-2">
-                  Directories this agent can access. Adding directories also enables CLI tools
-                  (Bash, Read, Edit, Web) alongside AgentGram tools.
-                </p>
-                <div className="space-y-1.5">
-                  {config.addDirs.map((dir, i) => (
-                    <div key={i} className="flex items-center gap-2">
-                      <FolderOpen className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
-                      <span className="text-xs font-mono truncate flex-1">{dir}</span>
+                      ))}
                       <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-6 w-6 flex-shrink-0 text-muted-foreground hover:text-destructive/90"
-                        onClick={() => {
-                          const updated = config.addDirs.filter((_, j) => j !== i);
-                          updateConfig(agent.id, { addDirs: updated });
+                        variant="outline"
+                        size="sm"
+                        className="w-full"
+                        onClick={async () => {
+                          try {
+                            const { open } = await import("@tauri-apps/plugin-dialog");
+                            const selected = await open({ directory: true, multiple: false });
+                            if (selected && typeof selected === "string") {
+                              updateConfig(agent.id, { addDirs: [...config.addDirs, selected] });
+                            }
+                          } catch {
+                            const path = window.prompt("Enter directory path:");
+                            if (path?.trim()) {
+                              updateConfig(agent.id, { addDirs: [...config.addDirs, path.trim()] });
+                            }
+                          }
                         }}
                       >
-                        <X className="w-3 h-3" />
+                        <FolderOpen className="w-3.5 h-3.5 mr-1.5" />
+                        Add Directory
                       </Button>
                     </div>
-                  ))}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full"
-                    onClick={async () => {
-                      try {
-                        const { open } = await import("@tauri-apps/plugin-dialog");
-                        const selected = await open({ directory: true, multiple: false });
-                        if (selected && typeof selected === "string") {
-                          updateConfig(agent.id, { addDirs: [...config.addDirs, selected] });
-                        }
-                      } catch {
-                        const path = window.prompt("Enter directory path:");
-                        if (path?.trim()) {
-                          updateConfig(agent.id, { addDirs: [...config.addDirs, path.trim()] });
-                        }
-                      }
-                    }}
-                  >
-                    <FolderOpen className="w-3.5 h-3.5 mr-1.5" />
-                    Add Directory
-                  </Button>
+                  )}
                 </div>
               </Section>
             )}
@@ -2311,7 +2326,6 @@ function ProfileSection({
   const [desc, setDesc] = useState(agent.description ?? "");
   const [agentType, setAgentType] = useState(agent.agentType || "worker");
   const [caps, setCaps] = useState((agent.capabilities ?? []).join(", "));
-  const [wakeUrl, setWakeUrl] = useState((agent as { wakeUrl?: string }).wakeUrl ?? "");
   // Visibility: "personal" = organizationId null (cross-workspace),
   // "workspace" = pinned to the user's currently-active workspace.
   // Backend rejects pinning to any other workspace, so no picker.
@@ -2324,6 +2338,9 @@ function ProfileSection({
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [cropImage, setCropImage] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState(false);
+  // Read-only metadata (ID/owner/created) — collapsed by default to keep
+  // the profile focused on editable fields.
+  const [detailsOpen, setDetailsOpen] = useState(false);
 
   const initialVisibility: "personal" | "workspace" = agent.organizationId
     ? "workspace"
@@ -2342,14 +2359,12 @@ function ProfileSection({
     setDesc(agent.description ?? "");
     setAgentType(agent.agentType || "worker");
     setCaps((agent.capabilities ?? []).join(", "));
-    setWakeUrl((agent as { wakeUrl?: string }).wakeUrl ?? "");
     setVisibility(agent.organizationId ? "workspace" : "personal");
   }, [
     agent.displayName,
     agent.description,
     agent.agentType,
     agent.capabilities,
-    (agent as { wakeUrl?: string }).wakeUrl,
     agent.organizationId,
   ]);
 
@@ -2358,7 +2373,6 @@ function ProfileSection({
     desc !== (agent.description ?? "") ||
     agentType !== (agent.agentType || "worker") ||
     caps !== (agent.capabilities ?? []).join(", ") ||
-    wakeUrl !== ((agent as { wakeUrl?: string }).wakeUrl ?? "") ||
     visibility !== initialVisibility;
 
   const handleSave = useCallback(async () => {
@@ -2374,7 +2388,6 @@ function ProfileSection({
         .split(",")
         .map((c) => c.trim())
         .filter(Boolean);
-      const trimmedWake = wakeUrl.trim();
       const trimmedDesc = desc.trim();
 
       // Only send organizationId when the user actually changed visibility
@@ -2393,7 +2406,6 @@ function ProfileSection({
         description: trimmedDesc || null,
         agentType,
         capabilities: trimmedCaps,
-        wakeUrl: trimmedWake || null,
         ...visibilityPatch,
       });
       await fetchAgents();
@@ -2404,7 +2416,7 @@ function ProfileSection({
     } finally {
       setSaving(false);
     }
-  }, [agent.id, name, desc, agentType, caps, wakeUrl, visibility, initialVisibility, activeWorkspace?.id, fetchAgents]);
+  }, [agent.id, name, desc, agentType, caps, visibility, initialVisibility, activeWorkspace?.id, fetchAgents]);
 
   const handleAvatarClick = () => {
     const input = document.createElement("input");
@@ -2535,21 +2547,6 @@ function ProfileSection({
           </p>
         </div>
 
-        <div className="space-y-1.5 mt-4">
-          <Label className="text-xs">Wake URL (optional)</Label>
-          <Input
-            value={wakeUrl}
-            onChange={(e) => setWakeUrl(e.target.value)}
-            placeholder="https://..."
-            className="text-xs font-mono"
-          />
-          <p className="text-[11px] text-muted-foreground">
-            Backend POSTs here when this agent receives messages while its
-            bridge is offline. Leave blank if you don't run a custom wake
-            endpoint.
-          </p>
-        </div>
-
         {WORKSPACES_ENABLED && (
         <div className="space-y-1.5 mt-4">
           <Label className="text-xs">Visibility</Label>
@@ -2623,35 +2620,53 @@ function ProfileSection({
         </div>
       </Section>
 
-      <Section title="Details">
-        <div className="space-y-1.5">
-          <Label className="text-xs">Agent ID</Label>
-          <div className="flex items-center gap-2">
-            <code className="flex-1 truncate rounded bg-muted px-2 py-1.5 font-mono text-xs">{agent.id}</code>
-            <button
-              onClick={handleCopyId}
-              className="rounded p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"
-              title="Copy agent ID"
-            >
-              {copiedId ? <Check className="h-3.5 w-3.5 text-success" /> : <Copy className="h-3.5 w-3.5" />}
-            </button>
-          </div>
-        </div>
+      <div>
+        <button
+          type="button"
+          onClick={() => setDetailsOpen((v) => !v)}
+          className="flex w-full items-center gap-1.5 mb-3 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider hover:text-foreground transition-colors"
+          aria-expanded={detailsOpen}
+        >
+          <ChevronDown
+            className={cn(
+              "w-3.5 h-3.5 transition-transform",
+              detailsOpen ? "rotate-0" : "-rotate-90"
+            )}
+          />
+          Details
+        </button>
+        {detailsOpen && (
+          <>
+            <div className="space-y-1.5">
+              <Label className="text-xs">Agent ID</Label>
+              <div className="flex items-center gap-2">
+                <code className="flex-1 truncate rounded bg-muted px-2 py-1.5 font-mono text-xs">{agent.id}</code>
+                <button
+                  onClick={handleCopyId}
+                  className="rounded p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"
+                  title="Copy agent ID"
+                >
+                  {copiedId ? <Check className="h-3.5 w-3.5 text-success" /> : <Copy className="h-3.5 w-3.5" />}
+                </button>
+              </div>
+            </div>
 
-        {agent.ownerId && (
-          <div className="space-y-1.5 mt-4">
-            <Label className="text-xs">Owner</Label>
-            <p className="text-sm text-muted-foreground font-mono">{agent.ownerId}</p>
-          </div>
-        )}
+            {agent.ownerId && (
+              <div className="space-y-1.5 mt-4">
+                <Label className="text-xs">Owner</Label>
+                <p className="text-sm text-muted-foreground font-mono">{agent.ownerId}</p>
+              </div>
+            )}
 
-        {agent.insertedAt && (
-          <div className="space-y-1.5 mt-4">
-            <Label className="text-xs">Created</Label>
-            <p className="text-sm text-muted-foreground">{new Date(agent.insertedAt).toLocaleDateString()}</p>
-          </div>
+            {agent.insertedAt && (
+              <div className="space-y-1.5 mt-4">
+                <Label className="text-xs">Created</Label>
+                <p className="text-sm text-muted-foreground">{new Date(agent.insertedAt).toLocaleDateString()}</p>
+              </div>
+            )}
+          </>
         )}
-      </Section>
+      </div>
 
       {cropImage && (
         <AvatarCropDialog
@@ -2725,6 +2740,9 @@ function DangerZone({
   onDeleted: () => void;
 }) {
   const { fetchAgents, stopAgent } = useAgentStore();
+  // Collapsed by default so destructive actions take a deliberate expand
+  // before they're reachable.
+  const [expanded, setExpanded] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [showConnections, setShowConnections] = useState(false);
   const [confirmName, setConfirmName] = useState("");
@@ -2810,43 +2828,59 @@ function DangerZone({
   return (
     <>
       <Separator className="my-2" />
-      <Section title="Danger Zone">
-        <div className="space-y-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="w-full justify-start text-muted-foreground"
-            onClick={() => {
-              setShowConnections(true);
-              fetchConnections();
-            }}
-          >
-            <Unlink className="w-3.5 h-3.5 mr-2" />
-            Manage Connections
-          </Button>
+      <div>
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          className="flex w-full items-center gap-1.5 mb-3 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider hover:text-foreground transition-colors"
+          aria-expanded={expanded}
+        >
+          <ChevronDown
+            className={cn(
+              "w-3.5 h-3.5 transition-transform",
+              expanded ? "rotate-0" : "-rotate-90"
+            )}
+          />
+          Danger Zone
+        </button>
+        {expanded && (
+          <div className="space-y-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full justify-start text-muted-foreground"
+              onClick={() => {
+                setShowConnections(true);
+                fetchConnections();
+              }}
+            >
+              <Unlink className="w-3.5 h-3.5 mr-2" />
+              Manage Connections
+            </Button>
 
-          <Button
-            variant="outline"
-            size="sm"
-            className="w-full justify-start text-warning hover:text-warning/90"
-            onClick={handleDeactivate}
-            disabled={deactivating}
-          >
-            <AlertTriangle className="w-3.5 h-3.5 mr-2" />
-            {deactivating ? "Deactivating..." : "Deactivate Agent"}
-          </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full justify-start text-warning hover:text-warning/90"
+              onClick={handleDeactivate}
+              disabled={deactivating}
+            >
+              <AlertTriangle className="w-3.5 h-3.5 mr-2" />
+              {deactivating ? "Deactivating..." : "Deactivate Agent"}
+            </Button>
 
-          <Button
-            variant="outline"
-            size="sm"
-            className="w-full justify-start text-destructive hover:text-destructive/90"
-            onClick={() => setShowDelete(true)}
-          >
-            <Trash2 className="w-3.5 h-3.5 mr-2" />
-            Delete Permanently
-          </Button>
-        </div>
-      </Section>
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full justify-start text-destructive hover:text-destructive/90"
+              onClick={() => setShowDelete(true)}
+            >
+              <Trash2 className="w-3.5 h-3.5 mr-2" />
+              Delete Permanently
+            </Button>
+          </div>
+        )}
+      </div>
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={showDelete} onOpenChange={setShowDelete}>
@@ -3193,17 +3227,21 @@ function RuntimePanel({ agent }: { agent: Agent }) {
       <div className="space-y-3">
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           <RuntimeRadio
-            label="Local"
-            description="Runs on this machine — offline when you quit the app."
-            selected={pendingRuntime === "local"}
-            onClick={() => setPendingRuntime("local")}
-          />
-          <RuntimeRadio
             label="Hosted"
-            description="Always-on, included with your subscription — stays connected when your desktop is closed."
+            icon={Cloud}
+            tag="Recommended"
+            description="Always-on in the cloud, included with your subscription. Stays connected and working even when your desktop is closed — no setup."
             selected={pendingRuntime === "org_host"}
             onClick={() => canSwitchToOrgHost && setPendingRuntime("org_host")}
             disabled={!canSwitchToOrgHost}
+          />
+          <RuntimeRadio
+            label="Local"
+            icon={Laptop}
+            tag="Advanced"
+            description="Runs on this machine, using your own model and tools. For when you want hands-on control — goes offline when you quit the app."
+            selected={pendingRuntime === "local"}
+            onClick={() => setPendingRuntime("local")}
           />
         </div>
 
@@ -3324,12 +3362,17 @@ function RuntimePanel({ agent }: { agent: Agent }) {
 function RuntimeRadio({
   label,
   description,
+  icon: Icon,
+  tag,
   selected,
   onClick,
   disabled,
 }: {
   label: string;
   description: string;
+  icon: React.ComponentType<{ className?: string }>;
+  /** Small qualifier shown next to the label, e.g. "Recommended" / "Advanced". */
+  tag?: string;
   selected: boolean;
   onClick: () => void;
   disabled?: boolean;
@@ -3340,23 +3383,48 @@ function RuntimeRadio({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        "rounded-lg border p-3 text-left transition-colors",
+        "group relative overflow-hidden rounded-xl border p-3.5 text-left transition-all",
         selected
-          ? "border-primary bg-primary/5"
-          : "border-border hover:bg-accent",
-        disabled && "opacity-50 cursor-not-allowed hover:bg-transparent"
+          ? "border-primary bg-primary/5 shadow-sm ring-1 ring-primary/30"
+          : "border-border hover:border-primary/40 hover:bg-accent/60",
+        disabled && "opacity-50 cursor-not-allowed hover:border-border hover:bg-transparent"
       )}
     >
-      <div className="flex items-center gap-2">
-        <div
+      {/* Selected check, top-right */}
+      {selected && (
+        <span className="absolute right-2.5 top-2.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-primary-foreground">
+          <Check className="h-3 w-3" />
+        </span>
+      )}
+
+      <div className="flex items-center gap-2.5">
+        <span
           className={cn(
-            "h-3 w-3 rounded-full border",
-            selected ? "border-primary bg-primary" : "border-muted-foreground"
+            "flex h-8 w-8 items-center justify-center rounded-lg transition-colors",
+            selected
+              ? "bg-primary/15 text-primary"
+              : "bg-muted text-muted-foreground group-hover:text-foreground"
           )}
-        />
-        <span className="text-sm font-medium">{label}</span>
+        >
+          <Icon className="h-4 w-4" />
+        </span>
+        <div className="flex flex-col">
+          <span className="text-sm font-semibold leading-tight">{label}</span>
+          {tag && (
+            <span
+              className={cn(
+                "text-[10px] font-medium uppercase tracking-wide",
+                selected ? "text-primary/80" : "text-muted-foreground"
+              )}
+            >
+              {tag}
+            </span>
+          )}
+        </div>
       </div>
-      <p className="text-xs text-muted-foreground mt-1.5 ml-5">{description}</p>
+      <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+        {description}
+      </p>
     </button>
   );
 }
