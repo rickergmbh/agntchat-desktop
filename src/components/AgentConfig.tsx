@@ -22,6 +22,8 @@ import {
   disableAgentPulse,
   triggerAgentPulse,
   updateAgentRuntime,
+  getAgentRuntimeOptions,
+  type AgentRuntimeOptions,
   getListingByAgent,
   createDirectoryListing,
   deleteDirectoryListing,
@@ -149,23 +151,56 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
   const [regenerating, setRegenerating] = useState(false);
 
   const { agent, config, apiKey } = managed;
-  const backend = config.backend || "anthropic";
-  const model = config.model || "";
-  const executionMode = config.executionMode || "single_shot";
   // Backend-served catalog. Same source as web/mobile so the three
   // surfaces stay aligned by construction.
   const catalog = useModelCatalog();
   useEffect(() => {
     void catalog.ensureLoaded();
   }, [catalog]);
+
+  // Hosted agents inherit their LLM backend from the host's seat — the user
+  // doesn't pick the auth/connection, only the model (within what the host
+  // can serve). Fetch the host's runtime descriptor so we can lock the
+  // provider/connection and filter the model list. Local agents skip this.
+  const isHosted = agent.runtime === "org_host";
+  const [runtimeOptions, setRuntimeOptions] =
+    useState<AgentRuntimeOptions | null>(null);
+  useEffect(() => {
+    if (!isHosted) {
+      setRuntimeOptions(null);
+      return;
+    }
+    let cancelled = false;
+    getAgentRuntimeOptions(agent.id)
+      .then((opts) => {
+        if (!cancelled) setRuntimeOptions(opts);
+      })
+      .catch(() => {
+        if (!cancelled) setRuntimeOptions(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [agent.id, isHosted]);
+
+  // The host's backend wins for hosted agents; otherwise the agent's own
+  // config drives the pickers. hostBackend is null until the fetch lands (or
+  // for local agents), so the UI falls back to config in the meantime.
+  const hostBackend = isHosted ? runtimeOptions?.backend ?? null : null;
+  const backend = hostBackend?.backend || config.backend || "anthropic";
+  const model = config.model || "";
+  const executionMode = config.executionMode || "single_shot";
+
   const PROVIDERS = catalog.providers;
   const supportedModes = catalog.supportedModesFor(backend);
   const providerExists = PROVIDERS.some((p) => p.id === backend);
   // CLI connection (auth/runtime) picker — only for CLI backends, which the
   // catalog flags by listing cliConnections. "subscription" is the default
   // when nothing is set. API providers return [] so the picker is hidden.
+  // For hosted agents the connection is fixed by the host's seat — we never
+  // show the picker and force the host's connection into model filtering.
   const cliConnections = catalog.cliConnectionsFor(backend);
-  const cliConnection = config.cliConnection || "subscription";
+  const cliConnection = hostBackend?.connection || config.cliConnection || "subscription";
   // Filter the model list by what the selected connection can actually run.
   // CLI models carry a `runtimes` map keyed by runtime (anthropic/bedrock/
   // vertex); a model missing the selected runtime would 400 at call time, so
@@ -177,6 +212,41 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
     .modelsFor(backend)
     .filter((m) => !m.runtimes || m.runtimes[connectionRuntime] != null);
   const currentModelInList = availableModels.some((m) => m.id === model);
+
+  // Reconcile a hosted agent's stored backend/model with the host's seat.
+  // An agent flipped local→hosted keeps its old local provider (e.g. an
+  // OpenAI API backend), which the host can't honor — it always runs under
+  // its own seat. Once we know the host's backend, snap config to it and
+  // re-default the model if the current one isn't servable. Mirrors the
+  // hosted defaults CreateAgentModal applies at creation time.
+  useEffect(() => {
+    if (!isHosted || !hostBackend || !catalog.loaded) return;
+    const updates: Record<string, unknown> = {};
+    if (config.backend !== hostBackend.backend) {
+      updates.backend = hostBackend.backend;
+      // Clear local-only auth knobs — the host owns the seat.
+      updates.cliConnection = hostBackend.connection;
+      updates.llmApiKey = null;
+      updates.llmApiKeyId = null;
+    }
+    if (!currentModelInList) {
+      updates.model = availableModels[0]?.id || "";
+    }
+    if (Object.keys(updates).length > 0) {
+      updateConfig(agent.id, updates);
+    }
+    // availableModels is derived from backend+connection; gating on the
+    // primitive inputs avoids re-running on every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    isHosted,
+    hostBackend?.backend,
+    hostBackend?.connection,
+    catalog.loaded,
+    config.backend,
+    currentModelInList,
+    agent.id,
+  ]);
 
   const [keyError, setKeyError] = useState<string | null>(null);
   const [confirmingRegen, setConfirmingRegen] = useState(false);
@@ -228,7 +298,8 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
     }
     return out;
   }, [agent.metadata]);
-  const requiresLlmKey = catalog.requiresLlmKey(backend);
+  // Hosted agents authenticate via the host's seat — never a per-agent key.
+  const requiresLlmKey = !isHosted && catalog.requiresLlmKey(backend);
   // Sentinel must match the SelectItem value below (`__custom__`), otherwise
   // base-ui can't find a matching item and the trigger falls back to raw text.
   const keyMode = config.llmApiKey
@@ -359,6 +430,28 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
             {/* LLM Provider — Primary section */}
             <Section title="LLM Provider">
               <div className="space-y-3">
+                {/* Hosted agents run under the host's seat — the provider and
+                    connection are set on the runtime side, not here. We show
+                    a locked summary instead of the pickers; only the model
+                    (below) stays editable, scoped to what the host serves. */}
+                {isHosted ? (
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Provider</Label>
+                    <div className="rounded-lg border border-border bg-muted/40 px-3 py-2">
+                      <div className="text-sm font-medium">
+                        {catalog.providerLabel(backend)}
+                        <span className="ml-2 text-xs text-muted-foreground">
+                          Hosted · set by your plan
+                        </span>
+                      </div>
+                      <p className="mt-0.5 text-[11px] text-muted-foreground">
+                        {runtimeOptions?.backend?.claudeSeat === false
+                          ? "⚠️ This host has no Claude seat connected yet — the agent can't authenticate until one is set up."
+                          : "Connection is managed by the host. Pick any supported model below."}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
                 <div className="space-y-1.5">
                   <Label className="text-xs">Provider</Label>
                   <Select
@@ -425,8 +518,11 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                     </SelectContent>
                   </Select>
                 </div>
+                )}
 
-                {cliConnections.length > 0 && (
+                {/* Connection picker is local-only — hosted agents have it
+                    fixed by the host's seat (handled in the locked summary). */}
+                {!isHosted && cliConnections.length > 0 && (
                   <div className="space-y-1.5">
                     <Label className="text-xs">Connection</Label>
                     <Select

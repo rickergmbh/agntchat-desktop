@@ -350,6 +350,33 @@ export async function updateAgentRuntime(
   return res.agent;
 }
 
+/** The LLM backend a hosted agent inherits from its assigned host. Hosted
+ *  agents don't pick their own auth — they run under the host's seat, so the
+ *  config UI locks the provider/connection to this and filters models to it. */
+export interface AgentRuntimeOptions {
+  runtime: "local" | "org_host";
+  host?: { id: string; name: string; status: string } | null;
+  /** Null for local agents. For hosted agents, the host's backend setup. */
+  backend?: {
+    /** Catalog provider id hosted agents run under (e.g. "claude_cli"). */
+    backend: string;
+    /** CLI connection the host's seat resolves to (e.g. "anthropic"). */
+    connection: string;
+    /** Whether the host confirmed a usable Claude seat. Null = host predates
+     *  runtime reporting (assumed-default), so don't warn. */
+    claudeSeat?: boolean | null;
+    seatSource?: string | null;
+  } | null;
+}
+
+/** Fetch what provider/connection/models a hosted agent's host can serve.
+ *  Only meaningful for runtime="org_host" agents. */
+export async function getAgentRuntimeOptions(
+  id: string
+): Promise<AgentRuntimeOptions> {
+  return request<AgentRuntimeOptions>(`/api/agents/${id}/runtime-options`);
+}
+
 // Organizations
 
 export interface Organization {
