@@ -3,7 +3,7 @@ import { useAgentStore } from "../stores/agentStore";
 import { updateSoulMd, revertSoulMd, reviseSoulMd } from "../lib/api";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Save, Link, RotateCcw, Loader2, Sparkles, CornerDownLeft } from "lucide-react";
+import { Save, Link, RotateCcw, Loader2 } from "lucide-react";
 
 interface SoulEditorProps {
   agentId: string;
@@ -104,43 +104,36 @@ export function SoulEditor({ agentId }: SoulEditorProps) {
       </div>
 
       {/* AI revision field — always visible at the top; just start typing. */}
-      <div className="rounded-lg border border-primary/40 bg-primary/5 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/40 transition-colors">
-        <div className="flex items-start gap-2 px-3 py-2.5">
-          <Sparkles className="mt-1.5 h-4 w-4 shrink-0 text-primary" />
-          <Textarea
-            value={instruction}
-            onChange={(e) => setInstruction(e.target.value)}
-            placeholder={
-              agentName
-                ? `Describe a change to ${agentName}'s soul — e.g. make the tone more playful, or add that they're an expert in tax law…`
-                : "Describe a change to this agent's soul — e.g. make the tone more playful, or add an area of expertise…"
+      <div className="rounded-md border border-muted-foreground/25 bg-background transition-colors focus-within:border-ring focus-within:ring-1 focus-within:ring-ring">
+        <Textarea
+          value={instruction}
+          onChange={(e) => setInstruction(e.target.value)}
+          placeholder={
+            agentName
+              ? `Describe a change to ${agentName}'s soul — e.g. make the tone more playful, or add that they're an expert in tax law…`
+              : "Describe a change to this agent's soul — e.g. make the tone more playful, or add an area of expertise…"
+          }
+          rows={2}
+          disabled={revising}
+          className="min-h-0 resize-none border-0 bg-transparent px-3 pt-2.5 pb-1.5 text-sm shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              handleRevise();
             }
-            rows={2}
-            disabled={revising}
-            className="min-h-0 resize-none border-0 bg-transparent p-0 text-sm shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                handleRevise();
-              }
-            }}
-          />
-        </div>
-        <div className="flex items-center justify-between border-t border-primary/15 px-3 py-1.5">
-          <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
-            <CornerDownLeft className="h-3 w-3" />
-            Enter to generate · Shift+Enter for a new line · review below before saving
+          }}
+        />
+        <div className="flex items-center justify-between gap-3 px-3 pb-2">
+          <span className="text-[11px] text-muted-foreground">
+            Enter to generate · Shift+Enter for a new line
           </span>
           <Button
             size="sm"
+            variant="outline"
             onClick={handleRevise}
             disabled={revising || !instruction.trim()}
           >
-            {revising ? (
-              <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
-            ) : (
-              <Sparkles className="w-3.5 h-3.5 mr-1.5" />
-            )}
+            {revising && <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />}
             {revising ? "Generating..." : "Generate"}
           </Button>
         </div>
@@ -181,12 +174,9 @@ export function SoulEditor({ agentId }: SoulEditorProps) {
       )}
 
       {proposed && (
-        <div className="flex items-start gap-2.5 rounded-md bg-primary/10 px-3 py-2.5 text-xs text-primary">
-          <Sparkles className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-          <p>
-            AI-proposed changes loaded below. Review and edit as needed, then{" "}
-            <span className="font-semibold">Save</span> to apply.
-          </p>
+        <div className="rounded-md border border-border bg-muted/40 px-3 py-2.5 text-xs text-muted-foreground">
+          AI-proposed changes loaded below. Review and edit as needed, then{" "}
+          <span className="font-medium text-foreground">Save</span> to apply.
         </div>
       )}
 

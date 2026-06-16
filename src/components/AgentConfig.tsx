@@ -73,7 +73,6 @@ import {
   ScrollText,
   Activity,
   Sparkles,
-  CornerDownLeft,
   FileText,
   Copy,
   Eye,
@@ -1625,6 +1624,8 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
   const [revising, setRevising] = useState(false);
   // True once an AI proposal has been loaded into the checklist but not saved.
   const [proposed, setProposed] = useState(false);
+  // Collapsible run stats (runs / last run / next run).
+  const [statsOpen, setStatsOpen] = useState(false);
 
   const workspaces = useWorkspaces();
 
@@ -1819,46 +1820,110 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
         </div>
 
         {isEnabled && (
-          <div className="space-y-1 text-xs text-muted-foreground mt-2">
-            <FieldRow label="Status" value={
+          <div className="mt-2">
+            <div className="flex items-center gap-2">
               <Badge variant={status === "active" ? "default" : "secondary"}>
                 {status === "active" ? "Active" : status === "paused" ? "Paused (auto)" : status}
               </Badge>
-            } />
-            <FieldRow label="Runs" value={String(runCount)} />
-            {failures > 0 && (
-              <FieldRow label="Consecutive Failures" value={
-                <span className="text-destructive">{failures}</span>
-              } />
+              {failures > 0 && (
+                <span className="text-xs text-destructive">
+                  {failures} consecutive {failures === 1 ? "failure" : "failures"}
+                </span>
+              )}
+              <button
+                type="button"
+                onClick={() => setStatsOpen((v) => !v)}
+                className="ml-auto flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-foreground transition-colors"
+                aria-expanded={statsOpen}
+              >
+                <ChevronDown
+                  className={cn(
+                    "w-3.5 h-3.5 transition-transform",
+                    statsOpen ? "rotate-0" : "-rotate-90"
+                  )}
+                />
+                Advanced
+              </button>
+            </div>
+            {statsOpen && (
+              <div className="mt-2 space-y-1 text-xs text-muted-foreground">
+                <FieldRow label="Runs" value={String(runCount)} />
+                <FieldRow label="Last Run" value={formatTime(lastRun)} />
+                <FieldRow label="Next Run" value={formatTime(nextRun)} />
+              </div>
             )}
-            <FieldRow label="Last Run" value={formatTime(lastRun)} />
-            <FieldRow label="Next Run" value={formatTime(nextRun)} />
           </div>
         )}
       </Section>
 
       <Separator />
 
+      <Section title="Instructions">
+        <p className="text-xs text-muted-foreground mb-2">
+          What should the agent do on each pulse? The agent will message you only if something needs attention.
+        </p>
+
+        {/* AI authoring field — describe the idea and let the model write the
+            instructions. Always visible at the top; just start typing. */}
+        <div className="mb-3 rounded-md border border-muted-foreground/25 bg-background transition-colors focus-within:border-ring focus-within:ring-1 focus-within:ring-ring">
+          <textarea
+            className="min-h-0 w-full resize-none border-0 bg-transparent px-3 pt-2.5 pb-1.5 text-sm focus:outline-none focus:ring-0"
+            rows={2}
+            value={pulseIdea}
+            disabled={revising}
+            placeholder={`Describe the idea and the action you want — e.g. "watch ${managed.agent.displayName || "this agent"}'s calendar and remind me to prep an hour before meetings". The model writes robust instructions.`}
+            onChange={(e) => setPulseIdea(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleRevise();
+              }
+            }}
+          />
+          <div className="flex items-center justify-between gap-3 px-3 pb-2">
+            <span className="text-[11px] text-muted-foreground">
+              Enter to generate · Shift+Enter for a new line
+            </span>
+            <Button size="sm" variant="outline" onClick={handleRevise} disabled={revising || !pulseIdea.trim()}>
+              {revising && <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />}
+              {revising ? "Generating..." : "Generate"}
+            </Button>
+          </div>
+        </div>
+
+        {proposed && (
+          <div className="mb-2 rounded-md border border-border bg-muted/40 px-3 py-2.5 text-xs text-muted-foreground">
+            AI-proposed instructions loaded below. Review and edit as needed, then{" "}
+            <span className="font-medium text-foreground">Save Changes</span> to apply.
+          </div>
+        )}
+
+        <textarea
+          className="w-full min-h-[200px] rounded-md border border-input bg-background px-3 py-2 text-sm font-mono resize-y focus:outline-none focus:ring-1 focus:ring-ring"
+          value={pulseMd}
+          onChange={(e) => { setPulseMd(e.target.value); setDirty(true); setProposed(false); }}
+          placeholder="e.g., Check if any reminders are due..."
+        />
+      </Section>
+
+      <Separator />
+
       <Section title="Schedule">
         <div className="space-y-3">
-          <div className="space-y-1.5">
-            <Label className="text-xs">Interval (minutes)</Label>
-            <Input
-              type="number"
-              min={5}
-              max={1440}
-              value={intervalMinutes}
-              onChange={(e) => {
-                setIntervalMinutes(e.target.value);
-                setDirty(true);
-              }}
-            />
-            <p className="text-xs text-muted-foreground">
-              Minimum 5 minutes — the scheduler runs every 5 minutes.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-4 gap-3">
+            <div className="space-y-1.5">
+              <Label className="text-xs">Interval (min)</Label>
+              <Input
+                type="number"
+                min={5}
+                max={1440}
+                value={intervalMinutes}
+                onChange={(e) => {
+                  setIntervalMinutes(e.target.value);
+                  setDirty(true);
+                }}
+              />
+            </div>
             <div className="space-y-1.5">
               <Label className="text-xs">Active From</Label>
               <Select
@@ -1891,19 +1956,21 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
                 </SelectContent>
               </Select>
             </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">Timezone</Label>
+              <Select value={timezone} onValueChange={(v) => { if (v) { setTimezone(v); setDirty(true); } }}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {["Etc/UTC", "Europe/Berlin", "Europe/London", "America/New_York", "America/Chicago", "America/Denver", "America/Los_Angeles", "Asia/Tokyo", "Asia/Shanghai", "Australia/Sydney"].map((tz) => (
+                    <SelectItem key={tz} value={tz}>{tz}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-
-          <div className="space-y-1.5">
-            <Label className="text-xs">Timezone</Label>
-            <Select value={timezone} onValueChange={(v) => { if (v) { setTimezone(v); setDirty(true); } }}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                {["Etc/UTC", "Europe/Berlin", "Europe/London", "America/New_York", "America/Chicago", "America/Denver", "America/Los_Angeles", "Asia/Tokyo", "Asia/Shanghai", "Australia/Sydney"].map((tz) => (
-                  <SelectItem key={tz} value={tz}>{tz}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <p className="text-xs text-muted-foreground">
+            Interval minimum 5 minutes — the scheduler runs every 5 minutes. Active hours use the selected timezone.
+          </p>
 
           {/* Pulse delivery workspace — only meaningful when the owner
               belongs to more than one workspace. "__personal__" is the
@@ -1935,67 +2002,6 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
             </div>
           )}
         </div>
-      </Section>
-
-      <Separator />
-
-      <Section title="Checklist">
-        <p className="text-xs text-muted-foreground mb-2">
-          What should the agent evaluate on each pulse? The agent will message you only if something needs attention.
-        </p>
-
-        {/* AI authoring field — describe the idea and let the model build a
-            robust checklist. Always visible at the top; just start typing. */}
-        <div className="mb-3 rounded-lg border border-primary/40 bg-primary/5 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/40 transition-colors">
-          <div className="flex items-start gap-2 px-3 py-2.5">
-            <Sparkles className="mt-1.5 h-4 w-4 shrink-0 text-primary" />
-            <textarea
-              className="min-h-0 w-full resize-none border-0 bg-transparent p-0 text-sm focus:outline-none focus:ring-0"
-              rows={2}
-              value={pulseIdea}
-              disabled={revising}
-              placeholder={`Describe the idea and the action you want — e.g. "watch ${managed.agent.displayName || "this agent"}'s calendar and remind me to prep an hour before meetings". The model writes a robust checklist.`}
-              onChange={(e) => setPulseIdea(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  handleRevise();
-                }
-              }}
-            />
-          </div>
-          <div className="flex items-center justify-between border-t border-primary/15 px-3 py-1.5">
-            <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
-              <CornerDownLeft className="h-3 w-3" />
-              Enter to generate · Shift+Enter for a new line · review below before saving
-            </span>
-            <Button size="sm" onClick={handleRevise} disabled={revising || !pulseIdea.trim()}>
-              {revising ? (
-                <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
-              ) : (
-                <Sparkles className="w-3.5 h-3.5 mr-1.5" />
-              )}
-              {revising ? "Generating..." : "Generate"}
-            </Button>
-          </div>
-        </div>
-
-        {proposed && (
-          <div className="mb-2 flex items-start gap-2.5 rounded-md bg-primary/10 px-3 py-2.5 text-xs text-primary">
-            <Sparkles className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-            <p>
-              AI-proposed checklist loaded below. Review and edit as needed, then{" "}
-              <span className="font-semibold">Save Changes</span> to apply.
-            </p>
-          </div>
-        )}
-
-        <textarea
-          className="w-full min-h-[200px] rounded-md border border-input bg-background px-3 py-2 text-sm font-mono resize-y focus:outline-none focus:ring-1 focus:ring-ring"
-          value={pulseMd}
-          onChange={(e) => { setPulseMd(e.target.value); setDirty(true); setProposed(false); }}
-          placeholder="e.g., Check if any reminders are due..."
-        />
       </Section>
 
       {/* Toast-style feedback for enable/disable/trigger/save. Sits

@@ -348,8 +348,14 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
       // pin sensible defaults (claude_cli) and skip per-agent key handling.
       const hosted = hosting === "hosted";
       const effBackend = hosted ? "claude_cli" : backend;
+      // Default hosted agents to Opus 4.8 (not the catalog's first entry,
+      // Fable 5) — fall back to the first available hosted model if Opus 4.8
+      // isn't in the catalog for some reason.
+      const hostedModels = catalog.modelsFor("claude_cli");
       const effModel = hosted
-        ? catalog.modelsFor("claude_cli")[0]?.id ?? model
+        ? hostedModels.find((m) => m.id === "claude-opus-4-8")?.id ??
+          hostedModels[0]?.id ??
+          model
         : model;
       const effExecutionMode = hosted ? "tool_use" : executionMode;
 
