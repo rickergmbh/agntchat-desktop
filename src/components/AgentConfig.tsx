@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useAgentStore, type ManagedAgent } from "../stores/agentStore";
+import { useAuthStore } from "../stores/authStore";
 import { useActiveWorkspace, useWorkspaces } from "../stores/workspaceStore";
 import { WORKSPACES_ENABLED } from "../lib/featureFlags";
 import { listOrganizationHosts, type OrganizationHost } from "../lib/api";
@@ -2928,9 +2929,23 @@ function ComputerUseDepsRow() {
 
 function RuntimePanel({ agent }: { agent: Agent }) {
   // Active workspace replaces the old single-org store. Personal
-  // workspaces aren't valid host targets.
+  // workspaces aren't valid *workspace-host* targets (the multi-host
+  // picker below), but they ARE valid for the subscription "Hosted"
+  // path — a paying user runs hosted agents on their plan's host.
   const active = useActiveWorkspace();
   const organization = active && !active.isPersonal ? active : null;
+
+  // Subscription-based hosting. This mirrors CreateAgentModal: a paying
+  // user (active/trialing) with a resolved host can flip any agent
+  // between Local and Hosted at will — independent of workspaces, which
+  // are gated off by default (WORKSPACES_ENABLED). Without this path the
+  // panel could never offer Hosted in the Personal workspace, so a
+  // subscriber could create a hosted agent but never switch one.
+  const participant = useAuthStore((s) => s.participant);
+  const subStatus = participant?.subscription?.status;
+  const isPlan = subStatus === "active" || subStatus === "trialing";
+  const subscriptionHostId = participant?.hostedHostId ?? null;
+  const canHostViaSubscription = isPlan && !!subscriptionHostId;
 
   const fetchAgents = useAgentStore((s) => s.fetchAgents);
   const stopAgentLocally = useAgentStore((s) => s.stopAgent);
@@ -2994,12 +3009,24 @@ function RuntimePanel({ agent }: { agent: Agent }) {
     setPendingIdle(currentIdle);
   }, [agent.id, currentRuntime, currentHostId, currentPresence, currentIdle, hosts]);
 
+  // Hosted is reachable either via the subscription host (paying user,
+  // any workspace) or the legacy workspace-host picker (shared workspace
+  // with registered hosts). Subscription takes precedence for the simple
+  // single-host flip; the workspace picker only matters when a shared
+  // workspace actually has hosts to choose from.
   const canSwitchToOrgHost =
-    organization !== null && hosts.length > 0;
+    canHostViaSubscription || (organization !== null && hosts.length > 0);
+
+  // Whether to show the explicit host/presence picker. Subscribers on the
+  // Personal workspace get the zero-config flip (host is implied); the
+  // multi-host picker only appears for shared workspaces with hosts.
+  const showHostPicker =
+    pendingRuntime === "org_host" && organization !== null && hosts.length > 0;
 
   const dirty =
     pendingRuntime !== currentRuntime ||
     (pendingRuntime === "org_host" &&
+      showHostPicker &&
       (pendingHostId !== currentHostId ||
         pendingPresence !== currentPresence ||
         pendingIdle !== currentIdle));
@@ -3028,19 +3055,34 @@ function RuntimePanel({ agent }: { agent: Agent }) {
         }
       }
 
-      await updateAgentRuntime(agent.id, {
-        runtime: pendingRuntime,
-        organizationId:
-          pendingRuntime === "org_host" ? organization?.id ?? null : null,
-        assignedHostId:
-          pendingRuntime === "org_host" ? pendingHostId : null,
-        presenceMode:
-          pendingRuntime === "org_host" ? pendingPresence : undefined,
-        idleTimeoutSeconds:
-          pendingRuntime === "org_host" && pendingPresence === "wake_on_demand"
-            ? pendingIdle
-            : null,
-      });
+      if (pendingRuntime === "org_host") {
+        // Resolve which host/org to pin to. The explicit workspace picker
+        // (shared workspace with hosts) wins when it's showing; otherwise
+        // fall back to the subscription host — same contract as
+        // CreateAgentModal's hosted path: pin to the plan's host, always-on.
+        const useWorkspacePicker = showHostPicker;
+        const orgId = useWorkspacePicker
+          ? organization?.id ?? null
+          : participant?.organizationId ?? active?.id ?? null;
+        const hostId = useWorkspacePicker ? pendingHostId : subscriptionHostId;
+        const presence = useWorkspacePicker ? pendingPresence : "always_on";
+
+        await updateAgentRuntime(agent.id, {
+          runtime: "org_host",
+          organizationId: orgId,
+          assignedHostId: hostId,
+          presenceMode: presence,
+          idleTimeoutSeconds:
+            presence === "wake_on_demand" ? pendingIdle : null,
+        });
+      } else {
+        await updateAgentRuntime(agent.id, {
+          runtime: "local",
+          organizationId: null,
+          assignedHostId: null,
+          idleTimeoutSeconds: null,
+        });
+      }
       await fetchAgents();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not update runtime");
@@ -3061,11 +3103,7 @@ function RuntimePanel({ agent }: { agent: Agent }) {
           />
           <RuntimeRadio
             label="Hosted"
-            description={
-              organization
-                ? "Always-on, included with your subscription — stays connected when your desktop is closed."
-                : "Available in a shared workspace."
-            }
+            description="Always-on, included with your subscription — stays connected when your desktop is closed."
             selected={pendingRuntime === "org_host"}
             onClick={() => canSwitchToOrgHost && setPendingRuntime("org_host")}
             disabled={!canSwitchToOrgHost}
@@ -3075,18 +3113,21 @@ function RuntimePanel({ agent }: { agent: Agent }) {
         {hostsLoading && !hostsLoaded && (
           <p className="text-xs text-muted-foreground">Loading hosts…</p>
         )}
-        {!organization && (
+        {/* Explain why Hosted is unavailable. Only relevant when neither
+            path is open — subscribers always have the subscription path. */}
+        {!canSwitchToOrgHost && !isPlan && (
           <p className="text-xs text-muted-foreground">
-            You&apos;re in your Personal workspace — switch to a shared workspace to run Hosted.
+            Hosted is included with a subscription — subscribe to run this agent
+            always-on in the cloud, even when your desktop is closed.
           </p>
         )}
-        {organization && hostsLoaded && hosts.length === 0 && (
+        {!canSwitchToOrgHost && isPlan && !subscriptionHostId && (
           <p className="text-xs text-muted-foreground">
-            No hosts in this workspace yet — add one in Settings → Organization.
+            Your hosted environment is still being set up — try again in a moment.
           </p>
         )}
 
-        {pendingRuntime === "org_host" && organization && hosts.length > 0 && (
+        {showHostPicker && (
           <>
             <div className="space-y-1.5">
               <Label className="text-xs">Host</Label>
@@ -3144,6 +3185,17 @@ function RuntimePanel({ agent }: { agent: Agent }) {
               </div>
             )}
           </>
+        )}
+
+        {/* Subscription path: no host picker — the plan's host is implied
+            and the agent runs always-on. Mirrors CreateAgentModal's hosted
+            choice so the two surfaces behave identically. */}
+        {pendingRuntime === "org_host" && !showHostPicker && (
+          <p className="text-xs text-muted-foreground">
+            Runs always-on in the cloud using your plan&apos;s shared brain —
+            nothing else to set up. Switch back to Local anytime to use your own
+            model on this machine.
+          </p>
         )}
 
         {error && <p className="text-xs text-destructive">{error}</p>}
