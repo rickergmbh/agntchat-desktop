@@ -102,6 +102,7 @@ import {
   ChevronDown,
   Cloud,
   Laptop,
+  Brain,
 } from "lucide-react";
 import {
   Dialog,
@@ -110,6 +111,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { AgentSkills } from "./AgentSkills";
+import { AgentMemory } from "./AgentMemory";
 import { AgentTemplates } from "./AgentTemplates";
 import { AgentRoutines } from "./AgentRoutines";
 import { AvatarCropDialog } from "./AvatarCropDialog";
@@ -334,6 +336,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
       name: "Capabilities",
       sections: [
         { value: "skills", label: "Skills", icon: Sparkles },
+        { value: "memory", label: "Memory", icon: Brain },
         { value: "templates", label: "Templates", icon: LayoutTemplate },
         { value: "routines", label: "Routines", icon: Timer },
       ],
@@ -1208,6 +1211,12 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
         {activeSection === "skills" && (
           <div className="flex-1 overflow-y-auto">
             <AgentSkills agentId={agent.id} />
+          </div>
+        )}
+
+        {activeSection === "memory" && (
+          <div className="flex-1 overflow-y-auto">
+            <AgentMemory agentId={agent.id} agentName={agent.displayName} />
           </div>
         )}
 

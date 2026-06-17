@@ -1274,6 +1274,132 @@ export async function deleteSkill(id: string): Promise<void> {
   await request(`/api/skills/${id}`, { method: "DELETE" });
 }
 
+// Memories
+//
+// Two scopes: per-agent ("what this agent remembers", owner-scoped via the
+// agent id) and per-family ("shared across all of the user's agents"; the
+// logged-in human is the family root, so no id is needed). Both are keyed by
+// (category, key) — POSTing an existing pair returns 409 unless `force: true`
+// is sent. The agent scope has a real PATCH; the family scope has none, so a
+// family "edit" is just a forced POST of the same category+key.
+
+export type MemoryCategory =
+  | "fact"
+  | "preference"
+  | "learning"
+  | "relationship"
+  | "skill";
+
+export interface Memory {
+  id: string;
+  category: MemoryCategory;
+  key: string;
+  content: string;
+  confidence: number;
+  description?: string | null;
+  tags: string[];
+  metadata?: Record<string, unknown>;
+  relatedIds?: string[];
+  sourceConversationId?: string | null;
+  insertedAt: string;
+  updatedAt: string;
+}
+
+export interface FamilyMemory {
+  id: string;
+  familyRootId: string;
+  category: MemoryCategory;
+  key: string;
+  content: string;
+  confidence: number;
+  description?: string | null;
+  tags: string[];
+  metadata?: Record<string, unknown>;
+  lastWrittenById?: string | null;
+  sourceConversationId?: string | null;
+  insertedAt: string;
+  updatedAt: string;
+}
+
+export interface MemoryInput {
+  category: MemoryCategory;
+  key: string;
+  content: string;
+  confidence?: number;
+  description?: string;
+  tags?: string[];
+  force?: boolean;
+  reason?: string;
+}
+
+export async function getAgentMemories(
+  agentId: string
+): Promise<{ memories: Memory[] }> {
+  return request(`/api/agents/${agentId}/memories`);
+}
+
+export async function createAgentMemory(
+  agentId: string,
+  body: MemoryInput
+): Promise<{ memory: Memory }> {
+  return request(`/api/agents/${agentId}/memories`, {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+}
+
+export async function updateAgentMemory(
+  agentId: string,
+  id: string,
+  body: {
+    content?: string;
+    confidence?: number;
+    description?: string;
+    tags?: string[];
+  }
+): Promise<{ memory: Memory }> {
+  return request(`/api/agents/${agentId}/memories/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(body),
+  });
+}
+
+export async function deleteAgentMemory(
+  agentId: string,
+  id: string
+): Promise<{ memoryPrompt: string }> {
+  return request(`/api/agents/${agentId}/memories/${id}`, {
+    method: "DELETE",
+  });
+}
+
+export async function getFamilyMemories(): Promise<{
+  familyRootId: string;
+  memories: FamilyMemory[];
+}> {
+  return request("/api/family/memories");
+}
+
+/**
+ * Create or overwrite a family memory. Family memories have no PATCH route —
+ * editing an existing (category, key) is a POST with `force: true`. A brand-new
+ * (category, key) collision surfaces as a 409 so the caller can warn the user.
+ */
+export async function saveFamilyMemory(
+  body: MemoryInput
+): Promise<{ memory: FamilyMemory }> {
+  return request("/api/family/memories", {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+}
+
+export async function deleteFamilyMemory(
+  id: string
+): Promise<{ deleted: boolean }> {
+  return request(`/api/family/memories/${id}`, { method: "DELETE" });
+}
+
 export async function assignSkill(
   skillId: string,
   agentId: string
