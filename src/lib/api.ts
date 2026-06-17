@@ -447,6 +447,15 @@ export interface OrganizationHost {
   datacenter?: string | null;
   /** Shared (multi-tenant) host: accepts agents pinned from any org. */
   shared?: boolean;
+  /**
+   * Resident counts, present on the platform-admin host list
+   * (`/api/admin/hosts`). `assignedAgentCount` = agents pinned here;
+   * `onlineAgentCount` = how many of those the host reports running;
+   * `userCount` = distinct human owners those agents roll up to.
+   */
+  assignedAgentCount?: number;
+  onlineAgentCount?: number;
+  userCount?: number;
 }
 
 /** An existing provider (Hostinger) VM the operator can register a host on. */

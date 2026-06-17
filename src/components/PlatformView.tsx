@@ -1,23 +1,38 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  Activity,
   AlertCircle,
   ArrowRightLeft,
   Check,
+  ChevronDown,
   ChevronRight,
   Cloud,
+  DownloadCloud,
+  KeyRound,
   Loader2,
   Pencil,
+  Plus,
   RefreshCw,
   RotateCcw,
+  RotateCw,
   Search,
-  Server,
+  ShieldCheck,
   ShieldHalf,
+  Trash2,
   Users as UsersIcon,
   X,
 } from "lucide-react";
 import * as api from "../lib/api";
 import { cn } from "../lib/utils";
+import { useAuthStore } from "../stores/authStore";
 import { useModelCatalog, type CatalogProvider } from "../stores/modelCatalogStore";
+import { useWorkspaces } from "../stores/workspaceStore";
+import {
+  ConnectAnthropicDialog,
+  ConnectHostDialog,
+  HostOpLog,
+  relativeAge,
+} from "./FleetView";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -67,7 +82,7 @@ export function PlatformView() {
             <OverviewTab />
           </TabsContent>
           <TabsContent value="hosts">
-            <HostsTab />
+            <HostsTab onGoProvisioning={() => setTab("provisioning")} />
           </TabsContent>
           <TabsContent value="users">
             <UsersTab />
@@ -189,15 +204,24 @@ function OverviewTab() {
   );
 }
 
-function HostsTab() {
+function HostsTab({ onGoProvisioning }: { onGoProvisioning: () => void }) {
+  // Operator's own org — backs the org-scoped management endpoints (add host,
+  // Anthropic seat, provider VM picker). Cross-org hosts are still listed via
+  // the admin endpoint; each row's SSH ops key on the host's own org id. Same
+  // fallback as the old Fleet view so personal-mode operators still get the
+  // Add host / Connect Anthropic actions.
+  const participantOrgId = useAuthStore((s) => s.participant?.organizationId);
+  const workspaces = useWorkspaces();
+  const operatorOrgId =
+    participantOrgId ?? workspaces.find((w) => w.isPersonal)?.id ?? null;
+
   const [hosts, setHosts] = useState<Array<api.OrganizationHost & { orgName?: string | null }>>(
     []
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [viewing, setViewing] = useState<
-    (api.OrganizationHost & { orgName?: string | null }) | null
-  >(null);
+  const [connectOpen, setConnectOpen] = useState(false);
+  const [anthropicOpen, setAnthropicOpen] = useState(false);
 
   const refresh = useCallback(async () => {
     try {
@@ -214,55 +238,143 @@ function HostsTab() {
     void refresh();
   }, [refresh]);
 
-  if (error) return <ErrorBox message={error} />;
-  if (loading)
-    return (
-      <div className="flex items-center gap-2 py-8 text-sm text-muted-foreground">
-        <Loader2 className="h-4 w-4 animate-spin" /> Loading…
-      </div>
-    );
-  if (hosts.length === 0)
-    return <p className="text-sm text-muted-foreground">No hosts across the platform yet.</p>;
-
   return (
-    <>
-      <ul className="space-y-2">
-        {hosts.map((h) => (
-          <AdminHostRow key={h.id} host={h} onChanged={refresh} onView={() => setViewing(h)} />
-        ))}
-      </ul>
-      <HostDetailDialog
-        host={viewing}
-        allHosts={hosts}
-        onOpenChange={(o) => !o && setViewing(null)}
-        onChanged={refresh}
-      />
-    </>
+    <div className="space-y-3">
+      <div className="flex flex-wrap items-center justify-end gap-2">
+        <Button variant="outline" size="sm" onClick={() => void refresh()}>
+          <RefreshCw className="h-3.5 w-3.5" />
+          Refresh
+        </Button>
+        {operatorOrgId && (
+          <Button variant="outline" size="sm" onClick={() => setAnthropicOpen(true)}>
+            <ShieldCheck className="h-3.5 w-3.5 text-muted-foreground" />
+            Connect Anthropic
+          </Button>
+        )}
+        <Button variant="outline" size="sm" onClick={onGoProvisioning}>
+          <Cloud className="h-3.5 w-3.5" />
+          Spin up VM
+        </Button>
+        {operatorOrgId && (
+          <Button size="sm" onClick={() => setConnectOpen(true)}>
+            <Plus className="h-3.5 w-3.5" />
+            Add host
+          </Button>
+        )}
+      </div>
+
+      {error && <ErrorBox message={error} />}
+
+      {loading ? (
+        <div className="flex items-center gap-2 py-8 text-sm text-muted-foreground">
+          <Loader2 className="h-4 w-4 animate-spin" /> Loading…
+        </div>
+      ) : hosts.length === 0 ? (
+        <p className="text-sm text-muted-foreground">No hosts across the platform yet.</p>
+      ) : (
+        <ul className="space-y-2">
+          {hosts.map((h) => (
+            <MergedHostRow key={h.id} host={h} allHosts={hosts} onChanged={refresh} />
+          ))}
+        </ul>
+      )}
+
+      {operatorOrgId && (
+        <>
+          <ConnectHostDialog
+            orgId={operatorOrgId}
+            open={connectOpen}
+            onOpenChange={setConnectOpen}
+            onChanged={() => void refresh()}
+          />
+          <ConnectAnthropicDialog
+            orgId={operatorOrgId}
+            open={anthropicOpen}
+            onOpenChange={setAnthropicOpen}
+            onConnected={() => void refresh()}
+          />
+        </>
+      )}
+    </div>
   );
 }
 
-function AdminHostRow({
+/**
+ * One host in the merged operator view: an enriched collapsed row (online /
+ * total agents, user count, status) that expands inline to the residents
+ * breakdown + SSH op log. Carries the host-lifecycle controls that used to
+ * live in the separate Fleet tab. Rename + shared-toggle go through the admin
+ * endpoints (cross-org); SSH ops + delete go through the org-scoped endpoints
+ * keyed on the host's own organization id (works for operator-owned/shared
+ * hosts — the common case).
+ */
+function MergedHostRow({
   host,
+  allHosts,
   onChanged,
-  onView,
 }: {
   host: api.OrganizationHost & { orgName?: string | null };
+  allHosts: Array<api.OrganizationHost & { orgName?: string | null }>;
   onChanged: () => Promise<void> | void;
-  onView: () => void;
 }) {
+  const hostOrgId = host.organizationId;
+  const [expanded, setExpanded] = useState(false);
+  const [detail, setDetail] = useState<api.AdminHostDetail | null>(null);
+  const [detailError, setDetailError] = useState<string | null>(null);
+  const [ops, setOps] = useState<api.HostOperation[]>([]);
+  const [busy, setBusy] = useState<api.HostOpKind | "delete" | null>(null);
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(host.name);
-  const [busy, setBusy] = useState(false);
+  const [renameBusy, setRenameBusy] = useState(false);
   const [shared, setShared] = useState(!!host.shared);
+  const [keyOpen, setKeyOpen] = useState(false);
+  const [pubKey, setPubKey] = useState<string | null>(null);
 
-  const save = async () => {
+  const bootstrapped = !!host.bootstrappedAt;
+  const assigned = host.assignedAgentCount ?? host.agentCount ?? 0;
+  const online = host.onlineAgentCount ?? host.runningAgentIds?.length ?? 0;
+  const users = host.userCount ?? 0;
+
+  const loadDetail = useCallback(async () => {
+    try {
+      const [d, o] = await Promise.all([
+        api.getAdminHost(host.id),
+        api.listHostOperations(hostOrgId, host.id),
+      ]);
+      setDetail(d);
+      setOps(o);
+      setDetailError(null);
+    } catch (e) {
+      setDetailError(e instanceof Error ? e.message : "Failed to load host detail");
+    }
+  }, [host.id, hostOrgId]);
+
+  useEffect(() => {
+    if (expanded) void loadDetail();
+  }, [expanded, loadDetail]);
+
+  const op = async (kind: api.HostOpKind, confirmMsg?: string) => {
+    if (confirmMsg && !confirm(confirmMsg)) return;
+    setBusy(kind);
+    try {
+      await api.runHostOp(hostOrgId, host.id, kind);
+      if (!expanded) setExpanded(true);
+      else await loadDetail();
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "Operation failed");
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const rename = async () => {
     const trimmed = name.trim();
     if (!trimmed || trimmed === host.name) {
       setEditing(false);
       setName(host.name);
       return;
     }
-    setBusy(true);
+    setRenameBusy(true);
     try {
       await api.updateAdminHost(host.id, { name: trimmed });
       setEditing(false);
@@ -271,7 +383,7 @@ function AdminHostRow({
       alert(e instanceof Error ? e.message : "Could not rename host");
       setName(host.name);
     } finally {
-      setBusy(false);
+      setRenameBusy(false);
     }
   };
 
@@ -285,130 +397,266 @@ function AdminHostRow({
     }
   };
 
+  const showKey = async () => {
+    setKeyOpen(true);
+    if (pubKey) return;
+    try {
+      setPubKey(await api.getHostPublicKey(hostOrgId, host.id));
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "Could not load public key");
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!confirm(`Delete host "${host.name}"? Agents assigned here stop running on it.`)) return;
+    setBusy("delete");
+    try {
+      await api.deleteOrganizationHost(hostOrgId, host.id);
+      await onChanged();
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "Could not delete host");
+    } finally {
+      setBusy(null);
+    }
+  };
+
   return (
-    <li className="flex items-center justify-between gap-3 rounded-lg border border-border px-4 py-3">
-      <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-2">
-          {editing ? (
-            <>
-              <Input
-                value={name}
-                autoFocus
-                disabled={busy}
-                onChange={(e) => setName(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") void save();
-                  if (e.key === "Escape") {
+    <li className="rounded-lg border border-border">
+      <div className="flex items-center gap-3 px-4 py-3">
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          className="shrink-0 text-muted-foreground"
+          aria-label={expanded ? "Collapse" : "Expand"}
+        >
+          {expanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+        </button>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            {editing ? (
+              <>
+                <Input
+                  value={name}
+                  autoFocus
+                  disabled={renameBusy}
+                  onChange={(e) => setName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") void rename();
+                    if (e.key === "Escape") {
+                      setName(host.name);
+                      setEditing(false);
+                    }
+                  }}
+                  className="h-7 max-w-[16rem]"
+                />
+                <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => void rename()} disabled={renameBusy}>
+                  <Check className="h-3.5 w-3.5" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 w-7 p-0"
+                  onClick={() => {
                     setName(host.name);
                     setEditing(false);
-                  }
-                }}
-                className="h-7 max-w-[16rem]"
-              />
-              <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => void save()} disabled={busy}>
-                <Check className="h-3.5 w-3.5" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-7 w-7 p-0"
-                onClick={() => {
-                  setName(host.name);
-                  setEditing(false);
-                }}
-                disabled={busy}
-              >
-                <X className="h-3.5 w-3.5" />
-              </Button>
-            </>
-          ) : (
-            <>
-              <span className="truncate font-medium">{host.name}</span>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-6 w-6 p-0 text-muted-foreground"
-                onClick={() => setEditing(true)}
-                title="Rename host"
-              >
-                <Pencil className="h-3 w-3" />
-              </Button>
-              <Badge
-                variant="outline"
-                className={cn(
-                  host.status === "online" && "border-success/30 bg-success/10 text-success",
-                  host.status === "offline" && "border-muted text-muted-foreground"
-                )}
-              >
-                {host.status}
-              </Badge>
-              {shared && (
-                <Badge variant="outline" className="border-primary/30 text-primary">
-                  shared
+                  }}
+                  disabled={renameBusy}
+                >
+                  <X className="h-3.5 w-3.5" />
+                </Button>
+              </>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setExpanded((v) => !v)}
+                  className="truncate text-left font-medium"
+                >
+                  {host.name}
+                </button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-6 w-6 shrink-0 p-0 text-muted-foreground"
+                  onClick={() => setEditing(true)}
+                  title="Rename host"
+                >
+                  <Pencil className="h-3 w-3" />
+                </Button>
+                <Badge
+                  variant="outline"
+                  className={cn(
+                    "shrink-0",
+                    host.status === "online" && "border-success/30 bg-success/10 text-success",
+                    host.status === "offline" && "border-muted text-muted-foreground",
+                    host.status === "disabled" && "border-destructive/30 bg-destructive/10 text-destructive"
+                  )}
+                >
+                  {host.status}
                 </Badge>
-              )}
-            </>
+                {shared && (
+                  <Badge variant="outline" className="shrink-0 border-primary/30 text-primary">
+                    shared
+                  </Badge>
+                )}
+                {!bootstrapped && (
+                  <Badge variant="outline" className="shrink-0 border-amber-500/30 text-amber-600">
+                    not bootstrapped
+                  </Badge>
+                )}
+              </>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={() => setExpanded((v) => !v)}
+            className="mt-0.5 block w-full truncate text-left text-xs text-muted-foreground"
+          >
+            <span className={cn("tabular-nums", online > 0 && "text-success")}>{online}</span>
+            <span className="tabular-nums">/{assigned}</span> agent{assigned === 1 ? "" : "s"} online
+            {` · ${users} user${users === 1 ? "" : "s"}`}
+            {host.orgName ? ` · ${host.orgName}` : ""}
+            {host.sshHost ? ` · ${host.sshUser || "root"}@${host.sshHost}` : " · no SSH target"}
+            {host.provider ? ` · ${host.provider}${host.providerVmId ? ` vm ${host.providerVmId}` : ""}` : ""}
+            {host.version ? ` · v${host.version}` : ""}
+            {` · seen ${relativeAge(host.lastSeenAt)}`}
+          </button>
+        </div>
+
+        <div className="flex shrink-0 items-center gap-1">
+          {!bootstrapped && host.sshHost && (
+            <Button variant="outline" size="sm" onClick={() => void showKey()} disabled={busy !== null} title="Show the SSH public key to authorize on the host">
+              <KeyRound className="h-3.5 w-3.5" />
+              Key
+            </Button>
           )}
-        </div>
-        <div className="mt-0.5 truncate text-xs text-muted-foreground">
-          {host.orgName ?? "—"} · {host.agentCount ?? 0} agents
-          {host.sshHost ? ` · ${host.sshHost}` : ""}
+          {!bootstrapped && host.sshHost && (
+            <Button variant="default" size="sm" onClick={() => void op("bootstrap")} disabled={busy !== null} title="Install the runtime over SSH">
+              {busy === "bootstrap" ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <DownloadCloud className="h-3.5 w-3.5" />}
+              Bootstrap
+            </Button>
+          )}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => void op("update", `Update "${host.name}"? Pulls latest + restarts.`)}
+            disabled={busy !== null || !host.sshHost}
+            title="Pull latest code + restart"
+          >
+            {busy === "update" ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <DownloadCloud className="h-3.5 w-3.5" />}
+            Update
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => void op("restart", `Restart "${host.name}"?`)}
+            disabled={busy !== null || !host.sshHost}
+            title="Restart the host service"
+          >
+            {busy === "restart" ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RotateCw className="h-3.5 w-3.5" />}
+            Restart
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => void op("probe")}
+            disabled={busy !== null || !host.sshHost}
+            title="Probe status over SSH"
+          >
+            {busy === "probe" ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Activity className="h-3.5 w-3.5" />}
+          </Button>
+          <label className="ml-1 flex items-center gap-1.5 text-xs text-muted-foreground" title="Shared (multi-tenant) host">
+            Shared
+            <Switch checked={shared} onCheckedChange={(v) => void toggleShared(v)} />
+          </label>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => void handleDelete()}
+            disabled={busy !== null}
+            className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+            title="Delete host"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </Button>
         </div>
       </div>
-      <div className="flex shrink-0 items-center gap-3">
-        <label className="flex items-center gap-2 text-xs text-muted-foreground">
-          Shared
-          <Switch checked={shared} onCheckedChange={(v) => void toggleShared(v)} />
-        </label>
-        <Button variant="outline" size="sm" onClick={onView} title="View residents">
-          View
-          <ChevronRight className="h-3.5 w-3.5" />
-        </Button>
-      </div>
+
+      {expanded && (
+        <div className="space-y-4 border-t border-border px-4 py-3">
+          <HostResidents
+            host={host}
+            detail={detail}
+            error={detailError}
+            allHosts={allHosts}
+            reload={loadDetail}
+            onChanged={onChanged}
+          />
+          <HostOpLog ops={ops} />
+        </div>
+      )}
+
+      <Dialog open={keyOpen} onOpenChange={setKeyOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Authorize "{host.name}"</DialogTitle>
+            <DialogDescription>
+              AgentGram connects to the VM over SSH using its own key. Add this public key to{" "}
+              {host.sshUser || "root"}@{host.sshHost}, then bootstrap.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 py-1">
+            {pubKey ? (
+              <div className="space-y-1">
+                <Label className="text-xs">Public key</Label>
+                <div className="flex items-center gap-2 rounded-md border border-border bg-muted px-2.5 py-2 font-mono text-xs break-all">
+                  <span className="flex-1 select-all">{pubKey}</span>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" /> Loading key…
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button
+              onClick={() => {
+                setKeyOpen(false);
+                void op("bootstrap");
+              }}
+              disabled={busy !== null || !pubKey}
+            >
+              Bootstrap now
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </li>
   );
 }
 
-/** Drill into one host: users + agents on it, token consumption, rebalance. */
-function HostDetailDialog({
+/** Inline residents panel for an expanded host: users + agents on it, token
+ *  consumption, and rebalance/reset controls. `detail` is loaded by the row. */
+function HostResidents({
   host,
+  detail,
+  error,
   allHosts,
-  onOpenChange,
+  reload,
   onChanged,
 }: {
-  host: (api.OrganizationHost & { orgName?: string | null }) | null;
+  host: api.OrganizationHost & { orgName?: string | null };
+  detail: api.AdminHostDetail | null;
+  error: string | null;
   allHosts: Array<api.OrganizationHost & { orgName?: string | null }>;
-  onOpenChange: (open: boolean) => void;
+  reload: () => Promise<void>;
   onChanged: () => Promise<void> | void;
 }) {
-  const [detail, setDetail] = useState<api.AdminHostDetail | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [busyAgent, setBusyAgent] = useState<string | null>(null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [bulkBusy, setBulkBusy] = useState(false);
   const [ownerFilter, setOwnerFilter] = useState<string>(""); // "" = all owners
-
-  const load = useCallback(async (hostId: string) => {
-    setLoading(true);
-    setError(null);
-    try {
-      setDetail(await api.getAdminHost(hostId));
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to load host");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (host) void load(host.id);
-    else {
-      setDetail(null);
-      setSelected(new Set());
-      setOwnerFilter("");
-    }
-  }, [host, load]);
 
   // Agents shown after the owner filter; selection/select-all operate on these.
   const visibleAgents = useMemo(
@@ -440,7 +688,7 @@ function HostDetailDialog({
     try {
       await api.bulkReassignAgents([...selected], target === "local" ? null : target);
       setSelected(new Set());
-      if (host) await load(host.id);
+      await reload();
       await onChanged();
     } catch (e) {
       alert(e instanceof Error ? e.message : "Bulk move failed");
@@ -451,8 +699,8 @@ function HostDetailDialog({
 
   // Other hosts an agent can move to (any host except this one).
   const moveTargets = useMemo(
-    () => allHosts.filter((h) => h.id !== host?.id),
-    [allHosts, host]
+    () => allHosts.filter((h) => h.id !== host.id),
+    [allHosts, host.id]
   );
 
   const move = async (agentId: string, target: string) => {
@@ -460,7 +708,7 @@ function HostDetailDialog({
     setBusyAgent(agentId);
     try {
       await api.reassignAgent(agentId, target === "local" ? null : target);
-      if (host) await load(host.id);
+      await reload();
       await onChanged();
     } catch (e) {
       alert(e instanceof Error ? e.message : "Move failed");
@@ -481,25 +729,16 @@ function HostDetailDialog({
     }
   };
 
-  return (
-    <Dialog open={!!host} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-5xl">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Server className="h-4 w-4" /> {host?.name}
-          </DialogTitle>
-          <DialogDescription>
-            {host?.orgName ?? "—"} · {host?.status} · who's running here and what they've used (last 30 days).
-          </DialogDescription>
-        </DialogHeader>
+  if (error) return <p className="text-sm text-destructive">{error}</p>;
+  if (!detail)
+    return (
+      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <Loader2 className="h-3.5 w-3.5 animate-spin" /> Loading residents…
+      </div>
+    );
 
-        {error && <ErrorBox message={error} />}
-        {loading || !detail ? (
-          <div className="flex items-center gap-2 py-8 text-sm text-muted-foreground">
-            <Loader2 className="h-4 w-4 animate-spin" /> Loading…
-          </div>
-        ) : (
-          <div className="max-h-[60vh] space-y-5 overflow-y-auto py-1">
+  return (
+    <div className="space-y-5">
             <section>
               <div className="mb-2 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
                 <UsersIcon className="h-3.5 w-3.5" /> Users ({detail.users.length})
@@ -670,10 +909,7 @@ function HostDetailDialog({
                 </div>
               )}
             </section>
-          </div>
-        )}
-      </DialogContent>
-    </Dialog>
+    </div>
   );
 }
 

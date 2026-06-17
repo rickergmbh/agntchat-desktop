@@ -5,7 +5,6 @@ import {
   User,
   Zap,
   FileText,
-  Server,
   ShieldHalf,
   Users,
   Sun,
@@ -34,7 +33,6 @@ import { TemplatesView } from "./templates/TemplatesView";
 import { CanvasView } from "./canvas/CanvasView";
 import { Profile } from "./Profile";
 import { FriendsView } from "./FriendsView";
-import { FleetView } from "./FleetView";
 import { PlatformView } from "./PlatformView";
 import { WorkspaceSwitcher } from "./WorkspaceSwitcher";
 import { WORKSPACES_ENABLED } from "../lib/featureFlags";
@@ -52,6 +50,7 @@ type View =
 export function AppShell() {
   const view = useNavStore((s) => s.view);
   const setView = useNavStore((s) => s.setView);
+  const participant = useAuthStore((s) => s.participant);
   const [showProfile, setShowProfile] = useState(false);
 
   // Connect socket + wire store listeners once we have auth
@@ -101,10 +100,11 @@ export function AppShell() {
           <TemplatesView />
         ) : view === "canvas" ? (
           <CanvasView />
-        ) : view === "fleet" ? (
-          <FleetView />
-        ) : view === "platform" ? (
-          <PlatformView />
+        ) : view === "fleet" || view === "platform" ? (
+          // Fleet folded into Platform — host management now lives under the
+          // admin-only Platform area. A stale persisted "fleet" view (the tab
+          // is gone) falls back to the dashboard for non-admins.
+          participant?.platformAdmin ? <PlatformView /> : <Dashboard />
         ) : (
           <Dashboard />
         )}
@@ -275,17 +275,11 @@ function LeftRail({
           active={view === "templates"}
           onClick={() => onChange("templates")}
         />
-        <RailButton
-          icon={Server}
-          label="Fleet"
-          active={view === "fleet"}
-          onClick={() => onChange("fleet")}
-        />
         {participant?.platformAdmin && (
           <RailButton
             icon={ShieldHalf}
             label="Platform"
-            active={view === "platform"}
+            active={view === "platform" || view === "fleet"}
             onClick={() => onChange("platform")}
           />
         )}

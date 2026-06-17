@@ -194,7 +194,7 @@ export function FleetView() {
   );
 }
 
-function relativeAge(iso?: string | null): string {
+export function relativeAge(iso?: string | null): string {
   if (!iso) return "never";
   const then = new Date(iso).getTime();
   if (Number.isNaN(then)) return "unknown";
@@ -624,7 +624,7 @@ function HostAgentList({
   );
 }
 
-function HostOpLog({ ops }: { ops: api.HostOperation[] }) {
+export function HostOpLog({ ops }: { ops: api.HostOperation[] }) {
   const [openId, setOpenId] = useState<string | null>(null);
 
   if (ops.length === 0) return null;
@@ -686,7 +686,7 @@ function normalizeSshHost(input: string): string {
   return h;
 }
 
-function ConnectHostDialog({
+export function ConnectHostDialog({
   orgId,
   open,
   onOpenChange,
@@ -912,7 +912,7 @@ function ConnectHostDialog({
   );
 }
 
-function ConnectAnthropicDialog({
+export function ConnectAnthropicDialog({
   orgId,
   open,
   onOpenChange,
@@ -1017,7 +1017,7 @@ function ConnectAnthropicDialog({
   );
 }
 
-function ProvisionDialog({
+export function ProvisionDialog({
   orgId,
   open,
   onOpenChange,
