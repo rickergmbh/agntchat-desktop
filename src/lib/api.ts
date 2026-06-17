@@ -82,6 +82,21 @@ export async function snoozeReminder(
   });
 }
 
+// Agents
+/**
+ * Ask the backend to bring an offline agent back online.
+ *
+ * The backend picks the mechanism by runtime: for an org-host agent it
+ * forces a clean restart of the bridge on its host (recovering even a
+ * wedged, alive-but-disconnected bridge); for a webhook agent it POSTs the
+ * wake_url. Mirrors the mobile "tap to wake" affordance.
+ */
+export async function wakeAgent(
+  agentId: string
+): Promise<{ woken: boolean; status?: string; reason?: string }> {
+  return request(`/api/agents/${agentId}/wake`, { method: "POST" });
+}
+
 // Auth
 export async function login(
   email: string,

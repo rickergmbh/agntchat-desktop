@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { MessageSquare, MessageCircle, ChevronRight, ChevronLeft, SquarePen, RefreshCw } from "lucide-react";
+import { MessageSquare, MessageCircle, ChevronRight, ChevronLeft, SquarePen, RefreshCw, Power, Loader2 } from "lucide-react";
+import { wakeAgent } from "../../lib/api";
 import { useResizableWidth } from "../../hooks/useResizableWidth";
 import { ResizeHandle } from "../ResizeHandle";
 import { useChatStore } from "../../stores/chatStore";
@@ -263,6 +264,40 @@ function ActiveConversation({
     if (parentId) setActiveConversation(parentId);
   };
 
+  // In a 1:1 conversation with an offline agent, offer a "bring online"
+  // affordance (mirrors mobile's "tap to wake"). For an org-host agent the
+  // backend turns this into a forced bridge restart, so it recovers an
+  // agent that's stuck offline even though its host is up. Null whenever the
+  // agent is already online (the dot/label covers that) or it's a group.
+  const wakeableAgentId = useMemo(() => {
+    if (!conversation) return null;
+    const others = (conversation.members ?? []).filter(
+      (m) => m.participantId !== myId
+    );
+    const isDM = conversation.type === "direct" || others.length === 1;
+    if (!isDM) return null;
+    const other = others[0];
+    if (other?.participant?.type !== "agent") return null;
+    if (online.has(other.participantId)) return null;
+    return other.participantId;
+  }, [conversation, myId, online]);
+
+  const [waking, setWaking] = useState(false);
+
+  const handleWake = async () => {
+    if (!wakeableAgentId || waking) return;
+    setWaking(true);
+    try {
+      await wakeAgent(wakeableAgentId);
+    } catch (e) {
+      console.warn("[MessagesView] wake failed", e);
+    }
+    // Presence flips via the WS presence store when the bridge reconnects,
+    // which hides the button. Clear the spinner after a grace window in case
+    // it never comes back, so the control doesn't spin forever.
+    setTimeout(() => setWaking(false), 8000);
+  };
+
   return (
     <>
       <header
@@ -344,6 +379,25 @@ function ActiveConversation({
             />
           </span>
         </button>
+
+        {wakeableAgentId && (
+          <button
+            type="button"
+            onClick={handleWake}
+            disabled={waking}
+            title="Bring this agent back online"
+            aria-label="Bring this agent back online"
+            className="shrink-0 flex h-7 items-center gap-1.5 rounded-md border border-border-strong px-2 text-[11px] font-medium text-foreground hover:bg-accent transition-colors disabled:opacity-60"
+            style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
+          >
+            {waking ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Power className="h-3.5 w-3.5" />
+            )}
+            {waking ? "Waking…" : "Bring online"}
+          </button>
+        )}
 
         {conversation && (
           <ChatHeaderMenu
