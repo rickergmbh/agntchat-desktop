@@ -2424,6 +2424,32 @@ export async function listConversationFiles(
   return files;
 }
 
+/**
+ * A file in the global "Files" view: a conversation file plus a summary of
+ * the conversation it lives in (so the UI can show and link to its source).
+ */
+export interface OwnerFile extends ConversationFile {
+  conversation: { id: string; title: string | null } | null;
+}
+
+/**
+ * Every file the signed-in account produced — the user's own uploads plus
+ * any created by agents they own — across all conversations, newest first.
+ * Ownership-scoped server-side; the human only ever sees their own family's
+ * files, never other members' uploads.
+ */
+export async function listOwnerFiles(
+  opts: { limit?: number; before?: string } = {}
+): Promise<OwnerFile[]> {
+  const query: string[] = [];
+  if (typeof opts.limit === "number") query.push(`limit=${opts.limit}`);
+  if (opts.before) query.push(`before=${encodeURIComponent(opts.before)}`);
+  const qs = query.length > 0 ? `?${query.join("&")}` : "";
+
+  const { files } = await request<{ files: OwnerFile[] }>(`/api/files${qs}`);
+  return files;
+}
+
 export type DisplayType = "row" | "chip" | "highlight" | "body" | "change" | "sparkline";
 export type HighlightColor = "success" | "warning" | "destructive" | "primary";
 export type ResultType =

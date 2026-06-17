@@ -5,6 +5,7 @@ export type View =
   | "tasks"
   | "agents"
   | "friends"
+  | "files"
   | "templates"
   | "canvas"
   | "fleet"

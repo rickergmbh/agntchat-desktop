@@ -5,6 +5,7 @@ import {
   User,
   Zap,
   FileText,
+  FolderOpen,
   ShieldHalf,
   Users,
   Sun,
@@ -30,6 +31,7 @@ import { Dashboard } from "./Dashboard";
 import { MessagesView } from "./messages/MessagesView";
 import { TasksView } from "./tasks/TasksView";
 import { TemplatesView } from "./templates/TemplatesView";
+import { FilesView } from "./files/FilesView";
 import { CanvasView } from "./canvas/CanvasView";
 import { Profile } from "./Profile";
 import { FriendsView } from "./FriendsView";
@@ -42,6 +44,7 @@ type View =
   | "tasks"
   | "agents"
   | "friends"
+  | "files"
   | "templates"
   | "canvas"
   | "fleet"
@@ -96,6 +99,8 @@ export function AppShell() {
           <TasksView onOpenConversation={handleOpenConversation} />
         ) : view === "friends" ? (
           <FriendsView />
+        ) : view === "files" ? (
+          <FilesView onOpenConversation={handleOpenConversation} />
         ) : view === "templates" ? (
           <TemplatesView />
         ) : view === "canvas" ? (
@@ -272,6 +277,12 @@ function LeftRail({
               </>
             ) : undefined
           }
+        />
+        <RailButton
+          icon={FolderOpen}
+          label="Files"
+          active={view === "files"}
+          onClick={() => onChange("files")}
         />
         <RailButton
           icon={FileText}
