@@ -308,7 +308,12 @@ function HostsTab() {
             Refresh
           </Button>
           {operatorOrgId && (
-            <Button variant="outline" size="sm" onClick={() => setAnthropicOpen(true)}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setAnthropicOpen(true)}
+              title="Set a shared Claude seat for the whole org — applied to every host. Use a host's “Anthropic” button to re-push it to just that host."
+            >
               <ShieldCheck className="h-3.5 w-3.5 text-muted-foreground" />
               Connect Anthropic
             </Button>
@@ -714,6 +719,22 @@ function MergedHostRow({
             {busy === "restart" ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RotateCw className="h-3.5 w-3.5" />}
             Restart
           </Button>
+          {bootstrapped && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => void op("set_token")}
+              disabled={busy !== null || !host.sshHost}
+              title="Push the org's shared Claude seat token to this host (re-sync Anthropic)"
+            >
+              {busy === "set_token" ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <ShieldCheck className="h-3.5 w-3.5" />
+              )}
+              Anthropic
+            </Button>
+          )}
           <Button
             variant="ghost"
             size="sm"
