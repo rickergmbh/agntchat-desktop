@@ -220,32 +220,77 @@ function HostsTab() {
   const [hosts, setHosts] = useState<Array<api.OrganizationHost & { orgName?: string | null }>>(
     []
   );
+  const [vms, setVms] = useState<api.ProviderVm[]>([]);
+  const [vmsError, setVmsError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [connectOpen, setConnectOpen] = useState(false);
+  // Which VM (if any) the "Add host" dialog should preselect.
+  const [connectVmId, setConnectVmId] = useState<string | undefined>(undefined);
   const [anthropicOpen, setAnthropicOpen] = useState(false);
 
   const refresh = useCallback(async () => {
-    try {
-      setHosts(await api.listAdminHosts());
+    setLoading(true);
+    const [hostsRes, vmsRes] = await Promise.allSettled([
+      api.listAdminHosts(),
+      api.adminListProviderVms(),
+    ]);
+
+    if (hostsRes.status === "fulfilled") {
+      setHosts(hostsRes.value);
       setError(null);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to load hosts");
-    } finally {
-      setLoading(false);
+    } else {
+      setError(
+        hostsRes.reason instanceof Error ? hostsRes.reason.message : "Failed to load hosts"
+      );
     }
+
+    if (vmsRes.status === "fulfilled") {
+      setVms(vmsRes.value);
+      setVmsError(null);
+    } else {
+      setVms([]);
+      setVmsError(
+        vmsRes.reason instanceof Error
+          ? vmsRes.reason.message
+          : "Failed to load Hostinger VMs"
+      );
+    }
+
+    setLoading(false);
   }, []);
 
   useEffect(() => {
     void refresh();
   }, [refresh]);
 
+  // Join hosts ↔ VMs by provider_vm_id: a host is the AgentGram-managed side of
+  // the VM it was provisioned on.
+  const hostByVmId = useMemo(() => {
+    const m = new Map<string, (typeof hosts)[number]>();
+    for (const h of hosts) if (h.providerVmId) m.set(h.providerVmId, h);
+    return m;
+  }, [hosts]);
+
+  // Hosts not backed by any VM in the inventory (manually-added boxes, or a VM
+  // we couldn't list) — shown in their own group so they aren't lost.
+  const otherHosts = useMemo(() => {
+    const managedVmHostIds = new Set(
+      vms.map((vm) => hostByVmId.get(vm.id)?.id).filter((id): id is string => Boolean(id))
+    );
+    return hosts.filter((h) => !managedVmHostIds.has(h.id));
+  }, [hosts, vms, hostByVmId]);
+
+  const openAddHost = (vmId?: string) => {
+    setConnectVmId(vmId);
+    setConnectOpen(true);
+  };
+
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2 text-sm font-medium">
-          <ServerIcon className="h-4 w-4" /> Managed hosts
-          {!loading && <span className="text-xs text-muted-foreground">({hosts.length})</span>}
+          <ServerIcon className="h-4 w-4" /> Hosts &amp; VMs
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Button variant="outline" size="sm" onClick={() => void refresh()}>
@@ -259,7 +304,7 @@ function HostsTab() {
             </Button>
           )}
           {operatorOrgId && (
-            <Button size="sm" onClick={() => setConnectOpen(true)}>
+            <Button size="sm" onClick={() => openAddHost()}>
               <Plus className="h-3.5 w-3.5" />
               Add host
             </Button>
@@ -273,14 +318,58 @@ function HostsTab() {
         <div className="flex items-center gap-2 py-8 text-sm text-muted-foreground">
           <Loader2 className="h-4 w-4 animate-spin" /> Loading…
         </div>
-      ) : hosts.length === 0 ? (
-        <p className="text-sm text-muted-foreground">No hosts across the platform yet.</p>
       ) : (
-        <ul className="space-y-2">
-          {hosts.map((h) => (
-            <MergedHostRow key={h.id} host={h} allHosts={hosts} onChanged={refresh} />
-          ))}
-        </ul>
+        <>
+          {/* One entry per Hostinger VM. Managed VMs expand to their full host
+              controls; unmanaged VMs offer to add a host on them. */}
+          {vms.length > 0 && (
+            <ul className="space-y-2">
+              {vms.map((vm) => {
+                const host = hostByVmId.get(vm.id);
+                return host ? (
+                  <MergedHostRow
+                    key={vm.id}
+                    host={host}
+                    allHosts={hosts}
+                    onChanged={refresh}
+                    vm={vm}
+                  />
+                ) : (
+                  <UnmanagedVmRow
+                    key={vm.id}
+                    vm={vm}
+                    canAdd={!!operatorOrgId}
+                    onAdd={() => openAddHost(vm.id)}
+                  />
+                );
+              })}
+            </ul>
+          )}
+
+          {vmsError && (
+            <p className="text-xs text-muted-foreground">
+              Couldn’t load the Hostinger VM inventory: {vmsError}
+            </p>
+          )}
+
+          {/* Hosts with no Hostinger VM behind them (manually-added boxes). */}
+          {otherHosts.length > 0 && (
+            <div className="space-y-2 pt-2">
+              <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                Other hosts (no Hostinger VM)
+              </div>
+              <ul className="space-y-2">
+                {otherHosts.map((h) => (
+                  <MergedHostRow key={h.id} host={h} allHosts={hosts} onChanged={refresh} />
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {vms.length === 0 && otherHosts.length === 0 && (
+            <p className="text-sm text-muted-foreground">No hosts or VMs yet.</p>
+          )}
+        </>
       )}
 
       {operatorOrgId && (
@@ -290,6 +379,7 @@ function HostsTab() {
             open={connectOpen}
             onOpenChange={setConnectOpen}
             onChanged={() => void refresh()}
+            initialVmId={connectVmId}
           />
           <ConnectAnthropicDialog
             orgId={operatorOrgId}
@@ -300,6 +390,47 @@ function HostsTab() {
         </>
       )}
     </div>
+  );
+}
+
+/**
+ * A Hostinger VM that isn't (yet) registered as an AgentGram host. Compact row
+ * showing the VM facts with an "Add host" action that opens the connect dialog
+ * preselected on this VM.
+ */
+function UnmanagedVmRow({
+  vm,
+  canAdd,
+  onAdd,
+}: {
+  vm: api.ProviderVm;
+  canAdd: boolean;
+  onAdd: () => void;
+}) {
+  return (
+    <li className="flex items-center gap-3 rounded-lg border border-dashed border-border px-4 py-3">
+      <Cloud className="h-4 w-4 shrink-0 text-muted-foreground" />
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-2">
+          <span className="truncate font-medium">{vm.hostname || vm.id}</span>
+          <Badge variant={vm.state === "running" ? "default" : "outline"} className="shrink-0">
+            {vm.state || "unknown"}
+          </Badge>
+          <Badge variant="outline" className="shrink-0 text-muted-foreground">
+            Not added
+          </Badge>
+        </div>
+        <div className="mt-0.5 truncate text-xs text-muted-foreground">
+          {[vm.ipv4, vm.plan, vm.datacenter].filter(Boolean).join(" · ") || vm.id}
+        </div>
+      </div>
+      {canAdd && (
+        <Button variant="outline" size="sm" className="shrink-0" onClick={onAdd}>
+          <Plus className="h-3.5 w-3.5" />
+          Add host
+        </Button>
+      )}
+    </li>
   );
 }
 
@@ -316,10 +447,14 @@ function MergedHostRow({
   host,
   allHosts,
   onChanged,
+  vm,
 }: {
   host: api.OrganizationHost & { orgName?: string | null };
   allHosts: Array<api.OrganizationHost & { orgName?: string | null }>;
   onChanged: () => Promise<void> | void;
+  /** The Hostinger VM this host is provisioned on, when known — shows the
+   *  live power-state next to the host's AgentGram status. */
+  vm?: api.ProviderVm;
 }) {
   const hostOrgId = host.organizationId;
   const [expanded, setExpanded] = useState(false);
@@ -498,6 +633,15 @@ function MergedHostRow({
                 >
                   {host.status}
                 </Badge>
+                {vm?.state && (
+                  <Badge
+                    variant="outline"
+                    className="shrink-0 text-muted-foreground"
+                    title="Hostinger power state"
+                  >
+                    VM: {vm.state}
+                  </Badge>
+                )}
                 {shared && (
                   <Badge variant="outline" className="shrink-0 border-primary/30 text-primary">
                     shared
@@ -1654,152 +1798,39 @@ function ProvisioningTab() {
 
   const opt = (o: api.ProvisioningOption) => String(o.name ?? o.id);
 
+  // The existing-VM inventory now lives in the unified Hosts list above; this
+  // section is just the "provision a new VM" form.
   return (
-    <div className="space-y-6">
-      {/* What we already have on the Hostinger account. */}
-      <ExistingVmsPanel />
-
-      {/* What we might create. */}
-      <div className="max-w-md space-y-3">
-        <div className="flex items-center gap-2 text-sm font-medium">
-          <Plus className="h-4 w-4" /> Provision a new shared host (Hostinger)
-        </div>
-        {loading ? (
-          <div className="flex items-center gap-2 py-4 text-sm text-muted-foreground">
-            <Loader2 className="h-4 w-4 animate-spin" /> Loading catalog…
-          </div>
-        ) : error && !catalog ? (
-          <ErrorBox message={error} />
-        ) : (
-          <>
-            {done && (
-              <div className="rounded-md border border-success/30 bg-success/10 px-3 py-2 text-sm text-success">
-                {done}
-              </div>
-            )}
-            <div className="space-y-1">
-              <Label htmlFor="p-name">Host name</Label>
-              <Input id="p-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="agentgram-2" />
-            </div>
-            <Sel id="p-dc" label="Data center" value={dataCenterId} set={setDataCenterId} opts={catalog?.dataCenters ?? []} fmt={opt} />
-            <Sel id="p-tpl" label="OS template" value={templateId} set={setTemplateId} opts={catalog?.templates ?? []} fmt={opt} />
-            <Sel id="p-plan" label="Plan" value={itemId} set={setItemId} opts={catalog?.plans ?? []} fmt={opt} />
-            {error && <p className="text-sm text-destructive">{error}</p>}
-            <Button onClick={() => void provision()} disabled={submitting}>
-              {submitting ? "Provisioning…" : "Provision"}
-            </Button>
-          </>
-        )}
+    <div className="max-w-md space-y-3">
+      <div className="flex items-center gap-2 text-sm font-medium">
+        <Plus className="h-4 w-4" /> Provision a new shared host (Hostinger)
       </div>
-    </div>
-  );
-}
-
-/**
- * Lists the VMs that already exist on the Hostinger account so the operator
- * can see what's actually provisioned vs. what they're about to create. Each
- * VM is cross-referenced against our hosts' providerVmId so we can flag the
- * ones already managed by AgentGram (vs. ones sitting in Hostinger unattached).
- */
-function ExistingVmsPanel() {
-  const [vms, setVms] = useState<api.ProviderVm[] | null>(null);
-  const [managedIds, setManagedIds] = useState<Set<string>>(new Set());
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const [vmList, hosts] = await Promise.all([
-        api.adminListProviderVms(),
-        // Best-effort — if the hosts call fails we still show the VMs, just
-        // without the "managed" cross-reference.
-        api.listAdminHosts().catch(() => []),
-      ]);
-      const ids = new Set(
-        hosts.map((h) => h.providerVmId).filter((id): id is string => Boolean(id))
-      );
-      setManagedIds(ids);
-      setVms(vmList);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not load Hostinger VMs");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    void load();
-  }, [load]);
-
-  return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-sm font-medium">
-          <Cloud className="h-4 w-4" /> Existing Hostinger VMs
-          {vms && <span className="text-xs text-muted-foreground">({vms.length})</span>}
-        </div>
-        <Button variant="ghost" size="sm" onClick={() => void load()} disabled={loading}>
-          <RefreshCw className={cn("h-3.5 w-3.5", loading && "animate-spin")} />
-        </Button>
-      </div>
-
-      {loading && !vms ? (
+      {loading ? (
         <div className="flex items-center gap-2 py-4 text-sm text-muted-foreground">
-          <Loader2 className="h-4 w-4 animate-spin" /> Loading…
+          <Loader2 className="h-4 w-4 animate-spin" /> Loading catalog…
         </div>
-      ) : error ? (
+      ) : error && !catalog ? (
         <ErrorBox message={error} />
-      ) : !vms || vms.length === 0 ? (
-        <p className="rounded-md border border-dashed border-border px-3 py-6 text-center text-sm text-muted-foreground">
-          No VMs found on the Hostinger account.
-        </p>
       ) : (
-        <div className="overflow-x-auto rounded-md border border-border">
-          <table className="w-full text-sm">
-            <thead className="bg-muted/50 text-xs text-muted-foreground">
-              <tr>
-                <th className="px-3 py-2 text-left font-medium">Hostname</th>
-                <th className="px-3 py-2 text-left font-medium">IPv4</th>
-                <th className="px-3 py-2 text-left font-medium">State</th>
-                <th className="px-3 py-2 text-left font-medium">Plan</th>
-                <th className="px-3 py-2 text-left font-medium">Data center</th>
-                <th className="px-3 py-2 text-left font-medium">In AgentGram</th>
-              </tr>
-            </thead>
-            <tbody>
-              {vms.map((vm) => (
-                <tr key={vm.id} className="border-t border-border">
-                  <td className="px-3 py-2">
-                    <div className="font-medium">{vm.hostname || "—"}</div>
-                    <div className="text-xs text-muted-foreground">{vm.id}</div>
-                  </td>
-                  <td className="px-3 py-2 font-mono text-xs">{vm.ipv4 || "—"}</td>
-                  <td className="px-3 py-2">
-                    <Badge variant={vm.state === "running" ? "default" : "outline"}>
-                      {vm.state || "unknown"}
-                    </Badge>
-                  </td>
-                  <td className="px-3 py-2">{vm.plan || "—"}</td>
-                  <td className="px-3 py-2">{vm.datacenter || "—"}</td>
-                  <td className="px-3 py-2">
-                    {managedIds.has(vm.id) ? (
-                      <Badge variant="secondary">Managed</Badge>
-                    ) : (
-                      <Badge variant="outline">Not added</Badge>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <>
+          {done && (
+            <div className="rounded-md border border-success/30 bg-success/10 px-3 py-2 text-sm text-success">
+              {done}
+            </div>
+          )}
+          <div className="space-y-1">
+            <Label htmlFor="p-name">Host name</Label>
+            <Input id="p-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="agentgram-2" />
+          </div>
+          <Sel id="p-dc" label="Data center" value={dataCenterId} set={setDataCenterId} opts={catalog?.dataCenters ?? []} fmt={opt} />
+          <Sel id="p-tpl" label="OS template" value={templateId} set={setTemplateId} opts={catalog?.templates ?? []} fmt={opt} />
+          <Sel id="p-plan" label="Plan" value={itemId} set={setItemId} opts={catalog?.plans ?? []} fmt={opt} />
+          {error && <p className="text-sm text-destructive">{error}</p>}
+          <Button onClick={() => void provision()} disabled={submitting}>
+            {submitting ? "Provisioning…" : "Provision"}
+          </Button>
+        </>
       )}
-      <p className="text-xs text-muted-foreground">
-        “Managed” VMs are already registered as AgentGram hosts. “Not added” VMs exist in Hostinger
-        but aren’t connected yet — attach one from the Hosts tab.
-      </p>
     </div>
   );
 }

@@ -691,11 +691,15 @@ export function ConnectHostDialog({
   open,
   onOpenChange,
   onChanged,
+  initialVmId,
 }: {
   orgId: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onChanged: () => void;
+  /** Preselect this Hostinger VM when the dialog opens (e.g. "Add host" was
+   *  clicked on a specific unmanaged VM row). Autofills name + SSH host. */
+  initialVmId?: string;
 }) {
   const [name, setName] = useState("");
   const [sshHost, setSshHost] = useState("");
@@ -717,12 +721,24 @@ export function ConnectHostDialog({
     let cancelled = false;
     api
       .listProviderVms(orgId)
-      .then((list) => !cancelled && setVms(list))
+      .then((list) => {
+        if (cancelled) return;
+        setVms(list);
+        // Preselect the VM the caller pointed us at and autofill from it.
+        if (initialVmId) {
+          const vm = list.find((v) => v.id === initialVmId);
+          if (vm) {
+            setSelectedVmId(vm.id);
+            if (vm.ipv4) setSshHost(vm.ipv4);
+            setName((n) => n || vm.hostname || "");
+          }
+        }
+      })
       .catch(() => !cancelled && setVms([]));
     return () => {
       cancelled = true;
     };
-  }, [open, orgId]);
+  }, [open, orgId, initialVmId]);
 
   const reset = () => {
     setName("");
