@@ -24,6 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { usePresenceStore } from "../stores/presenceStore";
 import { restartHostedAgents } from "../lib/api";
 import type {
   AgentConnection,
@@ -411,6 +412,7 @@ export function Dashboard() {
   const [startingAll, setStartingAll] = useState(false);
   const [stoppingAll, setStoppingAll] = useState(false);
   const [wakingHosted, setWakingHosted] = useState(false);
+  const markWaking = usePresenceStore((s) => s.markWaking);
   const healthIntervalRef = useRef<ReturnType<typeof setInterval>>(null);
   const activityIntervalRef = useRef<ReturnType<typeof setInterval>>(null);
 
@@ -703,9 +705,13 @@ export function Dashboard() {
   );
 
   const handleBringHostedOnline = async () => {
+    const ids = offlineHosted.map((m) => m.agent.id);
     setWakingHosted(true);
+    // Spin each offline hosted row immediately; the presence store clears a
+    // row when its agent reports online (or after a safety timeout).
+    markWaking(ids);
     try {
-      await restartHostedAgents(offlineHosted.map((m) => m.agent.id));
+      await restartHostedAgents(ids);
       // Bridges reconnect asynchronously; refetch so presence catches up (the
       // WS presence push also updates the rows as each comes online).
       await fetchAgents();

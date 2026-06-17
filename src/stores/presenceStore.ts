@@ -28,17 +28,63 @@ interface PresenceState {
   typing: Record<string, Set<string>>;
   /** participantId → display name (for rendering "X is typing...") */
   typingNames: Record<string, string>;
+  /** Hosted agents the user just asked to bring back online (a host restart
+   *  is in flight). Drives the per-row "Bringing online…" spinner until the
+   *  agent reports online via `agent_status_changed` or a safety timeout
+   *  clears it — so the action doesn't look like it did nothing. */
+  wakingAgents: Set<string>;
 
   /** Drop a participant's typing indicator immediately (e.g. when their
    * message arrives — don't wait for the per-participant TTL). */
   clearTyping: (convId: string, participantId: string) => void;
 
+  /** Mark agents as "coming online" (after a restart request). Auto-clears
+   *  each after a safety timeout if it never reports online. */
+  markWaking: (agentIds: string[]) => void;
+  /** Stop showing the waking spinner for an agent. */
+  clearWaking: (agentId: string) => void;
+
   initWsListeners: () => () => void;
 }
+
+// How long a "Bringing online…" spinner persists if the agent never reports
+// online (e.g. its host is down). Generous — a cold bridge respawn + reconnect
+// can take a while — but bounded so the row doesn't spin forever.
+const WAKING_TIMEOUT_MS = 60_000;
 
 export const usePresenceStore = create<PresenceState>((set) => {
   // Per-key timer (keyed "convId:participantId") so we can cancel/refresh
   const typingTimers = new Map<string, ReturnType<typeof setTimeout>>();
+  // Per-agent safety timers for the "Bringing online…" spinner.
+  const wakingTimers = new Map<string, ReturnType<typeof setTimeout>>();
+
+  function clearWaking(agentId: string) {
+    const timer = wakingTimers.get(agentId);
+    if (timer) {
+      clearTimeout(timer);
+      wakingTimers.delete(agentId);
+    }
+    set((s) => {
+      if (!s.wakingAgents.has(agentId)) return s;
+      const next = new Set(s.wakingAgents);
+      next.delete(agentId);
+      return { wakingAgents: next };
+    });
+  }
+
+  function markWaking(agentIds: string[]) {
+    if (agentIds.length === 0) return;
+    for (const id of agentIds) {
+      const prev = wakingTimers.get(id);
+      if (prev) clearTimeout(prev);
+      wakingTimers.set(id, setTimeout(() => clearWaking(id), WAKING_TIMEOUT_MS));
+    }
+    set((s) => {
+      const next = new Set(s.wakingAgents);
+      agentIds.forEach((id) => next.add(id));
+      return { wakingAgents: next };
+    });
+  }
 
   function clearTyping(convId: string, participantId: string) {
     const key = `${convId}:${participantId}`;
@@ -95,8 +141,11 @@ export const usePresenceStore = create<PresenceState>((set) => {
     agentActivityConvs: {},
     typing: {},
     typingNames: {},
+    wakingAgents: new Set(),
 
     clearTyping,
+    markWaking,
+    clearWaking,
 
     initWsListeners: () => {
       const unsubs: (() => void)[] = [];
@@ -150,6 +199,9 @@ export const usePresenceStore = create<PresenceState>((set) => {
           // the presence field.
           const effective: "online_local" | "offline" =
             presence ?? (payload.online ? "online_local" : "offline");
+
+          // The agent we were waiting on just came online — drop its spinner.
+          if (effective === "online_local") clearWaking(agentId);
 
           set((s) => {
             const wasOnline = s.online.has(agentId);
@@ -258,6 +310,8 @@ export const usePresenceStore = create<PresenceState>((set) => {
             agentActivity: activity,
             agentActivityConvs: activityConvs,
           });
+          // Any agent now reported online is no longer "waking".
+          Object.keys(agentPresences).forEach((id) => clearWaking(id));
         })
       );
 
@@ -301,6 +355,8 @@ export const usePresenceStore = create<PresenceState>((set) => {
         unsubs.forEach((u) => u());
         typingTimers.forEach((t) => clearTimeout(t));
         typingTimers.clear();
+        wakingTimers.forEach((t) => clearTimeout(t));
+        wakingTimers.clear();
       };
     },
   };

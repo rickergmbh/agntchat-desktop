@@ -5,7 +5,8 @@ import { AgentActivityIndicator } from "./AgentActivityIndicator";
 import { formatModelLabel, formatBackendLabel } from "../lib/models";
 import { AGENT_GRID_COLS, AGENT_CELL_ENGINE, AGENT_CELL_MODE } from "./agentTableLayout";
 import { formatUptime, cn } from "../lib/utils";
-import { Play, Square, RotateCcw, Crown, Cloud, AlertTriangle, Link2, ChevronRight, ChevronDown } from "lucide-react";
+import { Play, Power, Square, RotateCcw, Crown, Cloud, AlertTriangle, Link2, ChevronRight, ChevronDown, Loader2 } from "lucide-react";
+import { restartHostedAgents } from "../lib/api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -69,11 +70,13 @@ function StatusBadge({
   uptimeSecs,
   presence,
   runtime,
+  waking,
 }: {
   status: string;
   uptimeSecs: number | null;
   presence?: "online_local" | "offline";
   runtime?: "local" | "org_host";
+  waking?: boolean;
 }) {
   // Org-host runtime: the bridge runs on a remote VM, so processStatus
   // is always "stopped" on this device. The agent's real online state
@@ -82,6 +85,16 @@ function StatusBadge({
   // badge — "Stopped" would lie about the actual lifecycle.
   if (runtime === "org_host" && status === "stopped") {
     const remoteOnline = presence && presence !== "offline";
+    // A restart we asked for is in flight — show progress so the action
+    // doesn't look like it did nothing while the bridge respawns.
+    if (waking && !remoteOnline) {
+      return (
+        <Badge variant="outline" className="border-warning/30 text-warning bg-warning/10 gap-1.5">
+          <Loader2 className="w-3 h-3 animate-spin" />
+          Bringing online…
+        </Badge>
+      );
+    }
     return (
       <Badge
         variant="outline"
@@ -261,6 +274,10 @@ export function AgentRow({
   const globalActivity = usePresenceStore(
     (s) => s.agentActivity[managed.agent.id]
   );
+  // Whether a "bring online" restart we requested for this agent is in flight
+  // (shared across the row + the bulk button via the presence store).
+  const waking = usePresenceStore((s) => s.wakingAgents.has(managed.agent.id));
+  const markWaking = usePresenceStore((s) => s.markWaking);
   const [error, setError] = useState<string | null>(null);
 
   const isRunning = managed.processStatus === "running";
@@ -293,6 +310,23 @@ export function AgentRow({
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       setError(msg);
+    }
+  };
+
+  // Hosted agents have no local process — "bring online" asks the server to
+  // restart the bridge on its host. We optimistically mark it waking so the
+  // row spins immediately; the presence store clears it when the agent reports
+  // online (or after a safety timeout).
+  const remoteOnline =
+    managed.agent.presence != null && managed.agent.presence !== "offline";
+  const handleBringOnline = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setError(null);
+    markWaking([managed.agent.id]);
+    try {
+      await restartHostedAgents([managed.agent.id]);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
     }
   };
 
@@ -488,6 +522,7 @@ export function AgentRow({
                 uptimeSecs={liveUptimeSecs}
                 presence={managed.agent.presence}
                 runtime={managed.agent.runtime}
+                waking={waking}
               />
               <HealthHint health={managed.health} processStatus={managed.processStatus} />
               {managed.processStatus === "crashed" && managed.crashReason && (
@@ -522,20 +557,41 @@ export function AgentRow({
               </Tooltip>
             </TooltipProvider>
           ) : isOrgHost ? (
-            <TooltipProvider delay={150}>
-              <Tooltip>
-                <TooltipTrigger
-                  render={
-                    <span className="flex h-7 w-7 items-center justify-center text-muted-foreground/50">
-                      <Cloud className="w-4 h-4" />
-                    </span>
-                  }
-                />
-                <TooltipContent side="left" className="text-xs">
-                  Runs on the org host — started and stopped there, not from this device
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            waking ? (
+              <span
+                className="flex h-7 w-7 items-center justify-center text-warning"
+                title="Bringing online…"
+              >
+                <Loader2 className="w-4 h-4 animate-spin" />
+              </span>
+            ) : remoteOnline ? (
+              <TooltipProvider delay={150}>
+                <Tooltip>
+                  <TooltipTrigger
+                    render={
+                      <span className="flex h-7 w-7 items-center justify-center text-muted-foreground/50">
+                        <Cloud className="w-4 h-4" />
+                      </span>
+                    }
+                  />
+                  <TooltipContent side="left" className="text-xs">
+                    Runs on the org host — started and stopped there, not from this device
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            ) : (
+              // Offline hosted agent — let the owner restart its bridge on the
+              // host (the hosted equivalent of the local Play button).
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                className="text-info hover:text-info/90"
+                onClick={handleBringOnline}
+                title="Bring online (restart bridge on its host)"
+              >
+                <Power className="w-4 h-4" />
+              </Button>
+            )
           ) : managed.processStatus === "crashed" ? (
             <Button variant="ghost" size="icon-sm" className="text-warning hover:text-warning/90" onClick={handleToggle} title="Restart">
               <RotateCcw className="w-4 h-4" />
