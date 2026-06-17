@@ -4,7 +4,7 @@ import {
   Bot,
   User,
   Zap,
-  FileText,
+  LayoutTemplate,
   FolderOpen,
   ShieldHalf,
   Users,
@@ -105,7 +105,9 @@ export function AppShell() {
         ) : view === "files" ? (
           <FilesView onOpenConversation={handleOpenConversation} />
         ) : view === "templates" ? (
-          <TemplatesView />
+          // Response templates are an admin-only area now (matches the rail,
+          // which hides the button for non-admins).
+          participant?.platformAdmin ? <TemplatesView /> : <Dashboard />
         ) : view === "canvas" ? (
           <CanvasView />
         ) : view === "fleet" || view === "platform" ? (
@@ -287,12 +289,14 @@ function LeftRail({
           active={view === "files"}
           onClick={() => onChange("files")}
         />
-        <RailButton
-          icon={FileText}
-          label="Templates"
-          active={view === "templates"}
-          onClick={() => onChange("templates")}
-        />
+        {participant?.platformAdmin && (
+          <RailButton
+            icon={LayoutTemplate}
+            label="Templates"
+            active={view === "templates"}
+            onClick={() => onChange("templates")}
+          />
+        )}
         {participant?.platformAdmin && (
           <RailButton
             icon={ShieldHalf}
