@@ -30,6 +30,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Brain,
   Users,
@@ -113,7 +114,7 @@ export function AgentMemory({ agentId, agentName }: AgentMemoryProps) {
   }
 
   return (
-    <div className="p-5 space-y-8">
+    <div className="p-5 space-y-4">
       {error && (
         <div className="flex items-center gap-2 text-xs text-destructive bg-destructive/10 border border-destructive/20 rounded-lg p-3">
           <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
@@ -121,48 +122,77 @@ export function AgentMemory({ agentId, agentName }: AgentMemoryProps) {
         </div>
       )}
 
-      {/* Agent memories — what THIS agent remembers */}
-      <MemorySection
-        icon={<Brain className="w-4 h-4 text-primary" />}
-        title="Agent Memories"
-        subtitle={
-          agentName
-            ? `What ${agentName} remembers — specific to this agent.`
-            : "What this agent remembers — specific to this agent."
-        }
-        memories={agentMemories}
-        emptyHint="This agent hasn't remembered anything yet. Add a fact, preference, or learning it should keep in mind."
-        onAdd={() => {
-          setEditing(null);
-          setDialogScope("agent");
-        }}
-        onEdit={(m) => {
-          setEditing(m);
-          setDialogScope("agent");
-        }}
-        onDeleted={fetchAll}
-        onDelete={(m) => deleteAgentMemory(agentId, m.id)}
-      />
+      {/* Two distinct memory scopes, split into tabs so neither is missed.
+          Agent memories lead since they're the per-agent ones being edited. */}
+      <Tabs defaultValue="agent" className="w-full">
+        <TabsList>
+          <TabsTrigger value="agent" className="gap-1.5">
+            <Brain className="w-3.5 h-3.5" />
+            Agent Memories
+            {agentMemories.length > 0 && (
+              <span className="text-[10px] text-muted-foreground">
+                ({agentMemories.length})
+              </span>
+            )}
+          </TabsTrigger>
+          <TabsTrigger value="family" className="gap-1.5">
+            <Users className="w-3.5 h-3.5" />
+            Family Memories
+            {familyMemories.length > 0 && (
+              <span className="text-[10px] text-muted-foreground">
+                ({familyMemories.length})
+              </span>
+            )}
+          </TabsTrigger>
+        </TabsList>
 
-      {/* Family memories — shared across ALL the user's agents */}
-      <MemorySection
-        icon={<Users className="w-4 h-4 text-primary" />}
-        title="Family Memories"
-        subtitle="Shared across all of your agents."
-        shared
-        memories={familyMemories}
-        emptyHint="No shared memories yet. Anything you add here is visible to every agent in your family."
-        onAdd={() => {
-          setEditing(null);
-          setDialogScope("family");
-        }}
-        onEdit={(m) => {
-          setEditing(m);
-          setDialogScope("family");
-        }}
-        onDeleted={fetchAll}
-        onDelete={(m) => deleteFamilyMemory(m.id).then(() => undefined)}
-      />
+        {/* Agent memories — what THIS agent remembers */}
+        <TabsContent value="agent" className="mt-4">
+          <MemorySection
+            icon={<Brain className="w-4 h-4 text-primary" />}
+            title="Agent Memories"
+            subtitle={
+              agentName
+                ? `What ${agentName} remembers — specific to this agent.`
+                : "What this agent remembers — specific to this agent."
+            }
+            memories={agentMemories}
+            emptyHint="This agent hasn't remembered anything yet. Add a fact, preference, or learning it should keep in mind."
+            onAdd={() => {
+              setEditing(null);
+              setDialogScope("agent");
+            }}
+            onEdit={(m) => {
+              setEditing(m);
+              setDialogScope("agent");
+            }}
+            onDeleted={fetchAll}
+            onDelete={(m) => deleteAgentMemory(agentId, m.id)}
+          />
+        </TabsContent>
+
+        {/* Family memories — shared across ALL the user's agents */}
+        <TabsContent value="family" className="mt-4">
+          <MemorySection
+            icon={<Users className="w-4 h-4 text-primary" />}
+            title="Family Memories"
+            subtitle="Shared across all of your agents."
+            shared
+            memories={familyMemories}
+            emptyHint="No shared memories yet. Anything you add here is visible to every agent in your family."
+            onAdd={() => {
+              setEditing(null);
+              setDialogScope("family");
+            }}
+            onEdit={(m) => {
+              setEditing(m);
+              setDialogScope("family");
+            }}
+            onDeleted={fetchAll}
+            onDelete={(m) => deleteFamilyMemory(m.id).then(() => undefined)}
+          />
+        </TabsContent>
+      </Tabs>
 
       {dialogScope && (
         <MemoryFormDialog
