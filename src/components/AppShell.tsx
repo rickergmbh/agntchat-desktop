@@ -221,12 +221,16 @@ function LeftRail({
         style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
         className="flex flex-col gap-1 items-center"
       >
-        {/* Workspaces gated off: render static app branding in the tile
-            slot instead of the interactive switcher (which owns the
-            dropdown, create, settings gear, and pending-invites banner).
-            Flip WORKSPACES_ENABLED to bring the switcher back. */}
-        {WORKSPACES_ENABLED ? <WorkspaceSwitcher /> : <BrandingTile />}
-        <div className="my-1 h-px w-8 bg-rail-border" />
+        {/* Workspaces gated off: render nothing in the tile slot — the
+            static branding just clutters the rail. The interactive switcher
+            (dropdown, create, settings gear, pending-invites banner) returns
+            when WORKSPACES_ENABLED is flipped back on. */}
+        {WORKSPACES_ENABLED && (
+          <>
+            <WorkspaceSwitcher />
+            <div className="my-1 h-px w-8 bg-rail-border" />
+          </>
+        )}
 
         <RailButton
           icon={MessageCircle}
@@ -336,22 +340,6 @@ function LeftRail({
         </button>
       </div>
     </nav>
-  );
-}
-
-/**
- * Static branding tile shown at the top of the rail while workspaces are
- * gated off — a non-interactive stand-in for the WorkspaceSwitcher so the
- * rail keeps its visual anchor without hinting at multiple workspaces.
- */
-function BrandingTile() {
-  return (
-    <div
-      className="flex h-9 w-9 items-center justify-center rounded-md bg-primary"
-      title="Agentgram"
-    >
-      <Bot className="h-5 w-5 text-primary-foreground" />
-    </div>
   );
 }
 
