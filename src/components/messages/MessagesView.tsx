@@ -416,7 +416,7 @@ function ActiveConversation({
           button in the header instead. */}
       <div className="relative flex flex-1 min-h-0 flex-col">
         {!isThread ? <ThreadsBar conversationId={conversationId} /> : null}
-        <FilesBar conversationId={conversationId} />
+        <FilesBar conversationId={conversationId} isThread={isThread} />
         <ChatThread conversationId={conversationId} />
       </div>
       <MessageComposer conversationId={conversationId} />
