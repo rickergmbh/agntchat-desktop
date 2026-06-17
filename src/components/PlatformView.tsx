@@ -187,7 +187,10 @@ function OverviewTab() {
   const totalHosts = Object.values(stats.hostsByStatus ?? {}).reduce((a, b) => a + b, 0);
   const hosted = stats.agentsByRuntime?.org_host ?? 0;
   const local = stats.agentsByRuntime?.local ?? 0;
-  const rev = stats.revenue;
+  // Tolerate a partial payload (e.g. a dev app pointed at a backend that
+  // predates these fields) so the tab degrades instead of crashing.
+  const rev = stats.revenue ?? { currency: null, mrrCents: 0, unpricedCount: 0, tiers: [] };
+  const workspaces = stats.workspaces ?? [];
   const fmtUsdCents = (cents: number, currency?: string | null) =>
     new Intl.NumberFormat(undefined, {
       style: "currency",
@@ -196,9 +199,9 @@ function OverviewTab() {
     }).format(cents / 100);
 
   const cards = [
-    { label: "Users", value: stats.users, sub: `${stats.usersOnline} online · ${stats.payingUsers} paying` },
-    { label: "Agents", value: stats.agents, sub: `${stats.agentsOnline} online · ${hosted} hosted · ${local} local` },
-    { label: "Workspaces", value: stats.organizations, sub: `${stats.workspaces.length} total` },
+    { label: "Users", value: stats.users, sub: `${stats.usersOnline ?? 0} online · ${stats.payingUsers} paying` },
+    { label: "Agents", value: stats.agents, sub: `${stats.agentsOnline ?? 0} online · ${hosted} hosted · ${local} local` },
+    { label: "Workspaces", value: stats.organizations, sub: `${workspaces.length} total` },
     { label: "Hosts online", value: `${onlineHosts}/${totalHosts}`, sub: "by heartbeat" },
     { label: "MRR", value: fmtUsdCents(rev.mrrCents, rev.currency), sub: `${rev.tiers.reduce((n, t) => n + t.count, 0)} subs` },
   ];
@@ -260,11 +263,11 @@ function OverviewTab() {
           <div className="border-b border-border px-4 py-2 text-xs font-medium text-muted-foreground">
             Agents by workspace
           </div>
-          {stats.workspaces.length === 0 ? (
+          {workspaces.length === 0 ? (
             <p className="px-4 py-3 text-sm text-muted-foreground">No workspaces.</p>
           ) : (
             <ul className="max-h-72 overflow-y-auto">
-              {stats.workspaces.map((w) => (
+              {workspaces.map((w) => (
                 <li
                   key={w.id}
                   className="flex items-center justify-between gap-3 border-t border-border px-4 py-1.5 text-sm first:border-t-0"
