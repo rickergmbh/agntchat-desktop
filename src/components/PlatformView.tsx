@@ -1648,37 +1648,154 @@ function ProvisioningTab() {
     }
   };
 
-  if (loading)
-    return (
-      <div className="flex items-center gap-2 py-8 text-sm text-muted-foreground">
-        <Loader2 className="h-4 w-4 animate-spin" /> Loading…
-      </div>
-    );
-  if (error && !catalog) return <ErrorBox message={error} />;
-
   const opt = (o: api.ProvisioningOption) => String(o.name ?? o.id);
 
   return (
-    <div className="max-w-md space-y-3">
-      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <Cloud className="h-4 w-4" /> Spin up a new shared host (Hostinger).
+    <div className="space-y-6">
+      {/* What we already have on the Hostinger account. */}
+      <ExistingVmsPanel />
+
+      {/* What we might create. */}
+      <div className="max-w-md space-y-3">
+        <div className="flex items-center gap-2 text-sm font-medium">
+          <Plus className="h-4 w-4" /> Provision a new shared host (Hostinger)
+        </div>
+        {loading ? (
+          <div className="flex items-center gap-2 py-4 text-sm text-muted-foreground">
+            <Loader2 className="h-4 w-4 animate-spin" /> Loading catalog…
+          </div>
+        ) : error && !catalog ? (
+          <ErrorBox message={error} />
+        ) : (
+          <>
+            {done && (
+              <div className="rounded-md border border-success/30 bg-success/10 px-3 py-2 text-sm text-success">
+                {done}
+              </div>
+            )}
+            <div className="space-y-1">
+              <Label htmlFor="p-name">Host name</Label>
+              <Input id="p-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="agentgram-2" />
+            </div>
+            <Sel id="p-dc" label="Data center" value={dataCenterId} set={setDataCenterId} opts={catalog?.dataCenters ?? []} fmt={opt} />
+            <Sel id="p-tpl" label="OS template" value={templateId} set={setTemplateId} opts={catalog?.templates ?? []} fmt={opt} />
+            <Sel id="p-plan" label="Plan" value={itemId} set={setItemId} opts={catalog?.plans ?? []} fmt={opt} />
+            {error && <p className="text-sm text-destructive">{error}</p>}
+            <Button onClick={() => void provision()} disabled={submitting}>
+              {submitting ? "Provisioning…" : "Provision"}
+            </Button>
+          </>
+        )}
       </div>
-      {done && (
-        <div className="rounded-md border border-success/30 bg-success/10 px-3 py-2 text-sm text-success">
-          {done}
+    </div>
+  );
+}
+
+/**
+ * Lists the VMs that already exist on the Hostinger account so the operator
+ * can see what's actually provisioned vs. what they're about to create. Each
+ * VM is cross-referenced against our hosts' providerVmId so we can flag the
+ * ones already managed by AgentGram (vs. ones sitting in Hostinger unattached).
+ */
+function ExistingVmsPanel() {
+  const [vms, setVms] = useState<api.ProviderVm[] | null>(null);
+  const [managedIds, setManagedIds] = useState<Set<string>>(new Set());
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const [vmList, hosts] = await Promise.all([
+        api.adminListProviderVms(),
+        // Best-effort — if the hosts call fails we still show the VMs, just
+        // without the "managed" cross-reference.
+        api.listAdminHosts().catch(() => []),
+      ]);
+      const ids = new Set(
+        hosts.map((h) => h.providerVmId).filter((id): id is string => Boolean(id))
+      );
+      setManagedIds(ids);
+      setVms(vmList);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not load Hostinger VMs");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2 text-sm font-medium">
+          <Cloud className="h-4 w-4" /> Existing Hostinger VMs
+          {vms && <span className="text-xs text-muted-foreground">({vms.length})</span>}
+        </div>
+        <Button variant="ghost" size="sm" onClick={() => void load()} disabled={loading}>
+          <RefreshCw className={cn("h-3.5 w-3.5", loading && "animate-spin")} />
+        </Button>
+      </div>
+
+      {loading && !vms ? (
+        <div className="flex items-center gap-2 py-4 text-sm text-muted-foreground">
+          <Loader2 className="h-4 w-4 animate-spin" /> Loading…
+        </div>
+      ) : error ? (
+        <ErrorBox message={error} />
+      ) : !vms || vms.length === 0 ? (
+        <p className="rounded-md border border-dashed border-border px-3 py-6 text-center text-sm text-muted-foreground">
+          No VMs found on the Hostinger account.
+        </p>
+      ) : (
+        <div className="overflow-x-auto rounded-md border border-border">
+          <table className="w-full text-sm">
+            <thead className="bg-muted/50 text-xs text-muted-foreground">
+              <tr>
+                <th className="px-3 py-2 text-left font-medium">Hostname</th>
+                <th className="px-3 py-2 text-left font-medium">IPv4</th>
+                <th className="px-3 py-2 text-left font-medium">State</th>
+                <th className="px-3 py-2 text-left font-medium">Plan</th>
+                <th className="px-3 py-2 text-left font-medium">Data center</th>
+                <th className="px-3 py-2 text-left font-medium">In AgentGram</th>
+              </tr>
+            </thead>
+            <tbody>
+              {vms.map((vm) => (
+                <tr key={vm.id} className="border-t border-border">
+                  <td className="px-3 py-2">
+                    <div className="font-medium">{vm.hostname || "—"}</div>
+                    <div className="text-xs text-muted-foreground">{vm.id}</div>
+                  </td>
+                  <td className="px-3 py-2 font-mono text-xs">{vm.ipv4 || "—"}</td>
+                  <td className="px-3 py-2">
+                    <Badge variant={vm.state === "running" ? "default" : "outline"}>
+                      {vm.state || "unknown"}
+                    </Badge>
+                  </td>
+                  <td className="px-3 py-2">{vm.plan || "—"}</td>
+                  <td className="px-3 py-2">{vm.datacenter || "—"}</td>
+                  <td className="px-3 py-2">
+                    {managedIds.has(vm.id) ? (
+                      <Badge variant="secondary">Managed</Badge>
+                    ) : (
+                      <Badge variant="outline">Not added</Badge>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
-      <div className="space-y-1">
-        <Label htmlFor="p-name">Host name</Label>
-        <Input id="p-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="agentgram-2" />
-      </div>
-      <Sel id="p-dc" label="Data center" value={dataCenterId} set={setDataCenterId} opts={catalog?.dataCenters ?? []} fmt={opt} />
-      <Sel id="p-tpl" label="OS template" value={templateId} set={setTemplateId} opts={catalog?.templates ?? []} fmt={opt} />
-      <Sel id="p-plan" label="Plan" value={itemId} set={setItemId} opts={catalog?.plans ?? []} fmt={opt} />
-      {error && <p className="text-sm text-destructive">{error}</p>}
-      <Button onClick={() => void provision()} disabled={submitting}>
-        {submitting ? "Provisioning…" : "Provision"}
-      </Button>
+      <p className="text-xs text-muted-foreground">
+        “Managed” VMs are already registered as AgentGram hosts. “Not added” VMs exist in Hostinger
+        but aren’t connected yet — attach one from the Hosts tab.
+      </p>
     </div>
   );
 }

@@ -971,6 +971,17 @@ export async function getAdminProvisioningCatalog(): Promise<{
   return request("/api/admin/provisioning/catalog");
 }
 
+/**
+ * List the VMs that already exist on the Hostinger account (the operator's
+ * real inventory), so the Provisioning tab can show what we have vs. what we
+ * might create. Cross-reference each VM `id` against hosts' `providerVmId` to
+ * tell which are already managed by AgentGram.
+ */
+export async function adminListProviderVms(): Promise<ProviderVm[]> {
+  const res = await request<{ vms: ProviderVm[] }>("/api/admin/provisioning/vms");
+  return res.vms;
+}
+
 export async function adminProvision(params: {
   name: string;
   itemId: string;
