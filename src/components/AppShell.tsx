@@ -289,6 +289,11 @@ function LeftRail({
           active={view === "files"}
           onClick={() => onChange("files")}
         />
+        {/* Divider separating the everyone-buttons above from the admin-only
+            buttons (Templates, Platform) below. */}
+        {participant?.platformAdmin && (
+          <div className="my-1 h-px w-8 bg-rail-border" />
+        )}
         {participant?.platformAdmin && (
           <RailButton
             icon={LayoutTemplate}
