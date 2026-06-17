@@ -264,22 +264,32 @@ function HostsTab() {
     void refresh();
   }, [refresh]);
 
-  // Join hosts ↔ VMs by provider_vm_id: a host is the AgentGram-managed side of
-  // the VM it was provisioned on.
-  const hostByVmId = useMemo(() => {
-    const m = new Map<string, (typeof hosts)[number]>();
-    for (const h of hosts) if (h.providerVmId) m.set(h.providerVmId, h);
-    return m;
+  // Resolve which host (if any) backs a given VM. Prefer the explicit
+  // provider_vm_id link; fall back to matching the host's SSH IP to the VM's
+  // IPv4 — that covers hosts added manually by IP (no VM link stored), which
+  // would otherwise look orphaned even though they run on a known VM.
+  const hostForVm = useMemo(() => {
+    const byVmId = new Map<string, (typeof hosts)[number]>();
+    const byIp = new Map<string, (typeof hosts)[number]>();
+    for (const h of hosts) {
+      if (h.providerVmId) byVmId.set(h.providerVmId, h);
+      const ip = h.sshHost?.trim();
+      if (ip && !byIp.has(ip)) byIp.set(ip, h);
+    }
+    return (vm: api.ProviderVm) =>
+      byVmId.get(vm.id) ?? (vm.ipv4 ? byIp.get(vm.ipv4.trim()) : undefined);
   }, [hosts]);
 
   // Hosts not backed by any VM in the inventory (manually-added boxes, or a VM
   // we couldn't list) — shown in their own group so they aren't lost.
   const otherHosts = useMemo(() => {
-    const managedVmHostIds = new Set(
-      vms.map((vm) => hostByVmId.get(vm.id)?.id).filter((id): id is string => Boolean(id))
-    );
-    return hosts.filter((h) => !managedVmHostIds.has(h.id));
-  }, [hosts, vms, hostByVmId]);
+    const matchedHostIds = new Set<string>();
+    for (const vm of vms) {
+      const h = hostForVm(vm);
+      if (h) matchedHostIds.add(h.id);
+    }
+    return hosts.filter((h) => !matchedHostIds.has(h.id));
+  }, [hosts, vms, hostForVm]);
 
   const openAddHost = (vmId?: string) => {
     setConnectVmId(vmId);
@@ -325,7 +335,7 @@ function HostsTab() {
           {vms.length > 0 && (
             <ul className="space-y-2">
               {vms.map((vm) => {
-                const host = hostByVmId.get(vm.id);
+                const host = hostForVm(vm);
                 return host ? (
                   <MergedHostRow
                     key={vm.id}
