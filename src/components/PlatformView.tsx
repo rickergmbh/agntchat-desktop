@@ -34,6 +34,7 @@ import {
   HostOpLog,
   relativeAge,
 } from "./FleetView";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -119,6 +120,29 @@ function fmtUsd(n?: number | null): string {
   if (n === 0) return "$0";
   if (n < 0.01) return "<$0.01";
   return `$${n.toFixed(2)}`;
+}
+
+/** Two-letter avatar fallback from a name (or email when unnamed). */
+function initials(name?: string | null, email?: string | null): string {
+  const src = (name || email || "?").trim();
+  const parts = src.split(/\s+/).filter(Boolean);
+  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+  return src.slice(0, 2).toUpperCase();
+}
+
+/** Compact "how long a member": "today", "12d", "5mo", "2y 3mo". */
+function memberFor(iso?: string | null): string {
+  if (!iso) return "—";
+  const start = new Date(iso).getTime();
+  if (Number.isNaN(start)) return "—";
+  const days = Math.floor((Date.now() - start) / 86_400_000);
+  if (days <= 0) return "today";
+  if (days < 31) return `${days}d`;
+  const months = Math.floor(days / 30.44);
+  if (months < 12) return `${months}mo`;
+  const years = Math.floor(months / 12);
+  const rem = months % 12;
+  return rem ? `${years}y ${rem}mo` : `${years}y`;
 }
 
 /** Tiny inline sparkline of a daily-token series. */
@@ -1352,6 +1376,7 @@ function UsersTab() {
               <tr>
                 <th className="px-3 py-2 font-medium">User</th>
                 <th className="px-3 py-2 font-medium">Workspace</th>
+                <th className="px-3 py-2 font-medium">Member for</th>
                 <th className="px-3 py-2 font-medium">Agents</th>
                 <th className="px-3 py-2 font-medium">Tokens (30d)</th>
                 <th className="px-3 py-2 font-medium">Plan</th>
@@ -1363,10 +1388,28 @@ function UsersTab() {
               {users.map((u) => (
                 <tr key={u.id} className="border-t border-border">
                   <td className="px-3 py-2">
-                    <div className="font-medium">{u.displayName}</div>
-                    <div className="text-xs text-muted-foreground">{u.email}</div>
+                    <div className="flex items-center gap-2.5">
+                      <Avatar className="h-7 w-7 shrink-0">
+                        {u.avatarUrl ? (
+                          <AvatarImage src={u.avatarUrl} alt={u.displayName} displaySize={28} />
+                        ) : null}
+                        <AvatarFallback className="text-[10px]">
+                          {initials(u.displayName, u.email)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="min-w-0">
+                        <div className="truncate font-medium">{u.displayName}</div>
+                        <div className="truncate text-xs text-muted-foreground">{u.email}</div>
+                      </div>
+                    </div>
                   </td>
                   <td className="px-3 py-2 text-muted-foreground">{u.orgName ?? "—"}</td>
+                  <td
+                    className="px-3 py-2 text-muted-foreground"
+                    title={u.memberSince ? new Date(u.memberSince).toLocaleDateString() : undefined}
+                  >
+                    {memberFor(u.memberSince)}
+                  </td>
                   <td className="px-3 py-2 tabular-nums">{u.agentCount}</td>
                   <td className="px-3 py-2 tabular-nums text-muted-foreground">
                     {fmtTokens(u.tokens?.totalTokens)}
@@ -1400,7 +1443,7 @@ function UsersTab() {
               ))}
               {users.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="px-3 py-6 text-center text-muted-foreground">
+                  <td colSpan={8} className="px-3 py-6 text-center text-muted-foreground">
                     No users.
                   </td>
                 </tr>

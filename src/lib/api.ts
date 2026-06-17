@@ -821,6 +821,10 @@ export interface AdminUser {
   id: string;
   displayName: string;
   email?: string | null;
+  /** Profile image URL (null when unset → render initials). */
+  avatarUrl?: string | null;
+  /** ISO8601 account creation time, for "member for N" display. */
+  memberSince?: string | null;
   orgName?: string | null;
   agentCount: number;
   allocatedHostIds: string[];
