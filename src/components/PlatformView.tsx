@@ -185,23 +185,100 @@ function OverviewTab() {
 
   const onlineHosts = stats.hostsByStatus?.online ?? 0;
   const totalHosts = Object.values(stats.hostsByStatus ?? {}).reduce((a, b) => a + b, 0);
+  const hosted = stats.agentsByRuntime?.org_host ?? 0;
+  const local = stats.agentsByRuntime?.local ?? 0;
+  const rev = stats.revenue;
+  const fmtUsdCents = (cents: number, currency?: string | null) =>
+    new Intl.NumberFormat(undefined, {
+      style: "currency",
+      currency: (currency ?? "usd").toUpperCase(),
+      maximumFractionDigits: 0,
+    }).format(cents / 100);
 
   const cards = [
-    { label: "Users", value: stats.users },
-    { label: "Paying", value: stats.payingUsers },
-    { label: "Agents", value: stats.agents },
-    { label: "Workspaces", value: stats.organizations },
-    { label: "Hosts online", value: `${onlineHosts}/${totalHosts}` },
+    { label: "Users", value: stats.users, sub: `${stats.usersOnline} online · ${stats.payingUsers} paying` },
+    { label: "Agents", value: stats.agents, sub: `${stats.agentsOnline} online · ${hosted} hosted · ${local} local` },
+    { label: "Workspaces", value: stats.organizations, sub: `${stats.workspaces.length} total` },
+    { label: "Hosts online", value: `${onlineHosts}/${totalHosts}`, sub: "by heartbeat" },
+    { label: "MRR", value: fmtUsdCents(rev.mrrCents, rev.currency), sub: `${rev.tiers.reduce((n, t) => n + t.count, 0)} subs` },
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-      {cards.map((c) => (
-        <div key={c.label} className="rounded-lg border border-border p-4">
-          <div className="text-2xl font-semibold tabular-nums">{c.value}</div>
-          <div className="mt-1 text-xs text-muted-foreground">{c.label}</div>
-        </div>
-      ))}
+    <div className="space-y-6">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        {cards.map((c) => (
+          <div key={c.label} className="rounded-lg border border-border p-4">
+            <div className="text-2xl font-semibold tabular-nums">{c.value}</div>
+            <div className="mt-1 text-xs font-medium text-muted-foreground">{c.label}</div>
+            {c.sub && <div className="mt-0.5 text-[11px] text-muted-foreground/70">{c.sub}</div>}
+          </div>
+        ))}
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-2">
+        {/* Revenue per tier */}
+        <section className="rounded-lg border border-border">
+          <div className="flex items-center justify-between border-b border-border px-4 py-2 text-xs font-medium text-muted-foreground">
+            <span>Revenue by tier</span>
+            {rev.unpricedCount > 0 && (
+              <span className="text-amber-500" title="Run Release.backfill_subscription_amounts() to populate amounts from Stripe">
+                {rev.unpricedCount} unpriced
+              </span>
+            )}
+          </div>
+          {rev.tiers.length === 0 ? (
+            <p className="px-4 py-3 text-sm text-muted-foreground">No active subscriptions.</p>
+          ) : (
+            <table className="w-full text-sm">
+              <thead className="text-left text-xs text-muted-foreground">
+                <tr>
+                  <th className="px-4 py-1.5 font-medium">Tier</th>
+                  <th className="px-4 py-1.5 text-right font-medium">Subs</th>
+                  <th className="px-4 py-1.5 text-right font-medium">MRR</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rev.tiers.map((t) => (
+                  <tr key={t.plan ?? t.tier} className="border-t border-border">
+                    <td className="px-4 py-1.5 truncate" title={t.plan ?? undefined}>{t.tier ?? t.plan ?? "—"}</td>
+                    <td className="px-4 py-1.5 text-right tabular-nums">{t.count}</td>
+                    <td className="px-4 py-1.5 text-right tabular-nums">{fmtUsdCents(t.mrrCents, rev.currency)}</td>
+                  </tr>
+                ))}
+                <tr className="border-t border-border font-medium">
+                  <td className="px-4 py-1.5">Total</td>
+                  <td className="px-4 py-1.5 text-right tabular-nums">{rev.tiers.reduce((n, t) => n + t.count, 0)}</td>
+                  <td className="px-4 py-1.5 text-right tabular-nums">{fmtUsdCents(rev.mrrCents, rev.currency)}</td>
+                </tr>
+              </tbody>
+            </table>
+          )}
+        </section>
+
+        {/* Agents per workspace */}
+        <section className="rounded-lg border border-border">
+          <div className="border-b border-border px-4 py-2 text-xs font-medium text-muted-foreground">
+            Agents by workspace
+          </div>
+          {stats.workspaces.length === 0 ? (
+            <p className="px-4 py-3 text-sm text-muted-foreground">No workspaces.</p>
+          ) : (
+            <ul className="max-h-72 overflow-y-auto">
+              {stats.workspaces.map((w) => (
+                <li
+                  key={w.id}
+                  className="flex items-center justify-between gap-3 border-t border-border px-4 py-1.5 text-sm first:border-t-0"
+                >
+                  <span className="min-w-0 flex-1 truncate">{w.name ?? w.id.slice(0, 8)}</span>
+                  <span className="shrink-0 tabular-nums text-muted-foreground">
+                    {w.agentCount} agent{w.agentCount === 1 ? "" : "s"}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      </div>
     </div>
   );
 }

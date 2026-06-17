@@ -758,12 +758,39 @@ export async function getProvisioningCatalog(
 
 // --- Platform admin (operator console) ---
 
+export interface RevenueTier {
+  /** Human label (Stripe price nickname), falling back to the price id. */
+  tier: string | null;
+  /** Stripe price id. */
+  plan: string | null;
+  /** Active subscriptions on this tier. */
+  count: number;
+  /** Monthly-normalized revenue for this tier, in cents. */
+  mrrCents: number;
+}
+
 export interface PlatformStats {
   users: number;
-  agents: number;
-  organizations: number;
+  /** Distinct humans currently WS-connected. */
+  usersOnline: number;
   payingUsers: number;
+  agents: number;
+  /** Distinct agents with an online executor. */
+  agentsOnline: number;
+  /** Agent counts keyed by runtime, e.g. { org_host: 12, local: 40 }. */
+  agentsByRuntime: Record<string, number>;
+  organizations: number;
   hostsByStatus: Record<string, number>;
+  revenue: {
+    currency: string | null;
+    /** Total monthly recurring revenue across tiers, in cents. */
+    mrrCents: number;
+    /** Active subs with no stored amount yet (backfill pending). */
+    unpricedCount: number;
+    tiers: RevenueTier[];
+  };
+  /** Each workspace with how many agents are pinned to it (busiest first). */
+  workspaces: Array<{ id: string; name: string | null; agentCount: number }>;
 }
 
 /** Per-model token totals + estimated cost (costUsd null when unpriced). */
