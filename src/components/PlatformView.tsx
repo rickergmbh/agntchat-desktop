@@ -908,6 +908,25 @@ function HostResidents({
     }
   };
 
+  // Agents shown that aren't currently running on the host — the targets for a
+  // one-click "restart offline" after a host restart.
+  const offlineVisible = visibleAgents.filter((a) => !a.running);
+
+  const bulkReset = async (ids: string[]) => {
+    if (ids.length === 0) return;
+    setBulkBusy(true);
+    try {
+      await api.bulkResetAgents(ids);
+      setSelected(new Set());
+      await reload();
+      await onChanged();
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "Bulk reset failed");
+    } finally {
+      setBulkBusy(false);
+    }
+  };
+
   if (error) return <p className="text-sm text-destructive">{error}</p>;
   if (!detail)
     return (
@@ -968,10 +987,38 @@ function HostResidents({
                       ))}
                     </select>
                   )}
+                  {offlineVisible.length > 0 && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8"
+                      disabled={bulkBusy}
+                      onClick={() => void bulkReset(offlineVisible.map((a) => a.id))}
+                      title="Stop + respawn every offline agent shown (after a host restart)"
+                    >
+                      {bulkBusy ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <RotateCw className="h-3.5 w-3.5" />
+                      )}
+                      Restart offline ({offlineVisible.length})
+                    </Button>
+                  )}
                 </div>
                 {selected.size > 0 && (
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-muted-foreground">{selected.size} selected</span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8"
+                      disabled={bulkBusy}
+                      onClick={() => void bulkReset([...selected])}
+                      title="Stop + respawn the selected agents"
+                    >
+                      <RotateCw className="h-3.5 w-3.5" />
+                      Reset
+                    </Button>
                     <select
                       value=""
                       disabled={bulkBusy}

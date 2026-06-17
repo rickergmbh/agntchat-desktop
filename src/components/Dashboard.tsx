@@ -11,6 +11,7 @@ import {
   Plus,
   Search,
   Play,
+  Power,
   Square,
   Star,
   CheckCircle,
@@ -23,6 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { restartHostedAgents } from "../lib/api";
 import type {
   AgentConnection,
   ConnectionMode,
@@ -408,6 +410,7 @@ export function Dashboard() {
     });
   const [startingAll, setStartingAll] = useState(false);
   const [stoppingAll, setStoppingAll] = useState(false);
+  const [wakingHosted, setWakingHosted] = useState(false);
   const healthIntervalRef = useRef<ReturnType<typeof setInterval>>(null);
   const activityIntervalRef = useRef<ReturnType<typeof setInterval>>(null);
 
@@ -691,6 +694,28 @@ export function Dashboard() {
     setStoppingAll(false);
   };
 
+  // Hosted (org-host) agents that are currently offline. Unlike local agents,
+  // these run on a remote VM and can't be "started" locally — they're brought
+  // back via the server, which restarts each bridge on its host. Common after a
+  // host restart leaves a whole fleet offline.
+  const offlineHosted = Object.values(agents).filter(
+    (m) => m.agent.runtime === "org_host" && !isRunningForUI(m)
+  );
+
+  const handleBringHostedOnline = async () => {
+    setWakingHosted(true);
+    try {
+      await restartHostedAgents(offlineHosted.map((m) => m.agent.id));
+      // Bridges reconnect asynchronously; refetch so presence catches up (the
+      // WS presence push also updates the rows as each comes online).
+      await fetchAgents();
+    } catch {
+      // best-effort — leave the button for a retry
+    } finally {
+      setWakingHosted(false);
+    }
+  };
+
   // Directory drawer mirrors the agent drawer pattern — keeps the
   // selected listing visible during the slide-out animation so the
   // panel doesn't go blank when the user clicks "Close".
@@ -796,6 +821,26 @@ export function Dashboard() {
                     <Play className="w-3.5 h-3.5" />
                     <span className="hidden @min-[820px]:inline">
                       {startingAll ? "Starting..." : "Start All"}
+                    </span>
+                  </Button>
+                )}
+                {offlineHosted.length > 0 && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={handleBringHostedOnline}
+                    disabled={wakingHosted}
+                    title={`Bring ${offlineHosted.length} offline hosted agent(s) back online`}
+                  >
+                    {wakingHosted ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      <Power className="w-3.5 h-3.5" />
+                    )}
+                    <span className="hidden @min-[820px]:inline">
+                      {wakingHosted
+                        ? "Bringing online..."
+                        : `Bring online (${offlineHosted.length})`}
                     </span>
                   </Button>
                 )}

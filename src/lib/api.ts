@@ -97,6 +97,20 @@ export async function wakeAgent(
   return request(`/api/agents/${agentId}/wake`, { method: "POST" });
 }
 
+/**
+ * Bulk "bring my hosted agents online" — owner-scoped restart of the caller's
+ * own org-host agents (e.g. after a host restart left a fleet offline). Pass the
+ * ids the UI shows as offline; the server re-checks ownership/runtime.
+ */
+export async function restartHostedAgents(
+  agentIds: string[]
+): Promise<{ restarted: number; total: number }> {
+  return request(`/api/agents/restart-hosted`, {
+    method: "POST",
+    body: JSON.stringify({ agentIds }),
+  });
+}
+
 // Auth
 export async function login(
   email: string,
@@ -961,6 +975,16 @@ export async function resetAgent(
   agentId: string
 ): Promise<{ reset: boolean; via?: string; reason?: string; hostId?: string }> {
   return request(`/api/admin/agents/${agentId}/reset`, { method: "POST" });
+}
+
+/** Reset several agents at once (admin) — bring a host's offline agents back. */
+export async function bulkResetAgents(
+  agentIds: string[]
+): Promise<{ reset: number; total: number }> {
+  return request(`/api/admin/agents/bulk-reset`, {
+    method: "POST",
+    body: JSON.stringify({ agentIds }),
+  });
 }
 
 export async function getAdminProvisioningCatalog(): Promise<{
