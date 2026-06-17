@@ -380,6 +380,10 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
   const deleteMessage = useChatStore((s) => s.deleteMessage);
   const stopAgents = useChatStore((s) => s.stopAgents);
   const firstUnreadId = useChatStore((s) => s.firstUnreadIds[conversationId]);
+  // Deep-link target: when the Files view (or any caller) opens this
+  // conversation at a specific message, scroll to and flash it once loaded.
+  const scrollTargetMessageId = useChatStore((s) => s.scrollTargetMessageId);
+  const clearScrollTarget = useChatStore((s) => s.clearScrollTarget);
   const myId = useAuthStore((s) => s.participant?.id);
 
   const typingIds = usePresenceStore((s) => s.typing[conversationId]);
@@ -448,6 +452,12 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
     y: number;
   } | null>(null);
 
+  // Deep-link scroll: which message is currently flashed, plus a bounded
+  // counter so paging-back to find an old target can't loop forever.
+  const [highlightedMessageId, setHighlightedMessageId] = useState<string | null>(null);
+  const deepLinkTargetRef = useRef<string | null>(null);
+  const deepLinkAttemptsRef = useRef(0);
+
   useEffect(() => {
     if (messages.length === 0 && !loading) {
       fetchMessages(conversationId);
@@ -512,8 +522,12 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
   useLayoutEffect(() => {
     if (prevConvIdRef.current === conversationId) return;
     prevConvIdRef.current = conversationId;
-    pinnedRef.current = true;
-    setNearBottom(true);
+    // If we're opening straight to a deep-linked message, don't pin to the
+    // bottom — the deep-link effect below will scroll to the target instead,
+    // and pinning would make the autoscroll snap fight that jump.
+    const hasTarget = useChatStore.getState().scrollTargetMessageId !== null;
+    pinnedRef.current = !hasTarget;
+    setNearBottom(!hasTarget);
   }, [conversationId]);
 
   // Autoscroll — mimics mobile's inverted list: every thread opens at the
@@ -610,6 +624,56 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
     setMenu({ message, x: e.clientX, y: e.clientY });
   };
 
+  // Reset the page-back budget whenever a new deep-link target arrives.
+  if (scrollTargetMessageId && deepLinkTargetRef.current !== scrollTargetMessageId) {
+    deepLinkTargetRef.current = scrollTargetMessageId;
+    deepLinkAttemptsRef.current = 0;
+  }
+
+  // Deep-link to a specific message: scroll it into view and flash it. If the
+  // target isn't loaded yet (an old file), page backwards until it appears or
+  // we run out of history / attempts. Runs on every threadItems change so it
+  // retries as older pages stream in.
+  useEffect(() => {
+    if (!scrollTargetMessageId) return;
+
+    const container = scrollRef.current;
+    const node = container?.querySelector(
+      `[data-msg-id="${scrollTargetMessageId}"]`
+    ) as HTMLElement | null;
+
+    if (node) {
+      // Found it — release the bottom-pin so autoscroll won't fight us, center
+      // the message, flash a highlight, and clear the pending target.
+      pinnedRef.current = false;
+      node.scrollIntoView({ block: "center" });
+      setHighlightedMessageId(scrollTargetMessageId);
+      clearScrollTarget();
+      const t = window.setTimeout(() => setHighlightedMessageId(null), 2200);
+      return () => window.clearTimeout(t);
+    }
+
+    // Not loaded yet — page older messages a bounded number of times.
+    if (hasMore && !loading && deepLinkAttemptsRef.current < 25) {
+      deepLinkAttemptsRef.current += 1;
+      const oldest = rawMessages[0];
+      if (oldest) fetchMessages(conversationId, oldest.id);
+    } else if (!hasMore) {
+      // Reached the start of history without finding it — give up so we don't
+      // leave a stale target armed.
+      clearScrollTarget();
+    }
+  }, [
+    scrollTargetMessageId,
+    threadItems,
+    hasMore,
+    loading,
+    rawMessages,
+    conversationId,
+    fetchMessages,
+    clearScrollTarget,
+  ]);
+
   return (
     <div className="relative flex-1 flex flex-col overflow-hidden">
       <div
@@ -675,12 +739,21 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
                 <Fragment key={msg.id}>
                   {dayChanged && <DaySeparator iso={msg.insertedAt} />}
                   {showUnreadDivider && <UnreadDivider />}
-                  <MessageBubble
-                    message={msg}
-                    showAvatar={showAvatar}
-                    showSenderName={showSenderName}
-                    onContextMenu={handleContextMenu}
-                  />
+                  <div
+                    data-msg-id={msg.id}
+                    className={cn(
+                      "transition-colors duration-700",
+                      highlightedMessageId === msg.id &&
+                        "rounded-lg bg-primary/10 ring-1 ring-primary/30"
+                    )}
+                  >
+                    <MessageBubble
+                      message={msg}
+                      showAvatar={showAvatar}
+                      showSenderName={showSenderName}
+                      onContextMenu={handleContextMenu}
+                    />
+                  </div>
                 </Fragment>
               );
             })}

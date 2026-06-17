@@ -70,11 +70,14 @@ export function AppShell() {
 
   const setActiveConversation = useChatStore((s) => s.setActiveConversation);
   const handleOpenConversation = useCallback(
-    (conversationId: string) => {
-      setActiveConversation(conversationId);
+    (conversationId: string, messageId?: string) => {
+      setActiveConversation(
+        conversationId,
+        messageId ? { scrollToMessageId: messageId } : undefined
+      );
       setView("chat");
     },
-    [setActiveConversation]
+    [setActiveConversation, setView]
   );
 
   return (

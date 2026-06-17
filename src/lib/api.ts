@@ -2429,7 +2429,9 @@ export async function listConversationFiles(
  * the conversation it lives in (so the UI can show and link to its source).
  */
 export interface OwnerFile extends ConversationFile {
-  conversation: { id: string; title: string | null } | null;
+  conversation: { id: string; title: string | null; type: string } | null;
+  /** Set when the file was produced as part of a task (message.task_id). */
+  task: { id: string; title: string } | null;
 }
 
 /**
@@ -2448,6 +2450,22 @@ export async function listOwnerFiles(
 
   const { files } = await request<{ files: OwnerFile[] }>(`/api/files${qs}`);
   return files;
+}
+
+/** Forward (copy) a file into another conversation the caller belongs to. */
+export async function forwardFile(
+  attachmentId: string,
+  conversationId: string
+): Promise<void> {
+  await request(`/api/files/${attachmentId}/forward`, {
+    method: "POST",
+    body: JSON.stringify({ conversationId }),
+  });
+}
+
+/** Delete a file the caller owns — removes it from every list + storage. */
+export async function deleteOwnerFile(attachmentId: string): Promise<void> {
+  await request(`/api/files/${attachmentId}`, { method: "DELETE" });
 }
 
 export type DisplayType = "row" | "chip" | "highlight" | "body" | "change" | "sparkline";

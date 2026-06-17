@@ -81,6 +81,26 @@ export function formatClockTime(iso: string | undefined): string {
   });
 }
 
+/**
+ * Absolute date + time, e.g. "Jun 14, 2026, 3:42 PM". Used where the exact
+ * moment matters (the Files view "Added" column) rather than a relative or
+ * day-only label — so an old file shows the time it landed, not just the day.
+ * The year is dropped for the current year to keep it compact.
+ */
+export function formatExactDateTime(iso: string | undefined): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const sameYear = d.getFullYear() === new Date().getFullYear();
+  return d.toLocaleString(undefined, {
+    month: "short",
+    day: "numeric",
+    ...(sameYear ? {} : { year: "numeric" }),
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
 /** Two-letter initials from a display name — "James Ricker" → "JR". */
 export function getInitials(name: string | undefined): string {
   if (!name) return "?";

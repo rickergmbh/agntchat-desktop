@@ -102,6 +102,10 @@ interface ChatState {
   // Session
   activeConversationId: string | null;
   unreadCounts: Record<string, number>;
+  /** When set (via setActiveConversation with a target), ChatThread scrolls to
+   *  and highlights this message once it's loaded, then clears it. Drives
+   *  deep-links from the Files view ("jump to where this file was added"). */
+  scrollTargetMessageId: string | null;
 
   // Actions — conversations
   fetchConversations: () => Promise<void>;
@@ -151,7 +155,13 @@ interface ChatState {
   firstUnreadIds: Record<string, string | undefined>;
 
   // Actions — session
-  setActiveConversation: (id: string | null) => void;
+  setActiveConversation: (
+    id: string | null,
+    opts?: { scrollToMessageId?: string }
+  ) => void;
+  /** Clear the pending scroll target once ChatThread has handled (or given up
+   *  on) it, so re-opening the same conversation doesn't re-trigger a jump. */
+  clearScrollTarget: () => void;
   fetchUnreadCounts: () => Promise<void>;
   incrementUnread: (conversationId: string) => void;
 
@@ -174,6 +184,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
   firstUnreadIds: {},
   activeConversationId: null,
   unreadCounts: {},
+  scrollTargetMessageId: null,
 
   fetchConversations: async () => {
     set({ conversationsLoading: true });
@@ -584,7 +595,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
     set((s) => ({ drafts: { ...s.drafts, [conversationId]: text } }));
   },
 
-  setActiveConversation: (id) => {
+  setActiveConversation: (id, opts) => {
     const prev = get().activeConversationId;
     if (prev && prev !== id) {
       ws.leaveConversation(prev);
@@ -616,6 +627,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
         activeConversationId: id,
         unreadCounts: id ? { ...s.unreadCounts, [id]: 0 } : s.unreadCounts,
         firstUnreadIds,
+        scrollTargetMessageId: opts?.scrollToMessageId ?? null,
       };
     });
     if (id) {
@@ -626,6 +638,10 @@ export const useChatStore = create<ChatState>((set, get) => ({
         );
       }
     }
+  },
+
+  clearScrollTarget: () => {
+    if (get().scrollTargetMessageId !== null) set({ scrollTargetMessageId: null });
   },
 
   clearChatLocal: (conversationId) => {
