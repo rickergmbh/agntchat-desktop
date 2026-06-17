@@ -16,6 +16,7 @@ import {
   RotateCcw,
   RotateCw,
   Search,
+  Server as ServerIcon,
   ShieldCheck,
   ShieldHalf,
   Trash2,
@@ -74,7 +75,6 @@ export function PlatformView() {
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="hosts">Hosts</TabsTrigger>
           <TabsTrigger value="users">Users</TabsTrigger>
-          <TabsTrigger value="provisioning">Provisioning</TabsTrigger>
         </TabsList>
 
         <div className="flex-1 overflow-y-auto px-6 py-4">
@@ -82,13 +82,15 @@ export function PlatformView() {
             <OverviewTab />
           </TabsContent>
           <TabsContent value="hosts">
-            <HostsTab onGoProvisioning={() => setTab("provisioning")} />
+            {/* Hosts + provisioning live together: your managed hosts up top,
+                then the full Hostinger VM inventory and the "provision a new
+                host" form below. */}
+            <HostsTab />
+            <div className="my-6 border-t border-border" />
+            <ProvisioningTab />
           </TabsContent>
           <TabsContent value="users">
             <UsersTab />
-          </TabsContent>
-          <TabsContent value="provisioning">
-            <ProvisioningTab />
           </TabsContent>
         </div>
       </Tabs>
@@ -204,7 +206,7 @@ function OverviewTab() {
   );
 }
 
-function HostsTab({ onGoProvisioning }: { onGoProvisioning: () => void }) {
+function HostsTab() {
   // Operator's own org — backs the org-scoped management endpoints (add host,
   // Anthropic seat, provider VM picker). Cross-org hosts are still listed via
   // the admin endpoint; each row's SSH ops key on the host's own org id. Same
@@ -240,27 +242,29 @@ function HostsTab({ onGoProvisioning }: { onGoProvisioning: () => void }) {
 
   return (
     <div className="space-y-3">
-      <div className="flex flex-wrap items-center justify-end gap-2">
-        <Button variant="outline" size="sm" onClick={() => void refresh()}>
-          <RefreshCw className="h-3.5 w-3.5" />
-          Refresh
-        </Button>
-        {operatorOrgId && (
-          <Button variant="outline" size="sm" onClick={() => setAnthropicOpen(true)}>
-            <ShieldCheck className="h-3.5 w-3.5 text-muted-foreground" />
-            Connect Anthropic
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex items-center gap-2 text-sm font-medium">
+          <ServerIcon className="h-4 w-4" /> Managed hosts
+          {!loading && <span className="text-xs text-muted-foreground">({hosts.length})</span>}
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => void refresh()}>
+            <RefreshCw className="h-3.5 w-3.5" />
+            Refresh
           </Button>
-        )}
-        <Button variant="outline" size="sm" onClick={onGoProvisioning}>
-          <Cloud className="h-3.5 w-3.5" />
-          Spin up VM
-        </Button>
-        {operatorOrgId && (
-          <Button size="sm" onClick={() => setConnectOpen(true)}>
-            <Plus className="h-3.5 w-3.5" />
-            Add host
-          </Button>
-        )}
+          {operatorOrgId && (
+            <Button variant="outline" size="sm" onClick={() => setAnthropicOpen(true)}>
+              <ShieldCheck className="h-3.5 w-3.5 text-muted-foreground" />
+              Connect Anthropic
+            </Button>
+          )}
+          {operatorOrgId && (
+            <Button size="sm" onClick={() => setConnectOpen(true)}>
+              <Plus className="h-3.5 w-3.5" />
+              Add host
+            </Button>
+          )}
+        </div>
       </div>
 
       {error && <ErrorBox message={error} />}
