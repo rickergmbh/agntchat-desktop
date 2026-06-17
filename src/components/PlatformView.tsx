@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Activity,
   AlertCircle,
@@ -229,8 +229,14 @@ function HostsTab() {
   const [connectVmId, setConnectVmId] = useState<string | undefined>(undefined);
   const [anthropicOpen, setAnthropicOpen] = useState(false);
 
+  // Only show the full-page "Loading…" gate on the very first load. Later
+  // refreshes (triggered by host/agent actions) must NOT swap the list out for
+  // a spinner — that unmounts any expanded host row and reads as the tab
+  // "refreshing" out from under the user mid-action.
+  const loadedOnce = useRef(false);
+
   const refresh = useCallback(async () => {
-    setLoading(true);
+    if (!loadedOnce.current) setLoading(true);
     const [hostsRes, vmsRes] = await Promise.allSettled([
       api.listAdminHosts(),
       api.adminListProviderVms(),
@@ -257,6 +263,7 @@ function HostsTab() {
       );
     }
 
+    loadedOnce.current = true;
     setLoading(false);
   }, []);
 
@@ -836,6 +843,49 @@ function HostResidents({
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [bulkBusy, setBulkBusy] = useState(false);
   const [ownerFilter, setOwnerFilter] = useState<string>(""); // "" = all owners
+  // Agents we just asked the host to restart. Bridges respawn asynchronously
+  // (and staggered), so we show a "restarting" pill on each until the host's
+  // heartbeat reports it running again — otherwise the action looks like a
+  // no-op. Cleared per-agent below as `running` flips true, with a safety net.
+  const [restarting, setRestarting] = useState<Set<string>>(new Set());
+
+  const markRestarting = (ids: string[]) =>
+    setRestarting((prev) => new Set([...prev, ...ids]));
+
+  const unmarkRestarting = (ids: string[]) =>
+    setRestarting((prev) => {
+      const next = new Set(prev);
+      ids.forEach((id) => next.delete(id));
+      return next;
+    });
+
+  // Clear the pill once the heartbeat shows the bridge back up.
+  useEffect(() => {
+    if (!detail || restarting.size === 0) return;
+    const running = new Set(detail.agents.filter((a) => a.running).map((a) => a.id));
+    setRestarting((prev) => {
+      let changed = false;
+      const next = new Set(prev);
+      for (const id of prev) if (running.has(id)) (next.delete(id), (changed = true));
+      return changed ? next : prev;
+    });
+  }, [detail, restarting.size]);
+
+  // While anything is restarting, re-poll host detail so the dots update
+  // without a manual Refresh; give up after ~3 min (a staggered fleet restart
+  // can take a while, and the recovery worker backstops anything still down).
+  useEffect(() => {
+    if (restarting.size === 0) return;
+    const poll = setInterval(() => void reload(), 12_000);
+    const giveUp = setTimeout(() => {
+      clearInterval(poll);
+      setRestarting(new Set());
+    }, 180_000);
+    return () => {
+      clearInterval(poll);
+      clearTimeout(giveUp);
+    };
+  }, [restarting.size, reload]);
 
   // Agents shown after the owner filter; selection/select-all operate on these.
   const visibleAgents = useMemo(
@@ -898,10 +948,15 @@ function HostResidents({
 
   const reset = async (agentId: string) => {
     setBusyAgent(agentId);
+    markRestarting([agentId]);
     try {
       const r = await api.resetAgent(agentId);
-      if (!r.reset) alert(`No remote reset: ${r.reason ?? "unavailable"}`);
+      if (!r.reset) {
+        unmarkRestarting([agentId]);
+        alert(`No remote reset: ${r.reason ?? "unavailable"}`);
+      }
     } catch (e) {
+      unmarkRestarting([agentId]);
       alert(e instanceof Error ? e.message : "Reset failed");
     } finally {
       setBusyAgent(null);
@@ -915,12 +970,17 @@ function HostResidents({
   const bulkReset = async (ids: string[]) => {
     if (ids.length === 0) return;
     setBulkBusy(true);
+    markRestarting(ids);
     try {
       await api.bulkResetAgents(ids);
       setSelected(new Set());
+      // Refresh residents so the "restarting" pills can clear as bridges come
+      // back; the poll above keeps them current. `onChanged` updates the parent
+      // host counts but no longer collapses the row (refresh is non-blocking now).
       await reload();
-      await onChanged();
+      void onChanged();
     } catch (e) {
+      unmarkRestarting(ids);
       alert(e instanceof Error ? e.message : "Bulk reset failed");
     } finally {
       setBulkBusy(false);
@@ -1079,14 +1139,26 @@ function HostResidents({
                           </td>
                           <td className="px-3 py-2">
                             <div className="flex items-center gap-1.5 font-medium">
-                              <span
-                                className={cn(
-                                  "h-1.5 w-1.5 rounded-full",
-                                  a.running ? "bg-success" : "bg-muted-foreground/40"
-                                )}
-                                title={a.running ? "running" : "not running"}
-                              />
+                              {restarting.has(a.id) && !a.running ? (
+                                <Loader2
+                                  className="h-3 w-3 animate-spin text-amber-500"
+                                  aria-label="restarting"
+                                />
+                              ) : (
+                                <span
+                                  className={cn(
+                                    "h-1.5 w-1.5 rounded-full",
+                                    a.running ? "bg-success" : "bg-muted-foreground/40"
+                                  )}
+                                  title={a.running ? "running" : "not running"}
+                                />
+                              )}
                               {a.displayName}
+                              {restarting.has(a.id) && !a.running && (
+                                <span className="text-xs font-normal text-amber-500">
+                                  restarting…
+                                </span>
+                              )}
                             </div>
                           </td>
                           <td className="px-3 py-2 text-xs text-muted-foreground">

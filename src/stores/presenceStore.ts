@@ -48,9 +48,10 @@ interface PresenceState {
 }
 
 // How long a "Bringing online…" spinner persists if the agent never reports
-// online (e.g. its host is down). Generous — a cold bridge respawn + reconnect
-// can take a while — but bounded so the row doesn't spin forever.
-const WAKING_TIMEOUT_MS = 60_000;
+// online (e.g. its host is down). Generous — a bulk "bring online" restarts a
+// host's bridges staggered (~5s apart) so a large fleet's later agents respawn
+// well after the click — but bounded so the row doesn't spin forever.
+const WAKING_TIMEOUT_MS = 150_000;
 
 export const usePresenceStore = create<PresenceState>((set) => {
   // Per-key timer (keyed "convId:participantId") so we can cancel/refresh
