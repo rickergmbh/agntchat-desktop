@@ -5,7 +5,6 @@ import {
   User,
   Zap,
   FileText,
-  LayoutDashboard,
   Server,
   ShieldHalf,
   Users,
@@ -275,12 +274,6 @@ function LeftRail({
           label="Templates"
           active={view === "templates"}
           onClick={() => onChange("templates")}
-        />
-        <RailButton
-          icon={LayoutDashboard}
-          label="Canvas"
-          active={view === "canvas"}
-          onClick={() => onChange("canvas")}
         />
         <RailButton
           icon={Server}

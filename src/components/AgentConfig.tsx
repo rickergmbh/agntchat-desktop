@@ -80,7 +80,6 @@ import {
   RefreshCw,
   HelpCircle,
   LayoutTemplate,
-  Palette,
   Timer,
   Trash2,
   AlertTriangle,
@@ -112,7 +111,6 @@ import {
 } from "@/components/ui/dialog";
 import { AgentSkills } from "./AgentSkills";
 import { AgentTemplates } from "./AgentTemplates";
-import { AgentCanvas } from "./AgentCanvas";
 import { AgentRoutines } from "./AgentRoutines";
 import { AvatarCropDialog } from "./AvatarCropDialog";
 
@@ -338,7 +336,6 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
         { value: "skills", label: "Skills", icon: Sparkles },
         { value: "templates", label: "Templates", icon: LayoutTemplate },
         { value: "routines", label: "Routines", icon: Timer },
-        { value: "canvas", label: "Canvas", icon: Palette },
       ],
     },
     {
@@ -1238,12 +1235,6 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
         {activeSection === "routines" && (
           <div className="flex-1 overflow-y-auto">
             <AgentRoutines agentId={agent.id} />
-          </div>
-        )}
-
-        {activeSection === "canvas" && (
-          <div className="flex-1 overflow-y-auto">
-            <AgentCanvas managed={managed} />
           </div>
         )}
 
