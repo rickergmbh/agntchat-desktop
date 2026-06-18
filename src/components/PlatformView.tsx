@@ -1957,7 +1957,26 @@ function AllocateDialog({
     setBusy(true);
     setError(null);
     try {
-      await api.allocateUserToHost(user.id, hostId);
+      const res = await api.allocateUserToHost(user.id, hostId);
+      if (res.total === 0) {
+        setError("This user has no active agents to allocate.");
+        return;
+      }
+      if (res.allocated === 0) {
+        const why = res.failed[0]?.reason;
+        setError(
+          why
+            ? `Couldn't allocate any agents: ${why}`
+            : "Couldn't allocate any agents."
+        );
+        return;
+      }
+      if (res.failed.length > 0) {
+        setError(
+          `Allocated ${res.allocated} of ${res.total} — ${res.failed.length} failed (${res.failed[0].reason}).`
+        );
+        return;
+      }
       onDone();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Allocation failed");

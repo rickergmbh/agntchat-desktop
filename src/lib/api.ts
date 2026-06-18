@@ -907,10 +907,17 @@ export async function getAdminUser(userId: string): Promise<AdminUserDetail> {
   return res.user;
 }
 
+export interface AllocationResult {
+  allocated: number;
+  total: number;
+  /** Agents that couldn't be pinned, with a short reason each. */
+  failed: { agent_id: string; name: string; reason: string }[];
+}
+
 export async function allocateUserToHost(
   userId: string,
   hostId: string
-): Promise<{ allocated: number; total: number }> {
+): Promise<AllocationResult> {
   return request(`/api/admin/users/${userId}/allocate`, {
     method: "POST",
     body: JSON.stringify({ hostId }),
