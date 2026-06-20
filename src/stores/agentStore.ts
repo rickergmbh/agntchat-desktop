@@ -1017,7 +1017,17 @@ export const useAgentStore = create<AgentState>((set, get) => ({
   reconcileStaleExecutors: async () => {
     const managed = Object.values(get().agents);
     const stale = managed.filter(
-      (m) => m.agent.online === true && m.processStatus === "stopped"
+      (m) =>
+        m.agent.online === true &&
+        m.processStatus === "stopped" &&
+        // Only reconcile agents this device is actually responsible for
+        // running. An org_host agent's bridge lives on a remote Linux VM,
+        // not here — its processStatus is *always* "stopped" locally (see
+        // startAgent's org_host early-return). Marking it offline would be
+        // wrong: it stomps a healthy VM-hosted agent, causing the mobile
+        // app to flicker the agent offline → back online (next VM heartbeat
+        // re-registers the executor) on every desktop launch.
+        m.agent.runtime !== "org_host"
     );
     if (stale.length === 0) return;
     console.log(
