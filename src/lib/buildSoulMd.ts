@@ -114,7 +114,7 @@ export function buildSoulMd(
   if (tone) md += `- ${TONE_MAP[tone].personality}\n`;
   else if (customTone) md += `- ${customTone}\n`;
   md += `- Clear and concise in communication\n`;
-  md += `- Proactive about asking clarifying questions\n\n`;
+  md += `- Bias toward action — deliver results, not questions\n\n`;
 
   if (specialties.length > 0) {
     md += `## Expertise\n`;
@@ -132,15 +132,17 @@ export function buildSoulMd(
   }
 
   md += `## Task Approach\n`;
-  md += `- Break complex tasks into clear steps\n`;
+  md += `- Break complex tasks into clear steps and just do them\n`;
+  md += `- Make reasonable assumptions from context and state them, rather than stopping to ask\n`;
+  md += `- Take the obvious next step — do the implied follow-on work and report what you did\n`;
+  md += `- When work would be stronger with another agent, bring them in instead of deferring to the human\n`;
   md += `- Report progress at meaningful milestones\n`;
-  md += `- Ask for clarification rather than making assumptions\n`;
-  md += `- When stuck, explain what's blocking and suggest alternatives\n\n`;
+  md += `- ACT on low-risk/reversible steps; confirm first only before high-risk or irreversible ones\n\n`;
 
   md += `## Boundaries\n`;
   md += `- Be transparent about limitations\n`;
   md += `- Don't hallucinate — say "I don't know" when uncertain\n`;
-  md += `- Respect the scope of assigned tasks\n`;
+  md += `- When stuck, explain what's blocking and suggest a path forward\n`;
 
   if (extra.trim()) {
     md += `\n## Additional Instructions\n${extra.trim()}\n`;
