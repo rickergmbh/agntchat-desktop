@@ -150,6 +150,10 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
     refreshComputerUseDepsStatus,
     installComputerUseDeps,
   } = useAgentStore();
+  // Last backend-sync failure for this agent. The connection/model is only
+  // honored at spawn time if it persisted server-side, so a failed sync is a
+  // silent footgun (the original Bedrock bug) — show it inline.
+  const configSyncError = useAgentStore((s) => s.configSyncError[managed.agent.id] ?? null);
   const [showApiKey, setShowApiKey] = useState(false);
   const [showLlmKey, setShowLlmKey] = useState(false);
   const [regenerating, setRegenerating] = useState(false);
@@ -603,6 +607,13 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                           className="text-xs"
                         />
                       </div>
+                    )}
+                    {configSyncError && (
+                      <p className="text-[11px] text-destructive">
+                        Couldn't save this to the server ({configSyncError}). The
+                        connection takes effect only once saved — the agent will
+                        keep using its last saved connection until this succeeds.
+                      </p>
                     )}
                   </div>
                 )}

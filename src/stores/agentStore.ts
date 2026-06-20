@@ -212,6 +212,13 @@ interface AgentState {
   selectedAgentId: string | null;
   loading: boolean;
   error: string | null;
+  /** Per-agent error from the last model_config sync to the backend, keyed by
+   *  agentId. The connection/model lives in two places that must agree — the
+   *  local config drives the spawn env, the backend-persisted config drives the
+   *  resolved model id. A silently-dropped sync split those (the original
+   *  Bedrock bug), so surface failures instead of swallowing them. `null` =
+   *  last sync succeeded (or none attempted). */
+  configSyncError: Record<string, string | null>;
   /** Machine-wide install status of pyobjc + Pillow. */
   computerUseDeps: ComputerUseDepsStatus;
 
@@ -334,6 +341,7 @@ export const useAgentStore = create<AgentState>((set, get) => ({
   selectedAgentId: null,
   loading: false,
   error: null,
+  configSyncError: {},
   computerUseDeps: { state: "unknown" },
 
   refreshComputerUseDepsStatus: async () => {
@@ -834,9 +842,23 @@ export const useAgentStore = create<AgentState>((set, get) => ({
       if ("vertexRegion" in partial) mcPatch.vertex_region = partial.vertexRegion;
       if ("vertexProject" in partial) mcPatch.vertex_project = partial.vertexProject;
       if (Object.keys(mcPatch).length > 0) {
-        api.updateModelConfig(id, mcPatch).catch((err) =>
-          console.warn(`[agentStore] Failed to sync model_config to backend:`, err)
-        );
+        // Persist to the backend and TRACK the outcome. This sync is what
+        // keeps the spawn env (local config) and the resolved model id
+        // (backend config) in agreement — a silent failure here is exactly
+        // what produced the Bedrock split-brain, so record it for the UI to
+        // surface rather than swallowing it in a console.warn.
+        api
+          .updateModelConfig(id, mcPatch)
+          .then(() => {
+            if (get().configSyncError[id]) {
+              set({ configSyncError: { ...get().configSyncError, [id]: null } });
+            }
+          })
+          .catch((err) => {
+            const msg = err instanceof Error ? err.message : String(err);
+            console.warn(`[agentStore] Failed to sync model_config to backend:`, err);
+            set({ configSyncError: { ...get().configSyncError, [id]: msg } });
+          });
       }
     }
   },
@@ -906,9 +928,12 @@ export const useAgentStore = create<AgentState>((set, get) => ({
     if (selectedEffort) modelConfigPatch.effort = selectedEffort;
     if (selectedKeyId) modelConfigPatch.llm_api_key_id = selectedKeyId;
     if (Object.keys(modelConfigPatch).length > 0) {
-      api.updateModelConfig(result.agent.id, modelConfigPatch).catch((err) =>
-        console.warn(`[agentStore] Failed to sync model_config on create:`, err)
-      );
+      const newId = result.agent.id;
+      api.updateModelConfig(newId, modelConfigPatch).catch((err) => {
+        const msg = err instanceof Error ? err.message : String(err);
+        console.warn(`[agentStore] Failed to sync model_config on create:`, err);
+        set({ configSyncError: { ...get().configSyncError, [newId]: msg } });
+      });
     }
 
     return result.agent.id;
