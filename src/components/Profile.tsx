@@ -183,10 +183,17 @@ export function Profile({ onClose }: { onClose: () => void }) {
 
   // ---- Profile editing state ----
   const storedDescription = participant?.description ?? "";
+  const storedFirstName = participant?.firstName ?? "";
+  const storedLastName = participant?.lastName ?? "";
+  // The raw Display Name editor is behind the `display_name_field` runtime
+  // flag; by default users edit first/last name, which derives display_name.
+  const displayNameFieldEnabled = participant?.features?.display_name_field === true;
 
   const [displayName, setDisplayName] = useState(
     participant?.displayName ?? ""
   );
+  const [firstName, setFirstName] = useState(storedFirstName);
+  const [lastName, setLastName] = useState(storedLastName);
   const [description, setDescription] = useState(storedDescription);
   const [savingProfile, setSavingProfile] = useState(false);
   const [profileError, setProfileError] = useState<string | null>(null);
@@ -275,6 +282,14 @@ export function Profile({ onClose }: { onClose: () => void }) {
   }, [participant?.displayName]);
 
   useEffect(() => {
+    setFirstName(storedFirstName);
+  }, [storedFirstName]);
+
+  useEffect(() => {
+    setLastName(storedLastName);
+  }, [storedLastName]);
+
+  useEffect(() => {
     setDescription(storedDescription);
   }, [storedDescription]);
 
@@ -290,16 +305,24 @@ export function Profile({ onClose }: { onClose: () => void }) {
 
   const profileDirty =
     !!participant &&
-    displayName.trim() !== "" &&
-    (displayName.trim() !== participant.displayName ||
-      description.trim() !== storedDescription);
+    (firstName.trim() !== storedFirstName ||
+      lastName.trim() !== storedLastName ||
+      description.trim() !== storedDescription ||
+      (displayNameFieldEnabled &&
+        displayName.trim() !== "" &&
+        displayName.trim() !== participant.displayName));
 
   const handleSaveProfile = async () => {
     if (!participant || !profileDirty) return;
 
     const body: Parameters<typeof api.updateProfile>[0] = {};
-    const trimmedName = displayName.trim();
-    if (trimmedName !== participant.displayName) body.displayName = trimmedName;
+    if (firstName.trim() !== storedFirstName) body.firstName = firstName.trim();
+    if (lastName.trim() !== storedLastName) body.lastName = lastName.trim();
+    // Only send displayName when the raw editor is shown (flag on).
+    if (displayNameFieldEnabled) {
+      const trimmedName = displayName.trim();
+      if (trimmedName && trimmedName !== participant.displayName) body.displayName = trimmedName;
+    }
     // Description sends even when empty — clearing is a valid edit.
     if (description.trim() !== storedDescription) body.description = description.trim();
 
@@ -630,22 +653,61 @@ export function Profile({ onClose }: { onClose: () => void }) {
               <p className="text-xs text-destructive">{avatarError}</p>
             )}
 
-            {/* Display name */}
-            <div className="space-y-1.5">
-              <Label className="text-xs">Display Name</Label>
-              <Input
-                value={displayName}
-                onChange={(e) => {
-                  setDisplayName(e.target.value);
-                  setProfileError(null);
-                  setProfileSaved(false);
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && profileDirty) handleSaveProfile();
-                }}
-                placeholder="Your display name"
-              />
+            {/* First / Last name */}
+            <div className="flex gap-3">
+              <div className="flex-1 space-y-1.5">
+                <Label className="text-xs">First Name</Label>
+                <Input
+                  value={firstName}
+                  maxLength={50}
+                  onChange={(e) => {
+                    setFirstName(e.target.value);
+                    setProfileError(null);
+                    setProfileSaved(false);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && profileDirty) handleSaveProfile();
+                  }}
+                  placeholder="First name"
+                />
+              </div>
+              <div className="flex-1 space-y-1.5">
+                <Label className="text-xs">Last Name</Label>
+                <Input
+                  value={lastName}
+                  maxLength={50}
+                  onChange={(e) => {
+                    setLastName(e.target.value);
+                    setProfileError(null);
+                    setProfileSaved(false);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && profileDirty) handleSaveProfile();
+                  }}
+                  placeholder="Last name"
+                />
+              </div>
             </div>
+
+            {/* Raw Display Name — behind the `display_name_field` runtime flag.
+                Otherwise display name is derived from first + last on save. */}
+            {displayNameFieldEnabled && (
+              <div className="space-y-1.5">
+                <Label className="text-xs">Display Name</Label>
+                <Input
+                  value={displayName}
+                  onChange={(e) => {
+                    setDisplayName(e.target.value);
+                    setProfileError(null);
+                    setProfileSaved(false);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && profileDirty) handleSaveProfile();
+                  }}
+                  placeholder="Your display name"
+                />
+              </div>
+            )}
 
             {/* Description — longer bio */}
             <div className="space-y-1.5">

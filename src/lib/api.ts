@@ -143,6 +143,8 @@ export async function getProfile(): Promise<Participant> {
 // server-side); `description` is the longer free-form bio.
 export async function updateProfile(data: {
   displayName?: string;
+  firstName?: string;
+  lastName?: string;
   description?: string;
   tagline?: string;
   avatarUrl?: string;
@@ -1961,6 +1963,10 @@ export type UserConnectionStatus = "none" | "pending" | "accepted" | "rejected" 
 export interface Participant {
   id: string;
   displayName: string;
+  /** Human first/last name (self-view only). display_name is derived from
+   *  these on save and stays the canonical field everything else reads. */
+  firstName?: string | null;
+  lastName?: string | null;
   email?: string;
   maskedEmail?: string;
   connectionId?: string;
