@@ -76,6 +76,7 @@ export function PlatformView() {
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="hosts">Hosts</TabsTrigger>
           <TabsTrigger value="users">Users</TabsTrigger>
+          <TabsTrigger value="features">Feature Flags</TabsTrigger>
         </TabsList>
 
         <div className="flex-1 overflow-y-auto px-6 py-4">
@@ -92,6 +93,9 @@ export function PlatformView() {
           </TabsContent>
           <TabsContent value="users">
             <UsersTab />
+          </TabsContent>
+          <TabsContent value="features">
+            <FeatureFlagsTab />
           </TabsContent>
         </div>
       </Tabs>
@@ -1476,6 +1480,232 @@ function UsersTab() {
         onOpenChange={(o) => !o && setViewing(null)}
         onChanged={() => void refresh(search)}
       />
+    </div>
+  );
+}
+
+/**
+ * Runtime feature flags: a global on/off per capability plus a per-user
+ * allowlist (early-access cohort) for shipping a feature dark and lighting it
+ * up for a select few. Backed by `/api/admin/feature-flags`; the backend
+ * enforces each gated route regardless of what the UI shows.
+ */
+function FeatureFlagsTab() {
+  const [flags, setFlags] = useState<api.FeatureFlag[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const refresh = useCallback(async () => {
+    setLoading(true);
+    try {
+      setFlags(await api.listFeatureFlags());
+      setError(null);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Failed to load feature flags");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void refresh();
+  }, [refresh]);
+
+  // Replace one flag in place after a mutation returns the fresh row.
+  const onFlagChanged = useCallback((flag: api.FeatureFlag) => {
+    setFlags((prev) => prev.map((f) => (f.key === flag.key ? flag : f)));
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center gap-2 py-8 text-sm text-muted-foreground">
+        <Loader2 className="h-4 w-4 animate-spin" /> Loading…
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      {error && <ErrorBox message={error} />}
+      <p className="mb-4 max-w-2xl text-sm text-muted-foreground">
+        Toggle a capability platform-wide, or enable it for a select few while it
+        stays off for everyone else. Changes take effect immediately — no
+        redeploy.
+      </p>
+      <div className="space-y-3">
+        {flags.map((flag) => (
+          <FeatureFlagCard key={flag.key} flag={flag} onChanged={onFlagChanged} setError={setError} />
+        ))}
+        {flags.length === 0 && (
+          <p className="py-8 text-sm text-muted-foreground">No feature flags defined.</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function FeatureFlagCard({
+  flag,
+  onChanged,
+  setError,
+}: {
+  flag: api.FeatureFlag;
+  onChanged: (flag: api.FeatureFlag) => void;
+  setError: (msg: string | null) => void;
+}) {
+  const [busy, setBusy] = useState(false);
+  const [search, setSearch] = useState("");
+  const [results, setResults] = useState<api.AdminUser[]>([]);
+  const [searching, setSearching] = useState(false);
+  const searchTimer = useRef<ReturnType<typeof setTimeout>>(null);
+
+  const run = useCallback(
+    async (fn: () => Promise<api.FeatureFlag>) => {
+      setBusy(true);
+      try {
+        onChanged(await fn());
+        setError(null);
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Update failed");
+      } finally {
+        setBusy(false);
+      }
+    },
+    [onChanged, setError]
+  );
+
+  // Debounced user search for the allowlist picker (reuses the admin user list).
+  useEffect(() => {
+    if (searchTimer.current) clearTimeout(searchTimer.current);
+    if (search.trim().length < 2) {
+      setResults([]);
+      setSearching(false);
+      return;
+    }
+    setSearching(true);
+    searchTimer.current = setTimeout(async () => {
+      try {
+        const users = await api.listAdminUsers(search.trim());
+        // Drop anyone already allowlisted.
+        setResults(users.filter((u) => !flag.allowedParticipantIds.includes(u.id)));
+      } catch {
+        setResults([]);
+      } finally {
+        setSearching(false);
+      }
+    }, 300);
+    return () => {
+      if (searchTimer.current) clearTimeout(searchTimer.current);
+    };
+  }, [search, flag.allowedParticipantIds]);
+
+  return (
+    <div className="rounded-lg border border-border p-4">
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="font-medium">{flag.key}</span>
+            <Badge variant={flag.enabled ? "default" : "secondary"}>
+              {flag.enabled ? "On for everyone" : "Off"}
+            </Badge>
+          </div>
+          {flag.description && (
+            <p className="mt-1 text-xs text-muted-foreground">{flag.description}</p>
+          )}
+        </div>
+        <div className="flex items-center gap-2">
+          {busy && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
+          <Switch
+            checked={flag.enabled}
+            disabled={busy}
+            onCheckedChange={(v) => void run(() => api.setFeatureFlagEnabled(flag.key, v))}
+          />
+        </div>
+      </div>
+
+      {/* Per-user allowlist — early-access cohort, used when the global flag is
+          off. Members see the feature even while everyone else doesn't. */}
+      <div className="mt-4 border-t border-border pt-3">
+        <Label className="text-xs text-muted-foreground">
+          Early access {flag.enabled && "(superseded while On for everyone)"}
+        </Label>
+
+        {flag.allowed.length > 0 ? (
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {flag.allowed.map((u) => (
+              <span
+                key={u.id}
+                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/40 py-0.5 pl-1 pr-1.5 text-xs"
+              >
+                <Avatar className="h-4 w-4">
+                  {u.avatarUrl ? (
+                    <AvatarImage src={u.avatarUrl} alt={u.displayName} displaySize={16} />
+                  ) : null}
+                  <AvatarFallback className="text-[8px]">
+                    {initials(u.displayName, u.email)}
+                  </AvatarFallback>
+                </Avatar>
+                <span className="max-w-[140px] truncate">{u.displayName}</span>
+                <button
+                  type="button"
+                  disabled={busy}
+                  onClick={() => void run(() => api.revokeFeatureFlag(flag.key, u.id))}
+                  className="text-muted-foreground hover:text-destructive"
+                  aria-label={`Remove ${u.displayName}`}
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </span>
+            ))}
+          </div>
+        ) : (
+          <p className="mt-1 text-xs text-muted-foreground">No users in early access.</p>
+        )}
+
+        <div className="relative mt-2 max-w-sm">
+          <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Add a user by name or email…"
+            className="pl-8"
+          />
+          {(searching || results.length > 0) && search.trim().length >= 2 && (
+            <div className="absolute z-10 mt-1 w-full overflow-hidden rounded-md border border-border bg-popover shadow-md">
+              {searching ? (
+                <div className="px-3 py-2 text-xs text-muted-foreground">Searching…</div>
+              ) : (
+                results.slice(0, 6).map((u) => (
+                  <button
+                    type="button"
+                    key={u.id}
+                    disabled={busy}
+                    onClick={() => {
+                      setSearch("");
+                      setResults([]);
+                      void run(() => api.grantFeatureFlag(flag.key, u.id));
+                    }}
+                    className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-muted"
+                  >
+                    <Avatar className="h-6 w-6">
+                      {u.avatarUrl ? (
+                        <AvatarImage src={u.avatarUrl} alt={u.displayName} displaySize={24} />
+                      ) : null}
+                      <AvatarFallback className="text-[9px]">
+                        {initials(u.displayName, u.email)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="min-w-0">
+                      <div className="truncate">{u.displayName}</div>
+                      <div className="truncate text-xs text-muted-foreground">{u.email}</div>
+                    </div>
+                  </button>
+                ))
+              )}
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

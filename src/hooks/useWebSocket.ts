@@ -97,7 +97,9 @@ export function useWebSocket() {
         useChatStore.getState().fetchAgentConversations();
       }
       useChatStore.getState().fetchUnreadCounts();
-      useFriendStore.getState().fetchPendingCount();
+      if (useAuthStore.getState().participant?.features?.friends) {
+        useFriendStore.getState().fetchPendingCount();
+      }
       const activeId = useChatStore.getState().activeConversationId;
       if (activeId) useChatStore.getState().fetchMessages(activeId);
       syncAgents("reconnect");
@@ -117,7 +119,9 @@ export function useWebSocket() {
     useChatStore.getState().fetchConversations();
     useChatStore.getState().fetchUnreadCounts();
     useTaskStore.getState().fetchTasks();
-    useFriendStore.getState().fetchPendingCount();
+    if (useAuthStore.getState().participant?.features?.friends) {
+      useFriendStore.getState().fetchPendingCount();
+    }
     syncAgents("initial");
 
     return () => {

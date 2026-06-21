@@ -43,6 +43,8 @@ export function NewConversationDialog({ onClose }: Props) {
   const friendConnections = useFriendStore((s) => s.connections);
   const fetchFriendConnections = useFriendStore((s) => s.fetchConnections);
   const requestFriend = useFriendStore((s) => s.requestFriend);
+  // Friends (and human people-search) are behind a per-user runtime flag.
+  const friendsEnabled = useAuthStore((s) => s.participant?.features?.friends === true);
 
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -55,14 +57,14 @@ export function NewConversationDialog({ onClose }: Props) {
   const searchTimerRef = useRef<ReturnType<typeof setTimeout>>(null);
 
   useEffect(() => {
-    fetchFriendConnections();
-  }, [fetchFriendConnections]);
+    if (friendsEnabled) fetchFriendConnections();
+  }, [fetchFriendConnections, friendsEnabled]);
 
-  // Debounced people search
+  // Debounced people search (only when the friends feature is on for this user)
   useEffect(() => {
     if (searchTimerRef.current) clearTimeout(searchTimerRef.current);
 
-    if (search.length < 2) {
+    if (!friendsEnabled || search.length < 2) {
       setPeopleResults([]);
       setSearchingPeople(false);
       return;
@@ -84,7 +86,7 @@ export function NewConversationDialog({ onClose }: Props) {
     return () => {
       if (searchTimerRef.current) clearTimeout(searchTimerRef.current);
     };
-  }, [search]);
+  }, [search, friendsEnabled]);
 
   // Close on Escape
   useEffect(() => {

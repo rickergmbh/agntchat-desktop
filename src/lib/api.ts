@@ -887,6 +887,50 @@ export async function getAdminStats(): Promise<PlatformStats> {
   return res.stats;
 }
 
+// --- Feature flags (platform-admin) ---
+
+export interface FeatureFlag {
+  key: string;
+  enabled: boolean;
+  description?: string | null;
+  allowedParticipantIds: string[];
+  /** Hydrated allowlist members, for rendering names rather than uuids. */
+  allowed: { id: string; displayName: string; email?: string; avatarUrl?: string }[];
+  updatedAt?: string;
+}
+
+export async function listFeatureFlags(): Promise<FeatureFlag[]> {
+  const res = await request<{ flags: FeatureFlag[] }>("/api/admin/feature-flags");
+  return res.flags;
+}
+
+/** Flip a flag's global default. */
+export async function setFeatureFlagEnabled(key: string, enabled: boolean): Promise<FeatureFlag> {
+  const res = await request<{ flag: FeatureFlag }>(`/api/admin/feature-flags/${key}`, {
+    method: "PATCH",
+    body: JSON.stringify({ enabled }),
+  });
+  return res.flag;
+}
+
+/** Add a user to a flag's per-user allowlist. */
+export async function grantFeatureFlag(key: string, participantId: string): Promise<FeatureFlag> {
+  const res = await request<{ flag: FeatureFlag }>(`/api/admin/feature-flags/${key}`, {
+    method: "PATCH",
+    body: JSON.stringify({ grant: participantId }),
+  });
+  return res.flag;
+}
+
+/** Remove a user from a flag's per-user allowlist. */
+export async function revokeFeatureFlag(key: string, participantId: string): Promise<FeatureFlag> {
+  const res = await request<{ flag: FeatureFlag }>(`/api/admin/feature-flags/${key}`, {
+    method: "PATCH",
+    body: JSON.stringify({ revoke: participantId }),
+  });
+  return res.flag;
+}
+
 export async function listAdminHosts(): Promise<
   Array<OrganizationHost & { orgName?: string | null }>
 > {
@@ -1941,6 +1985,10 @@ export interface Participant {
   /** True when this human is a platform super-admin (env allowlist). Gates the
    *  desktop operator console; the backend enforces every /api/admin call. */
   platformAdmin?: boolean;
+  /** Runtime feature flags resolved for this user (`{ friends: bool, … }`).
+   *  Clients gate UI on these; the backend still enforces each gated route.
+   *  Toggle from the Platform console. */
+  features?: Record<string, boolean>;
   /** Stripe Billing subscription summary, or null when not subscribed. */
   subscription?: { plan?: string; status?: string } | null;
   /** For paying users: the host new agents should default to running on

@@ -101,7 +101,10 @@ export function AppShell() {
         ) : view === "tasks" ? (
           <TasksView onOpenConversation={handleOpenConversation} />
         ) : view === "friends" ? (
-          <FriendsView />
+          // Friends is behind a runtime feature flag (resolved per-user on /me).
+          // A stale persisted "friends" view falls back to the dashboard when
+          // the flag is off for this user.
+          participant?.features?.friends ? <FriendsView /> : <Dashboard />
         ) : view === "files" ? (
           <FilesView onOpenConversation={handleOpenConversation} />
         ) : view === "templates" ? (
@@ -182,6 +185,11 @@ function LeftRail({
   // Friends rail slot never flips to "Members".
   const isWorkspaceMode =
     WORKSPACES_ENABLED && activeWorkspace !== null && !activeWorkspace.isPersonal;
+  // Friends is behind a per-user runtime flag (resolved on /me). The rail slot
+  // still shows in workspace mode, where it's the "Members" view (org-scoped,
+  // not the personal friend graph).
+  const friendsEnabled = participant?.features?.friends === true;
+  const showFriendsRail = friendsEnabled || isWorkspaceMode;
 
   // Agent online/total — "running" is the only fully-up state; "starting"
   // and "stalled" keep a process alive but it's not actually serving, so
@@ -257,13 +265,15 @@ function LeftRail({
           badge={activeTaskCount > 0 ? activeTaskCount : undefined}
           badgeColor="destructive"
         />
-        <RailButton
-          icon={Users}
-          label={isWorkspaceMode ? "Members" : "Friends"}
-          active={view === "friends"}
-          onClick={() => onChange("friends")}
-          badge={!isWorkspaceMode && pendingFriends > 0 ? pendingFriends : undefined}
-        />
+        {showFriendsRail && (
+          <RailButton
+            icon={Users}
+            label={isWorkspaceMode ? "Members" : "Friends"}
+            active={view === "friends"}
+            onClick={() => onChange("friends")}
+            badge={!isWorkspaceMode && pendingFriends > 0 ? pendingFriends : undefined}
+          />
+        )}
         <RailButton
           icon={Bot}
           label={
