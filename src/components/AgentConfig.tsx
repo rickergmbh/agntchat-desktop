@@ -150,6 +150,9 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
     refreshComputerUseDepsStatus,
     installComputerUseDeps,
   } = useAgentStore();
+  // Share Agent + Publish to Directory are behind the `agent_sharing` runtime
+  // flag (resolved per-user on /me). Hide the whole Sharing group when off.
+  const sharingEnabled = useAuthStore((s) => s.participant?.features?.agent_sharing === true);
   // Last backend-sync failure for this agent. The connection/model is only
   // honored at spawn time if it persisted server-side, so a failed sync is a
   // silent footgun (the original Bedrock bug) — show it inline.
@@ -345,13 +348,18 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
         { value: "routines", label: "Routines", icon: Timer },
       ],
     },
-    {
-      name: "Sharing",
-      sections: [
-        { value: "share", label: "Share Agent", icon: Share2 },
-        { value: "publish", label: "Publish to Directory", icon: Globe2 },
-      ],
-    },
+    // Sharing group gated behind the `agent_sharing` feature flag.
+    ...(sharingEnabled
+      ? [
+          {
+            name: "Sharing",
+            sections: [
+              { value: "share", label: "Share Agent", icon: Share2 },
+              { value: "publish", label: "Publish to Directory", icon: Globe2 },
+            ],
+          },
+        ]
+      : []),
     {
       name: "Operations",
       sections: [
@@ -1258,13 +1266,13 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
           </div>
         )}
 
-        {activeSection === "share" && (
+        {sharingEnabled && activeSection === "share" && (
           <div className="flex-1 overflow-y-auto p-5">
             <ShareSection agent={agent} />
           </div>
         )}
 
-        {activeSection === "publish" && (
+        {sharingEnabled && activeSection === "publish" && (
           <div className="flex-1 overflow-y-auto p-5">
             <PublishSection agent={agent} />
           </div>
