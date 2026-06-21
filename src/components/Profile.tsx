@@ -174,6 +174,12 @@ function saveCustomApis(apis: CustomApi[]) {
 export function Profile({ onClose }: { onClose: () => void }) {
   const { participant, logout } = useAuthStore();
   const [activeSection, setActiveSection] = useState<SectionValue>("profile");
+  // Friends is behind a per-user runtime flag (resolved on /me) — hide its
+  // sidebar section + content when off for this user.
+  const friendsEnabled = participant?.features?.friends === true;
+  const visibleSections = SECTIONS.filter(
+    (s) => s.value !== "friends" || friendsEnabled
+  );
 
   // ---- Profile editing state ----
   const storedTagline =
@@ -530,7 +536,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
 
           <Separator className="w-6 mb-1" />
 
-          {SECTIONS.map((section) => (
+          {visibleSections.map((section) => (
             <Tooltip key={section.value}>
               <TooltipTrigger
                 render={
@@ -735,7 +741,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
           </div>
         )}
 
-        {activeSection === "friends" && (
+        {friendsEnabled && activeSection === "friends" && (
           // FriendsView manages its own header/scroll — give it the full
           // section area (no p-5 wrapper like the other sections).
           <div className="flex flex-1 min-h-0 overflow-hidden">
