@@ -60,7 +60,6 @@ import { deviceTimezone, filterTimezones, formatTimezoneLabel } from "../lib/tim
 import { getInitials } from "../lib/utils";
 import { uploadAvatar } from "../lib/imageProcessor";
 import { FriendsView } from "./FriendsView";
-import { Textarea } from "@/components/ui/textarea";
 import { open as tauriOpen } from "@tauri-apps/plugin-shell";
 import { PROVIDERS } from "../lib/models";
 import { useLlmKeyStore, type LlmApiKey as LlmApiKeyEntry } from "../stores/llmKeyStore";
@@ -182,7 +181,6 @@ export function Profile({ onClose }: { onClose: () => void }) {
   );
 
   // ---- Profile editing state ----
-  const storedDescription = participant?.description ?? "";
   const storedFirstName = participant?.firstName ?? "";
   const storedLastName = participant?.lastName ?? "";
   // The raw Display Name editor is behind the `display_name_field` runtime
@@ -194,7 +192,6 @@ export function Profile({ onClose }: { onClose: () => void }) {
   );
   const [firstName, setFirstName] = useState(storedFirstName);
   const [lastName, setLastName] = useState(storedLastName);
-  const [description, setDescription] = useState(storedDescription);
   const [savingProfile, setSavingProfile] = useState(false);
   const [profileError, setProfileError] = useState<string | null>(null);
   const [profileSaved, setProfileSaved] = useState(false);
@@ -289,10 +286,6 @@ export function Profile({ onClose }: { onClose: () => void }) {
     setLastName(storedLastName);
   }, [storedLastName]);
 
-  useEffect(() => {
-    setDescription(storedDescription);
-  }, [storedDescription]);
-
   // ---- Handlers ----
 
   // PATCH /api/me returns the full participant_self payload — persist it the
@@ -307,7 +300,6 @@ export function Profile({ onClose }: { onClose: () => void }) {
     !!participant &&
     (firstName.trim() !== storedFirstName ||
       lastName.trim() !== storedLastName ||
-      description.trim() !== storedDescription ||
       (displayNameFieldEnabled &&
         displayName.trim() !== "" &&
         displayName.trim() !== participant.displayName));
@@ -323,8 +315,6 @@ export function Profile({ onClose }: { onClose: () => void }) {
       const trimmedName = displayName.trim();
       if (trimmedName && trimmedName !== participant.displayName) body.displayName = trimmedName;
     }
-    // Description sends even when empty — clearing is a valid edit.
-    if (description.trim() !== storedDescription) body.description = description.trim();
 
     setSavingProfile(true);
     setProfileError(null);
@@ -708,26 +698,6 @@ export function Profile({ onClose }: { onClose: () => void }) {
                 />
               </div>
             )}
-
-            {/* Description — longer bio */}
-            <div className="space-y-1.5">
-              <Label className="text-xs">About</Label>
-              <Textarea
-                value={description}
-                rows={3}
-                maxLength={500}
-                onChange={(e) => {
-                  setDescription(e.target.value);
-                  setProfileError(null);
-                  setProfileSaved(false);
-                }}
-                placeholder="Tell others a bit about yourself..."
-                className="resize-none"
-              />
-              <p className="text-[10px] text-muted-foreground">
-                {description.length}/500
-              </p>
-            </div>
 
             {profileError && (
               <p className="text-xs text-destructive">{profileError}</p>
