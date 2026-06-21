@@ -182,16 +182,11 @@ export function Profile({ onClose }: { onClose: () => void }) {
   );
 
   // ---- Profile editing state ----
-  const storedTagline =
-    typeof participant?.metadata?.tagline === "string"
-      ? (participant.metadata.tagline as string)
-      : "";
   const storedDescription = participant?.description ?? "";
 
   const [displayName, setDisplayName] = useState(
     participant?.displayName ?? ""
   );
-  const [tagline, setTagline] = useState(storedTagline);
   const [description, setDescription] = useState(storedDescription);
   const [savingProfile, setSavingProfile] = useState(false);
   const [profileError, setProfileError] = useState<string | null>(null);
@@ -280,10 +275,6 @@ export function Profile({ onClose }: { onClose: () => void }) {
   }, [participant?.displayName]);
 
   useEffect(() => {
-    setTagline(storedTagline);
-  }, [storedTagline]);
-
-  useEffect(() => {
     setDescription(storedDescription);
   }, [storedDescription]);
 
@@ -301,7 +292,6 @@ export function Profile({ onClose }: { onClose: () => void }) {
     !!participant &&
     displayName.trim() !== "" &&
     (displayName.trim() !== participant.displayName ||
-      tagline.trim() !== storedTagline ||
       description.trim() !== storedDescription);
 
   const handleSaveProfile = async () => {
@@ -310,8 +300,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
     const body: Parameters<typeof api.updateProfile>[0] = {};
     const trimmedName = displayName.trim();
     if (trimmedName !== participant.displayName) body.displayName = trimmedName;
-    // Tagline/description send even when empty — clearing is a valid edit.
-    if (tagline.trim() !== storedTagline) body.tagline = tagline.trim();
+    // Description sends even when empty — clearing is a valid edit.
     if (description.trim() !== storedDescription) body.description = description.trim();
 
     setSavingProfile(true);
@@ -656,27 +645,6 @@ export function Profile({ onClose }: { onClose: () => void }) {
                 }}
                 placeholder="Your display name"
               />
-            </div>
-
-            {/* Tagline — short one-liner shown on friend cards */}
-            <div className="space-y-1.5">
-              <Label className="text-xs">Tagline</Label>
-              <Input
-                value={tagline}
-                maxLength={140}
-                onChange={(e) => {
-                  setTagline(e.target.value);
-                  setProfileError(null);
-                  setProfileSaved(false);
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && profileDirty) handleSaveProfile();
-                }}
-                placeholder="A short line about you"
-              />
-              <p className="text-[10px] text-muted-foreground">
-                {tagline.length}/140 — shown on your friend card
-              </p>
             </div>
 
             {/* Description — longer bio */}
