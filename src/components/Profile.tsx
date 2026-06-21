@@ -63,8 +63,6 @@ import { FriendsView } from "./FriendsView";
 import { open as tauriOpen } from "@tauri-apps/plugin-shell";
 import { PROVIDERS } from "../lib/models";
 import { useLlmKeyStore, type LlmApiKey as LlmApiKeyEntry } from "../stores/llmKeyStore";
-import { useWorkspaces } from "../stores/workspaceStore";
-import { HostsManagement } from "./HostsManagement";
 
 /** Open a URL in the system browser — Tauri native with window.open fallback. */
 function openExternal(url: string) {
@@ -122,12 +120,10 @@ const STATUS_CONFIG: Record<
   },
 };
 
-// Sidebar sections. Cloud Hosts lets a user register a dedicated Linux VM
-// so their agents run in the cloud without a local machine — it lives here
-// (against the user's Personal workspace) now that the workspace switcher /
-// settings modal are gated off. Other workspace-level config (models,
-// members, invites) returns to the Workspace settings modal when
-// WORKSPACES_ENABLED is flipped back on.
+// Sidebar sections. (Cloud Hosts / VM provisioning lives in the admin-only
+// Platform area now, not here — operators manage hosts for everyone there.)
+// Other workspace-level config (models, members, invites) returns to the
+// Workspace settings modal when WORKSPACES_ENABLED is flipped back on.
 const SECTIONS = [
   { value: "profile", label: "Profile", icon: User },
   { value: "friends", label: "Friends", icon: Users },
@@ -135,7 +131,6 @@ const SECTIONS = [
   { value: "region", label: "Region", icon: Globe },
   { value: "memory", label: "Memory", icon: Brain },
   { value: "llm-keys", label: "LLM Keys", icon: Key },
-  { value: "cloud-hosts", label: "Cloud Hosts", icon: Cloud },
   { value: "connections", label: "Connections", icon: Link2 },
 ] as const;
 
@@ -779,12 +774,6 @@ export function Profile({ onClose }: { onClose: () => void }) {
         {activeSection === "llm-keys" && (
           <div className="flex-1 overflow-y-auto p-5 space-y-6">
             <LlmApiKeysSection />
-          </div>
-        )}
-
-        {activeSection === "cloud-hosts" && (
-          <div className="flex-1 overflow-y-auto p-5 space-y-6">
-            <CloudHostsSection />
           </div>
         )}
 
@@ -1983,40 +1972,6 @@ function MemorySection({
 // ---------------------------------------------------------------------------
 // Sub-components
 // ---------------------------------------------------------------------------
-
-
-// ---------------------------------------------------------------------------
-// Cloud Hosts — register a dedicated Linux VM so agents run in the cloud
-// without a local machine. Mounted against the user's Personal workspace
-// org id (host management is org-scoped on the backend; the user owns their
-// Personal org, so they're owner/admin and the calls succeed).
-// ---------------------------------------------------------------------------
-
-function CloudHostsSection() {
-  const participant = useAuthStore((s) => s.participant);
-  const workspaces = useWorkspaces();
-  // Prefer the human's direct org; fall back to the workspace flagged
-  // isPersonal. Null only before the profile has loaded — render nothing
-  // until it resolves rather than calling the API with no org.
-  const personalOrgId =
-    participant?.organizationId ??
-    workspaces.find((w) => w.isPersonal)?.id ??
-    null;
-
-  return (
-    <section>
-      <SectionHeader
-        title="Cloud Hosts"
-        subtitle="Run agents on a dedicated Linux VM so they stay online without your local machine. Setup currently requires access to the Agentgram private host repo — reach out to opt in."
-      />
-      {personalOrgId ? (
-        <HostsManagement orgId={personalOrgId} />
-      ) : (
-        <p className="text-sm text-muted-foreground">Loading…</p>
-      )}
-    </section>
-  );
-}
 
 function SectionHeader({
   title,
