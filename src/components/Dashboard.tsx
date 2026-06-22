@@ -25,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { usePresenceStore } from "../stores/presenceStore";
+import { useModelCatalog } from "../stores/modelCatalogStore";
 import { restartHostedAgents } from "../lib/api";
 import type {
   AgentConnection,
@@ -399,6 +400,11 @@ export function Dashboard() {
   const fetchConnections = useDirectoryStore((s) => s.fetchConnections);
   const revokeConnection = useDirectoryStore((s) => s.revokeConnection);
 
+  // Load the backend model catalog so AgentRow can resolve model labels from
+  // it (single source of truth) — agent list rows render before any detail
+  // pane (which also loads it) is opened.
+  const ensureCatalog = useModelCatalog((s) => s.ensureLoaded);
+
   const [dirSearch, setDirSearchLocal] = useState("");
   const [selectedListingId, setSelectedListingId] = useState<string | null>(null);
   const dirSearchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -420,6 +426,7 @@ export function Dashboard() {
     fetchAgents();
     fetchHealth();
     fetchActivities();
+    void ensureCatalog();
     // Connections drive the connected/pending pills in directory rows
     // and the proxy/direct badge on owned agents. Both tabs render
     // them, so fetch up-front rather than gating on activeTab.
@@ -444,7 +451,7 @@ export function Dashboard() {
       if (healthIntervalRef.current) clearInterval(healthIntervalRef.current);
       if (activityIntervalRef.current) clearInterval(activityIntervalRef.current);
     };
-  }, [fetchAgents, fetchHealth, fetchActivities, refreshProcessStatuses, fetchConnections]);
+  }, [fetchAgents, fetchHealth, fetchActivities, refreshProcessStatuses, fetchConnections, ensureCatalog]);
 
   // Lazy-load directory listings on first switch into the directory tab.
   useEffect(() => {

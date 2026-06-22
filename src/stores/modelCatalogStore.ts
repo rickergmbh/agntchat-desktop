@@ -44,6 +44,12 @@ interface ModelCatalogState {
   requiresLlmKey: (providerId: string) => boolean;
   cliConnectionsFor: (providerId: string) => string[];
   providerLabel: (id: string) => string;
+  /** Display label for a stored model id, resolved from the backend
+   *  catalog (the single source of truth). `backend` narrows the search
+   *  to that provider's models; omit it to search every provider. Falls
+   *  back to a light cleanup of the raw id for unknown/custom ids or
+   *  before the catalog has loaded. */
+  modelLabel: (modelId: string | null | undefined, backend?: string | null) => string | null;
 }
 
 let inflight: Promise<void> | null = null;
@@ -104,5 +110,19 @@ export const useModelCatalog = create<ModelCatalogState>((set, get) => ({
   providerLabel: (id) => {
     const p = get().providers.find((p) => p.id === id);
     return p?.label ?? id;
+  },
+
+  modelLabel: (modelId, backend) => {
+    if (!modelId) return null;
+    const { providers } = get();
+    const scoped = backend ? providers.filter((p) => p.id === backend) : providers;
+    const search = scoped.length > 0 ? scoped : providers;
+    for (const p of search) {
+      const m = p.models.find((m) => m.id === modelId);
+      if (m) return m.label;
+    }
+    return modelId
+      .replace(/^(anthropic|openai|google|meta|mistral)\//i, "")
+      .replace(/-\d{4}-?\d{2}-?\d{2}$/, "");
   },
 }));

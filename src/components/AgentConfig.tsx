@@ -2272,23 +2272,47 @@ function HealthPanel({ managed }: { managed: ManagedAgent }) {
                 key={ex.id}
                 className="flex items-center justify-between py-1.5 px-2 rounded-md bg-muted/30"
               >
-                <div className="flex items-center gap-2 min-w-0">
-                  <Cpu className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-                  <span className="text-sm truncate">{ex.displayName || ex.executorKey}</span>
-                  <Badge
-                    variant="outline"
-                    className={cn(
-                      "text-[10px] px-1.5 py-0",
-                      ex.status === "online" && "border-success/30 text-success",
-                      ex.status === "offline" && "border-destructive/30 text-destructive",
-                      ex.status === "disabled" && "border-muted-foreground/30 text-muted-foreground"
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <Cpu className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                    <span className="text-sm truncate">{ex.displayName || ex.executorKey}</span>
+                    <Badge
+                      variant="outline"
+                      className={cn(
+                        "text-[10px] px-1.5 py-0",
+                        ex.status === "online" && "border-success/30 text-success",
+                        ex.status === "offline" && "border-destructive/30 text-destructive",
+                        ex.status === "disabled" && "border-muted-foreground/30 text-muted-foreground"
+                      )}
+                    >
+                      {ex.status}
+                    </Badge>
+                    {ex.activeTaskCount > 0 && (
+                      <span className="text-[10px] text-muted-foreground">{ex.activeTaskCount} active</span>
                     )}
-                  >
-                    {ex.status}
-                  </Badge>
-                  {ex.activeTaskCount > 0 && (
-                    <span className="text-[10px] text-muted-foreground">{ex.activeTaskCount} active</span>
-                  )}
+                  </div>
+                  {/* Liveness metadata — last poll, process uptime, memory.
+                      Lets you see at a glance how long the executor has run
+                      and when it last checked in. */}
+                  {(() => {
+                    const pm = (ex.processMetrics ?? {}) as {
+                      uptimeSeconds?: number;
+                      memoryMb?: number;
+                    };
+                    const bits: string[] = [];
+                    if (ex.secondsSincePoll != null)
+                      bits.push(`poll ${formatDuration(ex.secondsSincePoll)} ago`);
+                    if (pm.uptimeSeconds != null)
+                      bits.push(`up ${formatDuration(pm.uptimeSeconds)}`);
+                    if (pm.memoryMb != null) bits.push(`${pm.memoryMb.toFixed(0)} MB`);
+                    return bits.length > 0 ? (
+                      <div className="mt-0.5 ml-5 flex gap-3 text-[10px] text-muted-foreground">
+                        {bits.map((b) => (
+                          <span key={b}>{b}</span>
+                        ))}
+                      </div>
+                    ) : null;
+                  })()}
                 </div>
                 {ex.status !== "disabled" && (
                   <Button

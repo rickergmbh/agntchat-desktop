@@ -3,7 +3,7 @@ import { useChatStore } from "../../stores/chatStore";
 import { cn, formatClockTime } from "../../lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Bot, Reply as ReplyIcon } from "lucide-react";
-import { formatModelLabel } from "../../lib/models";
+import { useModelCatalog } from "../../stores/modelCatalogStore";
 import { MarkdownContent } from "./MarkdownContent";
 import { isTaskMessage, TaskMessage } from "./TaskMessages";
 import { isToolMessage, ToolMessage } from "./ToolMessages";
@@ -80,7 +80,10 @@ export function MessageBubble({
       | undefined;
   const rawBackend =
     (message.metadata?.backend as string | undefined) || undefined;
-  const modelLabel = isAgent ? formatModelLabel(rawModel, rawBackend) : null;
+  // Resolve from the backend catalog (single source of truth) rather than a
+  // static client table, so labels never drift from the model dropdown.
+  const catalogModelLabel = useModelCatalog((s) => s.modelLabel);
+  const modelLabel = isAgent ? catalogModelLabel(rawModel, rawBackend) : null;
 
   // Find the message we're replying to so we can render the preview
   const conversationId = message.conversationId;

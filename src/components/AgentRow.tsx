@@ -2,7 +2,8 @@ import { Fragment, useEffect, useState } from "react";
 import { useAgentStore, type ManagedAgent } from "../stores/agentStore";
 import { usePresenceStore } from "../stores/presenceStore";
 import { AgentActivityIndicator } from "./AgentActivityIndicator";
-import { formatModelLabel, formatBackendLabel } from "../lib/models";
+import { formatBackendLabel } from "../lib/models";
+import { useModelCatalog } from "../stores/modelCatalogStore";
 import { AGENT_GRID_COLS, AGENT_CELL_ENGINE, AGENT_CELL_MODE } from "./agentTableLayout";
 import { formatUptime, cn } from "../lib/utils";
 import { Play, Power, Square, RotateCcw, Crown, Cloud, AlertTriangle, Link2, ChevronRight, ChevronDown, Loader2 } from "lucide-react";
@@ -349,8 +350,11 @@ export function AgentRow({
       : "No API key — open agent to generate one";
   const canStart =
     startBlockedReason === null && managed.processStatus !== "starting";
+  // Model label comes from the backend catalog (single source of truth) so it
+  // never drifts from what the model dropdown offers; fall back to the raw id.
+  const catalogModelLabel = useModelCatalog((s) => s.modelLabel);
   const modelLabel =
-    formatModelLabel(managed.config.model) ||
+    catalogModelLabel(managed.config.model, managed.config.backend) ||
     managed.config.model;
   const backendLabel = formatBackendLabel(managed.config.backend);
 
