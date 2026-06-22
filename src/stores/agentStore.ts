@@ -298,12 +298,38 @@ const DEFAULT_CONFIG: AgentConfig = {
 // by the next saveLocalConfig. Add to this list when a field is removed.
 const ORPHAN_LOCAL_CONFIG_KEYS = ["computerUseEnabled"] as const;
 
+// Config fields the BACKEND owns — they're synced to model_config on every
+// edit (see updateConfig) and resolved server-side for both local and hosted
+// runs. The backend is the single source of truth for these, so a stale
+// localStorage blob must NEVER shadow the server value (that produced a
+// split-brain where the desktop showed an old model while the server / web
+// showed the real one). They're stripped from the local override at load
+// time; the merge then always takes the server's value. Genuinely
+// device-local fields (raw llmApiKey, dangerouslySkipPermissions, autoRestart,
+// autoStart, addDirs, maxTokens, historyLimit) are left untouched.
+const SERVER_OWNED_CONFIG_KEYS: readonly (keyof AgentConfig)[] = [
+  "backend",
+  "model",
+  "executionMode",
+  "effort",
+  "llmApiKeyId",
+  "cliConnection",
+  "awsRegion",
+  "vertexRegion",
+  "vertexProject",
+];
+
 function loadLocalConfig(agentId: string): Partial<AgentConfig> {
   const raw = localStorage.getItem(`agent:config:${agentId}`);
   if (raw) {
     try {
       const parsed = JSON.parse(raw) as Record<string, unknown>;
       for (const k of ORPHAN_LOCAL_CONFIG_KEYS) {
+        delete parsed[k];
+      }
+      // Backend-owned fields never come from localStorage — the server value
+      // wins so the model shown here matches the server (and the web app).
+      for (const k of SERVER_OWNED_CONFIG_KEYS) {
         delete parsed[k];
       }
       return parsed as Partial<AgentConfig>;
