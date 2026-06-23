@@ -29,7 +29,6 @@ import { useFriendStore } from "../stores/friendStore";
 import { useNavStore } from "../stores/navStore";
 import { usePresenceStore } from "../stores/presenceStore";
 import { useActiveWorkspace } from "../stores/workspaceStore";
-import { WORKSPACES_ENABLED } from "../lib/featureFlags";
 import { WorkspaceSettingsModal } from "./WorkspaceSettingsModal";
 import type { OrganizationMembership } from "../lib/api";
 
@@ -300,7 +299,10 @@ export function FriendsView({ onNavigate }: { onNavigate?: () => void } = {}) {
   // Members view (workspace memberships, no friend graph). Mirrors
   // web's FriendsPage behavior — see ARCHITECTURE.md § 17b.
   const activeWorkspace = useActiveWorkspace();
-  if (WORKSPACES_ENABLED && activeWorkspace && !activeWorkspace.isPersonal) {
+  const workspacesEnabled = useAuthStore(
+    (s) => s.participant?.features?.workspaces === true,
+  );
+  if (workspacesEnabled && activeWorkspace && !activeWorkspace.isPersonal) {
     return (
       <MembersView
         workspaceId={activeWorkspace.id}

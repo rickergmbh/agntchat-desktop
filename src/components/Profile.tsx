@@ -123,7 +123,7 @@ const STATUS_CONFIG: Record<
 // Sidebar sections. (Cloud Hosts / VM provisioning lives in the admin-only
 // Platform area now, not here — operators manage hosts for everyone there.)
 // Other workspace-level config (models, members, invites) returns to the
-// Workspace settings modal when WORKSPACES_ENABLED is flipped back on.
+// Workspace settings modal when the workspaces feature flag is enabled.
 const SECTIONS = [
   { value: "profile", label: "Profile", icon: User },
   { value: "friends", label: "Friends", icon: Users },

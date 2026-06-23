@@ -37,7 +37,6 @@ import { Profile } from "./Profile";
 import { FriendsView } from "./FriendsView";
 import { PlatformView } from "./PlatformView";
 import { WorkspaceSwitcher } from "./WorkspaceSwitcher";
-import { WORKSPACES_ENABLED } from "../lib/featureFlags";
 
 type View =
   | "chat"
@@ -180,11 +179,12 @@ function LeftRail({
   // a shared workspace. The friend-request badge is hidden in
   // workspace mode since friend connections are personal-graph only.
   const activeWorkspace = useActiveWorkspace();
-  // Workspaces are gated off for now (see featureFlags). With the flag off
-  // every user is in their Personal workspace, so this stays false and the
-  // Friends rail slot never flips to "Members".
+  // Workspaces are behind a per-user runtime flag (resolved on /me). With the
+  // flag off every user is in their Personal workspace, so this stays false and
+  // the Friends rail slot never flips to "Members".
+  const workspacesEnabled = participant?.features?.workspaces === true;
   const isWorkspaceMode =
-    WORKSPACES_ENABLED && activeWorkspace !== null && !activeWorkspace.isPersonal;
+    workspacesEnabled && activeWorkspace !== null && !activeWorkspace.isPersonal;
   // Friends is behind a per-user runtime flag (resolved on /me). The rail slot
   // still shows in workspace mode, where it's the "Members" view (org-scoped,
   // not the personal friend graph).
@@ -242,8 +242,8 @@ function LeftRail({
         {/* Workspaces gated off: render nothing in the tile slot — the
             static branding just clutters the rail. The interactive switcher
             (dropdown, create, settings gear, pending-invites banner) returns
-            when WORKSPACES_ENABLED is flipped back on. */}
-        {WORKSPACES_ENABLED && (
+            when the workspaces feature flag is enabled. */}
+        {workspacesEnabled && (
           <>
             <WorkspaceSwitcher />
             <div className="my-1 h-px w-8 bg-rail-border" />

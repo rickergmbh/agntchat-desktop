@@ -2,7 +2,6 @@ import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useAgentStore, type ManagedAgent } from "../stores/agentStore";
 import { useAuthStore } from "../stores/authStore";
 import { useActiveWorkspace, useWorkspaces } from "../stores/workspaceStore";
-import { WORKSPACES_ENABLED } from "../lib/featureFlags";
 import { listOrganizationHosts, type OrganizationHost } from "../lib/api";
 import {
   deleteAgent,
@@ -1618,6 +1617,9 @@ function PublishSection({ agent }: { agent: Agent }) {
 }
 
 function PulsePanel({ managed }: { managed: ManagedAgent }) {
+  // Workspaces are behind the `workspaces` runtime flag (resolved per-user on
+  // /me). When off, every user is in their Personal workspace.
+  const workspacesEnabled = useAuthStore((s) => s.participant?.features?.workspaces === true);
   const [data, setData] = useState<PulseData | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -1996,7 +1998,7 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
               Select-safe stand-in for "" (shadcn items can't be empty).
               Gated off with workspaces; pulse falls back to the owner's
               Personal workspace (empty organizationId). */}
-          {WORKSPACES_ENABLED && workspaces.length > 1 && (
+          {workspacesEnabled && workspaces.length > 1 && (
             <div className="space-y-1.5">
               <Label className="text-xs">Pulse workspace</Label>
               <Select
@@ -2447,6 +2449,9 @@ function ProfileSection({
   const { fetchAgents } = useAgentStore();
   const limits = useFieldLimits();
   const activeWorkspace = useActiveWorkspace();
+  // Workspaces are behind the `workspaces` runtime flag (resolved per-user on
+  // /me). When off, every user is in their Personal workspace.
+  const workspacesEnabled = useAuthStore((s) => s.participant?.features?.workspaces === true);
   const [name, setName] = useState(agent.displayName);
   const [desc, setDesc] = useState(agent.description ?? "");
   const [agentType, setAgentType] = useState(agent.agentType || "worker");
@@ -2672,7 +2677,7 @@ function ProfileSection({
           </p>
         </div>
 
-        {WORKSPACES_ENABLED && (
+        {workspacesEnabled && (
         <div className="space-y-1.5 mt-4">
           <Label className="text-xs">Visibility</Label>
           <div className="grid grid-cols-2 gap-2">
@@ -3194,7 +3199,7 @@ function RuntimePanel({ agent }: { agent: Agent }) {
   // Subscription-based hosting. This mirrors CreateAgentModal: a paying
   // user (active/trialing) with a resolved host can flip any agent
   // between Local and Hosted at will — independent of workspaces, which
-  // are gated off by default (WORKSPACES_ENABLED). Without this path the
+  // are gated by the `workspaces` runtime flag. Without this path the
   // panel could never offer Hosted in the Personal workspace, so a
   // subscriber could create a hosted agent but never switch one.
   const participant = useAuthStore((s) => s.participant);

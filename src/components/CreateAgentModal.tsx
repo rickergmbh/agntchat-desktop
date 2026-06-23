@@ -18,7 +18,6 @@ import { useAgentStore } from "../stores/agentStore";
 import { useAuthStore } from "../stores/authStore";
 import { useActiveWorkspace } from "../stores/workspaceStore";
 import { updateAgentRuntime } from "../lib/api";
-import { WORKSPACES_ENABLED } from "../lib/featureFlags";
 import { useLlmKeyStore } from "../stores/llmKeyStore";
 import { useModelCatalog } from "../stores/modelCatalogStore";
 import { useAgentTypes } from "../lib/agentTypes";
@@ -169,6 +168,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   // runs on their host using the plan's shared brain) so they can create and
   // start talking with zero setup. Advanced users switch to "local".
   const participant = useAuthStore((s) => s.participant);
+  const workspacesEnabled = participant?.features?.workspaces === true;
   const subStatus = participant?.subscription?.status;
   const isPlan = subStatus === "active" || subStatus === "trialing";
   const hostedHostId = participant?.hostedHostId ?? null;
@@ -1229,7 +1229,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                     )}
                   </div>
 
-                  {WORKSPACES_ENABLED && (
+                  {workspacesEnabled && (
                   <div className="space-y-1.5">
                     <Label className="text-xs">Visibility</Label>
                     <div className="grid grid-cols-2 gap-2">
