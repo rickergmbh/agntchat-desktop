@@ -1565,6 +1565,12 @@ function FeatureFlagCard({
       try {
         onChanged(await fn());
         setError(null);
+        // The toggle/grant/revoke may have changed THIS admin's own resolved
+        // `features` map (e.g. flipping `workspaces` on lights up the rail
+        // switcher). Refetch /api/me so the running session reflects it
+        // immediately instead of only after a relogin. The backend flushes
+        // its profile cache on the same mutation, so this read is fresh.
+        await useAuthStore.getState().fetchProfile();
       } catch (e) {
         setError(e instanceof Error ? e.message : "Update failed");
       } finally {
