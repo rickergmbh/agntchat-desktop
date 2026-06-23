@@ -1532,7 +1532,7 @@ function FeatureFlagsTab() {
         stays off for everyone else. Changes take effect immediately — no
         redeploy.
       </p>
-      <div className="space-y-3">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {flags.map((flag) => (
           <FeatureFlagCard key={flag.key} flag={flag} onChanged={onFlagChanged} setError={setError} />
         ))}
@@ -1606,32 +1606,46 @@ function FeatureFlagCard({
   }, [search, flag.allowedParticipantIds]);
 
   return (
-    <div className="rounded-lg border border-border p-4">
-      <div className="flex items-start justify-between gap-4">
+    <div
+      className={cn(
+        "flex flex-col overflow-hidden rounded-xl border bg-card shadow-sm transition-colors",
+        flag.enabled ? "border-primary/40" : "border-border"
+      )}
+    >
+      {/* Card header — a tinted strip so each flag reads as its own object,
+          with the on/off state mirrored in both the strip and the badge. */}
+      <div
+        className={cn(
+          "flex items-start justify-between gap-4 border-b p-4",
+          flag.enabled ? "border-primary/30 bg-primary/5" : "border-border bg-muted/30"
+        )}
+      >
         <div className="min-w-0">
-          <div className="flex items-center gap-2">
-            <span className="font-medium">{flag.key}</span>
-            <Badge variant={flag.enabled ? "default" : "secondary"}>
-              {flag.enabled ? "On for everyone" : "Off"}
-            </Badge>
-          </div>
+          <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-sm font-semibold">
+            {flag.key}
+          </code>
           {flag.description && (
-            <p className="mt-1 text-xs text-muted-foreground">{flag.description}</p>
+            <p className="mt-2 text-xs text-muted-foreground">{flag.description}</p>
           )}
         </div>
-        <div className="flex items-center gap-2">
-          {busy && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
-          <Switch
-            checked={flag.enabled}
-            disabled={busy}
-            onCheckedChange={(v) => void run(() => api.setFeatureFlagEnabled(flag.key, v))}
-          />
+        <div className="flex shrink-0 flex-col items-end gap-2">
+          <div className="flex items-center gap-2">
+            {busy && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
+            <Switch
+              checked={flag.enabled}
+              disabled={busy}
+              onCheckedChange={(v) => void run(() => api.setFeatureFlagEnabled(flag.key, v))}
+            />
+          </div>
+          <Badge variant={flag.enabled ? "default" : "secondary"}>
+            {flag.enabled ? "On for everyone" : "Off"}
+          </Badge>
         </div>
       </div>
 
       {/* Per-user allowlist — early-access cohort, used when the global flag is
           off. Members see the feature even while everyone else doesn't. */}
-      <div className="mt-4 border-t border-border pt-3">
+      <div className="p-4">
         <Label className="text-xs text-muted-foreground">
           Early access {flag.enabled && "(superseded while On for everyone)"}
         </Label>
