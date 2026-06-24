@@ -508,7 +508,13 @@ function HostCard({
       {expanded && (
         <div className="space-y-4 border-t border-border px-4 py-3">
           <HostAgentList agents={agents} error={agentsError} />
-          <HostOpLog ops={ops} />
+          <HostOpLog
+            ops={ops}
+            onCancel={async (opId) => {
+              await api.cancelHostOperation(orgId, host.id, opId);
+              await loadDetail();
+            }}
+          />
         </div>
       )}
 
@@ -636,17 +642,37 @@ function opDuration(o: api.HostOperation): string {
   return `${Math.floor(secs / 60)}m ${secs % 60}s`;
 }
 
-export function HostOpLog({ ops }: { ops: api.HostOperation[] }) {
+export function HostOpLog({
+  ops,
+  onCancel,
+}: {
+  ops: api.HostOperation[];
+  /** Cancel a stuck pending/running op. When omitted, no cancel control shows
+   *  (e.g. for non-admins). Returns once the op is cleared so the row refreshes. */
+  onCancel?: (operationId: string) => Promise<void> | void;
+}) {
   // Auto-expand a running/pending op so its output streams without a click;
   // otherwise honour whatever the user last toggled open.
   const activeId =
     ops.find((o) => o.status === "pending" || o.status === "running")?.id ?? null;
   const [openId, setOpenId] = useState<string | null>(activeId);
+  const [cancelingId, setCancelingId] = useState<string | null>(null);
 
   // Follow the active op as it changes (a freshly-kicked-off op becomes active).
   useEffect(() => {
     if (activeId) setOpenId(activeId);
   }, [activeId]);
+
+  const cancel = async (id: string) => {
+    if (!onCancel) return;
+    if (!confirm("Cancel this operation? It's marked canceled so the host's status reflects reality.")) return;
+    setCancelingId(id);
+    try {
+      await onCancel(id);
+    } finally {
+      setCancelingId(null);
+    }
+  };
 
   if (ops.length === 0)
     return <p className="text-sm text-muted-foreground">No operations yet.</p>;
@@ -661,35 +687,55 @@ export function HostOpLog({ ops }: { ops: api.HostOperation[] }) {
           const running = o.status === "pending" || o.status === "running";
           return (
             <li key={o.id} className="rounded-sm bg-muted/40 text-sm">
-              <button
-                type="button"
-                onClick={() => setOpenId((id) => (id === o.id ? null : o.id))}
-                className="flex w-full items-center justify-between gap-2 px-2.5 py-1.5 text-left"
-              >
-                <span className="flex items-center gap-2">
-                  <span
-                    className={cn(
-                      "h-2 w-2 rounded-full",
-                      o.status === "ok" && "bg-success",
-                      o.status === "failed" && "bg-destructive",
-                      running && "bg-amber-500 animate-pulse"
-                    )}
-                  />
-                  <span className="font-medium">{o.kind}</span>
-                  <span
-                    className={cn(
-                      "text-xs",
-                      o.status === "failed" ? "text-destructive" : "text-muted-foreground"
-                    )}
-                  >
-                    {o.status}
+              <div className="flex w-full items-center gap-2 px-2.5 py-1.5">
+                <button
+                  type="button"
+                  onClick={() => setOpenId((id) => (id === o.id ? null : o.id))}
+                  className="flex flex-1 items-center justify-between gap-2 text-left"
+                >
+                  <span className="flex items-center gap-2">
+                    <span
+                      className={cn(
+                        "h-2 w-2 rounded-full",
+                        o.status === "ok" && "bg-success",
+                        o.status === "failed" && "bg-destructive",
+                        o.status === "canceled" && "bg-muted-foreground/50",
+                        running && "bg-amber-500 animate-pulse"
+                      )}
+                    />
+                    <span className="font-medium">{o.kind}</span>
+                    <span
+                      className={cn(
+                        "text-xs",
+                        o.status === "failed" ? "text-destructive" : "text-muted-foreground"
+                      )}
+                    >
+                      {o.status}
+                    </span>
                   </span>
-                </span>
-                <span className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <span className="tabular-nums">{opDuration(o)}</span>
-                  <span>· {relativeAge(o.insertedAt)}</span>
-                </span>
-              </button>
+                  <span className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <span className="tabular-nums">{opDuration(o)}</span>
+                    <span>· {relativeAge(o.insertedAt)}</span>
+                  </span>
+                </button>
+                {running && onCancel && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 shrink-0 gap-1 px-1.5 text-xs text-muted-foreground hover:text-destructive"
+                    disabled={cancelingId === o.id}
+                    onClick={() => void cancel(o.id)}
+                    title="Cancel this stuck operation"
+                  >
+                    {cancelingId === o.id ? (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    ) : (
+                      <X className="h-3 w-3" />
+                    )}
+                    Cancel
+                  </Button>
+                )}
+              </div>
               {openId === o.id &&
                 (o.output ? (
                   <pre className="max-h-60 overflow-auto whitespace-pre-wrap break-all border-t border-border px-2.5 py-2 font-mono text-[11px] text-muted-foreground">

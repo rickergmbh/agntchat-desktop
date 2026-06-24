@@ -506,7 +506,7 @@ export interface HostOperation {
   id: string;
   hostId: string;
   kind: HostOpKind;
-  status: "pending" | "running" | "ok" | "failed";
+  status: "pending" | "running" | "ok" | "failed" | "canceled";
   output?: string | null;
   insertedAt: string;
   finishedAt?: string | null;
@@ -688,6 +688,19 @@ export async function listHostOperations(
     `/api/organizations/${orgId}/hosts/${hostId}/operations`
   );
   return res.operations;
+}
+
+/** Cancel a stuck op (pending/running → canceled) so status reflects reality. */
+export async function cancelHostOperation(
+  orgId: string,
+  hostId: string,
+  operationId: string
+): Promise<HostOperation> {
+  const res = await request<{ operation: HostOperation }>(
+    `/api/organizations/${orgId}/hosts/${hostId}/operations/${operationId}/cancel`,
+    { method: "POST" }
+  );
+  return res.operation;
 }
 
 /** Update a host's SSH connection details. */

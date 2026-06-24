@@ -977,7 +977,13 @@ function MergedHostRow({
               onChanged={onChanged}
             />
           ) : (
-            <HostOpLog ops={ops} />
+            <HostOpLog
+              ops={ops}
+              onCancel={async (opId) => {
+                await api.cancelHostOperation(hostOrgId, host.id, opId);
+                await loadDetail();
+              }}
+            />
           )}
         </div>
       )}
