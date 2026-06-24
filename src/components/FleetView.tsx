@@ -20,6 +20,7 @@ import {
   Trash2,
   X,
 } from "lucide-react";
+import { open as tauriOpen } from "@tauri-apps/plugin-shell";
 import * as api from "../lib/api";
 import { cn } from "../lib/utils";
 import { ws } from "../services/websocket";
@@ -624,10 +625,31 @@ function HostAgentList({
   );
 }
 
-export function HostOpLog({ ops }: { ops: api.HostOperation[] }) {
-  const [openId, setOpenId] = useState<string | null>(null);
+/** Wall-clock length of an op: finished ops show their total, running ops
+ *  show elapsed-so-far (the caller re-polls, so this advances on each render). */
+function opDuration(o: api.HostOperation): string {
+  const start = new Date(o.insertedAt).getTime();
+  if (Number.isNaN(start)) return "";
+  const end = o.finishedAt ? new Date(o.finishedAt).getTime() : Date.now();
+  const secs = Math.max(0, Math.round((end - start) / 1000));
+  if (secs < 60) return `${secs}s`;
+  return `${Math.floor(secs / 60)}m ${secs % 60}s`;
+}
 
-  if (ops.length === 0) return null;
+export function HostOpLog({ ops }: { ops: api.HostOperation[] }) {
+  // Auto-expand a running/pending op so its output streams without a click;
+  // otherwise honour whatever the user last toggled open.
+  const activeId =
+    ops.find((o) => o.status === "pending" || o.status === "running")?.id ?? null;
+  const [openId, setOpenId] = useState<string | null>(activeId);
+
+  // Follow the active op as it changes (a freshly-kicked-off op becomes active).
+  useEffect(() => {
+    if (activeId) setOpenId(activeId);
+  }, [activeId]);
+
+  if (ops.length === 0)
+    return <p className="text-sm text-muted-foreground">No operations yet.</p>;
 
   return (
     <div>
@@ -635,37 +657,52 @@ export function HostOpLog({ ops }: { ops: api.HostOperation[] }) {
         <Terminal className="h-3 w-3" /> Recent operations
       </div>
       <ul className="space-y-1">
-        {ops.map((o) => (
-          <li key={o.id} className="rounded-sm bg-muted/40 text-sm">
-            <button
-              type="button"
-              onClick={() => setOpenId((id) => (id === o.id ? null : o.id))}
-              className="flex w-full items-center justify-between gap-2 px-2.5 py-1.5 text-left"
-            >
-              <span className="flex items-center gap-2">
-                <span
-                  className={cn(
-                    "h-2 w-2 rounded-full",
-                    o.status === "ok" && "bg-success",
-                    o.status === "failed" && "bg-destructive",
-                    (o.status === "pending" || o.status === "running") &&
-                      "bg-amber-500 animate-pulse"
-                  )}
-                />
-                <span className="font-medium">{o.kind}</span>
-                <span className="text-xs text-muted-foreground">{o.status}</span>
-              </span>
-              <span className="text-xs text-muted-foreground">
-                {relativeAge(o.insertedAt)}
-              </span>
-            </button>
-            {openId === o.id && o.output && (
-              <pre className="max-h-60 overflow-auto whitespace-pre-wrap break-all border-t border-border px-2.5 py-2 font-mono text-[11px] text-muted-foreground">
-                {o.output}
-              </pre>
-            )}
-          </li>
-        ))}
+        {ops.map((o) => {
+          const running = o.status === "pending" || o.status === "running";
+          return (
+            <li key={o.id} className="rounded-sm bg-muted/40 text-sm">
+              <button
+                type="button"
+                onClick={() => setOpenId((id) => (id === o.id ? null : o.id))}
+                className="flex w-full items-center justify-between gap-2 px-2.5 py-1.5 text-left"
+              >
+                <span className="flex items-center gap-2">
+                  <span
+                    className={cn(
+                      "h-2 w-2 rounded-full",
+                      o.status === "ok" && "bg-success",
+                      o.status === "failed" && "bg-destructive",
+                      running && "bg-amber-500 animate-pulse"
+                    )}
+                  />
+                  <span className="font-medium">{o.kind}</span>
+                  <span
+                    className={cn(
+                      "text-xs",
+                      o.status === "failed" ? "text-destructive" : "text-muted-foreground"
+                    )}
+                  >
+                    {o.status}
+                  </span>
+                </span>
+                <span className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <span className="tabular-nums">{opDuration(o)}</span>
+                  <span>· {relativeAge(o.insertedAt)}</span>
+                </span>
+              </button>
+              {openId === o.id &&
+                (o.output ? (
+                  <pre className="max-h-60 overflow-auto whitespace-pre-wrap break-all border-t border-border px-2.5 py-2 font-mono text-[11px] text-muted-foreground">
+                    {o.output}
+                  </pre>
+                ) : running ? (
+                  <div className="flex items-center gap-1.5 border-t border-border px-2.5 py-2 text-[11px] text-muted-foreground">
+                    <Loader2 className="h-3 w-3 animate-spin" /> Running…
+                  </div>
+                ) : null)}
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
@@ -1028,6 +1065,251 @@ export function ConnectAnthropicDialog({
             </DialogFooter>
           </div>
         )}
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+/** Open a URL in the system browser — Tauri native with window.open fallback. */
+function openExternal(url: string) {
+  tauriOpen(url).catch(() => {
+    window.open(url, "_blank");
+  });
+}
+
+// Pull the OAuth URL out of the captured login pane. claude /login prints a
+// `https://claude.ai/oauth/authorize?…` (or anthropic console) URL when it
+// can't open a browser. Grab the first matching URL; trim trailing punctuation.
+const CLAUDE_LOGIN_URL_RE =
+  /https?:\/\/[^\s"']*(?:claude\.ai|anthropic\.com)[^\s"']*/i;
+
+function extractLoginUrl(pane: string): string | null {
+  const m = pane.match(CLAUDE_LOGIN_URL_RE);
+  if (!m) return null;
+  return m[0].replace(/[).,]+$/, "");
+}
+
+// Heuristic success / failure detection from the pane text.
+function loginSucceeded(pane: string): boolean {
+  return /login successful|logged in|successfully authenticated|you('| a)re now logged in/i.test(
+    pane
+  );
+}
+function loginFailed(pane: string): boolean {
+  return /invalid code|authentication failed|oauth error|error:|expired/i.test(pane);
+}
+
+/**
+ * Drives an interactive `claude /login` on one host VM, entirely from the
+ * desktop. The backend runs the login inside a detached tmux session over SSH;
+ * we poll its pane text for the OAuth URL, let the operator open it locally and
+ * paste the code back, then submit it. Writes the per-host file seat at
+ * /home/agentgram/.claude/.credentials.json (shared by every bridge on the box).
+ */
+export function ClaudeLoginDialog({
+  orgId,
+  hostId,
+  hostName,
+  open,
+  onOpenChange,
+}: {
+  orgId: string;
+  hostId: string;
+  hostName: string;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  const [pane, setPane] = useState("");
+  const [loginUrl, setLoginUrl] = useState<string | null>(null);
+  const [code, setCode] = useState("");
+  const [phase, setPhase] = useState<
+    "starting" | "awaiting_url" | "awaiting_code" | "submitting" | "done" | "error"
+  >("starting");
+  const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  // Start the session when the dialog opens; cancel + reset when it closes.
+  useEffect(() => {
+    if (!open) return;
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+
+    const applyPane = (text: string) => {
+      if (cancelled) return;
+      setPane(text);
+      const url = extractLoginUrl(text);
+      if (url) setLoginUrl(url);
+      // Don't override an in-flight code submission or a finished state.
+      setPhase((prev) => {
+        if (prev === "submitting" || prev === "done" || prev === "error") return prev;
+        if (loginSucceeded(text)) return "done";
+        if (url) return "awaiting_code";
+        return "awaiting_url";
+      });
+    };
+
+    const poll = async () => {
+      try {
+        const { output } = await api.pollClaudeLoginOutput(orgId, hostId);
+        applyPane(output);
+      } catch {
+        // Transient SSH hiccup — keep polling.
+      }
+      if (!cancelled) timer = setTimeout(poll, 2000);
+    };
+
+    setPhase("starting");
+    setPane("");
+    setLoginUrl(null);
+    setCode("");
+    setError(null);
+
+    api
+      .startClaudeLogin(orgId, hostId)
+      .then(() => {
+        if (cancelled) return;
+        setPhase("awaiting_url");
+        void poll();
+      })
+      .catch((e) => {
+        if (cancelled) return;
+        setError(e instanceof Error ? e.message : "Could not start login on the host");
+        setPhase("error");
+      });
+
+    return () => {
+      cancelled = true;
+      if (timer) clearTimeout(timer);
+      // Best-effort teardown of the remote tmux session.
+      void api.cancelClaudeLogin(orgId, hostId).catch(() => {});
+    };
+  }, [open, orgId, hostId]);
+
+  const submit = async () => {
+    const trimmed = code.trim();
+    if (!trimmed) return;
+    setPhase("submitting");
+    setError(null);
+    try {
+      const { output } = await api.submitClaudeLoginCode(orgId, hostId, trimmed);
+      setPane(output);
+      setCode("");
+      // Give claude a beat to process, then let the poller resolve success/failure.
+      if (loginSucceeded(output)) setPhase("done");
+      else if (loginFailed(output)) setPhase("error");
+      else setPhase("awaiting_code");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not submit code");
+      setPhase("awaiting_code");
+    }
+  };
+
+  const copyUrl = () => {
+    if (!loginUrl) return;
+    void navigator.clipboard.writeText(loginUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Sign in to Claude — {hostName}</DialogTitle>
+          <DialogDescription>
+            Runs <code>claude /login</code> on the VM. Open the URL below in your
+            browser, authorize, then paste the code it gives you. Credentials are
+            stored on the host and shared by every agent running on it.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-3 py-1">
+          {phase === "starting" && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin" /> Starting login on the host…
+            </div>
+          )}
+
+          {phase === "awaiting_url" && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin" /> Waiting for the login URL…
+            </div>
+          )}
+
+          {loginUrl && phase !== "done" && (
+            <div className="space-y-1">
+              <Label className="text-xs">Login URL</Label>
+              <div className="flex items-center gap-2 rounded-md border border-border bg-muted px-2.5 py-2 font-mono text-xs break-all">
+                <span className="flex-1 select-all">{loginUrl}</span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-6 w-6 shrink-0 p-0"
+                  onClick={copyUrl}
+                  title="Copy URL"
+                >
+                  {copied ? <Check className="h-3.5 w-3.5" /> : <CopyIcon className="h-3.5 w-3.5" />}
+                </Button>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                className="mt-1"
+                onClick={() => openExternal(loginUrl)}
+              >
+                Open in browser
+              </Button>
+            </div>
+          )}
+
+          {(phase === "awaiting_code" || phase === "submitting") && loginUrl && (
+            <div className="space-y-1">
+              <Label htmlFor="claude-auth-code">Authorization code</Label>
+              <div className="flex items-center gap-2">
+                <Input
+                  id="claude-auth-code"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") void submit();
+                  }}
+                  placeholder="Paste the code from the browser"
+                  className="font-mono text-xs"
+                  disabled={phase === "submitting"}
+                  autoFocus
+                />
+                <Button onClick={() => void submit()} disabled={phase === "submitting" || !code.trim()}>
+                  {phase === "submitting" ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Submit"}
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {phase === "done" && (
+            <div className="flex items-center gap-2 rounded-md border border-success/30 bg-success/10 px-2.5 py-2 text-sm text-success">
+              <Check className="h-4 w-4" /> Signed in. Agents on this host can now use Claude.
+            </div>
+          )}
+
+          {error && <p className="text-sm text-destructive">{error}</p>}
+
+          {pane && (
+            <div>
+              <div className="mb-1 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                <Terminal className="h-3 w-3" /> Terminal output
+              </div>
+              <pre className="max-h-48 overflow-auto whitespace-pre-wrap break-all rounded-sm bg-muted/40 px-2.5 py-2 font-mono text-[11px] text-muted-foreground">
+                {pane}
+              </pre>
+            </div>
+          )}
+        </div>
+
+        <DialogFooter>
+          <Button variant="ghost" onClick={() => onOpenChange(false)}>
+            {phase === "done" ? "Done" : "Cancel"}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

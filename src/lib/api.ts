@@ -734,6 +734,56 @@ export async function setOrganizationAnthropicToken(
   });
 }
 
+// --- Interactive Claude /login on a single host (driven over SSH via tmux) ---
+//
+// Each call returns the host's current login-session pane text. The flow is:
+// start → poll output until the URL appears → submit code → poll for success →
+// cancel (on close). These are synchronous SSH round-trips, not Oban ops.
+
+/** Start (or restart) the `claude /login` session on the host. */
+export async function startClaudeLogin(
+  orgId: string,
+  hostId: string
+): Promise<{ output: string }> {
+  return request<{ output: string }>(
+    `/api/organizations/${orgId}/hosts/${hostId}/claude-login/start`,
+    { method: "POST" }
+  );
+}
+
+/** Capture the current login-session pane text (poll for the URL / status). */
+export async function pollClaudeLoginOutput(
+  orgId: string,
+  hostId: string
+): Promise<{ output: string }> {
+  return request<{ output: string }>(
+    `/api/organizations/${orgId}/hosts/${hostId}/claude-login/output`
+  );
+}
+
+/** Type the OAuth auth code into the login session. */
+export async function submitClaudeLoginCode(
+  orgId: string,
+  hostId: string,
+  code: string
+): Promise<{ output: string }> {
+  return request<{ output: string }>(
+    `/api/organizations/${orgId}/hosts/${hostId}/claude-login/code`,
+    { method: "POST", body: JSON.stringify({ code }) }
+  );
+}
+
+/** Kill the login session (cancel / cleanup). */
+export async function cancelClaudeLogin(
+  orgId: string,
+  hostId: string
+): Promise<{ output: string }> {
+  return request<{ output: string }>(
+    `/api/organizations/${orgId}/hosts/${hostId}/claude-login/cancel`,
+    { method: "POST" }
+  );
+}
+
 // --- Host auto-provisioning (Hostinger) ---
 
 export interface ProvisioningOption {

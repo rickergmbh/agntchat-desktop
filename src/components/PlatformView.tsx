@@ -29,6 +29,7 @@ import { useAuthStore } from "../stores/authStore";
 import { useModelCatalog, type CatalogProvider } from "../stores/modelCatalogStore";
 import { useWorkspaces } from "../stores/workspaceStore";
 import {
+  ClaudeLoginDialog,
   ConnectAnthropicDialog,
   ConnectHostDialog,
   HostOpLog,
@@ -588,6 +589,8 @@ function MergedHostRow({
 }) {
   const hostOrgId = host.organizationId;
   const [expanded, setExpanded] = useState(false);
+  // Which inner panel shows once expanded — residents vs the SSH op log.
+  const [panel, setPanel] = useState<"residents" | "operations">("residents");
   const [detail, setDetail] = useState<api.AdminHostDetail | null>(null);
   const [detailError, setDetailError] = useState<string | null>(null);
   const [ops, setOps] = useState<api.HostOperation[]>([]);
@@ -597,6 +600,7 @@ function MergedHostRow({
   const [renameBusy, setRenameBusy] = useState(false);
   const [shared, setShared] = useState(!!host.shared);
   const [keyOpen, setKeyOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
   const [pubKey, setPubKey] = useState<string | null>(null);
 
   const bootstrapped = !!host.bootstrappedAt;
@@ -622,13 +626,35 @@ function MergedHostRow({
     if (expanded) void loadDetail();
   }, [expanded, loadDetail]);
 
+  // Is an SSH op in flight (kicked off here, or still finishing from a prior
+  // session)? Drives the header badge + the live re-poll below.
+  const opRunning = useMemo(
+    () => ops.some((o) => o.status === "pending" || o.status === "running"),
+    [ops]
+  );
+
+  // While an op is in flight, re-poll the op log so its status + output update
+  // in place — no collapse/reopen to see progress. Give up after ~5 min.
+  useEffect(() => {
+    if (!expanded || !opRunning) return;
+    const poll = setInterval(() => void loadDetail(), 4_000);
+    const giveUp = setTimeout(() => clearInterval(poll), 300_000);
+    return () => {
+      clearInterval(poll);
+      clearTimeout(giveUp);
+    };
+  }, [expanded, opRunning, loadDetail]);
+
   const op = async (kind: api.HostOpKind, confirmMsg?: string) => {
     if (confirmMsg && !confirm(confirmMsg)) return;
     setBusy(kind);
     try {
       await api.runHostOp(hostOrgId, host.id, kind);
-      if (!expanded) setExpanded(true);
-      else await loadDetail();
+      // Surface progress: expand the row and refresh so the running badge + op
+      // log appear. We don't force the Operations panel — the badge points the
+      // way; the live re-poll keeps it current once they switch to it.
+      setExpanded(true);
+      await loadDetail();
     } catch (e) {
       alert(e instanceof Error ? e.message : "Operation failed");
     } finally {
@@ -782,6 +808,17 @@ function MergedHostRow({
                     not bootstrapped
                   </Badge>
                 )}
+                {opRunning && (
+                  <Badge
+                    variant="outline"
+                    className="shrink-0 gap-1 border-amber-500/30 text-amber-600"
+                    title="An SSH operation is in progress — open Operations to watch it"
+                  >
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                    {ops.find((o) => o.status === "pending" || o.status === "running")?.kind ??
+                      "running"}
+                  </Badge>
+                )}
               </>
             )}
           </div>
@@ -838,16 +875,28 @@ function MergedHostRow({
             <Button
               variant="ghost"
               size="sm"
+              onClick={() => setLoginOpen(true)}
+              disabled={busy !== null || !host.sshHost}
+              title="Sign in to Claude on this host (runs `claude /login` over SSH)"
+            >
+              <ShieldCheck className="h-3.5 w-3.5" />
+              Anthropic
+            </Button>
+          )}
+          {bootstrapped && (
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => void op("set_token")}
               disabled={busy !== null || !host.sshHost}
-              title="Push the org's shared Claude seat token to this host (re-sync Anthropic)"
+              title="Re-push the org's shared Claude seat token to this host (set_token op)"
             >
               {busy === "set_token" ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
               ) : (
-                <ShieldCheck className="h-3.5 w-3.5" />
+                <RefreshCw className="h-3.5 w-3.5" />
               )}
-              Anthropic
+              Seat
             </Button>
           )}
           <Button
@@ -877,16 +926,59 @@ function MergedHostRow({
       </div>
 
       {expanded && (
-        <div className="space-y-4 border-t border-border px-4 py-3">
-          <HostResidents
-            host={host}
-            detail={detail}
-            error={detailError}
-            allHosts={allHosts}
-            reload={loadDetail}
-            onChanged={onChanged}
-          />
-          <HostOpLog ops={ops} />
+        <div className="border-t border-border px-4 py-3">
+          {/* Segmented switch: residents (users + agents) vs the SSH op log.
+              Operations is one click away — no scrolling to the bottom — and
+              its tab flags a live op so you can jump straight to progress. */}
+          <div className="mb-3 inline-flex rounded-md border border-border p-0.5 text-sm">
+            <button
+              type="button"
+              onClick={() => setPanel("residents")}
+              className={cn(
+                "rounded-[5px] px-3 py-1 font-medium transition-colors",
+                panel === "residents"
+                  ? "bg-muted text-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              Residents
+              <span className="ml-1.5 tabular-nums text-xs text-muted-foreground">
+                {users}u · {assigned}a
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setPanel("operations")}
+              className={cn(
+                "flex items-center gap-1.5 rounded-[5px] px-3 py-1 font-medium transition-colors",
+                panel === "operations"
+                  ? "bg-muted text-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              Operations
+              {opRunning ? (
+                <Loader2 className="h-3 w-3 animate-spin text-amber-500" />
+              ) : (
+                ops.length > 0 && (
+                  <span className="tabular-nums text-xs text-muted-foreground">{ops.length}</span>
+                )
+              )}
+            </button>
+          </div>
+
+          {panel === "residents" ? (
+            <HostResidents
+              host={host}
+              detail={detail}
+              error={detailError}
+              allHosts={allHosts}
+              reload={loadDetail}
+              onChanged={onChanged}
+            />
+          ) : (
+            <HostOpLog ops={ops} />
+          )}
         </div>
       )}
 
@@ -926,6 +1018,14 @@ function MergedHostRow({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <ClaudeLoginDialog
+        orgId={hostOrgId}
+        hostId={host.id}
+        hostName={host.name}
+        open={loginOpen}
+        onOpenChange={setLoginOpen}
+      />
     </li>
   );
 }
