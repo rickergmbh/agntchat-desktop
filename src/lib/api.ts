@@ -773,6 +773,22 @@ export async function submitClaudeLoginCode(
   );
 }
 
+/**
+ * Send a single navigation key (Enter/Up/Down/Left/Right/Space/Escape/Tab/
+ * BSpace/y/n) to the login session — used to answer prompts that precede the
+ * login itself, e.g. the "Do you trust the files in this folder?" dialog.
+ */
+export async function sendClaudeLoginKey(
+  orgId: string,
+  hostId: string,
+  key: string
+): Promise<{ output: string }> {
+  return request<{ output: string }>(
+    `/api/organizations/${orgId}/hosts/${hostId}/claude-login/key`,
+    { method: "POST", body: JSON.stringify({ key }) }
+  );
+}
+
 /** Kill the login session (cancel / cleanup). */
 export async function cancelClaudeLogin(
   orgId: string,

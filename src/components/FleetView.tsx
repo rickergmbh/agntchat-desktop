@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Activity,
   AlertCircle,
@@ -1099,6 +1099,15 @@ function loginFailed(pane: string): boolean {
   return /invalid code|authentication failed|oauth error|error:|expired/i.test(pane);
 }
 
+// Before the login URL appears, `claude` can show a "Do you trust the files in
+// this folder?" prompt that must be answered (Enter = the default "Yes" option)
+// before it continues. We detect it from the pane text and auto-confirm once.
+function trustPromptVisible(pane: string): boolean {
+  return /do you trust the files in this folder|trust the files in this|yes, proceed/i.test(
+    pane
+  );
+}
+
 /**
  * Drives an interactive `claude /login` on one host VM, entirely from the
  * desktop. The backend runs the login inside a detached tmux session over SSH;
@@ -1127,6 +1136,27 @@ export function ClaudeLoginDialog({
   >("starting");
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [keyBusy, setKeyBusy] = useState(false);
+  // Auto-confirm the trust-folder prompt at most once per session so we don't
+  // hammer Enter every 2s poll while the prompt is still painting.
+  const trustConfirmedRef = useRef(false);
+
+  // Fire-and-forget a navigation key into the remote session. Used both for the
+  // automatic trust-prompt confirmation and the manual controls below.
+  const sendKey = useCallback(
+    async (key: string) => {
+      setKeyBusy(true);
+      try {
+        const { output } = await api.sendClaudeLoginKey(orgId, hostId, key);
+        setPane(output);
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Could not send key to the host");
+      } finally {
+        setKeyBusy(false);
+      }
+    },
+    [orgId, hostId]
+  );
 
   // Start the session when the dialog opens; cancel + reset when it closes.
   useEffect(() => {
@@ -1137,6 +1167,12 @@ export function ClaudeLoginDialog({
     const applyPane = (text: string) => {
       if (cancelled) return;
       setPane(text);
+      // Auto-answer the trust-folder prompt (Enter = the highlighted "Yes")
+      // once, so the login can advance to printing the URL.
+      if (!trustConfirmedRef.current && !extractLoginUrl(text) && trustPromptVisible(text)) {
+        trustConfirmedRef.current = true;
+        void api.sendClaudeLoginKey(orgId, hostId, "Enter").catch(() => {});
+      }
       const url = extractLoginUrl(text);
       if (url) setLoginUrl(url);
       // Don't override an in-flight code submission or a finished state.
@@ -1163,6 +1199,7 @@ export function ClaudeLoginDialog({
     setLoginUrl(null);
     setCode("");
     setError(null);
+    trustConfirmedRef.current = false;
 
     api
       .startClaudeLogin(orgId, hostId)
@@ -1231,8 +1268,38 @@ export function ClaudeLoginDialog({
           )}
 
           {phase === "awaiting_url" && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Loader2 className="h-4 w-4 animate-spin" /> Waiting for the login URL…
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" /> Waiting for the login URL…
+              </div>
+              {trustPromptVisible(pane) && (
+                <p className="text-xs text-muted-foreground">
+                  The host is asking whether to trust this folder — confirming
+                  automatically. If it's stuck, use the controls below to answer
+                  it manually.
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Manual terminal controls — a fallback for any prompt that precedes
+              the login (trust-folder dialog, menu selection) that our
+              auto-confirm didn't clear. Shown until the URL appears. */}
+          {(phase === "awaiting_url" || phase === "starting") && (
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="mr-1 text-xs text-muted-foreground">Send key:</span>
+              {(["Up", "Down", "Enter"] as const).map((k) => (
+                <Button
+                  key={k}
+                  variant="outline"
+                  size="sm"
+                  className="h-7"
+                  disabled={keyBusy}
+                  onClick={() => void sendKey(k)}
+                >
+                  {k === "Up" ? "↑" : k === "Down" ? "↓" : "Enter ⏎"}
+                </Button>
+              ))}
             </div>
           )}
 
