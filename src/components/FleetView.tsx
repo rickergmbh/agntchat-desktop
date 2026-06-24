@@ -1123,16 +1123,24 @@ function openExternal(url: string) {
   });
 }
 
-// Pull the OAuth URL out of the captured login pane. claude /login prints a
-// `https://claude.ai/oauth/authorize?…` (or anthropic console) URL when it
-// can't open a browser. Grab the first matching URL; trim trailing punctuation.
-const CLAUDE_LOGIN_URL_RE =
-  /https?:\/\/[^\s"']*(?:claude\.ai|anthropic\.com)[^\s"']*/i;
+// Pull the OAuth authorize URL out of the captured login pane. claude /login
+// prints a `https://claude.com/cai/oauth/authorize?…` (or claude.ai / anthropic
+// console) URL when it can't open a browser. We match the *authorize* URL
+// specifically — not just any anthropic/claude link — so an unrelated marketing
+// URL in the banner (e.g. claude.com/news/…) is never mistaken for it.
+//
+// We anchor on the *authorize* URL specifically — not just any anthropic/claude
+// link — so an unrelated marketing URL in the login banner (e.g.
+// claude.com/news/…) is never mistaken for it. The backend runs the login in a
+// 1000-column tmux pane and captures with `-J`, so the ~400-char URL comes back
+// on a single line; from the anchor we take the contiguous run of non-whitespace.
+const AUTHORIZE_URL_RE =
+  /https?:\/\/(?:[a-z0-9.-]*\.)?(?:claude\.com|claude\.ai|anthropic\.com)\/[^\s]*oauth\/authorize[^\s]*/i;
 
 function extractLoginUrl(pane: string): string | null {
-  const m = pane.match(CLAUDE_LOGIN_URL_RE);
+  const m = pane.match(AUTHORIZE_URL_RE);
   if (!m) return null;
-  return m[0].replace(/[).,]+$/, "");
+  return m[0].replace(/[).,]+$/, "") || null;
 }
 
 // Heuristic success / failure detection from the pane text.
@@ -1152,6 +1160,13 @@ function trustPromptVisible(pane: string): boolean {
   return /do you trust the files in this folder|trust the files in this|yes, proceed/i.test(
     pane
   );
+}
+
+// After the URL, `claude /login` prints a "Paste code here if prompted" line and
+// blocks on stdin. Detecting it lets us reveal the code box even if URL
+// extraction failed — so the operator is never stuck unable to paste.
+function codePromptVisible(pane: string): boolean {
+  return /paste (the )?code|enter (the )?code|authorization code|code:\s*$/im.test(pane);
 }
 
 /**
@@ -1221,11 +1236,13 @@ export function ClaudeLoginDialog({
       }
       const url = extractLoginUrl(text);
       if (url) setLoginUrl(url);
-      // Don't override an in-flight code submission or a finished state.
+      // Don't override an in-flight code submission or a finished state. Move to
+      // the code step once the URL appears OR the host prints its "paste code"
+      // prompt — so a failed URL extraction never traps the operator.
       setPhase((prev) => {
         if (prev === "submitting" || prev === "done" || prev === "error") return prev;
         if (loginSucceeded(text)) return "done";
-        if (url) return "awaiting_code";
+        if (url || codePromptVisible(text)) return "awaiting_code";
         return "awaiting_url";
       });
     };
@@ -1375,9 +1392,15 @@ export function ClaudeLoginDialog({
             </div>
           )}
 
-          {(phase === "awaiting_code" || phase === "submitting") && loginUrl && (
+          {(phase === "awaiting_code" || phase === "submitting") && (
             <div className="space-y-1">
               <Label htmlFor="claude-auth-code">Authorization code</Label>
+              {!loginUrl && (
+                <p className="text-xs text-muted-foreground">
+                  Couldn't auto-detect the login URL — copy it from the terminal
+                  output below, open it in your browser, then paste the code here.
+                </p>
+              )}
               <div className="flex items-center gap-2">
                 <Input
                   id="claude-auth-code"
