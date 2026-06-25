@@ -246,7 +246,11 @@ function HostCard({
     if (expanded) void loadDetail();
   }, [expanded, loadDetail]);
 
-  const runningCount = host.agentCount ?? host.runningAgentIds?.length ?? 0;
+  // Canonical online signal from the backend (reachable now — same as the
+  // agent roster), with the assigned total. Falls back to the heartbeat
+  // self-report only if the enriched counts are somehow absent.
+  const onlineCount = host.onlineAgentCount ?? host.agentCount ?? host.runningAgentIds?.length ?? 0;
+  const assignedCount = host.assignedAgentCount ?? onlineCount;
   const bootstrapped = !!host.bootstrappedAt;
 
   const op = async (kind: api.HostOpKind, confirmMsg?: string) => {
@@ -409,7 +413,11 @@ function HostCard({
             onClick={() => setExpanded((v) => !v)}
             className="mt-0.5 block w-full truncate text-left text-xs text-muted-foreground"
           >
-            {runningCount} agent{runningCount === 1 ? "" : "s"} running
+            <span className={cn("tabular-nums", onlineCount > 0 && "text-success")}>
+              {onlineCount}
+            </span>
+            <span className="tabular-nums">/{assignedCount}</span> agent
+            {assignedCount === 1 ? "" : "s"} online
             {host.sshHost ? ` · ${host.sshUser || "root"}@${host.sshHost}` : " · no SSH target"}
             {host.provider
               ? ` · ${host.provider}${host.providerVmId ? ` vm ${host.providerVmId}` : ""}${
