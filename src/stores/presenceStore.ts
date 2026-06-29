@@ -28,6 +28,10 @@ interface PresenceState {
   typing: Record<string, Set<string>>;
   /** participantId → display name (for rendering "X is typing...") */
   typingNames: Record<string, string>;
+  /** participantId → "human" | "agent". Drives the semantic typing verb
+   *  ("is typing" vs "is processing") so the indicator reads the same as
+   *  web/mobile. */
+  typingTypes: Record<string, string>;
   /** Hosted agents the user just asked to bring back online (a host restart
    *  is in flight). Drives the per-row "Bringing online…" spinner until the
    *  agent reports online via `agent_status_changed` or a safety timeout
@@ -118,9 +122,15 @@ export const usePresenceStore = create<PresenceState>((set) => {
       setTimeout(() => clearTyping(convId, participantId), ttl)
     );
 
+    const ptype = isAgent ? "agent" : "human";
+
     set((s) => {
       const current = s.typing[convId] ?? new Set();
-      if (current.has(participantId) && s.typingNames[participantId] === displayName) {
+      if (
+        current.has(participantId) &&
+        s.typingNames[participantId] === displayName &&
+        s.typingTypes[participantId] === ptype
+      ) {
         return s;
       }
       const next = new Set(current);
@@ -130,6 +140,7 @@ export const usePresenceStore = create<PresenceState>((set) => {
         typingNames: displayName
           ? { ...s.typingNames, [participantId]: displayName }
           : s.typingNames,
+        typingTypes: { ...s.typingTypes, [participantId]: ptype },
       };
     });
   }
@@ -142,6 +153,7 @@ export const usePresenceStore = create<PresenceState>((set) => {
     agentActivityConvs: {},
     typing: {},
     typingNames: {},
+    typingTypes: {},
     wakingAgents: new Set(),
 
     clearTyping,

@@ -1,0 +1,28 @@
+export interface TypingEntry {
+  name: string;
+  type: string; // "human" | "agent"
+}
+
+// Semantic typing verb, shared across web / desktop / mobile so the indicator
+// reads identically everywhere:
+// - a lone human "is typing", a lone agent "is processing"
+// - all agents "are processing"; a mix that includes an agent "are responding";
+//   all humans "are typing".
+// Returns "" for an empty list (callers treat that as "nothing to show").
+export function buildTypingText(entries: TypingEntry[]): string {
+  if (entries.length === 0) return "";
+
+  if (entries.length === 1) {
+    const [only] = entries;
+    const verb = only.type === "agent" ? "is processing" : "is typing";
+    return `${only.name} ${verb}`;
+  }
+
+  const hasAgent = entries.some((e) => e.type === "agent");
+  const allAgents = entries.every((e) => e.type === "agent");
+  const names = entries.map((e) => e.name).join(", ");
+
+  if (allAgents) return `${names} are processing`;
+  if (hasAgent) return `${names} are responding`;
+  return `${names} are typing`;
+}

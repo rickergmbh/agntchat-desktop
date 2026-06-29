@@ -12,6 +12,7 @@ import { MessageContextMenu } from "./MessageContextMenu";
 import { StreamingBubble } from "./StreamingBubble";
 import { AgentConversationCard } from "./AgentConversationCard";
 import { cn, dayKey, formatDayLabel } from "../../lib/utils";
+import { buildTypingText } from "../../lib/typing-indicator";
 import { agentConversationSourceId } from "../../lib/thread-selectors";
 import type { Conversation, Message } from "../../lib/api";
 import { ws } from "../../services/websocket";
@@ -388,6 +389,7 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
 
   const typingIds = usePresenceStore((s) => s.typing[conversationId]);
   const typingNames = usePresenceStore((s) => s.typingNames);
+  const typingTypes = usePresenceStore((s) => s.typingTypes);
   const stream = useStreamingStore((s) => s.streams[conversationId]);
   const [stoppingAgents, setStoppingAgents] = useState(false);
 
@@ -607,18 +609,21 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
     el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   };
 
-  const typingLabel = useMemo(() => {
-    if (!typingIds || typingIds.size === 0) return null;
-    // Don't show typing if the same agent is already streaming (avoid dupe)
-    const names = Array.from(typingIds)
-      .filter((id) => !stream || stream.senderId !== id)
-      .map((id) => typingNames[id])
-      .filter(Boolean) as string[];
-    if (names.length === 0) return null;
-    if (names.length === 1) return `${names[0]} is typing…`;
-    if (names.length === 2) return `${names[0]} and ${names[1]} are typing…`;
-    return `${names[0]} and ${names.length - 1} others are typing…`;
-  }, [typingIds, typingNames, stream]);
+  // Build typing entries (name + type), filtering out ourselves and any agent
+  // already streaming (the StreamingBubble replaces its indicator). Mirrors
+  // web/mobile exactly so the wording reads the same on every platform.
+  const typingEntries = useMemo(() => {
+    if (!typingIds || typingIds.size === 0) return [];
+    return Array.from(typingIds)
+      .filter((id) => id !== myId && (!stream || stream.senderId !== id))
+      .map((id) => ({
+        name: typingNames[id] || "Someone",
+        type: typingTypes[id] || "human",
+      }));
+  }, [typingIds, typingNames, typingTypes, stream, myId]);
+
+  const typingHasAgent = typingEntries.some((e) => e.type === "agent");
+  const typingLabel = buildTypingText(typingEntries);
 
   const handleContextMenu = (message: Message, e: React.MouseEvent) => {
     setMenu({ message, x: e.clientX, y: e.clientY });
@@ -772,7 +777,12 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
           of scroll position. Was inside the scrollable div, so typing
           fired while the user was scrolled up was hidden below the fold. */}
       {typingLabel && (
-        <div className="border-t border-border bg-card/80 backdrop-blur px-4 py-1 text-[11px] text-muted-foreground italic">
+        <div
+          className={cn(
+            "border-t border-border bg-card/80 backdrop-blur px-4 py-1 text-[11px] italic",
+            typingHasAgent ? "text-primary" : "text-muted-foreground"
+          )}
+        >
           {typingLabel}
         </div>
       )}
