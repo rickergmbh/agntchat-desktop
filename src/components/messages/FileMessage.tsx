@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { FileIcon, ImageIcon, Download, Loader2, ExternalLink } from "lucide-react";
 import * as api from "../../lib/api";
-import { formatFileSize } from "../../services/fileUpload";
+import { formatFileSize, attachmentDisplayName } from "../../services/fileUpload";
 import type { Message } from "../../lib/api";
 
 interface FileContent {
@@ -90,7 +90,7 @@ export function AttachmentChip({
     >
       <FileIcon className="h-6 w-6 shrink-0" />
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium">{filename ?? "File"}</p>
+        <p className="truncate text-sm font-medium">{attachmentDisplayName(filename)}</p>
         {sizeBytes ? <p className="text-xs opacity-75">{formatFileSize(sizeBytes)}</p> : null}
       </div>
       {loading ? (

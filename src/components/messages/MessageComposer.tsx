@@ -24,6 +24,8 @@ import {
   uploadFile,
   uploadPastedText,
   PASTE_AS_FILE_THRESHOLD,
+  PASTED_TEXT_FILENAME,
+  PASTED_TEXT_LABEL,
   type PendingAttachment,
   type RideAlongAttachment,
 } from "../../services/fileUpload";
@@ -31,16 +33,9 @@ import type { ConversationMember } from "../../lib/api";
 
 const MAX_HEIGHT = 180;
 
-let pasteCounter = 0;
-function nextPasteFilename(): string {
-  pasteCounter += 1;
-  return `pasted-text-${pasteCounter}.txt`;
-}
-
 interface PastedText {
   id: string;
   text: string;
-  filename: string;
   charCount: number;
 }
 // Stable singleton for the `members` selector fallback. Inlining `?? []`
@@ -166,10 +161,9 @@ export function MessageComposer({ conversationId }: { conversationId: string }) 
     const pasted = e.clipboardData?.getData("text") ?? "";
     if (pasted.length >= PASTE_AS_FILE_THRESHOLD) {
       e.preventDefault();
-      const filename = nextPasteFilename();
       setPastedTexts((prev) => [
         ...prev,
-        { id: `${filename}:${Date.now()}`, text: pasted, filename, charCount: pasted.length },
+        { id: `paste:${Date.now()}:${prev.length}`, text: pasted, charCount: pasted.length },
       ]);
     }
   };
@@ -299,7 +293,7 @@ export function MessageComposer({ conversationId }: { conversationId: string }) 
       setUploading(true);
       try {
         const uploaded: RideAlongAttachment[] = await Promise.all(
-          pastedTexts.map((p) => uploadPastedText(conversationId, p.text, p.filename))
+          pastedTexts.map((p) => uploadPastedText(conversationId, p.text, PASTED_TEXT_FILENAME))
         );
         await sendMessage(conversationId, text, {
           parentMessageId: replyingTo?.id,
@@ -398,9 +392,9 @@ export function MessageComposer({ conversationId }: { conversationId: string }) 
             <div key={p.id} className="flex items-center gap-2 rounded-md bg-muted px-2.5 py-1.5">
               <FileIcon className="h-4 w-4 shrink-0 text-muted-foreground" />
               <div className="min-w-0 flex-1">
-                <p className="truncate text-xs font-medium">{p.filename}</p>
+                <p className="truncate text-xs font-medium">{PASTED_TEXT_LABEL}</p>
                 <p className="text-[11px] text-muted-foreground">
-                  Pasted text · {p.charCount.toLocaleString()} chars
+                  {p.charCount.toLocaleString()} chars
                 </p>
               </div>
               {!uploading && (

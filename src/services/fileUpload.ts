@@ -76,6 +76,22 @@ export interface RideAlongAttachment {
 export const PASTE_AS_FILE_THRESHOLD = 1500;
 
 /**
+ * Backing filename for a pasted-text attachment. Stable (no counter) — the
+ * storage key carries a UUID so there's never a collision, and a friendly
+ * label is shown in the UI instead of this raw name.
+ */
+export const PASTED_TEXT_FILENAME = "pasted-text.txt";
+
+/** Friendly UI label for a pasted-text attachment (à la Claude's "Pasted text"). */
+export const PASTED_TEXT_LABEL = "Pasted text";
+
+/** Maps a stored filename to its display label — "Pasted text" for pasted
+ *  blobs, the raw filename for everything else. */
+export function attachmentDisplayName(filename?: string): string {
+  return filename === PASTED_TEXT_FILENAME ? PASTED_TEXT_LABEL : filename || "File";
+}
+
+/**
  * Uploads a pasted text blob through the presigned-upload flow and returns
  * its ride-along descriptor — WITHOUT confirming it as a standalone file
  * message. The caller includes the descriptor in the `attachments` array of
