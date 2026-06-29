@@ -7,7 +7,7 @@ import { useModelCatalog } from "../../stores/modelCatalogStore";
 import { MarkdownContent } from "./MarkdownContent";
 import { isTaskMessage, TaskMessage } from "./TaskMessages";
 import { isToolMessage, ToolMessage } from "./ToolMessages";
-import { isFileMessage, FileMessage } from "./FileMessage";
+import { isFileMessage, FileMessage, RideAlongAttachments } from "./FileMessage";
 import {
   isStatusUpdateMessage,
   StatusUpdateMessage,
@@ -258,7 +258,10 @@ export function MessageBubble({
           ) : isResultPresentationMessage(message) ? (
             <ResultPresentationMessage message={message} />
           ) : (
-            <MarkdownContent content={message.content} />
+            <>
+              {message.content?.trim() ? <MarkdownContent content={message.content} /> : null}
+              <RideAlongAttachments message={message} />
+            </>
           )}
         </div>
 

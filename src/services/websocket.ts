@@ -226,19 +226,27 @@ class WebSocketService {
       contentType?: string;
       metadata?: Record<string, unknown>;
       parentMessageId?: string;
+      attachments?: Array<Record<string, unknown>>;
     }
   ): Promise<Record<string, unknown>> {
     return new Promise((resolve, reject) => {
       const channel = this.conversationChannels.get(conversationId);
       if (!channel) return reject(new Error("Not joined to conversation"));
 
+      const payload: Record<string, unknown> = {
+        content,
+        content_type: options?.contentType ?? "text",
+        metadata: options?.metadata ?? {},
+        parent_message_id: options?.parentMessageId,
+      };
+      // Ride-along attachments (paste-to-attachment): pre-uploaded objects the
+      // backend links to this text message in one transaction.
+      if (options?.attachments && options.attachments.length > 0) {
+        payload.attachments = options.attachments;
+      }
+
       channel
-        .push("new_message", {
-          content,
-          content_type: options?.contentType ?? "text",
-          metadata: options?.metadata ?? {},
-          parent_message_id: options?.parentMessageId,
-        })
+        .push("new_message", payload)
         .receive("ok", resolve)
         .receive("error", reject)
         .receive("timeout", () => reject(new Error("Message send timeout")));

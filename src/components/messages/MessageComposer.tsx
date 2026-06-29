@@ -22,11 +22,27 @@ import {
   formatFileSize,
   isImageFile,
   uploadFile,
+  uploadPastedText,
+  PASTE_AS_FILE_THRESHOLD,
   type PendingAttachment,
+  type RideAlongAttachment,
 } from "../../services/fileUpload";
 import type { ConversationMember } from "../../lib/api";
 
 const MAX_HEIGHT = 180;
+
+let pasteCounter = 0;
+function nextPasteFilename(): string {
+  pasteCounter += 1;
+  return `pasted-text-${pasteCounter}.txt`;
+}
+
+interface PastedText {
+  id: string;
+  text: string;
+  filename: string;
+  charCount: number;
+}
 // Stable singleton for the `members` selector fallback. Inlining `?? []`
 // returns a fresh array each call, which trips Zustand v4's
 // `useSyncExternalStore` snapshot equality check and loops React forever.
@@ -60,6 +76,10 @@ export function MessageComposer({ conversationId }: { conversationId: string }) 
   const [mentionIndex, setMentionIndex] = useState(0);
   const [attachment, setAttachment] = useState<PendingAttachment | null>(null);
   const [uploading, setUploading] = useState(false);
+  // Paste-to-attachment: large pasted text blobs lifted out of the composer
+  // into pending .txt attachments (a removable pill each). Uploaded on send,
+  // then ride along with the text message.
+  const [pastedTexts, setPastedTexts] = useState<PastedText[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const lastTypingAtRef = useRef(0);
@@ -74,6 +94,7 @@ export function MessageComposer({ conversationId }: { conversationId: string }) 
   // Reset attachment when switching conversations
   useEffect(() => {
     setAttachment(null);
+    setPastedTexts([]);
   }, [conversationId]);
 
   const attachFile = (file: File | null | undefined) => {
@@ -127,16 +148,29 @@ export function MessageComposer({ conversationId }: { conversationId: string }) 
   // intercept and attach it instead of letting the textarea paste junk.
   const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
     const items = e.clipboardData?.items;
-    if (!items) return;
-    for (const item of Array.from(items)) {
-      if (item.kind === "file") {
-        const file = item.getAsFile();
-        if (file) {
-          e.preventDefault();
-          attachFile(file);
-          return;
+    if (items) {
+      for (const item of Array.from(items)) {
+        if (item.kind === "file") {
+          const file = item.getAsFile();
+          if (file) {
+            e.preventDefault();
+            attachFile(file);
+            return;
+          }
         }
       }
+    }
+
+    // Large text paste → lift into a .txt attachment instead of dumping it
+    // into the composer (and the message body / agent prompt).
+    const pasted = e.clipboardData?.getData("text") ?? "";
+    if (pasted.length >= PASTE_AS_FILE_THRESHOLD) {
+      e.preventDefault();
+      const filename = nextPasteFilename();
+      setPastedTexts((prev) => [
+        ...prev,
+        { id: `${filename}:${Date.now()}`, text: pasted, filename, charCount: pasted.length },
+      ]);
     }
   };
 
@@ -236,7 +270,8 @@ export function MessageComposer({ conversationId }: { conversationId: string }) 
   const handleSend = async () => {
     const text = draft.trim();
     const hasAttachment = attachment != null;
-    if ((!text && !hasAttachment) || sending || uploading) return;
+    const hasPastedTexts = pastedTexts.length > 0;
+    if ((!text && !hasAttachment && !hasPastedTexts) || sending || uploading) return;
     setError(null);
 
     // If there's an attachment, upload it first. The server creates the file
@@ -255,6 +290,28 @@ export function MessageComposer({ conversationId }: { conversationId: string }) 
         return;
       }
       setUploading(false);
+      return;
+    }
+
+    // Paste-to-attachment ride-along: upload each pasted blob, then send the
+    // text message with the attachment descriptors so they land in one bubble.
+    if (hasPastedTexts) {
+      setUploading(true);
+      try {
+        const uploaded: RideAlongAttachment[] = await Promise.all(
+          pastedTexts.map((p) => uploadPastedText(conversationId, p.text, p.filename))
+        );
+        await sendMessage(conversationId, text, {
+          parentMessageId: replyingTo?.id,
+          attachments: uploaded as unknown as Array<Record<string, unknown>>,
+        });
+        setPastedTexts([]);
+        useChatStore.getState().setDraft(conversationId, "");
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Attachment upload failed");
+      } finally {
+        setUploading(false);
+      }
       return;
     }
 
@@ -306,7 +363,10 @@ export function MessageComposer({ conversationId }: { conversationId: string }) 
     }
   };
 
-  const canSend = (draft.trim().length > 0 || attachment != null) && !sending && !uploading;
+  const canSend =
+    (draft.trim().length > 0 || attachment != null || pastedTexts.length > 0) &&
+    !sending &&
+    !uploading;
 
   return (
     <div
@@ -331,6 +391,32 @@ export function MessageComposer({ conversationId }: { conversationId: string }) 
           uploading={uploading}
           onClear={clearAttachment}
         />
+      )}
+      {pastedTexts.length > 0 && (
+        <div className="flex flex-col gap-1.5 border-t border-border bg-muted/40 px-3 py-2">
+          {pastedTexts.map((p) => (
+            <div key={p.id} className="flex items-center gap-2 rounded-md bg-muted px-2.5 py-1.5">
+              <FileIcon className="h-4 w-4 shrink-0 text-muted-foreground" />
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-xs font-medium">{p.filename}</p>
+                <p className="text-[11px] text-muted-foreground">
+                  Pasted text · {p.charCount.toLocaleString()} chars
+                </p>
+              </div>
+              {!uploading && (
+                <button
+                  type="button"
+                  onClick={() => setPastedTexts((prev) => prev.filter((x) => x.id !== p.id))}
+                  className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+                  title="Remove pasted text"
+                  aria-label="Remove pasted text"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
       )}
       <div className="px-3 py-2.5">
         {error && <p className="text-[11px] text-destructive mb-1.5 px-1">{error}</p>}

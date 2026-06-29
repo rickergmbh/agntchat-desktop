@@ -135,7 +135,7 @@ interface ChatState {
   sendMessage: (
     conversationId: string,
     content: string,
-    options?: { parentMessageId?: string }
+    options?: { parentMessageId?: string; attachments?: Array<Record<string, unknown>> }
   ) => Promise<void>;
   deleteMessage: (conversationId: string, messageId: string) => void;
   addMessage: (conversationId: string, message: Message) => void;
@@ -430,6 +430,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
     const participant = useAuthStore.getState().participant;
     const now = new Date().toISOString();
     const parentMessageId = options?.parentMessageId;
+    const attachments = options?.attachments;
     const placeholder: Message = {
       id: `${PENDING_PREFIX}${nonce}`,
       conversationId,
@@ -483,6 +484,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
       await ws.sendMessage(conversationId, content, {
         metadata: { client_nonce: nonce },
         parentMessageId,
+        attachments,
       });
     } catch (e) {
       console.warn(`[chat] sendMessage failed, removing placeholder`, e);

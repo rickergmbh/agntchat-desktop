@@ -59,6 +59,74 @@ function useDownloadUrl(attachmentId?: string, existingUrl?: string) {
   return { url, loading };
 }
 
+/**
+ * Compact, tappable chip for a file that rides along with a (non-"file")
+ * text message — e.g. a paste-to-attachment .txt. Rendered below the
+ * message body. Distinct from FileMessage, which renders a standalone
+ * "file" message from its content JSON.
+ */
+export function AttachmentChip({
+  attachmentId,
+  filename,
+  sizeBytes,
+  downloadUrl,
+}: {
+  attachmentId: string;
+  filename?: string;
+  sizeBytes?: number;
+  downloadUrl?: string;
+}) {
+  const { url, loading } = useDownloadUrl(attachmentId, downloadUrl);
+
+  return (
+    <a
+      href={url ?? "#"}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex items-center gap-2.5 rounded-lg border border-border p-2 transition-colors hover:bg-muted/50"
+      onClick={(e) => {
+        if (!url) e.preventDefault();
+      }}
+    >
+      <FileIcon className="h-6 w-6 shrink-0" />
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-medium">{filename ?? "File"}</p>
+        {sizeBytes ? <p className="text-xs opacity-75">{formatFileSize(sizeBytes)}</p> : null}
+      </div>
+      {loading ? (
+        <Loader2 className="h-4 w-4 shrink-0 animate-spin" />
+      ) : url ? (
+        <ExternalLink className="h-4 w-4 shrink-0" />
+      ) : (
+        <Download className="h-4 w-4 shrink-0" />
+      )}
+    </a>
+  );
+}
+
+/**
+ * Renders chips for files riding along with a (non-"file") text message.
+ * Returns null when there are none, so it's safe to drop in any bubble.
+ */
+export function RideAlongAttachments({ message }: { message: Message }) {
+  const attachments = message.fileAttachments;
+  if (!attachments || attachments.length === 0) return null;
+
+  return (
+    <div className="mt-2 flex flex-col gap-1.5">
+      {attachments.map((att) => (
+        <AttachmentChip
+          key={att.id}
+          attachmentId={att.id}
+          filename={att.filename}
+          sizeBytes={att.sizeBytes}
+          downloadUrl={att.downloadUrl}
+        />
+      ))}
+    </div>
+  );
+}
+
 export function FileMessage({ message }: { message: Message }) {
   const file = safeParseJson<FileContent>(message.content, {
     filename: message.content,

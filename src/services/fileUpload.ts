@@ -56,3 +56,52 @@ export async function uploadFile(
     caption,
   });
 }
+
+/** A pre-uploaded object ready to ride along with a text message's
+ *  `new_message` push (see ws.sendMessage `attachments`). */
+export interface RideAlongAttachment {
+  storageKey: string;
+  filename: string;
+  contentType: string;
+  sizeBytes: number;
+}
+
+/**
+ * Paste-to-attachment: a single paste longer than this many characters is
+ * lifted out of the composer into a `.txt` attachment instead of bloating
+ * the message body (and the agent's prompt). Mirrors how Claude turns a
+ * large paste into a separate readable artifact. The agent reads it on
+ * demand via the `read_attachment` tool rather than receiving it inline.
+ */
+export const PASTE_AS_FILE_THRESHOLD = 1500;
+
+/**
+ * Uploads a pasted text blob through the presigned-upload flow and returns
+ * its ride-along descriptor — WITHOUT confirming it as a standalone file
+ * message. The caller includes the descriptor in the `attachments` array of
+ * the normal `new_message` push so text + attachment land in one bubble.
+ */
+export async function uploadPastedText(
+  conversationId: string,
+  text: string,
+  filename: string
+): Promise<RideAlongAttachment> {
+  const contentType = "text/plain";
+  const blob = new Blob([text], { type: contentType });
+  const sizeBytes = blob.size;
+
+  const { uploadUrl, storageKey } = await api.requestUploadUrl(conversationId, {
+    filename,
+    contentType,
+    sizeBytes,
+  });
+
+  const uploadResponse = await fetch(uploadUrl, {
+    method: "PUT",
+    headers: { "Content-Type": contentType },
+    body: blob,
+  });
+  if (!uploadResponse.ok) throw new Error("Upload to storage failed");
+
+  return { storageKey, filename, contentType, sizeBytes };
+}
