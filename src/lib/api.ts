@@ -1730,6 +1730,21 @@ export async function resumeRoutine(id: string): Promise<{ routine: Routine }> {
 }
 
 // Connected Accounts / Integrations
+export interface CredentialFieldDef {
+  key: string;
+  label: string;
+  secret: boolean;
+}
+
+// A user-defined named value entered for a custom endpoint. Secret values are
+// stored encrypted server-side and never returned.
+export interface CredentialFieldInput {
+  key: string;
+  label: string;
+  value: string;
+  secret: boolean;
+}
+
 export interface UserCredential {
   id: string;
   provider: string;
@@ -1739,6 +1754,11 @@ export interface UserCredential {
   providerUid?: string;
   lastUsedAt?: string;
   tokenExpiresAt?: string;
+  // Custom-endpoint extras (see backend serializer). Secret field VALUES are
+  // never returned — only their key/label/secret flag in `fieldDefs`.
+  endpoint?: string;
+  fieldDefs?: CredentialFieldDef[];
+  publicFields?: Record<string, string>;
   insertedAt: string;
   updatedAt: string;
 }
@@ -1763,10 +1783,23 @@ export async function authorizeProvider(provider: string): Promise<{ authorizeUr
   return request(`/api/integrations/${provider}/authorize`);
 }
 
-export async function storeProviderToken(provider: string, token: string): Promise<{ credential: UserCredential }> {
+export async function storeProviderToken(
+  provider: string,
+  token: string,
+  extras?: {
+    providerUid?: string;
+    endpoint?: string;
+    fields?: CredentialFieldInput[];
+  }
+): Promise<{ credential: UserCredential }> {
   return request(`/api/integrations/${provider}/token`, {
     method: "POST",
-    body: JSON.stringify({ token }),
+    body: JSON.stringify({
+      token,
+      providerUid: extras?.providerUid,
+      endpoint: extras?.endpoint,
+      fields: extras?.fields,
+    }),
   });
 }
 

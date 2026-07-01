@@ -140,26 +140,11 @@ type SectionValue = (typeof SECTIONS)[number]["value"];
 // Custom API persistence
 // ---------------------------------------------------------------------------
 
-export interface CustomApi {
-  id: string;
-  name: string;
-  apiKey: string;
-  endpoint: string;
-}
-
-function loadCustomApis(): CustomApi[] {
-  const raw = localStorage.getItem("customApis");
-  if (!raw) return [];
-  try {
-    return JSON.parse(raw);
-  } catch {
-    return [];
-  }
-}
-
-function saveCustomApis(apis: CustomApi[]) {
-  localStorage.setItem("customApis", JSON.stringify(apis));
-}
+// The custom endpoint is stored backend-side under the `custom` provider so
+// agents can actually resolve it (encrypted at rest, walks the ownership
+// chain). A single custom endpoint per user, with an API key plus any number
+// of extra named values (secret ones encrypted).
+type CustomFieldRow = api.CredentialFieldInput;
 
 // ---------------------------------------------------------------------------
 // Component
@@ -219,21 +204,14 @@ export function Profile({ onClose }: { onClose: () => void }) {
   );
   const [disconnecting, setDisconnecting] = useState(false);
 
-  // ---- Custom API state ----
-  const [customApis, setCustomApis] = useState<CustomApi[]>(loadCustomApis);
-  const [customApiDialog, setCustomApiDialog] = useState<{
-    open: boolean;
-    editing?: CustomApi;
-  }>({ open: false });
-  const [customApiForm, setCustomApiForm] = useState({
-    name: "",
-    apiKey: "",
-    endpoint: "",
-  });
+  // ---- Custom API state (backend `custom` provider) ----
+  const [customApiDialog, setCustomApiDialog] = useState(false);
+  const [customEndpoint, setCustomEndpoint] = useState("");
+  const [customApiKey, setCustomApiKey] = useState("");
+  const [customFields, setCustomFields] = useState<CustomFieldRow[]>([]);
   const [customApiError, setCustomApiError] = useState<string | null>(null);
-  const [deleteCustomApiId, setDeleteCustomApiId] = useState<string | null>(
-    null
-  );
+  const [savingCustomApi, setSavingCustomApi] = useState(false);
+  const [deleteCustomApi, setDeleteCustomApi] = useState(false);
 
   // ---- Fetch providers & credentials on mount ----
   const fetchIntegrations = useCallback(async () => {
@@ -435,61 +413,96 @@ export function Profile({ onClose }: { onClose: () => void }) {
     }
   };
 
-  // ---- Custom API handlers ----
+  // ---- Custom API handlers (backend `custom` provider) ----
 
-  const openAddCustomApi = () => {
-    setCustomApiForm({ name: "", apiKey: "", endpoint: "" });
+  const customCredential = credentials.find((c) => c.provider === "custom");
+
+  const openCustomApiDialog = () => {
+    // Prefill from the stored credential (edit). Secret values are never
+    // returned by the server — start them blank so the user only re-enters
+    // what they want to change; public values pre-fill from publicFields.
+    setCustomEndpoint(customCredential?.endpoint ?? "");
+    setCustomApiKey("");
+    setCustomFields(
+      (customCredential?.fieldDefs ?? []).map((d) => ({
+        key: d.key,
+        label: d.label,
+        secret: d.secret,
+        value: d.secret ? "" : customCredential?.publicFields?.[d.key] ?? "",
+      }))
+    );
     setCustomApiError(null);
-    setCustomApiDialog({ open: true });
+    setCustomApiDialog(true);
   };
 
-  const openEditCustomApi = (apiEntry: CustomApi) => {
-    setCustomApiForm({
-      name: apiEntry.name,
-      apiKey: apiEntry.apiKey,
-      endpoint: apiEntry.endpoint,
-    });
-    setCustomApiError(null);
-    setCustomApiDialog({ open: true, editing: apiEntry });
-  };
+  const addCustomField = () =>
+    setCustomFields((prev) => [
+      ...prev,
+      { key: "", label: "", value: "", secret: false },
+    ]);
 
-  const handleSaveCustomApi = () => {
-    const { name, apiKey, endpoint } = customApiForm;
-    if (!name.trim()) {
-      setCustomApiError("Name is required");
-      return;
-    }
-    if (!apiKey.trim()) {
-      setCustomApiError("API key is required");
-      return;
-    }
-    if (!endpoint.trim()) {
+  const updateCustomField = (index: number, patch: Partial<CustomFieldRow>) =>
+    setCustomFields((prev) =>
+      prev.map((f, i) => (i === index ? { ...f, ...patch } : f))
+    );
+
+  const removeCustomField = (index: number) =>
+    setCustomFields((prev) => prev.filter((_, i) => i !== index));
+
+  const handleSaveCustomApi = async () => {
+    if (!customEndpoint.trim()) {
       setCustomApiError("Service endpoint is required");
       return;
     }
+    // The primary key is the credential's `access_token`, which the backend
+    // always overwrites on save — so it must be re-entered every time (same
+    // as the other providers' token dialog and the mobile flow).
+    if (!customApiKey.trim()) {
+      setCustomApiError("API key is required");
+      return;
+    }
 
-    const entry: CustomApi = {
-      id: customApiDialog.editing?.id || crypto.randomUUID(),
-      name: name.trim(),
-      apiKey: apiKey.trim(),
-      endpoint: endpoint.trim(),
-    };
+    setSavingCustomApi(true);
+    setCustomApiError(null);
+    try {
+      const fields = customFields
+        .filter((f) => f.key.trim() !== "" && f.value.trim() !== "")
+        .map((f) => ({
+          key: f.key.trim(),
+          label: f.label.trim() || f.key.trim(),
+          value: f.value,
+          secret: f.secret,
+        }));
 
-    const updated = customApiDialog.editing
-      ? customApis.map((a) => (a.id === entry.id ? entry : a))
-      : [...customApis, entry];
-
-    setCustomApis(updated);
-    saveCustomApis(updated);
-    setCustomApiDialog({ open: false });
+      const { credential } = await api.storeProviderToken("custom", customApiKey.trim(), {
+        endpoint: customEndpoint.trim(),
+        fields,
+      });
+      setCredentials((prev) => [
+        ...prev.filter((c) => c.provider !== "custom"),
+        credential,
+      ]);
+      setCustomApiDialog(false);
+    } catch (e) {
+      setCustomApiError(
+        e instanceof Error ? e.message : "Failed to save custom API"
+      );
+    } finally {
+      setSavingCustomApi(false);
+    }
   };
 
-  const handleDeleteCustomApi = () => {
-    if (!deleteCustomApiId) return;
-    const updated = customApis.filter((a) => a.id !== deleteCustomApiId);
-    setCustomApis(updated);
-    saveCustomApis(updated);
-    setDeleteCustomApiId(null);
+  const handleDeleteCustomApi = async () => {
+    try {
+      await api.disconnectProvider("custom");
+      setCredentials((prev) => prev.filter((c) => c.provider !== "custom"));
+    } catch (e) {
+      setIntegrationError(
+        e instanceof Error ? e.message : "Failed to delete custom API"
+      );
+    } finally {
+      setDeleteCustomApi(false);
+    }
   };
 
   // ---- Helpers ----
@@ -779,35 +792,30 @@ export function Profile({ onClose }: { onClose: () => void }) {
 
         {activeSection === "connections" && (
           <div className="flex-1 overflow-y-auto p-5 space-y-6">
-            {/* Custom APIs — listed first so users immediately see they can
-                bring their own service endpoints, not just the built-ins. */}
+            {/* Custom API — a single bring-your-own endpoint stored backend-side
+                (encrypted, agent-usable) under the `custom` provider. */}
             <section>
               <SectionHeader
-                title="Custom APIs"
-                subtitle="Connect custom service endpoints for agent use"
+                title="Custom API"
+                subtitle="Connect a custom service endpoint for agent use"
               />
 
               <div className="rounded-xl border border-border bg-card divide-y divide-border overflow-hidden">
-                <button
-                  onClick={openAddCustomApi}
-                  className="w-full flex items-center gap-3 px-4 py-3 text-left text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors cursor-pointer"
-                >
-                  <span className="w-8 h-8 rounded-md border border-dashed border-border flex items-center justify-center flex-shrink-0">
-                    <Plus className="w-4 h-4" />
-                  </span>
-                  <span className="text-sm font-medium">Add Custom API</span>
-                </button>
-                {customApis.map((entry) => (
-                  <div key={entry.id} className="flex items-center gap-3 px-4 py-3">
+                {customCredential ? (
+                  <div className="flex items-center gap-3 px-4 py-3">
                     <div className="w-8 h-8 rounded-md flex items-center justify-center flex-shrink-0 bg-primary/10 border border-primary/20">
                       <Globe className="w-4 h-4 text-primary" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">
-                        {entry.name}
+                        {customCredential.endpoint || "Custom endpoint"}
                       </p>
                       <p className="text-xs text-muted-foreground truncate mt-0.5">
-                        {entry.endpoint}
+                        {(customCredential.fieldDefs?.length ?? 0) > 0
+                          ? `${customCredential.fieldDefs!.length} additional value${
+                              customCredential.fieldDefs!.length === 1 ? "" : "s"
+                            }`
+                          : "API key"}
                       </p>
                     </div>
                     <div className="flex items-center gap-1 flex-shrink-0">
@@ -815,7 +823,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
                         variant="ghost"
                         size="icon-sm"
                         className="text-muted-foreground hover:text-foreground"
-                        onClick={() => openEditCustomApi(entry)}
+                        onClick={openCustomApiDialog}
                       >
                         <Pencil className="w-3.5 h-3.5" />
                       </Button>
@@ -823,13 +831,23 @@ export function Profile({ onClose }: { onClose: () => void }) {
                         variant="ghost"
                         size="icon-sm"
                         className="text-muted-foreground hover:text-destructive"
-                        onClick={() => setDeleteCustomApiId(entry.id)}
+                        onClick={() => setDeleteCustomApi(true)}
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </Button>
                     </div>
                   </div>
-                ))}
+                ) : (
+                  <button
+                    onClick={openCustomApiDialog}
+                    className="w-full flex items-center gap-3 px-4 py-3 text-left text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors cursor-pointer"
+                  >
+                    <span className="w-8 h-8 rounded-md border border-dashed border-border flex items-center justify-center flex-shrink-0">
+                      <Plus className="w-4 h-4" />
+                    </span>
+                    <span className="text-sm font-medium">Add Custom API</span>
+                  </button>
+                )}
               </div>
             </section>
 
@@ -1008,58 +1026,116 @@ export function Profile({ onClose }: { onClose: () => void }) {
       {/* ADD / EDIT CUSTOM API DIALOG                                      */}
       {/* ================================================================= */}
       <Dialog
-        open={customApiDialog.open}
+        open={customApiDialog}
         onOpenChange={(open) => {
-          if (!open) setCustomApiDialog({ open: false });
+          if (!open) setCustomApiDialog(false);
         }}
       >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>
-              {customApiDialog.editing ? "Edit Custom API" : "Add Custom API"}
+              {customCredential ? "Edit Custom API" : "Add Custom API"}
             </DialogTitle>
             <DialogDescription>
-              Configure a custom service endpoint your agents can use.
+              Configure a custom service endpoint your agents can use. Extra
+              values marked secret are stored encrypted.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 py-2">
             <div className="space-y-1.5">
-              <Label className="text-xs">Name</Label>
-              <Input
-                value={customApiForm.name}
-                onChange={(e) => {
-                  setCustomApiForm((f) => ({ ...f, name: e.target.value }));
-                  setCustomApiError(null);
-                }}
-                placeholder="e.g. My Weather API"
-                autoFocus
-              />
-            </div>
-            <div className="space-y-1.5">
               <Label className="text-xs">Service Endpoint</Label>
               <Input
-                value={customApiForm.endpoint}
+                value={customEndpoint}
                 onChange={(e) => {
-                  setCustomApiForm((f) => ({ ...f, endpoint: e.target.value }));
+                  setCustomEndpoint(e.target.value);
                   setCustomApiError(null);
                 }}
                 placeholder="https://api.example.com/v1"
                 className="font-mono text-xs"
+                autoFocus
               />
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs">API Key</Label>
               <Input
                 type="password"
-                value={customApiForm.apiKey}
+                value={customApiKey}
                 onChange={(e) => {
-                  setCustomApiForm((f) => ({ ...f, apiKey: e.target.value }));
+                  setCustomApiKey(e.target.value);
                   setCustomApiError(null);
                 }}
-                placeholder="Your API key"
+                placeholder={
+                  customCredential ? "Re-enter to save changes" : "Your API key"
+                }
                 className="font-mono text-xs"
               />
             </div>
+
+            <div className="space-y-1.5">
+              <Label className="text-xs">Additional values</Label>
+              {customFields.map((field, index) => (
+                <div key={index} className="flex items-start gap-1.5">
+                  <div className="flex-1 space-y-1.5">
+                    <Input
+                      value={field.label}
+                      onChange={(e) =>
+                        updateCustomField(index, {
+                          label: e.target.value,
+                          key:
+                            field.key ||
+                            e.target.value
+                              .trim()
+                              .toLowerCase()
+                              .replace(/\s+/g, "_"),
+                        })
+                      }
+                      placeholder="Name (e.g. App ID)"
+                      className="text-xs"
+                    />
+                    <Input
+                      type={field.secret ? "password" : "text"}
+                      value={field.value}
+                      onChange={(e) =>
+                        updateCustomField(index, { value: e.target.value })
+                      }
+                      placeholder={field.secret ? "Value (encrypted)" : "Value"}
+                      className="font-mono text-xs"
+                    />
+                  </div>
+                  <Button
+                    type="button"
+                    variant={field.secret ? "default" : "outline"}
+                    size="sm"
+                    className="mt-0 h-9"
+                    onClick={() =>
+                      updateCustomField(index, { secret: !field.secret })
+                    }
+                  >
+                    Secret
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-sm"
+                    className="mt-1 text-muted-foreground hover:text-destructive"
+                    onClick={() => removeCustomField(index)}
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </Button>
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="text-primary hover:text-primary gap-1.5"
+                onClick={addCustomField}
+              >
+                <Plus className="w-3.5 h-3.5" />
+                Add value
+              </Button>
+            </div>
+
             {customApiError && (
               <p className="text-xs text-destructive">{customApiError}</p>
             )}
@@ -1068,12 +1144,22 @@ export function Profile({ onClose }: { onClose: () => void }) {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setCustomApiDialog({ open: false })}
+              onClick={() => setCustomApiDialog(false)}
+              disabled={savingCustomApi}
             >
               Cancel
             </Button>
-            <Button size="sm" onClick={handleSaveCustomApi}>
-              {customApiDialog.editing ? "Save" : "Add"}
+            <Button size="sm" onClick={handleSaveCustomApi} disabled={savingCustomApi}>
+              {savingCustomApi ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  Saving...
+                </>
+              ) : customCredential ? (
+                "Save"
+              ) : (
+                "Add"
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -1083,9 +1169,9 @@ export function Profile({ onClose }: { onClose: () => void }) {
       {/* DELETE CUSTOM API CONFIRMATION                                     */}
       {/* ================================================================= */}
       <Dialog
-        open={!!deleteCustomApiId}
+        open={deleteCustomApi}
         onOpenChange={(open) => {
-          if (!open) setDeleteCustomApiId(null);
+          if (!open) setDeleteCustomApi(false);
         }}
       >
         <DialogContent className="sm:max-w-sm">
@@ -1094,16 +1180,16 @@ export function Profile({ onClose }: { onClose: () => void }) {
             <DialogDescription>
               Are you sure you want to delete{" "}
               <span className="font-medium text-foreground">
-                {customApis.find((a) => a.id === deleteCustomApiId)?.name}
+                {customCredential?.endpoint || "this custom endpoint"}
               </span>
-              ? This cannot be undone.
+              ? Agents will no longer be able to use it. This cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setDeleteCustomApiId(null)}
+              onClick={() => setDeleteCustomApi(false)}
             >
               Cancel
             </Button>
