@@ -206,6 +206,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
 
   // ---- Custom API state (backend `custom` provider) ----
   const [customApiDialog, setCustomApiDialog] = useState(false);
+  const [customName, setCustomName] = useState("");
   const [customEndpoint, setCustomEndpoint] = useState("");
   const [customApiKey, setCustomApiKey] = useState("");
   const [customFields, setCustomFields] = useState<CustomFieldRow[]>([]);
@@ -421,6 +422,12 @@ export function Profile({ onClose }: { onClose: () => void }) {
     // Prefill from the stored credential (edit). Secret values are never
     // returned by the server — start them blank so the user only re-enters
     // what they want to change; public values pre-fill from publicFields.
+    // The label defaults to "custom" server-side; treat that as unnamed.
+    setCustomName(
+      customCredential?.label && customCredential.label !== "custom"
+        ? customCredential.label
+        : ""
+    );
     setCustomEndpoint(customCredential?.endpoint ?? "");
     setCustomApiKey("");
     setCustomFields(
@@ -476,6 +483,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
 
       const { credential } = await api.storeProviderToken("custom", customApiKey.trim(), {
         endpoint: customEndpoint.trim(),
+        label: customName.trim() || undefined,
         fields,
       });
       setCredentials((prev) => [
@@ -808,14 +816,18 @@ export function Profile({ onClose }: { onClose: () => void }) {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">
-                        {customCredential.endpoint || "Custom endpoint"}
+                        {customCredential.label &&
+                        customCredential.label !== "custom"
+                          ? customCredential.label
+                          : customCredential.endpoint || "Custom endpoint"}
                       </p>
                       <p className="text-xs text-muted-foreground truncate mt-0.5">
+                        {customCredential.endpoint || "API key"}
                         {(customCredential.fieldDefs?.length ?? 0) > 0
-                          ? `${customCredential.fieldDefs!.length} additional value${
+                          ? ` · ${customCredential.fieldDefs!.length} value${
                               customCredential.fieldDefs!.length === 1 ? "" : "s"
                             }`
-                          : "API key"}
+                          : ""}
                       </p>
                     </div>
                     <div className="flex items-center gap-1 flex-shrink-0">
@@ -1043,6 +1055,18 @@ export function Profile({ onClose }: { onClose: () => void }) {
           </DialogHeader>
           <div className="space-y-3 py-2">
             <div className="space-y-1.5">
+              <Label className="text-xs">Name</Label>
+              <Input
+                value={customName}
+                onChange={(e) => {
+                  setCustomName(e.target.value);
+                  setCustomApiError(null);
+                }}
+                placeholder="e.g. My Weather API"
+                autoFocus
+              />
+            </div>
+            <div className="space-y-1.5">
               <Label className="text-xs">Service Endpoint</Label>
               <Input
                 value={customEndpoint}
@@ -1052,7 +1076,6 @@ export function Profile({ onClose }: { onClose: () => void }) {
                 }}
                 placeholder="https://api.example.com/v1"
                 className="font-mono text-xs"
-                autoFocus
               />
             </div>
             <div className="space-y-1.5">

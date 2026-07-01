@@ -1751,6 +1751,8 @@ export interface UserCredential {
   credentialType: "oauth2" | "api_token";
   status: "active" | "expired" | "revoked" | "refresh_failed";
   scopes: string[];
+  // User-chosen name for the connection; defaults to the provider name.
+  label?: string;
   providerUid?: string;
   lastUsedAt?: string;
   tokenExpiresAt?: string;
@@ -1790,6 +1792,7 @@ export async function storeProviderToken(
     providerUid?: string;
     endpoint?: string;
     fields?: CredentialFieldInput[];
+    label?: string;
   }
 ): Promise<{ credential: UserCredential }> {
   return request(`/api/integrations/${provider}/token`, {
@@ -1799,6 +1802,7 @@ export async function storeProviderToken(
       providerUid: extras?.providerUid,
       endpoint: extras?.endpoint,
       fields: extras?.fields,
+      label: extras?.label,
     }),
   });
 }
