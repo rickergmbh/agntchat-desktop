@@ -1,6 +1,17 @@
 import { create } from "zustand";
 import { ws } from "../services/websocket";
 import type { ActiveStream, StreamPhase } from "../lib/api";
+import { useAuthStore } from "./authStore";
+
+/**
+ * `stream_text` feature flag — show the live token-by-token TEXT inside the
+ * streaming bubble. When OFF, keep tracking the stream (so the phase indicator
+ * still shows) but never populate `content`, so no streamed text renders.
+ * Mirrors mobile/stores/streamingStore.ts.
+ */
+function streamTextEnabled(): boolean {
+  return useAuthStore.getState().participant?.features?.stream_text === true;
+}
 
 /**
  * Ported from web/src/stores/streamingStore.ts.
@@ -254,10 +265,14 @@ export const useStreamingStore = create<StreamingState>((set, get) => ({
       }
 
       // Live content buffer for display: only the post-prefix portion during
-      // writing; empty in non-writing phases for a clean indicator.
-      const updatedContent = phase === "writing"
-        ? (rawCurrent.startsWith(thoughtPrefix) ? rawCurrent.slice(thoughtPrefix.length) : rawCurrent)
-        : "";
+      // writing; empty in non-writing phases for a clean indicator. When the
+      // `stream_text` flag is OFF we keep the stream (for the phase indicator)
+      // but never surface text — so the bubble shows "Writing…" without the
+      // clunky token-by-token transcript. Mirrors mobile.
+      const updatedContent =
+        phase === "writing" && streamTextEnabled()
+          ? (rawCurrent.startsWith(thoughtPrefix) ? rawCurrent.slice(thoughtPrefix.length) : rawCurrent)
+          : "";
 
       return {
         streams: {
