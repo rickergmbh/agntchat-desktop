@@ -461,10 +461,11 @@ export function Profile({ onClose }: { onClose: () => void }) {
       setCustomApiError("Service endpoint is required");
       return;
     }
-    // The primary key is the credential's `access_token`, which the backend
-    // always overwrites on save — so it must be re-entered every time (same
-    // as the other providers' token dialog and the mobile flow).
-    if (!customApiKey.trim()) {
+    // On CREATE the API key is required (it's the credential's access_token).
+    // On EDIT it's optional — a blank key routes through the metadata-only
+    // PATCH, leaving the stored token and secrets untouched.
+    const editing = !!customCredential;
+    if (!customApiKey.trim() && !editing) {
       setCustomApiError("API key is required");
       return;
     }
@@ -481,11 +482,18 @@ export function Profile({ onClose }: { onClose: () => void }) {
           secret: f.secret,
         }));
 
-      const { credential } = await api.storeProviderToken("custom", customApiKey.trim(), {
-        endpoint: customEndpoint.trim(),
-        label: customName.trim() || undefined,
-        fields,
-      });
+      const { credential } =
+        editing && !customApiKey.trim()
+          ? await api.updateProviderConnection("custom", {
+              endpoint: customEndpoint.trim(),
+              label: customName.trim() || undefined,
+              fields,
+            })
+          : await api.storeProviderToken("custom", customApiKey.trim(), {
+              endpoint: customEndpoint.trim(),
+              label: customName.trim() || undefined,
+              fields,
+            });
       setCredentials((prev) => [
         ...prev.filter((c) => c.provider !== "custom"),
         credential,
@@ -1079,7 +1087,15 @@ export function Profile({ onClose }: { onClose: () => void }) {
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs">API Key</Label>
+              <Label className="text-xs">
+                API Key
+                {customCredential ? (
+                  <span className="text-muted-foreground font-normal">
+                    {" "}
+                    — leave blank to keep current
+                  </span>
+                ) : null}
+              </Label>
               <Input
                 type="password"
                 value={customApiKey}
@@ -1087,9 +1103,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
                   setCustomApiKey(e.target.value);
                   setCustomApiError(null);
                 }}
-                placeholder={
-                  customCredential ? "Re-enter to save changes" : "Your API key"
-                }
+                placeholder={customCredential ? "Unchanged" : "Your API key"}
                 className="font-mono text-xs"
               />
             </div>

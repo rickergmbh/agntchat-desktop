@@ -1807,6 +1807,27 @@ export async function storeProviderToken(
   });
 }
 
+// Metadata-only edit for a connection (name / endpoint / non-secret fields).
+// Never touches the stored token or secret values — so a rename doesn't
+// require re-entering the API key.
+export async function updateProviderConnection(
+  provider: string,
+  changes: {
+    label?: string;
+    endpoint?: string;
+    fields?: CredentialFieldInput[];
+  }
+): Promise<{ credential: UserCredential }> {
+  return request(`/api/integrations/${provider}`, {
+    method: "PATCH",
+    body: JSON.stringify({
+      label: changes.label,
+      endpoint: changes.endpoint,
+      fields: changes.fields,
+    }),
+  });
+}
+
 export async function disconnectProvider(provider: string): Promise<void> {
   await request(`/api/integrations/${provider}`, { method: "DELETE" });
 }
