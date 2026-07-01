@@ -26,6 +26,13 @@ import {
 } from "@/components/ui/tooltip";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   X,
   LogOut,
   User,
@@ -209,6 +216,10 @@ export function Profile({ onClose }: { onClose: () => void }) {
   const [customName, setCustomName] = useState("");
   const [customEndpoint, setCustomEndpoint] = useState("");
   const [customApiKey, setCustomApiKey] = useState("");
+  // How the primary API key is sent on outbound calls.
+  const [customAuthMode, setCustomAuthMode] =
+    useState<api.CustomAuthMode>("bearer");
+  const [customAuthHeader, setCustomAuthHeader] = useState("");
   const [customFields, setCustomFields] = useState<CustomFieldRow[]>([]);
   const [customApiError, setCustomApiError] = useState<string | null>(null);
   const [savingCustomApi, setSavingCustomApi] = useState(false);
@@ -430,6 +441,8 @@ export function Profile({ onClose }: { onClose: () => void }) {
     );
     setCustomEndpoint(customCredential?.endpoint ?? "");
     setCustomApiKey("");
+    setCustomAuthMode(customCredential?.authMode ?? "bearer");
+    setCustomAuthHeader(customCredential?.authHeader ?? "");
     setCustomFields(
       (customCredential?.fieldDefs ?? []).map((d) => ({
         key: d.key,
@@ -469,6 +482,10 @@ export function Profile({ onClose }: { onClose: () => void }) {
       setCustomApiError("API key is required");
       return;
     }
+    if (customAuthMode === "header" && !customAuthHeader.trim()) {
+      setCustomApiError("Header name is required when sending the key as a header");
+      return;
+    }
 
     setSavingCustomApi(true);
     setCustomApiError(null);
@@ -482,17 +499,24 @@ export function Profile({ onClose }: { onClose: () => void }) {
           secret: f.secret,
         }));
 
+      const authHeader =
+        customAuthMode === "header" ? customAuthHeader.trim() : "";
+
       const { credential } =
         editing && !customApiKey.trim()
           ? await api.updateProviderConnection("custom", {
               endpoint: customEndpoint.trim(),
               label: customName.trim() || undefined,
               fields,
+              authMode: customAuthMode,
+              authHeader,
             })
           : await api.storeProviderToken("custom", customApiKey.trim(), {
               endpoint: customEndpoint.trim(),
               label: customName.trim() || undefined,
               fields,
+              authMode: customAuthMode,
+              authHeader,
             });
       setCredentials((prev) => [
         ...prev.filter((c) => c.provider !== "custom"),
@@ -1106,6 +1130,48 @@ export function Profile({ onClose }: { onClose: () => void }) {
                 placeholder={customCredential ? "Unchanged" : "Your API key"}
                 className="font-mono text-xs"
               />
+            </div>
+
+            {/* How the primary key is sent on outbound calls. Bearer is the
+                default; header-auth endpoints (e.g. x-agent-key-id) pick
+                "Custom header" and name it. */}
+            <div className="space-y-1.5">
+              <Label className="text-xs">Send key as</Label>
+              <Select
+                value={customAuthMode}
+                onValueChange={(v) => {
+                  setCustomAuthMode(v as api.CustomAuthMode);
+                  setCustomApiError(null);
+                }}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="bearer">
+                    Authorization: Bearer (default)
+                  </SelectItem>
+                  <SelectItem value="header">Custom header</SelectItem>
+                  <SelectItem value="none">Don't send automatically</SelectItem>
+                </SelectContent>
+              </Select>
+              {customAuthMode === "header" ? (
+                <Input
+                  value={customAuthHeader}
+                  onChange={(e) => {
+                    setCustomAuthHeader(e.target.value);
+                    setCustomApiError(null);
+                  }}
+                  placeholder="Header name (e.g. x-agent-key-id)"
+                  className="font-mono text-xs"
+                />
+              ) : null}
+              {customAuthMode === "none" ? (
+                <p className="text-[11px] text-muted-foreground">
+                  The key won't be attached automatically — reference it in your
+                  agent's request headers instead.
+                </p>
+              ) : null}
             </div>
 
             <div className="space-y-1.5">

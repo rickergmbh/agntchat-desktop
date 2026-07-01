@@ -1761,9 +1761,15 @@ export interface UserCredential {
   endpoint?: string;
   fieldDefs?: CredentialFieldDef[];
   publicFields?: Record<string, string>;
+  // How the primary token is sent on outbound calls: "bearer" (default) |
+  // "header" (custom header named by authHeader) | "none".
+  authMode?: CustomAuthMode;
+  authHeader?: string;
   insertedAt: string;
   updatedAt: string;
 }
+
+export type CustomAuthMode = "bearer" | "header" | "none";
 
 export interface ProviderInfo {
   name: string;
@@ -1793,6 +1799,8 @@ export async function storeProviderToken(
     endpoint?: string;
     fields?: CredentialFieldInput[];
     label?: string;
+    authMode?: CustomAuthMode;
+    authHeader?: string;
   }
 ): Promise<{ credential: UserCredential }> {
   return request(`/api/integrations/${provider}/token`, {
@@ -1803,6 +1811,8 @@ export async function storeProviderToken(
       endpoint: extras?.endpoint,
       fields: extras?.fields,
       label: extras?.label,
+      authMode: extras?.authMode,
+      authHeader: extras?.authHeader,
     }),
   });
 }
@@ -1816,6 +1826,8 @@ export async function updateProviderConnection(
     label?: string;
     endpoint?: string;
     fields?: CredentialFieldInput[];
+    authMode?: CustomAuthMode;
+    authHeader?: string;
   }
 ): Promise<{ credential: UserCredential }> {
   return request(`/api/integrations/${provider}`, {
@@ -1824,6 +1836,8 @@ export async function updateProviderConnection(
       label: changes.label,
       endpoint: changes.endpoint,
       fields: changes.fields,
+      authMode: changes.authMode,
+      authHeader: changes.authHeader,
     }),
   });
 }
