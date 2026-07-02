@@ -10,6 +10,15 @@ import { useAgentStore } from "../../stores/agentStore";
 import { useAuthStore } from "../../stores/authStore";
 import { ws } from "../../services/websocket";
 import { Button } from "@/components/ui/button";
+import {
+  Attachment,
+  AttachmentAction,
+  AttachmentActions,
+  AttachmentContent,
+  AttachmentDescription,
+  AttachmentMedia,
+  AttachmentTitle,
+} from "@/components/ui/attachment";
 import { ReplyBanner } from "./ReplyBanner";
 import {
   MentionPicker,
@@ -389,26 +398,33 @@ export function MessageComposer({ conversationId }: { conversationId: string }) 
       {pastedTexts.length > 0 && (
         <div className="flex flex-col gap-1.5 border-t border-border bg-muted/40 px-3 py-2">
           {pastedTexts.map((p) => (
-            <div key={p.id} className="flex items-center gap-2 rounded-md bg-muted px-2.5 py-1.5">
-              <FileIcon className="h-4 w-4 shrink-0 text-muted-foreground" />
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-xs font-medium">{PASTED_TEXT_LABEL}</p>
-                <p className="text-[11px] text-muted-foreground">
+            <Attachment
+              key={p.id}
+              size="sm"
+              state={uploading ? "uploading" : "idle"}
+              className="w-full"
+            >
+              <AttachmentMedia>
+                <FileIcon />
+              </AttachmentMedia>
+              <AttachmentContent>
+                <AttachmentTitle>{PASTED_TEXT_LABEL}</AttachmentTitle>
+                <AttachmentDescription>
                   {p.charCount.toLocaleString()} chars
-                </p>
-              </div>
+                </AttachmentDescription>
+              </AttachmentContent>
               {!uploading && (
-                <button
-                  type="button"
-                  onClick={() => setPastedTexts((prev) => prev.filter((x) => x.id !== p.id))}
-                  className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
-                  title="Remove pasted text"
-                  aria-label="Remove pasted text"
-                >
-                  <X className="h-3.5 w-3.5" />
-                </button>
+                <AttachmentActions>
+                  <AttachmentAction
+                    onClick={() => setPastedTexts((prev) => prev.filter((x) => x.id !== p.id))}
+                    title="Remove pasted text"
+                    aria-label="Remove pasted text"
+                  >
+                    <X />
+                  </AttachmentAction>
+                </AttachmentActions>
               )}
-            </div>
+            </Attachment>
           ))}
         </div>
       )}
@@ -492,39 +508,36 @@ function AttachmentPreview({
   onClear: () => void;
 }) {
   return (
-    <div className="flex items-center gap-3 border-t border-border bg-muted/40 px-3 py-2">
-      {attachment.isImage && attachment.previewUrl ? (
-        <img
-          src={attachment.previewUrl}
-          alt={attachment.file.name}
-          className="h-12 w-12 rounded-md object-cover shrink-0"
-        />
-      ) : (
-        <div className="flex h-12 w-12 items-center justify-center rounded-md bg-muted shrink-0">
-          {attachment.isImage ? (
-            <ImageIcon className="h-5 w-5 text-muted-foreground" />
+    <div className="border-t border-border bg-muted/40 px-3 py-2">
+      {/* "uploading" shimmers the title; "idle" (dashed border) = staged, not sent. */}
+      <Attachment state={uploading ? "uploading" : "idle"} className="w-full">
+        <AttachmentMedia variant={attachment.isImage ? "image" : "icon"}>
+          {attachment.isImage && attachment.previewUrl ? (
+            <img src={attachment.previewUrl} alt={attachment.file.name} />
+          ) : attachment.isImage ? (
+            <ImageIcon />
           ) : (
-            <FileIcon className="h-5 w-5 text-muted-foreground" />
+            <FileIcon />
           )}
-        </div>
-      )}
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-xs font-medium">{attachment.file.name}</p>
-        <p className="text-[11px] text-muted-foreground">
-          {formatFileSize(attachment.file.size)}
-          {uploading && " · Uploading…"}
-        </p>
-      </div>
-      <button
-        type="button"
-        onClick={onClear}
-        disabled={uploading}
-        className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-50"
-        title="Remove attachment"
-        aria-label="Remove attachment"
-      >
-        <X className="h-3.5 w-3.5" />
-      </button>
+        </AttachmentMedia>
+        <AttachmentContent>
+          <AttachmentTitle>{attachment.file.name}</AttachmentTitle>
+          <AttachmentDescription>
+            {formatFileSize(attachment.file.size)}
+            {uploading && " · Uploading…"}
+          </AttachmentDescription>
+        </AttachmentContent>
+        <AttachmentActions>
+          <AttachmentAction
+            onClick={onClear}
+            disabled={uploading}
+            title="Remove attachment"
+            aria-label="Remove attachment"
+          >
+            <X />
+          </AttachmentAction>
+        </AttachmentActions>
+      </Attachment>
     </div>
   );
 }

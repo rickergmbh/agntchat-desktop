@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
 import { FileIcon, ImageIcon, Download, Loader2, ExternalLink } from "lucide-react";
+import {
+  Attachment,
+  AttachmentContent,
+  AttachmentDescription,
+  AttachmentMedia,
+  AttachmentTitle,
+  AttachmentTrigger,
+} from "@/components/ui/attachment";
 import * as api from "../../lib/api";
 import { formatFileSize, attachmentDisplayName } from "../../services/fileUpload";
 import type { Message } from "../../lib/api";
@@ -77,30 +85,43 @@ export function AttachmentChip({
   downloadUrl?: string;
 }) {
   const { url, loading } = useDownloadUrl(attachmentId, downloadUrl);
+  const displayName = attachmentDisplayName(filename);
 
   return (
-    <a
-      href={url ?? "#"}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="flex items-center gap-2.5 rounded-lg border border-border p-2 transition-colors hover:bg-muted/50"
-      onClick={(e) => {
-        if (!url) e.preventDefault();
-      }}
-    >
-      <FileIcon className="h-6 w-6 shrink-0" />
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium">{attachmentDisplayName(filename)}</p>
-        {sizeBytes ? <p className="text-xs opacity-75">{formatFileSize(sizeBytes)}</p> : null}
+    // "processing" while the signed download URL resolves — shimmers the title.
+    <Attachment size="sm" state={loading ? "processing" : "done"} className="w-full">
+      <AttachmentMedia>
+        <FileIcon />
+      </AttachmentMedia>
+      <AttachmentContent>
+        <AttachmentTitle>{displayName}</AttachmentTitle>
+        {sizeBytes ? (
+          <AttachmentDescription>{formatFileSize(sizeBytes)}</AttachmentDescription>
+        ) : null}
+      </AttachmentContent>
+      <div className="relative z-20 flex shrink-0 items-center pr-1 text-muted-foreground">
+        {loading ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : url ? (
+          <ExternalLink className="h-4 w-4" />
+        ) : (
+          <Download className="h-4 w-4" />
+        )}
       </div>
-      {loading ? (
-        <Loader2 className="h-4 w-4 shrink-0 animate-spin" />
-      ) : url ? (
-        <ExternalLink className="h-4 w-4 shrink-0" />
-      ) : (
-        <Download className="h-4 w-4 shrink-0" />
-      )}
-    </a>
+      <AttachmentTrigger
+        aria-label={`Open ${displayName}`}
+        render={
+          <a
+            href={url ?? "#"}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => {
+              if (!url) e.preventDefault();
+            }}
+          />
+        }
+      />
+    </Attachment>
   );
 }
 
@@ -175,32 +196,39 @@ export function FileMessage({ message }: { message: Message }) {
 
   return (
     <div className="space-y-1.5">
-      <a
-        href={url ?? "#"}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center gap-3 rounded-lg border border-border p-2.5 transition-colors hover:bg-muted/50"
-        onClick={(e) => {
-          if (!url) e.preventDefault();
-        }}
-      >
-        <FileIcon className="h-8 w-8 shrink-0" />
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-medium">{filename}</p>
-          {size && (
-            <div className="text-xs opacity-75">
-              {formatFileSize(size)}
-            </div>
+      <Attachment state={loading ? "processing" : "done"} className="w-full">
+        <AttachmentMedia>
+          <FileIcon />
+        </AttachmentMedia>
+        <AttachmentContent>
+          <AttachmentTitle>{filename}</AttachmentTitle>
+          {size ? (
+            <AttachmentDescription>{formatFileSize(size)}</AttachmentDescription>
+          ) : null}
+        </AttachmentContent>
+        <div className="relative z-20 flex shrink-0 items-center pr-1 text-muted-foreground">
+          {loading ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : url ? (
+            <ExternalLink className="h-4 w-4" />
+          ) : (
+            <Download className="h-4 w-4" />
           )}
         </div>
-        {loading ? (
-          <Loader2 className="h-4 w-4 shrink-0 animate-spin" />
-        ) : url ? (
-          <ExternalLink className="h-4 w-4 shrink-0" />
-        ) : (
-          <Download className="h-4 w-4 shrink-0" />
-        )}
-      </a>
+        <AttachmentTrigger
+          aria-label={`Open ${filename}`}
+          render={
+            <a
+              href={url ?? "#"}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => {
+                if (!url) e.preventDefault();
+              }}
+            />
+          }
+        />
+      </Attachment>
       {file.caption && <p className="text-sm">{file.caption}</p>}
     </div>
   );

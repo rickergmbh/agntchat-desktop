@@ -3,6 +3,14 @@ import { useAuthStore } from "../../stores/authStore";
 import { useChatStore } from "../../stores/chatStore";
 import { cn, formatClockTime } from "../../lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Bubble, BubbleContent } from "@/components/ui/bubble";
+import {
+  Message as MessageRow,
+  MessageAvatar,
+  MessageContent,
+  MessageFooter,
+  MessageHeader,
+} from "@/components/ui/message";
 import { Bot, Reply as ReplyIcon } from "lucide-react";
 import { useModelCatalog } from "../../stores/modelCatalogStore";
 import { MarkdownContent } from "./MarkdownContent";
@@ -46,6 +54,63 @@ function isResultPresentationMessage(message: Message): boolean {
     }
   }
   return false;
+}
+
+/** Sender name + Agent pill + model label shown above the first bubble of a run. */
+function SenderHeader({
+  senderName,
+  isAgent,
+  modelLabel,
+}: {
+  senderName: string;
+  isAgent: boolean;
+  modelLabel: string | null;
+}) {
+  return (
+    <MessageHeader className="mb-0.5 flex-col items-start gap-0 px-1">
+      <span className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+        {senderName}
+        {isAgent && (
+          <span className="inline-flex items-center gap-1 rounded bg-bubble-agent-accent/10 px-1.5 py-0.5 text-[10px] font-bold text-bubble-agent-accent">
+            <Bot className="h-3 w-3" />
+            Agent
+          </span>
+        )}
+      </span>
+      {modelLabel && (
+        <span className="block font-mono text-[10px] text-muted-foreground/70">
+          {modelLabel}
+        </span>
+      )}
+    </MessageHeader>
+  );
+}
+
+/** Avatar column, pinned to the bottom of the run (matches web + mobile).
+ *  Renders an empty spacer when `show` is false so follow-up bubbles in a
+ *  run stay indented under the first one. */
+function SenderAvatar({
+  show,
+  senderName,
+  avatarUrl,
+}: {
+  show: boolean;
+  senderName: string;
+  avatarUrl?: string | null;
+}) {
+  if (!show) return <div className="w-8 shrink-0" />;
+  return (
+    // translate-y-0 cancels MessageAvatar's footer offset — our footer is a
+    // single 10px timestamp line, not the 2rem the upstream offset assumes.
+    <MessageAvatar className="bg-transparent group-has-data-[slot=message-footer]/message:translate-y-0">
+      <Avatar className="h-8 w-8">
+        {avatarUrl ? <AvatarImage src={avatarUrl} alt={senderName} /> : null}
+        <AvatarFallback className="bg-primary/10 text-primary text-[11px] font-semibold">
+          {senderName.charAt(0).toUpperCase() || "?"}
+        </AvatarFallback>
+      </Avatar>
+    </MessageAvatar>
+  );
 }
 
 export const MessageBubble = memo(function MessageBubble({
@@ -105,127 +170,75 @@ export const MessageBubble = memo(function MessageBubble({
     );
   }
 
+  const align = isOwn ? "end" : "start";
+  const handleContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!onContextMenu) return;
+    e.preventDefault();
+    onContextMenu(message, e);
+  };
+
   // Card messages (tasks + status lifecycle updates) reuse the same
   // avatar + sender header scaffold as regular bubbles but drop the
   // bubble background — the card supplies its own coloured border and
-  // background. Width-capped at 70% so these don't bleed edge-to-edge
-  // like they used to (matches web/src/components/MessageBubble.tsx:77).
+  // background. Width-capped at 35% so these don't bleed edge-to-edge
+  // (matches web/src/components/MessageBubble.tsx).
   if (isTask || isStatusUpdate) {
     return (
-      <div
-        className={cn(
-          "flex gap-2 px-4",
-          isOwn ? "justify-end" : "justify-start",
-          showAvatar ? "mt-3" : "mt-0.5"
-        )}
-        onContextMenu={(e) => {
-          if (!onContextMenu) return;
-          e.preventDefault();
-          onContextMenu(message, e);
-        }}
+      <MessageRow
+        align={align}
+        className={cn("px-4", showAvatar ? "mt-3" : "mt-0.5")}
+        onContextMenu={handleContextMenu}
       >
         {!isOwn && (
-          <div className="w-8 shrink-0 flex flex-col justify-end">
-            {showAvatar ? (
-              <Avatar className="h-8 w-8">
-                {avatarUrl ? <AvatarImage src={avatarUrl} alt={senderName} /> : null}
-                <AvatarFallback className="bg-primary/10 text-primary text-[11px] font-semibold">
-                  {senderName.charAt(0).toUpperCase() || "?"}
-                </AvatarFallback>
-              </Avatar>
-            ) : null}
-          </div>
+          <SenderAvatar show={showAvatar} senderName={senderName} avatarUrl={avatarUrl} />
         )}
-        <div className={cn("min-w-0 w-[35%]", isOwn ? "items-end" : "items-start")}>
+        <MessageContent className="w-[35%] gap-0">
           {!isOwn && showSenderName && (
-            <div className="mb-0.5 px-1">
-              <span className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-                {senderName}
-                {isAgent && (
-                  <span className="inline-flex items-center gap-1 rounded bg-bubble-agent-accent/10 px-1.5 py-0.5 text-[10px] font-bold text-bubble-agent-accent">
-                    <Bot className="h-3 w-3" />
-                    Agent
-                  </span>
-                )}
-              </span>
-              {modelLabel && (
-                <span className="block font-mono text-[10px] text-muted-foreground/70">
-                  {modelLabel}
-                </span>
-              )}
-            </div>
+            <SenderHeader
+              senderName={senderName}
+              isAgent={isAgent}
+              modelLabel={modelLabel}
+            />
           )}
           {isTask ? (
             <TaskMessage message={message} />
           ) : (
             <StatusUpdateMessage message={message} />
           )}
-          <span className="mt-0.5 block px-1 text-[10px] text-muted-foreground">
+          <MessageFooter className="mt-0.5 px-1 text-[10px] font-normal">
             {formatClockTime(message.insertedAt)}
-          </span>
-        </div>
-      </div>
+          </MessageFooter>
+        </MessageContent>
+      </MessageRow>
     );
   }
 
   return (
-    <div
-      className={cn(
-        "flex gap-2 px-4",
-        isOwn ? "justify-end" : "justify-start",
-        showAvatar ? "mt-3" : "mt-0.5"
-      )}
-      onContextMenu={(e) => {
-        if (!onContextMenu) return;
-        e.preventDefault();
-        onContextMenu(message, e);
-      }}
+    <MessageRow
+      align={align}
+      className={cn("px-4", showAvatar ? "mt-3" : "mt-0.5")}
+      onContextMenu={handleContextMenu}
     >
       {!isOwn && (
-        // Avatar column: `justify-end` pins the avatar to the bottom of the
-        // bubble wrapper (matches web + mobile) so it sits next to the most
-        // recent bubble of a run rather than floating at the top. Empty
-        // spacer when showAvatar is false keeps the message indented.
-        <div className="w-8 shrink-0 flex flex-col justify-end">
-          {showAvatar ? (
-            <Avatar className="h-8 w-8">
-              {avatarUrl ? <AvatarImage src={avatarUrl} alt={senderName} /> : null}
-              <AvatarFallback className="bg-primary/10 text-primary text-[11px] font-semibold">
-                {senderName.charAt(0).toUpperCase() || "?"}
-              </AvatarFallback>
-            </Avatar>
-          ) : null}
-        </div>
+        <SenderAvatar show={showAvatar} senderName={senderName} avatarUrl={avatarUrl} />
       )}
 
-      <div className={cn("flex flex-col max-w-[72%]", isOwn ? "items-end" : "items-start")}>
+      <MessageContent className="gap-0">
         {!isOwn && showSenderName && (
-          <div className="mb-0.5 px-1">
-            {/* Sender name inherits text-muted-foreground from the outer
-             * span — matches web's token (web/src/components/MessageBubble.tsx
-             * line 132). The "Agent" pill overrides to text-bubble-agent-
-             * accent for its own contrast. */}
-            <span className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-              {senderName}
-              {isAgent && (
-                <span className="inline-flex items-center gap-1 rounded bg-bubble-agent-accent/10 px-1.5 py-0.5 text-[10px] font-bold text-bubble-agent-accent">
-                  <Bot className="h-3 w-3" />
-                  Agent
-                </span>
-              )}
-            </span>
-            {modelLabel && (
-              <span className="block font-mono text-[10px] text-muted-foreground/70">
-                {modelLabel}
-              </span>
-            )}
-          </div>
+          <SenderHeader
+            senderName={senderName}
+            isAgent={isAgent}
+            modelLabel={modelLabel}
+          />
         )}
 
         {parent && (
+          // data-slot opts the preview into MessageContent's self-end
+          // alignment for own messages, like the bubble below it.
           <div
+            data-slot="reply-preview"
             className={cn(
-              "mb-0.5 max-w-full rounded-md border-l-2 px-2 py-1 text-[11px]",
+              "mb-0.5 max-w-[72%] rounded-md border-l-2 px-2 py-1 text-[11px]",
               isOwn
                 ? "border-primary-foreground/40 bg-primary/10 text-muted-foreground"
                 : "border-muted-foreground/40 bg-muted/40 text-muted-foreground"
@@ -241,36 +254,32 @@ export const MessageBubble = memo(function MessageBubble({
           </div>
         )}
 
-        <div
-          className={cn(
-            "rounded-2xl px-3.5 py-2 text-sm break-words",
-            isOwn
-              ? "bg-bubble-own text-bubble-own-foreground rounded-br-sm"
-              : isAgent
-                ? "bg-bubble-agent text-bubble-agent-foreground ring-1 ring-bubble-agent-accent/20 rounded-bl-sm"
-                : "bg-bubble-other text-bubble-other-foreground rounded-bl-sm",
-            message.pending && "opacity-60"
-          )}
+        <Bubble
+          variant={isOwn ? "own" : isAgent ? "agent" : "other"}
+          align={align}
+          className={cn("max-w-[72%]", message.pending && "opacity-60")}
         >
-          {isToolMessage(message) ? (
-            <ToolMessage message={message} />
-          ) : isFileMessage(message) ? (
-            <FileMessage message={message} />
-          ) : isResultPresentationMessage(message) ? (
-            <ResultPresentationMessage message={message} />
-          ) : (
-            <>
-              {message.content?.trim() ? <MarkdownContent content={message.content} /> : null}
-              <RideAlongAttachments message={message} />
-            </>
-          )}
-        </div>
+          <BubbleContent>
+            {isToolMessage(message) ? (
+              <ToolMessage message={message} />
+            ) : isFileMessage(message) ? (
+              <FileMessage message={message} />
+            ) : isResultPresentationMessage(message) ? (
+              <ResultPresentationMessage message={message} />
+            ) : (
+              <>
+                {message.content?.trim() ? <MarkdownContent content={message.content} /> : null}
+                <RideAlongAttachments message={message} />
+              </>
+            )}
+          </BubbleContent>
+        </Bubble>
 
-        <span className="text-[10px] text-muted-foreground mt-0.5 px-1">
+        <MessageFooter className="mt-0.5 px-1 text-[10px] font-normal">
           {formatClockTime(message.insertedAt)}
           {message.pending && " · sending"}
-        </span>
-      </div>
-    </div>
+        </MessageFooter>
+      </MessageContent>
+    </MessageRow>
   );
 });
