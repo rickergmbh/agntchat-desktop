@@ -398,6 +398,12 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
   const scrollTargetMessageId = useChatStore((s) => s.scrollTargetMessageId);
   const clearScrollTarget = useChatStore((s) => s.clearScrollTarget);
   const myId = useAuthStore((s) => s.participant?.id);
+  const turnAnchorEnabled = useAuthStore(
+    (s) => s.participant?.features?.turn_anchor === true
+  );
+  const conversationType = useChatStore(
+    (s) => s.conversations.find((c) => c.id === conversationId)?.type
+  );
 
   const typingIds = usePresenceStore((s) => s.typing[conversationId]);
   const typingNames = usePresenceStore((s) => s.typingNames);
@@ -466,6 +472,14 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
   // Armed on conversation open when there's a first-unread anchor to scroll
   // to; consumed once the divider has been positioned.
   const unreadAnchorPendingRef = useRef(false);
+  // --- Turn positioning (feature flag `turn_anchor`, direct conversations
+  // only): sending scrolls YOUR message near the top of the viewport and the
+  // reply streams into the space below (Claude.ai-style), instead of pinning
+  // to the bottom edge. The spacer div gives short threads room to position
+  // the message at the top; it shrinks as the reply grows.
+  const turnAnchorArmedRef = useRef(false);
+  const turnAnchorIdRef = useRef<string | null>(null);
+  const turnSpacerRef = useRef<HTMLDivElement>(null);
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
   const agentConversationsFetchAttemptedRef = useRef<string | null>(null);
   // `nearBottom` is UI-only — it drives the "Jump to latest" pill. It mirrors
@@ -558,6 +572,24 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
     );
   }, []);
 
+  // Turn positioning, step 3: as the reply streams in below the anchor, keep
+  // total below-anchor height ~one viewport by shrinking the spacer. Runs
+  // from the content ResizeObserver. (Steps 1–2 live beside the send effect
+  // further down.)
+  const maintainTurnSpacer = useCallback(() => {
+    const anchorId = turnAnchorIdRef.current;
+    const scroller = scrollRef.current;
+    const spacer = turnSpacerRef.current;
+    if (!anchorId || !scroller || !spacer) return;
+    const anchorNode = scroller.querySelector(`[data-msg-id="${CSS.escape(anchorId)}"]`);
+    if (!anchorNode) return;
+    const belowAnchorExclSpacer =
+      spacer.getBoundingClientRect().top - anchorNode.getBoundingClientRect().top;
+    const next = Math.max(0, scroller.clientHeight - belowAnchorExclSpacer - 24);
+    const current = spacer.offsetHeight;
+    if (Math.abs(next - current) > 1) spacer.style.height = `${next}px`;
+  }, []);
+
   // On conversation switch, re-arm the pin so opening a thread always lands
   // at the latest message even if the user had scrolled up in the prior one.
   // Declared before the snap effect so a switch re-arms the pin *before* the
@@ -580,6 +612,9 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
     setNearBottom(pinned);
     lastItemIdRef.current = null;
     prependAnchorRef.current = null;
+    turnAnchorArmedRef.current = false;
+    turnAnchorIdRef.current = null;
+    if (turnSpacerRef.current) turnSpacerRef.current.style.height = "0px";
     setShowNewPill(false);
   }, [conversationId]);
 
@@ -635,10 +670,11 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
       if (el && pinnedRef.current && !isSelectingInThread()) {
         el.scrollTop = el.scrollHeight;
       }
+      maintainTurnSpacer();
     });
     observer.observe(node);
     resizeObserverRef.current = observer;
-  }, [isSelectingInThread]);
+  }, [isSelectingInThread, maintainTurnSpacer]);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const el = e.currentTarget;
@@ -649,7 +685,15 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
     // measurement latching the pin off — the bug that stranded long threads.
     const pinned = distanceFromBottom < 24;
     pinnedRef.current = pinned;
-    if (pinned) setShowNewPill(false);
+    if (pinned) {
+      setShowNewPill(false);
+      // Reaching the bottom ends the turn-anchored reading position — the
+      // user asked to follow the latest again, so collapse the spacer.
+      if (turnAnchorIdRef.current) {
+        turnAnchorIdRef.current = null;
+        if (turnSpacerRef.current) turnSpacerRef.current.style.height = "0px";
+      }
+    }
     // The "Jump to latest" pill uses a roomier threshold so it doesn't flash
     // for a few px of overscroll.
     setNearBottom(distanceFromBottom < SCROLL_BOTTOM_THRESHOLD);
@@ -704,7 +748,14 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
   const lastItemId = threadItems[threadItems.length - 1]?.id;
   useEffect(() => {
     if (!lastItemId) return;
-    if (lastItemIdRef.current && lastItemIdRef.current !== lastItemId && !pinnedRef.current) {
+    if (
+      lastItemIdRef.current &&
+      lastItemIdRef.current !== lastItemId &&
+      !pinnedRef.current &&
+      // While turn-anchored, the reply lands right below the anchored
+      // message — it's already in view, so the pill would be noise.
+      !turnAnchorIdRef.current
+    ) {
       setShowNewPill(true);
     }
     lastItemIdRef.current = lastItemId;
@@ -722,16 +773,46 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
 
   // Sending is intent to see the latest — re-pin even if the user had
   // scrolled up (matches mobile/web). Keyed on the optimistic pending
-  // message the composer appends.
+  // message the composer appends. With the `turn_anchor` flag on in a
+  // direct conversation, sending instead anchors YOUR message near the top
+  // of the viewport (the layout effect below does the positioning).
   const lastRaw = rawMessages[rawMessages.length - 1];
   const lastRawIsOwnPending = !!lastRaw?.pending && lastRaw?.senderId === myId;
+  const turnAnchorActive = turnAnchorEnabled && conversationType === "direct";
   useEffect(() => {
     if (!lastRawIsOwnPending) return;
+    if (turnAnchorActive) {
+      turnAnchorArmedRef.current = true;
+      pinnedRef.current = false;
+      return;
+    }
     pinnedRef.current = true;
     setNearBottom(true);
     setShowNewPill(false);
     snapToBottom();
-  }, [lastRaw?.id, lastRawIsOwnPending, snapToBottom]);
+  }, [lastRaw?.id, lastRawIsOwnPending, turnAnchorActive, snapToBottom]);
+
+  // Turn positioning, step 2: once the just-sent optimistic message renders,
+  // size the spacer so the thread has room, then scroll the message near the
+  // top of the viewport. Imperative spacer (no state) so this all happens in
+  // one pre-paint pass.
+  useLayoutEffect(() => {
+    if (!turnAnchorArmedRef.current) return;
+    const scroller = scrollRef.current;
+    const spacer = turnSpacerRef.current;
+    if (!scroller || !spacer) return;
+    const pendingNodes = scroller.querySelectorAll("[data-own-pending]");
+    const node = pendingNodes[pendingNodes.length - 1] as HTMLElement | undefined;
+    if (!node) return;
+    turnAnchorArmedRef.current = false;
+    turnAnchorIdRef.current = node.getAttribute("data-msg-id");
+    pinnedRef.current = false;
+    spacer.style.height = `${Math.max(0, scroller.clientHeight - node.offsetHeight - 24)}px`;
+    const nodeTop =
+      node.getBoundingClientRect().top - scroller.getBoundingClientRect().top + scroller.scrollTop;
+    scroller.scrollTop = nodeTop - 8;
+  }, [threadItems.length]);
+
 
   // Build typing entries (name + type), filtering out ourselves and any agent
   // already streaming (the StreamingBubble replaces its indicator). Mirrors
@@ -880,6 +961,7 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
                   {showUnreadDivider && <UnreadDivider />}
                   <div
                     data-msg-id={msg.id}
+                    data-own-pending={msg.senderId === myId && msg.pending ? "" : undefined}
                     className={cn(
                       "transition-colors duration-700",
                       highlightedMessageId === msg.id &&
@@ -904,6 +986,11 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
                 stopping={stoppingAgents}
               />
             )}
+
+            {/* Turn-positioning spacer — sized imperatively (turn_anchor
+                flag) so a just-sent message can sit at the top of the
+                viewport while the reply streams into the space below. */}
+            <div ref={turnSpacerRef} aria-hidden />
           </div>
         )}
       </div>
