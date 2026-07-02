@@ -62,6 +62,7 @@ import {
   Moon,
   Monitor,
   Palette,
+  ChevronRight,
 } from "lucide-react";
 import { deviceTimezone, filterTimezones, formatTimezoneLabel } from "../lib/timezones";
 import { getInitials } from "../lib/utils";
@@ -220,6 +221,10 @@ export function Profile({ onClose }: { onClose: () => void }) {
   const [customAuthMode, setCustomAuthMode] =
     useState<api.CustomAuthMode>("bearer");
   const [customAuthHeader, setCustomAuthHeader] = useState("");
+  // Progressive disclosure: auth-mode + named fields live behind "Advanced".
+  // Auto-expands on edit when the connection already uses non-default auth
+  // or has named fields, so existing config is never hidden.
+  const [customAdvancedOpen, setCustomAdvancedOpen] = useState(false);
   const [customFields, setCustomFields] = useState<CustomFieldRow[]>([]);
   const [customApiError, setCustomApiError] = useState<string | null>(null);
   const [savingCustomApi, setSavingCustomApi] = useState(false);
@@ -441,16 +446,21 @@ export function Profile({ onClose }: { onClose: () => void }) {
     );
     setCustomEndpoint(customCredential?.endpoint ?? "");
     setCustomApiKey("");
-    setCustomAuthMode(customCredential?.authMode ?? "bearer");
+    const authMode = customCredential?.authMode ?? "bearer";
+    setCustomAuthMode(authMode);
     setCustomAuthHeader(customCredential?.authHeader ?? "");
+    const fieldDefs = customCredential?.fieldDefs ?? [];
     setCustomFields(
-      (customCredential?.fieldDefs ?? []).map((d) => ({
+      fieldDefs.map((d) => ({
         key: d.key,
         label: d.label,
         secret: d.secret,
         value: d.secret ? "" : customCredential?.publicFields?.[d.key] ?? "",
       }))
     );
+    // Reveal Advanced up front when the connection already relies on it, so
+    // non-default auth or named fields are never silently hidden on edit.
+    setCustomAdvancedOpen(authMode !== "bearer" || fieldDefs.length > 0);
     setCustomApiError(null);
     setCustomApiDialog(true);
   };
@@ -1132,6 +1142,25 @@ export function Profile({ onClose }: { onClose: () => void }) {
               />
             </div>
 
+            {/* Advanced options — auth-mode routing + named fields. Collapsed
+                by default so the common "paste one API key" flow only sees the
+                fields above. Auto-expanded on edit when the connection already
+                uses non-default auth or named fields. */}
+            <button
+              type="button"
+              onClick={() => setCustomAdvancedOpen((o) => !o)}
+              className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ChevronRight
+                className={`w-3.5 h-3.5 transition-transform ${
+                  customAdvancedOpen ? "rotate-90" : ""
+                }`}
+              />
+              Advanced options
+            </button>
+
+            {customAdvancedOpen ? (
+              <>
             {/* How the primary key is sent on outbound calls. Bearer is the
                 default; header-auth endpoints (e.g. x-agent-key-id) pick
                 "Custom header" and name it. */}
@@ -1238,6 +1267,8 @@ export function Profile({ onClose }: { onClose: () => void }) {
                 Add value
               </Button>
             </div>
+              </>
+            ) : null}
 
             {customApiError && (
               <p className="text-xs text-destructive">{customApiError}</p>
