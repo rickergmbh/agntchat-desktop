@@ -139,29 +139,35 @@ export function FileMessage({ message }: { message: Message }) {
   const { url, loading } = useDownloadUrl(attachmentId, attachment?.downloadUrl);
 
   if (isImage(contentType)) {
+    // Every state (loading / loaded / error) renders inside the same
+    // fixed-height frame so the async URL fetch + image decode never change
+    // the bubble's height — a mid-thread image loading used to shift the
+    // whole conversation under the reader.
     return (
       <div className="space-y-1">
-        {loading ? (
-          <div className="flex h-40 w-full items-center justify-center rounded-lg bg-muted/30">
-            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-          </div>
-        ) : url ? (
-          <a href={url} target="_blank" rel="noopener noreferrer">
-            <img
-              src={url}
-              alt={filename}
-              className="max-h-60 max-w-full rounded-lg object-contain"
-              onError={(e) => {
-                (e.target as HTMLImageElement).style.display = "none";
-              }}
-            />
-          </a>
-        ) : (
-          <div className="flex h-24 items-center justify-center rounded-lg bg-muted/30 text-xs text-muted-foreground">
-            <ImageIcon className="mr-1.5 h-4 w-4" />
-            {filename}
-          </div>
-        )}
+        <div className="h-60 max-w-full">
+          {loading ? (
+            <div className="flex h-full w-full items-center justify-center rounded-lg bg-muted/30">
+              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+            </div>
+          ) : url ? (
+            <a href={url} target="_blank" rel="noopener noreferrer" className="block h-full">
+              <img
+                src={url}
+                alt={filename}
+                className="h-full max-w-full rounded-lg object-contain object-left"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = "none";
+                }}
+              />
+            </a>
+          ) : (
+            <div className="flex h-full items-center justify-center rounded-lg bg-muted/30 text-xs text-muted-foreground">
+              <ImageIcon className="mr-1.5 h-4 w-4" />
+              {filename}
+            </div>
+          )}
+        </div>
         {file.caption && <p className="text-sm">{file.caption}</p>}
       </div>
     );

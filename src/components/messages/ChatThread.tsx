@@ -529,6 +529,20 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
     if (el) el.scrollTop = el.scrollHeight;
   }, []);
 
+  // Interaction-as-intent: an active text selection inside the scroller means
+  // the user is reading/copying — content-growth re-snaps must not yank the
+  // viewport mid-selection, even while pinned. Explicit actions (send, the
+  // pill) still snap unconditionally.
+  const isSelectingInThread = useCallback(() => {
+    const sel = window.getSelection();
+    return (
+      !!sel &&
+      !sel.isCollapsed &&
+      !!scrollRef.current &&
+      scrollRef.current.contains(sel.anchorNode)
+    );
+  }, []);
+
   // On conversation switch, re-arm the pin so opening a thread always lands
   // at the latest message even if the user had scrolled up in the prior one.
   // Declared before the snap effect so a switch re-arms the pin *before* the
@@ -557,7 +571,7 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
   // frames (e.g. a slow image). Gated on `pinnedRef` so a user reading
   // history is never yanked back down.
   useLayoutEffect(() => {
-    if (!pinnedRef.current) return;
+    if (!pinnedRef.current || isSelectingInThread()) return;
     snapToBottom();
     let r2 = 0;
     const r1 = requestAnimationFrame(() => {
@@ -568,7 +582,7 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
       cancelAnimationFrame(r1);
       cancelAnimationFrame(r2);
     };
-  }, [conversationId, threadItems.length, stream, snapToBottom]);
+  }, [conversationId, threadItems.length, stream, snapToBottom, isSelectingInThread]);
 
   // Keep the view pinned to the bottom while the message list's height
   // settles. Image attachments fetch their download URL async and render
@@ -583,11 +597,13 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
     if (!node) return;
     const observer = new ResizeObserver(() => {
       const el = scrollRef.current;
-      if (el && pinnedRef.current) el.scrollTop = el.scrollHeight;
+      if (el && pinnedRef.current && !isSelectingInThread()) {
+        el.scrollTop = el.scrollHeight;
+      }
     });
     observer.observe(node);
     resizeObserverRef.current = observer;
-  }, []);
+  }, [isSelectingInThread]);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const el = e.currentTarget;
