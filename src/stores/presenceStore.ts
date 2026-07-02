@@ -14,6 +14,10 @@ interface PresenceState {
    *  agent we share a conversation with — the backend pushes
    *  `agent_status_changed` to all conversation peers. */
   agentPresence: Record<string, "online_local">;
+  /** Per-agent machine name the bridge reported (local-runtime agents only).
+   *  Lets the UI say "running on Jamess-MacBook" instead of an ambiguous
+   *  "local" — key is dropped when the agent goes offline. */
+  agentDevices: Record<string, string>;
   /** Per-agent live activity (thinking / working / writing / …). Broadcast
    *  globally via `agent_activity_changed`, so an agent reads as busy on
    *  every surface even when we're viewing another conversation. Absence =
@@ -149,6 +153,7 @@ export const usePresenceStore = create<PresenceState>((set) => {
     connected: false,
     online: new Set(),
     agentPresence: {},
+    agentDevices: {},
     agentActivity: {},
     agentActivityConvs: {},
     typing: {},
@@ -216,6 +221,11 @@ export const usePresenceStore = create<PresenceState>((set) => {
           // The agent we were waiting on just came online — drop its spinner.
           if (effective === "online_local") clearWaking(agentId);
 
+          const deviceName =
+            typeof payload.deviceName === "string" && payload.deviceName
+              ? payload.deviceName
+              : undefined;
+
           set((s) => {
             const wasOnline = s.online.has(agentId);
             const wantOnline = effective === "online_local";
@@ -226,7 +236,10 @@ export const usePresenceStore = create<PresenceState>((set) => {
               effective === "offline"
                 ? currentPresence === undefined
                 : currentPresence === effective;
-            if (onlineUnchanged && presenceUnchanged) return s;
+            const deviceUnchanged =
+              (effective === "offline" ? undefined : deviceName) ===
+              s.agentDevices[agentId];
+            if (onlineUnchanged && presenceUnchanged && deviceUnchanged) return s;
 
             const nextOnline = onlineUnchanged ? s.online : new Set(s.online);
             if (!onlineUnchanged) {
@@ -242,7 +255,20 @@ export const usePresenceStore = create<PresenceState>((set) => {
               else nextAgentPresence[agentId] = effective;
             }
 
-            return { online: nextOnline, agentPresence: nextAgentPresence };
+            const nextAgentDevices = deviceUnchanged
+              ? s.agentDevices
+              : { ...s.agentDevices };
+            if (!deviceUnchanged) {
+              if (effective === "offline" || !deviceName)
+                delete nextAgentDevices[agentId];
+              else nextAgentDevices[agentId] = deviceName;
+            }
+
+            return {
+              online: nextOnline,
+              agentPresence: nextAgentPresence,
+              agentDevices: nextAgentDevices,
+            };
           });
         })
       );
@@ -320,6 +346,9 @@ export const usePresenceStore = create<PresenceState>((set) => {
           set({
             online: new Set(ids),
             agentPresence: agentPresences,
+            agentDevices:
+              (payload.agentDevices as Record<string, string> | undefined) ??
+              {},
             agentActivity: activity,
             agentActivityConvs: activityConvs,
           });

@@ -144,6 +144,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
   const {
     updateConfig,
     regenerateKey,
+    startAgent,
     selectAgent,
     fetchAgents,
     refreshComputerUseDepsStatus,
@@ -276,6 +277,22 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
       setKeyError(e instanceof Error ? e.message : "Failed to generate key");
     } finally {
       setRegenerating(false);
+    }
+  };
+
+  // One-click fix for an auth crash: mint a fresh key for this machine
+  // (invalidating the one on whichever device had it) and start the agent.
+  const [fixingKey, setFixingKey] = useState(false);
+  const handleFixKeyAndStart = async () => {
+    setFixingKey(true);
+    setKeyError(null);
+    try {
+      await regenerateKey(agent.id);
+      await startAgent(agent.id);
+    } catch (e) {
+      setKeyError(e instanceof Error ? e.message : "Failed to fix the key");
+    } finally {
+      setFixingKey(false);
     }
   };
 
@@ -430,13 +447,41 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
         {/* Header — editable name + avatar */}
         <AgentHeader agent={agent} />
 
-        {/* Crash reason banner — shown across all sections */}
+        {/* Crash reason banner — shown across all sections. An auth-kind
+            crash (rejected or missing API key) gets a one-click fix:
+            regenerate the key on this machine and start the agent. */}
         {managed.processStatus === "crashed" && managed.crashReason && (
           <div className="mx-4 mt-3 px-3 py-2.5 bg-destructive/10 border border-destructive/20 rounded-lg flex-shrink-0">
-            <div className="text-xs font-medium text-destructive mb-0.5">Agent crashed</div>
+            <div className="text-xs font-medium text-destructive mb-0.5">
+              {managed.crashKind === "auth" || managed.crashKind === "no_key"
+                ? "API key problem"
+                : "Agent crashed"}
+            </div>
             <div className="text-xs text-destructive/80 whitespace-pre-wrap break-words">
               {managed.crashReason}
             </div>
+            {(managed.crashKind === "auth" || managed.crashKind === "no_key") && (
+              <div className="mt-2 space-y-1.5">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="h-7 text-xs"
+                  disabled={fixingKey}
+                  onClick={handleFixKeyAndStart}
+                >
+                  {fixingKey ? "Fixing…" : "Generate new key & start agent"}
+                </Button>
+                <p className="text-[11px] text-muted-foreground">
+                  Each computer needs its own copy of the agent's API key, and
+                  only the newest key works. Generating a new one here means
+                  the agent can no longer run from the old computer until you
+                  do the same there.
+                </p>
+                {keyError && (
+                  <p className="text-[11px] text-destructive">{keyError}</p>
+                )}
+              </div>
+            )}
           </div>
         )}
 
@@ -982,10 +1027,14 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
               ) : (
                 <div className="rounded-md border border-dashed border-border p-3 text-center">
                   <p className="text-sm text-muted-foreground mb-2">
-                    No key stored on this machine
+                    No key stored on this computer
                   </p>
                   <p className="text-xs text-muted-foreground mb-3">
-                    Generate a new key to run this agent from here. This will invalidate any existing key.
+                    This usually means the agent was set up on another device —
+                    keys never leave the computer they were created on.
+                    Generate a new key to run the agent from here. The old key
+                    stops working, so if the agent runs on another computer
+                    you'll need to generate again there to move it back.
                   </p>
                   {keyError && (
                     <p className="text-xs text-destructive mb-2">{keyError}</p>

@@ -181,6 +181,12 @@ export interface ManagedAgent {
   processStatus: "running" | "stopped" | "crashed" | "starting" | "stalled";
   uptimeSecs: number | null;
   crashReason: string | null;
+  /** Machine-readable category for crashReason. "auth" = the agent's
+   *  AgentGram API key was rejected (regenerated elsewhere / deactivated);
+   *  "no_key" = no key stored on this computer (agent was set up on another
+   *  device). Both are fixed by generating a new key here — the UI renders
+   *  a one-click fix instead of a dead-end error string. */
+  crashKind: string | null;
   health: api.AgentHealth | null;
   /** Timestamp (ms) when activity was last detected via health delta */
   lastActivityAt: number | null;
@@ -352,6 +358,22 @@ function saveApiKey(agentId: string, key: string) {
   localStorage.setItem(`agent:apikey:${agentId}`, key);
 }
 
+/** This machine's name, as Rust computes it (and passes to the bridge via
+ *  AGENTGRAM_DEVICE_NAME) — so comparing against an agent's server-reported
+ *  deviceName answers "is that bridge running on THIS device?". Cached after
+ *  the first invoke; null when Tauri is unavailable (browser dev). */
+let cachedDeviceName: string | null | undefined;
+export async function getLocalDeviceName(): Promise<string | null> {
+  if (cachedDeviceName !== undefined) return cachedDeviceName;
+  try {
+    const name = await invoke<string>("get_device_name");
+    cachedDeviceName = name || null;
+  } catch {
+    cachedDeviceName = null;
+  }
+  return cachedDeviceName;
+}
+
 /**
  * Track consecutive health endpoint failures (network errors, 502s, etc.).
  * When the backend is deploying, the endpoint itself is unreachable — the first
@@ -437,6 +459,7 @@ export const useAgentStore = create<AgentState>((set, get) => ({
           processStatus: existing?.processStatus || "stopped",
           uptimeSecs: existing?.uptimeSecs || null,
           crashReason: existing?.crashReason || null,
+          crashKind: existing?.crashKind || null,
           health: existing?.health || null,
           lastActivityAt: existing?.lastActivityAt || null,
           prevHealth: existing?.prevHealth || null,
@@ -707,8 +730,29 @@ export const useAgentStore = create<AgentState>((set, get) => ({
 
   startAgent: async (id) => {
     const managed = get().agents[id];
-    if (!managed || !managed.apiKey) {
-      throw new Error("Agent not configured — missing API key");
+    if (!managed) {
+      throw new Error("Agent not found");
+    }
+    if (!managed.apiKey) {
+      // The plaintext key is only ever handed out on the machine that
+      // created (or last regenerated) it — an agent set up elsewhere has
+      // nothing stored here. Surface that as an actionable "auth" state so
+      // the UI offers the one-click "generate a new key" fix.
+      const reason =
+        "This agent's API key isn't on this computer — it was set up on " +
+        "another device. Generate a new key here to run it on this machine.";
+      set({
+        agents: {
+          ...get().agents,
+          [id]: {
+            ...managed,
+            processStatus: "crashed",
+            crashReason: reason,
+            crashKind: "no_key",
+          },
+        },
+      });
+      throw new Error(reason);
     }
 
     const needsLlmKey = providerRequiresLlmKey(managed.config.backend);
@@ -746,13 +790,13 @@ export const useAgentStore = create<AgentState>((set, get) => ({
       set({
         agents: {
           ...get().agents,
-          [id]: { ...managed, processStatus: "stopped", crashReason: null },
+          [id]: { ...managed, processStatus: "stopped", crashReason: null, crashKind: null },
         },
       });
       return;
     }
 
-    set({ agents: { ...get().agents, [id]: { ...managed, processStatus: "starting", crashReason: null } } });
+    set({ agents: { ...get().agents, [id]: { ...managed, processStatus: "starting", crashReason: null, crashKind: null } } });
 
     try {
       await invoke("start_agent", {
@@ -804,7 +848,7 @@ export const useAgentStore = create<AgentState>((set, get) => ({
       const current = get().agents[id];
       if (current) {
         const msg = e instanceof Error ? e.message : String(e);
-        set({ agents: { ...get().agents, [id]: { ...current, processStatus: "crashed", crashReason: msg } } });
+        set({ agents: { ...get().agents, [id]: { ...current, processStatus: "crashed", crashReason: msg, crashKind: null } } });
       }
       throw e;
     }
@@ -837,7 +881,7 @@ export const useAgentStore = create<AgentState>((set, get) => ({
     }
 
     if (managed) {
-      set({ agents: { ...get().agents, [id]: { ...managed, processStatus: "stopped", uptimeSecs: null, crashReason: null, startedAt: null, consecutiveBadPolls: 0 } } });
+      set({ agents: { ...get().agents, [id]: { ...managed, processStatus: "stopped", uptimeSecs: null, crashReason: null, crashKind: null, startedAt: null, consecutiveBadPolls: 0 } } });
     }
   },
 
@@ -932,6 +976,7 @@ export const useAgentStore = create<AgentState>((set, get) => ({
           processStatus: "stopped",
           uptimeSecs: null,
           crashReason: null,
+          crashKind: null,
           health: null,
           lastActivityAt: null,
           prevHealth: null,
@@ -995,12 +1040,16 @@ export const useAgentStore = create<AgentState>((set, get) => ({
           | "online_local"
           | "offline"
           | undefined;
+        const deviceName = isOnline
+          ? ((payload.deviceName as string | undefined) ?? null)
+          : null;
         set((s) => {
           const managed = s.agents[agentId];
           if (!managed) return s;
           if (
             managed.agent.online === isOnline &&
-            (presence === undefined || managed.agent.presence === presence)
+            (presence === undefined || managed.agent.presence === presence) &&
+            (managed.agent.deviceName ?? null) === deviceName
           ) {
             return s;
           }
@@ -1013,6 +1062,7 @@ export const useAgentStore = create<AgentState>((set, get) => ({
                   ...managed.agent,
                   online: isOnline,
                   ...(presence ? { presence } : {}),
+                  deviceName,
                 },
               },
             },
@@ -1067,6 +1117,7 @@ export const useAgentStore = create<AgentState>((set, get) => ({
 
   reconcileStaleExecutors: async () => {
     const managed = Object.values(get().agents);
+    const myDevice = await getLocalDeviceName();
     const stale = managed.filter(
       (m) =>
         m.agent.online === true &&
@@ -1078,7 +1129,13 @@ export const useAgentStore = create<AgentState>((set, get) => ({
         // wrong: it stomps a healthy VM-hosted agent, causing the mobile
         // app to flicker the agent offline → back online (next VM heartbeat
         // re-registers the executor) on every desktop launch.
-        m.agent.runtime !== "org_host"
+        m.agent.runtime !== "org_host" &&
+        // Same logic for an agent whose bridge is alive on ANOTHER of the
+        // user's machines: its executor reports that machine's deviceName,
+        // so "online but not running here" is the truth, not staleness.
+        // Only reconcile executors this device plausibly owns — no reported
+        // device (pre-device-reporting stale row) or our own name.
+        (!m.agent.deviceName || m.agent.deviceName === myDevice)
     );
     if (stale.length === 0) return;
     console.log(
@@ -1107,6 +1164,7 @@ export const useAgentStore = create<AgentState>((set, get) => ({
         status: string;
         uptimeSecs: number | null;
         crashReason: string | null;
+        crashKind: string | null;
       }> = await invoke("get_all_statuses");
 
       const current = get().agents;
@@ -1120,6 +1178,7 @@ export const useAgentStore = create<AgentState>((set, get) => ({
           const managed = agents[id];
           let newStatus = status.status as ManagedAgent["processStatus"];
           const newCrash = status.crashReason || null;
+          const newCrashKind = status.crashKind || null;
 
           // Preserve "stalled" status when OS process is still alive —
           // stall detection in fetchHealth sets this; only clear it when
@@ -1131,13 +1190,15 @@ export const useAgentStore = create<AgentState>((set, get) => ({
           if (
             managed.processStatus !== newStatus ||
             managed.uptimeSecs !== status.uptimeSecs ||
-            managed.crashReason !== newCrash
+            managed.crashReason !== newCrash ||
+            managed.crashKind !== newCrashKind
           ) {
             agents[id] = {
               ...managed,
               processStatus: newStatus,
               uptimeSecs: status.uptimeSecs,
               crashReason: newCrash,
+              crashKind: newCrashKind,
             };
             changed = true;
           }

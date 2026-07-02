@@ -6,7 +6,7 @@ import { formatBackendLabel } from "../lib/models";
 import { useModelCatalog } from "../stores/modelCatalogStore";
 import { AGENT_GRID_COLS, AGENT_CELL_ENGINE, AGENT_CELL_MODE } from "./agentTableLayout";
 import { formatUptime, cn } from "../lib/utils";
-import { Play, Power, Square, RotateCcw, Crown, Cloud, AlertTriangle, Link2, ChevronRight, ChevronDown, Loader2 } from "lucide-react";
+import { Play, Power, Square, RotateCcw, Crown, Cloud, AlertTriangle, KeyRound, Laptop, Link2, ChevronRight, ChevronDown, Loader2 } from "lucide-react";
 import { restartHostedAgents } from "../lib/api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -72,12 +72,15 @@ function StatusBadge({
   presence,
   runtime,
   waking,
+  deviceName,
 }: {
   status: string;
   uptimeSecs: number | null;
   presence?: "online_local" | "offline";
   runtime?: "local" | "org_host";
   waking?: boolean;
+  /** Machine the agent's bridge reported it is running on (when online). */
+  deviceName?: string | null;
 }) {
   // Org-host runtime: the bridge runs on a remote VM, so processStatus
   // is always "stopped" on this device. The agent's real online state
@@ -108,6 +111,27 @@ function StatusBadge({
       >
         <Cloud className="w-3 h-3" />
         {remoteOnline ? "Remote · online" : "Remote · offline"}
+      </Badge>
+    );
+  }
+
+  // Local-runtime agent with no process on THIS machine but a live bridge
+  // somewhere — it's running on another of the user's devices. Say where,
+  // instead of showing "Stopped" next to a green presence dot (which read
+  // as "running locally *here*" and confused everyone).
+  if (runtime !== "org_host" && status === "stopped" && presence === "online_local") {
+    return (
+      <Badge
+        variant="outline"
+        className="border-info/30 text-info bg-info/10 gap-1.5"
+        title={
+          deviceName
+            ? `Running locally on “${deviceName}” — start and stop it from that device`
+            : "Running locally on another device"
+        }
+      >
+        <Laptop className="w-3 h-3" />
+        {deviceName ? `On ${deviceName}` : "On another device"}
       </Badge>
     );
   }
@@ -278,6 +302,12 @@ export function AgentRow({
   // Whether a "bring online" restart we requested for this agent is in flight
   // (shared across the row + the bulk button via the presence store).
   const waking = usePresenceStore((s) => s.wakingAgents.has(managed.agent.id));
+  // Machine the agent's bridge reported (from the agent payload, kept live
+  // by agent_status_changed; the presence store covers peers' agents).
+  const presenceDevice = usePresenceStore(
+    (s) => s.agentDevices[managed.agent.id]
+  );
+  const deviceName = managed.agent.deviceName ?? presenceDevice ?? null;
   const markWaking = usePresenceStore((s) => s.markWaking);
   const [error, setError] = useState<string | null>(null);
 
@@ -347,7 +377,7 @@ export function AgentRow({
   const startBlockedReason: string | null =
     isOrgHost || managed.apiKey
       ? null
-      : "No API key — open agent to generate one";
+      : "No API key on this computer — the agent was set up on another device. Open it to generate a new key.";
   const canStart =
     startBlockedReason === null && managed.processStatus !== "starting";
   // Model label comes from the backend catalog (single source of truth) so it
@@ -527,6 +557,7 @@ export function AgentRow({
                 presence={managed.agent.presence}
                 runtime={managed.agent.runtime}
                 waking={waking}
+                deviceName={deviceName}
               />
               <HealthHint health={managed.health} processStatus={managed.processStatus} />
               {managed.processStatus === "crashed" && managed.crashReason && (
@@ -596,6 +627,33 @@ export function AgentRow({
                 <Power className="w-4 h-4" />
               </Button>
             )
+          ) : managed.processStatus === "crashed" &&
+            (managed.crashKind === "auth" || managed.crashKind === "no_key") ? (
+            // Restarting would just crash again on the same bad key — send
+            // the user to the fix (the key panel in the agent's settings).
+            <TooltipProvider delay={150}>
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      className="text-warning hover:text-warning/90"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onSelect();
+                      }}
+                    >
+                      <KeyRound className="w-4 h-4" />
+                    </Button>
+                  }
+                />
+                <TooltipContent side="left" className="text-xs">
+                  API key problem — open the agent to generate a new key for
+                  this computer
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           ) : managed.processStatus === "crashed" ? (
             <Button variant="ghost" size="icon-sm" className="text-warning hover:text-warning/90" onClick={handleToggle} title="Restart">
               <RotateCcw className="w-4 h-4" />

@@ -17,6 +17,11 @@ pub struct AgentProcess {
     pub uptime_secs: Option<u64>,
     pub exit_code: Option<i32>,
     pub crash_reason: Option<String>,
+    /// Machine-readable category for `crash_reason`. Currently only
+    /// `"auth"` (the agent's AgentGram API key was rejected) — the UI
+    /// turns that into a one-click "generate a new key" fix instead of
+    /// a dead-end error string.
+    pub crash_kind: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -90,6 +95,7 @@ struct RunningAgent {
     /// Shared log buffer — written by background reader thread, read by get_agent_logs
     logs: Arc<Mutex<Vec<String>>>,
     crash_reason: Option<String>,
+    crash_kind: Option<String>,
     /// Used to fire a synchronous offline ping to the backend at shutdown.
     /// SIGTERM gives the bridge ~2s to deregister itself, but Force Quit /
     /// SIGKILL / crash would otherwise leave the agent "online" for 90s.
@@ -127,7 +133,10 @@ impl ProcessManager {
                     let code = status.code();
                     if !status.success() && agent.crash_reason.is_none() {
                         // Try to extract crash reason from collected logs
-                        agent.crash_reason = extract_crash_reason(&agent.logs);
+                        if let Some((reason, kind)) = extract_crash_reason(&agent.logs) {
+                            agent.crash_reason = Some(reason);
+                            agent.crash_kind = kind.map(str::to_string);
+                        }
                     }
                     if status.success() {
                         (AgentStatus::Stopped, code)
@@ -144,9 +153,51 @@ impl ProcessManager {
     }
 }
 
+/// Human-readable name of this machine. Passed to the bridge as
+/// AGENTGRAM_DEVICE_NAME (reported to the backend in executor metadata)
+/// and exposed to the frontend via get_device_name — both sides MUST use
+/// the same value so "is that agent running on THIS device?" comparisons
+/// work. Prefers the user-facing name (macOS ComputerName) over the raw
+/// mDNS hostname.
+pub fn compute_device_name() -> String {
+    #[cfg(target_os = "macos")]
+    {
+        if let Ok(out) = Command::new("scutil").args(["--get", "ComputerName"]).output() {
+            if out.status.success() {
+                let name = String::from_utf8_lossy(&out.stdout).trim().to_string();
+                if !name.is_empty() {
+                    return name;
+                }
+            }
+        }
+    }
+    if let Ok(name) = std::env::var("COMPUTERNAME") {
+        let name = name.trim().to_string();
+        if !name.is_empty() {
+            return name;
+        }
+    }
+    if let Ok(out) = Command::new("hostname").output() {
+        if out.status.success() {
+            let name = String::from_utf8_lossy(&out.stdout).trim().to_string();
+            if !name.is_empty() {
+                return name.trim_end_matches(".local").to_string();
+            }
+        }
+    }
+    String::new()
+}
+
+#[tauri::command]
+pub fn get_device_name() -> String {
+    compute_device_name()
+}
+
 /// Extract crash reason from collected log lines, providing user-friendly
 /// messages with actionable fix instructions for common failure modes.
-fn extract_crash_reason(logs: &Arc<Mutex<Vec<String>>>) -> Option<String> {
+/// Returns `(reason, kind)` — `kind` is a machine-readable category the UI
+/// can act on (currently only `"auth"`).
+fn extract_crash_reason(logs: &Arc<Mutex<Vec<String>>>) -> Option<(String, Option<&'static str>)> {
     let lines = logs.lock().ok()?;
     if lines.is_empty() {
         return None;
@@ -166,48 +217,59 @@ fn extract_crash_reason(logs: &Arc<Mutex<Vec<String>>>) -> Option<String> {
             _ =>
                 format!("Missing Python package '{module}'. Run: pip3 install {module}"),
         };
-        return Some(install_hint);
+        return Some((install_hint, None));
     }
 
-    // --- Authentication failures ---
+    // --- Authentication failures (the agent's AgentGram API key) ---
+    // The bridge logs the specific cause after "AUTH_FAILED: " (invalid vs
+    // deactivated) — surface that verbatim when present.
+    if let Some(line) = lines.iter().find(|l| l.contains("AUTH_FAILED:")) {
+        let detail = line
+            .split("AUTH_FAILED:")
+            .nth(1)
+            .map(str::trim)
+            .filter(|s| !s.is_empty())
+            .unwrap_or("The agent's API key was rejected by the server.");
+        return Some((detail.to_string(), Some("auth")));
+    }
     if all_text.contains("AUTH_FAILED") || all_text.contains("401") {
-        return Some("Authentication failed — the agent's API key may be invalid or expired. Try regenerating it in agent settings.".to_string());
+        return Some(("The agent's API key was rejected — it may have been regenerated on another device. Generate a new key to run the agent on this computer.".to_string(), Some("auth")));
     }
     if all_text.contains("AuthError") {
-        return Some("Authentication error — check that the agent's API key is correct.".to_string());
+        return Some(("Authentication error — the agent's API key doesn't work. Generate a new key to run the agent on this computer.".to_string(), Some("auth")));
     }
 
     // --- LLM API key issues ---
     if all_text.contains("AuthenticationError") && all_text.contains("api_key") {
-        return Some("LLM API key is invalid or expired. Update it in agent settings under LLM Provider.".to_string());
+        return Some(("LLM API key is invalid or expired. Update it in agent settings under LLM Provider.".to_string(), None));
     }
     if all_text.contains("Invalid API Key") || all_text.contains("Incorrect API key") {
-        return Some("LLM API key is invalid. Check your API key in agent settings.".to_string());
+        return Some(("LLM API key is invalid. Check your API key in agent settings.".to_string(), None));
     }
     if all_text.contains("RateLimitError") || all_text.contains("rate_limit") {
-        return Some("LLM rate limit exceeded. Wait a moment and try again, or check your API plan limits.".to_string());
+        return Some(("LLM rate limit exceeded. Wait a moment and try again, or check your API plan limits.".to_string(), None));
     }
     if all_text.contains("InsufficientQuotaError") || all_text.contains("insufficient_quota") {
-        return Some("LLM API quota exceeded. Check your billing/usage at your LLM provider's dashboard.".to_string());
+        return Some(("LLM API quota exceeded. Check your billing/usage at your LLM provider's dashboard.".to_string(), None));
     }
 
     // --- Network / connection issues ---
     if all_text.contains("ConnectionError") || all_text.contains("ConnectError") {
         if all_text.contains("agentchat-backend") || all_text.contains("fly.dev") {
-            return Some("Cannot connect to AgentGram server. Check your internet connection.".to_string());
+            return Some(("Cannot connect to AgentGram server. Check your internet connection.".to_string(), None));
         }
-        return Some("Connection error — check your internet connection and try again.".to_string());
+        return Some(("Connection error — check your internet connection and try again.".to_string(), None));
     }
     if all_text.contains("TimeoutError") || all_text.contains("timed out") {
-        return Some("Request timed out. The server may be busy — try again in a moment.".to_string());
+        return Some(("Request timed out. The server may be busy — try again in a moment.".to_string(), None));
     }
 
     // --- Python runtime errors ---
     if all_text.contains("SyntaxError") {
-        return Some("Python syntax error in bridge script. This is a bug — please report it.".to_string());
+        return Some(("Python syntax error in bridge script. This is a bug — please report it.".to_string(), None));
     }
     if all_text.contains("PermissionError") {
-        return Some("Permission denied — the bridge script doesn't have access to a required file or directory.".to_string());
+        return Some(("Permission denied — the bridge script doesn't have access to a required file or directory.".to_string(), None));
     }
 
     // --- Generic: find the last meaningful error line ---
@@ -226,12 +288,17 @@ fn extract_crash_reason(logs: &Arc<Mutex<Vec<String>>>) -> Option<String> {
             } else {
                 line.clone()
             };
-            return Some(cleaned);
+            return Some((cleaned, None));
         }
     }
 
     // Last resort: return the last non-empty line
-    lines.iter().rev().find(|l| !l.trim().is_empty()).cloned()
+    lines
+        .iter()
+        .rev()
+        .find(|l| !l.trim().is_empty())
+        .cloned()
+        .map(|l| (l, None))
 }
 
 /// Parse "ModuleNotFoundError: No module named 'xxx'" from log text.
@@ -302,6 +369,7 @@ pub fn start_agent(
             uptime_secs: None,
             exit_code: None,
             crash_reason: None,
+            crash_kind: None,
         });
     }
 
@@ -329,6 +397,13 @@ pub fn start_agent(
 
     cmd.env("AGENT_ID", &args.agent_id);
     cmd.env("AGENT_API_KEY", &args.api_key);
+
+    // Tell the bridge which machine it's on — it reports this to the
+    // backend so every client can show "running on <this machine>".
+    let device_name = compute_device_name();
+    if !device_name.is_empty() {
+        cmd.env("AGENTGRAM_DEVICE_NAME", &device_name);
+    }
 
     if let Some(ref url) = args.api_url {
         cmd.env("AGENTGRAM_API_URL", url);
@@ -421,6 +496,7 @@ pub fn start_agent(
         agent_name: args.agent_name.clone(),
         logs,
         crash_reason: None,
+        crash_kind: None,
         agent_id: args.agent_id.clone(),
         api_key: args.api_key.clone(),
         api_url,
@@ -436,6 +512,7 @@ pub fn start_agent(
         uptime_secs: Some(0),
         exit_code: None,
         crash_reason: None,
+        crash_kind: None,
     })
 }
 
@@ -459,6 +536,7 @@ pub fn stop_agent(
             uptime_secs: None,
             exit_code: Some(0),
             crash_reason: None,
+            crash_kind: None,
         })
     } else {
         Err(format!("Agent {} is not running", agent_id))
@@ -487,6 +565,7 @@ pub fn get_agent_status(
             uptime_secs: uptime,
             exit_code,
             crash_reason: agent.crash_reason.clone(),
+            crash_kind: agent.crash_kind.clone(),
         })
     } else {
         Ok(AgentProcess {
@@ -496,6 +575,7 @@ pub fn get_agent_status(
             uptime_secs: None,
             exit_code: None,
             crash_reason: None,
+            crash_kind: None,
         })
     }
 }
@@ -524,6 +604,7 @@ pub fn get_all_statuses(
                 uptime_secs: uptime,
                 exit_code,
                 crash_reason: agent.crash_reason.clone(),
+                crash_kind: agent.crash_kind.clone(),
             });
         }
     }
