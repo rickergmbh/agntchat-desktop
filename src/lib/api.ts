@@ -2249,6 +2249,7 @@ export type TaskStatus =
   | "blocked"
   | "complete"
   | "cancelled"
+  | "failed"
   | "exhausted";
 
 export interface Task {

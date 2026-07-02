@@ -19,11 +19,11 @@ type Filter = "active" | "pending" | "in_progress" | "complete" | "cancelled";
  * Buckets cover the full set of backend task states so no task is ever
  * orphaned outside a filter. Canonical states (backend/lib/agentchat/tasks/
  * task.ex:9): pending accepted rejected in_progress blocked complete
- * cancelled exhausted. Matchers are grouped semantically:
+ * cancelled failed exhausted. Matchers are grouped semantically:
  *  - Pending = waiting to start or just picked up (pending + accepted)
  *  - Progress = actively running, including stalled (in_progress + blocked)
  *  - Done = completed successfully
- *  - Cancelled = terminated without success (cancelled + rejected + exhausted)
+ *  - Ended = terminated without success (cancelled + failed + rejected + exhausted)
  */
 const FILTERS: { value: Filter; label: string; matches: (s: TaskStatus) => boolean }[] = [
   {
@@ -45,8 +45,8 @@ const FILTERS: { value: Filter; label: string; matches: (s: TaskStatus) => boole
   { value: "complete", label: "Done", matches: (s) => s === "complete" },
   {
     value: "cancelled",
-    label: "Cancelled",
-    matches: (s) => s === "cancelled" || s === "rejected" || s === "exhausted",
+    label: "Ended",
+    matches: (s) => s === "cancelled" || s === "failed" || s === "rejected" || s === "exhausted",
   },
 ];
 
@@ -57,6 +57,7 @@ const STATUS_COLORS: Record<string, string> = {
   blocked: "bg-destructive/10 text-destructive border-destructive/30",
   complete: "bg-success/10 text-success border-success/30",
   cancelled: "bg-muted text-muted-foreground border-border",
+  failed: "bg-destructive/10 text-destructive border-destructive/30",
   rejected: "bg-destructive/10 text-destructive border-destructive/30",
   exhausted: "bg-muted text-muted-foreground border-border",
 };
