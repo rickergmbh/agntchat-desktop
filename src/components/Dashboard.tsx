@@ -27,6 +27,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { usePresenceStore } from "../stores/presenceStore";
 import { useModelCatalog } from "../stores/modelCatalogStore";
 import { restartHostedAgents } from "../lib/api";
+import { runningElsewhereOn, useLocalDeviceName } from "../hooks/useRunningElsewhere";
 import type {
   AgentConnection,
   ConnectionMode,
@@ -655,14 +656,20 @@ export function Dashboard() {
 
   const runningCount = Object.values(agents).filter(isRunningForUI).length;
   const totalCount = Object.keys(agents).length;
+  const agentDevices = usePresenceStore((s) => s.agentDevices);
+  const myDevice = useLocalDeviceName();
   // "Start All" only targets locally-runnable agents — flipping an
   // org-host agent into "starting" here would do nothing useful since
-  // the Tauri command short-circuits to AgentStatus::Remote.
+  // the Tauri command short-circuits to AgentStatus::Remote. Agents whose
+  // bridge is alive on ANOTHER of the user's machines are also skipped:
+  // bulk-starting must never silently take an agent over from the machine
+  // it's running on (the per-row Play button confirms that explicitly).
   const stoppedWithKeys = Object.values(agents).filter(
     (m) =>
       m.processStatus === "stopped" &&
       m.apiKey &&
-      m.agent.runtime !== "org_host"
+      m.agent.runtime !== "org_host" &&
+      runningElsewhereOn(m, agentDevices[m.agent.id], myDevice) === null
   );
   // "Stop All" mirrors Start All — only acts on local subprocesses.
   // stopAgent on an org-host agent is a no-op (the Tauri stop command

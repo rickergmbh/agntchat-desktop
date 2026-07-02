@@ -7,10 +7,19 @@ import { useModelCatalog } from "../stores/modelCatalogStore";
 import { AGENT_GRID_COLS, AGENT_CELL_ENGINE, AGENT_CELL_MODE } from "./agentTableLayout";
 import { formatUptime, cn } from "../lib/utils";
 import { Play, Power, Square, RotateCcw, Crown, Cloud, AlertTriangle, KeyRound, Laptop, Link2, ChevronRight, ChevronDown, Loader2 } from "lucide-react";
-import { restartHostedAgents } from "../lib/api";
+import { restartHostedAgents, forceResetAgent } from "../lib/api";
+import { runningElsewhereOn, useLocalDeviceName } from "../hooks/useRunningElsewhere";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Tooltip,
   TooltipContent,
@@ -308,8 +317,14 @@ export function AgentRow({
     (s) => s.agentDevices[managed.agent.id]
   );
   const deviceName = managed.agent.deviceName ?? presenceDevice ?? null;
+  const myDevice = useLocalDeviceName();
   const markWaking = usePresenceStore((s) => s.markWaking);
   const [error, setError] = useState<string | null>(null);
+  // Take-over confirmation: the agent's bridge is alive on ANOTHER of the
+  // user's machines, so starting here stops it there. null = no dialog;
+  // "" = running elsewhere but the device name is unknown.
+  const [confirmMoveFrom, setConfirmMoveFrom] = useState<string | null>(null);
+  const [moving, setMoving] = useState(false);
 
   const isRunning = managed.processStatus === "running";
 
@@ -336,11 +351,37 @@ export function AgentRow({
       if (isRunning) {
         await stopAgent(managed.agent.id);
       } else {
+        // The bridge is alive on another of the user's machines — starting
+        // here takes the agent over and stops it there. Confirm first.
+        const elsewhere = runningElsewhereOn(managed, presenceDevice, myDevice);
+        if (elsewhere !== null) {
+          setConfirmMoveFrom(elsewhere);
+          return;
+        }
         await startAgent(managed.agent.id);
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       setError(msg);
+    }
+  };
+
+  // Confirmed take-over: shut the other machine's bridge down first (the
+  // backend pushes a shutdown command to it over WS and re-queues its
+  // in-flight work), then start locally — so the agent never runs on two
+  // computers at once.
+  const handleConfirmMove = async () => {
+    setMoving(true);
+    setError(null);
+    try {
+      await forceResetAgent(managed.agent.id);
+      await startAgent(managed.agent.id);
+      setConfirmMoveFrom(null);
+    } catch (err) {
+      setConfirmMoveFrom(null);
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setMoving(false);
     }
   };
 
@@ -693,6 +734,67 @@ export function AgentRow({
         </div>
       </div>
 
+      {/* Take-over confirmation — the agent is live on another machine and
+          an agent can only run on one computer at a time. Confirming shuts
+          the other bridge down (backend-pushed command) before starting
+          here, so the move is clean instead of two bridges fighting. */}
+      <Dialog
+        open={confirmMoveFrom !== null}
+        onOpenChange={(open) => {
+          if (!open && !moving) setConfirmMoveFrom(null);
+        }}
+      >
+        <DialogContent
+          className="max-w-md"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <DialogHeader>
+            <DialogTitle>
+              Move {managed.agent.displayName} to this computer?
+            </DialogTitle>
+            <DialogDescription className="space-y-2 pt-1">
+              <span className="block">
+                {managed.agent.displayName} is currently running on{" "}
+                {confirmMoveFrom ? (
+                  <span className="font-medium text-foreground">
+                    “{confirmMoveFrom}”
+                  </span>
+                ) : (
+                  "another computer"
+                )}
+                . An agent can only run on one computer at a time — starting
+                it here will stop it there first.
+              </span>
+              <span className="block">
+                Anything it's working on is put back in its queue and picked
+                up once it's running here. You can move it back anytime by
+                starting it from the other computer.
+              </span>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setConfirmMoveFrom(null)}
+              disabled={moving}
+            >
+              Cancel
+            </Button>
+            <Button onClick={handleConfirmMove} disabled={moving}>
+              {moving ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+                  Moving…
+                </>
+              ) : confirmMoveFrom ? (
+                `Stop on ${confirmMoveFrom} & start here`
+              ) : (
+                "Stop it there & start here"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

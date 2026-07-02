@@ -288,6 +288,18 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
     setKeyError(null);
     try {
       await regenerateKey(agent.id);
+      // If the agent's bridge is still alive on another machine, stop it
+      // now — regenerating alone leaves it running on its cached session
+      // for up to an hour, and two bridges must never run at once.
+      const presence =
+        agent.presence ?? (agent.online ? "online_local" : "offline");
+      if (presence === "online_local") {
+        try {
+          await forceResetAgent(agent.id);
+        } catch {
+          // Best-effort — the invalidated key stops it at the next refresh.
+        }
+      }
       await startAgent(agent.id);
     } catch (e) {
       setKeyError(e instanceof Error ? e.message : "Failed to fix the key");
@@ -473,9 +485,9 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                 </Button>
                 <p className="text-[11px] text-muted-foreground">
                   Each computer needs its own copy of the agent's API key, and
-                  only the newest key works. Generating a new one here means
-                  the agent can no longer run from the old computer until you
-                  do the same there.
+                  only the newest key works. Generating a new one here moves
+                  the agent to this computer — if it's running on another
+                  computer right now, it will be stopped there.
                 </p>
                 {keyError && (
                   <p className="text-[11px] text-destructive">{keyError}</p>
