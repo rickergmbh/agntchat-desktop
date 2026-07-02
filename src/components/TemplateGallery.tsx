@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   LayoutTemplate,
-  Lock,
   X,
   ChevronRight,
 } from "lucide-react";
@@ -109,7 +108,6 @@ export function TemplateGallery({ onClose }: Props) {
               </div>
               <div className="flex items-center gap-1.5 mt-1">
                 <Badge variant="secondary" className="text-[9px] px-1 py-0">{template.resultType}</Badge>
-                {template.isBuiltin && <Lock className="w-2.5 h-2.5 text-muted-foreground" />}
                 <span className="text-[9px] text-muted-foreground">{template.fields.length} fields</span>
               </div>
             </button>
@@ -128,7 +126,6 @@ export function TemplateGallery({ onClose }: Props) {
                 )}
                 <div className="flex items-center gap-2 mt-2">
                   <Badge variant="secondary">{selected.resultType}</Badge>
-                  {selected.isBuiltin && <Badge variant="outline">built-in</Badge>}
                 </div>
               </div>
 

@@ -24,22 +24,19 @@ interface Props {
   field: DetailField;
   onChange: (updated: DetailField) => void;
   onDelete: () => void;
-  disabled: boolean;
 }
 
-export function FieldEditor({ field, onChange, onDelete, disabled }: Props) {
+export function FieldEditor({ field, onChange, onDelete }: Props) {
   return (
     <div className="relative rounded-lg border border-border p-3 space-y-3">
-      {!disabled && (
-        <button
-          type="button"
-          onClick={onDelete}
-          className="absolute right-2 top-2 rounded p-1 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
-          title="Remove field"
-        >
-          <X className="h-3.5 w-3.5" />
-        </button>
-      )}
+      <button
+        type="button"
+        onClick={onDelete}
+        className="absolute right-2 top-2 rounded p-1 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+        title="Remove field"
+      >
+        <X className="h-3.5 w-3.5" />
+      </button>
 
       <div className="grid grid-cols-2 gap-3 pr-6">
         <div className="space-y-1">
@@ -49,7 +46,6 @@ export function FieldEditor({ field, onChange, onDelete, disabled }: Props) {
             onChange={(e) => onChange({ ...field, key: e.target.value })}
             placeholder="field_key"
             className="h-8 font-mono text-xs"
-            disabled={disabled}
           />
         </div>
         <div className="space-y-1">
@@ -61,7 +57,6 @@ export function FieldEditor({ field, onChange, onDelete, disabled }: Props) {
             }
             placeholder="Display label"
             className="h-8 text-xs"
-            disabled={disabled}
           />
         </div>
       </div>
@@ -73,14 +68,12 @@ export function FieldEditor({ field, onChange, onDelete, disabled }: Props) {
             <button
               key={dt}
               type="button"
-              onClick={() => !disabled && onChange({ ...field, display: dt })}
-              disabled={disabled}
+              onClick={() => onChange({ ...field, display: dt })}
               className={cn(
                 "rounded-full border px-2.5 py-0.5 text-[10px] font-medium transition-colors",
                 field.display === dt
                   ? "border-primary bg-primary/10 text-primary"
-                  : "border-border text-muted-foreground hover:bg-accent",
-                disabled && "cursor-not-allowed opacity-50"
+                  : "border-border text-muted-foreground hover:bg-accent"
               )}
             >
               {dt}
@@ -99,7 +92,6 @@ export function FieldEditor({ field, onChange, onDelete, disabled }: Props) {
             }
             placeholder="lucide icon name"
             className="h-8 text-xs"
-            disabled={disabled}
           />
         </div>
         <div className="space-y-1">
@@ -111,7 +103,6 @@ export function FieldEditor({ field, onChange, onDelete, disabled }: Props) {
             }
             placeholder="e.g. currency, date"
             className="h-8 text-xs"
-            disabled={disabled}
           />
         </div>
       </div>
@@ -124,16 +115,12 @@ export function FieldEditor({ field, onChange, onDelete, disabled }: Props) {
               <button
                 key={hc.value}
                 type="button"
-                onClick={() =>
-                  !disabled && onChange({ ...field, color: hc.value })
-                }
-                disabled={disabled}
+                onClick={() => onChange({ ...field, color: hc.value })}
                 className={cn(
                   "flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-medium transition-colors",
                   field.color === hc.value
                     ? "border-primary bg-primary/5"
-                    : "border-border hover:bg-accent",
-                  disabled && "cursor-not-allowed opacity-50"
+                    : "border-border hover:bg-accent"
                 )}
               >
                 <span className={cn("h-2.5 w-2.5 rounded-full", hc.cls)} />

@@ -20,7 +20,6 @@ import {
   Plus,
   Trash2,
   Eye,
-  Lock,
 } from "lucide-react";
 
 interface AgentTemplatesProps {
@@ -146,9 +145,6 @@ export function AgentTemplates({ managed }: AgentTemplatesProps) {
                             {source.resultType}
                           </Badge>
                         )}
-                        {source?.isBuiltin && (
-                          <Lock className="w-3 h-3 text-muted-foreground" />
-                        )}
                       </div>
                       <p className="text-xs text-muted-foreground mt-0.5">
                         {source?.description ||
@@ -209,7 +205,6 @@ export function AgentTemplates({ managed }: AgentTemplatesProps) {
               )}
               <div className="flex gap-2 flex-wrap">
                 <Badge variant="secondary">{viewTemplate.resultType}</Badge>
-                {viewTemplate.isBuiltin && <Badge variant="outline">built-in</Badge>}
               </div>
               <div>
                 <p className="text-xs font-semibold text-muted-foreground mb-2">
@@ -318,9 +313,6 @@ function AddTemplateDialog({
                     >
                       {t.resultType}
                     </Badge>
-                    {t.isBuiltin && (
-                      <Lock className="w-3 h-3 text-muted-foreground" />
-                    )}
                   </div>
                   <p className="text-xs text-muted-foreground truncate">
                     {t.description || `${t.fields.length} field(s)`}

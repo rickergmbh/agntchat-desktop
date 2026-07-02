@@ -1,7 +1,6 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import {
   FileText,
-  Lock,
   Loader2,
   Plus,
   Save,
@@ -90,9 +89,6 @@ export function TemplateEditor({ template, isNew }: Props) {
   const [previewing, setPreviewing] = useState(false);
   const [copiedId, setCopiedId] = useState(false);
 
-  const isBuiltin = template?.isBuiltin ?? false;
-  const disabled = isBuiltin;
-
   const dirty = useMemo(() => {
     if (isNew) return true;
     return (
@@ -144,7 +140,7 @@ export function TemplateEditor({ template, isNew }: Props) {
   ]);
 
   const handleDelete = useCallback(async () => {
-    if (!template || isBuiltin) return;
+    if (!template) return;
     if (!confirm(`Delete template "${template.name}"? This cannot be undone.`))
       return;
     setDeleting(true);
@@ -157,7 +153,7 @@ export function TemplateEditor({ template, isNew }: Props) {
     } finally {
       setDeleting(false);
     }
-  }, [template, isBuiltin, deleteTemplate, selectTemplate]);
+  }, [template, deleteTemplate, selectTemplate]);
 
   const handlePreview = useCallback(async () => {
     setPreviewing(true);
@@ -225,7 +221,6 @@ export function TemplateEditor({ template, isNew }: Props) {
         description,
         resultType,
         fields,
-        isBuiltin: false,
         insertedAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
@@ -237,45 +232,43 @@ export function TemplateEditor({ template, isNew }: Props) {
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
-      {!disabled && (
-        <div className="flex items-center gap-2 border-b border-border bg-card px-6 py-2.5">
+      <div className="flex items-center gap-2 border-b border-border bg-card px-6 py-2.5">
+        <Button
+          size="sm"
+          onClick={handleSave}
+          disabled={saving || !name.trim() || !dirty}
+        >
+          {saving ? (
+            <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />
+          ) : saved ? (
+            <Check className="mr-1.5 h-3 w-3" />
+          ) : (
+            <Save className="mr-1.5 h-3 w-3" />
+          )}
+          {saved ? "Saved" : isNew ? "Create Template" : "Save Changes"}
+        </Button>
+        {dirty && !saved && (
+          <Badge variant="outline" className="text-[10px]">
+            Unsaved
+          </Badge>
+        )}
+        <div className="flex-1" />
+        {!isNew && (
           <Button
             size="sm"
-            onClick={handleSave}
-            disabled={saving || !name.trim() || !dirty}
+            variant="destructive"
+            onClick={handleDelete}
+            disabled={deleting}
           >
-            {saving ? (
+            {deleting ? (
               <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />
-            ) : saved ? (
-              <Check className="mr-1.5 h-3 w-3" />
             ) : (
-              <Save className="mr-1.5 h-3 w-3" />
+              <Trash2 className="mr-1.5 h-3 w-3" />
             )}
-            {saved ? "Saved" : isNew ? "Create Template" : "Save Changes"}
+            Delete
           </Button>
-          {dirty && !saved && (
-            <Badge variant="outline" className="text-[10px]">
-              Unsaved
-            </Badge>
-          )}
-          <div className="flex-1" />
-          {!isNew && !isBuiltin && (
-            <Button
-              size="sm"
-              variant="destructive"
-              onClick={handleDelete}
-              disabled={deleting}
-            >
-              {deleting ? (
-                <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />
-              ) : (
-                <Trash2 className="mr-1.5 h-3 w-3" />
-              )}
-              Delete
-            </Button>
-          )}
-        </div>
-      )}
+        )}
+      </div>
 
       {saveError && (
         <div className="flex items-start gap-2 border-b border-destructive/20 bg-destructive/5 px-6 py-2">
@@ -291,12 +284,6 @@ export function TemplateEditor({ template, isNew }: Props) {
               <Badge variant="secondary" className="text-[10px] uppercase">
                 {resultType}
               </Badge>
-              {isBuiltin && (
-                <Badge variant="outline" className="text-[10px] gap-1">
-                  <Lock className="h-2.5 w-2.5" />
-                  Built-in
-                </Badge>
-              )}
               {!isNew && template && (
                 <button
                   type="button"
@@ -354,7 +341,6 @@ export function TemplateEditor({ template, isNew }: Props) {
                   onChange={(e) => setName(e.target.value)}
                   placeholder="hotel_search_results"
                   className="h-9 font-mono text-sm"
-                  disabled={disabled}
                 />
                 <p className="text-[10px] text-muted-foreground">
                   Use snake_case. This identifies the template in API calls.
@@ -368,7 +354,6 @@ export function TemplateEditor({ template, isNew }: Props) {
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="What does this template display?"
                   rows={2}
-                  disabled={disabled}
                 />
               </div>
 
@@ -381,14 +366,12 @@ export function TemplateEditor({ template, isNew }: Props) {
                       <button
                         key={rt}
                         type="button"
-                        onClick={() => !disabled && setResultType(rt)}
-                        disabled={disabled}
+                        onClick={() => setResultType(rt)}
                         className={cn(
                           "flex items-center gap-2 rounded-lg border p-2 text-left transition-colors",
                           resultType === rt
                             ? "border-primary bg-primary/5"
-                            : "border-border hover:bg-muted/50",
-                          disabled && "cursor-not-allowed opacity-50"
+                            : "border-border hover:bg-muted/50"
                         )}
                       >
                         <Icon
@@ -466,17 +449,15 @@ export function TemplateEditor({ template, isNew }: Props) {
           <Section
             label={`Fields (${fields.length})`}
             right={
-              !disabled ? (
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={addField}
-                  className="h-6 px-2 text-[11px]"
-                >
-                  <Plus className="mr-1 h-3 w-3" />
-                  Add Field
-                </Button>
-              ) : null
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={addField}
+                className="h-6 px-2 text-[11px]"
+              >
+                <Plus className="mr-1 h-3 w-3" />
+                Add Field
+              </Button>
             }
           >
             {fields.length === 0 ? (
@@ -494,7 +475,6 @@ export function TemplateEditor({ template, isNew }: Props) {
                     field={field}
                     onChange={(updated) => updateField(index, updated)}
                     onDelete={() => removeField(index)}
-                    disabled={disabled}
                   />
                 ))}
               </div>

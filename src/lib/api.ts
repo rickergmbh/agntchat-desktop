@@ -2706,14 +2706,12 @@ export interface DetailField {
 
 export interface ResponseTemplate {
   id: string;
-  ownerId?: string;
   name: string;
   description?: string;
   resultType: ResultType;
   fields: DetailField[];
   sampleData?: Record<string, unknown>;
   flowTemplate?: Record<string, unknown>;
-  isBuiltin: boolean;
   insertedAt: string;
   updatedAt: string;
 }
@@ -2741,6 +2739,10 @@ export interface Agent {
   soulMdSourceName?: string;
   soulMdSourceId?: string;
   presence?: "online_local" | "offline";
+  /** Machine name the agent's bridge reported (local-runtime agents only,
+   *  present while online). Lets the UI say "running on Jamess-MacBook"
+   *  instead of an ambiguous "local". */
+  deviceName?: string | null;
   /** Org-host runtime routing. `"local"` (default) → desktop spawns
    *  agent_bridge.py as a subprocess. `"org_host"` → a registered Linux
    *  host VM runs the bridge; process_manager skips local spawn and

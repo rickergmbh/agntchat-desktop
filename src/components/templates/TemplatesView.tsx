@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   FileText,
-  Lock,
   Search,
   BookOpen,
   Loader2,
@@ -39,20 +38,15 @@ export function TemplatesView() {
     if (loadedAt === 0) fetchTemplates();
   }, [loadedAt, fetchTemplates]);
 
-  const { owned, builtin } = useMemo(() => {
+  const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    const filtered = !q
-      ? templates
-      : templates.filter(
-          (t) =>
-            t.name.toLowerCase().includes(q) ||
-            (t.description ?? "").toLowerCase().includes(q) ||
-            t.resultType.toLowerCase().includes(q)
-        );
-    return {
-      owned: filtered.filter((t) => !t.isBuiltin),
-      builtin: filtered.filter((t) => t.isBuiltin),
-    };
+    if (!q) return templates;
+    return templates.filter(
+      (t) =>
+        t.name.toLowerCase().includes(q) ||
+        (t.description ?? "").toLowerCase().includes(q) ||
+        t.resultType.toLowerCase().includes(q)
+    );
   }, [templates, search]);
 
   const isNew = selectedId === "new";
@@ -150,11 +144,8 @@ export function TemplatesView() {
           ) : templates.length === 0 ? (
             <EmptyList onCreate={() => selectTemplate("new")} />
           ) : (
-            <>
-              {owned.length > 0 && (
-                <SectionHeader label="Your Templates" count={owned.length} />
-              )}
-              {owned.map((t) => (
+            <div className="pt-2">
+              {filtered.map((t) => (
                 <TemplateRow
                   key={t.id}
                   template={t}
@@ -162,18 +153,7 @@ export function TemplatesView() {
                   onClick={() => selectTemplate(t.id)}
                 />
               ))}
-              {builtin.length > 0 && (
-                <SectionHeader label="Built-in" count={builtin.length} />
-              )}
-              {builtin.map((t) => (
-                <TemplateRow
-                  key={t.id}
-                  template={t}
-                  active={t.id === selectedId}
-                  onClick={() => selectTemplate(t.id)}
-                />
-              ))}
-            </>
+            </div>
           )}
         </div>
       </aside>
@@ -213,17 +193,6 @@ export function TemplatesView() {
   );
 }
 
-function SectionHeader({ label, count }: { label: string; count: number }) {
-  return (
-    <div className="px-3 pb-1 pt-3 flex items-center gap-1.5">
-      <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-        {label}
-      </span>
-      <span className="text-[10px] text-muted-foreground/60">{count}</span>
-    </div>
-  );
-}
-
 function TemplateRow({
   template,
   active,
@@ -244,14 +213,9 @@ function TemplateRow({
     >
       <FileText className="h-4 w-4 shrink-0 mt-0.5 text-muted-foreground" />
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-1.5">
-          <p className="truncate text-sm font-medium font-mono">
-            {template.name}
-          </p>
-          {template.isBuiltin && (
-            <Lock className="h-2.5 w-2.5 shrink-0 text-muted-foreground" />
-          )}
-        </div>
+        <p className="truncate text-sm font-medium font-mono">
+          {template.name}
+        </p>
         <div className="flex items-center gap-1.5 mt-0.5">
           <Badge variant="secondary" className="text-[9px] px-1 py-0">
             {template.resultType}
