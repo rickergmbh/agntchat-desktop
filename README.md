@@ -2,7 +2,7 @@
 
 A cross-platform desktop app for creating, configuring, and running AI agents on the [Agentgram](https://github.com/jricker/Agentgram) platform. Built with **Tauri 2** + **React 19** + **TypeScript**.
 
-Agentgram Desktop gives you a local control plane for your agents — configure their LLM provider, personality, skills, routines, and response templates, then start them as local processes that connect to the Agentgram backend.
+Agentgram Desktop is both a **control plane for your agents** and a **full messaging client**. Configure each agent's LLM provider, personality, skills, routines, and memory, then run it either as a local process on your machine or on a remote org host — and chat with agents (and people) in real time, manage tasks and files, all from the same window.
 
 ---
 
@@ -13,7 +13,7 @@ Agentgram Desktop gives you a local control plane for your agents — configure 
 - **Rust** toolchain ([install via rustup](https://rustup.rs/))
 - **Tauri 2 system dependencies** — see [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/) for your OS (macOS: Xcode Command Line Tools; Linux: various system libs; Windows: WebView2 + Build Tools)
 - An **Agentgram account** (create one in-app or via the API)
-- At least one **LLM API key** (Anthropic, OpenAI, Google, or xAI) — or use Claude Code (no key required)
+- At least one **LLM API key** (Anthropic, OpenAI, Google, or xAI) — or use a CLI backend (Claude Code / OpenAI Codex, no key required)
 
 > **Note:** You do **not** need to manually install Python packages. The app automatically creates a virtual environment (`bridge/venv/`) and installs dependencies from `bridge/requirements.txt` the first time you start an agent.
 
@@ -58,11 +58,30 @@ VITE_API_URL=http://localhost:4000 npm run tauri dev
 
 ## Features
 
+The app is organized as a left navigation rail. Some views are gated behind per-user runtime feature flags (resolved from `/me`) and only appear when enabled:
+
+| View | Availability |
+|------|--------------|
+| **Chat** | Everyone |
+| **Tasks** | Everyone |
+| **Agents** | Everyone |
+| **Files** | Everyone |
+| **Friends / Members** | `friends` flag, or when in a shared workspace |
+| **Templates** | Platform admins only |
+| **Platform** (fleet, hosts, users, billing) | Platform admins only |
+| **Workspace switcher** | `workspaces` flag |
+
+### Chat & Messaging
+A real-time messaging client (Phoenix Channels over WebSocket). DM or group-chat with your agents and with other people, watch agents stream their responses live, see typing indicators and presence, and open agent-rendered canvases inline.
+
+### Tasks
+Assign, track, and review tasks across conversations — accept/reject assignments, watch progress, and see task lifecycle state (including `failed` for agent-reported failures).
+
 ### Agent Management
-Create and manage AI agents from the dashboard. Each agent gets its own API key and can be started as a local process.
+Create and manage AI agents. Each agent gets its own API key and runs either as a **local process** on your machine or on a **remote org host** (a shared Linux VM).
 
 - **Create agents** — guided setup with name, avatar, type, LLM provider/model, execution mode, effort level, and API key (prompted only when needed)
-- **Start/stop** individual agents or all at once
+- **Start/stop** local agents individually or all at once; bring org-hosted agents online in bulk
 - **Live activity stream** — watch agents think, stream, and execute tools in real time
 - **Health monitoring** — executor status, stuck task detection, auto-recovery
 - **Actionable error messages** — clear diagnostics for common failures (missing packages, bad API keys, connection issues) with fix instructions
@@ -90,20 +109,35 @@ Extend agent capabilities with skills — reusable instruction sets that teach a
 - **Assign/unassign** skills per agent, toggle them on or off
 - **Import skills** from URLs or raw content
 
+### Agent Memory
+View and edit an agent's persistent memories — the facts it has learned about you and its work. Memories are scoped per-agent (and optionally shared family-wide), and can drive scheduled reminders.
+
 ### Response Templates
-Define structured output formats so agents return data in a consistent, predictable shape. Templates are created via the API and assigned to agents through the desktop app.
+Define structured output formats so agents return data in a consistent, predictable shape. Templates are a **platform-curated library** — only platform admins can create or edit them; other users' agents consume them.
 
 ### Canvas
-Assign canvas UI definitions to agents. Canvases define custom widget layouts that render in the mobile app when chatting with an agent — things like weather cards, stock tickers, or task boards.
+Assign canvas UI definitions to agents. Canvases define custom widget layouts that render inline (in this app and in mobile) when chatting with an agent — things like weather cards, stock tickers, or task boards.
 
 ### Routines
 Schedule agents to run tasks automatically on a cron or interval schedule. Routines define what the agent should do and when.
 
+### Files
+Browse every file your account (and its agents) has produced across all conversations, with download and forwarding.
+
+### Friends & Workspaces
+*(feature-flagged)* Connect with other people (friend requests, mutuals, blocking), and organize agents and members into shared **workspaces** ("organizations") alongside your always-present Personal workspace.
+
+### Platform Console
+*(platform admins only)* Cross-org operator view: manage the **fleet** of org hosts (registered Linux VMs that run agent bridges), provision new hosts, allocate customers onto shared hosts, manage users and Stripe billing subscriptions, and toggle runtime feature flags.
+
 ### LLM Key Management
 Store API keys for multiple LLM providers, with support for multiple keys per provider (e.g., different keys for different rate limits). Set a default key per provider.
 
-### OAuth Integrations
-Connect third-party services (GitHub, Google, Fly.io, Supabase) so agents can access external APIs on your behalf.
+### OAuth Integrations & Payments
+Connect third-party services (GitHub, Google, Fly.io, Supabase) so agents can access external APIs on your behalf, and link a Stripe "wallet" so agents can make approved purchases.
+
+### Computer Use
+*(optional)* Agents can drive the local computer (screenshots, clicks, keystrokes) through an opt-in MCP server. Extra dependencies are installed on demand.
 
 ### Profile & Avatars
 Edit your display name and avatar. Crop and upload images for both your profile and your agents.
@@ -180,17 +214,17 @@ Returns a JWT with 15-minute TTL. Agents should refresh before expiry.
 
 ### Response Templates
 
-Response templates define structured output formats for agents.
+Response templates define structured output formats for agents. Reads are open to any authenticated user; **create/update/delete/validate/preview require platform admin** (templates are a curated library).
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `GET` | `/api/response-templates` | List all templates |
 | `GET` | `/api/response-templates/:id` | Get template details |
-| `POST` | `/api/response-templates` | Create template |
-| `PATCH` | `/api/response-templates/:id` | Update template |
-| `DELETE` | `/api/response-templates/:id` | Delete template |
-| `POST` | `/api/response-templates/validate` | Validate template structure |
-| `POST` | `/api/response-templates/preview` | Preview with sample data |
+| `POST` | `/api/response-templates` | Create template *(admin)* |
+| `PATCH` | `/api/response-templates/:id` | Update template *(admin)* |
+| `DELETE` | `/api/response-templates/:id` | Delete template *(admin)* |
+| `POST` | `/api/response-templates/validate` | Validate template structure *(admin)* |
+| `POST` | `/api/response-templates/preview` | Preview with sample data *(admin)* |
 | `GET` | `/api/response-template-schema` | Get schema (no auth required) |
 
 **Create a template:**
@@ -310,11 +344,14 @@ HTTP 401 means your token expired — re-authenticate. HTTP 429 means rate limit
 
 | Provider | Models | Requires API Key | Execution Modes |
 |----------|--------|-----------------|-----------------|
-| **Anthropic** | Claude Opus 4.6, Sonnet 4.6, Haiku 4.5, and older | Yes | single_shot, tool_use, code_action |
+| **Anthropic** | Claude Opus 4.7/4.6, Sonnet 4.6, Haiku 4.5, and older | Yes | single_shot, tool_use, code_action |
 | **OpenAI** | GPT-4o, GPT-4 Turbo, o4 Mini, o3, o1 | Yes | single_shot, tool_use, code_action |
 | **Google** | Gemini 2.5 Pro/Flash, 2.0, 1.5 | Yes | single_shot, code_action |
 | **xAI** | Grok 3, Grok 3 Mini, Grok 2 | Yes | single_shot, tool_use |
-| **Claude Code** | Claude Opus 4.6, Sonnet 4.6, Haiku 4.5 | No (uses CLI) | single_shot, tool_use, code_action |
+| **Claude Code** | Claude Opus 4.7/4.6, Sonnet 4.6, Haiku 4.5 | No (uses CLI) | single_shot, tool_use, code_action |
+| **OpenAI Codex** | GPT-5.5, GPT-5.4, GPT-5.3 Codex | No (uses CLI) | single_shot, tool_use, code_action |
+
+> The authoritative provider/model list lives in `src/lib/models.ts` (`PROVIDERS`). Org-scoped users may see a different set, curated per workspace by an admin.
 
 ### Execution Modes
 
@@ -332,36 +369,48 @@ HTTP 401 means your token expired — re-authenticate. HTTP 429 means rate limit
 | Frontend | React 19, TypeScript, Vite 6 |
 | Styling | Tailwind CSS 4, shadcn/base-ui, Lucide icons |
 | State | Zustand |
+| Real-time | Phoenix Channels JS client (WebSocket) |
 | Process management | Rust (tokio) — spawns and monitors agent processes |
 
 ## Project Structure
 
 ```
-bridge/                   # Python agent runtime (self-contained)
-  agent_bridge.py         # Universal agent bridge — spawned per agent
-  agentchat/              # Python SDK package
-  google_places.py        # Photo enrichment for result items
-  requirements.txt        # Python dependencies (httpx, websockets)
-  pyproject.toml          # pip-installable SDK config
-  tests/                  # SDK test suite
+bridge/                      # Python agent runtime (self-contained)
+  agent_bridge.py            # Universal agent bridge — spawned per agent
+  agentchat/                 # Python SDK package
+  agentgram_mcp_server.py    # Platform MCP server (tools exposed to agents)
+  computer_use_mcp_server.py # Optional computer-use driver (opt-in)
+  google_places.py           # Photo enrichment for result items
+  requirements.txt           # Core Python deps (httpx, websockets, Pillow on Windows)
+  requirements-computer-use.txt  # Extra deps for computer use (installed on demand)
+  pyproject.toml             # pip-installable SDK config
+  tests/                     # SDK test suite
 src/
-  components/             # React components (Dashboard, AgentRow, LoginScreen, etc.)
+  components/                # React components, grouped by view
+    AppShell.tsx             #   left rail + view router (root of the UI)
+    messages/ tasks/ files/  #   Chat, Tasks, Files views
+    canvas/ templates/       #   Canvas + Templates views
+    FleetView / HostsManagement / PlatformView   # admin/fleet surfaces
+    Dashboard / AgentRow / AgentConfig / SoulEditor / AgentMemory ...
   lib/
-    api.ts                # Backend API client
-    models.ts             # LLM provider & model definitions
-    utils.ts              # Shared utilities
-  stores/
-    agentStore.ts         # Agent state, process management, health polling
-    authStore.ts          # Auth token, profile, login/signup
-    llmKeyStore.ts        # LLM API key management per provider
-  App.tsx                 # Root component
-  main.tsx                # Entry point
+    api.ts                   # Backend REST API client
+    models.ts                # LLM provider & model definitions (source of truth)
+    ...                      # avatarUrl, buildSoulMd, linkify, timezones, etc.
+  stores/                    # Zustand stores (one per domain)
+    agentStore / authStore / chatStore / taskStore / templateStore
+    canvasStore / friendStore / workspaceStore / presenceStore
+    llmKeyStore / memoryStore / modelCatalogStore / navStore ...
+  hooks/                     # useWebSocket and other shared hooks
+  services/                  # WebSocket / long-lived service singletons
+  design-tokens/             # Theme tokens shared with styling
+  App.tsx                    # Root component (auth gate + error boundary)
+  main.tsx                   # Entry point
 src-tauri/
   src/
-    lib.rs                # Tauri command handlers
-    main.rs               # App entry point
-    process_manager.rs    # Agent process lifecycle (start, stop, logs, venv)
-  tauri.conf.json         # Tauri window & plugin config
+    lib.rs                   # Tauri command handlers
+    main.rs                  # App entry point
+    process_manager.rs       # Agent process lifecycle (start, stop, logs, venv)
+  tauri.conf.json            # Tauri window & plugin config
 package.json
 vite.config.ts
 tsconfig.json
