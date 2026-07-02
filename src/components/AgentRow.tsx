@@ -187,18 +187,26 @@ function StatusBadge({
 
 // Surfaces non-healthy states inline beneath the status badge. "Healthy"
 // is the expected state for a running agent and adds noise when shown.
-// "Offline" while the local process is running is stale (the backend
-// hasn't yet received the executor's 60s heartbeat) — suppressing it
-// avoids the contradictory "Running 3s / offline" combo.
+// "Offline" is suppressed whenever we KNOW the agent is up — local process
+// running, or live WS presence says online (e.g. running on another
+// machine). The health snapshot refreshes on a slow poll, so after a
+// presence flip it can lag and would otherwise sit contradicting the
+// "Running 3s" / "On Jamess-MacBook" badge right above it.
 function HealthHint({
   health,
   processStatus,
+  online,
 }: {
   health: ManagedAgent["health"];
   processStatus: ManagedAgent["processStatus"];
+  /** Live WS presence — fresher than the polled health snapshot. */
+  online: boolean;
 }) {
   if (!health || health.healthStatus === "healthy") return null;
-  if (health.healthStatus === "offline" && processStatus === "running") {
+  if (
+    health.healthStatus === "offline" &&
+    (processStatus === "running" || online)
+  ) {
     return null;
   }
   const colors: Record<string, string> = {
@@ -600,7 +608,11 @@ export function AgentRow({
                 waking={waking}
                 deviceName={deviceName}
               />
-              <HealthHint health={managed.health} processStatus={managed.processStatus} />
+              <HealthHint
+                health={managed.health}
+                processStatus={managed.processStatus}
+                online={remoteOnline}
+              />
               {managed.processStatus === "crashed" && managed.crashReason && (
                 <span
                   className="text-[10px] text-destructive/80 line-clamp-2 block leading-tight"

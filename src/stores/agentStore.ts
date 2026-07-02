@@ -1028,6 +1028,20 @@ export const useAgentStore = create<AgentState>((set, get) => ({
   initWsListeners: () => {
     const unsubs: Array<() => void> = [];
 
+    // The health snapshot (`fetchHealth`) otherwise refreshes on a slow
+    // poll (60s from Dashboard) — after a presence flip it lags behind the
+    // instant WS status, leaving e.g. a stale "offline" hint under a badge
+    // that already says the agent is online elsewhere. Re-fetch shortly
+    // after any flip; debounced so a burst of flips costs one request.
+    let healthRefreshTimer: ReturnType<typeof setTimeout> | null = null;
+    const scheduleHealthRefresh = () => {
+      if (healthRefreshTimer) clearTimeout(healthRefreshTimer);
+      healthRefreshTimer = setTimeout(() => {
+        healthRefreshTimer = null;
+        get().fetchHealth();
+      }, 1500);
+    };
+
     // Backend pushes `agent_status_changed` on the user channel whenever an
     // agent's WS executor presence flips. Mirror it into `agent.online` so
     // the Agents rail chip + per-agent dots reflect reality in real time.
@@ -1035,6 +1049,7 @@ export const useAgentStore = create<AgentState>((set, get) => ({
       ws.on("agent_status_changed", (payload) => {
         const agentId = payload.agentId as string | undefined;
         if (!agentId) return;
+        scheduleHealthRefresh();
         const isOnline = Boolean(payload.online);
         const presence = payload.presence as
           | "online_local"
@@ -1112,7 +1127,10 @@ export const useAgentStore = create<AgentState>((set, get) => ({
       })
     );
 
-    return () => unsubs.forEach((u) => u());
+    return () => {
+      if (healthRefreshTimer) clearTimeout(healthRefreshTimer);
+      unsubs.forEach((u) => u());
+    };
   },
 
   reconcileStaleExecutors: async () => {
