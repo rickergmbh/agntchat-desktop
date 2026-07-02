@@ -568,10 +568,9 @@ fn mark_offline_sync(api_url: &str, agent_id: &str, api_key: &str) {
 }
 
 fn graceful_kill(child: &mut Child) {
-    let pid = child.id();
-
     #[cfg(unix)]
     {
+        let pid = child.id();
         unsafe {
             libc::kill(pid as i32, libc::SIGTERM);
         }
