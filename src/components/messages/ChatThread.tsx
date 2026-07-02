@@ -11,6 +11,7 @@ import { isTaskMessage } from "./TaskMessages";
 import { MessageContextMenu } from "./MessageContextMenu";
 import { StreamingBubble } from "./StreamingBubble";
 import { AgentConversationCard } from "./AgentConversationCard";
+import { Marker, MarkerContent } from "@/components/ui/marker";
 import { cn, dayKey, formatDayLabel } from "../../lib/utils";
 import { buildTypingText } from "../../lib/typing-indicator";
 import { agentConversationSourceId } from "../../lib/thread-selectors";
@@ -451,6 +452,9 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
     scrollHeight: number;
     scrollTop: number;
   } | null>(null);
+  // Armed on conversation open when there's a first-unread anchor to scroll
+  // to; consumed once the divider has been positioned.
+  const unreadAnchorPendingRef = useRef(false);
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
   const agentConversationsFetchAttemptedRef = useRef<string | null>(null);
   // `nearBottom` is UI-only — it drives the "Jump to latest" pill. It mirrors
@@ -553,14 +557,34 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
     prevConvIdRef.current = conversationId;
     // If we're opening straight to a deep-linked message, don't pin to the
     // bottom — the deep-link effect below will scroll to the target instead,
-    // and pinning would make the autoscroll snap fight that jump.
-    const hasTarget = useChatStore.getState().scrollTargetMessageId !== null;
-    pinnedRef.current = !hasTarget;
-    setNearBottom(!hasTarget);
+    // and pinning would make the autoscroll snap fight that jump. Likewise a
+    // conversation with unreads opens anchored at the "New messages" divider
+    // (pin released), not the absolute bottom.
+    const state = useChatStore.getState();
+    const hasTarget = state.scrollTargetMessageId !== null;
+    const hasUnreadAnchor = !!state.firstUnreadIds[conversationId];
+    unreadAnchorPendingRef.current = !hasTarget && hasUnreadAnchor;
+    const pinned = !hasTarget && !hasUnreadAnchor;
+    pinnedRef.current = pinned;
+    setNearBottom(pinned);
     lastItemIdRef.current = null;
     prependAnchorRef.current = null;
     setShowNewPill(false);
   }, [conversationId]);
+
+  // Position the unread divider near the top of the viewport once it renders.
+  // Retries on threadItems changes until it exists, then consumes the flag.
+  useLayoutEffect(() => {
+    if (!unreadAnchorPendingRef.current) return;
+    if (!firstUnreadId) {
+      unreadAnchorPendingRef.current = false;
+      return;
+    }
+    const node = scrollRef.current?.querySelector("[data-unread-divider]");
+    if (!node) return;
+    unreadAnchorPendingRef.current = false;
+    node.scrollIntoView({ block: "start" });
+  }, [firstUnreadId, threadItems.length, conversationId]);
 
   // Autoscroll — mimics mobile's inverted list: every thread opens at the
   // latest message and stays pinned there as content arrives, until the user
@@ -921,25 +945,26 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
 
 function DaySeparator({ iso }: { iso: string }) {
   return (
-    <div className="flex items-center justify-center px-4 py-3">
-      <div className="flex-1 border-t border-border" />
-      <span className="px-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+    <Marker variant="separator" className="px-4 py-3">
+      <MarkerContent className="px-1 text-[10px] font-semibold uppercase tracking-wider">
         {formatDayLabel(iso)}
-      </span>
-      <div className="flex-1 border-t border-border" />
-    </div>
+      </MarkerContent>
+    </Marker>
   );
 }
 
 function UnreadDivider() {
   return (
-    <div className="flex items-center justify-center px-4 py-2">
-      <div className="flex-1 border-t border-primary/40" />
-      <span className="px-3 text-[10px] font-semibold uppercase tracking-wider text-primary">
+    // data-unread-divider is the open-at-unread scroll anchor — keep it.
+    <Marker
+      data-unread-divider
+      variant="separator"
+      className="px-4 py-2 text-primary before:bg-primary/40 after:bg-primary/40"
+    >
+      <MarkerContent className="px-1 text-[10px] font-semibold uppercase tracking-wider">
         New messages
-      </span>
-      <div className="flex-1 border-t border-primary/40" />
-    </div>
+      </MarkerContent>
+    </Marker>
   );
 }
 
