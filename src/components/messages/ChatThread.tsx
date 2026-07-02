@@ -97,6 +97,17 @@ const STATUS_RANK: Record<string, number> = {
   cancelled: 2,
 };
 
+// Screen-reader phase announcements — mirrors StreamingBubble's visual
+// phase labels without exposing the token stream to aria-live.
+const STREAM_PHASE_ANNOUNCEMENT: Record<string, string> = {
+  thinking: "Agent is thinking",
+  tool_call: "Agent is using tools",
+  writing: "Agent is writing",
+  analyzing: "Agent is analyzing",
+  queued: "Agent is queued",
+  waiting: "Agent is waiting",
+};
+
 function isThreadCreationAckMessage(message: Message): boolean {
   return (
     message.sender?.type === "agent" &&
@@ -825,6 +836,11 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
                 )}
               </div>
             )}
+            {/* role=log announces message ADDITIONS politely. Deliberately
+                excludes the StreamingBubble below — its token-by-token text
+                updates would flood a screen reader; phase changes are
+                announced by the sr-only status node outside the scroller. */}
+            <div role="log" aria-live="polite" aria-relevant="additions" aria-label="Messages">
             {threadItems.map((item, i) => {
               const prevItem = threadItems[i - 1];
               const dayChanged =
@@ -880,6 +896,7 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
                 </Fragment>
               );
             })}
+            </div>
             {stream && (
               <StreamingBubble
                 stream={stream}
@@ -890,6 +907,14 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
           </div>
         )}
       </div>
+
+      {/* Screen-reader-only agent activity: announces phase TRANSITIONS
+          (thinking → writing …) without exposing the token stream. */}
+      {stream && (
+        <span role="status" className="sr-only">
+          {STREAM_PHASE_ANNOUNCEMENT[stream.phase] ?? "Agent is responding"}
+        </span>
+      )}
 
       {/* Pinned just below the scroll area — always visible regardless
           of scroll position. Was inside the scrollable div, so typing
