@@ -716,7 +716,9 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
           scrollHeight: el.scrollHeight,
           scrollTop: el.scrollTop,
         };
-        fetchMessages(conversationId, oldest.id);
+        // `before` is a DATETIME cursor server-side (parse_datetime) — an id
+        // parses to nil and silently refetches the newest page forever.
+        fetchMessages(conversationId, oldest.insertedAt);
       }
     }
   };
@@ -869,7 +871,7 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
     if (hasMore && !loading && deepLinkAttemptsRef.current < 25) {
       deepLinkAttemptsRef.current += 1;
       const oldest = rawMessages[0];
-      if (oldest) fetchMessages(conversationId, oldest.id);
+      if (oldest) fetchMessages(conversationId, oldest.insertedAt);
     } else if (!hasMore) {
       // Reached the start of history without finding it — give up so we don't
       // leave a stale target armed.
