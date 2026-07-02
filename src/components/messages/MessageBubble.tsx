@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useAuthStore } from "../../stores/authStore";
 import { useChatStore } from "../../stores/chatStore";
 import { cn, formatClockTime } from "../../lib/utils";
@@ -47,7 +48,7 @@ function isResultPresentationMessage(message: Message): boolean {
   return false;
 }
 
-export function MessageBubble({
+export const MessageBubble = memo(function MessageBubble({
   message,
   showAvatar,
   showSenderName,
@@ -272,4 +273,4 @@ export function MessageBubble({
       </div>
     </div>
   );
-}
+});

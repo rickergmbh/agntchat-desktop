@@ -438,6 +438,19 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
   // list) and releases only when the user scrolls up. Every scroll-to-bottom
   // path gates on it so we never yank someone reading history.
   const pinnedRef = useRef(true);
+  // "New messages" on the jump pill: raised when the newest item changes
+  // while the user is scrolled up; cleared whenever they reach the bottom.
+  const [showNewPill, setShowNewPill] = useState(false);
+  const lastItemIdRef = useRef<string | null>(null);
+  // Scroller metrics captured when an older-history fetch fires, consumed by
+  // the prepend-compensation layout effect so pagination doesn't shove the
+  // viewport. convId/firstId guard against stale anchors.
+  const prependAnchorRef = useRef<{
+    convId: string;
+    firstId: string;
+    scrollHeight: number;
+    scrollTop: number;
+  } | null>(null);
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
   const agentConversationsFetchAttemptedRef = useRef<string | null>(null);
   // `nearBottom` is UI-only — it drives the "Jump to latest" pill. It mirrors
@@ -530,6 +543,9 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
     const hasTarget = useChatStore.getState().scrollTargetMessageId !== null;
     pinnedRef.current = !hasTarget;
     setNearBottom(!hasTarget);
+    lastItemIdRef.current = null;
+    prependAnchorRef.current = null;
+    setShowNewPill(false);
   }, [conversationId]);
 
   // Autoscroll — mimics mobile's inverted list: every thread opens at the
@@ -580,7 +596,9 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
     // when they return to within a tight band of the bottom. The 24px band
     // (vs the larger button threshold) avoids a half-settled mid-load
     // measurement latching the pin off — the bug that stranded long threads.
-    pinnedRef.current = distanceFromBottom < 24;
+    const pinned = distanceFromBottom < 24;
+    pinnedRef.current = pinned;
+    if (pinned) setShowNewPill(false);
     // The "Jump to latest" pill uses a roomier threshold so it doesn't flash
     // for a few px of overscroll.
     setNearBottom(distanceFromBottom < SCROLL_BOTTOM_THRESHOLD);
@@ -596,9 +614,50 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
       // Use the raw oldest (not the consolidated one) as the pagination
       // anchor — a filtered TaskProgress could have been the earliest record.
       const oldest = rawMessages[0];
-      if (oldest) fetchMessages(conversationId, oldest.id);
+      if (oldest) {
+        prependAnchorRef.current = {
+          convId: conversationId,
+          firstId: oldest.id,
+          scrollHeight: el.scrollHeight,
+          scrollTop: el.scrollTop,
+        };
+        fetchMessages(conversationId, oldest.id);
+      }
     }
   };
+
+  // Prepend compensation: after older history renders above the viewport,
+  // shift scrollTop by the inserted height so the message the user was
+  // reading stays put. The scroller runs with overflow-anchor:none, so this
+  // is the only anchoring in play (no double-compensation from the browser).
+  const firstRawId = rawMessages[0]?.id;
+  useLayoutEffect(() => {
+    const anchor = prependAnchorRef.current;
+    if (!anchor) return;
+    if (anchor.convId !== conversationId) {
+      prependAnchorRef.current = null;
+      return;
+    }
+    // Not consumed until the prepend actually landed (first id changed).
+    if (!firstRawId || firstRawId === anchor.firstId) return;
+    prependAnchorRef.current = null;
+    // A deep-link jump is about to reposition anyway — don't fight it.
+    if (deepLinkTargetRef.current && useChatStore.getState().scrollTargetMessageId) return;
+    const el = scrollRef.current;
+    if (el) el.scrollTop = anchor.scrollTop + (el.scrollHeight - anchor.scrollHeight);
+  }, [firstRawId, conversationId]);
+
+  // Surface "New messages" on the pill when the NEWEST item changes while
+  // unpinned. Keyed on the last item's id (not list length) so history
+  // prepends don't raise a false signal.
+  const lastItemId = threadItems[threadItems.length - 1]?.id;
+  useEffect(() => {
+    if (!lastItemId) return;
+    if (lastItemIdRef.current && lastItemIdRef.current !== lastItemId && !pinnedRef.current) {
+      setShowNewPill(true);
+    }
+    lastItemIdRef.current = lastItemId;
+  }, [lastItemId]);
 
   const scrollToBottom = () => {
     const el = scrollRef.current;
@@ -606,8 +665,22 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
     // Re-arm the pin so we stay at the bottom as the thread continues.
     pinnedRef.current = true;
     setNearBottom(true);
+    setShowNewPill(false);
     el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   };
+
+  // Sending is intent to see the latest — re-pin even if the user had
+  // scrolled up (matches mobile/web). Keyed on the optimistic pending
+  // message the composer appends.
+  const lastRaw = rawMessages[rawMessages.length - 1];
+  const lastRawIsOwnPending = !!lastRaw?.pending && lastRaw?.senderId === myId;
+  useEffect(() => {
+    if (!lastRawIsOwnPending) return;
+    pinnedRef.current = true;
+    setNearBottom(true);
+    setShowNewPill(false);
+    snapToBottom();
+  }, [lastRaw?.id, lastRawIsOwnPending, snapToBottom]);
 
   // Build typing entries (name + type), filtering out ourselves and any agent
   // already streaming (the StreamingBubble replaces its indicator). Mirrors
@@ -625,9 +698,11 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
   const typingHasAgent = typingEntries.some((e) => e.type === "agent");
   const typingLabel = buildTypingText(typingEntries);
 
-  const handleContextMenu = (message: Message, e: React.MouseEvent) => {
+  // useCallback so the memoized MessageBubble rows don't all re-render on
+  // every thread render just because the handler identity changed.
+  const handleContextMenu = useCallback((message: Message, e: React.MouseEvent) => {
     setMenu({ message, x: e.clientX, y: e.clientY });
-  };
+  }, []);
 
   // Reset the page-back budget whenever a new deep-link target arrives.
   if (scrollTargetMessageId && deepLinkTargetRef.current !== scrollTargetMessageId) {
@@ -684,6 +759,9 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
       <div
         ref={scrollRef}
         onScroll={handleScroll}
+        // Native scroll anchoring off — the prepend layout effect owns
+        // position preservation; letting both run would double-compensate.
+        style={{ overflowAnchor: "none" }}
         className="flex-1 min-h-0 overflow-y-auto py-2 scrollbar-autohide"
       >
         {loading && messages.length === 0 ? (
@@ -797,9 +875,10 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
             "hover:bg-muted transition-colors"
           )}
           title="Jump to latest"
+          aria-label={showNewPill ? "New messages — jump to latest" : "Jump to latest"}
         >
           <ArrowDown className="h-3.5 w-3.5" />
-          Latest
+          {showNewPill ? "New messages" : "Latest"}
         </button>
       )}
 
