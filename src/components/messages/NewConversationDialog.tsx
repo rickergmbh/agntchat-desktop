@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useAgentStore } from "../../stores/agentStore";
 import { useChatStore } from "../../stores/chatStore";
 import { useFriendStore } from "../../stores/friendStore";
@@ -29,6 +30,7 @@ interface Props {
 type Mode = "select" | "channel";
 
 export function NewConversationDialog({ onClose }: Props) {
+  const { t } = useTranslation("chat");
   const agentsMap = useAgentStore((s) => s.agents);
   // Stable flattened list — avoids the Zustand `?? []` re-render trap.
   const agents = useMemo(
@@ -147,7 +149,7 @@ export function NewConversationDialog({ onClose }: Props) {
           )
         );
       } catch (e) {
-        setError(e instanceof Error ? e.message : "Could not send request");
+        setError(e instanceof Error ? e.message : t("friends:requestFailed"));
       }
     },
     [requestFriend]
@@ -181,7 +183,7 @@ export function NewConversationDialog({ onClose }: Props) {
     try {
       if (mode === "channel") {
         if (!groupTitle.trim()) {
-          setError("Channel needs a name.");
+          setError(t("newDialog.channelNeedsName"));
           setCreating(false);
           return;
         }
@@ -218,7 +220,7 @@ export function NewConversationDialog({ onClose }: Props) {
       }
 
       if (!groupTitle.trim()) {
-        setError("Group conversations need a name.");
+        setError(t("newDialog.groupNeedsName"));
         setCreating(false);
         return;
       }
@@ -231,7 +233,7 @@ export function NewConversationDialog({ onClose }: Props) {
       setActiveConversation(conv.id);
       onClose();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to create conversation");
+      setError(e instanceof Error ? e.message : t("newDialog.createFailed"));
     } finally {
       setCreating(false);
     }
@@ -260,11 +262,11 @@ export function NewConversationDialog({ onClose }: Props) {
     >
       <div className="flex max-h-[80vh] w-full max-w-md flex-col rounded-xl border border-border bg-card shadow-2xl">
         <div className="flex items-center justify-between border-b border-border px-4 py-3 shrink-0">
-          <h2 className="text-sm font-semibold">New Conversation</h2>
+          <h2 className="text-sm font-semibold">{t("newConversation")}</h2>
           <button
             onClick={onClose}
             className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
-            aria-label="Close"
+            aria-label={t("common:close")}
           >
             <X className="h-4 w-4" />
           </button>
@@ -281,7 +283,7 @@ export function NewConversationDialog({ onClose }: Props) {
             )}
           >
             <MessageCircle className="mr-1 inline h-3 w-3" />
-            Message
+            {t("newDialog.message")}
           </button>
           <button
             onClick={() => setMode("channel")}
@@ -293,7 +295,7 @@ export function NewConversationDialog({ onClose }: Props) {
             )}
           >
             <Users className="mr-1 inline h-3 w-3" />
-            Channel
+            {t("newDialog.channel")}
           </button>
         </div>
 
@@ -302,7 +304,7 @@ export function NewConversationDialog({ onClose }: Props) {
             <div className="relative">
               <Search className="absolute left-2.5 top-2 h-3.5 w-3.5 text-muted-foreground" />
               <Input
-                placeholder="Search people or agents..."
+                placeholder={t("newDialog.searchPlaceholder")}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="h-8 pl-8 text-xs"
@@ -320,9 +322,9 @@ export function NewConversationDialog({ onClose }: Props) {
           <>
             <div className="flex flex-col gap-3 border-b border-border px-4 py-3 shrink-0">
               <div>
-                <Label className="text-xs text-muted-foreground">Channel name</Label>
+                <Label className="text-xs text-muted-foreground">{t("newDialog.channelName")}</Label>
                 <Input
-                  placeholder="e.g. project-planning"
+                  placeholder={t("newDialog.channelNamePlaceholder")}
                   value={groupTitle}
                   onChange={(e) => setGroupTitle(e.target.value)}
                   className="mt-1 h-8 text-xs"
@@ -330,7 +332,7 @@ export function NewConversationDialog({ onClose }: Props) {
                 />
               </div>
               <p className="text-[11px] text-muted-foreground">
-                Add members now or later — members are optional.
+                {t("newDialog.membersOptionalHint")}
               </p>
             </div>
             <div className="flex-1 min-h-0 overflow-y-auto">
@@ -356,7 +358,7 @@ export function NewConversationDialog({ onClose }: Props) {
                       onClick={() => toggleParticipant(id)}
                       className="flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary hover:bg-primary/20"
                     >
-                      {p?.displayName ?? "Participant"}
+                      {p?.displayName ?? t("participant")}
                       <X className="h-3 w-3" />
                     </button>
                   );
@@ -366,9 +368,9 @@ export function NewConversationDialog({ onClose }: Props) {
 
             {isGroup && (
               <div className="border-b border-border px-4 py-2 shrink-0">
-                <Label className="text-xs text-muted-foreground">Group name</Label>
+                <Label className="text-xs text-muted-foreground">{t("newDialog.groupName")}</Label>
                 <Input
-                  placeholder="Enter group name..."
+                  placeholder={t("newDialog.groupNamePlaceholder")}
                   value={groupTitle}
                   onChange={(e) => setGroupTitle(e.target.value)}
                   className="mt-1 h-8 text-xs"
@@ -381,7 +383,7 @@ export function NewConversationDialog({ onClose }: Props) {
                 <>
                   <div className="px-4 py-1.5">
                     <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                      People
+                      {t("newDialog.people")}
                     </span>
                   </div>
                   {peopleResults.map((person) => (
@@ -402,7 +404,7 @@ export function NewConversationDialog({ onClose }: Props) {
                 <div className="flex items-center gap-2 px-4 py-2">
                   <Loader2 className="h-3 w-3 animate-spin text-muted-foreground" />
                   <span className="text-xs text-muted-foreground">
-                    Searching people...
+                    {t("newDialog.searchingPeople")}
                   </span>
                 </div>
               )}
@@ -410,13 +412,13 @@ export function NewConversationDialog({ onClose }: Props) {
               {(hasPeople || search.length >= 2) && (
                 <div className="px-4 py-1.5">
                   <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                    Agents
+                    {t("nav:agents")}
                   </span>
                 </div>
               )}
               {filteredAgents.length === 0 && !hasPeople && !searchingPeople && (
                 <p className="p-4 text-center text-xs text-muted-foreground">
-                  {search ? "No results match your search." : "No agents available."}
+                  {search ? t("newDialog.noResults") : t("noAgentsAvailable")}
                 </p>
               )}
               {filteredAgents.map((agent) => (
@@ -435,13 +437,13 @@ export function NewConversationDialog({ onClose }: Props) {
           <span className="text-xs text-muted-foreground">
             {mode === "channel"
               ? selected.size > 0
-                ? `${selected.size} member${selected.size > 1 ? "s" : ""} selected`
-                : "Members optional"
+                ? t("newDialog.membersSelected", { count: selected.size })
+                : t("newDialog.membersOptional")
               : selected.size === 0
-              ? "Select a person or agent"
+              ? t("newDialog.selectPrompt")
               : selected.size === 1
-              ? "Start DM"
-              : `Group with ${selected.size} participants`}
+              ? t("newDialog.startDm")
+              : t("newDialog.groupWith", { count: selected.size })}
           </span>
           <Button size="sm" onClick={handleCreate} disabled={!canCreate}>
             {creating ? (
@@ -454,10 +456,10 @@ export function NewConversationDialog({ onClose }: Props) {
               <Users className="mr-1 h-3 w-3" />
             )}
             {mode === "channel"
-              ? "Create Channel"
+              ? t("newDialog.createChannel")
               : selected.size <= 1
-              ? "Start Chat"
-              : "Create Group"}
+              ? t("newDialog.startChat")
+              : t("newDialog.createGroup")}
           </Button>
         </div>
       </div>
@@ -480,6 +482,7 @@ function PersonRow({
   onSelect: () => void;
   onConnect: () => void;
 }) {
+  const { t } = useTranslation("chat");
   const status = connection?.status ?? person.connectionStatus ?? "none";
   const incoming = connection?.status === "pending" && connection.addresseeId === currentUserId;
   const canChat = status === "accepted";
@@ -523,11 +526,17 @@ function PersonRow({
           }}
         >
           <UserPlus className="mr-1 h-3 w-3" />
-          Connect
+          {t("common:connect")}
         </Button>
       ) : (
         <span className="rounded-full border border-border px-2 py-0.5 text-[11px] capitalize text-muted-foreground">
-          {incoming ? "respond in Friends" : status === "pending" ? "pending" : status}
+          {incoming
+            ? t("friends:respondInFriends")
+            : status === "pending"
+            ? t("friends:status.pending")
+            : status === "blocked"
+            ? t("friends:status.blocked")
+            : status}
         </span>
       )}
     </button>

@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import {
   type Memory,
   type FamilyMemory,
@@ -53,12 +54,13 @@ const CATEGORIES: MemoryCategory[] = [
   "skill",
 ];
 
-const CATEGORY_LABELS: Record<MemoryCategory, string> = {
-  fact: "Facts",
-  preference: "Preferences",
-  learning: "Learnings",
-  relationship: "Relationships",
-  skill: "Skills",
+// labelKey pattern — resolved with t() at render time, never at module scope.
+const CATEGORY_LABEL_KEYS: Record<MemoryCategory, string> = {
+  fact: "categories.fact",
+  preference: "categories.preference",
+  learning: "categories.learning",
+  relationship: "categories.relationship",
+  skill: "categories.skill",
 };
 
 // A row is either an agent Memory or a FamilyMemory — both share the fields the
@@ -67,6 +69,7 @@ const CATEGORY_LABELS: Record<MemoryCategory, string> = {
 type AnyMemory = Memory | FamilyMemory;
 
 export function AgentMemory({ agentId, agentName }: AgentMemoryProps) {
+  const { t } = useTranslation("memory");
   const [agentMemories, setAgentMemories] = useState<Memory[]>([]);
   const [familyMemories, setFamilyMemories] = useState<FamilyMemory[]>([]);
   const [loading, setLoading] = useState(true);
@@ -90,7 +93,7 @@ export function AgentMemory({ agentId, agentName }: AgentMemoryProps) {
       setAgentMemories(agent.memories || []);
       setFamilyMemories(family.memories || []);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to load memories");
+      setError(e instanceof Error ? e.message : t("errors.loadFailed"));
     } finally {
       setLoading(false);
     }
@@ -108,7 +111,7 @@ export function AgentMemory({ agentId, agentName }: AgentMemoryProps) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12 text-sm text-muted-foreground">
-        Loading memories...
+        {t("loading")}
       </div>
     );
   }
@@ -128,7 +131,7 @@ export function AgentMemory({ agentId, agentName }: AgentMemoryProps) {
         <TabsList>
           <TabsTrigger value="agent" className="gap-1.5">
             <Brain className="w-3.5 h-3.5" />
-            Agent Memories
+            {t("agentMemories")}
             {agentMemories.length > 0 && (
               <span className="text-[10px] text-muted-foreground">
                 ({agentMemories.length})
@@ -137,7 +140,7 @@ export function AgentMemory({ agentId, agentName }: AgentMemoryProps) {
           </TabsTrigger>
           <TabsTrigger value="family" className="gap-1.5">
             <Users className="w-3.5 h-3.5" />
-            Family Memories
+            {t("familyMemories")}
             {familyMemories.length > 0 && (
               <span className="text-[10px] text-muted-foreground">
                 ({familyMemories.length})
@@ -150,14 +153,10 @@ export function AgentMemory({ agentId, agentName }: AgentMemoryProps) {
         <TabsContent value="agent" className="mt-4">
           <MemorySection
             icon={<Brain className="w-4 h-4 text-primary" />}
-            title="Agent Memories"
-            subtitle={
-              agentName
-                ? `What ${agentName} remembers — specific to this agent.`
-                : "What this agent remembers — specific to this agent."
-            }
+            title={t("agentMemories")}
+            subtitle={t("agentSubtitle", { name: agentName || t("agents:thisAgent") })}
             memories={agentMemories}
-            emptyHint="This agent hasn't remembered anything yet. Add a fact, preference, or learning it should keep in mind."
+            emptyHint={t("emptyAgentHint")}
             onAdd={() => {
               setEditing(null);
               setDialogScope("agent");
@@ -175,11 +174,11 @@ export function AgentMemory({ agentId, agentName }: AgentMemoryProps) {
         <TabsContent value="family" className="mt-4">
           <MemorySection
             icon={<Users className="w-4 h-4 text-primary" />}
-            title="Family Memories"
-            subtitle="Shared across all of your agents."
+            title={t("familyMemories")}
+            subtitle={t("familyNotice")}
             shared
             memories={familyMemories}
-            emptyHint="No shared memories yet. Anything you add here is visible to every agent in your family."
+            emptyHint={t("emptyFamilyHint")}
             onAdd={() => {
               setEditing(null);
               setDialogScope("family");
@@ -236,6 +235,7 @@ function MemorySection({
   onDelete: (m: AnyMemory) => Promise<unknown>;
   onDeleted: () => void;
 }) {
+  const { t } = useTranslation("memory");
   // Group by category, preserving the canonical category order.
   const byCategory = CATEGORIES.map((cat) => ({
     cat,
@@ -251,7 +251,7 @@ function MemorySection({
             <h3 className="text-sm font-semibold">{title}</h3>
             {shared && (
               <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
-                Shared
+                {t("sharedBadge")}
               </Badge>
             )}
           </div>
@@ -259,12 +259,12 @@ function MemorySection({
           {shared && (
             <p className="text-[11px] text-warning mt-1 flex items-center gap-1">
               <AlertTriangle className="w-3 h-3 shrink-0" />
-              Editing or deleting a family memory affects every agent you own.
+              {t("familyEditWarning")}
             </p>
           )}
         </div>
         <Button size="sm" variant="outline" className="shrink-0" onClick={onAdd}>
-          <Plus className="w-3.5 h-3.5 mr-1.5" /> Add
+          <Plus className="w-3.5 h-3.5 mr-1.5" /> {t("common:add")}
         </Button>
       </div>
 
@@ -277,7 +277,7 @@ function MemorySection({
           {byCategory.map((group) => (
             <div key={group.cat}>
               <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">
-                {CATEGORY_LABELS[group.cat]}
+                {t(CATEGORY_LABEL_KEYS[group.cat])}
               </div>
               <div className="space-y-1.5">
                 {group.items.map((m) => (
@@ -314,6 +314,7 @@ function MemoryRow({
   onDelete: (m: AnyMemory) => Promise<unknown>;
   onDeleted: () => void;
 }) {
+  const { t } = useTranslation("memory");
   const [confirming, setConfirming] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -326,7 +327,13 @@ function MemoryRow({
       setConfirming(false);
       onDeleted();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to delete");
+      setError(
+        e instanceof Error
+          ? e.message
+          : shared
+            ? t("deleteFamilyFailed")
+            : t("common:errors.deleteFailed")
+      );
     } finally {
       setDeleting(false);
     }
@@ -354,9 +361,9 @@ function MemoryRow({
           )}
           {memory.tags?.length > 0 && (
             <div className="flex gap-1 flex-wrap mt-1.5">
-              {memory.tags.map((t) => (
-                <Badge key={t} variant="outline" className="text-[10px] px-1.5 py-0">
-                  {t}
+              {memory.tags.map((tag) => (
+                <Badge key={tag} variant="outline" className="text-[10px] px-1.5 py-0">
+                  {tag}
                 </Badge>
               ))}
             </div>
@@ -386,8 +393,8 @@ function MemoryRow({
         <div className="flex items-center gap-2 mt-2 p-2 rounded-lg border border-destructive/30 bg-destructive/5">
           <p className="text-xs text-destructive flex-1">
             {shared
-              ? "Delete this family memory for ALL your agents?"
-              : "Delete this memory? This cannot be undone."}
+              ? t("deleteFamilyConfirm", { key: memory.key })
+              : t("common:confirmDelete", { name: memory.key })}
           </p>
           <Button
             size="sm"
@@ -395,10 +402,10 @@ function MemoryRow({
             onClick={handleDelete}
             disabled={deleting}
           >
-            {deleting ? "Deleting..." : "Delete"}
+            {deleting ? t("common:deleting") : t("common:delete")}
           </Button>
           <Button size="sm" variant="outline" onClick={() => setConfirming(false)}>
-            Cancel
+            {t("common:cancel")}
           </Button>
         </div>
       )}
@@ -424,6 +431,7 @@ function MemoryFormDialog({
   onClose: () => void;
   onSaved: () => void;
 }) {
+  const { t } = useTranslation("memory");
   const isEdit = !!existing;
   const [category, setCategory] = useState<MemoryCategory>(
     existing?.category ?? "fact"
@@ -446,13 +454,13 @@ function MemoryFormDialog({
     const trimmedKey = key.trim();
     const conf = confidence.trim() === "" ? undefined : Number(confidence);
     if (conf !== undefined && (Number.isNaN(conf) || conf < 0 || conf > 1)) {
-      setError("Confidence must be a number between 0 and 1.");
+      setError(t("form.confidenceRange"));
       setSaving(false);
       return;
     }
     const tagsList = tags
       .split(",")
-      .map((t) => t.trim())
+      .map((tag) => tag.trim())
       .filter(Boolean);
 
     try {
@@ -479,7 +487,10 @@ function MemoryFormDialog({
           } catch (e) {
             if (isConflict(e)) {
               setError(
-                "A memory with this category and key already exists. Pick a different key, or edit the existing one."
+                t("alreadyExistsMessage", {
+                  key: trimmedKey,
+                  category: t(CATEGORY_LABEL_KEYS[category]),
+                })
               );
               setSaving(false);
               return;
@@ -504,7 +515,10 @@ function MemoryFormDialog({
         } catch (e) {
           if (isConflict(e)) {
             setError(
-              "A family memory with this category and key already exists. Pick a different key, or edit the existing one."
+              t("familyAlreadyExistsMessage", {
+                key: trimmedKey,
+                category: t(CATEGORY_LABEL_KEYS[category]),
+              })
             );
             setSaving(false);
             return;
@@ -514,34 +528,39 @@ function MemoryFormDialog({
       }
       onSaved();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to save memory");
+      setError(e instanceof Error ? e.message : t("saveFailed"));
     } finally {
       setSaving(false);
     }
   };
 
-  const titleScope = scope === "family" ? "Family" : "Agent";
+  const dialogTitle =
+    scope === "family"
+      ? isEdit
+        ? t("form.titleEditFamily")
+        : t("form.titleNewFamily")
+      : isEdit
+        ? t("form.titleEdit")
+        : t("form.titleNew");
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>
-            {isEdit ? `Edit ${titleScope} Memory` : `Add ${titleScope} Memory`}
-          </DialogTitle>
+          <DialogTitle>{dialogTitle}</DialogTitle>
         </DialogHeader>
 
         {scope === "family" && (
           <div className="flex items-center gap-2 text-xs text-warning bg-warning/10 border border-warning/20 rounded-lg p-2.5">
             <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
-            This memory is shared across every agent you own.
+            {t("form.sharedNotice")}
           </div>
         )}
 
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label className="text-xs">Category</Label>
+              <Label className="text-xs">{t("form.category")}</Label>
               <Select
                 value={category}
                 onValueChange={(v) => v && setCategory(v as MemoryCategory)}
@@ -553,18 +572,18 @@ function MemoryFormDialog({
                 <SelectContent>
                   {CATEGORIES.map((c) => (
                     <SelectItem key={c} value={c}>
-                      {CATEGORY_LABELS[c]}
+                      {t(CATEGORY_LABEL_KEYS[c])}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs">Key</Label>
+              <Label className="text-xs">{t("form.key")}</Label>
               <Input
                 value={key}
                 onChange={(e) => setKey(e.target.value)}
-                placeholder="favorite_editor"
+                placeholder={t("form.keyPlaceholder")}
                 className="font-mono text-xs"
                 disabled={isEdit}
               />
@@ -572,32 +591,32 @@ function MemoryFormDialog({
           </div>
           {isEdit && (
             <p className="text-[11px] text-muted-foreground -mt-2">
-              Category and key identify this memory and can't be changed.
+              {t("form.keyFixed")}
             </p>
           )}
 
           <div className="space-y-1.5">
-            <Label className="text-xs">Content</Label>
+            <Label className="text-xs">{t("form.content")}</Label>
             <Textarea
               className="min-h-[100px] text-sm leading-relaxed resize-y"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="What should be remembered..."
+              placeholder={t("form.contentPlaceholder")}
             />
           </div>
 
           <div className="space-y-1.5">
-            <Label className="text-xs">Description (optional)</Label>
+            <Label className="text-xs">{t("common:descriptionOptional")}</Label>
             <Input
               value={description ?? ""}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="A short note about this memory..."
+              placeholder={t("form.descriptionPlaceholder")}
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label className="text-xs">Confidence (0–1)</Label>
+              <Label className="text-xs">{t("form.confidenceLabel")}</Label>
               <Input
                 type="number"
                 min="0"
@@ -609,11 +628,11 @@ function MemoryFormDialog({
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs">Tags (comma-separated)</Label>
+              <Label className="text-xs">{t("form.tags")}</Label>
               <Input
                 value={tags}
                 onChange={(e) => setTags(e.target.value)}
-                placeholder="work, tooling"
+                placeholder={t("form.tagsPlaceholder")}
               />
             </div>
           </div>
@@ -626,10 +645,14 @@ function MemoryFormDialog({
               disabled={saving || !content.trim() || (!isEdit && !key.trim())}
               className="flex-1"
             >
-              {saving ? "Saving..." : isEdit ? "Save Changes" : "Add Memory"}
+              {saving
+                ? t("common:saving")
+                : isEdit
+                  ? t("common:saveChanges")
+                  : t("common:add")}
             </Button>
             <Button variant="outline" onClick={onClose} className="flex-1">
-              Cancel
+              {t("common:cancel")}
             </Button>
           </div>
         </div>

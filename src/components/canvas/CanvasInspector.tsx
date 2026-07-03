@@ -1,10 +1,12 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   json: string;
 }
 
 export function CanvasInspector({ json }: Props) {
+  const { t } = useTranslation("canvas");
   const parsed = useMemo(() => {
     try {
       return JSON.parse(json) as Record<string, unknown>;
@@ -42,15 +44,15 @@ export function CanvasInspector({ json }: Props) {
     <div className="space-y-3 border-t border-border bg-card/40 px-3 py-3">
       <section>
         <h3 className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
-          Structure
+          {t("inspector.structure")}
         </h3>
         <div className="grid grid-cols-4 gap-2">
-          <Stat label="Zones" value={String(zones.length)} />
-          <Stat label="Widgets" value={String(widgets.length)} />
-          <Stat label="Composer" value={composer?.mode ?? "—"} />
+          <Stat label={t("inspector.zones")} value={String(zones.length)} />
+          <Stat label={t("inspector.widgets")} value={String(widgets.length)} />
+          <Stat label={t("inspector.composer")} value={composer?.mode ?? "—"} />
           <Stat
-            label="Theme"
-            value={theme?.bgColor ? "custom" : "default"}
+            label={t("theme")}
+            value={theme?.bgColor ? t("inspector.custom") : t("inspector.default")}
           />
         </div>
       </section>
@@ -58,7 +60,7 @@ export function CanvasInspector({ json }: Props) {
       {typeCounts.length > 0 && (
         <section>
           <h3 className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
-            Widget Mix
+            {t("inspector.widgetMix")}
           </h3>
           <div className="flex flex-wrap gap-1">
             {typeCounts.map(([t, n]) => (

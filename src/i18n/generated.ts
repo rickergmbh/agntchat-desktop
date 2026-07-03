@@ -54,11 +54,51 @@ export const resources = {
         "resetToOriginal": "Reset to Original",
         "title": "Profile Picture"
       },
+      "bulk": {
+        "bringOnlineCount": "Bring online ({{count}})",
+        "bringOnlineTitle_one": "Bring {{count}} offline hosted agent back online",
+        "bringOnlineTitle_other": "Bring {{count}} offline hosted agents back online",
+        "bringingOnline": "Bringing online...",
+        "startAll": "Start All",
+        "startStoppedTitle_one": "Start {{count}} stopped agent",
+        "startStoppedTitle_other": "Start {{count}} stopped agents",
+        "starting": "Starting...",
+        "stopAll": "Stop All",
+        "stopRunningTitle_one": "Stop {{count}} running agent",
+        "stopRunningTitle_other": "Stop {{count}} running agents",
+        "stopping": "Stopping..."
+      },
       "busyMessage": "They're working on {{task}}. Your message went to the work room — open it to continue the thread.",
       "busyTitle": "{{name}} is busy",
       "capabilities": "Capabilities",
       "categories": "Categories",
       "collapseSubAgents": "Collapse sub-agents",
+      "config": {
+        "awsRegionPlaceholder": "AWS region (e.g. us-east-1)",
+        "crash": {
+          "agentCrashed": "Agent crashed",
+          "apiKeyProblem": "API key problem",
+          "fixAction": "Generate new key & start agent",
+          "fixExplain": "Each computer needs its own copy of the agent's API key, and only the newest key works. Generating a new one here moves the agent to this computer — if it's running on another computer right now, it will be stopped there.",
+          "fixFailed": "Failed to fix the key",
+          "fixing": "Fixing…"
+        },
+        "customOption": "{{value}} (custom)",
+        "groupOperations": "Operations",
+        "health": {
+          "label": "Health"
+        },
+        "hostManagedConnection": "Connection is managed by the host. Pick any supported model below.",
+        "hostedSetByPlan": "Hosted · set by your plan",
+        "noClaudeSeat": "⚠️ This host has no Claude seat connected yet — the agent can't authenticate until one is set up.",
+        "sectionLogs": "Logs",
+        "share": {
+          "title": "Share Agent"
+        },
+        "syncError": "Couldn't save this to the server ({{error}}). The connection takes effect only once saved — the agent will keep using its last saved connection until this succeeds.",
+        "vertexProjectPlaceholder": "GCP project ID",
+        "vertexRegionPlaceholder": "Vertex region (e.g. us-east5)"
+      },
       "connect": {
         "action": "Connect",
         "failed": "Failed to connect.",
@@ -244,6 +284,7 @@ export const resources = {
         "newKeyThisAgent": "New API Key (this agent only)",
         "photoHint": "A photo makes your agent easy to recognize at a glance.",
         "photoTitle": "Give your agent a face",
+        "photoTitleNamed": "Give {{name}} a face",
         "provider": "Provider",
         "providerApiKey": "{{provider}} API Key",
         "providerDefault": "Provider default (Anthropic)",
@@ -279,6 +320,12 @@ export const resources = {
           "reviewer": "What do they review?",
           "worker": "What are they good at?"
         },
+        "specialtiesTitleByRole": {
+          "observer": "What do they monitor?",
+          "orchestrator": "What will they manage?",
+          "reviewer": "What do they review?",
+          "worker": "What are they good at?"
+        },
         "status": {
           "abilities": "Configuring abilities...",
           "almostReady": "Almost ready...",
@@ -290,6 +337,7 @@ export const resources = {
         "taskTimeout": "Task Timeout (seconds)",
         "timeoutSeconds": "Timeout (seconds)",
         "toneHint": "Pick a style or add your own.",
+        "toneTitle": "How should they talk?",
         "typePlaceholder": "Type...",
         "visibility": {
           "label": "Visibility",
@@ -375,6 +423,7 @@ export const resources = {
       },
       "effortLabel": "Effort",
       "empty": {
+        "createFirstHint": "Create your first agent to start delegating work.",
         "noneFound": "No agents found",
         "subtitle": "Tap + to create your first agent",
         "title": "No agents yet"
@@ -815,6 +864,21 @@ export const resources = {
         "whereToReport": "Where to report",
         "yourDmWith": "Your DM with {{agentName}}"
       },
+      "row": {
+        "bringingOnline": "Bringing online…",
+        "crashed": "Crashed",
+        "onAnotherDevice": "On another device",
+        "onDevice": "On {{device}}",
+        "remoteOffline": "Remote · offline",
+        "remoteOnline": "Remote · online",
+        "runningOnDeviceHint": "Running locally on “{{device}}” — start and stop it from that device",
+        "runningOnOtherDevice": "Running locally on another device",
+        "stalled": "Stalled",
+        "starting": "Starting",
+        "stopped": "Stopped"
+      },
+      "runningCount_one": "{{count}} running",
+      "runningCount_other": "{{count}} running",
       "runtime": {
         "alwaysOn": "Always on",
         "host": "Host",
@@ -1019,6 +1083,11 @@ export const resources = {
       },
       "subAgents_one": "{{count}} sub-agent",
       "subAgents_other": "{{count}} sub-agents",
+      "table": {
+        "actions": "Actions",
+        "engine": "Engine",
+        "mode": "Mode"
+      },
       "tag": "agent",
       "tags": "Tags",
       "tasksPerMonth_one": "{{count}} task/mo",
@@ -1992,6 +2061,7 @@ export const resources = {
       "someone": "Someone",
       "start": "Start",
       "status": "Status",
+      "stop": "Stop",
       "submit": "Submit",
       "tapToChange": "Tap to change",
       "tapToChoosePhoto": "Tap to choose a photo",
@@ -2307,17 +2377,21 @@ export const resources = {
       "deleteFamilyTitle": "Delete Family Memory",
       "deleteTitle": "Delete Memory",
       "empty": "No memory yet. The summary builds as agents and humans exchange messages; it'll appear here once the first pass runs.",
+      "emptyAgentHint": "This agent hasn't remembered anything yet. Add a fact, preference, or learning it should keep in mind.",
+      "emptyFamilyHint": "No shared memories yet. Anything you add here is visible to every agent in your family.",
       "errors": {
         "loadFailed": "Failed to load memories",
         "loadFamilyFailed": "Failed to load family memories"
       },
       "familyAlreadyExistsMessage": "A family memory with key \"{{key}}\" already exists in {{category}}. Edit the existing memory instead.",
+      "familyEditWarning": "Editing or deleting a family memory affects every agent you own.",
       "familyMemories": "Family Memories",
       "familyNotice": "Family memories are shared with all your agents.",
       "form": {
         "category": "Category",
         "commaSeparated": "Separate multiple tags with commas.",
         "confidenceLabel": "Confidence (optional, 0–1)",
+        "confidenceRange": "Confidence must be a number between 0 and 1.",
         "content": "Content",
         "contentPlaceholder": "What should be remembered?",
         "descriptionPlaceholder": "Extra context about this memory",
@@ -2364,6 +2438,7 @@ export const resources = {
       "tools": "Tools",
       "trustLevel": "trust: {{level}}",
       "updatedAt": "Updated {{date}}",
+      "updatedAtBy": "Updated {{date}} by {{name}}",
       "updatedBy": "{{name}} updated memory",
       "viewSheet": {
         "empty": "No memory yet for this conversation.",
@@ -3226,6 +3301,7 @@ export const resources = {
         "disconnectFailed": "Failed to disconnect.",
         "incompleteResponse": "Stripe Link returned an incomplete response. Try again.",
         "noPaymentMethod": "no payment method found",
+        "noPaymentMethodFound": "No payment method was found in this wallet.",
         "notCompletedBody": "The connection expired or was declined. Try again.",
         "notCompletedTitle": "Not completed",
         "openLink": "Open Stripe Link",
@@ -3233,6 +3309,7 @@ export const resources = {
         "timedOutBody": "The wallet connection wasn't completed. Try again.",
         "timedOutTitle": "Timed out",
         "title": "Payment Wallet",
+        "verificationCode": "Your verification code",
         "waiting": "Waiting for approval…"
       },
       "workspace": {
@@ -3240,6 +3317,7 @@ export const resources = {
         "adminHint": "Admins can invite members, manage hosts, and configure models.",
         "agentsInOtherWorkspaces_one": "{{count}} agent in another workspace",
         "agentsInOtherWorkspaces_other": "{{count}} agents in other workspaces",
+        "avatarAdminOnly": "Only owners and admins can change the avatar.",
         "avatarHint": "PNG, JPEG, or WebP. Click the avatar to upload a new image.",
         "avatarLabel": "Workspace avatar",
         "changeRole": "Change role",
@@ -3321,6 +3399,7 @@ export const resources = {
         "removeAvatar": "Remove avatar",
         "removeAvatarConfirm": "Remove workspace avatar?",
         "removeMemberConfirm": "Remove {{name}}?",
+        "renameAdminOnly": "Only owners and admins can rename the workspace.",
         "renameHint": "You can rename it later. URL slug is derived from this.",
         "resetToDefault": "Reset to global default",
         "revoke": "Revoke",
@@ -3335,6 +3414,7 @@ export const resources = {
         "runtimeBackend": "Runtime backend",
         "runtimeBackendPrompt": "Where should this CLI connect to?",
         "runtimePick": "pick…",
+        "runtimePlaceholder": "Runtime…",
         "sendInvite": "Send invite",
         "settingsFor": "Settings for {{name}}",
         "slugLabel": "Slug",
@@ -3608,6 +3688,7 @@ export const resources = {
       },
       "revisionHistory": "Revision History",
       "revisionPlaceholder": "What should the agent change or address?",
+      "searchActionsPlaceholder": "Search actions…",
       "searchPlaceholder": "Search tasks...",
       "selectTask": "Select a task",
       "selectTaskHint": "Select a task to view details",
@@ -3644,6 +3725,7 @@ export const resources = {
       "thisTask": "this task",
       "unassigned": "Unassigned",
       "untitled": "Untitled task",
+      "untitledAction": "Untitled Action",
       "untitledTask": "Untitled task",
       "updated": "Updated",
       "viewFullDetails": "View Full Details",
@@ -3698,12 +3780,14 @@ export const resources = {
         "displayType": "Display Type",
         "format": "Format",
         "formatPlaceholder": "e.g. currency, date",
+        "hidden": "Hidden",
         "highlightColor": "Highlight Color",
         "icon": "Icon",
         "iconPlaceholder": "lucide icon name",
         "key": "Key",
         "label": "Label",
         "labelPlaceholder": "Display label",
+        "link": "Link",
         "remove": "Remove field"
       },
       "fieldCount_one": "{{count}} field",
@@ -3815,11 +3899,51 @@ export const resources = {
         "resetToOriginal": "Restablecer al original",
         "title": "Foto de perfil"
       },
+      "bulk": {
+        "bringOnlineCount": "Conectar ({{count}})",
+        "bringOnlineTitle_one": "Volver a conectar {{count}} agente alojado desconectado",
+        "bringOnlineTitle_other": "Volver a conectar {{count}} agentes alojados desconectados",
+        "bringingOnline": "Conectando...",
+        "startAll": "Iniciar todos",
+        "startStoppedTitle_one": "Iniciar {{count}} agente detenido",
+        "startStoppedTitle_other": "Iniciar {{count}} agentes detenidos",
+        "starting": "Iniciando...",
+        "stopAll": "Detener todos",
+        "stopRunningTitle_one": "Detener {{count}} agente en ejecución",
+        "stopRunningTitle_other": "Detener {{count}} agentes en ejecución",
+        "stopping": "Deteniendo..."
+      },
       "busyMessage": "Está trabajando en {{task}}. Tu mensaje fue a la sala de trabajo — ábrela para continuar el hilo.",
       "busyTitle": "{{name}} está ocupado",
       "capabilities": "Capacidades",
       "categories": "Categorías",
       "collapseSubAgents": "Contraer subagentes",
+      "config": {
+        "awsRegionPlaceholder": "Región de AWS (p. ej. us-east-1)",
+        "crash": {
+          "agentCrashed": "El agente falló",
+          "apiKeyProblem": "Problema con la clave de API",
+          "fixAction": "Generar clave nueva e iniciar el agente",
+          "fixExplain": "Cada equipo necesita su propia copia de la clave de API del agente, y solo funciona la más reciente. Generar una nueva aquí mueve el agente a este equipo — si se está ejecutando en otro equipo ahora mismo, se detendrá allí.",
+          "fixFailed": "No se pudo arreglar la clave",
+          "fixing": "Arreglando…"
+        },
+        "customOption": "{{value}} (personalizado)",
+        "groupOperations": "Operaciones",
+        "health": {
+          "label": "Estado"
+        },
+        "hostManagedConnection": "La conexión la gestiona el host. Elige cualquier modelo compatible más abajo.",
+        "hostedSetByPlan": "Alojado · según tu plan",
+        "noClaudeSeat": "⚠️ Este host aún no tiene una plaza de Claude conectada — el agente no puede autenticarse hasta que se configure una.",
+        "sectionLogs": "Registros",
+        "share": {
+          "title": "Compartir agente"
+        },
+        "syncError": "No se pudo guardar esto en el servidor ({{error}}). La conexión solo se aplica una vez guardada — el agente seguirá usando su última conexión guardada hasta que se logre.",
+        "vertexProjectPlaceholder": "ID de proyecto de GCP",
+        "vertexRegionPlaceholder": "Región de Vertex (p. ej. us-east5)"
+      },
       "connect": {
         "action": "Conectar",
         "failed": "No se pudo conectar.",
@@ -4005,6 +4129,7 @@ export const resources = {
         "newKeyThisAgent": "Nueva clave de API (solo este agente)",
         "photoHint": "Una foto hace que tu agente sea fácil de reconocer de un vistazo.",
         "photoTitle": "Dale una cara a tu agente",
+        "photoTitleNamed": "Dale una cara a {{name}}",
         "provider": "Proveedor",
         "providerApiKey": "Clave API de {{provider}}",
         "providerDefault": "Proveedor predeterminado (Anthropic)",
@@ -4040,6 +4165,12 @@ export const resources = {
           "reviewer": "¿Qué revisa?",
           "worker": "¿En qué es bueno?"
         },
+        "specialtiesTitleByRole": {
+          "observer": "¿Qué supervisan?",
+          "orchestrator": "¿Qué van a gestionar?",
+          "reviewer": "¿Qué revisan?",
+          "worker": "¿En qué son buenos?"
+        },
         "status": {
           "abilities": "Configurando habilidades...",
           "almostReady": "Casi listo...",
@@ -4051,6 +4182,7 @@ export const resources = {
         "taskTimeout": "Tiempo de espera de tarea (segundos)",
         "timeoutSeconds": "Tiempo de espera (segundos)",
         "toneHint": "Elige un estilo o añade el tuyo.",
+        "toneTitle": "¿Cómo debería hablar?",
         "typePlaceholder": "Escribe...",
         "visibility": {
           "label": "Visibilidad",
@@ -4136,6 +4268,7 @@ export const resources = {
       },
       "effortLabel": "Esfuerzo",
       "empty": {
+        "createFirstHint": "Crea tu primer agente para empezar a delegar trabajo.",
         "noneFound": "No se encontraron agentes",
         "subtitle": "Toca + para crear tu primer agente",
         "title": "Aún no hay agentes"
@@ -4576,6 +4709,21 @@ export const resources = {
         "whereToReport": "Dónde informar",
         "yourDmWith": "Tu chat directo con {{agentName}}"
       },
+      "row": {
+        "bringingOnline": "Conectando…",
+        "crashed": "Falló",
+        "onAnotherDevice": "En otro dispositivo",
+        "onDevice": "En {{device}}",
+        "remoteOffline": "Remoto · desconectado",
+        "remoteOnline": "Remoto · en línea",
+        "runningOnDeviceHint": "Ejecutándose localmente en «{{device}}» — inícialo y detenlo desde ese dispositivo",
+        "runningOnOtherDevice": "Ejecutándose localmente en otro dispositivo",
+        "stalled": "Estancado",
+        "starting": "Iniciando",
+        "stopped": "Detenido"
+      },
+      "runningCount_one": "{{count}} en ejecución",
+      "runningCount_other": "{{count}} en ejecución",
       "runtime": {
         "alwaysOn": "Siempre activo",
         "host": "Host",
@@ -4780,6 +4928,11 @@ export const resources = {
       },
       "subAgents_one": "{{count}} subagente",
       "subAgents_other": "{{count}} subagentes",
+      "table": {
+        "actions": "Acciones",
+        "engine": "Motor",
+        "mode": "Modo"
+      },
       "tag": "agente",
       "tags": "Etiquetas",
       "tasksPerMonth_one": "{{count}} tarea/mes",
@@ -5753,6 +5906,7 @@ export const resources = {
       "someone": "Alguien",
       "start": "Empezar",
       "status": "Estado",
+      "stop": "Detener",
       "submit": "Enviar",
       "tapToChange": "Toca para cambiar",
       "tapToChoosePhoto": "Toca para elegir una foto",
@@ -6068,17 +6222,21 @@ export const resources = {
       "deleteFamilyTitle": "Eliminar memoria familiar",
       "deleteTitle": "Eliminar memoria",
       "empty": "Aún no hay memoria. El resumen se construye a medida que agentes y humanos intercambian mensajes; aparecerá aquí cuando se ejecute la primera pasada.",
+      "emptyAgentHint": "Este agente aún no ha recordado nada. Añade un dato, preferencia o aprendizaje que deba tener en cuenta.",
+      "emptyFamilyHint": "Aún no hay memorias compartidas. Todo lo que añadas aquí será visible para todos los agentes de tu familia.",
       "errors": {
         "loadFailed": "No se pudieron cargar las memorias",
         "loadFamilyFailed": "No se pudieron cargar las memorias de la familia"
       },
       "familyAlreadyExistsMessage": "Ya existe una memoria familiar con la clave \"{{key}}\" en {{category}}. Edita la memoria existente en su lugar.",
+      "familyEditWarning": "Editar o eliminar una memoria familiar afecta a todos los agentes que posees.",
       "familyMemories": "Memorias familiares",
       "familyNotice": "Las memorias familiares se comparten con todos tus agentes.",
       "form": {
         "category": "Categoría",
         "commaSeparated": "Separa varias etiquetas con comas.",
         "confidenceLabel": "Confianza (opcional, 0–1)",
+        "confidenceRange": "La confianza debe ser un número entre 0 y 1.",
         "content": "Contenido",
         "contentPlaceholder": "¿Qué se debe recordar?",
         "descriptionPlaceholder": "Contexto adicional sobre esta memoria",
@@ -6125,6 +6283,7 @@ export const resources = {
       "tools": "Herramientas",
       "trustLevel": "confianza: {{level}}",
       "updatedAt": "Actualizado {{date}}",
+      "updatedAtBy": "Actualizado {{date}} por {{name}}",
       "updatedBy": "{{name}} actualizó la memoria",
       "viewSheet": {
         "empty": "Esta conversación aún no tiene memoria.",
@@ -6987,6 +7146,7 @@ export const resources = {
         "disconnectFailed": "No se pudo desconectar.",
         "incompleteResponse": "Stripe Link devolvió una respuesta incompleta. Inténtalo de nuevo.",
         "noPaymentMethod": "no se encontró ningún método de pago",
+        "noPaymentMethodFound": "No se encontró ningún método de pago en esta cartera.",
         "notCompletedBody": "La conexión caducó o fue rechazada. Inténtalo de nuevo.",
         "notCompletedTitle": "No completado",
         "openLink": "Abrir Stripe Link",
@@ -6994,6 +7154,7 @@ export const resources = {
         "timedOutBody": "La conexión de la cartera no se completó. Inténtalo de nuevo.",
         "timedOutTitle": "Tiempo agotado",
         "title": "Cartera de pagos",
+        "verificationCode": "Tu código de verificación",
         "waiting": "Esperando la aprobación…"
       },
       "workspace": {
@@ -7001,6 +7162,7 @@ export const resources = {
         "adminHint": "Los administradores pueden invitar miembros, gestionar hosts y configurar modelos.",
         "agentsInOtherWorkspaces_one": "{{count}} agente en otro espacio de trabajo",
         "agentsInOtherWorkspaces_other": "{{count}} agentes en otros espacios de trabajo",
+        "avatarAdminOnly": "Solo los propietarios y administradores pueden cambiar el avatar.",
         "avatarHint": "PNG, JPEG o WebP. Haz clic en el avatar para subir una imagen nueva.",
         "avatarLabel": "Avatar del espacio de trabajo",
         "changeRole": "Cambiar rol",
@@ -7082,6 +7244,7 @@ export const resources = {
         "removeAvatar": "Quitar avatar",
         "removeAvatarConfirm": "¿Quitar el avatar del espacio de trabajo?",
         "removeMemberConfirm": "¿Quitar a {{name}}?",
+        "renameAdminOnly": "Solo los propietarios y administradores pueden renombrar el espacio de trabajo.",
         "renameHint": "Puedes renombrarlo más tarde. El slug de la URL se deriva de este nombre.",
         "resetToDefault": "Restablecer al valor global predeterminado",
         "revoke": "Revocar",
@@ -7096,6 +7259,7 @@ export const resources = {
         "runtimeBackend": "Backend de ejecución",
         "runtimeBackendPrompt": "¿A dónde debe conectarse esta CLI?",
         "runtimePick": "elegir…",
+        "runtimePlaceholder": "Entorno de ejecución…",
         "sendInvite": "Enviar invitación",
         "settingsFor": "Ajustes de {{name}}",
         "slugLabel": "Slug",
@@ -7369,6 +7533,7 @@ export const resources = {
       },
       "revisionHistory": "Historial de revisiones",
       "revisionPlaceholder": "¿Qué debería cambiar o abordar el agente?",
+      "searchActionsPlaceholder": "Buscar acciones…",
       "searchPlaceholder": "Buscar tareas...",
       "selectTask": "Selecciona una tarea",
       "selectTaskHint": "Selecciona una tarea para ver los detalles",
@@ -7405,6 +7570,7 @@ export const resources = {
       "thisTask": "esta tarea",
       "unassigned": "Sin asignar",
       "untitled": "Tarea sin título",
+      "untitledAction": "Acción sin título",
       "untitledTask": "Tarea sin título",
       "updated": "Actualizada",
       "viewFullDetails": "Ver todos los detalles",
@@ -7459,12 +7625,14 @@ export const resources = {
         "displayType": "Tipo de visualización",
         "format": "Formato",
         "formatPlaceholder": "p. ej. currency, date",
+        "hidden": "Oculto",
         "highlightColor": "Color de resaltado",
         "icon": "Icono",
         "iconPlaceholder": "nombre de icono de lucide",
         "key": "Clave",
         "label": "Etiqueta",
         "labelPlaceholder": "Etiqueta visible",
+        "link": "Enlace",
         "remove": "Quitar campo"
       },
       "fieldCount_one": "{{count}} campo",

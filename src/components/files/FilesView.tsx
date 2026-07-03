@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useTranslation } from "react-i18next";
 import {
   deleteOwnerFile,
   forwardFile,
@@ -35,11 +36,11 @@ const PAGE_SIZE = 100;
 
 type Category = "all" | "documents" | "images" | "media";
 
-const FILTERS: { key: Category; label: string }[] = [
-  { key: "all", label: "All" },
-  { key: "documents", label: "Documents" },
-  { key: "images", label: "Images" },
-  { key: "media", label: "Media" },
+const FILTERS: { key: Category; labelKey: string }[] = [
+  { key: "all", labelKey: "filters.all" },
+  { key: "documents", labelKey: "filters.documents" },
+  { key: "images", labelKey: "filters.images" },
+  { key: "media", labelKey: "filters.media" },
 ];
 
 /** Coarse bucket used by both the type-filter pills and the row icon. */
@@ -77,6 +78,7 @@ interface Props {
  * with per-file actions (open, copy link, forward, delete).
  */
 export function FilesView({ onOpenConversation }: Props) {
+  const { t } = useTranslation("files");
   const [files, setFiles] = useState<OwnerFile[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -101,11 +103,11 @@ export function FilesView({ onOpenConversation }: Props) {
       setFiles(page);
       setReachedEnd(page.length < PAGE_SIZE);
     } catch {
-      setError("Couldn't load your files. Check your connection and try again.");
+      setError(t("errors.loadFailed"));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     load();
@@ -126,11 +128,11 @@ export function FilesView({ onOpenConversation }: Props) {
       });
       setReachedEnd(page.length < PAGE_SIZE);
     } catch {
-      flash({ kind: "error", message: "Couldn't load more files." });
+      flash({ kind: "error", message: t("errors.loadMoreFailed") });
     } finally {
       setLoadingMore(false);
     }
-  }, [files, loadingMore, flash]);
+  }, [files, loadingMore, flash, t]);
 
   const counts = useMemo(() => {
     const c = { all: files.length, documents: 0, images: 0, media: 0 };
@@ -163,12 +165,12 @@ export function FilesView({ onOpenConversation }: Props) {
         a.click();
         a.remove();
       } catch {
-        flash({ kind: "error", message: "Couldn't open the file." });
+        flash({ kind: "error", message: t("errors.openFailed") });
       } finally {
         setOpening(null);
       }
     },
-    [flash]
+    [flash, t]
   );
 
   const copyLink = useCallback(
@@ -177,26 +179,26 @@ export function FilesView({ onOpenConversation }: Props) {
         const { url } = await getFileDownloadUrl(file.id);
         await navigator.clipboard?.writeText(url);
         // The only link the private bucket exposes is a short-lived signed URL.
-        flash({ kind: "success", message: "Link copied — opens for 5 minutes." });
+        flash({ kind: "success", message: t("linkCopiedToast") });
       } catch {
-        flash({ kind: "error", message: "Couldn't copy the link." });
+        flash({ kind: "error", message: t("errors.copyLinkFailed") });
       }
     },
-    [flash]
+    [flash, t]
   );
 
   const removeFile = useCallback(
     async (file: OwnerFile) => {
-      if (!confirm(`Delete "${file.filename}"? This can't be undone.`)) return;
+      if (!confirm(t("deleteConfirm", { filename: file.filename }))) return;
       try {
         await deleteOwnerFile(file.id);
         setFiles((prev) => prev.filter((f) => f.id !== file.id));
-        flash({ kind: "success", message: "File deleted." });
+        flash({ kind: "success", message: t("deleted") });
       } catch {
-        flash({ kind: "error", message: "Couldn't delete the file." });
+        flash({ kind: "error", message: t("errors.deleteFailed") });
       }
     },
-    [flash]
+    [flash, t]
   );
 
   const openSource = useCallback(
@@ -214,10 +216,10 @@ export function FilesView({ onOpenConversation }: Props) {
           <div className="min-w-0">
             <h1 className="flex items-center gap-2 text-lg font-semibold text-foreground">
               <FolderOpen className="h-5 w-5 text-primary" />
-              Files
+              {t("nav:files")}
             </h1>
             <p className="mt-0.5 text-sm text-muted-foreground">
-              Everything you and your agents have created, across every chat and task.
+              {t("subtitle")}
             </p>
           </div>
           <div className="relative w-64 max-w-[40%] shrink-0">
@@ -226,7 +228,7 @@ export function FilesView({ onOpenConversation }: Props) {
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search files…"
+              placeholder={t("searchPlaceholder")}
               className="h-9 w-full rounded-lg border border-border bg-background pl-8 pr-3 text-sm outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
             />
           </div>
@@ -246,7 +248,7 @@ export function FilesView({ onOpenConversation }: Props) {
                   : "bg-muted text-muted-foreground hover:bg-accent hover:text-foreground"
               )}
             >
-              {f.label}
+              {t(f.labelKey)}
               <span className="ml-1.5 opacity-60 tabular-nums">{counts[f.key]}</span>
             </button>
           ))}
@@ -256,10 +258,10 @@ export function FilesView({ onOpenConversation }: Props) {
       {/* Column header */}
       {!loading && !error && files.length > 0 && (
         <div className="flex shrink-0 items-center gap-3 border-b border-border px-6 py-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-          <span className="min-w-0 flex-1">Name</span>
-          <span className="hidden w-56 shrink-0 md:block">Location</span>
-          <span className="hidden w-40 shrink-0 lg:block">Added by</span>
-          <span className="hidden w-44 shrink-0 sm:block">Added</span>
+          <span className="min-w-0 flex-1">{t("columns.name")}</span>
+          <span className="hidden w-56 shrink-0 md:block">{t("columns.location")}</span>
+          <span className="hidden w-40 shrink-0 lg:block">{t("columns.addedBy")}</span>
+          <span className="hidden w-44 shrink-0 sm:block">{t("columns.added")}</span>
           <span className="w-8 shrink-0" />
         </div>
       )}
@@ -278,18 +280,18 @@ export function FilesView({ onOpenConversation }: Props) {
               onClick={load}
               className="rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:opacity-90"
             >
-              Retry
+              {t("common:retry")}
             </button>
           </div>
         ) : files.length === 0 ? (
           <EmptyState
-            title="No files yet"
-            subtitle="Files you or your agents add to any chat or task will collect here."
+            title={t("empty.noFiles")}
+            subtitle={t("empty.noFilesHint")}
           />
         ) : visible.length === 0 ? (
           <EmptyState
-            title="No matching files"
-            subtitle="Try a different search or filter."
+            title={t("empty.noMatches")}
+            subtitle={t("empty.noMatchesHint")}
           />
         ) : (
           <div className="px-3 py-1.5">
@@ -317,7 +319,7 @@ export function FilesView({ onOpenConversation }: Props) {
                   className="flex items-center gap-2 rounded-lg border border-border px-4 py-1.5 text-sm text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-50"
                 >
                   {loadingMore && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-                  Load more
+                  {t("common:loadMore")}
                 </button>
               </div>
             )}
@@ -333,12 +335,12 @@ export function FilesView({ onOpenConversation }: Props) {
             setForwardFor(null);
             flash({
               kind: "success",
-              message: `Forwarded to ${conv}.`,
+              message: t("forwardedTo", { conversation: conv }),
             });
           }}
           onError={() => {
             setForwardFor(null);
-            flash({ kind: "error", message: "Couldn't forward the file." });
+            flash({ kind: "error", message: t("errors.forwardFailed") });
           }}
         />
       )}
@@ -378,10 +380,11 @@ function FileRow({
   onDelete: () => void;
   onOpenSource: () => void;
 }) {
+  const { t } = useTranslation("files");
   const isTask = !!file.task;
   const sourceLabel = isTask
-    ? file.task!.title || "Untitled task"
-    : file.conversation?.title || "Untitled chat";
+    ? file.task!.title || t("untitledTask")
+    : file.conversation?.title || t("untitledChat");
 
   return (
     <div className="group flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-accent">
@@ -390,7 +393,7 @@ function FileRow({
         type="button"
         onClick={onOpen}
         disabled={opening}
-        title="Open file"
+        title={t("openFile")}
         className="flex min-w-0 flex-1 items-center gap-3 text-left disabled:opacity-50"
       >
         <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-muted text-primary">
@@ -412,7 +415,11 @@ function FileRow({
           <button
             type="button"
             onClick={onOpenSource}
-            title={`Open ${isTask ? "task" : "chat"}: ${sourceLabel}`}
+            title={
+              isTask
+                ? t("openSourceTask", { title: sourceLabel })
+                : t("openSourceChat", { title: sourceLabel })
+            }
             className="flex max-w-full items-center gap-1.5 rounded-md px-2 py-1 text-xs text-muted-foreground hover:bg-background hover:text-foreground"
           >
             {isTask ? (
@@ -442,7 +449,7 @@ function FileRow({
           </AvatarFallback>
         </Avatar>
         <span className="truncate text-xs text-muted-foreground">
-          {file.uploader?.displayName ?? "Unknown"}
+          {file.uploader?.displayName ?? t("common:unknown")}
         </span>
       </div>
 
@@ -476,6 +483,7 @@ function RowActionsMenu({
   onForward: () => void;
   onDelete: () => void;
 }) {
+  const { t } = useTranslation("files");
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState({ x: 0, y: 0 });
   const btnRef = useRef<HTMLButtonElement>(null);
@@ -509,7 +517,7 @@ function RowActionsMenu({
         ref={btnRef}
         type="button"
         onClick={toggle}
-        title="More"
+        title={t("common:more")}
         className={cn(
           "flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-background hover:text-foreground",
           open ? "bg-background text-foreground" : "opacity-0 group-hover:opacity-100"
@@ -525,11 +533,11 @@ function RowActionsMenu({
             className="fixed z-50 min-w-[180px] rounded-lg border border-border bg-popover p-1 text-popover-foreground shadow-lg"
             style={{ left: pos.x - 180, top: pos.y + 4 }}
           >
-            <MenuItem icon={SquareArrowOutUpRight} label="Open" onClick={run(onOpen)} />
-            <MenuItem icon={Link2} label="Copy link" onClick={run(onCopyLink)} />
-            <MenuItem icon={Forward} label="Forward…" onClick={run(onForward)} />
+            <MenuItem icon={SquareArrowOutUpRight} label={t("common:open")} onClick={run(onOpen)} />
+            <MenuItem icon={Link2} label={t("copyLink")} onClick={run(onCopyLink)} />
+            <MenuItem icon={Forward} label={t("forwardEllipsis")} onClick={run(onForward)} />
             <div className="my-1 h-px bg-border" />
-            <MenuItem icon={Trash2} label="Delete" destructive onClick={run(onDelete)} />
+            <MenuItem icon={Trash2} label={t("common:delete")} destructive onClick={run(onDelete)} />
           </div>,
           document.body
         )}
@@ -578,6 +586,7 @@ function ForwardDialog({
   onDone: (conversationLabel: string) => void;
   onError: () => void;
 }) {
+  const { t } = useTranslation("files");
   const conversations = useChatStore((s) => s.conversations);
   const myId = useAuthStore((s) => s.participant?.id);
   const [query, setQuery] = useState("");
@@ -612,7 +621,7 @@ function ForwardDialog({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="border-b border-border px-4 py-3">
-          <p className="text-sm font-semibold text-foreground">Forward file</p>
+          <p className="text-sm font-semibold text-foreground">{t("forward.title")}</p>
           <p className="mt-0.5 truncate text-xs text-muted-foreground">{file.filename}</p>
         </div>
         <div className="border-b border-border p-2">
@@ -623,7 +632,7 @@ function ForwardDialog({
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search chats…"
+              placeholder={t("forward.searchPlaceholder")}
               className="h-9 w-full rounded-lg border border-border bg-background pl-8 pr-3 text-sm outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
             />
           </div>
@@ -631,7 +640,7 @@ function ForwardDialog({
         <div className="min-h-0 flex-1 overflow-y-auto p-1">
           {list.length === 0 ? (
             <p className="px-3 py-6 text-center text-xs text-muted-foreground">
-              No chats found.
+              {t("forward.noChats")}
             </p>
           ) : (
             list.map(({ conv, label }) => (

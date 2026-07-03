@@ -1,4 +1,5 @@
 import { X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "../../lib/utils";
@@ -15,11 +16,11 @@ const DISPLAY_TYPES: DisplayType[] = [
 
 const LINK_TYPES: FieldLink[] = ["tel", "mailto", "url", "map"];
 
-const HIGHLIGHT_COLORS: { value: HighlightColor; label: string; cls: string }[] = [
-  { value: "success", label: "Green", cls: "bg-success" },
-  { value: "warning", label: "Yellow", cls: "bg-warning" },
-  { value: "destructive", label: "Red", cls: "bg-destructive" },
-  { value: "primary", label: "Blue", cls: "bg-primary" },
+const HIGHLIGHT_COLORS: { value: HighlightColor; labelKey: string; cls: string }[] = [
+  { value: "success", labelKey: "colors.green", cls: "bg-success" },
+  { value: "warning", labelKey: "colors.yellow", cls: "bg-warning" },
+  { value: "destructive", labelKey: "colors.red", cls: "bg-destructive" },
+  { value: "primary", labelKey: "colors.blue", cls: "bg-primary" },
 ];
 
 interface Props {
@@ -29,20 +30,21 @@ interface Props {
 }
 
 export function FieldEditor({ field, onChange, onDelete }: Props) {
+  const { t } = useTranslation("templates");
   return (
     <div className="relative rounded-lg border border-border p-3 space-y-3">
       <button
         type="button"
         onClick={onDelete}
         className="absolute right-2 top-2 rounded p-1 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
-        title="Remove field"
+        title={t("field.remove")}
       >
         <X className="h-3.5 w-3.5" />
       </button>
 
       <div className="grid grid-cols-2 gap-3 pr-6">
         <div className="space-y-1">
-          <Label className="text-xs">Key</Label>
+          <Label className="text-xs">{t("field.key")}</Label>
           <Input
             value={field.key}
             onChange={(e) => onChange({ ...field, key: e.target.value })}
@@ -51,20 +53,20 @@ export function FieldEditor({ field, onChange, onDelete }: Props) {
           />
         </div>
         <div className="space-y-1">
-          <Label className="text-xs">Label</Label>
+          <Label className="text-xs">{t("field.label")}</Label>
           <Input
             value={field.label ?? ""}
             onChange={(e) =>
               onChange({ ...field, label: e.target.value || undefined })
             }
-            placeholder="Display label"
+            placeholder={t("field.labelPlaceholder")}
             className="h-8 text-xs"
           />
         </div>
       </div>
 
       <div className="space-y-1">
-        <Label className="text-xs">Display Type</Label>
+        <Label className="text-xs">{t("field.displayType")}</Label>
         <div className="flex flex-wrap gap-1.5">
           {DISPLAY_TYPES.map((dt) => (
             <button
@@ -78,7 +80,7 @@ export function FieldEditor({ field, onChange, onDelete }: Props) {
                   : "border-border text-muted-foreground hover:bg-accent"
               )}
             >
-              {dt}
+              {t(`displayTypes.${dt}`, { defaultValue: dt })}
             </button>
           ))}
         </div>
@@ -86,24 +88,24 @@ export function FieldEditor({ field, onChange, onDelete }: Props) {
 
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1">
-          <Label className="text-xs">Icon</Label>
+          <Label className="text-xs">{t("field.icon")}</Label>
           <Input
             value={field.icon ?? ""}
             onChange={(e) =>
               onChange({ ...field, icon: e.target.value || undefined })
             }
-            placeholder="lucide icon name"
+            placeholder={t("field.iconPlaceholder")}
             className="h-8 text-xs"
           />
         </div>
         <div className="space-y-1">
-          <Label className="text-xs">Format</Label>
+          <Label className="text-xs">{t("field.format")}</Label>
           <Input
             value={field.format ?? ""}
             onChange={(e) =>
               onChange({ ...field, format: e.target.value || undefined })
             }
-            placeholder="route, stops, or percent"
+            placeholder={t("field.formatPlaceholder")}
             className="h-8 text-xs"
           />
         </div>
@@ -111,7 +113,7 @@ export function FieldEditor({ field, onChange, onDelete }: Props) {
 
       {field.display === "highlight" && (
         <div className="space-y-1">
-          <Label className="text-xs">Highlight Color</Label>
+          <Label className="text-xs">{t("field.highlightColor")}</Label>
           <div className="flex gap-2">
             {HIGHLIGHT_COLORS.map((hc) => (
               <button
@@ -126,7 +128,7 @@ export function FieldEditor({ field, onChange, onDelete }: Props) {
                 )}
               >
                 <span className={cn("h-2.5 w-2.5 rounded-full", hc.cls)} />
-                {hc.label}
+                {t(hc.labelKey)}
               </button>
             ))}
           </div>
@@ -135,7 +137,7 @@ export function FieldEditor({ field, onChange, onDelete }: Props) {
 
       <div className="flex items-end justify-between gap-3">
         <div className="space-y-1">
-          <Label className="text-xs">Link</Label>
+          <Label className="text-xs">{t("field.link")}</Label>
           <div className="flex flex-wrap gap-1.5">
             {LINK_TYPES.map((lt) => (
               <button
@@ -162,7 +164,7 @@ export function FieldEditor({ field, onChange, onDelete }: Props) {
             checked={field.hidden ?? false}
             onChange={(e) => onChange({ ...field, hidden: e.target.checked || undefined })}
           />
-          Hidden
+          {t("field.hidden")}
         </label>
       </div>
     </div>

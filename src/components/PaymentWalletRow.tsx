@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Wallet, ExternalLink, Loader2, AlertCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { open as tauriOpen } from "@tauri-apps/plugin-shell";
 import {
   Dialog,
@@ -47,6 +48,7 @@ function openExternal(url: string) {
 }
 
 export function PaymentWalletRow() {
+  const { t } = useTranslation("settings");
   const [status, setStatus] = useState<WalletStatus | null>(null);
   const [device, setDevice] = useState<DeviceInfo | null>(null);
   const [connecting, setConnecting] = useState(false);
@@ -91,7 +93,7 @@ export function PaymentWalletRow() {
       const resp = await paymentConnectStart();
       const url = resp.verificationUriComplete || resp.verificationUri;
       if (!resp.userCode || !url) {
-        setError("Stripe Link returned an incomplete response. Try again.");
+        setError(t("wallet.incompleteResponse"));
         return;
       }
 
@@ -110,7 +112,7 @@ export function PaymentWalletRow() {
           stopPolling();
           if (mountedRef.current) {
             setDevice(null);
-            setError("The wallet connection timed out. Try again.");
+            setError(t("wallet.timedOutBody"));
           }
           return;
         }
@@ -131,13 +133,13 @@ export function PaymentWalletRow() {
             stopPolling();
             if (mountedRef.current) {
               setDevice(null);
-              setError("The connection expired or was declined. Try again.");
+              setError(t("wallet.notCompletedBody"));
             }
           }
         }
       }, intervalMs);
     } catch {
-      if (mountedRef.current) setError("Couldn't start the wallet connection. Try again.");
+      if (mountedRef.current) setError(t("wallet.startFailed"));
     } finally {
       if (mountedRef.current) setConnecting(false);
     }
@@ -156,7 +158,7 @@ export function PaymentWalletRow() {
       await paymentDisconnect();
       await fetchStatus();
     } catch {
-      if (mountedRef.current) setError("Failed to disconnect.");
+      if (mountedRef.current) setError(t("wallet.disconnectFailed"));
     } finally {
       if (mountedRef.current) setDisconnecting(false);
     }
@@ -180,18 +182,18 @@ export function PaymentWalletRow() {
           </div>
 
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate">Payment Wallet</p>
+            <p className="text-sm font-medium truncate">{t("wallet.title")}</p>
             {isConnected ? (
               <p className="flex items-center gap-1.5 text-xs text-muted-foreground truncate mt-0.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-success flex-shrink-0" />
                 <span className="truncate">
-                  Connected
+                  {t("common:connected")}
                   <span className="text-muted-foreground"> · Stripe Link</span>
                 </span>
               </p>
             ) : (
               <p className="text-xs text-muted-foreground truncate mt-0.5">
-                Agents request payments from your Stripe Link wallet — you approve each one
+                {t("wallet.description")}
               </p>
             )}
           </div>
@@ -207,7 +209,7 @@ export function PaymentWalletRow() {
                     disabled={disconnecting}
                   >
                     {disconnecting && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-                    Confirm
+                    {t("common:confirm")}
                   </Button>
                   <Button
                     variant="ghost"
@@ -215,7 +217,7 @@ export function PaymentWalletRow() {
                     onClick={() => setConfirmingDisconnect(false)}
                     disabled={disconnecting}
                   >
-                    Cancel
+                    {t("common:cancel")}
                   </Button>
                 </>
               ) : (
@@ -225,7 +227,7 @@ export function PaymentWalletRow() {
                   className="text-muted-foreground hover:text-destructive"
                   onClick={() => setConfirmingDisconnect(true)}
                 >
-                  Disconnect
+                  {t("wallet.disconnect")}
                 </Button>
               )}
             </div>
@@ -242,7 +244,7 @@ export function PaymentWalletRow() {
               ) : (
                 <ExternalLink className="w-3.5 h-3.5" />
               )}
-              Connect
+              {t("wallet.connect")}
             </Button>
           )}
         </div>
@@ -250,7 +252,7 @@ export function PaymentWalletRow() {
         {isConnected && status && !status.hasPaymentMethod && (
           <p className="ml-11 mt-1 flex items-center gap-1 text-[11px] text-warning">
             <AlertCircle className="w-3 h-3" />
-            No payment method was found in this wallet.
+            {t("wallet.noPaymentMethodFound")}
           </p>
         )}
 
@@ -266,16 +268,13 @@ export function PaymentWalletRow() {
       <Dialog open={!!device} onOpenChange={(open) => !open && cancelConnect()}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Connect Payment Wallet</DialogTitle>
-            <DialogDescription>
-              Approve the connection in Stripe Link. If the browser didn't open, use the
-              code below.
-            </DialogDescription>
+            <DialogTitle>{t("wallet.connectTitle")}</DialogTitle>
+            <DialogDescription>{t("wallet.approveHint")}</DialogDescription>
           </DialogHeader>
 
           <div className="space-y-3 py-2">
             <div className="rounded-lg border border-border bg-muted/30 p-4 text-center">
-              <p className="text-xs text-muted-foreground mb-2">Your verification code</p>
+              <p className="text-xs text-muted-foreground mb-2">{t("wallet.verificationCode")}</p>
               <code className="text-2xl font-mono font-bold tracking-widest text-foreground">
                 {device?.userCode}
               </code>
@@ -290,12 +289,12 @@ export function PaymentWalletRow() {
               }
             >
               <ExternalLink className="w-3.5 h-3.5" />
-              Open Stripe Link
+              {t("wallet.openLink")}
             </Button>
 
             <p className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
               <Loader2 className="w-3.5 h-3.5 animate-spin" />
-              Waiting for approval…
+              {t("wallet.waiting")}
             </p>
           </div>
         </DialogContent>

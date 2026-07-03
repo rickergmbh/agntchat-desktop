@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useAgentStore, type ManagedAgent } from "../stores/agentStore";
 import { useDirectoryStore } from "../stores/directoryStore";
 import { AgentRow } from "./AgentRow";
@@ -50,6 +51,7 @@ function DirectoryItem({
   isActive: boolean;
   onClick: () => void;
 }) {
+  const { t } = useTranslation("agents");
   const agent = listing.agent;
   return (
     <button
@@ -70,22 +72,22 @@ function DirectoryItem({
           <span className="truncate text-sm font-medium">{listing.listingName}</span>
           {listing.verified && (
             <span className="rounded-full bg-info/10 px-1.5 py-0.5 text-[9px] font-semibold text-info">
-              Verified
+              {t("verified")}
             </span>
           )}
           {listing.visibility === "friends_only" && (
             <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-semibold text-primary">
-              Friends only
+              {t("friendsOnly")}
             </span>
           )}
           {connectionStatus === "accepted" && (
             <span className="flex items-center gap-0.5 rounded-full bg-success/15 px-1.5 py-0.5 text-[9px] font-semibold text-success">
-              <CheckCircle className="h-2.5 w-2.5" /> Connected
+              <CheckCircle className="h-2.5 w-2.5" /> {t("common:connected")}
             </span>
           )}
           {connectionStatus === "pending" && (
             <span className="flex items-center gap-0.5 rounded-full bg-warning/15 px-1.5 py-0.5 text-[9px] font-semibold text-warning">
-              <Clock className="h-2.5 w-2.5" /> Pending
+              <Clock className="h-2.5 w-2.5" /> {t("common:pending")}
             </span>
           )}
         </div>
@@ -102,7 +104,7 @@ function DirectoryItem({
             </span>
           )}
           {listing.monthlyTasksCompleted > 0 && (
-            <span>{listing.monthlyTasksCompleted} tasks/mo</span>
+            <span>{t("tasksPerMonth", { count: listing.monthlyTasksCompleted })}</span>
           )}
           {listing.categories.length > 0 && (
             <span className="truncate">{listing.categories.join(", ")}</span>
@@ -129,6 +131,7 @@ function DirectoryAgentDetail({
   onDisconnect: () => void;
   onClose: () => void;
 }) {
+  const { t } = useTranslation("agents");
   const agent = listing.agent;
   const [connecting, setConnecting] = useState(false);
   const [disconnecting, setDisconnecting] = useState(false);
@@ -149,14 +152,14 @@ function DirectoryAgentDetail({
   }, [onConnect, allowsEither, chosenMode]);
 
   const handleDisconnect = useCallback(async () => {
-    if (!confirm("Disconnect from this agent? You'll lose access.")) return;
+    if (!confirm(t("disconnectConfirm"))) return;
     setDisconnecting(true);
     try {
       await onDisconnect();
     } finally {
       setDisconnecting(false);
     }
-  }, [onDisconnect]);
+  }, [onDisconnect, t]);
 
   return (
     <div className="flex h-full flex-col bg-card">
@@ -172,7 +175,7 @@ function DirectoryAgentDetail({
             <h2 className="truncate text-base font-semibold">{listing.listingName}</h2>
             {listing.verified && (
               <span className="rounded-full bg-info/10 px-2 py-0.5 text-[10px] font-semibold text-info">
-                Verified
+                {t("verified")}
               </span>
             )}
           </div>
@@ -183,7 +186,7 @@ function DirectoryAgentDetail({
           )}
         </div>
         <Button variant="ghost" size="sm" onClick={onClose}>
-          Close
+          {t("common:close")}
         </Button>
       </div>
 
@@ -194,7 +197,7 @@ function DirectoryAgentDetail({
               {agent.capabilities && agent.capabilities.length > 0 && (
                 <div className="space-y-1.5">
                   <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    Capabilities
+                    {t("capabilities")}
                   </p>
                   <div className="flex flex-wrap gap-1.5">
                     {agent.capabilities.map((cap) => (
@@ -212,7 +215,7 @@ function DirectoryAgentDetail({
               {agent.description && (
                 <div className="space-y-1.5">
                   <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    About
+                    {t("about")}
                   </p>
                   <p className="text-sm text-muted-foreground">{agent.description}</p>
                 </div>
@@ -223,7 +226,7 @@ function DirectoryAgentDetail({
           {listing.categories.length > 0 && (
             <div className="space-y-1.5">
               <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Categories
+                {t("categories")}
               </p>
               <div className="flex flex-wrap gap-1.5">
                 {listing.categories.map((cat) => (
@@ -241,7 +244,7 @@ function DirectoryAgentDetail({
           {listing.tags.length > 0 && (
             <div className="space-y-1.5">
               <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Tags
+                {t("tags")}
               </p>
               <div className="flex flex-wrap gap-1.5">
                 {listing.tags.map((tag) => (
@@ -259,7 +262,7 @@ function DirectoryAgentDetail({
           {!connection || connection.status === "rejected" || connection.status === "revoked" ? (
             <div className="space-y-1.5">
               <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Connection
+                {t("connection.title")}
               </p>
               {allowsEither ? (
                 <div className="space-y-1.5">
@@ -279,10 +282,10 @@ function DirectoryAgentDetail({
                         chosenMode === "direct" ? "text-primary" : "text-foreground"
                       )}
                     >
-                      Direct
+                      {t("connection.direct")}
                     </div>
                     <div className="mt-0.5 text-[11px] text-muted-foreground">
-                      Runs on the owner's machine. Uses their API credits.
+                      {t("connection.directDescription")}
                     </div>
                   </button>
                   <button
@@ -301,18 +304,18 @@ function DirectoryAgentDetail({
                         chosenMode === "proxy" ? "text-primary" : "text-foreground"
                       )}
                     >
-                      Proxy
+                      {t("connection.proxy")}
                     </div>
                     <div className="mt-0.5 text-[11px] text-muted-foreground">
-                      Clones the agent into your account. Runs on your machine, uses your API keys.
+                      {t("connection.proxyDescription")}
                     </div>
                   </button>
                 </div>
               ) : (
                 <p className="text-xs text-muted-foreground">
                   {lockedMode === "proxy"
-                    ? "Proxy — a clone will run on your machine using your API keys."
-                    : "Direct — runs on the owner's machine using their API credits."}
+                    ? t("connection.proxyLocked")
+                    : t("connection.directLocked")}
                 </p>
               )}
             </div>
@@ -323,7 +326,7 @@ function DirectoryAgentDetail({
               <>
                 <div className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-2 text-xs font-semibold text-success">
                   <CheckCircle className="h-3.5 w-3.5" />
-                  Connected
+                  {t("common:connected")}
                 </div>
                 <button
                   onClick={handleDisconnect}
@@ -335,13 +338,13 @@ function DirectoryAgentDetail({
                   ) : (
                     <Unlink className="h-3.5 w-3.5" />
                   )}
-                  Disconnect
+                  {t("disconnect.action")}
                 </button>
               </>
             ) : connection?.status === "pending" ? (
               <div className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-2 text-xs font-semibold text-muted-foreground">
                 <Clock className="h-3.5 w-3.5" />
-                Pending Approval
+                {t("connect.pendingApproval")}
               </div>
             ) : (
               <button
@@ -354,7 +357,7 @@ function DirectoryAgentDetail({
                 ) : (
                   <LinkIcon className="h-3.5 w-3.5" />
                 )}
-                Connect
+                {t("connect.action")}
               </button>
             )}
           </div>
@@ -365,6 +368,7 @@ function DirectoryAgentDetail({
 }
 
 export function Dashboard() {
+  const { t } = useTranslation("agents");
   const {
     agents,
     selectedAgentId,
@@ -477,10 +481,10 @@ export function Dashboard() {
       try {
         await requestConnection(listing.agentId, mode ? { mode } : undefined);
       } catch (e) {
-        alert(e instanceof Error ? e.message : "Connection failed");
+        alert(e instanceof Error ? e.message : t("errors.connectFailed"));
       }
     },
-    [requestConnection]
+    [requestConnection, t]
   );
 
   const handleDisconnect = useCallback(
@@ -488,10 +492,10 @@ export function Dashboard() {
       try {
         await revokeConnection(connectionId);
       } catch (e) {
-        alert(e instanceof Error ? e.message : "Disconnect failed");
+        alert(e instanceof Error ? e.message : t("errors.disconnectFailed"));
       }
     },
-    [revokeConnection]
+    [revokeConnection, t]
   );
 
   // Map agent IDs to connection status — pills shown on directory rows.
@@ -782,7 +786,7 @@ export function Dashboard() {
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              Agents
+              {t("nav:agents")}
               <span className="rounded-full bg-muted px-1.5 py-0.5 text-[9px] text-muted-foreground">
                 {activeCount}
               </span>
@@ -799,11 +803,11 @@ export function Dashboard() {
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              Directory
+              {t("directory")}
             </button>
             {activeTab === "agents" && runningCount > 0 && (
               <span className="ml-2 hidden @min-[560px]:inline text-[11px] text-success whitespace-nowrap">
-                {runningCount} running
+                {t("runningCount", { count: runningCount })}
               </span>
             )}
           </div>
@@ -823,8 +827,8 @@ export function Dashboard() {
                     type="text"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Search agents..."
-                    aria-label="Search agents"
+                    placeholder={t("searchPlaceholder")}
+                    aria-label={t("searchPlaceholder")}
                     className="h-8 pl-8 text-xs w-9 @min-[680px]:w-[120px] @min-[920px]:w-[180px] placeholder:opacity-0 @min-[680px]:placeholder:opacity-100"
                   />
                 </div>
@@ -836,11 +840,11 @@ export function Dashboard() {
                     variant="outline"
                     onClick={handleStartAll}
                     disabled={startingAll}
-                    title={`Start ${stoppedWithKeys.length} stopped agent(s)`}
+                    title={t("bulk.startStoppedTitle", { count: stoppedWithKeys.length })}
                   >
                     <Play className="w-3.5 h-3.5" />
                     <span className="hidden @min-[820px]:inline">
-                      {startingAll ? "Starting..." : "Start All"}
+                      {startingAll ? t("bulk.starting") : t("bulk.startAll")}
                     </span>
                   </Button>
                 )}
@@ -850,7 +854,7 @@ export function Dashboard() {
                     variant="outline"
                     onClick={handleBringHostedOnline}
                     disabled={wakingHosted}
-                    title={`Bring ${offlineHosted.length} offline hosted agent(s) back online`}
+                    title={t("bulk.bringOnlineTitle", { count: offlineHosted.length })}
                   >
                     {wakingHosted ? (
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -859,8 +863,8 @@ export function Dashboard() {
                     )}
                     <span className="hidden @min-[820px]:inline">
                       {wakingHosted
-                        ? "Bringing online..."
-                        : `Bring online (${offlineHosted.length})`}
+                        ? t("bulk.bringingOnline")
+                        : t("bulk.bringOnlineCount", { count: offlineHosted.length })}
                     </span>
                   </Button>
                 )}
@@ -870,17 +874,17 @@ export function Dashboard() {
                     variant="outline"
                     onClick={handleStopAll}
                     disabled={stoppingAll}
-                    title={`Stop ${runningCount} running agent(s)`}
+                    title={t("bulk.stopRunningTitle", { count: runningCount })}
                   >
                     <Square className="w-3.5 h-3.5" />
                     <span className="hidden @min-[820px]:inline">
-                      {stoppingAll ? "Stopping..." : "Stop All"}
+                      {stoppingAll ? t("bulk.stopping") : t("bulk.stopAll")}
                     </span>
                   </Button>
                 )}
-                <Button size="sm" onClick={() => setShowCreate(true)} title="New Agent">
+                <Button size="sm" onClick={() => setShowCreate(true)} title={t("createAgent")}>
                   <Plus className="w-3.5 h-3.5" />
-                  <span className="hidden @min-[820px]:inline">New Agent</span>
+                  <span className="hidden @min-[820px]:inline">{t("createAgent")}</span>
                 </Button>
               </>
             ) : (
@@ -890,8 +894,8 @@ export function Dashboard() {
                   type="text"
                   value={dirSearch}
                   onChange={(e) => handleDirSearch(e.target.value)}
-                  placeholder="Search directory..."
-                  aria-label="Search directory"
+                  placeholder={t("directorySearchPlaceholder")}
+                  aria-label={t("directorySearchPlaceholder")}
                   className="h-8 pl-8 text-xs w-9 @min-[560px]:w-[160px] @min-[820px]:w-[220px] placeholder:opacity-0 @min-[560px]:placeholder:opacity-100"
                 />
               </div>
@@ -910,20 +914,20 @@ export function Dashboard() {
           {activeTab === "agents" ? (
             loading && totalCount === 0 ? (
               <div className="text-center text-muted-foreground py-20">
-                Loading agents...
+                {t("common:loading")}
               </div>
             ) : totalCount === 0 && !error ? (
               <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
                 <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-3">
                   <Bot className="w-7 h-7 text-primary" />
                 </div>
-                <p className="text-sm font-medium text-foreground">No agents yet</p>
+                <p className="text-sm font-medium text-foreground">{t("empty.title")}</p>
                 <p className="text-xs text-muted-foreground mt-1 mb-4 max-w-xs">
-                  Create your first agent to start delegating work.
+                  {t("empty.createFirstHint")}
                 </p>
                 <Button size="sm" onClick={() => setShowCreate(true)}>
                   <Plus className="w-3.5 h-3.5" />
-                  Create Agent
+                  {t("createAgent")}
                 </Button>
               </div>
             ) : (
@@ -934,11 +938,11 @@ export function Dashboard() {
                     AGENT_GRID_COLS
                   )}
                 >
-                  <span>Agent</span>
-                  <span className={AGENT_CELL_ENGINE}>Engine</span>
-                  <span className={AGENT_CELL_MODE}>Mode</span>
-                  <span>Status</span>
-                  <span className="text-right">Actions</span>
+                  <span>{t("common:agent")}</span>
+                  <span className={AGENT_CELL_ENGINE}>{t("table.engine")}</span>
+                  <span className={AGENT_CELL_MODE}>{t("table.mode")}</span>
+                  <span>{t("common:status")}</span>
+                  <span className="text-right">{t("table.actions")}</span>
                 </div>
                 {agentList.map((row) => (
                   <AgentRow
@@ -971,7 +975,7 @@ export function Dashboard() {
                 </div>
               ) : dirListings.length === 0 ? (
                 <div className="p-8 text-center text-xs text-muted-foreground">
-                  {dirSearch ? "No agents found." : "No agents in the directory yet."}
+                  {dirSearch ? t("noAgentsFound") : t("emptyDirectory")}
                 </div>
               ) : (
                 <>
@@ -996,7 +1000,7 @@ export function Dashboard() {
                         {dirLoadingMore ? (
                           <Loader2 className="mr-1 h-3 w-3 animate-spin" />
                         ) : null}
-                        Load more
+                        {t("common:loadMore")}
                       </Button>
                     </div>
                   )}

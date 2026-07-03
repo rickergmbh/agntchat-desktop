@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import {
   FileText,
   Loader2,
@@ -65,6 +66,7 @@ interface Props {
 }
 
 export function TemplateEditor({ template, isNew }: Props) {
+  const { t } = useTranslation("templates");
   const updateTemplate = useTemplateStore((s) => s.updateTemplate);
   const createTemplate = useTemplateStore((s) => s.createTemplate);
   const deleteTemplate = useTemplateStore((s) => s.deleteTemplate);
@@ -124,11 +126,12 @@ export function TemplateEditor({ template, isNew }: Props) {
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
     } catch (e) {
-      setSaveError(e instanceof Error ? e.message : "Save failed");
+      setSaveError(e instanceof Error ? e.message : t("common:errors.saveFailed"));
     } finally {
       setSaving(false);
     }
   }, [
+    t,
     name,
     description,
     resultType,
@@ -142,7 +145,7 @@ export function TemplateEditor({ template, isNew }: Props) {
 
   const handleDelete = useCallback(async () => {
     if (!template) return;
-    if (!confirm(`Delete template "${template.name}"? This cannot be undone.`))
+    if (!confirm(t("deleteConfirm", { name: template.name })))
       return;
     setDeleting(true);
     setSaveError(null);
@@ -150,11 +153,11 @@ export function TemplateEditor({ template, isNew }: Props) {
       await deleteTemplate(template.id);
       selectTemplate(null);
     } catch (e) {
-      setSaveError(e instanceof Error ? e.message : "Delete failed");
+      setSaveError(e instanceof Error ? e.message : t("common:errors.deleteFailed"));
     } finally {
       setDeleting(false);
     }
-  }, [template, deleteTemplate, selectTemplate]);
+  }, [t, template, deleteTemplate, selectTemplate]);
 
   const handlePreview = useCallback(async () => {
     setPreviewing(true);
@@ -169,12 +172,12 @@ export function TemplateEditor({ template, isNew }: Props) {
       setPreviewCss(result.css);
       setPreviewErrors(result.errors);
     } catch (e) {
-      const msg = e instanceof Error ? e.message : "Failed to generate preview";
+      const msg = e instanceof Error ? e.message : t("previewFailed");
       setPreviewErrors([msg]);
     } finally {
       setPreviewing(false);
     }
-  }, [name, resultType, fields, previewTemplate]);
+  }, [t, name, resultType, fields, previewTemplate]);
 
   const specKey = useMemo(
     () => JSON.stringify({ name, resultType, fields }),
@@ -218,7 +221,7 @@ export function TemplateEditor({ template, isNew }: Props) {
     if (isNew) {
       return {
         id: "new",
-        name: name || "untitled",
+        name: name || t("common:untitled"),
         description,
         resultType,
         fields,
@@ -227,7 +230,7 @@ export function TemplateEditor({ template, isNew }: Props) {
       };
     }
     return null;
-  }, [template, isNew, name, description, resultType, fields]);
+  }, [t, template, isNew, name, description, resultType, fields]);
 
   const TypeIcon = RESULT_TYPE_ICONS[resultType];
 
@@ -246,11 +249,11 @@ export function TemplateEditor({ template, isNew }: Props) {
           ) : (
             <Save className="mr-1.5 h-3 w-3" />
           )}
-          {saved ? "Saved" : isNew ? "Create Template" : "Save Changes"}
+          {saved ? t("common:saved") : isNew ? t("createTemplate") : t("saveChanges")}
         </Button>
         {dirty && !saved && (
           <Badge variant="outline" className="text-[10px]">
-            Unsaved
+            {t("common:unsaved")}
           </Badge>
         )}
         <div className="flex-1" />
@@ -266,7 +269,7 @@ export function TemplateEditor({ template, isNew }: Props) {
             ) : (
               <Trash2 className="mr-1.5 h-3 w-3" />
             )}
-            Delete
+            {t("common:delete")}
           </Button>
         )}
       </div>
@@ -283,14 +286,14 @@ export function TemplateEditor({ template, isNew }: Props) {
           <div>
             <div className="flex flex-wrap items-center gap-2 mb-1.5">
               <Badge variant="secondary" className="text-[10px] uppercase">
-                {resultType}
+                {t(`resultTypes.${resultType}`, { defaultValue: resultType })}
               </Badge>
               {!isNew && template && (
                 <button
                   type="button"
                   onClick={handleCopyId}
                   className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-foreground"
-                  title="Copy template ID"
+                  title={t("copyId")}
                 >
                   <span className="font-mono">
                     {template.id.slice(0, 8)}…
@@ -309,34 +312,33 @@ export function TemplateEditor({ template, isNew }: Props) {
               </div>
               <div className="min-w-0 flex-1">
                 <h1 className="text-lg font-semibold font-mono leading-tight">
-                  {isNew ? "New Template" : template?.name}
+                  {isNew ? t("newTitle") : template?.name}
                 </h1>
                 {template?.updatedAt && !isNew && (
                   <p className="mt-0.5 text-[11px] text-muted-foreground">
-                    Updated {formatRelativeShort(template.updatedAt)} ago
+                    {t("common:updatedAgo", { time: formatRelativeShort(template.updatedAt) })}
                   </p>
                 )}
               </div>
             </div>
           </div>
 
-          <Section label="Card Preview">
+          <Section label={t("sections.cardPreview")}>
             {cardPreviewTemplate && cardPreviewTemplate.sampleData ? (
               <div className="rounded-xl border border-border bg-card p-4">
                 <TemplateCardPreview template={cardPreviewTemplate} />
               </div>
             ) : (
               <div className="rounded-xl border border-dashed border-border bg-muted/20 p-4 text-xs text-muted-foreground">
-                No sample data on this template. The rendered HTML further down
-                uses the server's preview pipeline regardless.
+                {t("noSampleData")}
               </div>
             )}
           </Section>
 
-          <Section label="Details">
+          <Section label={t("sections.details")}>
             <div className="space-y-3">
               <div className="space-y-1.5">
-                <Label className="text-xs">Template Name</Label>
+                <Label className="text-xs">{t("name")}</Label>
                 <Input
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -344,22 +346,22 @@ export function TemplateEditor({ template, isNew }: Props) {
                   className="h-9 font-mono text-sm"
                 />
                 <p className="text-[10px] text-muted-foreground">
-                  Use snake_case. This identifies the template in API calls.
+                  {t("nameHint")}
                 </p>
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-xs">Description</Label>
+                <Label className="text-xs">{t("common:description")}</Label>
                 <Textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="What does this template display?"
+                  placeholder={t("descriptionPlaceholder")}
                   rows={2}
                 />
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-xs">Result Type</Label>
+                <Label className="text-xs">{t("resultTypeLabel")}</Label>
                 <div className="grid grid-cols-3 gap-2">
                   {RESULT_TYPES.map((rt) => {
                     const Icon = RESULT_TYPE_ICONS[rt];
@@ -384,7 +386,7 @@ export function TemplateEditor({ template, isNew }: Props) {
                           )}
                         />
                         <span className="text-xs font-medium capitalize">
-                          {rt}
+                          {t(`resultTypes.${rt}`, { defaultValue: rt })}
                         </span>
                       </button>
                     );
@@ -395,7 +397,7 @@ export function TemplateEditor({ template, isNew }: Props) {
           </Section>
 
           <Section
-            label="Rendered HTML"
+            label={t("sections.renderedHtml")}
             right={
               <Button
                 size="sm"
@@ -409,7 +411,7 @@ export function TemplateEditor({ template, isNew }: Props) {
                 ) : (
                   <Eye className="mr-1 h-3 w-3" />
                 )}
-                Refresh
+                {t("common:refresh")}
               </Button>
             }
           >
@@ -442,13 +444,13 @@ export function TemplateEditor({ template, isNew }: Props) {
               </div>
             ) : (
               <div className="rounded-lg border border-dashed border-border bg-muted/20 p-6 text-center text-xs text-muted-foreground">
-                Set a template name above to generate a preview.
+                {t("setNameForPreview")}
               </div>
             )}
           </Section>
 
           <Section
-            label={`Fields (${fields.length})`}
+            label={t("sections.fields", { count: fields.length })}
             right={
               <Button
                 size="sm"
@@ -457,7 +459,7 @@ export function TemplateEditor({ template, isNew }: Props) {
                 className="h-6 px-2 text-[11px]"
               >
                 <Plus className="mr-1 h-3 w-3" />
-                Add Field
+                {t("addField")}
               </Button>
             }
           >
@@ -465,7 +467,7 @@ export function TemplateEditor({ template, isNew }: Props) {
               <div className="rounded-lg border border-dashed border-border p-6 text-center">
                 <LayoutGrid className="mx-auto mb-2 h-8 w-8 text-muted-foreground/50" />
                 <p className="text-xs text-muted-foreground">
-                  No fields defined yet. Add one to get started.
+                  {t("noFields")}
                 </p>
               </div>
             ) : (
@@ -483,7 +485,7 @@ export function TemplateEditor({ template, isNew }: Props) {
           </Section>
 
           {template && !isNew && (
-            <Section label="Raw JSON">
+            <Section label={t("sections.rawJson")}>
               <pre className="rounded-lg border border-border bg-muted/30 p-3 text-[11px] overflow-x-auto">
                 {JSON.stringify(template, null, 2)}
               </pre>
@@ -518,20 +520,21 @@ function Section({
 }
 
 export function TemplatesEmptyState({ onCreate }: { onCreate: () => void }) {
+  const { t } = useTranslation("templates");
   return (
     <div className="flex flex-1 items-center justify-center bg-background">
       <div className="text-center">
         <FileText className="mx-auto h-12 w-12 text-muted-foreground/40 mb-3" />
         <h2 className="text-sm font-medium text-foreground">
-          Select a template
+          {t("select")}
         </h2>
         <p className="mt-1 text-xs text-muted-foreground max-w-xs">
-          Pick one from the left to see its preview, fields, and raw JSON.
+          {t("selectHint")}
         </p>
         <div className="mt-4 flex items-center justify-center gap-2">
           <Button size="sm" onClick={onCreate}>
             <Plus className="mr-1.5 h-3 w-3" />
-            Create Template
+            {t("createTemplate")}
           </Button>
         </div>
       </div>

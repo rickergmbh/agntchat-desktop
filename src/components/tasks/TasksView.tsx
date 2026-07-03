@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Zap } from "lucide-react";
 import { useTaskStore } from "../../stores/taskStore";
 import { useResizableWidth } from "../../hooks/useResizableWidth";
@@ -11,6 +12,7 @@ export function TasksView({
 }: {
   onOpenConversation: (conversationId: string) => void;
 }) {
+  const { t } = useTranslation("tasks");
   const tasks = useTaskStore((s) => s.tasks);
   const selectedId = useTaskStore((s) => s.selectedTaskId);
   const fetchTasks = useTaskStore((s) => s.fetchTasks);
@@ -41,7 +43,7 @@ export function TasksView({
         resizing={resizing}
         onResizeStart={onResizeStart}
         onResizeReset={onResizeReset}
-        label="Resize task list"
+        label={t("resizeList")}
       />
       <section className="relative z-10 -ml-2 flex-1 flex flex-col bg-card overflow-hidden surface-panel rounded-l-2xl">
         {selected ? (
@@ -55,13 +57,13 @@ export function TasksView({
 }
 
 function EmptyDetail() {
+  const { t } = useTranslation("tasks");
   return (
     <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
       <Zap className="w-12 h-12 text-muted-foreground/40 mb-3" />
-      <p className="text-sm font-medium text-foreground">Select a task</p>
+      <p className="text-sm font-medium text-foreground">{t("selectTask")}</p>
       <p className="text-xs text-muted-foreground mt-1 max-w-xs">
-        Pick a task from the left to see its progress, live activity, and
-        actions.
+        {t("selectHint")}
       </p>
     </div>
   );

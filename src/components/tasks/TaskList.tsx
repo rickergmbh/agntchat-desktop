@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Loader2, Search, Square, Zap } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
@@ -25,27 +26,29 @@ type Filter = "active" | "pending" | "in_progress" | "complete" | "cancelled";
  *  - Done = completed successfully
  *  - Ended = terminated without success (cancelled + failed + rejected + exhausted)
  */
-const FILTERS: { value: Filter; label: string; matches: (s: TaskStatus) => boolean }[] = [
+// `labelKey` resolves in the tasks: namespace at render time (never t() at
+// module scope — it would freeze the language at load).
+const FILTERS: { value: Filter; labelKey: string; matches: (s: TaskStatus) => boolean }[] = [
   {
     value: "active",
-    label: "Active",
+    labelKey: "filters.active",
     matches: (s) =>
       s === "pending" || s === "accepted" || s === "in_progress" || s === "blocked",
   },
   {
     value: "pending",
-    label: "Pending",
+    labelKey: "filters.pending",
     matches: (s) => s === "pending" || s === "accepted",
   },
   {
     value: "in_progress",
-    label: "Progress",
+    labelKey: "filters.inProgress",
     matches: (s) => s === "in_progress" || s === "blocked",
   },
-  { value: "complete", label: "Done", matches: (s) => s === "complete" },
+  { value: "complete", labelKey: "filters.done", matches: (s) => s === "complete" },
   {
     value: "cancelled",
-    label: "Ended",
+    labelKey: "filters.ended",
     matches: (s) => s === "cancelled" || s === "failed" || s === "rejected" || s === "exhausted",
   },
 ];
@@ -62,6 +65,18 @@ const STATUS_COLORS: Record<string, string> = {
   exhausted: "bg-muted text-muted-foreground border-border",
 };
 
+const STATUS_LABEL_KEY: Record<string, string> = {
+  pending: "status.pending",
+  accepted: "status.accepted",
+  in_progress: "status.inProgress",
+  blocked: "status.blocked",
+  complete: "status.complete",
+  cancelled: "status.cancelled",
+  failed: "status.failed",
+  rejected: "status.rejected",
+  exhausted: "status.exhausted",
+};
+
 export function TaskList({
   width,
   innerRef,
@@ -71,6 +86,7 @@ export function TaskList({
   /** Ref to the aside — its left edge is the resize drag origin. */
   innerRef?: React.RefObject<HTMLElement | null>;
 } = {}) {
+  const { t } = useTranslation("tasks");
   const tasks = useTaskStore((s) => s.tasks);
   const loading = useTaskStore((s) => s.loading);
   const selectedId = useTaskStore((s) => s.selectedTaskId);
@@ -135,7 +151,7 @@ export function TaskList({
           <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center shrink-0">
             <Zap className="w-3.5 h-3.5 text-primary-foreground" />
           </div>
-          <h2 className="text-sm font-semibold text-foreground">Tasks</h2>
+          <h2 className="text-sm font-semibold text-foreground">{t("nav:tasks")}</h2>
         </div>
       </div>
 
@@ -146,7 +162,7 @@ export function TaskList({
         <div className="relative">
           <Search className="absolute left-2.5 top-2 h-3.5 w-3.5 text-muted-foreground" />
           <Input
-            placeholder="Search tasks..."
+            placeholder={t("searchPlaceholder")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="h-8 pl-8 text-xs"
@@ -158,13 +174,16 @@ export function TaskList({
         >
           <SelectTrigger className="h-8 w-full text-xs">
             <SelectValue>
-              {(v: Filter) => FILTERS.find((f) => f.value === v)?.label ?? v}
+              {(v: Filter) => {
+                const match = FILTERS.find((f) => f.value === v);
+                return match ? t(match.labelKey) : v;
+              }}
             </SelectValue>
           </SelectTrigger>
           <SelectContent>
             {FILTERS.map((f) => (
               <SelectItem key={f.value} value={f.value} className="text-xs">
-                {f.label}
+                {t(f.labelKey)}
               </SelectItem>
             ))}
           </SelectContent>
@@ -214,15 +233,16 @@ function TaskRow({
   active: boolean;
   onClick: () => void;
 }) {
+  const { t } = useTranslation("tasks");
   const assignee = task.assignees?.[0];
-  const name = assignee?.displayName ?? "Unassigned";
+  const name = assignee?.displayName ?? t("unassigned");
   const statusClass = STATUS_COLORS[task.status] ?? STATUS_COLORS.cancelled;
   const updateTaskStatus = useTaskStore((s) => s.updateTaskStatus);
   const [stopping, setStopping] = useState(false);
   const stoppable = ACTIVE_ROW_STATUSES.has(task.status);
 
   const handleStop = async () => {
-    if (!confirm(`Stop "${task.title}"?`)) return;
+    if (!confirm(t("stopConfirm", { title: task.title }))) return;
     setStopping(true);
     try {
       await updateTaskStatus(task.id, "cancelled");
@@ -275,7 +295,9 @@ function TaskRow({
                 statusClass
               )}
             >
-              {task.status.replace(/_/g, " ")}
+              {STATUS_LABEL_KEY[task.status]
+                ? t(STATUS_LABEL_KEY[task.status])
+                : task.status.replace(/_/g, " ")}
             </span>
             <span className="truncate text-[11px] text-muted-foreground">
               {name}
@@ -289,8 +311,8 @@ function TaskRow({
           type="button"
           onClick={stopping ? undefined : handleStop}
           disabled={stopping}
-          title="Stop task"
-          aria-label="Stop task"
+          title={t("stopTask")}
+          aria-label={t("stopTask")}
           className={cn(
             "absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full",
             "border border-border bg-card text-muted-foreground shadow-sm transition-all",
@@ -311,16 +333,15 @@ function TaskRow({
 }
 
 function EmptyState({ hasFilter }: { hasFilter: boolean }) {
+  const { t } = useTranslation("tasks");
   return (
     <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
       <Zap className="w-10 h-10 text-muted-foreground/40 mb-3" />
       <p className="text-sm text-muted-foreground">
-        {hasFilter ? "No matching tasks" : "No tasks yet"}
+        {hasFilter ? t("emptyFiltered") : t("emptyLabel")}
       </p>
       <p className="text-xs text-muted-foreground mt-1">
-        {hasFilter
-          ? "Try adjusting search or filters."
-          : "Tasks your agents are working on will appear here."}
+        {hasFilter ? t("emptyFilteredHint") : t("emptyHint")}
       </p>
     </div>
   );

@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import {
   LayoutDashboard,
   Loader2,
@@ -59,6 +60,7 @@ const EXAMPLE_DEFINITION = {
 };
 
 function CopyIdChip({ id }: { id: string }) {
+  const { t } = useTranslation("canvas");
   const [copied, setCopied] = useState(false);
   return (
     <button
@@ -69,7 +71,7 @@ function CopyIdChip({ id }: { id: string }) {
         setTimeout(() => setCopied(false), 1500);
       }}
       className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-foreground"
-      title="Copy canvas ID"
+      title={t("copyId")}
     >
       <span className="font-mono">{id.slice(0, 8)}…</span>
       {copied ? (
@@ -81,11 +83,12 @@ function CopyIdChip({ id }: { id: string }) {
   );
 }
 
-function statusBadge(canvas: CanvasDefinitionSummary) {
+function StatusBadge({ canvas }: { canvas: CanvasDefinitionSummary }) {
+  const { t } = useTranslation("canvas");
   if (canvas.isBuiltin) {
     return (
       <Badge variant="secondary" className="text-[10px]">
-        Built-in
+        {t("status.builtin")}
       </Badge>
     );
   }
@@ -95,7 +98,7 @@ function statusBadge(canvas: CanvasDefinitionSummary) {
         variant="secondary"
         className="text-[10px] bg-success/10 text-success border-success/30"
       >
-        Published
+        {t("status.published")}
       </Badge>
     );
   }
@@ -104,7 +107,7 @@ function statusBadge(canvas: CanvasDefinitionSummary) {
       variant="secondary"
       className="text-[10px] bg-warning/10 text-warning border-warning/30"
     >
-      Draft
+      {t("status.draft")}
     </Badge>
   );
 }
@@ -115,6 +118,7 @@ interface Props {
 }
 
 export function CanvasEditor({ canvas, isNew }: Props) {
+  const { t } = useTranslation("canvas");
   const createDefinition = useCanvasStore((s) => s.createDefinition);
   const updateDefinition = useCanvasStore((s) => s.updateDefinition);
   const deleteDefinition = useCanvasStore((s) => s.deleteDefinition);
@@ -230,12 +234,13 @@ export function CanvasEditor({ canvas, isNew }: Props) {
         setSaved(true);
         setTimeout(() => setSaved(false), 2000);
       } catch (e) {
-        setSaveError(e instanceof Error ? e.message : "Save failed");
+        setSaveError(e instanceof Error ? e.message : t("common:errors.saveFailed"));
       } finally {
         setSaving(false);
       }
     },
     [
+      t,
       isNew,
       canvas,
       name,
@@ -249,18 +254,18 @@ export function CanvasEditor({ canvas, isNew }: Props) {
 
   const handleDelete = useCallback(async () => {
     if (!canvas || isBuiltin) return;
-    if (!confirm(`Delete "${canvas.name}"? This cannot be undone.`)) return;
+    if (!confirm(t("deleteConfirm", { name: canvas.name }))) return;
     setDeleting(true);
     setSaveError(null);
     try {
       await deleteDefinition(canvas.id);
       selectCanvas(null);
     } catch (e) {
-      setSaveError(e instanceof Error ? e.message : "Delete failed");
+      setSaveError(e instanceof Error ? e.message : t("common:errors.deleteFailed"));
     } finally {
       setDeleting(false);
     }
-  }, [canvas, isBuiltin, deleteDefinition, selectCanvas]);
+  }, [t, canvas, isBuiltin, deleteDefinition, selectCanvas]);
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
@@ -271,11 +276,11 @@ export function CanvasEditor({ canvas, isNew }: Props) {
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <h2 className="truncate text-base font-semibold">
-              {isNew ? "New Canvas" : canvas?.name ?? "Canvas"}
+              {isNew ? t("newTitle") : canvas?.name ?? t("untitled")}
             </h2>
             {!isNew && canvas && (
               <>
-                {statusBadge(canvas)}
+                <StatusBadge canvas={canvas} />
                 {canvas.version != null && (
                   <Badge variant="outline" className="text-[10px]">
                     v{canvas.version}
@@ -287,34 +292,34 @@ export function CanvasEditor({ canvas, isNew }: Props) {
           </div>
           {!isNew && canvas?.updatedAt && (
             <p className="mt-0.5 text-[11px] text-muted-foreground">
-              Updated {formatRelativeShort(canvas.updatedAt)} ago
+              {t("common:updatedAgo", { time: formatRelativeShort(canvas.updatedAt) })}
             </p>
           )}
         </div>
         {dirty && (
           <Badge variant="outline" className="text-[10px]">
-            Unsaved
+            {t("common:unsaved")}
           </Badge>
         )}
       </div>
 
       <div className="flex gap-4 border-b border-border px-6 py-3">
         <div className="flex-1 space-y-1">
-          <Label className="text-xs">Name</Label>
+          <Label className="text-xs">{t("common:name")}</Label>
           <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="my-canvas"
+            placeholder={t("namePlaceholder")}
             className="h-9 font-mono text-sm"
             disabled={isBuiltin}
           />
         </div>
         <div className="flex-1 space-y-1">
-          <Label className="text-xs">Description</Label>
+          <Label className="text-xs">{t("common:description")}</Label>
           <Input
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="A brief description..."
+            placeholder={t("descriptionPlaceholder")}
             className="h-9 text-sm"
             disabled={isBuiltin}
           />
@@ -326,7 +331,7 @@ export function CanvasEditor({ canvas, isNew }: Props) {
           <div className="flex items-center gap-1.5 border-b border-border px-3 py-2">
             <Code2 className="h-3.5 w-3.5 text-muted-foreground" />
             <span className="text-xs font-medium text-muted-foreground">
-              Definition
+              {t("definition")}
             </span>
             <div className="ml-auto flex items-center gap-1">
               <Button
@@ -337,7 +342,7 @@ export function CanvasEditor({ canvas, isNew }: Props) {
                 disabled={isBuiltin}
               >
                 <Braces className="mr-1 h-3 w-3" />
-                Format
+                {t("format")}
               </Button>
               <Button
                 variant="ghost"
@@ -351,7 +356,7 @@ export function CanvasEditor({ canvas, isNew }: Props) {
                 ) : (
                   <CheckCircle2 className="mr-1 h-3 w-3" />
                 )}
-                Validate
+                {t("validate")}
               </Button>
               <Button
                 variant="ghost"
@@ -361,7 +366,7 @@ export function CanvasEditor({ canvas, isNew }: Props) {
                 disabled={isBuiltin}
               >
                 <Sparkles className="mr-1 h-3 w-3" />
-                Example
+                {t("example")}
               </Button>
             </div>
           </div>
@@ -389,7 +394,7 @@ export function CanvasEditor({ canvas, isNew }: Props) {
           <div className="flex items-center gap-1.5 border-b border-border px-3 py-2">
             <Eye className="h-3.5 w-3.5 text-muted-foreground" />
             <span className="text-xs font-medium text-muted-foreground">
-              Preview
+              {t("previewLabel")}
             </span>
           </div>
           <div className="flex-1 min-h-0 overflow-hidden">
@@ -411,7 +416,7 @@ export function CanvasEditor({ canvas, isNew }: Props) {
           {validation.valid ? (
             <>
               <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-success" />
-              <p className="text-xs text-success">Definition is valid</p>
+              <p className="text-xs text-success">{t("definitionValid")}</p>
             </>
           ) : (
             <>
@@ -450,7 +455,7 @@ export function CanvasEditor({ canvas, isNew }: Props) {
             ) : (
               <Save className="mr-1.5 h-3 w-3" />
             )}
-            {saved ? "Saved" : "Save Draft"}
+            {saved ? t("common:saved") : t("saveDraft")}
           </Button>
           <Button
             size="sm"
@@ -460,12 +465,12 @@ export function CanvasEditor({ canvas, isNew }: Props) {
             {currentlyPublished ? (
               <>
                 <EyeOff className="mr-1.5 h-3 w-3" />
-                Unpublish
+                {t("unpublish")}
               </>
             ) : (
               <>
                 <Eye className="mr-1.5 h-3 w-3" />
-                Publish
+                {t("publish")}
               </>
             )}
           </Button>
@@ -482,7 +487,7 @@ export function CanvasEditor({ canvas, isNew }: Props) {
               ) : (
                 <Trash2 className="mr-1.5 h-3 w-3" />
               )}
-              Delete
+              {t("common:delete")}
             </Button>
           )}
         </div>

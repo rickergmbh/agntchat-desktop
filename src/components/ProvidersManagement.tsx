@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Loader2, Trash2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import * as api from "../lib/api";
 import type { OrganizationProviderConfig } from "../lib/api";
@@ -145,6 +146,7 @@ interface ProviderRowProps {
 }
 
 function ProviderRow({ provider, config, onUpsert, onReset }: ProviderRowProps) {
+  const { t } = useTranslation("settings");
   const isCli = provider.id === "claude_cli" || provider.id === "codex_cli";
   const enabled = config?.enabled ?? true;
   const cliConnection = config?.cliConnection ?? null;
@@ -195,10 +197,8 @@ function ProviderRow({ provider, config, onUpsert, onReset }: ProviderRowProps) 
             <div className="text-sm font-medium">{provider.label}</div>
             <div className="text-xs text-muted-foreground">
               {isExplicitlyConfigured
-                ? `Configured (${(allowedModels ?? []).length} model${
-                    (allowedModels ?? []).length === 1 ? "" : "s"
-                  })`
-                : "Using global default"}
+                ? t("workspace.configuredModels", { count: (allowedModels ?? []).length })
+                : t("workspace.usingGlobalDefault")}
             </div>
           </div>
         </div>
@@ -211,7 +211,7 @@ function ProviderRow({ provider, config, onUpsert, onReset }: ProviderRowProps) 
               }
             >
               <SelectTrigger className="w-32">
-                <SelectValue placeholder="Runtime…" />
+                <SelectValue placeholder={t("workspace.runtimeBackend")} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="anthropic">Anthropic API</SelectItem>
@@ -225,7 +225,7 @@ function ProviderRow({ provider, config, onUpsert, onReset }: ProviderRowProps) 
               variant="ghost"
               size="sm"
               onClick={onReset}
-              title="Reset to global default"
+              title={t("workspace.resetToDefault")}
             >
               <Trash2 className="w-3.5 h-3.5" />
             </Button>

@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useAgentStore, type ManagedAgent } from "../stores/agentStore";
 import { usePresenceStore } from "../stores/presenceStore";
 import { AgentActivityIndicator } from "./AgentActivityIndicator";
@@ -58,6 +59,7 @@ function PresenceDot({
   presence: "online_local" | "offline" | undefined;
   online: boolean | undefined;
 }) {
+  const { t } = useTranslation("agents");
   const locallyRunning = processStatus === "running";
   const effective: "online_local" | "offline" =
     locallyRunning
@@ -70,7 +72,7 @@ function PresenceDot({
         "absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-card",
         effective === "online_local" ? "bg-success" : "bg-muted-foreground"
       )}
-      aria-label={effective === "online_local" ? "Online" : "Offline"}
+      aria-label={effective === "online_local" ? t("common:online") : t("common:offline")}
     />
   );
 }
@@ -91,6 +93,7 @@ function StatusBadge({
   /** Machine the agent's bridge reported it is running on (when online). */
   deviceName?: string | null;
 }) {
+  const { t } = useTranslation("agents");
   // Org-host runtime: the bridge runs on a remote VM, so processStatus
   // is always "stopped" on this device. The agent's real online state
   // comes from the backend's WS presence (presence !== "offline"
@@ -104,7 +107,7 @@ function StatusBadge({
       return (
         <Badge variant="outline" className="border-warning/30 text-warning bg-warning/10 gap-1.5">
           <Loader2 className="w-3 h-3 animate-spin" />
-          Bringing online…
+          {t("row.bringingOnline")}
         </Badge>
       );
     }
@@ -119,7 +122,7 @@ function StatusBadge({
         )}
       >
         <Cloud className="w-3 h-3" />
-        {remoteOnline ? "Remote · online" : "Remote · offline"}
+        {remoteOnline ? t("row.remoteOnline") : t("row.remoteOffline")}
       </Badge>
     );
   }
@@ -135,12 +138,12 @@ function StatusBadge({
         className="border-info/30 text-info bg-info/10 gap-1.5"
         title={
           deviceName
-            ? `Running locally on “${deviceName}” — start and stop it from that device`
-            : "Running locally on another device"
+            ? t("row.runningOnDeviceHint", { device: deviceName })
+            : t("row.runningOnOtherDevice")
         }
       >
         <Laptop className="w-3 h-3" />
-        {deviceName ? `On ${deviceName}` : "On another device"}
+        {deviceName ? t("row.onDevice", { device: deviceName }) : t("row.onAnotherDevice")}
       </Badge>
     );
   }
@@ -149,7 +152,7 @@ function StatusBadge({
     return (
       <Badge variant="outline" className="border-success/30 text-success bg-success/10 gap-1.5">
         <span className="w-1.5 h-1.5 rounded-full bg-success" />
-        {uptimeSecs != null ? formatUptime(uptimeSecs) : "Running"}
+        {uptimeSecs != null ? formatUptime(uptimeSecs) : t("status.running")}
       </Badge>
     );
   }
@@ -157,7 +160,7 @@ function StatusBadge({
     return (
       <Badge variant="outline" className="border-warning/30 text-warning bg-warning/10 gap-1.5">
         <span className="w-1.5 h-1.5 rounded-full bg-warning animate-pulse" />
-        Starting
+        {t("row.starting")}
       </Badge>
     );
   }
@@ -165,7 +168,7 @@ function StatusBadge({
     return (
       <Badge variant="outline" className="border-warning/30 text-warning bg-warning/10 gap-1.5">
         <span className="w-1.5 h-1.5 rounded-full bg-warning animate-pulse" />
-        Stalled
+        {t("row.stalled")}
       </Badge>
     );
   }
@@ -173,14 +176,14 @@ function StatusBadge({
     return (
       <Badge variant="outline" className="border-destructive/30 text-destructive bg-destructive/10 gap-1.5">
         <span className="w-1.5 h-1.5 rounded-full bg-destructive" />
-        Crashed
+        {t("row.crashed")}
       </Badge>
     );
   }
   return (
     <Badge variant="outline" className="gap-1.5">
       <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40" />
-      Stopped
+      {t("row.stopped")}
     </Badge>
   );
 }

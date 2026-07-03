@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   CheckCircle2,
   Clock,
@@ -38,6 +39,21 @@ const STATUS_CHIP_CLASS: Record<string, string> = {
   exhausted: "bg-muted text-muted-foreground border-border",
 };
 
+// `labelKey` resolves in the tasks: namespace at render time (never t() at
+// module scope — it would freeze the language at load).
+const STATUS_LABEL_KEY: Record<string, string> = {
+  pending: "status.pending",
+  accepted: "status.accepted",
+  in_progress: "status.inProgress",
+  blocked: "status.blocked",
+  complete: "status.complete",
+  cancelled: "status.cancelled",
+  rejected: "status.rejected",
+  exhausted: "status.exhausted",
+  failed: "status.failed",
+  declined: "status.declined",
+};
+
 export function TaskDetail({
   task,
   onOpenConversation,
@@ -45,6 +61,7 @@ export function TaskDetail({
   task: Task;
   onOpenConversation: (conversationId: string) => void;
 }) {
+  const { t } = useTranslation("tasks");
   const updateTaskStatus = useTaskStore((s) => s.updateTaskStatus);
   const requestRevision = useTaskStore((s) => s.requestRevision);
   const liveMeta = useTaskStore((s) => s.taskLifecycleMeta[task.id]);
@@ -89,13 +106,13 @@ export function TaskDetail({
   };
 
   const handleCancel = async () => {
-    if (!confirm(`Cancel "${task.title}"?`)) return;
+    if (!confirm(t("confirmCancel", { title: task.title }))) return;
     setSubmitting(true);
     setActionError(null);
     try {
       await updateTaskStatus(task.id, "cancelled");
     } catch (e) {
-      setActionError(e instanceof Error ? e.message : "Cancel failed");
+      setActionError(e instanceof Error ? e.message : t("errors.cancelFailed"));
     } finally {
       setSubmitting(false);
     }
@@ -111,7 +128,7 @@ export function TaskDetail({
       setShowRevision(false);
       setRevisionText("");
     } catch (e) {
-      setActionError(e instanceof Error ? e.message : "Revision failed");
+      setActionError(e instanceof Error ? e.message : t("errors.revisionFailed"));
     } finally {
       setSubmitting(false);
     }
@@ -129,13 +146,15 @@ export function TaskDetail({
                   statusChip
                 )}
               >
-                {effectiveStatus.replace(/_/g, " ")}
+                {STATUS_LABEL_KEY[effectiveStatus]
+                  ? t(STATUS_LABEL_KEY[effectiveStatus])
+                  : effectiveStatus.replace(/_/g, " ")}
               </span>
               <button
                 type="button"
                 onClick={handleCopyId}
                 className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-foreground"
-                title="Copy task ID"
+                title={t("copyTaskId")}
               >
                 <span className="font-mono">{task.id.slice(0, 8)}…</span>
                 {copied ? (
@@ -153,10 +172,10 @@ export function TaskDetail({
               <Button
                 size="sm"
                 onClick={() => onOpenConversation(workConvId)}
-                title="Open the task's work sub-conversation"
+                title={t("openWorkRoomTitle")}
               >
                 <MessageSquarePlus className="w-3.5 h-3.5" />
-                Open work room
+                {t("openWorkRoom")}
               </Button>
             )}
             {task.conversationId && (
@@ -164,10 +183,10 @@ export function TaskDetail({
                 size="sm"
                 variant="outline"
                 onClick={() => onOpenConversation(task.conversationId)}
-                title="Open the conversation this task lives in"
+                title={t("openChatTitle")}
               >
                 <MessageSquare className="w-3.5 h-3.5" />
-                Open chat
+                {t("openChat")}
               </Button>
             )}
           </div>
@@ -180,7 +199,7 @@ export function TaskDetail({
           <section className="rounded-xl border border-primary/20 border-l-4 border-l-primary bg-card p-4">
             <div className="flex items-center gap-2 mb-3 text-xs font-medium text-muted-foreground">
               <Loader2 className="w-3.5 h-3.5 animate-spin text-primary" />
-              <span>Live activity</span>
+              <span>{t("liveActivity")}</span>
             </div>
             <div className="space-y-1.5">
               {recentSteps.slice(0, -1).slice(-4).map((step, i) => (
@@ -203,7 +222,7 @@ export function TaskDetail({
         {task.description && (
           <section>
             <h3 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
-              Description
+              {t("common:description")}
             </h3>
             <div className="text-sm">
               <MarkdownContent content={task.description} />
@@ -216,7 +235,7 @@ export function TaskDetail({
           <section className="rounded-xl border border-success/20 border-l-4 border-l-success bg-success/5 p-4">
             <div className="flex items-center gap-2 mb-2 text-xs font-medium text-success dark:text-success">
               <CheckCircle2 className="w-3.5 h-3.5" />
-              <span>Summary</span>
+              <span>{t("summary")}</span>
             </div>
             <div className="text-sm">
               <MarkdownContent content={summary} />
@@ -245,7 +264,7 @@ export function TaskDetail({
           <section className="rounded-xl border border-destructive/20 border-l-4 border-l-destructive bg-destructive/5 p-4">
             <div className="flex items-center gap-2 mb-2 text-xs font-medium text-destructive dark:text-destructive">
               <XCircle className="w-3.5 h-3.5" />
-              <span>Failure</span>
+              <span>{t("failure")}</span>
             </div>
             <p className="text-sm text-destructive dark:text-destructive whitespace-pre-wrap">
               {liveMeta.error}
@@ -257,7 +276,7 @@ export function TaskDetail({
         {assignees.length > 0 && (
           <section>
             <h3 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-              Assigned to
+              {t("assignedTo")}
             </h3>
             <div className="flex flex-wrap gap-2">
               {assignees.map((a) => (
@@ -274,7 +293,7 @@ export function TaskDetail({
                   <span className="text-xs">{a.displayName}</span>
                   {a.type === "agent" && (
                     <span className="text-[9px] rounded bg-primary/10 text-primary px-1 uppercase tracking-wide">
-                      agent
+                      {t("common:agent")}
                     </span>
                   )}
                 </div>
@@ -286,31 +305,31 @@ export function TaskDetail({
         {/* Creator + times */}
         <section className="grid grid-cols-2 gap-3 text-xs">
           {task.creator && (
-            <Row label="Created by" value={task.creator.displayName} />
+            <Row label={t("createdBy")} value={task.creator.displayName} />
           )}
           {task.deadline && (
-            <Row label="Deadline" value={new Date(task.deadline).toLocaleString()} />
+            <Row label={t("deadline")} value={new Date(task.deadline).toLocaleString()} />
           )}
           <Row
-            label="Created"
-            value={`${formatRelativeShort(task.insertedAt)} ago`}
+            label={t("created")}
+            value={t("common:time.agoShort", { time: formatRelativeShort(task.insertedAt) })}
           />
           <Row
-            label="Updated"
-            value={`${formatRelativeShort(task.updatedAt)} ago`}
+            label={t("updated")}
+            value={t("common:time.agoShort", { time: formatRelativeShort(task.updatedAt) })}
           />
         </section>
 
         {/* Revision form */}
         {showRevision && (
           <section className="rounded-xl border border-border bg-card p-4 space-y-2">
-            <h3 className="text-xs font-semibold">Request revision</h3>
+            <h3 className="text-xs font-semibold">{t("requestRevision")}</h3>
             <textarea
               autoFocus
               value={revisionText}
               onChange={(e) => setRevisionText(e.target.value)}
               rows={4}
-              placeholder="What should the agent change or address?"
+              placeholder={t("revisionPlaceholder")}
               className="w-full resize-y rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
             />
             <div className="flex justify-end gap-2">
@@ -323,7 +342,7 @@ export function TaskDetail({
                 }}
                 disabled={submitting}
               >
-                Cancel
+                {t("common:cancel")}
               </Button>
               <Button
                 size="sm"
@@ -335,7 +354,7 @@ export function TaskDetail({
                 ) : (
                   <Send className="w-3.5 h-3.5" />
                 )}
-                Send
+                {t("common:send")}
               </Button>
             </div>
           </section>
@@ -357,13 +376,13 @@ export function TaskDetail({
             className="text-destructive border-destructive/30 hover:bg-destructive/10 hover:text-destructive/90"
           >
             <Ban className="w-3.5 h-3.5" />
-            Cancel task
+            {t("cancelTask")}
           </Button>
         )}
         {isComplete && !showRevision && (
           <Button size="sm" onClick={() => setShowRevision(true)}>
             <Send className="w-3.5 h-3.5" />
-            Request revision
+            {t("requestRevision")}
           </Button>
         )}
       </footer>

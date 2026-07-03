@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ArrowRightLeft,
   Ban,
@@ -19,6 +20,7 @@ import {
   MessageSquarePlus,
 } from "lucide-react";
 import { cn, formatClockTime } from "../../lib/utils";
+import i18n from "../../i18n";
 import type { Message } from "../../lib/api";
 import { useTaskStore } from "../../stores/taskStore";
 import { useNavStore } from "../../stores/navStore";
@@ -158,7 +160,7 @@ function resolveAgentName(payload: StatusPayload, message: Message): string {
     payload.agent_name ??
     payload.assignee_name ??
     message.sender?.displayName ??
-    "Agent"
+    i18n.t("agents:fallbackName")
   );
 }
 
@@ -207,6 +209,7 @@ function AgentAvatar({
 }
 
 function CopyableTaskId({ taskId }: { taskId: string }) {
+  const { t } = useTranslation("tasks");
   const [copied, setCopied] = useState(false);
   const handleCopy = () => {
     navigator.clipboard?.writeText(taskId);
@@ -218,7 +221,7 @@ function CopyableTaskId({ taskId }: { taskId: string }) {
       onClick={handleCopy}
       type="button"
       className="mt-2 flex items-center gap-1.5 border-t border-border pt-2 text-left"
-      title="Copy task ID"
+      title={t("card.copyTaskId")}
     >
       <span className="text-[10px] text-muted-foreground/60">ID</span>
       <span className="font-mono text-[10px] text-muted-foreground/60">
@@ -285,9 +288,10 @@ function WorkingCard({
   message: Message;
   recentSteps: string[];
 }) {
+  const { t } = useTranslation("tasks");
   const agentName = resolveAgentName(payload, message);
   const avatarUrl = resolveAvatarUrl(payload, message);
-  const title = payload.title || "Untitled task";
+  const title = payload.title || t("untitled");
 
   return (
     <div className="my-2 w-full">
@@ -300,7 +304,7 @@ function WorkingCard({
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-sm font-semibold text-foreground">{agentName}</p>
-              <p className="text-xs text-muted-foreground">is working on this</p>
+              <p className="text-xs text-muted-foreground">{t("card.workingOnThis")}</p>
             </div>
             <Loader2 className="h-4 w-4 animate-spin text-primary" />
             {payload.task_id && (
@@ -328,13 +332,14 @@ function CompletionCard({
   payload: StatusPayload;
   message: Message;
 }) {
+  const { t } = useTranslation("tasks");
   const [expanded, setExpanded] = useState(false);
   const setView = useNavStore((s) => s.setView);
   const selectTask = useTaskStore((s) => s.selectTask);
   const fetchTask = useTaskStore((s) => s.fetchTask);
   const agentName = resolveAgentName(payload, message);
   const avatarUrl = resolveAvatarUrl(payload, message);
-  const title = payload.title || "Untitled task";
+  const title = payload.title || t("untitled");
   const summary = payload.summary;
 
   if (!expanded) {
@@ -347,7 +352,7 @@ function CompletionCard({
         >
           <CheckCircle className="h-[18px] w-[18px] shrink-0 text-white" />
           <div className="min-w-0 flex-1">
-            <span className="text-xs font-semibold text-white">Task Complete</span>
+            <span className="text-xs font-semibold text-white">{t("card.taskComplete")}</span>
             <p className="mt-0.5 truncate text-xs text-white/75">
               {title} · {agentName}
             </p>
@@ -369,7 +374,7 @@ function CompletionCard({
           <AgentAvatar name={agentName} avatarUrl={avatarUrl} size={36} />
           <div className="min-w-0 flex-1">
             <span className="text-[10px] font-bold uppercase tracking-wider text-success dark:text-success">
-              Task Complete
+              {t("card.taskComplete")}
             </span>
             <p className="text-xs text-muted-foreground">{agentName}</p>
           </div>
@@ -387,7 +392,7 @@ function CompletionCard({
           {payload.duration_seconds != null && (
             <div className="mt-2 flex items-center gap-1.5 text-[10px] text-muted-foreground/60">
               <Clock className="h-3 w-3" />
-              <span>Completed in {formatDuration(payload.duration_seconds)}</span>
+              <span>{t("card.completedIn", { duration: formatDuration(payload.duration_seconds) })}</span>
             </div>
           )}
           {payload.task_id && <CopyableTaskId taskId={payload.task_id} />}
@@ -403,7 +408,7 @@ function CompletionCard({
               }}
               className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-lg border border-border bg-background/50 py-2 text-xs font-medium text-primary transition-colors hover:bg-accent"
             >
-              View Full Details
+              {t("card.viewFullDetails")}
               <ChevronRight className="h-3.5 w-3.5" />
             </button>
           )}
@@ -420,10 +425,11 @@ function FailureCard({
   payload: StatusPayload;
   message: Message;
 }) {
+  const { t } = useTranslation("tasks");
   const [expanded, setExpanded] = useState(false);
   const agentName = resolveAgentName(payload, message);
   const avatarUrl = resolveAvatarUrl(payload, message);
-  const title = payload.title || "Untitled task";
+  const title = payload.title || t("untitled");
   const error = payload.error || payload.summary;
 
   if (!expanded) {
@@ -437,7 +443,7 @@ function FailureCard({
           <XCircle className="h-[18px] w-[18px] shrink-0 text-destructive" />
           <div className="min-w-0 flex-1">
             <span className="text-xs font-semibold text-destructive dark:text-destructive">
-              Task Failed
+              {t("card.taskFailed")}
             </span>
             <p className="mt-0.5 truncate text-xs text-muted-foreground">
               {title} · {agentName}
@@ -460,7 +466,7 @@ function FailureCard({
           <AgentAvatar name={agentName} avatarUrl={avatarUrl} size={36} />
           <div className="min-w-0 flex-1">
             <span className="text-[10px] font-bold uppercase tracking-wider text-destructive dark:text-destructive">
-              Task Failed
+              {t("card.taskFailed")}
             </span>
             <p className="text-xs text-muted-foreground">{agentName}</p>
           </div>
@@ -494,23 +500,29 @@ function CapabilityWarningCard({
   payload: StatusPayload;
   message: Message;
 }) {
+  const { t } = useTranslation("tasks");
   const agentName = resolveAgentName(payload, message);
   const avatarUrl = resolveAvatarUrl(payload, message);
   const headline =
     payload.kind === "snapshot_error"
-      ? "Capability check failed"
+      ? t("capability.snapshotError")
       : payload.kind === "missing_required_tools"
-      ? "Assignee missing required tools"
+      ? t("capability.missingTools")
       : payload.kind === "rerouted"
-      ? "Auto-rerouted to capable agent"
-      : "Task capability warning";
+      ? t("capability.rerouted")
+      : t("capability.warning");
 
   const detail =
     payload.kind === "snapshot_error"
       ? payload.error
       : payload.kind === "missing_required_tools"
       ? payload.unresolved_mismatches
-          ?.map((m) => `${m.agent_id.slice(0, 8)}… missing ${m.missing.join(", ")}`)
+          ?.map((m) =>
+            t("capability.missingDetail", {
+              agent: `${m.agent_id.slice(0, 8)}…`,
+              tools: m.missing.join(", "),
+            })
+          )
           .join("; ")
       : payload.kind === "rerouted"
       ? payload.reroutes
@@ -537,7 +549,7 @@ function CapabilityWarningCard({
           )}
           {payload.required_tools && payload.required_tools.length > 0 && (
             <p className="mt-1 truncate font-mono text-[10px] text-muted-foreground/80">
-              required: {payload.required_tools.join(", ")}
+              {t("capability.required", { tools: payload.required_tools.join(", ") })}
             </p>
           )}
         </div>
@@ -550,39 +562,25 @@ function CapabilityWarningCard({
  *  (misroute / bad assignee / unauthorized). No `task_id` exists since the
  *  task was never persisted — without this card the only signal is the
  *  LLM's narration, which often glosses over the failure. */
-/** Server-side error_kind → user-facing label + next-step hint. Source
- *  of truth for the kinds is `Agentchat.Tasks.FailureArtifact.classify/1`.
+/** Server-side error_kind → user-facing label + next-step hint (as tasks:
+ *  namespace keys, resolved with t() at render time). Source of truth for
+ *  the kinds is `Agentchat.Tasks.FailureArtifact.classify/1`.
  *  Keep in parity with mobile/web's `humanizeRequestFailure` (same
  *  content, duplicated because the three clients don't share a package). */
-function humanizeRequestFailure(kind?: string): { label: string; hint?: string } {
+function humanizeRequestFailure(kind?: string): { labelKey: string; hintKey?: string } {
   switch (kind) {
     case "misrouted_task":
-      return {
-        label: "Wrong conversation",
-        hint: "The agent tried to put this task somewhere it can't reach. It usually self-corrects on retry — or ask again.",
-      };
+      return { labelKey: "requestFailed.misrouted.label", hintKey: "requestFailed.misrouted.hint" };
     case "invalid_assignees_not_uuid":
-      return {
-        label: "Bad assignee",
-        hint: "The agent referenced an ID that isn't a real agent. Mention the assignee by name and ask again.",
-      };
+      return { labelKey: "requestFailed.badAssignee.label", hintKey: "requestFailed.badAssignee.hint" };
     case "invalid_assignees_not_found":
-      return {
-        label: "Unknown assignee",
-        hint: "The target agent has been removed or renamed.",
-      };
+      return { labelKey: "requestFailed.unknownAssignee.label", hintKey: "requestFailed.unknownAssignee.hint" };
     case "invalid_assignees_not_a_list":
-      return {
-        label: "Malformed request",
-        hint: "The agent sent an invalid payload. Safe to retry.",
-      };
+      return { labelKey: "requestFailed.malformed.label", hintKey: "requestFailed.malformed.hint" };
     case "unauthorized":
-      return {
-        label: "Permission denied",
-        hint: "The agent doesn't have access to that conversation.",
-      };
+      return { labelKey: "requestFailed.unauthorized.label", hintKey: "requestFailed.unauthorized.hint" };
     default:
-      return { label: "Task creation failed" };
+      return { labelKey: "requestFailed.generic.label" };
   }
 }
 
@@ -593,10 +591,12 @@ function RequestFailedCard({
   payload: StatusPayload;
   message: Message;
 }) {
+  const { t } = useTranslation("tasks");
   const agentName = resolveAgentName(payload, message);
   const avatarUrl = resolveAvatarUrl(payload, message);
   const error = payload.error;
-  const { label, hint } = humanizeRequestFailure(payload.error_kind);
+  const { labelKey, hintKey } = humanizeRequestFailure(payload.error_kind);
+  const hint = hintKey ? t(hintKey) : undefined;
   const agents = useAgentStore((s) => s.agents);
   const resolvedAssignees =
     payload.attempted_assignees && payload.attempted_assignees.length > 0
@@ -613,11 +613,11 @@ function RequestFailedCard({
           <div className="flex items-center gap-1.5">
             <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-destructive" />
             <span className="text-xs font-semibold text-destructive">
-              {label}
+              {t(labelKey)}
             </span>
           </div>
           <p className="text-xs text-muted-foreground">
-            {agentName} couldn't create this task
+            {t("requestFailed.couldntCreate", { name: agentName })}
           </p>
           {payload.attempted_title && (
             <p className="line-clamp-2 text-xs font-medium text-foreground">
@@ -632,7 +632,7 @@ function RequestFailedCard({
           )}
           {resolvedAssignees && (
             <p className="mt-1 truncate text-xs text-muted-foreground/80">
-              Tried to assign: {resolvedAssignees.join(", ")}
+              {t("requestFailed.triedToAssign", { names: resolvedAssignees.join(", ") })}
             </p>
           )}
         </div>
@@ -648,15 +648,16 @@ function CancelledCard({
   payload: StatusPayload;
   message: Message;
 }) {
+  const { t } = useTranslation("tasks");
   const agentName = resolveAgentName(payload, message);
-  const title = payload.title || "Untitled task";
+  const title = payload.title || t("untitled");
   return (
     <div className="my-2 w-full">
       <div className="flex w-full items-center gap-3 rounded-xl border border-muted-foreground/20 border-l-4 border-l-muted-foreground bg-muted/50 px-4 py-2.5">
         <Ban className="h-[18px] w-[18px] shrink-0 text-muted-foreground" />
         <div className="min-w-0 flex-1">
           <span className="text-xs font-semibold text-muted-foreground">
-            Task Cancelled
+            {t("card.taskCancelled")}
           </span>
           <p className="mt-0.5 truncate text-xs text-muted-foreground/70">
             {title} · {agentName}
@@ -676,9 +677,10 @@ function LifecycleCard({
   message: Message;
   lifecycle: string;
 }) {
+  const { t } = useTranslation("tasks");
   const agentName = resolveAgentName(payload, message);
   const avatarUrl = resolveAvatarUrl(payload, message);
-  const title = payload.title || "Untitled task";
+  const title = payload.title || t("untitled");
 
   const config: Record<
     string,
@@ -691,22 +693,22 @@ function LifecycleCard({
     }
   > = {
     task_delegated: {
-      label: "Task Assigned",
-      meta: `Assigned to ${agentName}`,
+      label: t("card.taskAssigned"),
+      meta: t("card.assignedTo", { name: agentName }),
       Icon: Forward,
       borderColor: "border-l-primary",
       iconColor: "text-primary",
     },
     task_self_assigned: {
-      label: "Working on It",
-      meta: `${agentName} is on it`,
+      label: t("card.workingOnIt"),
+      meta: t("card.isOnIt", { name: agentName }),
       Icon: Zap,
       borderColor: "border-l-warning",
       iconColor: "text-warning",
     },
     task_accepted: {
-      label: "Task Accepted",
-      meta: `Picked up by ${agentName}`,
+      label: t("card.taskAccepted"),
+      meta: t("card.pickedUpBy", { name: agentName }),
       Icon: Eye,
       borderColor: "border-l-primary",
       iconColor: "text-primary",
@@ -714,7 +716,11 @@ function LifecycleCard({
   };
 
   const c = config[lifecycle] ?? {
-    label: lifecycle.replace(/_/g, " "),
+    // Known lifecycle types resolve via tasks:lifecycle.*; anything else is a
+    // raw server value we can only de-snake.
+    label: LIFECYCLE_TYPES.has(lifecycle)
+      ? t(`lifecycle.${lifecycle}`)
+      : lifecycle.replace(/_/g, " "),
     meta: agentName,
     Icon: ArrowRightLeft,
     borderColor: "border-l-muted-foreground",
@@ -775,6 +781,7 @@ function LifecycleCard({
  *  work conv is only discoverable via the SubConversationList accordion
  *  or the busy-redirect alert. */
 function WorkRoomLink({ workConversationId }: { workConversationId: string }) {
+  const { t } = useTranslation("tasks");
   const setActiveConversation = useChatStore((s) => s.setActiveConversation);
   const setView = useNavStore((s) => s.setView);
   return (
@@ -788,13 +795,14 @@ function WorkRoomLink({ workConversationId }: { workConversationId: string }) {
       className="mt-2 inline-flex items-center gap-1.5 rounded-md bg-primary/10 px-2.5 py-1.5 text-xs font-semibold text-primary hover:bg-primary/15"
     >
       <MessageSquarePlus className="h-3 w-3" />
-      Open work room
+      {t("card.openWorkRoom")}
       <ChevronRight className="h-3 w-3" />
     </button>
   );
 }
 
 export function StatusUpdateMessage({ message }: { message: Message }) {
+  const { t } = useTranslation("tasks");
   const payload = safeParseJson<StatusPayload>(message.content, {
     summary: message.content,
   });
@@ -902,7 +910,9 @@ export function StatusUpdateMessage({ message }: { message: Message }) {
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <span className="text-xs font-semibold">
-            {lifecycle.replace(/_/g, " ")}
+            {LIFECYCLE_TYPES.has(lifecycle)
+              ? t(`lifecycle.${lifecycle}`)
+              : lifecycle.replace(/_/g, " ")}
           </span>
           {message.sender?.displayName && (
             <span className="flex items-center gap-1 text-[10px] text-muted-foreground">

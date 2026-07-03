@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   FileText,
   Search,
@@ -25,6 +26,7 @@ function openExternal(url: string) {
 }
 
 export function TemplatesView() {
+  const { t } = useTranslation("templates");
   const templates = useTemplateStore((s) => s.templates);
   const loading = useTemplateStore((s) => s.loading);
   const loadedAt = useTemplateStore((s) => s.loadedAt);
@@ -85,13 +87,13 @@ export function TemplatesView() {
             <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center shrink-0">
               <FileText className="w-3.5 h-3.5 text-primary-foreground" />
             </div>
-            <h2 className="text-sm font-semibold text-foreground">Templates</h2>
+            <h2 className="text-sm font-semibold text-foreground">{t("nav:templates")}</h2>
           </div>
           <button
             type="button"
             onClick={() => selectTemplate("new")}
-            title="New template"
-            aria-label="New template"
+            title={t("createTooltip")}
+            aria-label={t("createTooltip")}
             className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
             style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
           >
@@ -106,7 +108,7 @@ export function TemplatesView() {
           <div className="relative">
             <Search className="absolute left-2.5 top-2 h-3.5 w-3.5 text-muted-foreground" />
             <Input
-              placeholder="Search templates..."
+              placeholder={t("searchPlaceholder")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="h-8 pl-8 text-xs"
@@ -127,7 +129,7 @@ export function TemplatesView() {
                 onClick={() => fetchTemplates()}
                 className="mt-1 text-[11px] text-destructive underline hover:no-underline"
               >
-                Retry
+                {t("common:retry")}
               </button>
             </div>
           </div>
@@ -163,7 +165,7 @@ export function TemplatesView() {
         resizing={resizing}
         onResizeStart={onResizeStart}
         onResizeReset={onResizeReset}
-        label="Resize template list"
+        label={t("resizeList")}
       />
 
       <section className="relative z-10 -ml-2 flex-1 flex flex-col bg-card overflow-hidden surface-panel rounded-l-2xl">
@@ -172,10 +174,10 @@ export function TemplatesView() {
             size="sm"
             variant="outline"
             onClick={() => openExternal(DOCS_URL)}
-            title="Open documentation"
+            title={t("common:openDocumentation")}
           >
             <BookOpen className="w-3.5 h-3.5" />
-            Docs
+            {t("docs")}
           </Button>
         </header>
 
@@ -202,6 +204,7 @@ function TemplateRow({
   active: boolean;
   onClick: () => void;
 }) {
+  const { t } = useTranslation("templates");
   return (
     <button
       type="button"
@@ -218,11 +221,10 @@ function TemplateRow({
         </p>
         <div className="flex items-center gap-1.5 mt-0.5">
           <Badge variant="secondary" className="text-[9px] px-1 py-0">
-            {template.resultType}
+            {t(`resultTypes.${template.resultType}`, { defaultValue: template.resultType })}
           </Badge>
           <span className="text-[10px] text-muted-foreground">
-            {template.fields.length} field
-            {template.fields.length === 1 ? "" : "s"}
+            {t("fields", { count: template.fields.length })}
           </span>
         </div>
       </div>
@@ -231,13 +233,14 @@ function TemplateRow({
 }
 
 function EmptyList({ onCreate }: { onCreate: () => void }) {
+  const { t } = useTranslation("templates");
   return (
     <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
       <FileText className="w-10 h-10 text-muted-foreground/40 mb-3" />
-      <p className="text-sm text-muted-foreground">No templates yet</p>
+      <p className="text-sm text-muted-foreground">{t("emptyLabel")}</p>
       <Button size="sm" onClick={onCreate} className="mt-3">
         <Plus className="mr-1.5 h-3 w-3" />
-        Create Template
+        {t("createTemplate")}
       </Button>
     </div>
   );

@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { Mail, Loader2, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import * as api from "../lib/api";
 import { useWorkspaceStore } from "../stores/workspaceStore";
 
@@ -16,6 +17,7 @@ interface Props {
  * `active_organization_changed` (workspaceStore handles the cascade).
  */
 export function PendingInvitesBanner({ onAllResolved }: Props) {
+  const { t } = useTranslation("settings");
   const refresh = useWorkspaceStore((s) => s.refresh);
   const [invites, setInvites] = useState<api.PendingWorkspaceInvite[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -50,7 +52,7 @@ export function PendingInvitesBanner({ onAllResolved }: Props) {
       setInvites((prev) => (prev ?? []).filter((i) => i.id !== invite.id));
       if ((invites ?? []).length <= 1) onAllResolved?.();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not accept");
+      setError(e instanceof Error ? e.message : t("workspace.acceptFailed"));
     } finally {
       setAcceptingId(null);
     }
@@ -66,12 +68,12 @@ export function PendingInvitesBanner({ onAllResolved }: Props) {
       <div className="mb-2 flex items-center justify-between">
         <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-primary">
           <Mail className="h-3 w-3" />
-          Pending invitations ({invites.length})
+          {t("workspace.pendingInvites")} ({invites.length})
         </div>
         <button
           type="button"
           onClick={handleDismiss}
-          aria-label="Dismiss"
+          aria-label={t("common:dismiss")}
           className="text-muted-foreground hover:text-foreground"
         >
           <X className="h-3 w-3" />
@@ -86,9 +88,11 @@ export function PendingInvitesBanner({ onAllResolved }: Props) {
           >
             <div className="min-w-0 flex-1">
               <p className="truncate text-xs font-medium">
-                {invite.organizationName ?? "Workspace"}
+                {invite.organizationName ?? t("workspace.fallbackName")}
               </p>
-              <p className="text-[10px] capitalize text-muted-foreground">{invite.role}</p>
+              <p className="text-[10px] text-muted-foreground">
+                {t(`workspace.roles.${invite.role}`, { defaultValue: invite.role })}
+              </p>
             </div>
             <button
               type="button"
@@ -99,7 +103,7 @@ export function PendingInvitesBanner({ onAllResolved }: Props) {
               {acceptingId === invite.id ? (
                 <Loader2 className="h-3 w-3 animate-spin" />
               ) : (
-                "Accept"
+                t("common:accept")
               )}
             </button>
           </div>

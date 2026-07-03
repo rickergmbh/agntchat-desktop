@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   MoreVertical,
   Copy,
@@ -34,6 +35,7 @@ export function ChatHeaderMenu({
    *  state tied to the now-gone conversation (e.g. close the details panel). */
   onAfterDangerAction?: () => void;
 }) {
+  const { t } = useTranslation("chat");
   const currentUserId = useAuthStore((s) => s.participant?.id);
   const clearChatLocal = useChatStore((s) => s.clearChatLocal);
   const stopAgents = useChatStore((s) => s.stopAgents);
@@ -83,7 +85,7 @@ export function ChatHeaderMenu({
   };
 
   const handleClearChat = () => {
-    if (!confirm("Clear messages from this conversation locally? Server history stays intact.")) {
+    if (!confirm(t("menu.clearChatConfirm"))) {
       return;
     }
     clearChatLocal(conversation.id);
@@ -97,7 +99,7 @@ export function ChatHeaderMenu({
       await stopAgents(conversation.id);
       setOpen(false);
     } catch (e) {
-      setActionError(e instanceof Error ? e.message : "Failed to stop agents");
+      setActionError(e instanceof Error ? e.message : t("menu.stopAgentsFailed"));
     } finally {
       setStopping(false);
     }
@@ -105,7 +107,7 @@ export function ChatHeaderMenu({
 
   const handleDanger = async () => {
     if (isAdmin) {
-      if (!confirm(`Delete "${conversation.title || "this conversation"}"? This cannot be undone.`)) {
+      if (!confirm(t("menu.deleteConfirm", { title: conversation.title || t("thisConversation") }))) {
         return;
       }
       try {
@@ -113,17 +115,17 @@ export function ChatHeaderMenu({
         setOpen(false);
         onAfterDangerAction?.();
       } catch (e) {
-        setActionError(e instanceof Error ? e.message : "Delete failed");
+        setActionError(e instanceof Error ? e.message : t("menu.deleteFailed"));
       }
     } else {
-      if (!confirm("Leave this conversation?")) return;
+      if (!confirm(t("details.leaveConfirmTitle"))) return;
       if (!currentUserId) return;
       try {
         await leaveConversation(conversation.id, currentUserId);
         setOpen(false);
         onAfterDangerAction?.();
       } catch (e) {
-        setActionError(e instanceof Error ? e.message : "Leave failed");
+        setActionError(e instanceof Error ? e.message : t("menu.leaveFailed"));
       }
     }
   };
@@ -134,8 +136,8 @@ export function ChatHeaderMenu({
         ref={btnRef}
         type="button"
         onClick={() => setOpen((v) => !v)}
-        title="More"
-        aria-label="More actions"
+        title={t("menu.moreActions")}
+        aria-label={t("menu.moreActions")}
         aria-expanded={open}
         className={cn(
           "rounded-md p-1.5 transition-colors",
@@ -155,12 +157,12 @@ export function ChatHeaderMenu({
         >
           <MenuItem
             icon={copied ? Check : Copy}
-            label={copied ? "ID copied" : "Copy conversation ID"}
+            label={copied ? t("menu.idCopied") : t("menu.copyConversationId")}
             onClick={handleCopyId}
           />
           <MenuItem
             icon={Eraser}
-            label="Clear chat (local)"
+            label={t("menu.clearChatLocal")}
             onClick={handleClearChat}
           />
           {hasAgents && (
@@ -170,7 +172,7 @@ export function ChatHeaderMenu({
                 stopping ? "animate-spin" : undefined,
                 "text-warning"
               )}
-              label={stopping ? "Stopping…" : "Stop agents"}
+              label={stopping ? t("menu.stopping") : t("menu.stopAgents")}
               onClick={stopping ? undefined : handleStopAgents}
               disabled={stopping}
             />
@@ -178,7 +180,7 @@ export function ChatHeaderMenu({
           <MenuDivider />
           <MenuItem
             icon={isAdmin ? Trash2 : LogOut}
-            label={isAdmin ? "Delete conversation" : "Leave conversation"}
+            label={isAdmin ? t("menu.deleteConversation") : t("menu.leaveConversation")}
             onClick={handleDanger}
             destructive
           />

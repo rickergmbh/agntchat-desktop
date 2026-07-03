@@ -1,4 +1,6 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
+import i18n from "../i18n";
 import { useAgentStore, type ManagedAgent } from "../stores/agentStore";
 import { useAuthStore } from "../stores/authStore";
 import { useActiveWorkspace, useWorkspaces } from "../stores/workspaceStore";
@@ -118,13 +120,12 @@ import { AvatarCropDialog } from "./AvatarCropDialog";
 // Display labels + one-line hints for the CLI connection (auth/runtime)
 // picker. Keys match the catalog's cliConnections values. Kept here (not in
 // the catalog payload) so copy can change without a backend deploy.
-const CLI_CONNECTION_LABELS: Record<string, string> = {
-  subscription: "Subscription / Login",
-  anthropic: "Anthropic API",
-  bedrock: "AWS Bedrock",
-  vertex: "GCP Vertex",
-  openai: "OpenAI API",
-};
+// labelKey pattern — resolved with t() at render time, never at module scope.
+const cliConnectionLabel = (id: string) =>
+  i18n.t(`agents:config.cliConnection.labels.${id}`, { defaultValue: id });
+
+const cliConnectionHint = (id: string) =>
+  i18n.t(`agents:config.cliConnection.hints.${id}`, { defaultValue: "" });
 
 // Computer-use safety deps (pyobjc/Quartz) only exist on macOS — the
 // install can never succeed elsewhere, so the deps row and the auto-install
@@ -132,15 +133,8 @@ const CLI_CONNECTION_LABELS: Record<string, string> = {
 // (Windows) reports "Windows NT".
 const IS_MACOS = navigator.userAgent.includes("Macintosh");
 
-const CLI_CONNECTION_HINTS: Record<string, string> = {
-  subscription: "Uses this machine's `claude login` (Pro/Max/Console seat).",
-  anthropic: "Anthropic-direct API. Set the key under API Key below.",
-  bedrock: "Routes through AWS Bedrock using this machine's AWS credentials.",
-  vertex: "Routes through Google Vertex using this machine's gcloud credentials.",
-  openai: "OpenAI-direct API for the Codex CLI.",
-};
-
 export function AgentConfig({ managed }: { managed: ManagedAgent }) {
+  const { t } = useTranslation("agents");
   const {
     updateConfig,
     regenerateKey,
@@ -274,7 +268,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
     try {
       await regenerateKey(agent.id);
     } catch (e) {
-      setKeyError(e instanceof Error ? e.message : "Failed to generate key");
+      setKeyError(e instanceof Error ? e.message : t("regenerateKey.failed"));
     } finally {
       setRegenerating(false);
     }
@@ -302,7 +296,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
       }
       await startAgent(agent.id);
     } catch (e) {
-      setKeyError(e instanceof Error ? e.message : "Failed to fix the key");
+      setKeyError(e instanceof Error ? e.message : t("config.crash.fixFailed"));
     } finally {
       setFixingKey(false);
     }
@@ -357,43 +351,43 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
     sections: Array<{ value: string; label: string; icon: typeof Settings2 }>;
   }> = [
     {
-      name: "Profile",
+      name: t("nav:profile"),
       sections: [
-        { value: "profile", label: "Profile", icon: User },
-        { value: "soul", label: "Soul", icon: FileText },
+        { value: "profile", label: t("nav:profile"), icon: User },
+        { value: "soul", label: t("soul.title"), icon: FileText },
       ],
     },
     {
-      name: "Model",
-      sections: [{ value: "config", label: "Model", icon: Settings2 }],
+      name: t("common:model"),
+      sections: [{ value: "config", label: t("common:model"), icon: Settings2 }],
     },
     {
-      name: "Capabilities",
+      name: t("sections.capabilities"),
       sections: [
-        { value: "skills", label: "Skills", icon: Sparkles },
-        { value: "memory", label: "Memory", icon: Brain },
-        { value: "templates", label: "Templates", icon: LayoutTemplate },
-        { value: "routines", label: "Routines", icon: Timer },
+        { value: "skills", label: t("skills.title"), icon: Sparkles },
+        { value: "memory", label: t("memory:title"), icon: Brain },
+        { value: "templates", label: t("nav:templates"), icon: LayoutTemplate },
+        { value: "routines", label: t("routines.title"), icon: Timer },
       ],
     },
     // Sharing group gated behind the `agent_sharing` feature flag.
     ...(sharingEnabled
       ? [
           {
-            name: "Sharing",
+            name: t("sections.sharing"),
             sections: [
-              { value: "share", label: "Share Agent", icon: Share2 },
-              { value: "publish", label: "Publish to Directory", icon: Globe2 },
+              { value: "share", label: t("config.share.title"), icon: Share2 },
+              { value: "publish", label: t("publish.submit"), icon: Globe2 },
             ],
           },
         ]
       : []),
     {
-      name: "Operations",
+      name: t("config.groupOperations"),
       sections: [
-        { value: "pulse", label: "Pulse", icon: HeartPulse },
-        { value: "logs", label: "Logs", icon: ScrollText },
-        { value: "health", label: "Health", icon: Activity },
+        { value: "pulse", label: t("pulse.title"), icon: HeartPulse },
+        { value: "logs", label: t("config.sectionLogs"), icon: ScrollText },
+        { value: "health", label: t("config.health.label"), icon: Activity },
       ],
     },
   ];
@@ -466,8 +460,8 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
           <div className="mx-4 mt-3 px-3 py-2.5 bg-destructive/10 border border-destructive/20 rounded-lg flex-shrink-0">
             <div className="text-xs font-medium text-destructive mb-0.5">
               {managed.crashKind === "auth" || managed.crashKind === "no_key"
-                ? "API key problem"
-                : "Agent crashed"}
+                ? t("config.crash.apiKeyProblem")
+                : t("config.crash.agentCrashed")}
             </div>
             <div className="text-xs text-destructive/80 whitespace-pre-wrap break-words">
               {managed.crashReason}
@@ -481,13 +475,10 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                   disabled={fixingKey}
                   onClick={handleFixKeyAndStart}
                 >
-                  {fixingKey ? "Fixing…" : "Generate new key & start agent"}
+                  {fixingKey ? t("config.crash.fixing") : t("config.crash.fixAction")}
                 </Button>
                 <p className="text-[11px] text-muted-foreground">
-                  Each computer needs its own copy of the agent's API key, and
-                  only the newest key works. Generating a new one here moves
-                  the agent to this computer — if it's running on another
-                  computer right now, it will be stopped there.
+                  {t("config.crash.fixExplain")}
                 </p>
                 {keyError && (
                   <p className="text-[11px] text-destructive">{keyError}</p>
@@ -517,24 +508,24 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                     (below) stays editable, scoped to what the host serves. */}
                 {isHosted ? (
                   <div className="space-y-1.5">
-                    <Label className="text-xs">Provider</Label>
+                    <Label className="text-xs">{t("common:provider")}</Label>
                     <div className="rounded-lg border border-border bg-muted/40 px-3 py-2">
                       <div className="text-sm font-medium">
                         {catalog.providerLabel(backend)}
                         <span className="ml-2 text-xs text-muted-foreground">
-                          Hosted · set by your plan
+                          {t("config.hostedSetByPlan")}
                         </span>
                       </div>
                       <p className="mt-0.5 text-[11px] text-muted-foreground">
                         {runtimeOptions?.backend?.claudeSeat === false
-                          ? "⚠️ This host has no Claude seat connected yet — the agent can't authenticate until one is set up."
-                          : "Connection is managed by the host. Pick any supported model below."}
+                          ? t("config.noClaudeSeat")
+                          : t("config.hostManagedConnection")}
                       </p>
                     </div>
                   </div>
                 ) : (
                 <div className="space-y-1.5">
-                  <Label className="text-xs">Provider</Label>
+                  <Label className="text-xs">{t("common:provider")}</Label>
                   <Select
                     value={backend}
                     onValueChange={(val: string | null) => {
@@ -588,7 +579,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                     <SelectContent>
                       {!providerExists && backend && (
                         <SelectItem value={backend}>
-                          {backend} (custom)
+                          {t("config.customOption", { value: backend })}
                         </SelectItem>
                       )}
                       {PROVIDERS.map((p) => (
@@ -605,7 +596,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                     fixed by the host's seat (handled in the locked summary). */}
                 {!isHosted && cliConnections.length > 0 && (
                   <div className="space-y-1.5">
-                    <Label className="text-xs">Connection</Label>
+                    <Label className="text-xs">{t("connection.title")}</Label>
                     <Select
                       value={cliConnection}
                       onValueChange={(val: string | null) => {
@@ -628,19 +619,19 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                     >
                       <SelectTrigger className="w-full">
                         <SelectValue>
-                          {(val: unknown) => CLI_CONNECTION_LABELS[String(val)] ?? String(val)}
+                          {(val: unknown) => cliConnectionLabel(String(val))}
                         </SelectValue>
                       </SelectTrigger>
                       <SelectContent>
                         {cliConnections.map((c) => (
                           <SelectItem key={c} value={c}>
-                            {CLI_CONNECTION_LABELS[c] ?? c}
+                            {cliConnectionLabel(c)}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                     <p className="text-[11px] text-muted-foreground">
-                      {CLI_CONNECTION_HINTS[cliConnection] ?? ""}
+                      {cliConnectionHint(cliConnection)}
                     </p>
                     {cliConnection === "bedrock" && (
                       <Input
@@ -648,7 +639,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                         onChange={(e) =>
                           updateConfig(agent.id, { awsRegion: e.target.value || null })
                         }
-                        placeholder="AWS region (e.g. us-east-1)"
+                        placeholder={t("config.awsRegionPlaceholder")}
                         className="text-xs"
                       />
                     )}
@@ -659,7 +650,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                           onChange={(e) =>
                             updateConfig(agent.id, { vertexRegion: e.target.value || null })
                           }
-                          placeholder="Vertex region (e.g. us-east5)"
+                          placeholder={t("config.vertexRegionPlaceholder")}
                           className="text-xs"
                         />
                         <Input
@@ -667,23 +658,21 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                           onChange={(e) =>
                             updateConfig(agent.id, { vertexProject: e.target.value || null })
                           }
-                          placeholder="GCP project ID"
+                          placeholder={t("config.vertexProjectPlaceholder")}
                           className="text-xs"
                         />
                       </div>
                     )}
                     {configSyncError && (
                       <p className="text-[11px] text-destructive">
-                        Couldn't save this to the server ({configSyncError}). The
-                        connection takes effect only once saved — the agent will
-                        keep using its last saved connection until this succeeds.
+                        {t("config.syncError", { error: configSyncError })}
                       </p>
                     )}
                   </div>
                 )}
 
                 <div className="space-y-1.5">
-                  <Label className="text-xs">Model</Label>
+                  <Label className="text-xs">{t("model.model")}</Label>
                   <Select
                     value={model}
                     onValueChange={(val: string | null) => {
@@ -704,7 +693,9 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                     <SelectContent>
                       {!currentModelInList && config.model && (
                         <SelectItem value={config.model}>
-                          {normalizeModelName(config.model) || config.model} (custom)
+                          {t("config.customOption", {
+                            value: normalizeModelName(config.model) || config.model,
+                          })}
                         </SelectItem>
                       )}
                       {availableModels.map((m) => (
