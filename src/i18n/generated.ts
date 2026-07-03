@@ -546,6 +546,13 @@ export const resources = {
         "hosted": "Hosted",
         "local": "Local"
       },
+      "inputForm": {
+        "datePlaceholder": "YYYY-MM-DD",
+        "dateRangeTo": "to",
+        "endDate": "End date",
+        "locationPlaceholder": "City, address, or coordinates",
+        "startDate": "Start date"
+      },
       "listing": {
         "categories": "Categories",
         "connection": "Connection",
@@ -1282,9 +1289,138 @@ export const resources = {
       "badges": {
         "overdue": "Overdue"
       },
+      "builder": {
+        "addWidget": "Add Widget",
+        "composerModeHeading": "Composer Mode",
+        "composerModes": {
+          "actionPanel": "Action Panel",
+          "disabled": "Disabled",
+          "hybrid": "Hybrid",
+          "text": "Text Input",
+          "voice": "Voice"
+        },
+        "fields": {
+          "allowMultipleOpen": "Allow Multiple Open",
+          "autoPlay": "Auto-Play",
+          "defaultTabId": "Default Tab ID",
+          "dismissible": "Dismissible",
+          "durationMs": "Duration (ms)",
+          "emptyStateText": "Empty State Text",
+          "imageUrl": "Image URL",
+          "intervalMs": "Interval (ms)",
+          "itemsJsonHint": "Items (JSON: {{sample}})",
+          "messageOnTap": "Message to send on tap",
+          "position": "Position",
+          "severity": "Severity",
+          "stateKey": "State Key",
+          "stateKeyTriggersOnChange": "State Key (triggers on change)",
+          "subtitle": "Subtitle",
+          "tabsJsonHint": "Tabs (JSON array: {{sample}})",
+          "templateName": "Template Name",
+          "text": "Text",
+          "textContent": "Text Content",
+          "title": "Title",
+          "variant": "Variant"
+        },
+        "placeholders": {
+          "alertTitle": "Alert title...",
+          "bannerText": "Banner text...",
+          "buttonLabel": "Button label...",
+          "cardSubtitle": "Card subtitle...",
+          "cardTitle": "Card title...",
+          "commandOrMessage": "/command or message...",
+          "emptyStateHint": "Shown when the list is empty",
+          "enterText": "Enter text...",
+          "optionalDescription": "Optional description..."
+        },
+        "widgetTypes": {
+          "accordion": {
+            "description": "Collapsible sections",
+            "label": "Accordion"
+          },
+          "alert": {
+            "description": "Severity-styled banner",
+            "label": "Alert"
+          },
+          "banner": {
+            "description": "Persistent info strip",
+            "label": "Banner"
+          },
+          "button": {
+            "description": "Action button",
+            "label": "Button"
+          },
+          "buttonGrid": {
+            "description": "Array of action buttons",
+            "label": "Button Grid"
+          },
+          "card": {
+            "description": "Information card",
+            "label": "Card"
+          },
+          "carousel": {
+            "description": "Horizontal scrollable cards",
+            "label": "Carousel"
+          },
+          "divider": {
+            "description": "Visual separator",
+            "label": "Divider"
+          },
+          "flowStep": {
+            "description": "Current flow step",
+            "label": "Flow Step"
+          },
+          "image": {
+            "description": "Image display",
+            "label": "Image"
+          },
+          "messageList": {
+            "description": "Chat message history",
+            "label": "Message List"
+          },
+          "scoreDisplay": {
+            "description": "Value from canvas state",
+            "label": "Score Display"
+          },
+          "spacer": {
+            "description": "Flexible space",
+            "label": "Spacer"
+          },
+          "tabs": {
+            "description": "Horizontal tab navigation",
+            "label": "Tabs"
+          },
+          "templatedList": {
+            "description": "Render a state array using an agent detail template",
+            "label": "Templated List"
+          },
+          "text": {
+            "description": "Static text display",
+            "label": "Text"
+          },
+          "toast": {
+            "description": "Ephemeral state notification",
+            "label": "Toast"
+          },
+          "typingIndicator": {
+            "description": "Shows who is typing",
+            "label": "Typing Indicator"
+          }
+        },
+        "zoneField": "Zone",
+        "zones": {
+          "content": "Content",
+          "footer": "Footer",
+          "header": "Header"
+        }
+      },
       "builtin": "Built-in",
       "builtinCanvases": "Built-in Canvases",
       "composer": "Composer",
+      "composerHints": {
+        "disabled": "Messaging is disabled in this experience.",
+        "voice": "Voice mode enabled for this experience."
+      },
       "copyId": "Copy canvas ID",
       "create": "Create Canvas",
       "createCanvas": "Create Canvas",
@@ -1410,7 +1546,12 @@ export const resources = {
         "nextMonth": "Next Month",
         "nextWeek": "Next Week",
         "threeDays": "3 Days",
-        "title": "Push to when?"
+        "title": "Push to when?",
+        "tomorrow": "Tomorrow"
+      },
+      "reschedule": {
+        "multiple": "I want to reschedule these: {{names}}. When would be best?",
+        "single": "I want to reschedule \"{{title}}\" (id: {{id}}) — when would be best?"
       },
       "resizeList": "Resize canvas list",
       "saveDraft": "Save Draft",
@@ -1449,6 +1590,14 @@ export const resources = {
         "openWorkRoom": "Open work room",
         "title": "{{name}} is busy"
       },
+      "approvalResponse": {
+        "decision": {
+          "approved": "Approved",
+          "needsInfo": "Needs Info",
+          "rejected": "Rejected"
+        },
+        "invalid": "Invalid approval response"
+      },
       "attachmentCaptionHint": "Add a description for context...",
       "backToParent": "Back to parent conversation",
       "branch": {
@@ -1466,6 +1615,14 @@ export const resources = {
       "bringAgentOnline": "Bring this agent back online",
       "bringOnline": "Bring online",
       "cancelReply": "Cancel reply",
+      "capabilityNegotiation": {
+        "action": {
+          "announce": "Capabilities Announced",
+          "match": "Capability Match",
+          "request": "Capabilities Requested"
+        },
+        "invalid": "Invalid capability message"
+      },
       "channelNamePlaceholder": "e.g. project-planning",
       "channelNameSubtitle": "Give this channel a name. You can add people later.",
       "charCount_one": "{{count}} char",
@@ -1910,6 +2067,7 @@ export const resources = {
         "tapped": "You tapped “{{label}}”",
         "tappedSkipped": "You tapped “{{label}}” — skipped"
       },
+      "viewOnlyBadge": "View only",
       "wake": {
         "bridgeRequired": "{{names}} — bridge must be running on host machine.",
         "cantWakeTitle": "Can't Wake"
@@ -2179,7 +2337,8 @@ export const resources = {
         "openFailedMessage": "The download link could not be loaded. Please try again.",
         "openFailedTitle": "Couldn't open file",
         "tooLarge": "File too large (max {{max}})",
-        "uploadFailed": "Upload failed"
+        "uploadFailed": "Upload failed",
+        "uploadFailedTitle": "Upload Failed"
       },
       "file": "File",
       "fileDeleted": "File deleted.",
@@ -2518,11 +2677,13 @@ export const resources = {
         "actual": "Actual",
         "clearResolved_one": "Clear {{count}} resolved bug",
         "clearResolved_other": "Clear {{count}} resolved bugs",
+        "details": "Details",
         "empty": "No bug reports yet",
         "emptyFiltered": "No matching bug reports",
         "emptyHint": "Bug reports from agents will appear here",
         "environment": "Environment",
         "expected": "Expected",
+        "less": "Less",
         "stackTrace": "Stack Trace",
         "stepsToReproduce": "Steps to Reproduce",
         "suggestedFix": "Suggested Fix",
@@ -3130,6 +3291,7 @@ export const resources = {
         },
         "pasteToken": "Paste your API token",
         "placeholders": {
+          "endpointUrl": "https://api.example.com/v1",
           "fieldName": "Name (e.g. App ID)",
           "name": "e.g. My Weather API",
           "providerUid": "e.g. your username or email",
@@ -3734,6 +3896,8 @@ export const resources = {
     },
     "templates": {
       "addField": "Add Field",
+      "addTemplate": "Add Template",
+      "addToAgent": "Add to Agent",
       "allAssigned": "All available templates are already assigned.",
       "assigned": "Assigned",
       "cardPreview": "Card Preview",
@@ -3821,6 +3985,7 @@ export const resources = {
       "previewLabel": "Card as delivered to conversation",
       "rawJson": "Raw JSON",
       "removeField": "Remove field",
+      "removeFromAgent": "Remove from Agent",
       "renderedHtml": "Rendered HTML",
       "resizeList": "Resize template list",
       "resultType": {
@@ -4390,6 +4555,13 @@ export const resources = {
       "hosting": {
         "hosted": "Alojado",
         "local": "Local"
+      },
+      "inputForm": {
+        "datePlaceholder": "AAAA-MM-DD",
+        "dateRangeTo": "a",
+        "endDate": "Fecha de fin",
+        "locationPlaceholder": "Ciudad, dirección o coordenadas",
+        "startDate": "Fecha de inicio"
       },
       "listing": {
         "categories": "Categorías",
@@ -5127,9 +5299,138 @@ export const resources = {
       "badges": {
         "overdue": "Vencido"
       },
+      "builder": {
+        "addWidget": "Añadir widget",
+        "composerModeHeading": "Modo del compositor",
+        "composerModes": {
+          "actionPanel": "Panel de acciones",
+          "disabled": "Desactivado",
+          "hybrid": "Híbrido",
+          "text": "Entrada de texto",
+          "voice": "Voz"
+        },
+        "fields": {
+          "allowMultipleOpen": "Permitir varias abiertas",
+          "autoPlay": "Reproducción automática",
+          "defaultTabId": "ID de pestaña predeterminada",
+          "dismissible": "Se puede descartar",
+          "durationMs": "Duración (ms)",
+          "emptyStateText": "Texto de estado vacío",
+          "imageUrl": "URL de la imagen",
+          "intervalMs": "Intervalo (ms)",
+          "itemsJsonHint": "Elementos (JSON: {{sample}})",
+          "messageOnTap": "Mensaje a enviar al tocar",
+          "position": "Posición",
+          "severity": "Gravedad",
+          "stateKey": "Clave de estado",
+          "stateKeyTriggersOnChange": "Clave de estado (se activa al cambiar)",
+          "subtitle": "Subtítulo",
+          "tabsJsonHint": "Pestañas (array JSON: {{sample}})",
+          "templateName": "Nombre de la plantilla",
+          "text": "Texto",
+          "textContent": "Contenido de texto",
+          "title": "Título",
+          "variant": "Variante"
+        },
+        "placeholders": {
+          "alertTitle": "Título de la alerta...",
+          "bannerText": "Texto del banner...",
+          "buttonLabel": "Etiqueta del botón...",
+          "cardSubtitle": "Subtítulo de la tarjeta...",
+          "cardTitle": "Título de la tarjeta...",
+          "commandOrMessage": "/comando o mensaje...",
+          "emptyStateHint": "Se muestra cuando la lista está vacía",
+          "enterText": "Escribe un texto...",
+          "optionalDescription": "Descripción opcional..."
+        },
+        "widgetTypes": {
+          "accordion": {
+            "description": "Secciones plegables",
+            "label": "Acordeón"
+          },
+          "alert": {
+            "description": "Aviso con estilo según la gravedad",
+            "label": "Alerta"
+          },
+          "banner": {
+            "description": "Franja informativa persistente",
+            "label": "Banner"
+          },
+          "button": {
+            "description": "Botón de acción",
+            "label": "Botón"
+          },
+          "buttonGrid": {
+            "description": "Conjunto de botones de acción",
+            "label": "Cuadrícula de botones"
+          },
+          "card": {
+            "description": "Tarjeta de información",
+            "label": "Tarjeta"
+          },
+          "carousel": {
+            "description": "Tarjetas desplazables horizontalmente",
+            "label": "Carrusel"
+          },
+          "divider": {
+            "description": "Separador visual",
+            "label": "Divisor"
+          },
+          "flowStep": {
+            "description": "Paso actual del flujo",
+            "label": "Paso del flujo"
+          },
+          "image": {
+            "description": "Visualización de imagen",
+            "label": "Imagen"
+          },
+          "messageList": {
+            "description": "Historial de mensajes del chat",
+            "label": "Lista de mensajes"
+          },
+          "scoreDisplay": {
+            "description": "Valor desde el estado del lienzo",
+            "label": "Visualización de puntuación"
+          },
+          "spacer": {
+            "description": "Espacio flexible",
+            "label": "Espaciador"
+          },
+          "tabs": {
+            "description": "Navegación horizontal por pestañas",
+            "label": "Pestañas"
+          },
+          "templatedList": {
+            "description": "Renderiza un array de estado usando una plantilla de detalle de agente",
+            "label": "Lista con plantilla"
+          },
+          "text": {
+            "description": "Visualización de texto estático",
+            "label": "Texto"
+          },
+          "toast": {
+            "description": "Notificación efímera de estado",
+            "label": "Notificación emergente"
+          },
+          "typingIndicator": {
+            "description": "Muestra quién está escribiendo",
+            "label": "Indicador de escritura"
+          }
+        },
+        "zoneField": "Zona",
+        "zones": {
+          "content": "Contenido",
+          "footer": "Pie de página",
+          "header": "Encabezado"
+        }
+      },
       "builtin": "Integrado",
       "builtinCanvases": "Lienzos integrados",
       "composer": "Compositor",
+      "composerHints": {
+        "disabled": "La mensajería está deshabilitada en esta experiencia.",
+        "voice": "El modo de voz está habilitado para esta experiencia."
+      },
       "copyId": "Copiar ID del lienzo",
       "create": "Crear lienzo",
       "createCanvas": "Crear lienzo",
@@ -5255,7 +5556,12 @@ export const resources = {
         "nextMonth": "El próximo mes",
         "nextWeek": "La próxima semana",
         "threeDays": "3 días",
-        "title": "¿Aplazar hasta cuándo?"
+        "title": "¿Aplazar hasta cuándo?",
+        "tomorrow": "Mañana"
+      },
+      "reschedule": {
+        "multiple": "Quiero reprogramar estos: {{names}}. ¿Cuándo sería mejor?",
+        "single": "Quiero reprogramar \"{{title}}\" (id: {{id}}) — ¿cuándo sería mejor?"
       },
       "resizeList": "Redimensionar la lista de lienzos",
       "saveDraft": "Guardar borrador",
@@ -5294,6 +5600,14 @@ export const resources = {
         "openWorkRoom": "Abrir sala de trabajo",
         "title": "{{name}} está ocupado"
       },
+      "approvalResponse": {
+        "decision": {
+          "approved": "Aprobado",
+          "needsInfo": "Necesita información",
+          "rejected": "Rechazado"
+        },
+        "invalid": "Respuesta de aprobación no válida"
+      },
       "attachmentCaptionHint": "Añade una descripción para dar contexto...",
       "backToParent": "Volver a la conversación principal",
       "branch": {
@@ -5311,6 +5625,14 @@ export const resources = {
       "bringAgentOnline": "Volver a poner este agente en línea",
       "bringOnline": "Poner en línea",
       "cancelReply": "Cancelar respuesta",
+      "capabilityNegotiation": {
+        "action": {
+          "announce": "Capacidades anunciadas",
+          "match": "Coincidencia de capacidad",
+          "request": "Capacidades solicitadas"
+        },
+        "invalid": "Mensaje de capacidad no válido"
+      },
       "channelNamePlaceholder": "p. ej. planificacion-proyecto",
       "channelNameSubtitle": "Dale un nombre a este canal. Puedes añadir personas más tarde.",
       "charCount_one": "{{count}} carácter",
@@ -5755,6 +6077,7 @@ export const resources = {
         "tapped": "Tocaste “{{label}}”",
         "tappedSkipped": "Tocaste “{{label}}” — omitido"
       },
+      "viewOnlyBadge": "Solo lectura",
       "wake": {
         "bridgeRequired": "{{names}} — el puente debe estar en ejecución en la máquina anfitriona.",
         "cantWakeTitle": "No se puede despertar"
@@ -6024,7 +6347,8 @@ export const resources = {
         "openFailedMessage": "No se pudo cargar el enlace de descarga. Inténtalo de nuevo.",
         "openFailedTitle": "No se pudo abrir el archivo",
         "tooLarge": "Archivo demasiado grande (máx. {{max}})",
-        "uploadFailed": "Error al subir el archivo"
+        "uploadFailed": "Error al subir el archivo",
+        "uploadFailedTitle": "Error al subir"
       },
       "file": "Archivo",
       "fileDeleted": "Archivo eliminado.",
@@ -6363,11 +6687,13 @@ export const resources = {
         "actual": "Real",
         "clearResolved_one": "Limpiar {{count}} error resuelto",
         "clearResolved_other": "Limpiar {{count}} errores resueltos",
+        "details": "Detalles",
         "empty": "Aún no hay informes de errores",
         "emptyFiltered": "No hay informes de errores que coincidan",
         "emptyHint": "Los informes de errores de los agentes aparecerán aquí",
         "environment": "Entorno",
         "expected": "Esperado",
+        "less": "Menos",
         "stackTrace": "Traza de pila",
         "stepsToReproduce": "Pasos para reproducir",
         "suggestedFix": "Solución sugerida",
@@ -6975,6 +7301,7 @@ export const resources = {
         },
         "pasteToken": "Pega tu token de API",
         "placeholders": {
+          "endpointUrl": "https://api.example.com/v1",
           "fieldName": "Nombre (p. ej. ID de la app)",
           "name": "p. ej. Mi API del tiempo",
           "providerUid": "p. ej. tu usuario o correo",
@@ -7579,6 +7906,8 @@ export const resources = {
     },
     "templates": {
       "addField": "Añadir campo",
+      "addTemplate": "Añadir plantilla",
+      "addToAgent": "Añadir al agente",
       "allAssigned": "Todas las plantillas disponibles ya están asignadas.",
       "assigned": "Asignadas",
       "cardPreview": "Vista previa de la tarjeta",
@@ -7666,6 +7995,7 @@ export const resources = {
       "previewLabel": "Tarjeta tal como se entrega en la conversación",
       "rawJson": "JSON sin procesar",
       "removeField": "Quitar campo",
+      "removeFromAgent": "Quitar del agente",
       "renderedHtml": "HTML renderizado",
       "resizeList": "Redimensionar la lista de plantillas",
       "resultType": {
