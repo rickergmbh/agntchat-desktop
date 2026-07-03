@@ -273,47 +273,50 @@ export function ConversationDetailsPanel({
           />
         )}
 
-        {/* Title section */}
+        {/* Title section — a DM has no title of its own (it's just the two
+            participants), so the editable title/rename block is group- and
+            channel-only. DMs show just the type + member count below. */}
         <div className="relative px-4 py-4 after:absolute after:bottom-0 after:left-4 after:right-4 after:h-px after:bg-border">
-          {editing ? (
-            <div className="flex items-center gap-2">
-              <input
-                autoFocus
-                className="flex-1 rounded border border-input bg-background px-2 py-1 text-sm outline-none focus:ring-2 focus:ring-ring"
-                value={titleDraft}
-                onChange={(e) => setTitleDraft(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") handleRename();
-                  if (e.key === "Escape") setEditing(false);
-                }}
-              />
-              <button
-                onClick={handleRename}
-                className="rounded p-1 text-primary hover:bg-muted"
-                title={t("common:save")}
-              >
-                <Check className="h-4 w-4" />
-              </button>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2">
-              <h2 className="flex-1 truncate text-base font-semibold">
-                {conversation.title || t("untitledConversation")}
-              </h2>
-              {isAdmin && (
-                <button
-                  onClick={() => {
-                    setTitleDraft(conversation.title ?? "");
-                    setEditing(true);
+          {conversation.type !== "direct" &&
+            (editing ? (
+              <div className="flex items-center gap-2">
+                <input
+                  autoFocus
+                  className="flex-1 rounded border border-input bg-background px-2 py-1 text-sm outline-none focus:ring-2 focus:ring-ring"
+                  value={titleDraft}
+                  onChange={(e) => setTitleDraft(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") handleRename();
+                    if (e.key === "Escape") setEditing(false);
                   }}
-                  className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
-                  title={t("common:rename")}
+                />
+                <button
+                  onClick={handleRename}
+                  className="rounded p-1 text-primary hover:bg-muted"
+                  title={t("common:save")}
                 >
-                  <Pencil className="h-3.5 w-3.5" />
+                  <Check className="h-4 w-4" />
                 </button>
-              )}
-            </div>
-          )}
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <h2 className="flex-1 truncate text-base font-semibold">
+                  {conversation.title || t("untitledConversation")}
+                </h2>
+                {isAdmin && (
+                  <button
+                    onClick={() => {
+                      setTitleDraft(conversation.title ?? "");
+                      setEditing(true);
+                    }}
+                    className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+                    title={t("common:rename")}
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                  </button>
+                )}
+              </div>
+            ))}
           <p className="mt-1 text-xs text-muted-foreground">
             {t(`type.${conversation.type}`, { defaultValue: conversation.type })} ·{" "}
             {t("members", { count: members.length })}
