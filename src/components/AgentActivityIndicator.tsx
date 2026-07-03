@@ -1,7 +1,8 @@
+import { useTranslation } from "react-i18next";
 import { cn } from "../lib/utils";
 import {
   activityIcon,
-  activityLabel,
+  activityLabelKey,
   activityIsActive,
   type AgentActivity,
 } from "../lib/agent-activity";
@@ -22,6 +23,7 @@ export function AgentActivityIndicator({
   iconClassName?: string;
   showLabel?: boolean;
 }) {
+  const { t } = useTranslation("chat");
   const Icon = activityIcon(activity);
   const active = activityIsActive(activity);
   return (
@@ -32,7 +34,7 @@ export function AgentActivityIndicator({
       )}
     >
       <Icon className={cn("h-3 w-3 shrink-0", active && "animate-pulse", iconClassName)} />
-      {showLabel && <span className="truncate">{activityLabel(activity)}</span>}
+      {showLabel && <span className="truncate">{t(activityLabelKey(activity))}</span>}
     </span>
   );
 }

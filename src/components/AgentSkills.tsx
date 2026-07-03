@@ -877,10 +877,10 @@ function EditSkillForm({
 
       <div className="flex gap-2">
         <Button onClick={handleSave} disabled={saving || !description || !promptContent} className="flex-1">
-          {saving ? "Saving..." : "Save Changes"}
+          {saving ? t("common:saving") : t("common:saveChanges")}
         </Button>
         <Button variant="outline" onClick={onCancel} className="flex-1">
-          Cancel
+          {t("common:cancel")}
         </Button>
       </div>
     </div>
@@ -898,6 +898,7 @@ function InstallSharedDialog({
   onClose: () => void;
   agentId: string;
 }) {
+  const { t } = useTranslation("agents");
   const [skillId, setSkillId] = useState("");
   const [installing, setInstalling] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -915,11 +916,11 @@ function InstallSharedDialog({
       } catch {
         // Assignment may fail if activation rules don't match
       }
-      setSuccess(`Installed "${skill.displayName}"`);
+      setSuccess(t("skills.installSharedDialog.installedSuccess", { name: skill.displayName }));
       setSkillId("");
       setTimeout(onClose, 1000);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to install skill");
+      setError(e instanceof Error ? e.message : t("skills.errors.installFailed"));
     } finally {
       setInstalling(false);
     }
@@ -929,18 +930,18 @@ function InstallSharedDialog({
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Install Shared Skill</DialogTitle>
+          <DialogTitle>{t("skills.installSharedDialog.title")}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Paste a skill ID shared by another user to install it.
+            {t("skills.installSharedDialog.description")}
           </p>
           <div className="space-y-1.5">
-            <Label className="text-xs">Skill ID</Label>
+            <Label className="text-xs">{t("skills.installSharedDialog.skillIdLabel")}</Label>
             <Input
               value={skillId}
               onChange={(e) => setSkillId(e.target.value)}
-              placeholder="paste-skill-uuid-here"
+              placeholder={t("skills.installSharedDialog.skillIdPlaceholder")}
               className="font-mono text-xs"
             />
           </div>
@@ -953,7 +954,7 @@ function InstallSharedDialog({
             disabled={installing || !skillId.trim()}
             className="w-full"
           >
-            {installing ? "Installing..." : "Install Skill"}
+            {installing ? t("skills.installSharedDialog.installing") : t("skills.installSharedDialog.install")}
           </Button>
         </div>
       </DialogContent>

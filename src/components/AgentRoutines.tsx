@@ -42,15 +42,21 @@ import {
   AlertTriangle,
 } from "lucide-react";
 
-const HOURS = Array.from({ length: 24 }, (_, i) => ({
-  value: String(i),
-  label: i === 0 ? "12:00 AM" : i < 12 ? `${i}:00 AM` : i === 12 ? "12:00 PM" : `${i - 12}:00 PM`,
-}));
+const HOURS = Array.from({ length: 24 }, (_, i) => ({ value: String(i) }));
+
+// AM/PM label for hour `i` (0-23), resolved via the i18n singleton at call
+// time so language switches stay live (never t() at module scope, since
+// HOURS/hourLabel are module-level).
+function hourLabel(i: number): string {
+  const period = i < 12 ? i18n.t("common:time.am") : i18n.t("common:time.pm");
+  const h12 = i === 0 ? 12 : i <= 12 ? i : i - 12;
+  return `${h12}:00 ${period}`;
+}
 
 // Key suffixes only — resolved via i18n.t at call time so language
 // switches stay live (never t() at module scope).
 const DOW_KEYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
-const dowShort = (i: number) => i18n.t(`common:time.dowShort.${DOW_KEYS[i]}`);
+const dowShort = (i: number) => i18n.t(`common:daysShort.${DOW_KEYS[i]}`);
 
 // Parse a cron day-of-week field ("*", "1-5", "0,6", "1,3,5") into a sorted
 // list of 0..6 (Sunday=0).
@@ -198,11 +204,13 @@ function describeSchedule(state: ScheduleState): string {
       return i18n.t("agents:routines.customCronExpression");
     case "datetime":
     default: {
-      const hourLabel =
-        HOURS.find((h) => h.value === state.cronHour)?.label.replace(
-          ":00",
-          `:${(state.cronMinute || "0").padStart(2, "0")}`,
-        ) || `${state.cronHour}:${(state.cronMinute || "0").padStart(2, "0")}`;
+      const hourValue = parseInt(state.cronHour, 10);
+      const formattedHourLabel = !isNaN(hourValue)
+        ? hourLabel(hourValue).replace(
+            ":00",
+            `:${(state.cronMinute || "0").padStart(2, "0")}`,
+          )
+        : `${state.cronHour}:${(state.cronMinute || "0").padStart(2, "0")}`;
       const days = state.selectedDays;
       let dayLabel: string;
       if (days.length === 7) dayLabel = i18n.t("agents:routines.everyDay");
@@ -212,7 +220,7 @@ function describeSchedule(state: ScheduleState): string {
         dayLabel = i18n.t("agents:routines.weekends");
       else if (days.length === 0) dayLabel = i18n.t("agents:routines.noDaysSelected");
       else dayLabel = days.map((d) => dowShort(d)).join(", ");
-      return i18n.t("agents:routines.daysAtTimeUtc", { days: dayLabel, time: hourLabel });
+      return i18n.t("agents:routines.daysAtTimeUtc", { days: dayLabel, time: formattedHourLabel });
     }
   }
 }
@@ -222,7 +230,7 @@ interface AgentRoutinesProps {
 }
 
 function formatHourMinute12h(hour: number, minute: number): string {
-  const period = hour < 12 ? "AM" : "PM";
+  const period = hour < 12 ? i18n.t("common:time.am") : i18n.t("common:time.pm");
   const h = hour === 0 ? 12 : hour <= 12 ? hour : hour - 12;
   const m = String(minute).padStart(2, "0");
   return `${h}:${m} ${period}`;
@@ -416,7 +424,7 @@ function ScheduleFields({
                 <SelectContent>
                   {HOURS.map((h) => (
                     <SelectItem key={h.value} value={h.value}>
-                      {h.label}
+                      {hourLabel(parseInt(h.value, 10))}
                     </SelectItem>
                   ))}
                 </SelectContent>

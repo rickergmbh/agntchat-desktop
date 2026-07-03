@@ -709,7 +709,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
 
                 {requiresLlmKey && (
                 <div className="space-y-1.5">
-                  <Label className="text-xs">API Key</Label>
+                  <Label className="text-xs">{t("common:apiKey")}</Label>
                   <Select
                     value={keyMode}
                     onValueChange={(val: string | null) => {
@@ -749,24 +749,26 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                           const v = String(val);
                           if (v === "__default__") {
                             return hasAppDefault
-                              ? "Provider Default"
-                              : "None (set in Settings)";
+                              ? t("config.apiKey.providerDefault")
+                              : t("config.apiKey.noneSetInSettings");
                           }
-                          if (v === "__custom__") return "Custom Key...";
+                          if (v === "__custom__") return t("config.apiKey.customKey");
                           return providerKeys.find((k) => k.id === v)?.label ?? v;
                         }}
                       </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="__default__">
-                        {hasAppDefault ? "Provider Default" : "None (set in Settings)"}
+                        {hasAppDefault
+                          ? t("config.apiKey.providerDefault")
+                          : t("config.apiKey.noneSetInSettings")}
                       </SelectItem>
                       {providerKeys.map((k) => (
                         <SelectItem key={k.id} value={k.id}>
                           {k.label}
                         </SelectItem>
                       ))}
-                      <SelectItem value="__custom__">Custom Key...</SelectItem>
+                      <SelectItem value="__custom__">{t("config.apiKey.customKey")}</SelectItem>
                     </SelectContent>
                   </Select>
                   {keyMode === "__custom__" && (
@@ -779,7 +781,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                             llmApiKey: e.target.value || null,
                           })
                         }
-                        placeholder="sk-..."
+                        placeholder={t("config.apiKey.placeholder")}
                         className="flex-1 font-mono text-xs"
                       />
                       <Button
@@ -809,16 +811,15 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
             <div>
               <div className="space-y-2">
                 <div className="flex items-center gap-1.5">
-                  <Label className="text-xs">Mode</Label>
+                  <Label className="text-xs">{t("config.mode.label")}</Label>
                   <Tooltip>
                     <TooltipTrigger className="cursor-help">
                       <HelpCircle className="w-3.5 h-3.5 text-muted-foreground" />
                     </TooltipTrigger>
                     <TooltipContent side="right" className="max-w-[280px]">
-                      <p className="font-medium mb-1">How the agent calls the LLM</p>
+                      <p className="font-medium mb-1">{t("config.mode.tooltipTitle")}</p>
                       <p className="text-xs text-muted-foreground">
-                        Controls whether the agent gets a single response, can
-                        use tools iteratively, or runs code.
+                        {t("config.mode.tooltipBody")}
                       </p>
                     </TooltipContent>
                   </Tooltip>
@@ -843,7 +844,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                           disabled={!supported}
                         >
                           {m.label}
-                          {!supported && " (not available)"}
+                          {!supported && ` ${t("config.mode.notAvailable")}`}
                         </SelectItem>
                       );
                     })}
@@ -858,10 +859,10 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                 </p>
                 {!supportedModes.includes(executionMode) && (
                   <p className="text-xs text-destructive">
-                    Not supported by{" "}
-                    {PROVIDERS.find((p) => p.id === backend)?.label ||
-                      backend}
-                    . Falls back to Single Shot at runtime.
+                    {t("config.mode.notSupported", {
+                      provider:
+                        PROVIDERS.find((p) => p.id === backend)?.label || backend,
+                    })}
                   </p>
                 )}
               </div>
@@ -872,16 +873,15 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
               <div>
                 <div className="space-y-2">
                   <div className="flex items-center gap-1.5">
-                    <Label className="text-xs">Effort</Label>
+                    <Label className="text-xs">{t("effortLabel")}</Label>
                     <Tooltip>
                       <TooltipTrigger className="cursor-help">
                         <HelpCircle className="w-3.5 h-3.5 text-muted-foreground" />
                       </TooltipTrigger>
                       <TooltipContent side="right" className="max-w-[280px]">
-                        <p className="font-medium mb-1">Reasoning depth</p>
+                        <p className="font-medium mb-1">{t("config.effort.tooltipTitle")}</p>
                         <p className="text-xs text-muted-foreground">
-                          Controls how much thinking the model does. Lower effort
-                          = faster responses, higher effort = more thorough.
+                          {t("config.effort.tooltipBody")}
                         </p>
                       </TooltipContent>
                     </Tooltip>
@@ -900,7 +900,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="default">Default (high)</SelectItem>
+                      <SelectItem value="default">{t("config.effort.defaultOption")}</SelectItem>
                       {EFFORT_LEVELS.map((level) => (
                         <SelectItem key={level.id} value={level.id}>
                           {level.label}
@@ -911,7 +911,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                   <p className="text-xs text-muted-foreground">
                     {config.effort
                       ? EFFORT_LEVELS.find((l) => l.id === config.effort)?.description
-                      : "Default reasoning depth — thorough and careful."}
+                      : t("config.effort.defaultDescription")}
                   </p>
                 </div>
               </div>
@@ -924,14 +924,13 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                 auto-restart is managed by the host supervisor, so the whole
                 section is hidden when the agent runs hosted. */}
             {!isHosted && (
-            <Section title="Behavior">
+            <Section title={t("config.behavior.title")}>
               <div className="space-y-3">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1">
-                    <Label className="text-sm">Skip permissions</Label>
+                    <Label className="text-sm">{t("config.behavior.skipPermissions.label")}</Label>
                     <p className="text-xs text-muted-foreground">
-                      Lets Claude Code &amp; Codex act without per-action
-                      approval. Enable only for agents you fully trust.
+                      {t("config.behavior.skipPermissions.description")}
                     </p>
                   </div>
                   <Switch
@@ -945,7 +944,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <Label className="text-sm">Auto-restart on crash or stall</Label>
+                  <Label className="text-sm">{t("config.behavior.autoRestart")}</Label>
                   <Switch
                     checked={config.autoRestart}
                     onCheckedChange={(v) =>
@@ -961,7 +960,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                 (local runtime). Hosted agents authenticate to the backend via
                 a host-minted delegation token, so the key is irrelevant. */}
             {!isHosted && (
-            <Section title="Agent API Key">
+            <Section title={t("config.agentApiKey.title")}>
               {apiKey ? (
                 <>
                   <div className="flex gap-2">
@@ -994,21 +993,21 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                   </div>
                   {confirmingRegen ? (
                     <div className="mt-2 flex items-center gap-2">
-                      <p className="text-xs text-destructive">This will invalidate the current key.</p>
+                      <p className="text-xs text-destructive">{t("regenerateKey.message")}</p>
                       <Button
                         variant="destructive"
                         size="sm"
                         onClick={handleRegenerate}
                         disabled={regenerating}
                       >
-                        {regenerating ? "Regenerating..." : "Confirm"}
+                        {regenerating ? t("config.agentApiKey.regenerating") : t("common:confirm")}
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => setConfirmingRegen(false)}
                       >
-                        Cancel
+                        {t("common:cancel")}
                       </Button>
                     </div>
                   ) : (
@@ -1020,7 +1019,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                       disabled={regenerating}
                     >
                       <RefreshCw className="w-3 h-3 mr-1.5" />
-                      Regenerate
+                      {t("regenerateKey.action")}
                     </Button>
                   )}
                   {keyError && (
@@ -1030,14 +1029,10 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
               ) : (
                 <div className="rounded-md border border-dashed border-border p-3 text-center">
                   <p className="text-sm text-muted-foreground mb-2">
-                    No key stored on this computer
+                    {t("config.agentApiKey.noKeyTitle")}
                   </p>
                   <p className="text-xs text-muted-foreground mb-3">
-                    This usually means the agent was set up on another device —
-                    keys never leave the computer they were created on.
-                    Generate a new key to run the agent from here. The old key
-                    stops working, so if the agent runs on another computer
-                    you'll need to generate again there to move it back.
+                    {t("config.agentApiKey.noKeyExplain")}
                   </p>
                   {keyError && (
                     <p className="text-xs text-destructive mb-2">{keyError}</p>
@@ -1053,7 +1048,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                         regenerating && "animate-spin"
                       )}
                     />
-                    {regenerating ? "Generating..." : "Generate API Key"}
+                    {regenerating ? t("config.agentApiKey.generating") : t("config.agentApiKey.generateAction")}
                   </Button>
                 </div>
               )}
@@ -1067,24 +1062,22 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                 access to this machine's folders, so the whole group is hidden
                 and reappears together when you switch the runtime to Local. */}
             {!isHosted && (
-              <Section title="Local runtime settings">
+              <Section title={t("config.localRuntime.title")}>
                 <div className="space-y-4">
                   <p className="text-xs text-muted-foreground">
-                    These apply only while this agent runs on your machine (Local
-                    runtime).
+                    {t("config.localRuntime.subtitle")}
                   </p>
 
                   {/* Allow computer use */}
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1">
-                      <Label className="text-sm">Allow computer use</Label>
+                      <Label className="text-sm">{t("config.localRuntime.computerUse.label")}</Label>
                       <p className="text-xs text-muted-foreground">
-                        Lets this agent control the computer — screenshots,
-                        clicks, typing (Claude Code &amp; Codex).
+                        {t("config.localRuntime.computerUse.description")}
                         {IS_MACOS
-                          ? " Needs Screen Recording & Accessibility permissions."
-                          : " Uses native Windows input."}{" "}
-                        Restart the agent after changing.
+                          ? ` ${t("config.localRuntime.computerUse.macPermissions")}`
+                          : ` ${t("config.localRuntime.computerUse.windowsInput")}`}{" "}
+                        {t("config.localRuntime.computerUse.restartHint")}
                       </p>
                       {agent.metadata?.computer_use_enabled === true &&
                         (IS_MACOS ? (
@@ -1092,9 +1085,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                         ) : (
                           <p className="text-xs text-green-600 dark:text-green-500 mt-2 flex items-center gap-1">
                             <Check className="w-3 h-3" />
-                            Safety features built in on Windows (focused-app
-                            gate, terminal-window redaction, audit log) —
-                            nothing to install.
+                            {t("config.localRuntime.computerUse.windowsSafetyBuiltIn")}
                           </p>
                         ))}
                     </div>
@@ -1134,14 +1125,9 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                   {config.backend === "claude_cli" &&
                     agent.metadata?.computer_use_enabled === true && (
                       <div className="space-y-1.5 rounded-lg border border-border p-3">
-                        <Label className="text-xs">Allowed apps</Label>
+                        <Label className="text-xs">{t("config.localRuntime.allowedApps.label")}</Label>
                         <p className="text-xs text-muted-foreground">
-                          Optional. When empty, the agent can interact with any app
-                          except the hardcoded deny list (1Password, Keychain, etc).
-                          When non-empty, the agent is restricted to these apps —
-                          anything else is refused. Match is case-insensitive
-                          substring against the focused application name. Restart
-                          the agent after editing for changes to take effect.
+                          {t("config.localRuntime.allowedApps.description")}
                         </p>
                         {((agent.metadata?.computer_use_allowed_apps as string[] | undefined) || []).map(
                           (app, i) => (
@@ -1174,8 +1160,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                           className="w-full"
                           onClick={async () => {
                             const name = window.prompt(
-                              "App name to allow (e.g. 'Safari', 'Calculator'). " +
-                              "Match is case-insensitive substring.",
+                              t("config.localRuntime.allowedApps.promptMessage"),
                             );
                             if (!name?.trim()) return;
                             const current = (agent.metadata?.computer_use_allowed_apps as string[] | undefined) || [];
@@ -1186,14 +1171,14 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                           }}
                         >
                           <ShieldOff className="w-3.5 h-3.5 mr-1.5" />
-                          Add allowed app
+                          {t("config.localRuntime.allowedApps.addButton")}
                         </Button>
                       </div>
                     )}
 
                   {/* Start on app launch */}
                   <div className="flex items-center justify-between">
-                    <Label className="text-sm">Start on app launch</Label>
+                    <Label className="text-sm">{t("config.localRuntime.startOnLaunch")}</Label>
                     <Switch
                       checked={config.autoStart}
                       onCheckedChange={(v) =>
@@ -1205,10 +1190,9 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                   {/* Working Directories (Claude CLI only) */}
                   {config.backend === "claude_cli" && (
                     <div className="space-y-1.5">
-                      <Label className="text-xs">Working directories</Label>
+                      <Label className="text-xs">{t("config.localRuntime.workingDirs.label")}</Label>
                       <p className="text-xs text-muted-foreground">
-                        Directories this agent can access. Adding directories also enables CLI tools
-                        (Bash, Read, Edit, Web) alongside AgentGram tools.
+                        {t("config.localRuntime.workingDirs.description")}
                       </p>
                       {config.addDirs.map((dir, i) => (
                         <div key={i} className="flex items-center gap-2">
@@ -1239,7 +1223,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                               updateConfig(agent.id, { addDirs: [...config.addDirs, selected] });
                             }
                           } catch {
-                            const path = window.prompt("Enter directory path:");
+                            const path = window.prompt(t("config.localRuntime.workingDirs.promptMessage"));
                             if (path?.trim()) {
                               updateConfig(agent.id, { addDirs: [...config.addDirs, path.trim()] });
                             }
@@ -1247,7 +1231,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                         }}
                       >
                         <FolderOpen className="w-3.5 h-3.5 mr-1.5" />
-                        Add Directory
+                        {t("config.localRuntime.workingDirs.addButton")}
                       </Button>
                     </div>
                   )}
@@ -1346,24 +1330,25 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
 // ---------------------------------------------------------------------------
 
 function ShareSection({ agent }: { agent: Agent }) {
+  const { t } = useTranslation("agents");
   const [copied, setCopied] = useState<"id" | "message" | null>(null);
   const [error, setError] = useState<string | null>(null);
   const canSystemShare =
     typeof navigator !== "undefined" && typeof navigator.share === "function";
 
-  const shareMessage = `Connect with ${agent.displayName} on Agentgram!\n\nAgent ID: ${agent.id}`;
+  const shareMessage = t("share.message", { name: agent.displayName, id: agent.id });
 
   const copy = async (kind: "id" | "message", text: string) => {
     try {
       if (!navigator.clipboard?.writeText) {
-        throw new Error("Clipboard API unavailable (use HTTPS or copy manually).");
+        throw new Error(t("config.share.clipboardUnavailable"));
       }
       await navigator.clipboard.writeText(text);
       setCopied(kind);
       setError(null);
       setTimeout(() => setCopied(null), 1500);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Couldn't copy to clipboard.");
+      setError(e instanceof Error ? e.message : t("config.share.copyFailed"));
     }
   };
 
@@ -1371,7 +1356,7 @@ function ShareSection({ agent }: { agent: Agent }) {
     if (canSystemShare) {
       try {
         await navigator.share({
-          title: `Connect with ${agent.displayName}`,
+          title: t("config.share.shareTitle", { name: agent.displayName }),
           text: shareMessage,
         });
       } catch (e) {
@@ -1394,14 +1379,14 @@ function ShareSection({ agent }: { agent: Agent }) {
       <div className="rounded-lg border bg-card p-4 space-y-3">
         <div className="flex items-center gap-2">
           <Share2 className="h-4 w-4 text-primary" />
-          <h3 className="text-sm font-semibold">Share Agent</h3>
+          <h3 className="text-sm font-semibold">{t("config.share.title")}</h3>
         </div>
         <p className="text-xs text-muted-foreground">
-          Send this agent's identifier to someone so they can connect with it through the directory.
+          {t("config.share.description")}
         </p>
 
         <div className="space-y-1.5">
-          <Label className="text-xs">Agent ID</Label>
+          <Label className="text-xs">{t("agentId")}</Label>
           <div className="flex gap-2">
             <Input value={agent.id} readOnly className="font-mono text-xs" />
             <Button size="sm" variant="outline" onClick={() => copy("id", agent.id)}>
@@ -1411,7 +1396,7 @@ function ShareSection({ agent }: { agent: Agent }) {
         </div>
 
         <div className="space-y-1.5">
-          <Label className="text-xs">Share Message</Label>
+          <Label className="text-xs">{t("config.share.messageLabel")}</Label>
           <pre className="rounded-lg border bg-muted/40 p-2.5 text-xs font-mono whitespace-pre-wrap">
             {shareMessage}
           </pre>
@@ -1420,19 +1405,19 @@ function ShareSection({ agent }: { agent: Agent }) {
         <div className="flex gap-2">
           <Button size="sm" variant="outline" onClick={() => copy("message", shareMessage)} className="flex-1">
             {copied === "message" ? (
-              <><Check className="h-3.5 w-3.5 mr-1.5" /> Copied</>
+              <><Check className="h-3.5 w-3.5 mr-1.5" /> {t("common:copied")}</>
             ) : (
-              <><Copy className="h-3.5 w-3.5 mr-1.5" /> Copy Message</>
+              <><Copy className="h-3.5 w-3.5 mr-1.5" /> {t("config.share.copyMessage")}</>
             )}
           </Button>
           <Button
             size="sm"
             onClick={handleSystemShare}
             className="flex-1"
-            title={canSystemShare ? "Open native share sheet" : "Browser has no share sheet — falls back to copy"}
+            title={canSystemShare ? t("config.share.nativeShareTooltip") : t("config.share.fallbackShareTooltip")}
           >
             <Share2 className="h-3.5 w-3.5 mr-1.5" />
-            {canSystemShare ? "Share…" : "Copy to Share"}
+            {canSystemShare ? t("config.share.shareEllipsis") : t("config.share.copyToShare")}
           </Button>
         </div>
       </div>
@@ -1445,11 +1430,21 @@ function ShareSection({ agent }: { agent: Agent }) {
 // ---------------------------------------------------------------------------
 
 const VISIBILITY_OPTIONS = ["public", "friends_only", "unlisted"] as const;
+// labelKey pattern — resolved with t() at render time. Maps a visibility
+// value to its key under agents:publish.visibilityOptions.*.
+const visibilityLabelKey = (v: (typeof VISIBILITY_OPTIONS)[number]) =>
+  v === "friends_only" ? "friendsOnly" : v;
+
 const PREDEFINED_CATEGORIES = [
   "coding", "research", "writing", "data-analysis", "devops", "qa", "design", "general",
-];
+] as const;
+// labelKey pattern — maps a category value to its key under
+// agents:publish.categoryOptions.*.
+const categoryLabelKey = (cat: string) =>
+  cat === "data-analysis" ? "dataAnalysis" : cat;
 
 function PublishSection({ agent }: { agent: Agent }) {
+  const { t } = useTranslation("agents");
   const [existing, setExisting] = useState<DirectoryListing | null>(null);
   const [loading, setLoading] = useState(true);
   const [listingName, setListingName] = useState(agent.displayName);
@@ -1468,7 +1463,7 @@ function PublishSection({ agent }: { agent: Agent }) {
         if (!cancelled) setExisting(found);
       } catch (e) {
         if (!cancelled) {
-          setError(e instanceof Error ? e.message : "Failed to load listing status");
+          setError(e instanceof Error ? e.message : t("config.publish.loadStatusFailed"));
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -1486,10 +1481,10 @@ function PublishSection({ agent }: { agent: Agent }) {
   const handlePublish = async () => {
     setError(null);
     const name = listingName.trim();
-    if (!name) { setError("Listing name is required."); return; }
+    if (!name) { setError(t("publish.errors.nameRequired")); return; }
     setBusy(true);
     try {
-      const tagsList = tags.split(",").map((t) => t.trim()).filter(Boolean);
+      const tagsList = tags.split(",").map((tag) => tag.trim()).filter(Boolean);
       const listing = await createDirectoryListing({
         agentId: agent.id,
         listingName: name,
@@ -1500,7 +1495,7 @@ function PublishSection({ agent }: { agent: Agent }) {
       });
       setExisting(listing);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to publish agent");
+      setError(e instanceof Error ? e.message : t("publish.errors.saveFailed"));
     } finally {
       setBusy(false);
     }
@@ -1508,14 +1503,14 @@ function PublishSection({ agent }: { agent: Agent }) {
 
   const handleUnpublish = async () => {
     if (!existing) return;
-    if (!confirm("Remove this agent from the directory?")) return;
+    if (!confirm(t("publish.unpublishMessage"))) return;
     setBusy(true);
     setError(null);
     try {
       await deleteDirectoryListing(existing.id);
       setExisting(null);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to remove listing");
+      setError(e instanceof Error ? e.message : t("publish.errors.unpublishFailed"));
     } finally {
       setBusy(false);
     }
@@ -1524,7 +1519,7 @@ function PublishSection({ agent }: { agent: Agent }) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12 text-sm text-muted-foreground">
-        <Loader2 className="mr-2 h-4 w-4 animate-spin" />Loading...
+        <Loader2 className="mr-2 h-4 w-4 animate-spin" />{t("common:loading")}
       </div>
     );
   }
@@ -1535,29 +1530,35 @@ function PublishSection({ agent }: { agent: Agent }) {
         <div className="rounded-lg border bg-card p-4 space-y-3">
           <div className="flex items-center gap-2">
             <Globe2 className="h-4 w-4 text-green-500" />
-            <h3 className="text-sm font-semibold">Listed in Directory</h3>
+            <h3 className="text-sm font-semibold">{t("listing.listedInDirectory")}</h3>
           </div>
           <dl className="space-y-1.5 text-xs">
             <div className="flex justify-between gap-2">
-              <dt className="text-muted-foreground">Name</dt>
+              <dt className="text-muted-foreground">{t("common:name")}</dt>
               <dd className="font-medium truncate">{existing.listingName}</dd>
             </div>
             <div className="flex justify-between gap-2">
-              <dt className="text-muted-foreground">Visibility</dt>
-              <dd className="font-medium capitalize">{existing.visibility.replace("_", " ")}</dd>
+              <dt className="text-muted-foreground">{t("publish.visibility")}</dt>
+              <dd className="font-medium capitalize">
+                {t(`publish.visibilityOptions.${visibilityLabelKey(existing.visibility)}`)}
+              </dd>
             </div>
             {existing.categories.length > 0 && (
               <div className="flex justify-between gap-2">
-                <dt className="text-muted-foreground">Categories</dt>
-                <dd className="font-medium text-right">{existing.categories.join(", ")}</dd>
+                <dt className="text-muted-foreground">{t("publish.categories")}</dt>
+                <dd className="font-medium text-right">
+                  {existing.categories
+                    .map((c) => t(`publish.categoryOptions.${categoryLabelKey(c)}`, { defaultValue: c }))
+                    .join(", ")}
+                </dd>
               </div>
             )}
             <div className="flex justify-between gap-2">
-              <dt className="text-muted-foreground">Rating</dt>
+              <dt className="text-muted-foreground">{t("config.publish.rating")}</dt>
               <dd className="font-medium">
                 {existing.ratingCount > 0
                   ? `${existing.ratingAvg.toFixed(1)} (${existing.ratingCount})`
-                  : "Unrated"}
+                  : t("config.publish.unrated")}
               </dd>
             </div>
           </dl>
@@ -1569,9 +1570,9 @@ function PublishSection({ agent }: { agent: Agent }) {
             className="text-destructive hover:bg-destructive/10 hover:text-destructive w-full"
           >
             {busy ? (
-              <><Loader2 className="mr-1.5 h-3 w-3 animate-spin" />Removing...</>
+              <><Loader2 className="mr-1.5 h-3 w-3 animate-spin" />{t("publish.removing")}</>
             ) : (
-              "Remove from Directory"
+              t("publish.unpublishFromDirectory")
             )}
           </Button>
         </div>
@@ -1590,29 +1591,29 @@ function PublishSection({ agent }: { agent: Agent }) {
       <div className="rounded-lg border bg-card p-4 space-y-3">
         <div className="flex items-center gap-2">
           <Globe2 className="h-4 w-4 text-primary" />
-          <h3 className="text-sm font-semibold">Publish to Directory</h3>
+          <h3 className="text-sm font-semibold">{t("publish.submit")}</h3>
         </div>
         <p className="text-xs text-muted-foreground">
-          Make this agent discoverable to other Agentgram users.
+          {t("config.publish.discoverableExplain")}
         </p>
 
         <div className="space-y-1.5">
-          <Label className="text-xs">Listing Name *</Label>
+          <Label className="text-xs">{t("config.publish.listingNameRequired")}</Label>
           <Input value={listingName} onChange={(e) => setListingName(e.target.value)} />
         </div>
 
         <div className="space-y-1.5">
-          <Label className="text-xs">Description</Label>
+          <Label className="text-xs">{t("common:description")}</Label>
           <textarea
             className="flex min-h-[72px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="What does this agent do?"
+            placeholder={t("publish.placeholders.description")}
           />
         </div>
 
         <div className="space-y-1.5">
-          <Label className="text-xs">Visibility</Label>
+          <Label className="text-xs">{t("publish.visibility")}</Label>
           <div className="flex gap-1.5 flex-wrap">
             {VISIBILITY_OPTIONS.map((v) => (
               <button
@@ -1625,14 +1626,14 @@ function PublishSection({ agent }: { agent: Agent }) {
                     : "border-border text-muted-foreground hover:bg-accent"
                 )}
               >
-                {v.replace("_", " ")}
+                {t(`publish.visibilityOptions.${visibilityLabelKey(v)}`)}
               </button>
             ))}
           </div>
         </div>
 
         <div className="space-y-1.5">
-          <Label className="text-xs">Categories</Label>
+          <Label className="text-xs">{t("publish.categories")}</Label>
           <div className="flex gap-1.5 flex-wrap">
             {PREDEFINED_CATEGORIES.map((cat) => (
               <button
@@ -1645,22 +1646,22 @@ function PublishSection({ agent }: { agent: Agent }) {
                     : "border-border text-muted-foreground hover:bg-accent"
                 )}
               >
-                {cat}
+                {t(`publish.categoryOptions.${categoryLabelKey(cat)}`)}
               </button>
             ))}
           </div>
         </div>
 
         <div className="space-y-1.5">
-          <Label className="text-xs">Tags (comma-separated)</Label>
-          <Input value={tags} onChange={(e) => setTags(e.target.value)} placeholder="e.g. python, async" />
+          <Label className="text-xs">{t("config.publish.tagsCommaSeparated")}</Label>
+          <Input value={tags} onChange={(e) => setTags(e.target.value)} placeholder={t("publish.placeholders.tags")} />
         </div>
 
         <Button onClick={handlePublish} disabled={busy} className="w-full">
           {busy ? (
-            <><Loader2 className="mr-1.5 h-3 w-3 animate-spin" />Publishing...</>
+            <><Loader2 className="mr-1.5 h-3 w-3 animate-spin" />{t("publish.publishing")}</>
           ) : (
-            <><Globe2 className="mr-1.5 h-3.5 w-3.5" /> Publish</>
+            <><Globe2 className="mr-1.5 h-3.5 w-3.5" /> {t("config.publish.publishAction")}</>
           )}
         </Button>
       </div>
@@ -1669,6 +1670,7 @@ function PublishSection({ agent }: { agent: Agent }) {
 }
 
 function PulsePanel({ managed }: { managed: ManagedAgent }) {
+  const { t } = useTranslation("agents");
   // Workspaces are behind the `workspaces` runtime flag (resolved per-user on
   // /me). When off, every user is in their Personal workspace.
   const workspacesEnabled = useAuthStore((s) => s.participant?.features?.workspaces === true);
@@ -1723,7 +1725,7 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
       const msg = e instanceof Error ? e.message : String(e);
       const status = (e as { status?: number } | null)?.status;
       if (status !== 404 && !/\b404\b/.test(msg)) {
-        setLoadError(msg || "Failed to load pulse config.");
+        setLoadError(msg || t("pulse.errors.loadFailed"));
       }
     } finally {
       setLoading(false);
@@ -1757,7 +1759,7 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
       await fetchData();
     } catch (e) {
       setHbError(
-        e instanceof Error ? e.message : "Failed to toggle pulse."
+        e instanceof Error ? e.message : t("pulse.errors.toggleFailed")
       );
     }
     setActionLoading(null);
@@ -1770,11 +1772,11 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
     // that would be a UI lie).
     const parsed = Number(intervalMinutes);
     if (!Number.isInteger(parsed) || parsed < 5 || parsed > 1440) {
-      setHbError("Interval must be a whole number between 5 and 1440 minutes.");
+      setHbError(t("pulse.errors.invalidIntervalMessage"));
       return;
     }
     if (activeStart === activeEnd) {
-      setHbError("Active hours: start and end must differ (zero-length window).");
+      setHbError(t("pulse.errors.invalidHoursMessage"));
       return;
     }
     setSaving(true);
@@ -1790,11 +1792,11 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
         organization_id: organizationId,
       });
       await fetchData();
-      setHbResult("Saved.");
+      setHbResult(t("config.pulse.saved"));
       setTimeout(() => setHbResult(null), 1800);
     } catch (e) {
       setHbError(
-        e instanceof Error ? e.message : "Failed to save pulse."
+        e instanceof Error ? e.message : t("config.pulse.saveFailed")
       );
     }
     setSaving(false);
@@ -1806,11 +1808,11 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
     setHbResult(null);
     try {
       await triggerAgentPulse(managed.agent.id);
-      setHbResult("Pulse triggered.");
+      setHbResult(t("pulse.triggeredMessage"));
       setTimeout(() => setHbResult(null), 1800);
     } catch (e) {
       setHbError(
-        e instanceof Error ? e.message : "Failed to trigger pulse."
+        e instanceof Error ? e.message : t("pulse.errors.triggerFailed")
       );
     }
     setActionLoading(null);
@@ -1830,7 +1832,7 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
       setPulseIdea("");
     } catch (e) {
       setHbError(
-        e instanceof Error ? e.message : "Failed to generate checklist."
+        e instanceof Error ? e.message : t("pulse.errors.generateFailed")
       );
     }
     setRevising(false);
@@ -1862,14 +1864,14 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
           {loadError}
         </div>
       )}
-      <Section title="Pulse">
+      <Section title={t("pulse.title")}>
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-medium">
-              {isEnabled ? "Enabled" : "Disabled"}
+              {isEnabled ? t("common:enabled") : t("common:disabled")}
             </p>
             <p className="text-xs text-muted-foreground">
-              Periodic autonomous thinking
+              {t("pulse.subtitle")}
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -1881,7 +1883,7 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
                 disabled={actionLoading === "trigger"}
               >
                 <Play className="h-3 w-3 mr-1" />
-                {actionLoading === "trigger" ? "..." : "Trigger Now"}
+                {actionLoading === "trigger" ? "..." : t("config.pulse.triggerNow")}
               </Button>
             )}
             <Switch
@@ -1896,11 +1898,11 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
           <div className="mt-2">
             <div className="flex items-center gap-2">
               <Badge variant={status === "active" ? "default" : "secondary"}>
-                {status === "active" ? "Active" : status === "paused" ? "Paused (auto)" : status}
+                {status === "active" ? t("status.active") : status === "paused" ? t("pulse.pausedAuto") : status}
               </Badge>
               {failures > 0 && (
                 <span className="text-xs text-destructive">
-                  {failures} consecutive {failures === 1 ? "failure" : "failures"}
+                  {t("routines.consecutiveFailures", { count: failures })}
                 </span>
               )}
               <button
@@ -1915,14 +1917,14 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
                     statsOpen ? "rotate-0" : "-rotate-90"
                   )}
                 />
-                Advanced
+                {t("config.pulse.advancedToggle")}
               </button>
             </div>
             {statsOpen && (
               <div className="mt-2 space-y-1 text-xs text-muted-foreground">
-                <FieldRow label="Runs" value={String(runCount)} />
-                <FieldRow label="Last Run" value={formatTime(lastRun)} />
-                <FieldRow label="Next Run" value={formatTime(nextRun)} />
+                <FieldRow label={t("pulse.runs")} value={String(runCount)} />
+                <FieldRow label={t("pulse.lastRun")} value={formatTime(lastRun)} />
+                <FieldRow label={t("pulse.nextRun")} value={formatTime(nextRun)} />
               </div>
             )}
           </div>
@@ -1931,9 +1933,9 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
 
       <Separator />
 
-      <Section title="Instructions">
+      <Section title={t("routines.instructions")}>
         <p className="text-xs text-muted-foreground mb-2">
-          What should the agent do on each pulse? The agent will message you only if something needs attention.
+          {t("pulse.checklistHint")}
         </p>
 
         {/* AI authoring field — describe the idea and let the model write the
@@ -1944,7 +1946,9 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
             rows={2}
             value={pulseIdea}
             disabled={revising}
-            placeholder={`Describe the idea and the action you want — e.g. "watch ${managed.agent.displayName || "this agent"}'s calendar and remind me to prep an hour before meetings". The model writes robust instructions.`}
+            placeholder={t("config.pulse.ideaPlaceholderDetailed", {
+              name: managed.agent.displayName || t("thisAgent"),
+            })}
             onChange={(e) => setPulseIdea(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
@@ -1955,37 +1959,41 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
           />
           <div className="flex items-center justify-between gap-3 px-3 pb-2">
             <span className="text-[11px] text-muted-foreground">
-              Enter to generate · Shift+Enter for a new line
+              {t("config.pulse.enterShiftHint")}
             </span>
             <Button size="sm" variant="outline" onClick={handleRevise} disabled={revising || !pulseIdea.trim()}>
               {revising && <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />}
-              {revising ? "Generating..." : "Generate"}
+              {revising ? t("common:generating") : t("common:generate")}
             </Button>
           </div>
         </div>
 
-        {proposed && (
-          <div className="mb-2 rounded-md border border-border bg-muted/40 px-3 py-2.5 text-xs text-muted-foreground">
-            AI-proposed instructions loaded below. Review and edit as needed, then{" "}
-            <span className="font-medium text-foreground">Save Changes</span> to apply.
-          </div>
-        )}
+        {proposed && (() => {
+          const [before, , after] = t("config.pulse.proposedBanner").split(/<bold>|<\/bold>/);
+          return (
+            <div className="mb-2 rounded-md border border-border bg-muted/40 px-3 py-2.5 text-xs text-muted-foreground">
+              {before}
+              <span className="font-medium text-foreground">{t("common:saveChanges")}</span>
+              {after}
+            </div>
+          );
+        })()}
 
         <textarea
           className="w-full min-h-[200px] rounded-md border border-input bg-background px-3 py-2 text-sm font-mono resize-y focus:outline-none focus:ring-1 focus:ring-ring"
           value={pulseMd}
           onChange={(e) => { setPulseMd(e.target.value); setDirty(true); setProposed(false); }}
-          placeholder="e.g., Check if any reminders are due..."
+          placeholder={t("pulse.editorPlaceholder")}
         />
       </Section>
 
       <Separator />
 
-      <Section title="Schedule">
+      <Section title={t("pulse.schedule")}>
         <div className="space-y-3">
           <div className="grid grid-cols-4 gap-3">
             <div className="space-y-1.5">
-              <Label className="text-xs">Interval (min)</Label>
+              <Label className="text-xs">{t("config.pulse.intervalMinShort")}</Label>
               <Input
                 type="number"
                 min={5}
@@ -1998,7 +2006,7 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs">Active From</Label>
+              <Label className="text-xs">{t("pulse.activeFrom")}</Label>
               <Select
                 value={String(activeStart)}
                 onValueChange={(v) => { setActiveStart(Number(v)); setDirty(true); }}
@@ -2014,7 +2022,7 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
               </Select>
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs">Active Until</Label>
+              <Label className="text-xs">{t("pulse.activeUntil")}</Label>
               <Select
                 value={String(activeEnd)}
                 onValueChange={(v) => { setActiveEnd(Number(v)); setDirty(true); }}
@@ -2030,7 +2038,7 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
               </Select>
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs">Timezone</Label>
+              <Label className="text-xs">{t("settings:timezone.label")}</Label>
               <Select value={timezone} onValueChange={(v) => { if (v) { setTimezone(v); setDirty(true); } }}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
@@ -2042,7 +2050,7 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
             </div>
           </div>
           <p className="text-xs text-muted-foreground">
-            Interval minimum 5 minutes — the scheduler runs every 5 minutes. Active hours use the selected timezone.
+            {t("config.pulse.scheduleHint")}
           </p>
 
           {/* Pulse delivery workspace — only meaningful when the owner
@@ -2052,7 +2060,7 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
               Personal workspace (empty organizationId). */}
           {workspacesEnabled && workspaces.length > 1 && (
             <div className="space-y-1.5">
-              <Label className="text-xs">Pulse workspace</Label>
+              <Label className="text-xs">{t("pulse.workspace")}</Label>
               <Select
                 value={organizationId || "__personal__"}
                 onValueChange={(v) => {
@@ -2063,14 +2071,14 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
               >
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="__personal__">Default (your Personal workspace)</SelectItem>
+                  <SelectItem value="__personal__">{t("pulse.defaultWorkspace")}</SelectItem>
                   {workspaces.map((w) => (
                     <SelectItem key={w.id} value={w.id}>{w.name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
               <p className="text-[11px] text-muted-foreground">
-                Which workspace this agent's pulse alerts post into.
+                {t("pulse.deliveryHint")}
               </p>
             </div>
           )}
@@ -2094,7 +2102,7 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
       {dirty && (
         <div className="sticky bottom-0 bg-background border-t border-border pt-3 pb-1">
           <Button onClick={handleSave} disabled={saving} className="w-full">
-            {saving ? "Saving..." : "Save Changes"}
+            {saving ? t("common:saving") : t("common:saveChanges")}
           </Button>
         </div>
       )}
@@ -2103,6 +2111,7 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
 }
 
 function HealthPanel({ managed }: { managed: ManagedAgent }) {
+  const { t } = useTranslation("agents");
   const [detail, setDetail] = useState<AgentHealthDetail | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   // ALL hooks must run unconditionally on every render — the previous
@@ -2141,7 +2150,7 @@ function HealthPanel({ managed }: { managed: ManagedAgent }) {
   if (!health) {
     return (
       <div className="text-center text-muted-foreground py-10 text-sm">
-        No health data available
+        {t("config.health.noData")}
       </div>
     );
   }
@@ -2170,7 +2179,7 @@ function HealthPanel({ managed }: { managed: ManagedAgent }) {
       await fetchDetail();
     } catch (e) {
       setActionError(
-        e instanceof Error ? e.message : `Failed to run ${label}.`
+        e instanceof Error ? e.message : t("config.health.actionFailed", { label })
       );
     } finally {
       setActionLoading(null);
@@ -2180,9 +2189,9 @@ function HealthPanel({ managed }: { managed: ManagedAgent }) {
   return (
     <div className="flex-1 overflow-y-auto p-5 space-y-5">
       {/* Status Overview */}
-      <Section title="Status">
+      <Section title={t("common:status")}>
         <FieldRow
-          label="Health"
+          label={t("config.health.label")}
           value={
             <Badge
               variant="outline"
@@ -2193,19 +2202,22 @@ function HealthPanel({ managed }: { managed: ManagedAgent }) {
                   "border-destructive/30 text-destructive bg-destructive/10"
               )}
             >
-              {health.healthStatus}
+              {t(`config.health.status.${health.healthStatus}`, { defaultValue: health.healthStatus })}
             </Badge>
           }
         />
         <FieldRow
-          label="Executors"
-          value={`${health.onlineExecutorCount} / ${health.executorCount} online`}
+          label={t("health.executors")}
+          value={t("config.health.onlineOfTotal", {
+            online: health.onlineExecutorCount,
+            total: health.executorCount,
+          })}
         />
-        <FieldRow label="Queued Tasks" value={String(health.queuedTasks)} />
-        <FieldRow label="Queued Messages" value={String(health.queuedMessages)} />
+        <FieldRow label={t("config.health.queuedTasksLabel")} value={String(health.queuedTasks)} />
+        <FieldRow label={t("config.health.queuedMessagesLabel")} value={String(health.queuedMessages)} />
         {health.stuckCount > 0 && (
           <FieldRow
-            label="Stuck Items"
+            label={t("config.health.stuckItemsLabel")}
             value={
               <span className="text-destructive font-medium">{health.stuckCount}</span>
             }
@@ -2214,7 +2226,7 @@ function HealthPanel({ managed }: { managed: ManagedAgent }) {
       </Section>
 
       {/* Quick Actions — always show Unstick, conditionally show others */}
-      <Section title="Actions">
+      <Section title={t("config.health.actionsTitle")}>
         <div className="flex flex-wrap gap-2 py-1">
           <Button
             size="sm"
@@ -2223,7 +2235,7 @@ function HealthPanel({ managed }: { managed: ManagedAgent }) {
             onClick={() =>
               handleAction(
                 "unstick",
-                "Unstick",
+                t("health.unstickAction"),
                 async () => {
                   const r = await unstickAgent(managed.agent.id);
                   if (
@@ -2231,16 +2243,20 @@ function HealthPanel({ managed }: { managed: ManagedAgent }) {
                     r.tasksExpired === 0 &&
                     r.messagesRequeued === 0
                   ) {
-                    return "nothing to unstick";
+                    return t("health.nothingToUnstickMessage");
                   }
-                  return `reset ${r.executorsReset} executor(s), expired ${r.tasksExpired} task(s) and re-queued ${r.messagesRequeued} message(s)`;
+                  return t("health.unstuckMessage", {
+                    executors: r.executorsReset,
+                    tasks: r.tasksExpired,
+                    messages: r.messagesRequeued,
+                  });
                 },
-                "Re-enable disabled executors and re-queue any stuck tasks or messages. Safe to run any time the agent feels stalled."
+                t("health.unstickMessage")
               )
             }
           >
             <RefreshCw className="w-3.5 h-3.5 mr-1.5" />
-            {actionLoading === "unstick" ? "Unsticking..." : "Unstick Agent"}
+            {actionLoading === "unstick" ? t("config.health.unsticking") : t("health.unstickTitle")}
           </Button>
           {(health.queuedMessages > 0 || (detail?.unackedMessages.length ?? 0) > 0) && (
             <Button
@@ -2250,18 +2266,21 @@ function HealthPanel({ managed }: { managed: ManagedAgent }) {
               onClick={() =>
                 handleAction(
                   "clear-messages",
-                  "Clear messages",
+                  t("health.clearMessagesTitle"),
                   async () => {
                     const r = await clearAgentMessages(managed.agent.id);
-                    if (r.expired === 0 && r.unclaimed === 0) return "nothing to clear";
-                    return `expired ${r.expired}, unclaimed ${r.unclaimed}`;
+                    if (r.expired === 0 && r.unclaimed === 0) return t("config.health.nothingToClear");
+                    return t("health.messagesClearedMessage", {
+                      expired: r.expired,
+                      unclaimed: r.unclaimed,
+                    });
                   },
-                  "Expire every queued message for this agent. Use when a flood of stuck messages is blocking new work."
+                  t("health.clearMessagesMessage")
                 )
               }
             >
               <Inbox className="w-3.5 h-3.5 mr-1.5" />
-              {actionLoading === "clear-messages" ? "Clearing..." : "Clear Messages"}
+              {actionLoading === "clear-messages" ? t("config.health.clearing") : t("health.clearMessagesTitle")}
             </Button>
           )}
           {(health.queuedTasks > 0 || (detail?.stuckTasks.length ?? 0) > 0) && (
@@ -2272,18 +2291,21 @@ function HealthPanel({ managed }: { managed: ManagedAgent }) {
               onClick={() =>
                 handleAction(
                   "clear-tasks",
-                  "Clear tasks",
+                  t("health.clearTasksTitle"),
                   async () => {
                     const r = await clearAgentTasks(managed.agent.id);
-                    if (r.expired === 0 && r.unclaimed === 0) return "nothing to clear";
-                    return `expired ${r.expired}, unclaimed ${r.unclaimed}`;
+                    if (r.expired === 0 && r.unclaimed === 0) return t("config.health.nothingToClear");
+                    return t("health.tasksClearedMessage", {
+                      expired: r.expired,
+                      unclaimed: r.unclaimed,
+                    });
                   },
-                  "Expire every queued task for this agent. Use when stuck tasks are blocking new assignments."
+                  t("health.clearTasksMessage")
                 )
               }
             >
               <ListTodo className="w-3.5 h-3.5 mr-1.5" />
-              {actionLoading === "clear-tasks" ? "Clearing..." : "Clear Tasks"}
+              {actionLoading === "clear-tasks" ? t("config.health.clearing") : t("health.clearTasksTitle")}
             </Button>
           )}
           <Button
@@ -2293,17 +2315,21 @@ function HealthPanel({ managed }: { managed: ManagedAgent }) {
             onClick={() =>
               handleAction(
                 "reset",
-                "Force reset",
+                t("config.health.forceResetLabel"),
                 async () => {
                   const r = await forceResetAgent(managed.agent.id);
-                  return `disabled ${r.disabledExecutors} executor(s), unclaimed ${r.unclaimedTasks} task(s) and ${r.unclaimedMessages} message(s)`;
+                  return t("health.resetDoneMessage", {
+                    executors: r.disabledExecutors,
+                    tasks: r.unclaimedTasks,
+                    messages: r.unclaimedMessages,
+                  });
                 },
-                "Shut down all executors and unclaim all pending work. The agent will need to be restarted manually."
+                t("health.forceResetMessage")
               )
             }
           >
             <Zap className="w-3.5 h-3.5 mr-1.5" />
-            {actionLoading === "reset" ? "Resetting..." : "Force Reset"}
+            {actionLoading === "reset" ? t("config.health.resetting") : t("health.forceResetTitle")}
           </Button>
         </div>
         {actionResult && (
@@ -2319,7 +2345,7 @@ function HealthPanel({ managed }: { managed: ManagedAgent }) {
 
       {/* Executors */}
       {detail && detail.executors.length > 0 && (
-        <Section title="Executors">
+        <Section title={t("health.executors")}>
           <div className="space-y-2">
             {detail.executors.map((ex) => (
               <div
@@ -2339,10 +2365,16 @@ function HealthPanel({ managed }: { managed: ManagedAgent }) {
                         ex.status === "disabled" && "border-muted-foreground/30 text-muted-foreground"
                       )}
                     >
-                      {ex.status}
+                      {ex.status === "online"
+                        ? t("common:online")
+                        : ex.status === "offline"
+                        ? t("common:offline")
+                        : t("common:disabled")}
                     </Badge>
                     {ex.activeTaskCount > 0 && (
-                      <span className="text-[10px] text-muted-foreground">{ex.activeTaskCount} active</span>
+                      <span className="text-[10px] text-muted-foreground">
+                        {t("config.health.activeCount", { count: ex.activeTaskCount })}
+                      </span>
                     )}
                   </div>
                   {/* Liveness metadata — last poll, process uptime, memory.
@@ -2355,9 +2387,15 @@ function HealthPanel({ managed }: { managed: ManagedAgent }) {
                     };
                     const bits: string[] = [];
                     if (ex.secondsSincePoll != null)
-                      bits.push(`poll ${formatDuration(ex.secondsSincePoll)} ago`);
+                      bits.push(
+                        t("config.health.pollAgoInline", {
+                          duration: formatDuration(ex.secondsSincePoll),
+                        })
+                      );
                     if (pm.uptimeSeconds != null)
-                      bits.push(`up ${formatDuration(pm.uptimeSeconds)}`);
+                      bits.push(
+                        t("config.health.upInline", { duration: formatDuration(pm.uptimeSeconds) })
+                      );
                     if (pm.memoryMb != null) bits.push(`${pm.memoryMb.toFixed(0)} MB`);
                     return bits.length > 0 ? (
                       <div className="mt-0.5 ml-5 flex gap-3 text-[10px] text-muted-foreground">
@@ -2378,16 +2416,16 @@ function HealthPanel({ managed }: { managed: ManagedAgent }) {
                       const name = ex.displayName || ex.executorKey;
                       handleAction(
                         `kill-${ex.id}`,
-                        "Kill executor",
+                        t("config.health.killExecutorLabel"),
                         async () => {
                           await killExecutor(managed.agent.id, ex.id);
-                          return `shut down "${name}"`;
+                          return t("config.health.killedSummary", { name });
                         },
-                        `Kill executor "${name}"? It will stop processing tasks.`
+                        t("health.killMessage", { name })
                       );
                     }}
                   >
-                    {actionLoading === `kill-${ex.id}` ? "..." : "Kill"}
+                    {actionLoading === `kill-${ex.id}` ? "..." : t("health.killAction")}
                   </Button>
                 )}
               </div>
@@ -2398,7 +2436,7 @@ function HealthPanel({ managed }: { managed: ManagedAgent }) {
 
       {/* Stuck Tasks */}
       {detail && detail.stuckTasks.length > 0 && (
-        <Section title={`Stuck Tasks (${detail.stuckTasks.length})`}>
+        <Section title={t("config.health.stuckTasksTitle", { count: detail.stuckTasks.length })}>
           <div className="space-y-1.5">
             {detail.stuckTasks.map((task) => (
               <div
@@ -2406,10 +2444,13 @@ function HealthPanel({ managed }: { managed: ManagedAgent }) {
                 className="flex items-center justify-between py-1.5 px-2 rounded-md bg-destructive/5 border border-destructive/10"
               >
                 <div className="min-w-0">
-                  <div className="text-sm truncate">{task.title || "Untitled task"}</div>
+                  <div className="text-sm truncate">{task.title || t("config.health.untitledTask")}</div>
                   <div className="text-[10px] text-muted-foreground flex items-center gap-1">
                     <Clock className="w-3 h-3" />
-                    {task.status} for {formatDuration(task.elapsedSeconds)}
+                    {t("config.health.taskStatusDuration", {
+                      status: task.status,
+                      duration: formatDuration(task.elapsedSeconds),
+                    })}
                   </div>
                 </div>
               </div>
@@ -2420,7 +2461,7 @@ function HealthPanel({ managed }: { managed: ManagedAgent }) {
 
       {/* Stuck Messages */}
       {detail && detail.unackedMessages.length > 0 && (
-        <Section title={`Unacknowledged Messages (${detail.unackedMessages.length})`}>
+        <Section title={t("config.health.unackedMessagesTitle", { count: detail.unackedMessages.length })}>
           <div className="space-y-1.5">
             {detail.unackedMessages.map((msg) => (
               <div
@@ -2429,7 +2470,7 @@ function HealthPanel({ managed }: { managed: ManagedAgent }) {
               >
                 <div className="text-[10px] text-muted-foreground flex items-center gap-1">
                   <Clock className="w-3 h-3" />
-                  Claimed for {formatDuration(msg.elapsedSeconds)}
+                  {t("config.health.claimedForDuration", { duration: formatDuration(msg.elapsedSeconds) })}
                 </div>
               </div>
             ))}
@@ -2486,18 +2527,16 @@ function FieldRow({
 // — it just shows the current avatar + name + description as an
 // across-tab anchor; editing happens here.
 
-const AGENT_TYPES: Array<{ value: string; label: string; desc: string }> = [
-  { value: "worker", label: "Worker", desc: "Does tasks when asked" },
-  { value: "orchestrator", label: "Orchestrator", desc: "Coordinates other agents" },
-  { value: "reviewer", label: "Reviewer", desc: "Reviews and validates work" },
-  { value: "observer", label: "Observer", desc: "Monitors conversations" },
-];
+// labelKey pattern — value maps to agents:types.<value>.label / .desc,
+// resolved with t() at render time, never at module scope.
+const AGENT_TYPES = ["worker", "orchestrator", "reviewer", "observer"] as const;
 
 function ProfileSection({
   agent,
 }: {
   agent: Agent;
 }) {
+  const { t } = useTranslation("agents");
   const { fetchAgents } = useAgentStore();
   const limits = useFieldLimits();
   const activeWorkspace = useActiveWorkspace();
@@ -2560,7 +2599,7 @@ function ProfileSection({
   const handleSave = useCallback(async () => {
     const trimmedName = name.trim();
     if (!trimmedName) {
-      setError("Display name is required.");
+      setError(t("errors.displayNameRequired"));
       return;
     }
     setSaving(true);
@@ -2594,11 +2633,11 @@ function ProfileSection({
       setSaved(true);
       setTimeout(() => setSaved(false), 1800);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to save profile.");
+      setError(e instanceof Error ? e.message : t("config.profile.saveFailed"));
     } finally {
       setSaving(false);
     }
-  }, [agent.id, name, desc, agentType, caps, visibility, initialVisibility, activeWorkspace?.id, fetchAgents]);
+  }, [agent.id, name, desc, agentType, caps, visibility, initialVisibility, activeWorkspace?.id, fetchAgents, t]);
 
   const handleAvatarClick = () => {
     const input = document.createElement("input");
@@ -2621,7 +2660,7 @@ function ProfileSection({
       await updateAgent(agent.id, { avatarUrl: newUrl });
       await fetchAgents();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Avatar upload failed.");
+      setError(e instanceof Error ? e.message : t("config.profile.avatarUploadFailed"));
     } finally {
       setUploadingAvatar(false);
     }
@@ -2629,14 +2668,14 @@ function ProfileSection({
 
   return (
     <>
-      <Section title="Identity">
+      <Section title={t("config.profile.identityTitle")}>
         {/* Avatar — own row at the top so it reads as the focal point. */}
         <div className="flex items-center gap-3 mb-5">
           <button
             onClick={handleAvatarClick}
             disabled={uploadingAvatar}
             className="relative flex-shrink-0"
-            title="Change avatar"
+            title={t("config.profile.changeAvatarTitle")}
           >
             <Avatar className="h-16 w-16 rounded-lg">
               {agent.avatarUrl && (
@@ -2655,13 +2694,13 @@ function ProfileSection({
             </div>
           </button>
           <p className="text-xs text-muted-foreground">
-            Click the avatar to upload a new picture (square crop, JPEG/PNG/WebP).
+            {t("config.profile.avatarHint")}
           </p>
         </div>
 
         <div className="space-y-1.5">
           <div className="flex items-baseline justify-between">
-            <Label className="text-xs">Display Name</Label>
+            <Label className="text-xs">{t("config.profile.displayNameLabel")}</Label>
             <span className="text-[10px] text-muted-foreground tabular-nums">
               {name.length}/{limits.agent.displayName}
             </span>
@@ -2669,7 +2708,7 @@ function ProfileSection({
           <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="My Agent"
+            placeholder={t("config.profile.namePlaceholder")}
             className="text-sm"
             maxLength={limits.agent.displayName}
           />
@@ -2677,7 +2716,7 @@ function ProfileSection({
 
         <div className="space-y-1.5 mt-4">
           <div className="flex items-baseline justify-between">
-            <Label className="text-xs">Description</Label>
+            <Label className="text-xs">{t("common:description")}</Label>
             <span className="text-[10px] text-muted-foreground tabular-nums">
               {desc.length}/{limits.agent.description}
             </span>
@@ -2685,14 +2724,14 @@ function ProfileSection({
           <Input
             value={desc}
             onChange={(e) => setDesc(e.target.value)}
-            placeholder="What this agent does"
+            placeholder={t("publish.placeholders.description")}
             className="text-sm"
             maxLength={limits.agent.description}
           />
         </div>
 
         <div className="space-y-1.5 mt-4">
-          <Label className="text-xs">Agent Role</Label>
+          <Label className="text-xs">{t("edit.role")}</Label>
           <Select
             value={agentType}
             onValueChange={(val: string | null) => {
@@ -2703,35 +2742,36 @@ function ProfileSection({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {AGENT_TYPES.map((t) => (
-                <SelectItem key={t.value} value={t.value}>
-                  {t.label}
+              {AGENT_TYPES.map((type) => (
+                <SelectItem key={type} value={type}>
+                  {t(`types.${type}.label`)}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
           <p className="text-[11px] text-muted-foreground">
-            {AGENT_TYPES.find((t) => t.value === agentType)?.desc ?? ""}
+            {AGENT_TYPES.includes(agentType as (typeof AGENT_TYPES)[number])
+              ? t(`types.${agentType}.desc`)
+              : ""}
           </p>
         </div>
 
         <div className="space-y-1.5 mt-4">
-          <Label className="text-xs">Capabilities</Label>
+          <Label className="text-xs">{t("capabilities")}</Label>
           <Input
             value={caps}
             onChange={(e) => setCaps(e.target.value)}
-            placeholder="search, weather, calendar"
+            placeholder={t("edit.capabilitiesPlaceholder")}
             className="text-xs"
           />
           <p className="text-[11px] text-muted-foreground">
-            Comma-separated tags. Used by orchestrators to discover which
-            sibling can handle a task.
+            {t("config.profile.capabilitiesHint")}
           </p>
         </div>
 
         {workspacesEnabled && (
         <div className="space-y-1.5 mt-4">
-          <Label className="text-xs">Visibility</Label>
+          <Label className="text-xs">{t("wizard.visibility.label")}</Label>
           <div className="grid grid-cols-2 gap-2">
             <button
               type="button"
@@ -2743,9 +2783,9 @@ function ProfileSection({
                   : "border-border hover:bg-accent"
               )}
             >
-              <span className="text-xs font-medium">Personal</span>
+              <span className="text-xs font-medium">{t("wizard.visibility.personal")}</span>
               <span className="text-[10px] text-muted-foreground">
-                Visible in all your workspaces
+                {t("wizard.visibility.personalHint")}
               </span>
             </button>
             <button
@@ -2764,15 +2804,17 @@ function ProfileSection({
               )}
             >
               <span className="text-xs font-medium">
-                Pinned to{" "}
-                {activeWorkspace && !activeWorkspace.isPersonal
-                  ? activeWorkspace.name
-                  : "this workspace"}
+                {t("wizard.visibility.pinnedTo", {
+                  name:
+                    activeWorkspace && !activeWorkspace.isPersonal
+                      ? activeWorkspace.name
+                      : t("wizard.visibility.thisWorkspace"),
+                })}
               </span>
               <span className="text-[10px] text-muted-foreground">
                 {activeWorkspace && !activeWorkspace.isPersonal
-                  ? "Only visible in this workspace"
-                  : "Switch to a shared workspace to pin"}
+                  ? t("wizard.visibility.pinnedHint")
+                  : t("wizard.visibility.pinDisabledHint")}
               </span>
             </button>
           </div>
@@ -2794,10 +2836,10 @@ function ProfileSection({
             ) : saved ? (
               <Check className="w-3 h-3 mr-1.5" />
             ) : null}
-            {saved ? "Saved" : "Save"}
+            {saved ? t("common:saved") : t("common:save")}
           </Button>
           {dirty && !saving && (
-            <span className="text-[11px] text-muted-foreground">Unsaved changes</span>
+            <span className="text-[11px] text-muted-foreground">{t("config.profile.unsavedChanges")}</span>
           )}
         </div>
       </Section>
@@ -2815,18 +2857,18 @@ function ProfileSection({
               detailsOpen ? "rotate-0" : "-rotate-90"
             )}
           />
-          Details
+          {t("common:details")}
         </button>
         {detailsOpen && (
           <>
             <div className="space-y-1.5">
-              <Label className="text-xs">Agent ID</Label>
+              <Label className="text-xs">{t("agentId")}</Label>
               <div className="flex items-center gap-2">
                 <code className="flex-1 truncate rounded bg-muted px-2 py-1.5 font-mono text-xs">{agent.id}</code>
                 <button
                   onClick={handleCopyId}
                   className="rounded p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"
-                  title="Copy agent ID"
+                  title={t("copyAgentId")}
                 >
                   {copiedId ? <Check className="h-3.5 w-3.5 text-success" /> : <Copy className="h-3.5 w-3.5" />}
                 </button>
@@ -2835,14 +2877,14 @@ function ProfileSection({
 
             {agent.ownerId && (
               <div className="space-y-1.5 mt-4">
-                <Label className="text-xs">Owner</Label>
+                <Label className="text-xs">{t("owner")}</Label>
                 <p className="text-sm text-muted-foreground font-mono">{agent.ownerId}</p>
               </div>
             )}
 
             {agent.insertedAt && (
               <div className="space-y-1.5 mt-4">
-                <Label className="text-xs">Created</Label>
+                <Label className="text-xs">{t("common:created")}</Label>
                 <p className="text-sm text-muted-foreground">{new Date(agent.insertedAt).toLocaleDateString()}</p>
               </div>
             )}
@@ -2880,6 +2922,7 @@ function AgentHeader({
 }: {
   agent: { id: string; displayName: string; avatarUrl?: string; description?: string; agentType?: string };
 }) {
+  const { t } = useTranslation("agents");
   const selectAgent = useAgentStore((s) => s.selectAgent);
   return (
     // Fixed h-14 (matches every other column header in the app) so the bottom
@@ -2902,8 +2945,8 @@ function AgentHeader({
       </div>
       <button
         onClick={() => selectAgent(null)}
-        title="Close"
-        aria-label="Close agent details"
+        title={t("common:close")}
+        aria-label={t("config.header.closeAriaLabel")}
         className="shrink-0 flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
       >
         <X className="h-4 w-4" />
@@ -2921,6 +2964,7 @@ function DangerZone({
   agent: { id: string; displayName: string; metadata?: Record<string, unknown> };
   onDeleted: () => void;
 }) {
+  const { t } = useTranslation("agents");
   const { fetchAgents, stopAgent } = useAgentStore();
   // Collapsed by default so destructive actions take a deliberate expand
   // before they're reachable.
@@ -2951,7 +2995,7 @@ function DangerZone({
       await fetchAgents();
       onDeleted();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to deactivate");
+      setError(e instanceof Error ? e.message : t("deactivate.failed"));
     } finally {
       setDeactivating(false);
     }
@@ -2973,7 +3017,7 @@ function DangerZone({
       await fetchAgents();
       onDeleted();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to delete");
+      setError(e instanceof Error ? e.message : t("delete.failed"));
     } finally {
       setDeleting(false);
     }
@@ -3001,7 +3045,7 @@ function DangerZone({
       await revokeConnection(connId);
       setConnections((prev) => prev.filter((c) => c.id !== connId));
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to revoke");
+      setError(e instanceof Error ? e.message : t("connections.errors.revokeFailed"));
     } finally {
       setRevokingId(null);
     }
@@ -3023,7 +3067,7 @@ function DangerZone({
               expanded ? "rotate-0" : "-rotate-90"
             )}
           />
-          Danger Zone
+          {t("dangerZone")}
         </button>
         {expanded && (
           <div className="space-y-2">
@@ -3037,7 +3081,7 @@ function DangerZone({
               }}
             >
               <Unlink className="w-3.5 h-3.5 mr-2" />
-              Manage Connections
+              {t("config.dangerZone.manageConnections")}
             </Button>
 
             <Button
@@ -3048,7 +3092,7 @@ function DangerZone({
               disabled={deactivating}
             >
               <AlertTriangle className="w-3.5 h-3.5 mr-2" />
-              {deactivating ? "Deactivating..." : "Deactivate Agent"}
+              {deactivating ? t("config.dangerZone.deactivating") : t("deactivate.title")}
             </Button>
 
             <Button
@@ -3058,7 +3102,7 @@ function DangerZone({
               onClick={() => setShowDelete(true)}
             >
               <Trash2 className="w-3.5 h-3.5 mr-2" />
-              Delete Permanently
+              {t("delete.permanently")}
             </Button>
           </div>
         )}
@@ -3068,16 +3112,35 @@ function DangerZone({
       <Dialog open={showDelete} onOpenChange={setShowDelete}>
         <DialogContent className="max-w-sm">
           <DialogHeader>
-            <DialogTitle>Delete Agent Permanently</DialogTitle>
+            <DialogTitle>{t("delete.title")}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              This will permanently delete <strong>{agent.displayName}</strong> and all
-              associated data. This action cannot be undone.
+              {(() => {
+                const [before, , after] = t("config.dangerZone.deleteExplain").split(/<bold>|<\/bold>/);
+                return (
+                  <>
+                    {before}
+                    <strong>{agent.displayName}</strong>
+                    {after}
+                  </>
+                );
+              })()}
             </p>
             <div className="space-y-1.5">
               <label className="text-xs font-medium">
-                Type <strong>{agent.displayName}</strong> to confirm
+                {(() => {
+                  const [before, , after] = t("settings:workspace.typeToConfirm", {
+                    name: "",
+                  }).split(/<bold>|<\/bold>/);
+                  return (
+                    <>
+                      {before}
+                      <strong>{agent.displayName}</strong>
+                      {after}
+                    </>
+                  );
+                })()}
               </label>
               <Input
                 value={confirmName}
@@ -3093,7 +3156,7 @@ function DangerZone({
               disabled={confirmName !== agent.displayName || deleting}
               onClick={handleDeletePermanently}
             >
-              {deleting ? "Deleting..." : "Delete Permanently"}
+              {deleting ? t("common:deleting") : t("delete.permanently")}
             </Button>
           </div>
         </DialogContent>
@@ -3103,15 +3166,15 @@ function DangerZone({
       <Dialog open={showConnections} onOpenChange={setShowConnections}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Connections</DialogTitle>
+            <DialogTitle>{t("config.dangerZone.connectionsTitle")}</DialogTitle>
           </DialogHeader>
           {loadingConns ? (
             <p className="text-sm text-muted-foreground text-center py-4">
-              Loading...
+              {t("common:loading")}
             </p>
           ) : connections.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-4">
-              No connections for this agent.
+              {t("config.dangerZone.noConnections")}
             </p>
           ) : (
             <div className="space-y-1 max-h-60 overflow-y-auto">
@@ -3122,7 +3185,7 @@ function DangerZone({
                 >
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium truncate">
-                      {conn.agentName || conn.requesterName || "Unknown"}
+                      {conn.agentName || conn.requesterName || t("common:unknown")}
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {conn.status}
@@ -3135,7 +3198,7 @@ function DangerZone({
                     disabled={revokingId === conn.id}
                     onClick={() => handleRevoke(conn.id)}
                   >
-                    {revokingId === conn.id ? "..." : "Disconnect"}
+                    {revokingId === conn.id ? "..." : t("common:disconnect")}
                   </Button>
                 </div>
               ))}
@@ -3156,6 +3219,7 @@ function DangerZone({
  * store handles the Tauri commands + polling.
  */
 function ComputerUseDepsRow() {
+  const { t } = useTranslation("agents");
   const status = useAgentStore((s) => s.computerUseDeps);
   const refresh = useAgentStore((s) => s.refreshComputerUseDepsStatus);
   const install = useAgentStore((s) => s.installComputerUseDeps);
@@ -3170,8 +3234,7 @@ function ComputerUseDepsRow() {
     return (
       <p className="text-xs text-green-600 dark:text-green-500 mt-2 flex items-center gap-1">
         <Check className="w-3 h-3" />
-        Safety features installed (real perm probe, native Quartz drivers,
-        terminal redaction).
+        {t("config.computerUseDeps.installed")}
       </p>
     );
   }
@@ -3181,7 +3244,7 @@ function ComputerUseDepsRow() {
     return (
       <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
         <Loader2 className="w-3 h-3 animate-spin" />
-        Installing safety features (1–3 min, runs in background)…
+        {t("config.computerUseDeps.installing")}
         {lastLine && (
           <span className="ml-1 truncate font-mono opacity-70">{lastLine}</span>
         )}
@@ -3194,7 +3257,7 @@ function ComputerUseDepsRow() {
       <div className="text-xs mt-2 space-y-1">
         <p className="text-destructive flex items-center gap-1">
           <AlertTriangle className="w-3 h-3" />
-          Safety feature install failed.
+          {t("config.computerUseDeps.failed")}
         </p>
         {status.error && (
           <p className="text-muted-foreground font-mono break-all">{status.error}</p>
@@ -3205,7 +3268,7 @@ function ComputerUseDepsRow() {
           className="h-6 text-xs"
           onClick={() => void install()}
         >
-          Retry install
+          {t("config.computerUseDeps.retryInstall")}
         </Button>
       </div>
     );
@@ -3215,10 +3278,7 @@ function ComputerUseDepsRow() {
   return (
     <div className="text-xs mt-2 space-y-1">
       <p className="text-muted-foreground">
-        Optional safety features not installed — currently using fallbacks
-        (8KB perm-probe heuristic, cliclick for scroll/right-click, screenshot
-        refusal when terminal is visible). Installing adds the real Screen
-        Recording perm check, native Quartz drivers, and terminal redaction.
+        {t("config.computerUseDeps.notInstalledExplain")}
       </p>
       <Button
         variant="outline"
@@ -3226,7 +3286,7 @@ function ComputerUseDepsRow() {
         className="h-6 text-xs"
         onClick={() => void install()}
       >
-        Install safety features
+        {t("config.computerUseDeps.installAction")}
       </Button>
     </div>
   );
@@ -3241,6 +3301,7 @@ function ComputerUseDepsRow() {
 // ---------------------------------------------------------------------------
 
 function RuntimePanel({ agent }: { agent: Agent }) {
+  const { t } = useTranslation("agents");
   // Active workspace replaces the old single-org store. Personal
   // workspaces aren't valid *workspace-host* targets (the multi-host
   // picker below), but they ARE valid for the subscription "Hosted"
@@ -3398,59 +3459,58 @@ function RuntimePanel({ agent }: { agent: Agent }) {
       }
       await fetchAgents();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not update runtime");
+      setError(e instanceof Error ? e.message : t("runtime.updateFailed"));
     } finally {
       setSaving(false);
     }
   };
 
   return (
-    <Section title="Runtime">
+    <Section title={t("config.runtime.sectionTitle")}>
       <div className="space-y-3">
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           <RuntimeRadio
-            label="Hosted"
+            label={t("runtime.hosted")}
             icon={Cloud}
-            tag="Recommended"
-            description="Always-on in the cloud, included with your subscription. Stays connected and working even when your desktop is closed — no setup."
+            tag={t("config.runtime.recommendedTag")}
+            description={t("config.runtime.hostedDescription")}
             selected={pendingRuntime === "org_host"}
             onClick={() => canSwitchToOrgHost && setPendingRuntime("org_host")}
             disabled={!canSwitchToOrgHost}
           />
           <RuntimeRadio
-            label="Local"
+            label={t("runtime.local")}
             icon={Laptop}
-            tag="Advanced"
-            description="Runs on this machine, using your own model and tools. For when you want hands-on control — goes offline when you quit the app."
+            tag={t("config.runtime.advancedTag")}
+            description={t("config.runtime.localDescription")}
             selected={pendingRuntime === "local"}
             onClick={() => setPendingRuntime("local")}
           />
         </div>
 
         {hostsLoading && !hostsLoaded && (
-          <p className="text-xs text-muted-foreground">Loading hosts…</p>
+          <p className="text-xs text-muted-foreground">{t("config.runtime.loadingHosts")}</p>
         )}
         {/* Explain why Hosted is unavailable. Only relevant when neither
             path is open — subscribers always have the subscription path. */}
         {!canSwitchToOrgHost && !isPlan && (
           <p className="text-xs text-muted-foreground">
-            Hosted is included with a subscription — subscribe to run this agent
-            always-on in the cloud, even when your desktop is closed.
+            {t("runtime.subscribeHint")}
           </p>
         )}
         {!canSwitchToOrgHost && isPlan && !subscriptionHostId && (
           <p className="text-xs text-muted-foreground">
-            Your hosted environment is still being set up — try again in a moment.
+            {t("config.runtime.settingUp")}
           </p>
         )}
 
         {showHostPicker && (
           <>
             <div className="space-y-1.5">
-              <Label className="text-xs">Host</Label>
+              <Label className="text-xs">{t("runtime.host")}</Label>
               <Select value={pendingHostId ?? undefined} onValueChange={(v) => setPendingHostId(v)}>
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Pick a host" />
+                  <SelectValue placeholder={t("config.runtime.pickHostPlaceholder")} />
                 </SelectTrigger>
                 <SelectContent>
                   {hosts.map((h) => (
@@ -3467,7 +3527,7 @@ function RuntimePanel({ agent }: { agent: Agent }) {
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs">Presence</Label>
+              <Label className="text-xs">{t("runtime.presence")}</Label>
               <Select
                 value={pendingPresence}
                 onValueChange={(v) => setPendingPresence(v as typeof pendingPresence)}
@@ -3476,9 +3536,9 @@ function RuntimePanel({ agent }: { agent: Agent }) {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="always_on">Always on</SelectItem>
-                  <SelectItem value="wake_on_demand">Wake on demand</SelectItem>
-                  <SelectItem value="manual">Manual</SelectItem>
+                  <SelectItem value="always_on">{t("runtime.alwaysOn")}</SelectItem>
+                  <SelectItem value="wake_on_demand">{t("runtime.wakeOnDemand")}</SelectItem>
+                  <SelectItem value="manual">{t("runtime.manual")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -3486,7 +3546,7 @@ function RuntimePanel({ agent }: { agent: Agent }) {
             {pendingPresence === "wake_on_demand" && (
               <div className="space-y-1.5">
                 <Label className="text-xs" htmlFor="idle-timeout">
-                  Idle timeout (seconds)
+                  {t("runtime.idleTimeout")}
                 </Label>
                 <Input
                   id="idle-timeout"
@@ -3509,9 +3569,7 @@ function RuntimePanel({ agent }: { agent: Agent }) {
             choice so the two surfaces behave identically. */}
         {pendingRuntime === "org_host" && !showHostPicker && (
           <p className="text-xs text-muted-foreground">
-            Runs always-on in the cloud using your plan&apos;s shared brain —
-            nothing else to set up. Switch back to Local anytime to use your own
-            model on this machine.
+            {t("config.runtime.hostedNoPickerExplain")}
           </p>
         )}
 
@@ -3520,7 +3578,7 @@ function RuntimePanel({ agent }: { agent: Agent }) {
         {dirty && (
           <div className="flex items-center gap-2">
             <Button size="sm" onClick={() => void save()} disabled={saving}>
-              {saving ? "Saving…" : "Save"}
+              {saving ? t("common:saving") : t("common:save")}
             </Button>
             <Button
               variant="ghost"
@@ -3532,7 +3590,7 @@ function RuntimePanel({ agent }: { agent: Agent }) {
                 setPendingIdle(currentIdle);
               }}
             >
-              Cancel
+              {t("common:cancel")}
             </Button>
           </div>
         )}

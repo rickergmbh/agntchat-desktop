@@ -325,7 +325,7 @@ export function ConversationDetailsPanel({
             overflowing. */}
         <div className="px-4 py-3">
           <h4 className="mb-2 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
-            Members
+            {t("nav:members")}
           </h4>
           <ul className="max-h-60 overflow-y-auto space-y-0.5 pr-1">
             {members.map((m) => (
@@ -339,7 +339,7 @@ export function ConversationDetailsPanel({
                 onRemove={() =>
                   handleRemove(
                     m.participantId,
-                    m.participant?.displayName ?? "this member"
+                    m.participant?.displayName ?? t("details.thisMember")
                   )
                 }
               />
@@ -354,16 +354,16 @@ export function ConversationDetailsPanel({
                   className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
                 >
                   <UserPlus className="h-4 w-4" />
-                  Add members
+                  {t("details.addMembers")}
                 </button>
               ) : (
                 <div className="rounded-lg border border-border p-2">
                   <p className="mb-2 text-[11px] font-medium text-muted-foreground">
-                    Select agents to add
+                    {t("details.selectAgentsToAdd")}
                   </p>
                   {availableAgents.length === 0 ? (
                     <p className="text-xs text-muted-foreground px-1 py-0.5">
-                      No agents available
+                      {t("noAgentsAvailable")}
                     </p>
                   ) : (
                     <ul className="max-h-48 space-y-0.5 overflow-y-auto">
@@ -396,11 +396,11 @@ export function ConversationDetailsPanel({
                         setAddingIds(new Set());
                       }}
                     >
-                      Cancel
+                      {t("common:cancel")}
                     </Button>
                     {addingIds.size > 0 && (
                       <Button size="sm" onClick={handleAddSelected}>
-                        Add ({addingIds.size})
+                        {t("details.addCount", { count: addingIds.size })}
                       </Button>
                     )}
                   </div>
@@ -421,14 +421,14 @@ export function ConversationDetailsPanel({
         <div className="relative px-4 py-3 before:absolute before:top-0 before:left-4 before:right-4 before:h-px before:bg-border">
           <button
             onClick={() => {
-              if (confirm("Clear messages from this conversation locally? Server history stays intact.")) {
+              if (confirm(t("menu.clearChatConfirm"))) {
                 clearChatLocal(conversation.id);
               }
             }}
             className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
           >
             <Eraser className="h-4 w-4" />
-            Clear chat (local)
+            {t("menu.clearChatLocal")}
           </button>
         </div>
 
@@ -438,24 +438,24 @@ export function ConversationDetailsPanel({
             <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3">
               <p className="text-sm font-medium">
                 {danger === "delete"
-                  ? "Delete this conversation?"
-                  : "Leave this conversation?"}
+                  ? t("details.deleteConfirmTitle")
+                  : t("details.leaveConfirmTitle")}
               </p>
               <p className="mt-1 text-xs text-muted-foreground">
                 {danger === "delete"
-                  ? "This removes it for everyone and cannot be undone."
-                  : "You'll no longer see new messages here."}
+                  ? t("details.deleteConfirmBody")
+                  : t("details.leaveConfirmBody")}
               </p>
               <div className="mt-2 flex justify-end gap-2">
                 <Button size="sm" variant="ghost" onClick={() => setDanger(null)}>
-                  Cancel
+                  {t("common:cancel")}
                 </Button>
                 <Button
                   size="sm"
                   variant="destructive"
                   onClick={handleDangerConfirm}
                 >
-                  {danger === "delete" ? "Delete" : "Leave"}
+                  {danger === "delete" ? t("common:delete") : t("details.leave")}
                 </Button>
               </div>
             </div>
@@ -465,7 +465,7 @@ export function ConversationDetailsPanel({
               className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-destructive hover:bg-destructive/10"
             >
               <Trash2 className="h-4 w-4" />
-              Delete conversation
+              {t("menu.deleteConversation")}
             </button>
           ) : (
             <button
@@ -473,7 +473,7 @@ export function ConversationDetailsPanel({
               className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-destructive hover:bg-destructive/10"
             >
               <LogOut className="h-4 w-4" />
-              Leave conversation
+              {t("menu.leaveConversation")}
             </button>
           )}
         </div>
@@ -501,8 +501,9 @@ function MemberRow({
   isConversationCreator: boolean;
   onRemove: () => void;
 }) {
+  const { t } = useTranslation("chat");
   const p = member.participant;
-  const name = p?.displayName ?? "Unknown";
+  const name = p?.displayName ?? t("common:unknown");
   const isAgent = p?.type === "agent";
   const isOnline = presence !== "offline";
   // Live activity (thinking / working / writing) read reactively per row so
@@ -536,7 +537,7 @@ function MemberRow({
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-1.5">
           <span className="truncate text-sm font-medium">{name}</span>
-          {isSelf && <span className="text-[10px] text-muted-foreground">(You)</span>}
+          {isSelf && <span className="text-[10px] text-muted-foreground">({t("common:you")})</span>}
           {isConversationCreator && (
             <Crown className="h-3 w-3 text-warning shrink-0" />
           )}
@@ -545,7 +546,8 @@ function MemberRow({
           <AgentActivityIndicator activity={activity} />
         ) : (
           <p className="text-[11px] text-muted-foreground">
-            {isAgent ? "Agent" : "Human"} · {isOnline ? "Online" : "Offline"}
+            {isAgent ? t("common:agent") : t("common:human")} ·{" "}
+            {isOnline ? t("common:online") : t("common:offline")}
           </p>
         )}
       </div>
@@ -554,7 +556,7 @@ function MemberRow({
         <button
           onClick={onRemove}
           className="rounded p-1 text-muted-foreground opacity-0 hover:bg-destructive/10 hover:text-destructive/90 group-hover:opacity-100 transition-opacity"
-          title="Remove member"
+          title={t("details.removeMember")}
         >
           <UserMinus className="h-3.5 w-3.5" />
         </button>
@@ -570,6 +572,7 @@ function MemorySection({
   entry: { memory: ConversationMemory; version: number } | undefined;
   loading: boolean;
 }) {
+  const { t } = useTranslation("memory");
   const memory = entry?.memory;
   const hasAnything =
     !!memory &&
@@ -585,7 +588,7 @@ function MemorySection({
       <div className="flex items-center gap-2 px-4 pt-3 pb-2">
         <Brain className="h-3.5 w-3.5 text-primary" />
         <h4 className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-          Memory
+          {t("title")}
         </h4>
       </div>
 
@@ -595,24 +598,23 @@ function MemorySection({
         </div>
       ) : !hasAnything ? (
         <p className="px-4 pb-4 text-xs text-muted-foreground">
-          No memory yet. The summary builds as agents and humans exchange
-          messages; it'll appear here once the first pass runs.
+          {t("empty")}
         </p>
       ) : (
         <div>
           {memory!.summary && (
-            <MemorySubsection title="Summary" icon={FileText} defaultOpen>
+            <MemorySubsection title={t("sections.summary")} icon={FileText} defaultOpen>
               <p className="leading-relaxed">{memory!.summary}</p>
             </MemorySubsection>
           )}
           {memory!.currentState && (
-            <MemorySubsection title="Current State" icon={Info}>
+            <MemorySubsection title={t("sections.currentState")} icon={Info}>
               <p className="leading-relaxed">{memory!.currentState}</p>
             </MemorySubsection>
           )}
           {memory!.keyDecisions && memory!.keyDecisions.length > 0 && (
             <MemorySubsection
-              title="Key Decisions"
+              title={t("sections.keyDecisions")}
               icon={CheckSquare}
               count={memory!.keyDecisions.length}
             >
@@ -630,7 +632,7 @@ function MemorySection({
           )}
           {memory!.openQuestions && memory!.openQuestions.length > 0 && (
             <MemorySubsection
-              title="Open Questions"
+              title={t("sections.openQuestions")}
               icon={HelpCircle}
               count={memory!.openQuestions.length}
             >
@@ -643,7 +645,7 @@ function MemorySection({
           )}
           {memory!.completedWork && memory!.completedWork.length > 0 && (
             <MemorySubsection
-              title="Completed Work"
+              title={t("sections.completedWork")}
               icon={CheckSquare}
               count={memory!.completedWork.length}
             >
@@ -657,7 +659,7 @@ function MemorySection({
           {memory!.participantsContext &&
             Object.keys(memory!.participantsContext).length > 0 && (
               <MemorySubsection
-                title="Participants"
+                title={t("sections.participants")}
                 icon={Users}
                 count={Object.keys(memory!.participantsContext).length}
               >
@@ -676,7 +678,7 @@ function MemorySection({
             )}
           {memory!.updatedAt && (
             <p className="px-4 py-2 text-[10px] text-muted-foreground">
-              Updated {new Date(memory!.updatedAt).toLocaleString()}
+              {t("updatedAt", { date: new Date(memory!.updatedAt).toLocaleString() })}
             </p>
           )}
         </div>
@@ -742,29 +744,30 @@ function ParticipantContextRow({
   participantId: string;
   entry: ParticipantContextEntry;
 }) {
+  const { t } = useTranslation("memory");
   const isAgent = entry.type === "agent";
   const meta = [
     entry.role,
     entry.message_count != null
-      ? `${entry.message_count} msg${entry.message_count === 1 ? "" : "s"}`
+      ? t("messageCount", { count: entry.message_count })
       : null,
     isAgent && entry.model ? entry.model : null,
-    isAgent && entry.trust_level ? `trust: ${entry.trust_level}` : null,
+    isAgent && entry.trust_level ? t("trustLevel", { level: entry.trust_level }) : null,
   ].filter(Boolean) as string[];
 
   const pillGroups: Array<{ label: string; items: string[] }> = [];
   if (entry.capabilities?.length)
-    pillGroups.push({ label: "Capabilities", items: entry.capabilities });
-  if (entry.roles?.length) pillGroups.push({ label: "Roles", items: entry.roles });
-  if (entry.tools?.length) pillGroups.push({ label: "Tools", items: entry.tools });
+    pillGroups.push({ label: t("capabilities"), items: entry.capabilities });
+  if (entry.roles?.length) pillGroups.push({ label: t("roles"), items: entry.roles });
+  if (entry.tools?.length) pillGroups.push({ label: t("tools"), items: entry.tools });
 
   return (
     <div>
       <dt className="flex items-center gap-1.5 text-foreground">
         <span className="font-medium">{entry.name ?? participantId}</span>
         {isAgent && (
-          <span className="rounded bg-bubble-agent-accent/10 px-1 py-0.5 text-[9px] font-semibold text-bubble-agent-accent">
-            AGENT
+          <span className="rounded bg-bubble-agent-accent/10 px-1 py-0.5 text-[9px] font-semibold uppercase text-bubble-agent-accent">
+            {t("common:agent")}
           </span>
         )}
       </dt>
@@ -819,8 +822,9 @@ function AvatarBlock({
   onFile: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onRemove: () => void;
 }) {
+  const { t } = useTranslation("chat");
   const hasCustomAvatar = !!conversation.avatarUrl;
-  const title = conversation.title || "Group";
+  const title = conversation.title || t("group");
 
   return (
     <div className="relative flex flex-col items-center py-5 after:absolute after:bottom-0 after:left-4 after:right-4 after:h-px after:bg-border">
@@ -846,7 +850,7 @@ function AvatarBlock({
               type="button"
               onClick={() => avatarInputRef.current?.click()}
               disabled={uploading}
-              title={hasCustomAvatar ? "Change photo" : "Upload photo"}
+              title={hasCustomAvatar ? t("details.changePhoto") : t("details.uploadPhoto")}
               // Poke outside the avatar bounding box and stack above the
               // GroupAvatar's overflow tile (which uses z-30 on web +
               // desktop). z-40 on the camera is enough to beat it.
@@ -867,7 +871,7 @@ function AvatarBlock({
           onClick={onRemove}
           className="mt-3 text-[11px] text-muted-foreground hover:text-destructive"
         >
-          Remove photo
+          {t("details.removePhoto")}
         </button>
       )}
       {avatarError && (

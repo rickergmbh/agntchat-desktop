@@ -46,6 +46,11 @@ export const resources = {
       },
       "agentDetails": "Agent Details",
       "agentId": "Agent ID",
+      "apiKeyReveal": {
+        "copied": "Copied!",
+        "copyButton": "Copy API Key",
+        "warning": "Save this API key now — it won't be shown again."
+      },
       "avatar": {
         "chooseNew": "Choose New Photo",
         "chooseOption": "Choose an option",
@@ -74,7 +79,43 @@ export const resources = {
       "categories": "Categories",
       "collapseSubAgents": "Collapse sub-agents",
       "config": {
+        "agentApiKey": {
+          "generateAction": "Generate API Key",
+          "generating": "Generating...",
+          "noKeyExplain": "This usually means the agent was set up on another device — keys never leave the computer they were created on. Generate a new key to run the agent from here. The old key stops working, so if the agent runs on another computer you'll need to generate again there to move it back.",
+          "noKeyTitle": "No key stored on this computer",
+          "regenerating": "Regenerating...",
+          "title": "Agent API Key"
+        },
+        "apiKey": {
+          "customKey": "Custom Key...",
+          "noneSetInSettings": "None (set in Settings)",
+          "placeholder": "sk-...",
+          "providerDefault": "Provider Default"
+        },
+        "apiKeyGenerateHint": "Generate a new key to run this agent from here. This will invalidate any existing key.",
+        "apiKeyNoneStored": "No key stored on this machine",
+        "apiKeySectionTitle": "Agent API Key",
+        "autoDocDescription": "Attach relevant API references to every task this agent receives.",
+        "autoDocLabel": "Auto-inject API documentation",
+        "autoDocTooltip": "When on, every task this agent receives gets relevant API doc snippets attached automatically — based on its capabilities and the task content. Useful when the agent calls external APIs (Stripe, Slack, etc.). Off by default.",
         "awsRegionPlaceholder": "AWS region (e.g. us-east-1)",
+        "behavior": {
+          "autoRestart": "Auto-restart on crash or stall",
+          "skipPermissions": {
+            "description": "Lets Claude Code & Codex act without per-action approval. Enable only for agents you fully trust.",
+            "label": "Skip permissions"
+          },
+          "title": "Behavior"
+        },
+        "computerUseDeps": {
+          "failed": "Safety feature install failed.",
+          "installAction": "Install safety features",
+          "installed": "Safety features installed (real perm probe, native Quartz drivers, terminal redaction).",
+          "installing": "Installing safety features (1–3 min, runs in background)…",
+          "notInstalledExplain": "Optional safety features not installed — currently using fallbacks (8KB perm-probe heuristic, cliclick for scroll/right-click, screenshot refusal when terminal is visible). Installing adds the real Screen Recording perm check, native Quartz drivers, and terminal redaction.",
+          "retryInstall": "Retry install"
+        },
         "crash": {
           "agentCrashed": "Agent crashed",
           "apiKeyProblem": "API key problem",
@@ -84,17 +125,155 @@ export const resources = {
           "fixing": "Fixing…"
         },
         "customOption": "{{value}} (custom)",
+        "dangerZone": {
+          "connectionsTitle": "Connections",
+          "deactivating": "Deactivating...",
+          "deleteExplain": "This will permanently delete <bold></bold> and all associated data. This action cannot be undone.",
+          "manageConnections": "Manage Connections",
+          "noConnections": "No connections for this agent."
+        },
+        "effort": {
+          "defaultDescription": "Default reasoning depth — thorough and careful.",
+          "defaultOption": "Default (high)",
+          "tooltipBody": "Controls how much thinking the model does. Lower effort = faster responses, higher effort = more thorough.",
+          "tooltipTitle": "Reasoning depth"
+        },
+        "effortDefaultDescription": "Default reasoning depth — thorough and careful.",
+        "effortDefaultOption": "Default (high)",
+        "effortTooltipBody": "Controls how much thinking the model does. Lower effort = faster responses, higher effort = more thorough.",
+        "effortTooltipTitle": "Reasoning depth",
+        "generateApiKeyButton": "Generate API Key",
         "groupOperations": "Operations",
+        "header": {
+          "closeAriaLabel": "Close agent details"
+        },
         "health": {
-          "label": "Health"
+          "actionFailed": "Failed to run {{label}}.",
+          "actionsTitle": "Actions",
+          "activeCount": "{{count}} active",
+          "claimedForDuration": "Claimed for {{duration}}",
+          "clearing": "Clearing...",
+          "forceResetLabel": "Force reset",
+          "killExecutorLabel": "Kill executor",
+          "killedSummary": "shut down \"{{name}}\"",
+          "label": "Health",
+          "noData": "No health data available",
+          "nothingToClear": "nothing to clear",
+          "onlineOfTotal": "{{online}} / {{total}} online",
+          "pollAgoInline": "poll {{duration}} ago",
+          "queuedMessagesLabel": "Queued Messages",
+          "queuedTasksLabel": "Queued Tasks",
+          "resetting": "Resetting...",
+          "status": {
+            "degraded": "Degraded",
+            "healthy": "Healthy",
+            "offline": "Offline",
+            "stuck": "Stuck"
+          },
+          "stuckItemsLabel": "Stuck Items",
+          "stuckTasksTitle": "Stuck Tasks ({{count}})",
+          "taskStatusDuration": "{{status}} for {{duration}}",
+          "unackedMessagesTitle": "Unacknowledged Messages ({{count}})",
+          "unsticking": "Unsticking...",
+          "untitledTask": "Untitled task",
+          "upInline": "up {{duration}}"
         },
         "hostManagedConnection": "Connection is managed by the host. Pick any supported model below.",
         "hostedSetByPlan": "Hosted · set by your plan",
+        "keyRegeneratingLabel": "Regenerating...",
+        "localRuntime": {
+          "allowedApps": {
+            "addButton": "Add allowed app",
+            "description": "Optional. When empty, the agent can interact with any app except the hardcoded deny list (1Password, Keychain, etc). When non-empty, the agent is restricted to these apps — anything else is refused. Match is case-insensitive substring against the focused application name. Restart the agent after editing for changes to take effect.",
+            "label": "Allowed apps",
+            "promptMessage": "App name to allow (e.g. 'Safari', 'Calculator'). Match is case-insensitive substring."
+          },
+          "computerUse": {
+            "description": "Lets this agent control the computer — screenshots, clicks, typing (Claude Code & Codex).",
+            "label": "Allow computer use",
+            "macPermissions": "Needs Screen Recording & Accessibility permissions.",
+            "restartHint": "Restart the agent after changing.",
+            "windowsInput": "Uses native Windows input.",
+            "windowsSafetyBuiltIn": "Safety features built in on Windows (focused-app gate, terminal-window redaction, audit log) — nothing to install."
+          },
+          "startOnLaunch": "Start on app launch",
+          "subtitle": "These apply only while this agent runs on your machine (Local runtime).",
+          "title": "Local runtime settings",
+          "workingDirs": {
+            "addButton": "Add Directory",
+            "description": "Directories this agent can access. Adding directories also enables CLI tools (Bash, Read, Edit, Web) alongside AgentGram tools.",
+            "label": "Working directories",
+            "promptMessage": "Enter directory path:"
+          }
+        },
+        "mode": {
+          "label": "Mode",
+          "notAvailable": "(not available)",
+          "notSupported": "Not supported by {{provider}}. Falls back to Single Shot at runtime.",
+          "tooltipBody": "Controls whether the agent gets a single response, can use tools iteratively, or runs code.",
+          "tooltipTitle": "How the agent calls the LLM"
+        },
+        "modeTooltipBody": "Controls whether the agent gets a single response, can use tools iteratively, or runs code.",
+        "modeTooltipTitle": "How the agent calls the LLM",
+        "modeUnsupportedWarning": "Not supported by {{provider}}. Falls back to Single Shot at runtime.",
         "noClaudeSeat": "⚠️ This host has no Claude seat connected yet — the agent can't authenticate until one is set up.",
+        "profile": {
+          "avatarHint": "Click the avatar to upload a new picture (square crop, JPEG/PNG/WebP).",
+          "avatarUploadFailed": "Avatar upload failed.",
+          "capabilitiesHint": "Comma-separated tags. Used by orchestrators to discover which sibling can handle a task.",
+          "changeAvatarTitle": "Change avatar",
+          "displayNameLabel": "Display Name",
+          "identityTitle": "Identity",
+          "namePlaceholder": "My Agent",
+          "saveFailed": "Failed to save profile.",
+          "unsavedChanges": "Unsaved changes"
+        },
+        "publish": {
+          "discoverableExplain": "Make this agent discoverable to other Agentgram users.",
+          "listingNameRequired": "Listing Name *",
+          "loadStatusFailed": "Failed to load listing status",
+          "publishAction": "Publish",
+          "rating": "Rating",
+          "tagsCommaSeparated": "Tags (comma-separated)",
+          "unrated": "Unrated"
+        },
+        "pulse": {
+          "advancedToggle": "Advanced",
+          "enterShiftHint": "Enter to generate · Shift+Enter for a new line",
+          "ideaPlaceholderDetailed": "Describe the idea and the action you want — e.g. \"watch {{name}}'s calendar and remind me to prep an hour before meetings\". The model writes robust instructions.",
+          "intervalMinShort": "Interval (min)",
+          "proposedBanner": "AI-proposed instructions loaded below. Review and edit as needed, then <bold></bold> to apply.",
+          "saveFailed": "Failed to save pulse.",
+          "saved": "Saved.",
+          "scheduleHint": "Interval minimum 5 minutes — the scheduler runs every 5 minutes. Active hours use the selected timezone.",
+          "triggerNow": "Trigger Now"
+        },
+        "runtime": {
+          "advancedTag": "Advanced",
+          "hostedDescription": "Always-on in the cloud, included with your subscription. Stays connected and working even when your desktop is closed — no setup.",
+          "hostedNoPickerExplain": "Runs always-on in the cloud using your plan's shared brain — nothing else to set up. Switch back to Local anytime to use your own model on this machine.",
+          "loadingHosts": "Loading hosts…",
+          "localDescription": "Runs on this machine, using your own model and tools. For when you want hands-on control — goes offline when you quit the app.",
+          "pickHostPlaceholder": "Pick a host",
+          "recommendedTag": "Recommended",
+          "sectionTitle": "Runtime",
+          "settingUp": "Your hosted environment is still being set up — try again in a moment."
+        },
         "sectionLogs": "Logs",
         "share": {
+          "clipboardUnavailable": "Clipboard API unavailable (use HTTPS or copy manually).",
+          "copyFailed": "Couldn't copy to clipboard.",
+          "copyMessage": "Copy Message",
+          "copyToShare": "Copy to Share",
+          "description": "Send this agent's identifier to someone so they can connect with it through the directory.",
+          "fallbackShareTooltip": "Browser has no share sheet — falls back to copy",
+          "messageLabel": "Share Message",
+          "nativeShareTooltip": "Open native share sheet",
+          "shareEllipsis": "Share…",
+          "shareTitle": "Connect with {{name}}",
           "title": "Share Agent"
         },
+        "skipPermissionsDescription": "Lets Claude Code & Codex act without per-action approval. Enable only for agents you fully trust.",
         "syncError": "Couldn't save this to the server ({{error}}). The connection takes effect only once saved — the agent will keep using its last saved connection until this succeeds.",
         "vertexProjectPlaceholder": "GCP project ID",
         "vertexRegionPlaceholder": "Vertex region (e.g. us-east5)"
@@ -153,6 +332,20 @@ export const resources = {
           "sent": "Sent"
         },
         "thisAgent": "This agent"
+      },
+      "connectionsSection": {
+        "direction": {
+          "incoming": "incoming",
+          "outgoing": "outgoing"
+        },
+        "empty": "No connections",
+        "emptyHint": "Connections let other agents discover and message this one through the directory.",
+        "status": {
+          "accepted": "Accepted",
+          "pending": "Pending",
+          "rejected": "Rejected",
+          "revoked": "Revoked"
+        }
       },
       "copy": {
         "idCopied": "Agent ID copied to clipboard.",
@@ -358,6 +551,13 @@ export const resources = {
       "createFirstAgent": "Create your first agent",
       "createFirstAgentHint": "Agents are AI teammates you can chat with, assign tasks to, and build with. Pick a personality, give them a job, and you're off.",
       "dangerZone": "Danger Zone",
+      "dangerZoneActions": {
+        "deactivateConfirm": "Deactivate this agent? It will stop responding to messages.",
+        "deactivating": "Deactivating...",
+        "deleteWarningParagraph": "This will permanently delete {{name}} and all associated data. This action cannot be undone.",
+        "deleting": "Deleting...",
+        "typeToConfirmLabel": "Type {{name}} to confirm"
+      },
       "deactivate": {
         "action": "Deactivate",
         "cloneMessage": "This will deactivate your local copy of \"{{name}}\". The original agent is not affected.",
@@ -489,7 +689,16 @@ export const resources = {
       },
       "friendsOnly": "Friends only",
       "getDesktopApp": "Get Desktop App",
+      "groups": {
+        "access": "Access",
+        "capabilities": "Capabilities",
+        "operations": "Operations",
+        "sharing": "Sharing"
+      },
       "health": {
+        "actionFailed": "Failed to run {{label}}.",
+        "activeCount": "{{count}} active",
+        "claimedForDuration": "Claimed for {{duration}}",
         "clearMessagesCount_one": "Clear {{count}} message",
         "clearMessagesCount_other": "Clear {{count}} messages",
         "clearMessagesFailed": "Failed to clear messages.",
@@ -500,36 +709,60 @@ export const resources = {
         "clearTasksFailed": "Failed to clear tasks.",
         "clearTasksMessage": "Expire every queued task for this agent. Use when stuck tasks are blocking new assignments.",
         "clearTasksTitle": "Clear Tasks",
+        "dataUnavailable": "Health data not available",
         "degradedExplain": "At least one executor hasn't checked in for over 45s. The bridge may be busy with a long LLM call or the network is jittery.",
         "degradedTitle": "Agent Degraded",
+        "executorStatus": {
+          "disabled": "Disabled",
+          "offline": "Offline",
+          "online": "Online",
+          "registered": "Registered"
+        },
         "executors": "Executors",
         "executorsOnline": "Executors: {{online}}/{{total}} online",
+        "executorsOnlineValue": "{{online}} / {{total}} online",
+        "forceResetActionLabel": "Force reset",
         "forceResetMessage": "This will shut down all executors and unclaim all pending work. The agent will need to be restarted manually.",
         "forceResetTitle": "Force Reset Agent",
         "killAction": "Kill",
         "killFailed": "Failed to kill executor.",
         "killMessage": "Kill \"{{name}}\"? It will stop immediately and any work it has claimed will be released.",
         "killTitle": "Kill Executor",
+        "killedExecutorSummary": "shut down \"{{name}}\"",
+        "memoryMb": "{{value}} MB",
         "messagesClearedMessage": "Expired {{expired}} queued messages and released {{unclaimed}} claimed messages.",
         "messagesClearedTitle": "Messages Cleared",
+        "nothingToClear": "Nothing to clear.",
         "nothingToUnstickMessage": "The agent has no stuck items.",
         "nothingToUnstickTitle": "Nothing to Unstick",
         "pollAgo": "Polled {{duration}} ago",
         "queuedMessages": "Queued messages: {{count}}",
+        "queuedMessagesLabel": "Queued Messages",
         "queuedTasks": "Queued tasks: {{count}}",
+        "queuedTasksLabel": "Queued Tasks",
         "reducedHealth": "The agent is reporting reduced health.",
         "resetAction": "Reset",
         "resetDoneMessage": "Disabled {{executors}} executors, unclaimed {{tasks}} tasks and {{messages}} messages.",
         "resetDoneTitle": "Agent Reset",
         "resetFailed": "Failed to reset agent.",
+        "statusValue": {
+          "degraded": "Degraded",
+          "healthy": "Healthy",
+          "offline": "Offline",
+          "stuck": "Stuck"
+        },
         "stuckExplain": "The agent has tasks or messages that are stuck — claimed but not completed within the timeout.",
+        "stuckForDuration": "stuck for {{duration}}",
         "stuckItems": "Stuck items: {{count}}",
+        "stuckItemsLabel": "Stuck Items",
+        "stuckTasksSectionTitle": "Stuck Tasks ({{count}})",
         "stuckTasks_one": "{{count}} stuck task",
         "stuckTasks_other": "{{count}} stuck tasks",
         "stuckTitle": "Agent Stuck",
         "tasksClearedMessage": "Expired {{expired}} queued tasks and released {{unclaimed}} claimed tasks.",
         "tasksClearedTitle": "Tasks Cleared",
         "title": "Health & Executors",
+        "unackedMessagesSectionTitle": "Unacknowledged Messages ({{count}})",
         "unackedMessages_one": "{{count}} unacknowledged message",
         "unackedMessages_other": "{{count}} unacknowledged messages",
         "unstickAction": "Unstick",
@@ -574,9 +807,11 @@ export const resources = {
         "changeAgent": "Change Agent",
         "count_one": "{{count}} location",
         "count_other": "{{count}} locations",
+        "deleteFailed": "Failed to delete location",
         "deleteMessage": "Delete \"{{label}}\"?",
         "deleteTitle": "Delete Location",
         "detailsTitle": "Location Details",
+        "discardConfirm": "Discard unsaved location changes?",
         "droppedPin": "Dropped pin: {{lat}}, {{lng}}",
         "editLocation": "Edit Location",
         "empty": "No Locations",
@@ -592,7 +827,10 @@ export const resources = {
           "lngRange": "Longitude must be between -180 and 180"
         },
         "geocodeHint": "Enter an address and tap the button to update coordinates",
+        "labelPlaceholder": "Office, Home, Studio…",
+        "latLngRequired": "Latitude and longitude are required.",
         "latitude": "Latitude",
+        "loadFailed": "Failed to load locations",
         "longitude": "Longitude",
         "metadataJson": "Metadata (JSON)",
         "notFoundTitle": "Not Found",
@@ -603,11 +841,36 @@ export const resources = {
         "primary": "Primary",
         "primaryLocation": "Primary Location",
         "saveLocation": "Save Location",
+        "saveLocationFailed": "Failed to save location",
         "selectAgent": "Select an Agent",
         "selectAgentHint": "Choose which agent operates at this location",
-        "title": "Agent Locations"
+        "setAsPrimaryTitle": "Set as primary",
+        "setPrimaryAction": "Set primary",
+        "setPrimaryHint": "Used as the agent's default location.",
+        "title": "Agent Locations",
+        "updateFailed": "Failed to update location"
       },
       "lookUpAgent": "Look Up Agent",
+      "memory": {
+        "category": {
+          "fact": "Fact",
+          "learning": "Learning",
+          "preference": "Preference",
+          "relationship": "Relationship",
+          "skill": "Skill"
+        },
+        "categoryPlural": {
+          "fact": "Facts",
+          "learning": "Learnings",
+          "preference": "Preferences",
+          "relationship": "Relationships",
+          "skill": "Skills"
+        },
+        "deleteAgentConfirm": "Delete this agent memory (\"{{key}}\")? This only affects {{name}}.",
+        "deleteFailed": "Failed to delete memory",
+        "keyContentRequired": "Key and content are required.",
+        "privateToAgent": "Private to {{name}}."
+      },
       "model": {
         "advancedHint": "Saved when you tap away. Leave blank to use the platform default. Used by the local bridge.",
         "backend": "Backend",
@@ -632,7 +895,9 @@ export const resources = {
         "atLeastOneRuntimeTitle": "At least one runtime"
       },
       "profile": {
+        "avatarUploadHint": "Click the avatar to upload a new picture (square crop, JPEG/PNG/WebP).",
         "capabilities": "Capabilities",
+        "capabilitiesHint": "Comma-separated tags. Used by orchestrators to discover which sibling can handle a task.",
         "chat": "Chat",
         "disconnectMessage": "Are you sure you want to disconnect from {{name}}?",
         "disconnectTitle": "Disconnect Agent",
@@ -640,10 +905,12 @@ export const resources = {
           "disconnectFailed": "Failed to disconnect. Please try again.",
           "requestFailed": "Failed to request connection."
         },
+        "namePlaceholder": "My Agent",
         "notFoundHint": "Check the Agent ID and try again.",
         "pendingApproval": "Pending Approval",
         "requestSentMessage": "The agent's owner will review your connection request.",
-        "requestSentTitle": "Request Sent"
+        "requestSentTitle": "Request Sent",
+        "unsavedChanges": "Unsaved changes"
       },
       "proxy": {
         "copyKey": "Copy Key",
@@ -657,14 +924,37 @@ export const resources = {
       },
       "publish": {
         "categories": "Categories",
+        "category": {
+          "coding": "Coding",
+          "dataAnalysis": "Data Analysis",
+          "design": "Design",
+          "devops": "DevOps",
+          "general": "General",
+          "qa": "QA",
+          "research": "Research",
+          "writing": "Writing"
+        },
+        "categoryOptions": {
+          "coding": "Coding",
+          "dataAnalysis": "Data Analysis",
+          "design": "Design",
+          "devops": "DevOps",
+          "general": "General",
+          "qa": "QA",
+          "research": "Research",
+          "writing": "Writing"
+        },
         "connection": "Connection",
+        "discoverableHint": "Make this agent discoverable to other Agentgram users.",
         "errors": {
           "nameRequired": "Listing name is required.",
           "noAgent": "No agent selected.",
           "saveFailed": "Failed to save listing.",
           "unpublishFailed": "Failed to unpublish."
         },
+        "listedTitle": "Listed in Directory",
         "listingName": "Listing Name",
+        "loadStatusFailed": "Failed to load listing status",
         "modes": {
           "direct": {
             "hint": "Runs on your machine. Uses your API credits.",
@@ -679,22 +969,29 @@ export const resources = {
             "title": "Proxy"
           }
         },
+        "notListedTitle": "Not listed in the directory",
+        "ownerOnlyHint": "Only the owner can publish this agent.",
         "placeholders": {
           "description": "What does this agent do?",
           "listingName": "Agent display name",
           "tags": "elixir, phoenix, ai"
         },
+        "publishButton": "Publish",
         "publishedMessage": "{{name}} is now listed in the directory.",
         "publishedTitle": "Published",
         "publishing": "Publishing...",
+        "rating": "Rating",
+        "removeConfirm": "Remove this agent from the directory?",
         "removing": "Removing...",
         "submit": "Publish to Directory",
         "tags": "Tags",
         "tagsHint": "Comma-separated tags",
+        "tagsLabelHint": "Tags (comma-separated)",
         "unpublish": "Unpublish",
         "unpublishFromDirectory": "Unpublish from Directory",
         "unpublishMessage": "This agent will be removed from the directory. Existing connections won't be affected.",
         "unpublishTitle": "Unpublish listing?",
+        "unrated": "Unrated",
         "viewListing": "View Listing",
         "visibility": "Visibility",
         "visibilityOptions": {
@@ -725,6 +1022,7 @@ export const resources = {
           "triggerFailed": "Failed to trigger."
         },
         "ideaPlaceholder": "Describe the idea and the action you want…",
+        "intervalActiveHoursHint": "Interval minimum 5 minutes — the scheduler runs every 5 minutes. Active hours use the selected timezone.",
         "intervalHint": "Minimum 5 minutes — the scheduler runs every 5 minutes.",
         "intervalMinutes": "Interval (minutes)",
         "lastRun": "Last run",
@@ -732,11 +1030,13 @@ export const resources = {
         "notYetRun": "not yet run",
         "pausedAuto": "Paused (auto)",
         "personalWorkspace": "Personal workspace",
+        "proposedBannerPrefix": "AI-proposed instructions loaded below. Review and edit as needed, then",
         "runs": "Runs",
         "schedule": "Schedule",
         "subtitle": "Periodic autonomous thinking",
         "title": "Pulse",
         "trigger": "Trigger",
+        "triggerNow": "Trigger Now",
         "triggeredMessage": "Pulse run started.",
         "triggeredTitle": "Triggered",
         "workspace": "Pulse workspace",
@@ -769,6 +1069,7 @@ export const resources = {
       },
       "rolesLabel": "Roles",
       "routines": {
+        "am": "AM",
         "atMinute": "At minute",
         "consecutiveFailures_one": "{{count}} consecutive failure",
         "consecutiveFailures_other": "{{count}} consecutive failures",
@@ -840,6 +1141,7 @@ export const resources = {
         "notScheduled": "Not scheduled",
         "orSendToAnother": "Or send to another conversation:",
         "pickAtLeastOneDay": "Pick at least one day for this routine to run.",
+        "pm": "PM",
         "preset": {
           "everyDay": "Every day",
           "weekdays": "Weekdays",
@@ -887,14 +1189,20 @@ export const resources = {
       "runningCount_one": "{{count}} running",
       "runningCount_other": "{{count}} running",
       "runtime": {
+        "advancedTag": "Advanced",
         "alwaysOn": "Always on",
         "host": "Host",
+        "hostOption": "{{name}} ({{status}})",
         "hosted": "Hosted",
+        "hostedActiveDescription": "Runs always-on in the cloud using your plan's shared brain — nothing else to set up. Switch back to Local anytime to use your own model on this machine.",
         "hostedHint": "Runs always-on in the cloud using your plan's shared brain — nothing else to set up.",
+        "hostedRadioDescription": "Always-on in the cloud, included with your subscription. Stays connected and working even when your computer is closed.",
         "idleTimeout": "Idle timeout (seconds)",
         "local": "Local",
+        "localRadioDescription": "Runs on this machine, using your own model and tools. Goes offline when you quit the app.",
         "manual": "Manual",
         "presence": "Presence",
+        "recommendedTag": "Recommended",
         "subscribeHint": "Hosted is included with a subscription — subscribe to run this agent always-on in the cloud, even when your computer is closed.",
         "updateFailed": "Could not update runtime",
         "wakeOnDemand": "Wake on demand"
@@ -927,17 +1235,37 @@ export const resources = {
       },
       "searchPlaceholder": "Search agents...",
       "sections": {
+        "actions": "Actions",
+        "behavior": "Behavior",
         "capabilities": "Capabilities",
+        "health": "Health",
+        "identity": "Identity",
         "locationAccess": "Location Access",
+        "locations": "Locations",
+        "model": "Model",
+        "publish": "Publish",
         "pulse": "Pulse",
         "routines": "Routines",
+        "runtime": "Runtime",
         "runtimeModel": "Runtime & Model",
+        "share": "Share",
         "sharing": "Sharing",
-        "skills": "Skills"
+        "skills": "Skills",
+        "soul": "Soul"
       },
       "selectAgentHint": "Select an agent to view details",
       "share": {
-        "message": "Connect with {{name}} on Agentgram!\n\nAgent ID: {{id}}"
+        "clipboardUnavailable": "Clipboard API unavailable (use HTTPS or copy manually).",
+        "copyFailed": "Couldn't copy to clipboard.",
+        "copyMessageButton": "Copy Message",
+        "copyToShare": "Copy to Share",
+        "description": "Send this agent's identifier to someone so they can connect with it through the directory.",
+        "fallbackShareTitle": "Browser has no share sheet — falls back to copy",
+        "message": "Connect with {{name}} on Agentgram!\n\nAgent ID: {{id}}",
+        "messageLabel": "Share Message",
+        "nativeShareTitle": "Open native share sheet",
+        "shareEllipsis": "Share…",
+        "shareTitle": "Connect with {{name}}"
       },
       "showSubAgents_one": "Show {{count}} sub-agent",
       "showSubAgents_other": "Show {{count}} sub-agents",
@@ -968,8 +1296,12 @@ export const resources = {
         "errors": {
           "assignFailed": "Failed to assign skill",
           "createFailed": "Failed to create skill",
+          "deleteFailed": "Failed to delete skill",
           "importFailed": "Import failed",
-          "saveFailed": "Failed to save"
+          "installFailed": "Failed to install skill",
+          "loadFailed": "Failed to load skills",
+          "saveFailed": "Failed to save",
+          "unassignFailed": "Failed to unassign skill"
         },
         "fields": {
           "category": "Category",
@@ -992,10 +1324,29 @@ export const resources = {
         "importUrlHint": "Link to a skill folder or SKILL.md file on GitHub.",
         "importing": "Importing...",
         "installShared": "Install Shared",
+        "installSharedDialog": {
+          "description": "Paste a skill ID shared by another user to install it.",
+          "install": "Install Skill",
+          "installedSuccess": "Installed \"{{name}}\"",
+          "installing": "Installing…",
+          "skillIdLabel": "Skill ID",
+          "skillIdPlaceholder": "paste-skill-uuid-here",
+          "title": "Install Shared Skill"
+        },
+        "installSharedHint": "Paste a skill ID shared by another user to install it.",
+        "installSharedSkillTitle": "Install Shared Skill",
+        "installSkillButton": "Install Skill",
+        "installedMessage": "Installed \"{{name}}\"",
+        "installingLabel": "Installing...",
         "installs_one": "{{count}} install",
         "installs_other": "{{count}} installs",
         "loading": "Loading skills…",
+        "nameSlugPlaceholder": "gmail-integration",
         "noMatches": "No skills match your search.",
+        "noneAvailableHint": "No skills available. Create one, import from a URL, or install a shared skill.",
+        "promptContentPlaceholder": "### Skill Name\n\nInstructions for the agent...",
+        "ratingSummary": "Rating: {{rating}}/5",
+        "ratingSummaryWithCount": "Rating: {{rating}}/5 ({{count}})",
         "rating_one": "★ {{rating}} ({{count}} rating)",
         "rating_other": "★ {{rating}} ({{count}} ratings)",
         "scope": {
@@ -1009,6 +1360,8 @@ export const resources = {
           "owner": "Owner (all your agents)"
         },
         "searchPlaceholder": "Search skills...",
+        "skillIdLabel": "Skill ID",
+        "skillIdPlaceholder": "paste-skill-uuid-here",
         "title": "Skills",
         "visibility": {
           "public": "Public",
@@ -1031,6 +1384,7 @@ export const resources = {
         "contentPlaceholder": "Agent soul.md content...",
         "description": "The soul defines this agent's personality, tone, and expertise. Edit it directly, or describe a change and let AI revise it for you.",
         "detached": "Detached from {{source}} — local edits override the source.",
+        "enterShiftHint": "Enter to generate · Shift+Enter for a new line",
         "errors": {
           "generate": "Failed to generate update",
           "revert": "Failed to revert",
@@ -1041,12 +1395,16 @@ export const resources = {
         "generating": "Generating…",
         "hint": "Define this agent's personality, behavior, and boundaries.",
         "inherited": "Inherited from {{source}}. Editing will detach from source.",
+        "longDescription": "The soul is this agent's core identity — its system prompt. Written in Markdown, it defines who the agent is, how it speaks, what it cares about, and the rules it follows. It's sent to the model on every message and task, so it shapes everything the agent does. Write it in plain language, as if briefing a new teammate.",
         "placeholder": "# Soul\n\nYou are an AI agent...",
         "proposed": "Proposed — review and Save to apply.",
+        "proposedBannerPrefix": "AI-proposed changes loaded below. Review and edit as needed, then",
+        "proposedBannerSuffix": "to apply.",
         "revertFailed": "Failed to revert soul",
         "revertToSource": "· Revert to source",
         "reverting": "Reverting...",
         "revisePlaceholder": "Describe a change to {{name}}'s soul…",
+        "tabLabel": "Soul.md",
         "title": "Soul"
       },
       "specialtyQuestions": {
@@ -1099,6 +1457,11 @@ export const resources = {
       "tags": "Tags",
       "tasksPerMonth_one": "{{count}} task/mo",
       "tasksPerMonth_other": "{{count}} tasks/mo",
+      "templates": {
+        "addFailed": "Failed to add template",
+        "assignedTemplatesHeader": "Assigned Templates",
+        "removeFailed": "Failed to remove template"
+      },
       "thisAgent": "this agent",
       "tones": {
         "casual": "Casual",
@@ -1583,6 +1946,14 @@ export const resources = {
       "zones": "Zones"
     },
     "chat": {
+      "activity": {
+        "analyzing": "Analyzing",
+        "thinking": "Thinking",
+        "toolCall": "Using tools",
+        "waiting": "Waiting",
+        "working": "Working",
+        "writing": "Writing"
+      },
       "agentBusy": {
         "bodyGeneric": "They're working on a task. Your message went to the work room — open it to continue the thread.",
         "bodyTask": "They're working on “{{task}}”. Your message went to the work room — open it to continue the thread.",
@@ -1969,6 +2340,7 @@ export const resources = {
         "thinking": "Agent is thinking",
         "toolCall": "Agent is using tools",
         "waiting": "Agent is waiting",
+        "working": "Agent is working",
         "writing": "Agent is writing"
       },
       "streamPhase": {
@@ -2081,6 +2453,7 @@ export const resources = {
       "action": "Action",
       "add": "Add",
       "agent": "Agent",
+      "aiInitials": "AI",
       "apiKey": "API key",
       "apply": "Apply",
       "back": "Back",
@@ -2132,6 +2505,7 @@ export const resources = {
       "download": "Download",
       "duration": {
         "hours": "{{count}}h",
+        "hoursMinutes": "{{hours}}h {{minutes}}m",
         "minutes": "{{count}}m",
         "seconds": "{{count}}s"
       },
@@ -2225,6 +2599,7 @@ export const resources = {
       "tapToChoosePhoto": "Tap to choose a photo",
       "time": {
         "agoShort": "{{time}} ago",
+        "am": "AM",
         "daysAgo_one": "{{count}} day ago",
         "daysAgo_other": "{{count}} days ago",
         "daysShort": "{{count}}d",
@@ -2247,6 +2622,7 @@ export const resources = {
         "never": "never",
         "now": "now",
         "nowShort": "now",
+        "pm": "PM",
         "secondsShort": "{{count}}s",
         "shortDays_one": "{{count}}d",
         "shortDays_other": "{{count}}d",
@@ -4056,6 +4432,11 @@ export const resources = {
       },
       "agentDetails": "Detalles del agente",
       "agentId": "ID del agente",
+      "apiKeyReveal": {
+        "copied": "¡Copiado!",
+        "copyButton": "Copiar clave de API",
+        "warning": "Guarda esta clave de API ahora — no se volverá a mostrar."
+      },
       "avatar": {
         "chooseNew": "Elegir nueva foto",
         "chooseOption": "Elige una opción",
@@ -4084,7 +4465,43 @@ export const resources = {
       "categories": "Categorías",
       "collapseSubAgents": "Contraer subagentes",
       "config": {
+        "agentApiKey": {
+          "generateAction": "Generar clave de API",
+          "generating": "Generando...",
+          "noKeyExplain": "Esto suele significar que el agente se configuró en otro dispositivo — las claves nunca salen del equipo donde se crearon. Genera una clave nueva para ejecutar el agente desde aquí. La clave anterior dejará de funcionar, así que si el agente se ejecuta en otro equipo tendrás que generar otra allí para moverlo de vuelta.",
+          "noKeyTitle": "No hay ninguna clave guardada en este equipo",
+          "regenerating": "Regenerando...",
+          "title": "Clave de API del agente"
+        },
+        "apiKey": {
+          "customKey": "Clave personalizada...",
+          "noneSetInSettings": "Ninguna (configúrala en Ajustes)",
+          "placeholder": "sk-...",
+          "providerDefault": "Proveedor predeterminado"
+        },
+        "apiKeyGenerateHint": "Genera una nueva clave para ejecutar este agente desde aquí. Esto invalidará cualquier clave existente.",
+        "apiKeyNoneStored": "No hay ninguna clave almacenada en esta máquina",
+        "apiKeySectionTitle": "Clave de API del agente",
+        "autoDocDescription": "Adjunta referencias de API relevantes a cada tarea que reciba este agente.",
+        "autoDocLabel": "Inyectar documentación de API automáticamente",
+        "autoDocTooltip": "Si está activado, cada tarea que reciba este agente incluirá automáticamente fragmentos de documentación de API relevantes, según sus capacidades y el contenido de la tarea. Útil cuando el agente llama a APIs externas (Stripe, Slack, etc.). Desactivado por defecto.",
         "awsRegionPlaceholder": "Región de AWS (p. ej. us-east-1)",
+        "behavior": {
+          "autoRestart": "Reinicio automático ante fallos o bloqueos",
+          "skipPermissions": {
+            "description": "Permite que Claude Code y Codex actúen sin aprobación por acción. Actívalo solo para agentes en los que confíes plenamente.",
+            "label": "Omitir permisos"
+          },
+          "title": "Comportamiento"
+        },
+        "computerUseDeps": {
+          "failed": "Error al instalar las funciones de seguridad.",
+          "installAction": "Instalar funciones de seguridad",
+          "installed": "Funciones de seguridad instaladas (comprobación real de permisos, controladores nativos de Quartz, redacción de terminal).",
+          "installing": "Instalando funciones de seguridad (1–3 min, se ejecuta en segundo plano)…",
+          "notInstalledExplain": "Las funciones de seguridad opcionales no están instaladas — actualmente se usan alternativas (heurística de 8 KB para permisos, cliclick para desplazamiento/clic derecho, rechazo de capturas cuando la terminal es visible). Instalarlas añade la comprobación real de Grabación de pantalla, controladores nativos de Quartz y redacción de terminal.",
+          "retryInstall": "Reintentar instalación"
+        },
         "crash": {
           "agentCrashed": "El agente falló",
           "apiKeyProblem": "Problema con la clave de API",
@@ -4094,17 +4511,155 @@ export const resources = {
           "fixing": "Arreglando…"
         },
         "customOption": "{{value}} (personalizado)",
+        "dangerZone": {
+          "connectionsTitle": "Conexiones",
+          "deactivating": "Desactivando...",
+          "deleteExplain": "Esto eliminará permanentemente a <bold></bold> y todos los datos asociados. Esta acción no se puede deshacer.",
+          "manageConnections": "Gestionar conexiones",
+          "noConnections": "Este agente no tiene conexiones."
+        },
+        "effort": {
+          "defaultDescription": "Profundidad de razonamiento predeterminada: minuciosa y cuidadosa.",
+          "defaultOption": "Predeterminado (alto)",
+          "tooltipBody": "Controla cuánto razona el modelo. Un esfuerzo menor implica respuestas más rápidas; uno mayor, respuestas más completas.",
+          "tooltipTitle": "Profundidad de razonamiento"
+        },
+        "effortDefaultDescription": "Profundidad de razonamiento predeterminada: exhaustiva y cuidadosa.",
+        "effortDefaultOption": "Predeterminado (alto)",
+        "effortTooltipBody": "Controla cuánto razona el modelo. Menor esfuerzo = respuestas más rápidas, mayor esfuerzo = más exhaustivo.",
+        "effortTooltipTitle": "Profundidad de razonamiento",
+        "generateApiKeyButton": "Generar clave de API",
         "groupOperations": "Operaciones",
+        "header": {
+          "closeAriaLabel": "Cerrar detalles del agente"
+        },
         "health": {
-          "label": "Estado"
+          "actionFailed": "No se pudo ejecutar {{label}}.",
+          "actionsTitle": "Acciones",
+          "activeCount": "{{count}} en curso",
+          "claimedForDuration": "Reclamado durante {{duration}}",
+          "clearing": "Borrando...",
+          "forceResetLabel": "Reinicio forzado",
+          "killExecutorLabel": "Detener ejecutor",
+          "killedSummary": "se detuvo \"{{name}}\"",
+          "label": "Estado",
+          "noData": "No hay datos de estado disponibles",
+          "nothingToClear": "nada que borrar",
+          "onlineOfTotal": "{{online}} / {{total}} en línea",
+          "pollAgoInline": "sondeo hace {{duration}}",
+          "queuedMessagesLabel": "Mensajes en cola",
+          "queuedTasksLabel": "Tareas en cola",
+          "resetting": "Reiniciando...",
+          "status": {
+            "degraded": "Degradado",
+            "healthy": "Saludable",
+            "offline": "Desconectado",
+            "stuck": "Bloqueado"
+          },
+          "stuckItemsLabel": "Elementos bloqueados",
+          "stuckTasksTitle": "Tareas bloqueadas ({{count}})",
+          "taskStatusDuration": "{{status}} durante {{duration}}",
+          "unackedMessagesTitle": "Mensajes sin confirmar ({{count}})",
+          "unsticking": "Desbloqueando...",
+          "untitledTask": "Tarea sin título",
+          "upInline": "activo {{duration}}"
         },
         "hostManagedConnection": "La conexión la gestiona el host. Elige cualquier modelo compatible más abajo.",
         "hostedSetByPlan": "Alojado · según tu plan",
+        "keyRegeneratingLabel": "Regenerando...",
+        "localRuntime": {
+          "allowedApps": {
+            "addButton": "Añadir app permitida",
+            "description": "Opcional. Si está vacío, el agente puede interactuar con cualquier app salvo las de la lista de bloqueo fija (1Password, Keychain, etc). Si no está vacío, el agente queda restringido a estas apps — cualquier otra será rechazada. La coincidencia es una subcadena sin distinguir mayúsculas contra el nombre de la app enfocada. Reinicia el agente tras editar para que los cambios surtan efecto.",
+            "label": "Apps permitidas",
+            "promptMessage": "Nombre de la app a permitir (p. ej. 'Safari', 'Calculadora'). La coincidencia es una subcadena sin distinguir mayúsculas."
+          },
+          "computerUse": {
+            "description": "Permite que este agente controle el equipo: capturas de pantalla, clics, escritura (Claude Code y Codex).",
+            "label": "Permitir el uso del equipo",
+            "macPermissions": "Requiere permisos de Grabación de pantalla y Accesibilidad.",
+            "restartHint": "Reinicia el agente después de cambiarlo.",
+            "windowsInput": "Usa la entrada nativa de Windows.",
+            "windowsSafetyBuiltIn": "Las funciones de seguridad ya están integradas en Windows (bloqueo por app enfocada, redacción de ventanas de terminal, registro de auditoría) — no hay nada que instalar."
+          },
+          "startOnLaunch": "Iniciar al abrir la app",
+          "subtitle": "Esto se aplica solo mientras este agente se ejecuta en tu equipo (ejecución local).",
+          "title": "Configuración de ejecución local",
+          "workingDirs": {
+            "addButton": "Añadir directorio",
+            "description": "Directorios a los que este agente puede acceder. Añadir directorios también habilita las herramientas de CLI (Bash, Read, Edit, Web) junto con las herramientas de AgentGram.",
+            "label": "Directorios de trabajo",
+            "promptMessage": "Introduce la ruta del directorio:"
+          }
+        },
+        "mode": {
+          "label": "Modo",
+          "notAvailable": "(no disponible)",
+          "notSupported": "No es compatible con {{provider}}. Usará Respuesta única en tiempo de ejecución.",
+          "tooltipBody": "Controla si el agente recibe una única respuesta, puede usar herramientas de forma iterativa o ejecuta código.",
+          "tooltipTitle": "Cómo llama el agente al LLM"
+        },
+        "modeTooltipBody": "Controla si el agente recibe una única respuesta, puede usar herramientas de forma iterativa o ejecuta código.",
+        "modeTooltipTitle": "Cómo el agente llama al LLM",
+        "modeUnsupportedWarning": "No es compatible con {{provider}}. Se usará Single Shot en tiempo de ejecución.",
         "noClaudeSeat": "⚠️ Este host aún no tiene una plaza de Claude conectada — el agente no puede autenticarse hasta que se configure una.",
+        "profile": {
+          "avatarHint": "Haz clic en el avatar para subir una imagen nueva (recorte cuadrado, JPEG/PNG/WebP).",
+          "avatarUploadFailed": "Error al subir el avatar.",
+          "capabilitiesHint": "Etiquetas separadas por comas. Los orquestadores las usan para saber qué agente hermano puede encargarse de una tarea.",
+          "changeAvatarTitle": "Cambiar avatar",
+          "displayNameLabel": "Nombre visible",
+          "identityTitle": "Identidad",
+          "namePlaceholder": "Mi Agente",
+          "saveFailed": "No se pudo guardar el perfil.",
+          "unsavedChanges": "Cambios sin guardar"
+        },
+        "publish": {
+          "discoverableExplain": "Haz que este agente sea visible para otros usuarios de Agentgram.",
+          "listingNameRequired": "Nombre de la publicación *",
+          "loadStatusFailed": "No se pudo cargar el estado de la publicación",
+          "publishAction": "Publicar",
+          "rating": "Valoración",
+          "tagsCommaSeparated": "Etiquetas (separadas por comas)",
+          "unrated": "Sin valorar"
+        },
+        "pulse": {
+          "advancedToggle": "Avanzado",
+          "enterShiftHint": "Intro para generar · Mayús+Intro para una nueva línea",
+          "ideaPlaceholderDetailed": "Describe la idea y la acción que quieres — p. ej. \"vigila el calendario de {{name}} y recuérdame prepararme una hora antes de las reuniones\". El modelo escribirá instrucciones detalladas.",
+          "intervalMinShort": "Intervalo (min)",
+          "proposedBanner": "Se han cargado abajo las instrucciones propuestas por la IA. Revísalas y edítalas si hace falta, luego <bold></bold> para aplicarlas.",
+          "saveFailed": "No se pudo guardar el pulso.",
+          "saved": "Guardado.",
+          "scheduleHint": "Intervalo mínimo de 5 minutos — el programador se ejecuta cada 5 minutos. El horario activo usa la zona horaria seleccionada.",
+          "triggerNow": "Activar ahora"
+        },
+        "runtime": {
+          "advancedTag": "Avanzado",
+          "hostedDescription": "Siempre activo en la nube, incluido con tu suscripción. Sigue conectado y funcionando aunque cierres el escritorio — sin configuración.",
+          "hostedNoPickerExplain": "Se ejecuta siempre activo en la nube usando el cerebro compartido de tu plan — no hay nada más que configurar. Vuelve a Local cuando quieras para usar tu propio modelo en este equipo.",
+          "loadingHosts": "Cargando hosts…",
+          "localDescription": "Se ejecuta en este equipo, usando tu propio modelo y herramientas. Ideal cuando quieres control directo — se desconecta al cerrar la app.",
+          "pickHostPlaceholder": "Elige un host",
+          "recommendedTag": "Recomendado",
+          "sectionTitle": "Entorno de ejecución",
+          "settingUp": "Tu entorno alojado todavía se está configurando — inténtalo de nuevo en un momento."
+        },
         "sectionLogs": "Registros",
         "share": {
+          "clipboardUnavailable": "La API del portapapeles no está disponible (usa HTTPS o copia manualmente).",
+          "copyFailed": "No se pudo copiar al portapapeles.",
+          "copyMessage": "Copiar mensaje",
+          "copyToShare": "Copiar para compartir",
+          "description": "Envía el identificador de este agente a alguien para que pueda conectarse con él a través del directorio.",
+          "fallbackShareTooltip": "El navegador no tiene panel para compartir — se usará copiar",
+          "messageLabel": "Mensaje para compartir",
+          "nativeShareTooltip": "Abrir panel nativo para compartir",
+          "shareEllipsis": "Compartir…",
+          "shareTitle": "Conéctate con {{name}}",
           "title": "Compartir agente"
         },
+        "skipPermissionsDescription": "Permite que Claude Code y Codex actúen sin aprobación por acción. Actívalo solo para agentes en los que confíes plenamente.",
         "syncError": "No se pudo guardar esto en el servidor ({{error}}). La conexión solo se aplica una vez guardada — el agente seguirá usando su última conexión guardada hasta que se logre.",
         "vertexProjectPlaceholder": "ID de proyecto de GCP",
         "vertexRegionPlaceholder": "Región de Vertex (p. ej. us-east5)"
@@ -4163,6 +4718,20 @@ export const resources = {
           "sent": "Enviadas"
         },
         "thisAgent": "Este agente"
+      },
+      "connectionsSection": {
+        "direction": {
+          "incoming": "entrante",
+          "outgoing": "saliente"
+        },
+        "empty": "Sin conexiones",
+        "emptyHint": "Las conexiones permiten que otros agentes descubran y envíen mensajes a este a través del directorio.",
+        "status": {
+          "accepted": "Aceptada",
+          "pending": "Pendiente",
+          "rejected": "Rechazada",
+          "revoked": "Revocada"
+        }
       },
       "copy": {
         "idCopied": "ID del agente copiado al portapapeles.",
@@ -4368,6 +4937,13 @@ export const resources = {
       "createFirstAgent": "Crea tu primer agente",
       "createFirstAgentHint": "Los agentes son compañeros de IA con los que puedes chatear, a los que puedes asignar tareas y con los que puedes construir. Elige una personalidad, dales un trabajo y listo.",
       "dangerZone": "Zona de peligro",
+      "dangerZoneActions": {
+        "deactivateConfirm": "¿Desactivar este agente? Dejará de responder a los mensajes.",
+        "deactivating": "Desactivando...",
+        "deleteWarningParagraph": "Esto eliminará permanentemente a {{name}} y todos los datos asociados. Esta acción no se puede deshacer.",
+        "deleting": "Eliminando...",
+        "typeToConfirmLabel": "Escribe {{name}} para confirmar"
+      },
       "deactivate": {
         "action": "Desactivar",
         "cloneMessage": "Esto desactivará tu copia local de «{{name}}». El agente original no se ve afectado.",
@@ -4499,7 +5075,16 @@ export const resources = {
       },
       "friendsOnly": "Solo amigos",
       "getDesktopApp": "Obtener la app de escritorio",
+      "groups": {
+        "access": "Acceso",
+        "capabilities": "Capacidades",
+        "operations": "Operaciones",
+        "sharing": "Compartir"
+      },
       "health": {
+        "actionFailed": "Error al ejecutar {{label}}.",
+        "activeCount": "{{count}} activo(s)",
+        "claimedForDuration": "Reclamado durante {{duration}}",
         "clearMessagesCount_one": "Borrar {{count}} mensaje",
         "clearMessagesCount_other": "Borrar {{count}} mensajes",
         "clearMessagesFailed": "No se pudieron borrar los mensajes.",
@@ -4510,36 +5095,60 @@ export const resources = {
         "clearTasksFailed": "No se pudieron borrar las tareas.",
         "clearTasksMessage": "Caduca todas las tareas en cola de este agente. Úsalo cuando las tareas atascadas bloqueen nuevas asignaciones.",
         "clearTasksTitle": "Borrar tareas",
+        "dataUnavailable": "Datos de salud no disponibles",
         "degradedExplain": "Al menos un ejecutor lleva más de 45 s sin reportarse. El puente puede estar ocupado con una llamada larga al LLM o la red está inestable.",
         "degradedTitle": "Agente degradado",
+        "executorStatus": {
+          "disabled": "Deshabilitado",
+          "offline": "Sin conexión",
+          "online": "En línea",
+          "registered": "Registrado"
+        },
         "executors": "Ejecutores",
         "executorsOnline": "Ejecutores: {{online}}/{{total}} en línea",
+        "executorsOnlineValue": "{{online}} / {{total}} en línea",
+        "forceResetActionLabel": "Reinicio forzado",
         "forceResetMessage": "Esto apagará todos los ejecutores y liberará todo el trabajo pendiente. El agente tendrá que reiniciarse manualmente.",
         "forceResetTitle": "Forzar reinicio del agente",
         "killAction": "Terminar",
         "killFailed": "No se pudo terminar el ejecutor.",
         "killMessage": "¿Terminar \"{{name}}\"? Se detendrá de inmediato y se liberará cualquier trabajo que tuviera asignado.",
         "killTitle": "Terminar ejecutor",
+        "killedExecutorSummary": "se detuvo \"{{name}}\"",
+        "memoryMb": "{{value}} MB",
         "messagesClearedMessage": "Se caducaron {{expired}} mensajes en cola y se liberaron {{unclaimed}} mensajes reclamados.",
         "messagesClearedTitle": "Mensajes borrados",
+        "nothingToClear": "Nada que limpiar.",
         "nothingToUnstickMessage": "El agente no tiene elementos atascados.",
         "nothingToUnstickTitle": "Nada que desatascar",
         "pollAgo": "Último sondeo hace {{duration}}",
         "queuedMessages": "Mensajes en cola: {{count}}",
+        "queuedMessagesLabel": "Mensajes en cola",
         "queuedTasks": "Tareas en cola: {{count}}",
+        "queuedTasksLabel": "Tareas en cola",
         "reducedHealth": "El agente está reportando un estado de salud reducido.",
         "resetAction": "Reiniciar",
         "resetDoneMessage": "Se desactivaron {{executors}} ejecutores y se liberaron {{tasks}} tareas y {{messages}} mensajes.",
         "resetDoneTitle": "Agente reiniciado",
         "resetFailed": "No se pudo reiniciar el agente.",
+        "statusValue": {
+          "degraded": "Degradado",
+          "healthy": "Saludable",
+          "offline": "Sin conexión",
+          "stuck": "Atascado"
+        },
         "stuckExplain": "El agente tiene tareas o mensajes atascados: reclamados pero no completados dentro del tiempo límite.",
+        "stuckForDuration": "atascado durante {{duration}}",
         "stuckItems": "Elementos atascados: {{count}}",
+        "stuckItemsLabel": "Elementos atascados",
+        "stuckTasksSectionTitle": "Tareas atascadas ({{count}})",
         "stuckTasks_one": "{{count}} tarea atascada",
         "stuckTasks_other": "{{count}} tareas atascadas",
         "stuckTitle": "Agente atascado",
         "tasksClearedMessage": "Se caducaron {{expired}} tareas en cola y se liberaron {{unclaimed}} tareas reclamadas.",
         "tasksClearedTitle": "Tareas borradas",
         "title": "Salud y ejecutores",
+        "unackedMessagesSectionTitle": "Mensajes sin confirmar ({{count}})",
         "unackedMessages_one": "{{count}} mensaje sin confirmar",
         "unackedMessages_other": "{{count}} mensajes sin confirmar",
         "unstickAction": "Desatascar",
@@ -4584,9 +5193,11 @@ export const resources = {
         "changeAgent": "Cambiar de agente",
         "count_one": "{{count}} ubicación",
         "count_other": "{{count}} ubicaciones",
+        "deleteFailed": "Error al eliminar la ubicación",
         "deleteMessage": "¿Eliminar \"{{label}}\"?",
         "deleteTitle": "Eliminar ubicación",
         "detailsTitle": "Detalles de la ubicación",
+        "discardConfirm": "¿Descartar los cambios de ubicación sin guardar?",
         "droppedPin": "Pin colocado: {{lat}}, {{lng}}",
         "editLocation": "Editar ubicación",
         "empty": "Sin ubicaciones",
@@ -4602,7 +5213,10 @@ export const resources = {
           "lngRange": "La longitud debe estar entre -180 y 180"
         },
         "geocodeHint": "Introduce una dirección y toca el botón para actualizar las coordenadas",
+        "labelPlaceholder": "Oficina, Casa, Estudio…",
+        "latLngRequired": "Se requieren la latitud y la longitud.",
         "latitude": "Latitud",
+        "loadFailed": "Error al cargar las ubicaciones",
         "longitude": "Longitud",
         "metadataJson": "Metadatos (JSON)",
         "notFoundTitle": "No encontrada",
@@ -4613,11 +5227,36 @@ export const resources = {
         "primary": "Principal",
         "primaryLocation": "Ubicación principal",
         "saveLocation": "Guardar ubicación",
+        "saveLocationFailed": "Error al guardar la ubicación",
         "selectAgent": "Selecciona un agente",
         "selectAgentHint": "Elige qué agente opera en esta ubicación",
-        "title": "Ubicaciones de agentes"
+        "setAsPrimaryTitle": "Marcar como principal",
+        "setPrimaryAction": "Marcar como principal",
+        "setPrimaryHint": "Se usa como la ubicación predeterminada del agente.",
+        "title": "Ubicaciones de agentes",
+        "updateFailed": "Error al actualizar la ubicación"
       },
       "lookUpAgent": "Buscar agente",
+      "memory": {
+        "category": {
+          "fact": "Dato",
+          "learning": "Aprendizaje",
+          "preference": "Preferencia",
+          "relationship": "Relación",
+          "skill": "Habilidad"
+        },
+        "categoryPlural": {
+          "fact": "Datos",
+          "learning": "Aprendizajes",
+          "preference": "Preferencias",
+          "relationship": "Relaciones",
+          "skill": "Habilidades"
+        },
+        "deleteAgentConfirm": "¿Eliminar este recuerdo del agente (\"{{key}}\")? Esto solo afecta a {{name}}.",
+        "deleteFailed": "Error al eliminar el recuerdo",
+        "keyContentRequired": "Se requieren la clave y el contenido.",
+        "privateToAgent": "Privado para {{name}}."
+      },
       "model": {
         "advancedHint": "Se guarda al tocar fuera. Déjalo en blanco para usar el valor predeterminado de la plataforma. Lo usa el puente local.",
         "backend": "Backend",
@@ -4642,7 +5281,9 @@ export const resources = {
         "atLeastOneRuntimeTitle": "Al menos un entorno de ejecución"
       },
       "profile": {
+        "avatarUploadHint": "Haz clic en el avatar para subir una nueva foto (recorte cuadrado, JPEG/PNG/WebP).",
         "capabilities": "Capacidades",
+        "capabilitiesHint": "Etiquetas separadas por comas. Los orquestadores las usan para descubrir qué agente puede encargarse de una tarea.",
         "chat": "Chatear",
         "disconnectMessage": "¿Seguro que quieres desconectarte de {{name}}?",
         "disconnectTitle": "Desconectar agente",
@@ -4650,10 +5291,12 @@ export const resources = {
           "disconnectFailed": "No se pudo desconectar. Inténtalo de nuevo.",
           "requestFailed": "No se pudo solicitar la conexión."
         },
+        "namePlaceholder": "Mi agente",
         "notFoundHint": "Comprueba el ID del agente e inténtalo de nuevo.",
         "pendingApproval": "Pendiente de aprobación",
         "requestSentMessage": "El propietario del agente revisará tu solicitud de conexión.",
-        "requestSentTitle": "Solicitud enviada"
+        "requestSentTitle": "Solicitud enviada",
+        "unsavedChanges": "Cambios sin guardar"
       },
       "proxy": {
         "copyKey": "Copiar clave",
@@ -4667,14 +5310,37 @@ export const resources = {
       },
       "publish": {
         "categories": "Categorías",
+        "category": {
+          "coding": "Programación",
+          "dataAnalysis": "Análisis de datos",
+          "design": "Diseño",
+          "devops": "DevOps",
+          "general": "General",
+          "qa": "QA",
+          "research": "Investigación",
+          "writing": "Escritura"
+        },
+        "categoryOptions": {
+          "coding": "Programación",
+          "dataAnalysis": "Análisis de datos",
+          "design": "Diseño",
+          "devops": "DevOps",
+          "general": "General",
+          "qa": "QA",
+          "research": "Investigación",
+          "writing": "Escritura"
+        },
         "connection": "Conexión",
+        "discoverableHint": "Haz que otros usuarios de Agentgram puedan descubrir este agente.",
         "errors": {
           "nameRequired": "El nombre del anuncio es obligatorio.",
           "noAgent": "No se ha seleccionado ningún agente.",
           "saveFailed": "No se pudo guardar el anuncio.",
           "unpublishFailed": "No se pudo retirar."
         },
+        "listedTitle": "Listado en el directorio",
         "listingName": "Nombre del anuncio",
+        "loadStatusFailed": "Error al cargar el estado del anuncio",
         "modes": {
           "direct": {
             "hint": "Se ejecuta en tu máquina. Usa tus créditos de API.",
@@ -4689,22 +5355,29 @@ export const resources = {
             "title": "Proxy"
           }
         },
+        "notListedTitle": "No está listado en el directorio",
+        "ownerOnlyHint": "Solo el propietario puede publicar este agente.",
         "placeholders": {
           "description": "¿Qué hace este agente?",
           "listingName": "Nombre visible del agente",
           "tags": "elixir, phoenix, ia"
         },
+        "publishButton": "Publicar",
         "publishedMessage": "{{name}} ya aparece en el directorio.",
         "publishedTitle": "Publicado",
         "publishing": "Publicando...",
+        "rating": "Calificación",
+        "removeConfirm": "¿Quitar este agente del directorio?",
         "removing": "Quitando...",
         "submit": "Publicar en el directorio",
         "tags": "Etiquetas",
         "tagsHint": "Etiquetas separadas por comas",
+        "tagsLabelHint": "Etiquetas (separadas por comas)",
         "unpublish": "Retirar",
         "unpublishFromDirectory": "Retirar del directorio",
         "unpublishMessage": "Este agente se eliminará del directorio. Las conexiones existentes no se verán afectadas.",
         "unpublishTitle": "¿Retirar el anuncio?",
+        "unrated": "Sin calificar",
         "viewListing": "Ver anuncio",
         "visibility": "Visibilidad",
         "visibilityOptions": {
@@ -4735,6 +5408,7 @@ export const resources = {
           "triggerFailed": "No se pudo lanzar."
         },
         "ideaPlaceholder": "Describe la idea y la acción que quieres…",
+        "intervalActiveHoursHint": "El intervalo mínimo es de 5 minutos; el planificador se ejecuta cada 5 minutos. Las horas activas usan la zona horaria seleccionada.",
         "intervalHint": "Mínimo 5 minutos — el planificador se ejecuta cada 5 minutos.",
         "intervalMinutes": "Intervalo (minutos)",
         "lastRun": "Última ejecución",
@@ -4742,11 +5416,13 @@ export const resources = {
         "notYetRun": "aún no ejecutado",
         "pausedAuto": "En pausa (auto)",
         "personalWorkspace": "Espacio personal",
+        "proposedBannerPrefix": "Las instrucciones propuestas por la IA se cargaron abajo. Revísalas y edítalas según sea necesario, luego",
         "runs": "Ejecuciones",
         "schedule": "Programación",
         "subtitle": "Pensamiento autónomo periódico",
         "title": "Pulso",
         "trigger": "Lanzar",
+        "triggerNow": "Activar ahora",
         "triggeredMessage": "La ejecución del pulso ha comenzado.",
         "triggeredTitle": "Lanzado",
         "workspace": "Espacio de trabajo del pulso",
@@ -4779,6 +5455,7 @@ export const resources = {
       },
       "rolesLabel": "Roles",
       "routines": {
+        "am": "a.m.",
         "atMinute": "En el minuto",
         "consecutiveFailures_one": "{{count}} fallo consecutivo",
         "consecutiveFailures_other": "{{count}} fallos consecutivos",
@@ -4850,6 +5527,7 @@ export const resources = {
         "notScheduled": "Sin programar",
         "orSendToAnother": "O envíalo a otra conversación:",
         "pickAtLeastOneDay": "Elige al menos un día para que esta rutina se ejecute.",
+        "pm": "p.m.",
         "preset": {
           "everyDay": "Todos los días",
           "weekdays": "Entre semana",
@@ -4897,14 +5575,20 @@ export const resources = {
       "runningCount_one": "{{count}} en ejecución",
       "runningCount_other": "{{count}} en ejecución",
       "runtime": {
+        "advancedTag": "Avanzado",
         "alwaysOn": "Siempre activo",
         "host": "Host",
+        "hostOption": "{{name}} ({{status}})",
         "hosted": "Alojado",
+        "hostedActiveDescription": "Se ejecuta siempre activo en la nube usando el cerebro compartido de tu plan; no hay nada más que configurar. Cambia a Local en cualquier momento para usar tu propio modelo en esta máquina.",
         "hostedHint": "Se ejecuta siempre activo en la nube usando el cerebro compartido de tu plan; no hay nada más que configurar.",
+        "hostedRadioDescription": "Siempre activo en la nube, incluido con tu suscripción. Permanece conectado y trabajando aunque cierres tu computadora.",
         "idleTimeout": "Tiempo de inactividad (segundos)",
         "local": "Local",
+        "localRadioDescription": "Se ejecuta en esta máquina, usando tu propio modelo y herramientas. Se desconecta cuando cierras la aplicación.",
         "manual": "Manual",
         "presence": "Presencia",
+        "recommendedTag": "Recomendado",
         "subscribeHint": "El alojamiento está incluido con la suscripción: suscríbete para ejecutar este agente siempre activo en la nube, incluso con tu ordenador apagado.",
         "updateFailed": "No se pudo actualizar el entorno de ejecución",
         "wakeOnDemand": "Despertar a demanda"
@@ -4937,17 +5621,37 @@ export const resources = {
       },
       "searchPlaceholder": "Buscar agentes...",
       "sections": {
+        "actions": "Acciones",
+        "behavior": "Comportamiento",
         "capabilities": "Capacidades",
+        "health": "Salud",
+        "identity": "Identidad",
         "locationAccess": "Acceso a la ubicación",
+        "locations": "Ubicaciones",
+        "model": "Modelo",
+        "publish": "Publicar",
         "pulse": "Pulso",
         "routines": "Rutinas",
+        "runtime": "Tiempo de ejecución",
         "runtimeModel": "Ejecución y modelo",
+        "share": "Compartir",
         "sharing": "Compartir",
-        "skills": "Habilidades"
+        "skills": "Habilidades",
+        "soul": "Alma"
       },
       "selectAgentHint": "Selecciona un agente para ver los detalles",
       "share": {
-        "message": "¡Conéctate con {{name}} en Agentgram!\n\nID del agente: {{id}}"
+        "clipboardUnavailable": "La API del portapapeles no está disponible (usa HTTPS o copia manualmente).",
+        "copyFailed": "No se pudo copiar al portapapeles.",
+        "copyMessageButton": "Copiar mensaje",
+        "copyToShare": "Copiar para compartir",
+        "description": "Envía el identificador de este agente a alguien para que pueda conectarse con él a través del directorio.",
+        "fallbackShareTitle": "El navegador no tiene hoja de compartir; se copiará en su lugar",
+        "message": "¡Conéctate con {{name}} en Agentgram!\n\nID del agente: {{id}}",
+        "messageLabel": "Mensaje para compartir",
+        "nativeShareTitle": "Abrir hoja de compartir nativa",
+        "shareEllipsis": "Compartir…",
+        "shareTitle": "Conéctate con {{name}}"
       },
       "showSubAgents_one": "Mostrar {{count}} subagente",
       "showSubAgents_other": "Mostrar {{count}} subagentes",
@@ -4978,8 +5682,12 @@ export const resources = {
         "errors": {
           "assignFailed": "No se pudo asignar la habilidad",
           "createFailed": "No se pudo crear la habilidad",
+          "deleteFailed": "Error al eliminar la habilidad",
           "importFailed": "Error al importar",
-          "saveFailed": "No se pudo guardar"
+          "installFailed": "No se pudo instalar la habilidad",
+          "loadFailed": "Error al cargar las habilidades",
+          "saveFailed": "Error al guardar",
+          "unassignFailed": "Error al desasignar la habilidad"
         },
         "fields": {
           "category": "Categoría",
@@ -5002,10 +5710,29 @@ export const resources = {
         "importUrlHint": "Enlace a una carpeta de habilidad o a un archivo SKILL.md en GitHub.",
         "importing": "Importando...",
         "installShared": "Instalar compartida",
+        "installSharedDialog": {
+          "description": "Pega un ID de habilidad compartido por otro usuario para instalarla.",
+          "install": "Instalar habilidad",
+          "installedSuccess": "Se instaló \"{{name}}\"",
+          "installing": "Instalando…",
+          "skillIdLabel": "ID de habilidad",
+          "skillIdPlaceholder": "pega-aqui-el-uuid-de-la-habilidad",
+          "title": "Instalar habilidad compartida"
+        },
+        "installSharedHint": "Pega el ID de una habilidad compartida por otro usuario para instalarla.",
+        "installSharedSkillTitle": "Instalar habilidad compartida",
+        "installSkillButton": "Instalar habilidad",
+        "installedMessage": "Se instaló \"{{name}}\"",
+        "installingLabel": "Instalando...",
         "installs_one": "{{count}} instalación",
         "installs_other": "{{count}} instalaciones",
         "loading": "Cargando habilidades…",
+        "nameSlugPlaceholder": "integracion-gmail",
         "noMatches": "Ninguna habilidad coincide con tu búsqueda.",
+        "noneAvailableHint": "No hay habilidades disponibles. Crea una, impórtala desde una URL o instala una habilidad compartida.",
+        "promptContentPlaceholder": "### Nombre de la habilidad\n\nInstrucciones para el agente...",
+        "ratingSummary": "Calificación: {{rating}}/5",
+        "ratingSummaryWithCount": "Calificación: {{rating}}/5 ({{count}})",
         "rating_one": "★ {{rating}} ({{count}} valoración)",
         "rating_other": "★ {{rating}} ({{count}} valoraciones)",
         "scope": {
@@ -5019,6 +5746,8 @@ export const resources = {
           "owner": "Propietario (todos tus agentes)"
         },
         "searchPlaceholder": "Buscar habilidades...",
+        "skillIdLabel": "ID de la habilidad",
+        "skillIdPlaceholder": "pega-aqui-el-uuid-de-la-habilidad",
         "title": "Habilidades",
         "visibility": {
           "public": "Pública",
@@ -5041,6 +5770,7 @@ export const resources = {
         "contentPlaceholder": "Contenido de soul.md del agente...",
         "description": "El alma define la personalidad, el tono y la especialización de este agente. Edítala directamente o describe un cambio y deja que la IA la revise por ti.",
         "detached": "Separado de {{source}}: las ediciones locales prevalecen sobre el origen.",
+        "enterShiftHint": "Enter para generar · Mayús+Enter para una nueva línea",
         "errors": {
           "generate": "No se pudo generar la actualización",
           "revert": "No se pudo revertir",
@@ -5051,12 +5781,16 @@ export const resources = {
         "generating": "Generando…",
         "hint": "Define la personalidad, el comportamiento y los límites de este agente.",
         "inherited": "Heredado de {{source}}. Editarlo lo separará del origen.",
+        "longDescription": "El alma es la identidad central de este agente: su prompt de sistema. Escrita en Markdown, define quién es el agente, cómo habla, qué le importa y las reglas que sigue. Se envía al modelo en cada mensaje y tarea, por lo que da forma a todo lo que hace el agente. Escríbela en lenguaje sencillo, como si instruyeras a un nuevo compañero de equipo.",
         "placeholder": "# Soul\n\nEres un agente de IA...",
         "proposed": "Propuesto: revísalo y guarda para aplicarlo.",
+        "proposedBannerPrefix": "Los cambios propuestos por la IA se cargaron abajo. Revísalos y edítalos según sea necesario, luego",
+        "proposedBannerSuffix": "para aplicarlos.",
         "revertFailed": "No se pudo revertir el alma",
         "revertToSource": "· Revertir al origen",
         "reverting": "Revirtiendo...",
         "revisePlaceholder": "Describe un cambio para el alma de {{name}}…",
+        "tabLabel": "Soul.md",
         "title": "Alma"
       },
       "specialtyQuestions": {
@@ -5109,6 +5843,11 @@ export const resources = {
       "tags": "Etiquetas",
       "tasksPerMonth_one": "{{count}} tarea/mes",
       "tasksPerMonth_other": "{{count}} tareas/mes",
+      "templates": {
+        "addFailed": "Error al añadir la plantilla",
+        "assignedTemplatesHeader": "Plantillas asignadas",
+        "removeFailed": "Error al quitar la plantilla"
+      },
       "thisAgent": "este agente",
       "tones": {
         "casual": "Informal",
@@ -5593,6 +6332,14 @@ export const resources = {
       "zones": "Zonas"
     },
     "chat": {
+      "activity": {
+        "analyzing": "Analizando",
+        "thinking": "Pensando",
+        "toolCall": "Usando herramientas",
+        "waiting": "Esperando",
+        "working": "Trabajando",
+        "writing": "Escribiendo"
+      },
       "agentBusy": {
         "bodyGeneric": "Está trabajando en una tarea. Tu mensaje fue a la sala de trabajo — ábrela para continuar el hilo.",
         "bodyTask": "Está trabajando en «{{task}}». Tu mensaje fue a la sala de trabajo — ábrela para continuar el hilo.",
@@ -5979,6 +6726,7 @@ export const resources = {
         "thinking": "El agente está pensando",
         "toolCall": "El agente está usando herramientas",
         "waiting": "El agente está esperando",
+        "working": "El agente está trabajando",
         "writing": "El agente está escribiendo"
       },
       "streamPhase": {
@@ -6091,6 +6839,7 @@ export const resources = {
       "action": "Acción",
       "add": "Añadir",
       "agent": "Agente",
+      "aiInitials": "IA",
       "apiKey": "Clave de API",
       "apply": "Aplicar",
       "back": "Atrás",
@@ -6142,6 +6891,7 @@ export const resources = {
       "download": "Descargar",
       "duration": {
         "hours": "{{count}} h",
+        "hoursMinutes": "{{hours}}h {{minutes}}m",
         "minutes": "{{count}} min",
         "seconds": "{{count}} s"
       },
@@ -6235,6 +6985,7 @@ export const resources = {
       "tapToChoosePhoto": "Toca para elegir una foto",
       "time": {
         "agoShort": "hace {{time}}",
+        "am": "a. m.",
         "daysAgo_one": "hace {{count}} día",
         "daysAgo_other": "hace {{count}} días",
         "daysShort": "{{count}}d",
@@ -6257,6 +7008,7 @@ export const resources = {
         "never": "nunca",
         "now": "ahora",
         "nowShort": "ahora",
+        "pm": "p. m.",
         "secondsShort": "{{count}}s",
         "shortDays_one": "{{count}}d",
         "shortDays_other": "{{count}}d",

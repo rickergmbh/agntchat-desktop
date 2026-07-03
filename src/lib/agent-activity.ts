@@ -18,13 +18,18 @@ export type AgentActivity =
 // Short labels for compact surfaces (conversation rows, agent rail). The
 // streaming bubble keeps its own "…"-suffixed labels; these are terser so
 // they fit a one-line status under a name.
-const ACTIVITY_LABELS: Record<AgentActivity, string> = {
-  thinking: "Thinking",
-  tool_call: "Using tools",
-  writing: "Writing",
-  analyzing: "Analyzing",
-  waiting: "Waiting",
-  working: "Working",
+//
+// These are i18n KEYS (fully namespace-qualified), not resolved strings —
+// this module has no React context to call t() from. Uses the terse
+// chat:activity.* set (distinct from the verbose chat:streamAnnounce.*
+// screen-reader announcements). React callers: `t(activityLabelKey(a))`.
+const ACTIVITY_LABEL_KEYS: Record<AgentActivity, string> = {
+  thinking: "chat:activity.thinking",
+  tool_call: "chat:activity.toolCall",
+  writing: "chat:activity.writing",
+  analyzing: "chat:activity.analyzing",
+  waiting: "chat:activity.waiting",
+  working: "chat:activity.working",
 };
 
 const ACTIVITY_ICONS: Record<AgentActivity, LucideIcon> = {
@@ -36,8 +41,10 @@ const ACTIVITY_ICONS: Record<AgentActivity, LucideIcon> = {
   working: Activity,
 };
 
-export function activityLabel(activity: AgentActivity): string {
-  return ACTIVITY_LABELS[activity] ?? "Working";
+/** Returns the i18n key for an activity's compact label — NOT the resolved
+ *  string. React callers: `t(activityLabelKey(activity))`. */
+export function activityLabelKey(activity: AgentActivity): string {
+  return ACTIVITY_LABEL_KEYS[activity] ?? "chat:activity.working";
 }
 
 export function activityIcon(activity: AgentActivity): LucideIcon {
