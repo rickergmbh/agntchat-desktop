@@ -183,7 +183,7 @@ export const MessageBubble = memo(function MessageBubble({
   // Card messages (tasks + status lifecycle updates) reuse the same
   // avatar + sender header scaffold as regular bubbles but drop the
   // bubble background — the card supplies its own coloured border and
-  // background. Width-capped at 35% so these don't bleed edge-to-edge
+  // background. Width-capped at 60% so these don't bleed edge-to-edge
   // (matches web/src/components/MessageBubble.tsx).
   if (isTask || isStatusUpdate) {
     return (
@@ -195,7 +195,7 @@ export const MessageBubble = memo(function MessageBubble({
         {!isOwn && (
           <SenderAvatar show={showAvatar} senderName={senderName} avatarUrl={avatarUrl} />
         )}
-        <MessageContent className="w-[35%] gap-0">
+        <MessageContent className="w-[60%] gap-0">
           {!isOwn && showSenderName && (
             <SenderHeader
               senderName={senderName}
