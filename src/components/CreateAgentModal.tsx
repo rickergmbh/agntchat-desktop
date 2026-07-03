@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import {
   X,
   ArrowLeft,
@@ -77,29 +78,32 @@ const STEPS = [
 ] as const;
 type WizardStep = (typeof STEPS)[number];
 
-const STEP_TITLES: Record<WizardStep, string> = {
-  name: "What should we call your agent?",
-  photo: "Give them a face",
-  role: "How should they work?",
-  tone: "How should they talk?",
-  specialties: "What are they good at?",
-  details: "Any extra details?",
-  brain: "Pick a brain",
-  review: "Ready to launch?",
+// i18n keys (agents namespace) — resolved with t() at render so language
+// switches take effect live.
+const STEP_TITLE_KEYS: Record<WizardStep, string> = {
+  name: "create.steps.name.title",
+  photo: "create.steps.photo.title",
+  role: "create.steps.role.title",
+  tone: "create.steps.tone.title",
+  specialties: "create.steps.specialties.title",
+  details: "create.steps.details.title",
+  brain: "create.steps.brain.title",
+  review: "create.steps.review.title",
 };
 
-const STEP_SUBTITLES: Record<WizardStep, string> = {
-  name: "Pick something memorable — you can always change it later.",
-  photo: "Optional, but it makes them feel more real.",
-  role: "Set the rhythm. You can change this later.",
-  tone: "How they sound when they talk to you.",
-  specialties: "The things they should be good at.",
-  details: "Anything else worth telling them up front.",
-  brain: "Which AI model powers them.",
-  review: "Last look before we bring them online.",
+const STEP_SUBTITLE_KEYS: Record<WizardStep, string> = {
+  name: "create.steps.name.subtitle",
+  photo: "create.steps.photo.subtitle",
+  role: "create.steps.role.subtitle",
+  tone: "create.steps.tone.subtitle",
+  specialties: "create.steps.specialties.subtitle",
+  details: "create.steps.details.subtitle",
+  brain: "create.steps.brain.subtitle",
+  review: "create.steps.review.subtitle",
 };
 
 export function CreateAgentModal({ onClose }: { onClose: () => void }) {
+  const { t } = useTranslation("agents");
   const { createAgent, selectAgent } = useAgentStore();
   const limits = useFieldLimits();
 
@@ -282,7 +286,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
       const url = await uploadAvatar(file, `pending-${Date.now()}`);
       setAvatarUrl(url);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Upload failed");
+      setError(e instanceof Error ? e.message : t("create.errors.uploadFailed"));
     } finally {
       setUploadingAvatar(false);
     }
@@ -332,13 +336,13 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
 
   const handleCreate = useCallback(async () => {
     if (!displayName.trim()) {
-      setError("Name is required");
+      setError(t("create.errors.nameRequired"));
       setStepIndex(0);
       return;
     }
     // Hosted agents use the host's shared brain — no API key to enter.
     if (hosting === "local" && showApiKeyInput && !apiKey.trim()) {
-      setError("API key is required for this provider");
+      setError(t("create.errors.apiKeyRequired"));
       return;
     }
     setCreating(true);
@@ -376,7 +380,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
             });
             if (hasDefaultKey) llmApiKeyIdPin = newId;
           } catch (e) {
-            setError(e instanceof Error ? e.message : "Failed to save the API key");
+            setError(e instanceof Error ? e.message : t("create.errors.saveKeyFailed"));
             setCreating(false);
             return;
           }
@@ -450,7 +454,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
       if (newId) await selectAgent(newId);
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create agent");
+      setError(err instanceof Error ? err.message : t("create.errors.createFailed"));
     } finally {
       setCreating(false);
     }
@@ -487,6 +491,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     catalog,
     activeWorkspace,
     visibility,
+    t,
   ]);
 
   const initials = displayName
@@ -512,12 +517,12 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
               <DialogTitle className="text-lg font-semibold text-foreground">
                 <LetterReveal
                   key={step}
-                  text={STEP_TITLES[step]}
+                  text={t(STEP_TITLE_KEYS[step])}
                   delayPerChar={28}
                 />
               </DialogTitle>
               <p className="text-sm text-text-muted min-h-[2.5em]">
-                {STEP_SUBTITLES[step]}
+                {t(STEP_SUBTITLE_KEYS[step])}
               </p>
             </div>
 
@@ -552,7 +557,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
               {step === "name" && (
                 <div className="space-y-1.5">
                   <div className="flex items-baseline justify-between">
-                    <Label htmlFor="agent-name">Name</Label>
+                    <Label htmlFor="agent-name">{t("common:name")}</Label>
                     <span className="text-xs text-text-muted tabular-nums">
                       {displayName.length}/{limits.agent.displayName}
                     </span>
@@ -562,7 +567,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                     type="text"
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
-                    placeholder="Atlas, Kal, Finance Bro"
+                    placeholder={t("create.namePlaceholder")}
                     autoFocus
                     maxLength={limits.agent.displayName}
                   />
@@ -575,7 +580,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                     type="button"
                     onClick={handleAvatarPick}
                     className="relative group"
-                    title="Choose avatar image"
+                    title={t("create.chooseAvatar")}
                   >
                     <Avatar className="h-32 w-32 rounded-2xl border-2 border-dashed border-border group-hover:border-primary transition-colors">
                       {avatarUrl && (
@@ -595,7 +600,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                     )}
                   </button>
                   <p className="text-xs text-text-muted">
-                    {avatarUrl ? "Click to change" : "Click to choose a photo (optional)"}
+                    {avatarUrl ? t("create.clickToChange") : t("create.clickToChoosePhoto")}
                   </p>
                   <input
                     ref={fileInputRef}
@@ -675,7 +680,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                           <button
                             type="button"
                             onClick={() => setCustomTone(null)}
-                            aria-label="Remove custom tone"
+                            aria-label={t("create.removeCustomTone")}
                           >
                             <X className="h-3 w-3" />
                           </button>
@@ -687,7 +692,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                           onClick={() => setToneAddOpen(true)}
                           className="inline-flex items-center gap-1 rounded-full border border-dashed border-border px-3 py-1 text-xs text-text-muted hover:bg-accent"
                         >
-                          <Plus className="h-3 w-3" /> Custom
+                          <Plus className="h-3 w-3" /> {t("common:custom")}
                         </button>
                       )}
                     </div>
@@ -696,7 +701,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                         autoFocus
                         value={customToneInput}
                         onChange={(e) => setCustomToneInput(e.target.value)}
-                        placeholder="e.g. Sarcastic"
+                        placeholder={t("create.customTonePlaceholder")}
                         maxLength={30}
                         onKeyDown={(e) => {
                           if (e.key === "Enter") {
@@ -715,7 +720,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                   </div>
                   <div className="space-y-1.5">
                     <div className="flex items-baseline justify-between">
-                      <Label htmlFor="agent-desc">Description (optional)</Label>
+                      <Label htmlFor="agent-desc">{t("common:descriptionOptional")}</Label>
                       <span className="text-xs text-text-muted tabular-nums">
                         {description.length}/{limits.agent.description}
                       </span>
@@ -724,15 +729,15 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                       id="agent-desc"
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
-                      placeholder={
+                      placeholder={t(
                         agentRole === "orchestrator"
-                          ? "What teams or workflows will they coordinate?"
+                          ? "create.descPlaceholder.orchestrator"
                           : agentRole === "reviewer"
-                            ? "What kind of work will they review?"
+                            ? "create.descPlaceholder.reviewer"
                             : agentRole === "observer"
-                              ? "What are they monitoring, and when should they speak up?"
-                              : "What kind of work will this agent handle?"
-                      }
+                              ? "create.descPlaceholder.observer"
+                              : "create.descPlaceholder.worker"
+                      )}
                       rows={3}
                       maxLength={limits.agent.description}
                       className="resize-none"
@@ -772,7 +777,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                         <button
                           type="button"
                           onClick={() => removeCustomSpecialty(s)}
-                          aria-label={`Remove ${s}`}
+                          aria-label={t("create.removeSpecialty", { name: s })}
                         >
                           <X className="h-3 w-3" />
                         </button>
@@ -793,7 +798,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                       autoFocus
                       value={customSpecialtyInput}
                       onChange={(e) => setCustomSpecialtyInput(e.target.value)}
-                      placeholder="Add a specialty"
+                      placeholder={t("create.addSpecialtyPlaceholder")}
                       maxLength={40}
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
@@ -817,7 +822,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                   <div className="space-y-1.5">
                     <div className="flex items-baseline justify-between">
                       <Label htmlFor="agent-instructions">
-                        Custom instructions (optional)
+                        {t("create.customInstructionsOptional")}
                       </Label>
                       <span className="text-xs text-text-muted tabular-nums">
                         {customInstructions.length}/2000
@@ -827,7 +832,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                       id="agent-instructions"
                       value={customInstructions}
                       onChange={(e) => setCustomInstructions(e.target.value)}
-                      placeholder="Anything else this agent should know? Tools to prefer, things to avoid…"
+                      placeholder={t("create.instructionsPlaceholder")}
                       rows={4}
                       maxLength={2000}
                       className="resize-none"
@@ -842,9 +847,9 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                         )}
                       />
                       <div>
-                        <div className="text-xs font-medium">Location access</div>
+                        <div className="text-xs font-medium">{t("create.locationAccess")}</div>
                         <div className="text-[10px] text-text-muted">
-                          Lets this agent use your location for local search and recommendations.
+                          {t("create.locationAccessDescription")}
                         </div>
                       </div>
                     </div>
@@ -871,9 +876,9 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                               : "border-border hover:border-foreground/30"
                           )}
                         >
-                          <div className="text-sm font-medium">☁️ Hosted</div>
+                          <div className="text-sm font-medium">☁️ {t("hosting.hosted")}</div>
                           <div className="mt-0.5 text-xs text-text-muted">
-                            Always on, powered by your plan. No setup.
+                            {t("create.hostedDescription")}
                           </div>
                         </button>
                         <button
@@ -887,11 +892,11 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                           )}
                         >
                           <div className="text-sm font-medium">
-                            Local{" "}
-                            <span className="text-text-muted">(advanced)</span>
+                            {t("hosting.local")}{" "}
+                            <span className="text-text-muted">{t("create.localAdvancedTag")}</span>
                           </div>
                           <div className="mt-0.5 text-xs text-text-muted">
-                            Runs on this machine; pick your own model.
+                            {t("create.localDescription")}
                           </div>
                         </button>
                       </div>
@@ -900,9 +905,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
 
                   {hosting === "hosted" && (
                     <div className="rounded-lg border border-border bg-muted/40 p-3 text-sm text-text-muted">
-                      Your agent runs always-on in the cloud using your plan's
-                      shared brain — nothing else to set up. You can switch it to
-                      a custom local model anytime in the agent's settings.
+                      {t("create.hostedInfo")}
                     </div>
                   )}
 
@@ -910,7 +913,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                   <>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1.5">
-                      <Label>Provider</Label>
+                      <Label>{t("common:provider")}</Label>
                       <Select
                         value={backend}
                         onValueChange={(v) => handleBackendChange(v ?? "")}
@@ -928,7 +931,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                       </Select>
                     </div>
                     <div className="space-y-1.5">
-                      <Label>Model</Label>
+                      <Label>{t("common:model")}</Label>
                       <Select
                         value={model}
                         onValueChange={(v) => v && setModel(v)}
@@ -954,7 +957,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                     )}
                   >
                     <div className="space-y-1.5">
-                      <Label>Execution Mode</Label>
+                      <Label>{t("executionMode")}</Label>
                       <Select
                         value={executionMode}
                         onValueChange={(v) => v && setExecutionMode(v)}
@@ -975,7 +978,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                     </div>
                     {showEffort && (
                       <div className="space-y-1.5">
-                        <Label>Effort</Label>
+                        <Label>{t("effortLabel")}</Label>
                         <Select
                           value={effort || "high"}
                           onValueChange={(v) => v && setEffort(v)}
@@ -997,7 +1000,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
 
                   {needsApiKey && hasDefaultKey && (
                     <div className="space-y-1.5">
-                      <Label>{providerLabel} API Key</Label>
+                      <Label>{t("create.providerApiKey", { provider: providerLabel })}</Label>
                       <Select
                         value={keySelection}
                         onValueChange={(v) => {
@@ -1009,14 +1012,14 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                           <SelectValue>
                             {(val: unknown) => {
                               const v = String(val);
-                              if (v === "__default__") return "Provider Default";
-                              if (v === "__custom__") return "Custom Key for this agent…";
+                              if (v === "__default__") return t("create.keyOptions.providerDefault");
+                              if (v === "__custom__") return t("create.keyOptions.customForAgent");
                               return providerKeys.find((k) => k.id === v)?.label ?? v;
                             }}
                           </SelectValue>
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="__default__">Provider Default</SelectItem>
+                          <SelectItem value="__default__">{t("create.keyOptions.providerDefault")}</SelectItem>
                           {providerKeys
                             .filter((k) => !k.isDefault)
                             .map((k) => (
@@ -1024,17 +1027,17 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                                 {k.label}
                               </SelectItem>
                             ))}
-                          <SelectItem value="__custom__">Custom Key for this agent…</SelectItem>
+                          <SelectItem value="__custom__">{t("create.keyOptions.customForAgent")}</SelectItem>
                         </SelectContent>
                       </Select>
                       {keySelection === "__default__" && (
                         <p className="text-xs text-text-muted">
-                          Uses your saved default — won't be changed.
+                          {t("create.keyOptions.usesDefaultHint")}
                         </p>
                       )}
                       {keySelection !== "__default__" && keySelection !== "__custom__" && (
                         <p className="text-xs text-text-muted">
-                          This agent will use the selected key. Default unchanged.
+                          {t("create.keyOptions.pinnedHint")}
                         </p>
                       )}
                     </div>
@@ -1044,8 +1047,8 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                     <div className="space-y-1.5">
                       <Label htmlFor="llm-api-key">
                         {hasDefaultKey
-                          ? "New API Key (this agent only)"
-                          : `${providerLabel} API Key`}
+                          ? t("create.newKeyThisAgent")
+                          : t("create.providerApiKey", { provider: providerLabel })}
                       </Label>
                       <div className="relative">
                         <Input
@@ -1071,8 +1074,8 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                       </div>
                       <p className="text-xs text-text-muted">
                         {hasDefaultKey
-                          ? "Saved for this agent only — your provider default stays as-is."
-                          : `Saved as your default key for ${providerLabel}.`}
+                          ? t("create.keySavedThisAgentHint")
+                          : t("create.keySavedAsDefaultHint", { provider: providerLabel })}
                       </p>
                     </div>
                   )}
@@ -1093,10 +1096,10 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5 text-sm font-medium text-foreground group-hover:text-accent-hover transition-colors">
                           <ShieldOff className="w-3.5 h-3.5" />
-                          Skip permission prompts
+                          {t("create.skipPermissions")}
                         </div>
                         <p className="text-xs text-text-muted mt-0.5">
-                          Faster but less safe — agents won't ask before running tools.
+                          {t("create.skipPermissionsDescription")}
                         </p>
                       </div>
                     </label>
@@ -1116,14 +1119,14 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5 text-sm font-medium text-foreground group-hover:text-accent-hover transition-colors">
                           <ShieldOff className="w-3.5 h-3.5" />
-                          Allow computer use
+                          {t("create.computerUse")}
                         </div>
                         <p className="text-xs text-text-muted mt-0.5">
-                          Screenshot / click / type / scroll on your Mac.
-                          Requires Screen Recording &amp; Accessibility perms.
-                          Touch <code>~/.agentgram/computer_use.paused</code> to
-                          stop anytime. You can change this later in the
-                          agent's Behavior settings.
+                          <Trans
+                            t={t}
+                            i18nKey="create.computerUseDescription"
+                            components={{ code: <code /> }}
+                          />
                         </p>
                       </div>
                     </label>
@@ -1150,7 +1153,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                       </Avatar>
                       <div className="min-w-0 flex-1">
                         <div className="truncate text-sm font-semibold">
-                          {displayName || "Untitled"}
+                          {displayName || t("common:untitled")}
                         </div>
                         {description && (
                           <p className="mt-0.5 line-clamp-2 text-xs text-text-muted">
@@ -1180,7 +1183,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                           )}
                           {requiresLocation && (
                             <span className="inline-flex items-center gap-0.5 rounded-full bg-accent px-2 py-0.5 text-[10px] text-accent-foreground">
-                              <MapPin className="h-2.5 w-2.5" /> Location
+                              <MapPin className="h-2.5 w-2.5" /> {t("nav:location")}
                             </span>
                           )}
                         </div>
@@ -1189,9 +1192,9 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                   </div>
 
                   <div className="rounded-lg border border-border p-3 space-y-1.5 text-xs">
-                    <ReviewRow label="Brain" value={`${providerLabel ?? "—"} · ${models.find((m) => m.id === model)?.label ?? model ?? "—"}`} />
+                    <ReviewRow label={t("create.review.brain")} value={`${providerLabel ?? "—"} · ${models.find((m) => m.id === model)?.label ?? model ?? "—"}`} />
                     <ReviewRow
-                      label="Mode"
+                      label={t("create.review.mode")}
                       value={
                         EXECUTION_MODES.find((m) => m.id === executionMode)
                           ?.label ?? executionMode
@@ -1199,7 +1202,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                     />
                     {showEffort && (
                       <ReviewRow
-                        label="Effort"
+                        label={t("effortLabel")}
                         value={
                           EFFORT_LEVELS.find((e) => e.id === (effort || "high"))
                             ?.label ?? effort ?? "high"
@@ -1207,31 +1210,31 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                       />
                     )}
                     <ReviewRow
-                      label="Key"
+                      label={t("create.review.key")}
                       value={
                         keySelection === "__custom__" || (showApiKeyInput && !hasDefaultKey)
-                          ? "Custom (this agent)"
+                          ? t("create.review.customKeyThisAgent")
                           : keySelection === "__default__"
-                            ? `${providerLabel ?? backend} default`
+                            ? t("create.review.providerDefaultValue", { provider: providerLabel ?? backend })
                             : providerKeys.find((k) => k.id === keySelection)?.label ??
-                              "Pinned key"
+                              t("create.review.pinnedKey")
                       }
                     />
                     {skipPermissions && (
-                      <ReviewRow label="Safety" value="Skip permission prompts" />
+                      <ReviewRow label={t("create.review.safety")} value={t("create.skipPermissions")} />
                     )}
                     {computerUseEnabled && (
                       <ReviewRow
                         data-testid="review-computer-use"
-                        label="Computer use"
-                        value="Allowed (configure allowed-app list after creation)"
+                        label={t("create.review.computerUse")}
+                        value={t("create.review.computerUseAllowed")}
                       />
                     )}
                   </div>
 
                   {workspacesEnabled && (
                   <div className="space-y-1.5">
-                    <Label className="text-xs">Visibility</Label>
+                    <Label className="text-xs">{t("create.visibility.label")}</Label>
                     <div className="grid grid-cols-2 gap-2">
                       <button
                         type="button"
@@ -1243,9 +1246,9 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                             : "border-border hover:bg-accent"
                         )}
                       >
-                        <span className="text-xs font-medium">Personal</span>
+                        <span className="text-xs font-medium">{t("create.visibility.personal")}</span>
                         <span className="text-[10px] text-text-muted">
-                          Visible in all your workspaces
+                          {t("create.visibility.personalDescription")}
                         </span>
                       </button>
                       <button
@@ -1265,15 +1268,17 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                         )}
                       >
                         <span className="text-xs font-medium">
-                          Pinned to{" "}
-                          {activeWorkspace && !activeWorkspace.isPersonal
-                            ? activeWorkspace.name
-                            : "this workspace"}
+                          {t("create.visibility.pinnedTo", {
+                            workspace:
+                              activeWorkspace && !activeWorkspace.isPersonal
+                                ? activeWorkspace.name
+                                : t("create.visibility.thisWorkspace"),
+                          })}
                         </span>
                         <span className="text-[10px] text-text-muted">
                           {activeWorkspace && !activeWorkspace.isPersonal
-                            ? "Only visible in this workspace"
-                            : "Switch to a shared workspace to pin"}
+                            ? t("create.visibility.onlyThisWorkspace")
+                            : t("create.visibility.switchToShared")}
                         </span>
                       </button>
                     </div>
@@ -1300,7 +1305,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                 disabled={creating}
               >
                 <ArrowLeft className="w-4 h-4" />
-                Back
+                {t("common:back")}
               </Button>
             ) : (
               <Button
@@ -1309,7 +1314,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                 onClick={onClose}
                 disabled={creating}
               >
-                Cancel
+                {t("common:cancel")}
               </Button>
             )}
 
@@ -1321,9 +1326,9 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
               {creating && <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />}
               {isLast
                 ? creating
-                  ? "Bringing them to life..."
-                  : "Create Agent"
-                : "Next"}
+                  ? t("create.creatingLabel")
+                  : t("create.createAgent")
+                : t("common:next")}
               {!isLast && !creating && <ArrowRight className="ml-1 h-3 w-3" />}
             </Button>
           </div>

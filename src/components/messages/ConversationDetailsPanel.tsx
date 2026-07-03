@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useChatStore } from "../../stores/chatStore";
 import { usePresenceStore } from "../../stores/presenceStore";
 import { useAgentStore } from "../../stores/agentStore";
@@ -53,6 +54,7 @@ export function ConversationDetailsPanel({
   onClose,
   onAfterLeave,
 }: Props) {
+  const { t } = useTranslation("chat");
   const online = usePresenceStore((s) => s.online);
   const updateTitle = useChatStore((s) => s.updateConversationTitle);
   const updateAvatar = useChatStore((s) => s.updateConversationAvatar);
@@ -84,13 +86,13 @@ export function ConversationDetailsPanel({
         await updateAvatar(conversation.id, newUrl);
       } catch (err) {
         setAvatarError(
-          err instanceof Error ? err.message : "Failed to upload photo"
+          err instanceof Error ? err.message : t("details.uploadPhotoFailed")
         );
       } finally {
         setUploadingAvatar(false);
       }
     },
-    [conversation.id, updateAvatar]
+    [conversation.id, updateAvatar, t]
   );
 
   const handleAvatarRemove = useCallback(async () => {
@@ -99,10 +101,10 @@ export function ConversationDetailsPanel({
       await updateAvatar(conversation.id, null);
     } catch (err) {
       setAvatarError(
-        err instanceof Error ? err.message : "Failed to remove photo"
+        err instanceof Error ? err.message : t("details.removePhotoFailed")
       );
     }
-  }, [conversation.id, updateAvatar]);
+  }, [conversation.id, updateAvatar, t]);
 
   // Conversation memory — the summary agents see on entry + the periodic
   // MemoryAutoSummaryWorker output. Fetched on open; WS `memory_updated`
@@ -170,20 +172,20 @@ export function ConversationDetailsPanel({
       await updateTitle(conversation.id, trimmed);
       setEditing(false);
     } catch (e) {
-      setActionError(e instanceof Error ? e.message : "Rename failed");
+      setActionError(e instanceof Error ? e.message : t("details.renameFailed"));
     }
-  }, [titleDraft, conversation.id, conversation.title, updateTitle]);
+  }, [titleDraft, conversation.id, conversation.title, updateTitle, t]);
 
   const handleRemove = useCallback(
     async (participantId: string, name: string) => {
-      if (!confirm(`Remove ${name} from this conversation?`)) return;
+      if (!confirm(t("details.removeMemberConfirm", { name }))) return;
       try {
         await removeMember(conversation.id, participantId);
       } catch (e) {
-        setActionError(e instanceof Error ? e.message : "Remove failed");
+        setActionError(e instanceof Error ? e.message : t("details.removeFailed"));
       }
     },
-    [conversation.id, removeMember]
+    [conversation.id, removeMember, t]
   );
 
   const handleAddSelected = useCallback(async () => {
@@ -195,9 +197,9 @@ export function ConversationDetailsPanel({
       setAddingIds(new Set());
       setShowAddMembers(false);
     } catch (e) {
-      setActionError(e instanceof Error ? e.message : "Failed to add");
+      setActionError(e instanceof Error ? e.message : t("details.addFailed"));
     }
-  }, [addingIds, conversation.id, addMember]);
+  }, [addingIds, conversation.id, addMember, t]);
 
   const toggleAddId = useCallback((id: string) => {
     setAddingIds((prev) => {
@@ -220,7 +222,7 @@ export function ConversationDetailsPanel({
       setDanger(null);
       onAfterLeave?.();
     } catch (e) {
-      setActionError(e instanceof Error ? e.message : "Action failed");
+      setActionError(e instanceof Error ? e.message : t("details.actionFailed"));
     }
   }, [
     danger,
@@ -229,6 +231,7 @@ export function ConversationDetailsPanel({
     deleteConversation,
     leaveConversation,
     onAfterLeave,
+    t,
   ]);
 
   const memberIds = new Set(members.map((m) => m.participantId));
@@ -241,11 +244,11 @@ export function ConversationDetailsPanel({
       {/* Header — h-14 to line up with the sidebar's Messages header and the
           conversation header across the three vertical columns. */}
       <div className="relative flex h-14 items-center justify-between px-4 shrink-0 after:absolute after:bottom-0 after:left-4 after:right-4 after:h-px after:bg-border">
-        <h3 className="text-sm font-semibold">Details</h3>
+        <h3 className="text-sm font-semibold">{t("details.title")}</h3>
         <button
           onClick={onClose}
           className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
-          aria-label="Close details"
+          aria-label={t("details.close")}
         >
           <X className="h-4 w-4" />
         </button>
@@ -287,7 +290,7 @@ export function ConversationDetailsPanel({
               <button
                 onClick={handleRename}
                 className="rounded p-1 text-primary hover:bg-muted"
-                title="Save"
+                title={t("common:save")}
               >
                 <Check className="h-4 w-4" />
               </button>
@@ -295,7 +298,7 @@ export function ConversationDetailsPanel({
           ) : (
             <div className="flex items-center gap-2">
               <h2 className="flex-1 truncate text-base font-semibold">
-                {conversation.title || "Untitled conversation"}
+                {conversation.title || t("untitledConversation")}
               </h2>
               {isAdmin && (
                 <button
@@ -304,15 +307,16 @@ export function ConversationDetailsPanel({
                     setEditing(true);
                   }}
                   className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
-                  title="Rename"
+                  title={t("common:rename")}
                 >
                   <Pencil className="h-3.5 w-3.5" />
                 </button>
               )}
             </div>
           )}
-          <p className="mt-1 text-xs text-muted-foreground capitalize">
-            {conversation.type} · {members.length} member{members.length !== 1 ? "s" : ""}
+          <p className="mt-1 text-xs text-muted-foreground">
+            {t(`type.${conversation.type}`, { defaultValue: conversation.type })} ·{" "}
+            {t("members", { count: members.length })}
           </p>
         </div>
 

@@ -1,4 +1,5 @@
 import { Wrench, Terminal } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { Message } from "../../lib/api";
 import { cn } from "../../lib/utils";
 
@@ -18,8 +19,9 @@ function safeParseJson<T>(str: string, fallback: T): T {
 }
 
 export function ToolCallMessage({ message }: { message: Message }) {
+  const { t } = useTranslation("chat");
   const tool = safeParseJson<ToolCallContent>(message.content, {});
-  const name = tool.tool ?? tool.name ?? "Tool call";
+  const name = tool.tool ?? tool.name ?? t("toolCall");
   const args = tool.args ?? tool.input;
 
   return (
@@ -38,12 +40,13 @@ export function ToolCallMessage({ message }: { message: Message }) {
 }
 
 export function ToolResultMessage({ message }: { message: Message }) {
+  const { t } = useTranslation("chat");
   const isLong = (message.content ?? "").length > 200;
   return (
     <div className="space-y-1">
       <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
         <Terminal className="h-3 w-3" />
-        <span>Result</span>
+        <span>{t("toolResult")}</span>
       </div>
       <pre
         className={cn(

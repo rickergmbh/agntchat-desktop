@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useTranslation, Trans } from "react-i18next";
 import { useAgentStore } from "../stores/agentStore";
 import { updateSoulMd, revertSoulMd, reviseSoulMd } from "../lib/api";
 import { Textarea } from "@/components/ui/textarea";
@@ -10,6 +11,7 @@ interface SoulEditorProps {
 }
 
 export function SoulEditor({ agentId }: SoulEditorProps) {
+  const { t } = useTranslation("agents");
   const agent = useAgentStore((s) => s.agents[agentId]?.agent);
   const refreshAgent = useAgentStore((s) => s.selectAgent);
   const [content, setContent] = useState("");
@@ -51,7 +53,7 @@ export function SoulEditor({ agentId }: SoulEditorProps) {
       setDirty(false);
       setProposed(false);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to save");
+      setError(e instanceof Error ? e.message : t("soul.errors.save"));
     } finally {
       setSaving(false);
     }
@@ -69,7 +71,7 @@ export function SoulEditor({ agentId }: SoulEditorProps) {
       setProposed(true);
       setInstruction("");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to generate update");
+      setError(e instanceof Error ? e.message : t("soul.errors.generate"));
     } finally {
       setRevising(false);
     }
@@ -84,22 +86,18 @@ export function SoulEditor({ agentId }: SoulEditorProps) {
       setDirty(false);
       setProposed(false);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to revert");
+      setError(e instanceof Error ? e.message : t("soul.errors.revert"));
     } finally {
       setReverting(false);
     }
-  }, [agentId, refreshAgent]);
+  }, [agentId, refreshAgent, t]);
 
   return (
     <div className="flex flex-col h-full p-4 gap-3">
       <div className="space-y-1">
-        <h3 className="text-sm font-semibold">Soul</h3>
+        <h3 className="text-sm font-semibold">{t("soul.title")}</h3>
         <p className="text-xs text-muted-foreground leading-relaxed">
-          The soul is this agent&apos;s core identity — its system prompt. Written
-          in Markdown, it defines who the agent is, how it speaks, what it cares
-          about, and the rules it follows. It&apos;s sent to the model on every
-          message and task, so it shapes everything the agent does. Write it in
-          plain language, as if briefing a new teammate.
+          {t("soul.description")}
         </p>
       </div>
 
@@ -110,8 +108,8 @@ export function SoulEditor({ agentId }: SoulEditorProps) {
           onChange={(e) => setInstruction(e.target.value)}
           placeholder={
             agentName
-              ? `Describe a change to ${agentName}'s soul — e.g. make the tone more playful, or add that they're an expert in tax law…`
-              : "Describe a change to this agent's soul — e.g. make the tone more playful, or add an area of expertise…"
+              ? t("soul.changePlaceholderNamed", { name: agentName })
+              : t("soul.changePlaceholder")
           }
           rows={2}
           disabled={revising}
@@ -125,7 +123,7 @@ export function SoulEditor({ agentId }: SoulEditorProps) {
         />
         <div className="flex items-center justify-between gap-3 px-3 pb-2">
           <span className="text-[11px] text-muted-foreground">
-            Enter to generate · Shift+Enter for a new line
+            {t("common:enterToGenerateHint")}
           </span>
           <Button
             size="sm"
@@ -134,7 +132,7 @@ export function SoulEditor({ agentId }: SoulEditorProps) {
             disabled={revising || !instruction.trim()}
           >
             {revising && <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />}
-            {revising ? "Generating..." : "Generate"}
+            {revising ? t("common:generating") : t("common:generate")}
           </Button>
         </div>
       </div>
@@ -150,10 +148,20 @@ export function SoulEditor({ agentId }: SoulEditorProps) {
           <Link className="mt-0.5 h-3.5 w-3.5 shrink-0" />
           <p>
             {isInherited ? (
-              <>Inherited from <span className="font-semibold">{agent.soulMdSourceName}</span>. Editing will detach from source.</>
+              <Trans
+                t={t}
+                i18nKey="soul.inherited"
+                values={{ name: agent.soulMdSourceName }}
+                components={{ b: <span className="font-semibold" /> }}
+              />
             ) : (
               <>
-                Detached from <span className="font-semibold">{agent.soulMdSourceName}</span> — local edits override the source.
+                <Trans
+                  t={t}
+                  i18nKey="soul.detached"
+                  values={{ name: agent.soulMdSourceName }}
+                  components={{ b: <span className="font-semibold" /> }}
+                />
                 <span className="mx-1.5">·</span>
                 <button
                   onClick={handleRevert}
@@ -165,7 +173,7 @@ export function SoulEditor({ agentId }: SoulEditorProps) {
                   ) : (
                     <RotateCcw className="h-3 w-3" />
                   )}
-                  Revert to source
+                  {t("soul.revertToSource")}
                 </button>
               </>
             )}
@@ -175,22 +183,26 @@ export function SoulEditor({ agentId }: SoulEditorProps) {
 
       {proposed && (
         <div className="rounded-md border border-border bg-muted/40 px-3 py-2.5 text-xs text-muted-foreground">
-          AI-proposed changes loaded below. Review and edit as needed, then{" "}
-          <span className="font-medium text-foreground">Save</span> to apply.
+          <Trans
+            t={t}
+            i18nKey="soul.proposedNotice"
+            values={{ save: t("common:save") }}
+            components={{ b: <span className="font-medium text-foreground" /> }}
+          />
         </div>
       )}
 
       <Textarea
         value={content}
         onChange={(e) => handleChange(e.target.value)}
-        placeholder="Agent soul.md content..."
+        placeholder={t("soul.contentPlaceholder")}
         className="flex-1 font-mono text-sm resize-none"
       />
       {error && <p className="text-xs text-destructive">{error}</p>}
       <div className="flex justify-end">
         <Button size="sm" onClick={handleSave} disabled={saving || !dirty}>
           <Save className="w-3.5 h-3.5 mr-1.5" />
-          {saving ? "Saving..." : "Save"}
+          {saving ? t("common:saving") : t("common:save")}
         </Button>
       </div>
     </div>

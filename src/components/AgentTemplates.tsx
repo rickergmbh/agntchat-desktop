@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import {
   type ResponseTemplate,
   type DetailField,
@@ -27,6 +28,7 @@ interface AgentTemplatesProps {
 }
 
 export function AgentTemplates({ managed }: AgentTemplatesProps) {
+  const { t } = useTranslation("templates");
   const { fetchAgents } = useAgentStore();
   const [allTemplates, setAllTemplates] = useState<ResponseTemplate[]>([]);
   const [loading, setLoading] = useState(true);
@@ -88,7 +90,7 @@ export function AgentTemplates({ managed }: AgentTemplatesProps) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12 text-sm text-muted-foreground">
-        Loading templates...
+        {t("loading")}
       </div>
     );
   }
@@ -100,24 +102,23 @@ export function AgentTemplates({ managed }: AgentTemplatesProps) {
       {assignedEntries.length === 0 ? (
         <div className="text-center py-8">
           <LayoutTemplate className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
-          <p className="text-sm font-medium">No response templates</p>
+          <p className="text-sm font-medium">{t("emptyLabel")}</p>
           <p className="text-xs text-muted-foreground mt-1">
-            Templates define how this agent formats structured results (hotels,
-            emails, products, etc.)
+            {t("emptyDescription")}
           </p>
           <Button
             size="sm"
             className="mt-4"
             onClick={() => setShowAdd(true)}
           >
-            <Plus className="w-3.5 h-3.5 mr-1.5" /> Add Template
+            <Plus className="w-3.5 h-3.5 mr-1.5" /> {t("add")}
           </Button>
         </div>
       ) : (
         <>
           <div>
             <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
-              Assigned Templates
+              {t("assigned")}
             </span>
             <div className="space-y-1 mt-2">
               {assignedEntries.map(([name, fields]) => {
@@ -148,7 +149,7 @@ export function AgentTemplates({ managed }: AgentTemplatesProps) {
                       </div>
                       <p className="text-xs text-muted-foreground mt-0.5">
                         {source?.description ||
-                          `${(fields as DetailField[]).length} field(s)`}
+                          t("fieldCount", { count: (fields as DetailField[]).length })}
                       </p>
                     </div>
                     <div className="flex items-center gap-1 ml-2">
@@ -182,7 +183,7 @@ export function AgentTemplates({ managed }: AgentTemplatesProps) {
             variant="outline"
             onClick={() => setShowAdd(true)}
           >
-            <Plus className="w-3.5 h-3.5 mr-1.5" /> Add Template
+            <Plus className="w-3.5 h-3.5 mr-1.5" /> {t("add")}
           </Button>
         </>
       )}
@@ -208,7 +209,7 @@ export function AgentTemplates({ managed }: AgentTemplatesProps) {
               </div>
               <div>
                 <p className="text-xs font-semibold text-muted-foreground mb-2">
-                  Fields ({viewTemplate.fields.length})
+                  {t("fieldsWithCount", { count: viewTemplate.fields.length })}
                 </p>
                 <div className="space-y-1">
                   {viewTemplate.fields.map((f) => (
@@ -234,7 +235,7 @@ export function AgentTemplates({ managed }: AgentTemplatesProps) {
               {viewTemplate.sampleData && (
                 <div>
                   <p className="text-xs font-semibold text-muted-foreground mb-2">
-                    Sample Data
+                    {t("sampleData")}
                   </p>
                   <pre className="bg-muted rounded-lg p-3 text-xs font-mono overflow-x-auto">
                     {JSON.stringify(viewTemplate.sampleData, null, 2)}
@@ -268,60 +269,59 @@ function AddTemplateDialog({
   templates: ResponseTemplate[];
   onAdd: (t: ResponseTemplate) => void;
 }) {
+  const { t } = useTranslation("templates");
   const [search, setSearch] = useState("");
 
   const filtered = templates.filter(
-    (t) =>
-      t.name.includes(search.toLowerCase()) ||
-      (t.description || "").toLowerCase().includes(search.toLowerCase()) ||
-      t.resultType.includes(search.toLowerCase())
+    (tpl) =>
+      tpl.name.includes(search.toLowerCase()) ||
+      (tpl.description || "").toLowerCase().includes(search.toLowerCase()) ||
+      tpl.resultType.includes(search.toLowerCase())
   );
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Add Template</DialogTitle>
+          <DialogTitle>{t("add")}</DialogTitle>
         </DialogHeader>
         <Input
-          placeholder="Search templates..."
+          placeholder={t("searchPlaceholder")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="mb-3"
         />
         {filtered.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-4">
-            {templates.length === 0
-              ? "All available templates are already assigned."
-              : "No matching templates."}
+            {templates.length === 0 ? t("allAssigned") : t("noMatches")}
           </p>
         ) : (
           <div className="space-y-1 max-h-60 overflow-y-auto">
-            {filtered.map((t) => (
+            {filtered.map((tpl) => (
               <div
-                key={t.id}
+                key={tpl.id}
                 className="flex items-center justify-between p-2.5 rounded-lg border hover:bg-accent/50"
               >
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <p className="text-sm font-medium truncate font-mono">
-                      {t.name}
+                      {tpl.name}
                     </p>
                     <Badge
                       variant="secondary"
                       className="text-[10px] px-1.5 py-0"
                     >
-                      {t.resultType}
+                      {tpl.resultType}
                     </Badge>
                   </div>
                   <p className="text-xs text-muted-foreground truncate">
-                    {t.description || `${t.fields.length} field(s)`}
+                    {tpl.description || t("fieldCount", { count: tpl.fields.length })}
                   </p>
                 </div>
                 <Button
                   size="sm"
                   variant="ghost"
-                  onClick={() => onAdd(t)}
+                  onClick={() => onAdd(tpl)}
                 >
                   <Plus className="w-3.5 h-3.5" />
                 </Button>

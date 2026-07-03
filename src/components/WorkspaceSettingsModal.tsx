@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { X, Loader2, Trash2, LogOut, Mail, Crown, Shield, User, Send, Copy as CopyIcon, Camera } from "lucide-react";
 import * as api from "../lib/api";
 import { uploadAvatar } from "../lib/imageProcessor";
@@ -30,6 +31,7 @@ interface Props {
  * the user is no longer in.
  */
 export function WorkspaceSettingsModal({ workspaceId, onClose }: Props) {
+  const { t } = useTranslation("settings");
   const [tab, setTab] = useState<Tab>("general");
   const workspace = useWorkspaces().find((w) => w.id === workspaceId);
 
@@ -60,12 +62,12 @@ export function WorkspaceSettingsModal({ workspaceId, onClose }: Props) {
         <div className="flex items-center justify-between border-b border-border px-5 py-3">
           <div className="min-w-0">
             <h2 className="truncate text-base font-semibold">{workspace.name}</h2>
-            <p className="truncate text-xs text-muted-foreground">Workspace settings</p>
+            <p className="truncate text-xs text-muted-foreground">{t("workspace.title")}</p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close"
+            aria-label={t("common:close")}
             className="rounded-md p-1 text-muted-foreground hover:bg-accent hover:text-foreground"
           >
             <X className="h-4 w-4" />
@@ -75,24 +77,24 @@ export function WorkspaceSettingsModal({ workspaceId, onClose }: Props) {
         {/* Tab nav */}
         <div className="flex shrink-0 gap-1 border-b border-border px-3 pt-2">
           <TabButton active={tab === "general"} onClick={() => setTab("general")}>
-            General
+            {t("workspace.tabs.general")}
           </TabButton>
           <TabButton active={tab === "members"} onClick={() => setTab("members")}>
-            Members
+            {t("workspace.tabs.members")}
           </TabButton>
           {isAdminOrOwner && (
             <TabButton active={tab === "hosts"} onClick={() => setTab("hosts")}>
-              Hosts
+              {t("workspace.tabs.hosts")}
             </TabButton>
           )}
           {isAdminOrOwner && (
             <TabButton active={tab === "models"} onClick={() => setTab("models")}>
-              Models
+              {t("workspace.tabs.models")}
             </TabButton>
           )}
           {isAdminOrOwner && (
             <TabButton active={tab === "invites"} onClick={() => setTab("invites")}>
-              Invites
+              {t("workspace.tabs.invites")}
             </TabButton>
           )}
         </div>
@@ -112,13 +114,13 @@ export function WorkspaceSettingsModal({ workspaceId, onClose }: Props) {
           {tab === "hosts" && isAdminOrOwner && (
             <HostsManagement
               orgId={workspace.id}
-              subtitle="Run agents on a dedicated Linux VM. Setup currently requires access to the Agentgram private host repo — reach out to opt in."
+              subtitle={t("workspace.hostsSubtitle")}
             />
           )}
           {tab === "models" && isAdminOrOwner && (
             <ProvidersManagement
               orgId={workspace.id}
-              subtitle="Choose which LLM providers and models this workspace's members can use. Leave a provider unconfigured to allow the global default list."
+              subtitle={t("workspace.modelsSubtitle")}
             />
           )}
           {tab === "invites" && isAdminOrOwner && <InvitesTab workspace={workspace} />}
@@ -166,6 +168,7 @@ function GeneralTab({
   isAdminOrOwner: boolean;
   onClose: () => void;
 }) {
+  const { t } = useTranslation("settings");
   const renameWorkspace = useWorkspaceStore((s) => s.renameWorkspace);
   const setWorkspaceAvatar = useWorkspaceStore((s) => s.setWorkspaceAvatar);
   const deleteWorkspace = useWorkspaceStore((s) => s.deleteWorkspace);
@@ -187,7 +190,7 @@ function GeneralTab({
       const url = await uploadAvatar(file, `workspace-avatars/${workspace.id}.jpg`);
       await setWorkspaceAvatar(workspace.id, url);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not upload avatar");
+      setError(err instanceof Error ? err.message : t("workspace.errors.avatarUpload"));
     } finally {
       setUploadingAvatar(false);
       e.target.value = "";
@@ -200,7 +203,7 @@ function GeneralTab({
     try {
       await setWorkspaceAvatar(workspace.id, null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not remove avatar");
+      setError(err instanceof Error ? err.message : t("workspace.errors.avatarRemove"));
     } finally {
       setUploadingAvatar(false);
     }
@@ -213,39 +216,34 @@ function GeneralTab({
     try {
       await renameWorkspace(workspace.id, name.trim());
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not rename");
+      setError(e instanceof Error ? e.message : t("workspace.errors.rename"));
     } finally {
       setSaving(false);
     }
   }
 
   async function handleDelete() {
-    if (
-      !confirm(
-        `Delete "${workspace.name}"? This removes all conversations, agents, and members in this workspace. This cannot be undone.`
-      )
-    )
-      return;
+    if (!confirm(t("workspace.deleteConfirm", { name: workspace.name }))) return;
     setDestroying(true);
     setError(null);
     try {
       await deleteWorkspace(workspace.id);
       onClose();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not delete");
+      setError(e instanceof Error ? e.message : t("workspace.errors.delete"));
       setDestroying(false);
     }
   }
 
   async function handleLeave() {
-    if (!confirm(`Leave "${workspace.name}"?`)) return;
+    if (!confirm(t("workspace.leaveConfirm", { name: workspace.name }))) return;
     setLeaving(true);
     setError(null);
     try {
       await leaveWorkspace(workspace.id);
       onClose();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not leave");
+      setError(e instanceof Error ? e.message : t("workspace.errors.leave"));
       setLeaving(false);
     }
   }
@@ -255,7 +253,7 @@ function GeneralTab({
       {/* Avatar — only shown to admins/owners who can change it */}
       {isAdminOrOwner && (
         <section>
-          <label className="text-xs font-medium">Workspace avatar</label>
+          <label className="text-xs font-medium">{t("workspace.avatarLabel")}</label>
           <div className="mt-1.5 flex items-center gap-3">
             <div className="relative">
               <Avatar className="h-14 w-14 rounded-md">
@@ -289,7 +287,7 @@ function GeneralTab({
             </div>
             <div className="flex flex-col gap-1">
               <p className="text-[11px] text-muted-foreground">
-                Renders in the sidebar tile. JPEG, PNG, or WebP — square crop recommended.
+                {t("workspace.avatarHint")}
               </p>
               {workspace.avatarUrl && (
                 <button
@@ -298,7 +296,7 @@ function GeneralTab({
                   disabled={uploadingAvatar}
                   className="text-left text-[11px] text-destructive hover:underline disabled:opacity-50"
                 >
-                  Remove avatar
+                  {t("workspace.removeAvatar")}
                 </button>
               )}
             </div>
@@ -310,7 +308,7 @@ function GeneralTab({
       {isAdminOrOwner && (
         <section>
           <label htmlFor="ws-rename" className="text-xs font-medium">
-            Workspace name
+            {t("workspace.nameLabel")}
           </label>
           <div className="mt-1.5 flex gap-2">
             <input
@@ -327,7 +325,7 @@ function GeneralTab({
               className="flex items-center rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
             >
               {saving && <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />}
-              Save
+              {t("common:save")}
             </button>
           </div>
         </section>
@@ -336,12 +334,11 @@ function GeneralTab({
       {/* Workspace identifiers — developer info, only relevant to admins/owners */}
       {isAdminOrOwner && (
         <section className="space-y-2">
-          <label className="text-xs font-medium">Workspace identifiers</label>
-          <ReadOnlyField label="ID" value={workspace.id} />
-          <ReadOnlyField label="Slug" value={workspace.slug} />
+          <label className="text-xs font-medium">{t("workspace.identifiersLabel")}</label>
+          <ReadOnlyField label={t("workspace.idLabel")} value={workspace.id} />
+          <ReadOnlyField label={t("workspace.slugLabel")} value={workspace.slug} />
           <p className="text-[11px] text-muted-foreground">
-            The workspace ID is what backend resources reference (agents, hosts,
-            conversations). Slug appears in URLs.
+            {t("workspace.identifiersHint")}
           </p>
         </section>
       )}
@@ -356,9 +353,9 @@ function GeneralTab({
         <section className="rounded-md border border-border p-3">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <h3 className="text-sm font-semibold">Leave workspace</h3>
+              <h3 className="text-sm font-semibold">{t("workspace.leave")}</h3>
               <p className="mt-0.5 text-xs text-muted-foreground">
-                You'll lose access to all conversations and agents here.
+                {t("workspace.leaveDescription")}
               </p>
             </div>
             <button
@@ -372,7 +369,7 @@ function GeneralTab({
               ) : (
                 <LogOut className="mr-1.5 h-3 w-3" />
               )}
-              Leave
+              {t("workspace.leaveButton")}
             </button>
           </div>
         </section>
@@ -382,9 +379,9 @@ function GeneralTab({
         <section className="rounded-md border border-destructive/30 p-3">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <h3 className="text-sm font-semibold text-destructive">Delete workspace</h3>
+              <h3 className="text-sm font-semibold text-destructive">{t("workspace.delete")}</h3>
               <p className="mt-0.5 text-xs text-muted-foreground">
-                Permanently removes the workspace, its conversations, agents, hosts, and credentials.
+                {t("workspace.deleteDescription")}
               </p>
             </div>
             <button
@@ -398,7 +395,7 @@ function GeneralTab({
               ) : (
                 <Trash2 className="mr-1.5 h-3 w-3" />
               )}
-              Delete
+              {t("common:delete")}
             </button>
           </div>
         </section>
@@ -418,6 +415,7 @@ function MembersTab({
   isOwner: boolean;
   isAdminOrOwner: boolean;
 }) {
+  const { t } = useTranslation("settings");
   const [members, setMembers] = useState<OrganizationMembership[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -432,11 +430,11 @@ function MembersTab({
       const result = await api.listOrganizationMembers(workspace.id);
       setMembers(result);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not load members");
+      setError(e instanceof Error ? e.message : t("workspace.errors.loadMembers"));
     } finally {
       setLoading(false);
     }
-  }, [workspace.id]);
+  }, [workspace.id, t]);
 
   useEffect(() => {
     load();
@@ -447,18 +445,18 @@ function MembersTab({
       await updateMemberRole(workspace.id, member.participantId, role);
       await load();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not update role");
+      setError(e instanceof Error ? e.message : t("workspace.errors.updateRole"));
     }
   }
 
   async function handleRemove(member: OrganizationMembership) {
-    const name = member.participant?.displayName ?? "this member";
-    if (!confirm(`Remove ${name} from ${workspace.name}?`)) return;
+    const name = member.participant?.displayName ?? t("workspace.thisMember");
+    if (!confirm(t("workspace.removeMemberConfirm", { name, workspace: workspace.name }))) return;
     try {
       await removeMember(workspace.id, member.participantId);
       await load();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not remove");
+      setError(e instanceof Error ? e.message : t("workspace.errors.removeMember"));
     }
   }
 
@@ -493,9 +491,9 @@ function MembersTab({
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1.5">
                 <span className="truncate text-sm font-medium">
-                  {m.participant?.displayName ?? "Unknown"}
+                  {m.participant?.displayName ?? t("common:unknown")}
                 </span>
-                {isSelf && <span className="text-[10px] text-muted-foreground">(you)</span>}
+                {isSelf && <span className="text-[10px] text-muted-foreground">{t("workspace.youTag")}</span>}
               </div>
             </div>
             <RoleBadge role={m.role} />
@@ -504,10 +502,10 @@ function MembersTab({
                 value={m.role}
                 onChange={(e) => handleRoleChange(m, e.target.value as "admin" | "member")}
                 className="h-7 rounded-md border border-border bg-background px-2 text-xs"
-                aria-label="Role"
+                aria-label={t("workspace.roleLabel")}
               >
-                <option value="member">Member</option>
-                <option value="admin">Admin</option>
+                <option value="member">{t("workspace.roles.member")}</option>
+                <option value="admin">{t("workspace.roles.admin")}</option>
               </select>
             )}
             {isAdminOrOwner && m.role !== "owner" && !isSelf && (
@@ -516,7 +514,7 @@ function MembersTab({
                 onClick={() => handleRemove(m)}
                 className="shrink-0 rounded-md px-2 py-1 text-xs text-destructive hover:bg-destructive/10"
               >
-                Remove
+                {t("common:remove")}
               </button>
             )}
           </div>
@@ -527,6 +525,7 @@ function MembersTab({
 }
 
 function ReadOnlyField({ label, value }: { label: string; value: string }) {
+  const { t } = useTranslation("common");
   return (
     <div className="flex items-center gap-2 rounded-md border border-border bg-muted/40 px-2.5 py-1.5 font-mono text-xs">
       <span className="text-[10px] uppercase tracking-wide text-muted-foreground">
@@ -536,7 +535,7 @@ function ReadOnlyField({ label, value }: { label: string; value: string }) {
       <button
         type="button"
         onClick={() => void navigator.clipboard.writeText(value)}
-        aria-label={`Copy ${label}`}
+        aria-label={t("copyItem", { item: label })}
         className="rounded-sm p-1 text-muted-foreground hover:bg-accent hover:text-foreground"
       >
         <CopyIcon className="h-3 w-3" />
@@ -546,12 +545,14 @@ function ReadOnlyField({ label, value }: { label: string; value: string }) {
 }
 
 function RoleBadge({ role }: { role: "owner" | "admin" | "member" }) {
+  const { t } = useTranslation("settings");
   const config = {
-    owner: { Icon: Crown, label: "Owner", cls: "text-amber-500" },
-    admin: { Icon: Shield, label: "Admin", cls: "text-primary" },
-    member: { Icon: User, label: "Member", cls: "text-muted-foreground" },
+    owner: { Icon: Crown, labelKey: "workspace.roles.owner", cls: "text-amber-500" },
+    admin: { Icon: Shield, labelKey: "workspace.roles.admin", cls: "text-primary" },
+    member: { Icon: User, labelKey: "workspace.roles.member", cls: "text-muted-foreground" },
   }[role];
-  const { Icon, label, cls } = config;
+  const { Icon, labelKey, cls } = config;
+  const label = t(labelKey);
   return (
     <span className={cn("flex items-center gap-1 text-[11px]", cls)}>
       <Icon className="h-3 w-3" />
@@ -563,6 +564,7 @@ function RoleBadge({ role }: { role: "owner" | "admin" | "member" }) {
 // --- Invites tab -------------------------------------------------------
 
 function InvitesTab({ workspace }: { workspace: WorkspaceMembership }) {
+  const { t } = useTranslation("settings");
   const [invites, setInvites] = useState<OrganizationInvite[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -580,11 +582,11 @@ function InvitesTab({ workspace }: { workspace: WorkspaceMembership }) {
       const list = await api.listOrganizationInvites(workspace.id);
       setInvites(list.filter((i) => !i.redeemedAt));
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not load invites");
+      setError(e instanceof Error ? e.message : t("workspace.errors.loadInvites"));
     } finally {
       setLoading(false);
     }
-  }, [workspace.id]);
+  }, [workspace.id, t]);
 
   useEffect(() => {
     load();
@@ -601,42 +603,42 @@ function InvitesTab({ workspace }: { workspace: WorkspaceMembership }) {
       setRole("member");
       await load();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not send invite");
+      setError(e instanceof Error ? e.message : t("workspace.errors.sendInvite"));
     } finally {
       setSending(false);
     }
   }
 
   async function handleRevoke(invite: OrganizationInvite) {
-    if (!confirm(`Revoke invitation to ${invite.email}?`)) return;
+    if (!confirm(t("workspace.revokeInviteConfirm", { email: invite.email }))) return;
     try {
       await revokeInvite(workspace.id, invite.id);
       await load();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not revoke");
+      setError(e instanceof Error ? e.message : t("workspace.errors.revokeInvite"));
     }
   }
 
   return (
     <div className="space-y-5">
       <form onSubmit={handleSend} className="space-y-2">
-        <label className="text-xs font-medium">Invite by email</label>
+        <label className="text-xs font-medium">{t("workspace.inviteByEmail")}</label>
         <div className="flex gap-2">
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="teammate@example.com"
+            placeholder={t("workspace.inviteEmailPlaceholder")}
             className="h-9 flex-1 rounded-md border border-border bg-background px-3 text-sm"
           />
           <select
             value={role}
             onChange={(e) => setRole(e.target.value as "admin" | "member")}
             className="h-9 rounded-md border border-border bg-background px-2 text-sm"
-            aria-label="Role"
+            aria-label={t("workspace.roleLabel")}
           >
-            <option value="member">Member</option>
-            <option value="admin">Admin</option>
+            <option value="member">{t("workspace.roles.member")}</option>
+            <option value="admin">{t("workspace.roles.admin")}</option>
           </select>
           <button
             type="submit"
@@ -648,7 +650,7 @@ function InvitesTab({ workspace }: { workspace: WorkspaceMembership }) {
             ) : (
               <Send className="mr-1.5 h-3 w-3" />
             )}
-            Send
+            {t("common:send")}
           </button>
         </div>
       </form>
@@ -661,7 +663,7 @@ function InvitesTab({ workspace }: { workspace: WorkspaceMembership }) {
 
       <div>
         <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          Pending invitations
+          {t("workspace.pendingInvites")}
         </h3>
         {loading ? (
           <div className="flex justify-center py-6">
@@ -669,7 +671,7 @@ function InvitesTab({ workspace }: { workspace: WorkspaceMembership }) {
           </div>
         ) : (invites ?? []).length === 0 ? (
           <p className="py-4 text-center text-xs text-muted-foreground">
-            No pending invitations.
+            {t("workspace.noPendingInvites")}
           </p>
         ) : (
           <div className="space-y-1">
@@ -681,14 +683,16 @@ function InvitesTab({ workspace }: { workspace: WorkspaceMembership }) {
                 <Mail className="h-4 w-4 shrink-0 text-muted-foreground" />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm">{invite.email}</p>
-                  <p className="text-[11px] text-muted-foreground">{invite.role}</p>
+                  <p className="text-[11px] text-muted-foreground">
+                    {t(`workspace.roles.${invite.role}`)}
+                  </p>
                 </div>
                 <button
                   type="button"
                   onClick={() => handleRevoke(invite)}
                   className="rounded-md px-2 py-1 text-xs text-destructive hover:bg-destructive/10"
                 >
-                  Revoke
+                  {t("workspace.revoke")}
                 </button>
               </div>
             ))}

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Archive, ChevronDown, ChevronRight } from "lucide-react";
 import { MarkdownContent } from "./MarkdownContent";
 import type { Message } from "../../lib/api";
@@ -20,6 +21,7 @@ export function isCompactionSummaryMessage(message: Message): boolean {
 export function CompactionSummaryMessage({ message }: { message: Message }) {
   // Collapsed by default — it's archived history; the header stays visible
   // and the user expands the narrative on demand.
+  const { t } = useTranslation("chat");
   const [expanded, setExpanded] = useState(false);
   const data = (message.contentStructured?.data ?? {}) as CompactionPayload;
   const count = data.messages_compacted ?? 0;
@@ -35,8 +37,8 @@ export function CompactionSummaryMessage({ message }: { message: Message }) {
         <Archive className="h-3.5 w-3.5 shrink-0" />
         <span className="flex-1 text-left">
           {count > 0
-            ? `${count} earlier message${count === 1 ? "" : "s"} summarized`
-            : "Earlier messages summarized"}
+            ? t("compaction.summarized", { count })
+            : t("compaction.summarizedNoCount")}
         </span>
         {expanded ? (
           <ChevronDown className="h-3.5 w-3.5 shrink-0" />

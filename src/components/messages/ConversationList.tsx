@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 import { useChatStore } from "../../stores/chatStore";
 import { useAuthStore } from "../../stores/authStore";
 import { usePresenceStore } from "../../stores/presenceStore";
@@ -22,6 +23,7 @@ import type { AgentActivity } from "../../lib/agent-activity";
 import type { Conversation } from "../../lib/api";
 
 export function ConversationList() {
+  const { t } = useTranslation("chat");
   const conversations = useChatStore((s) => s.conversations);
   const loading = useChatStore((s) => s.conversationsLoading);
   const activeId = useChatStore((s) => s.activeConversationId);
@@ -45,10 +47,10 @@ export function ConversationList() {
       <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
         <MessageSquare className="w-10 h-10 text-muted-foreground/40 mb-3" />
         <p className="text-sm text-muted-foreground">
-          No conversations yet
+          {t("noConversations")}
         </p>
         <p className="text-xs text-muted-foreground mt-1">
-          Click the pencil icon above to start one.
+          {t("startOneHint")}
         </p>
       </div>
     );

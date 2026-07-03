@@ -1,4 +1,5 @@
 import { Bot, Brain, Wrench, Pen, Search, Clock, Users, Loader2, Square } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { ActiveStream, StreamPhase } from "../../lib/api";
 import { cn } from "../../lib/utils";
 import { Bubble, BubbleContent } from "@/components/ui/bubble";
@@ -18,13 +19,13 @@ const phaseIcons: Record<StreamPhase, typeof Brain> = {
   waiting: Users,
 };
 
-const phaseLabels: Record<StreamPhase, string> = {
-  thinking: "Thinking...",
-  tool_call: "Using tools...",
-  writing: "Writing...",
-  analyzing: "Analyzing...",
-  queued: "Message queued — agent is offline",
-  waiting: "Waiting for turn...",
+const phaseLabelKeys: Record<StreamPhase, string> = {
+  thinking: "streamPhase.thinking",
+  tool_call: "streamPhase.toolCall",
+  writing: "streamPhase.writing",
+  analyzing: "streamPhase.analyzing",
+  queued: "streamPhase.queued",
+  waiting: "streamPhase.waiting",
 };
 
 export function StreamingBubble({
@@ -38,8 +39,11 @@ export function StreamingBubble({
   onStop?: () => void;
   stopping?: boolean;
 }) {
+  const { t } = useTranslation("chat");
   const Icon = phaseIcons[stream.phase] ?? Brain;
-  const label = stream.phaseDetail ?? phaseLabels[stream.phase] ?? "Working...";
+  const label =
+    stream.phaseDetail ??
+    t(phaseLabelKeys[stream.phase] ?? "streamPhase.working");
   const animated = stream.phase !== "queued" && stream.phase !== "waiting";
 
   return (
@@ -54,7 +58,7 @@ export function StreamingBubble({
         <MessageHeader className="mb-0.5 gap-1.5 px-0 text-[11px] font-normal">
           <span className="font-medium text-foreground">{stream.senderName}</span>
           <span className="px-1.5 py-[1px] rounded bg-bubble-agent-accent/10 text-bubble-agent-accent text-[9px] font-semibold uppercase tracking-wide">
-            agent
+            {t("common:agent")}
           </span>
         </MessageHeader>
 
@@ -100,8 +104,8 @@ export function StreamingBubble({
           type="button"
           onClick={stopping ? undefined : onStop}
           disabled={stopping}
-          title="Stop agents"
-          aria-label="Stop agents"
+          title={t("stopAgents")}
+          aria-label={t("stopAgents")}
           className={cn(
             "self-end mb-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full",
             "border border-border bg-card text-muted-foreground shadow-sm transition-colors",

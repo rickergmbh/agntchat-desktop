@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import {
   type Skill,
   getAgentSkills,
@@ -51,6 +52,7 @@ interface AgentSkillsProps {
 }
 
 export function AgentSkills({ agentId }: AgentSkillsProps) {
+  const { t } = useTranslation("agents");
   const [resolvedSkills, setResolvedSkills] = useState<Skill[]>([]);
   const [allSkills, setAllSkills] = useState<Skill[]>([]);
   const [loading, setLoading] = useState(true);
@@ -102,7 +104,7 @@ export function AgentSkills({ agentId }: AgentSkillsProps) {
       await fetchSkills();
       setShowAdd(false);
     } catch (e) {
-      const msg = e instanceof Error ? e.message : "Failed to assign skill";
+      const msg = e instanceof Error ? e.message : t("skills.errors.assignFailed");
       console.error("Failed to assign skill:", msg);
       setAssignError(msg);
     } finally {
@@ -137,7 +139,7 @@ export function AgentSkills({ agentId }: AgentSkillsProps) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12 text-sm text-muted-foreground">
-        Loading skills...
+        {t("skills.loading")}
       </div>
     );
   }
@@ -147,19 +149,19 @@ export function AgentSkills({ agentId }: AgentSkillsProps) {
       {resolvedSkills.length === 0 ? (
         <div className="text-center py-8">
           <Sparkles className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
-          <p className="text-sm font-medium">No skills attached</p>
+          <p className="text-sm font-medium">{t("skills.emptyTitle")}</p>
           <p className="text-xs text-muted-foreground mt-1">
-            Skills give this agent operational knowledge — API access, formatting rules, workflows.
+            {t("skills.emptyHint")}
           </p>
           <div className="flex gap-2 justify-center mt-4">
             <Button size="sm" onClick={() => setShowAdd(true)}>
-              <Plus className="w-3.5 h-3.5 mr-1.5" /> Add Skill
+              <Plus className="w-3.5 h-3.5 mr-1.5" /> {t("skills.addSkill")}
             </Button>
             <Button size="sm" variant="outline" onClick={() => setShowCreate(true)}>
-              Create New
+              {t("skills.createNew")}
             </Button>
             <Button size="sm" variant="outline" onClick={() => setShowInstallShared(true)}>
-              <Link2 className="w-3.5 h-3.5 mr-1.5" /> Install Shared
+              <Link2 className="w-3.5 h-3.5 mr-1.5" /> {t("skills.installShared")}
             </Button>
           </div>
         </div>
@@ -169,22 +171,22 @@ export function AgentSkills({ agentId }: AgentSkillsProps) {
               reachable without scrolling past the skill list. */}
           <div className="flex flex-wrap gap-2">
             <Button size="sm" variant="outline" onClick={() => setShowAdd(true)}>
-              <Plus className="w-3.5 h-3.5 mr-1.5" /> Add Skill
+              <Plus className="w-3.5 h-3.5 mr-1.5" /> {t("skills.addSkill")}
             </Button>
             <Button size="sm" variant="outline" onClick={() => setShowCreate(true)}>
-              Create New
+              {t("skills.createNew")}
             </Button>
             <Button size="sm" variant="outline" onClick={() => setShowImport(true)}>
-              <Download className="w-3.5 h-3.5 mr-1.5" /> Import
+              <Download className="w-3.5 h-3.5 mr-1.5" /> {t("skills.import")}
             </Button>
             <Button size="sm" variant="outline" onClick={() => setShowInstallShared(true)}>
-              <Link2 className="w-3.5 h-3.5 mr-1.5" /> Install Shared
+              <Link2 className="w-3.5 h-3.5 mr-1.5" /> {t("skills.installShared")}
             </Button>
           </div>
 
           {globalSkills.length > 0 && (
             <SkillGroup
-              label="Global"
+              label={t("skills.scope.global")}
               icon={<Globe className="w-3 h-3" />}
               skills={globalSkills}
               onView={setViewSkill}
@@ -192,7 +194,7 @@ export function AgentSkills({ agentId }: AgentSkillsProps) {
           )}
           {ownerSkills.length > 0 && (
             <SkillGroup
-              label="Owner"
+              label={t("skills.scope.owner")}
               icon={<User className="w-3 h-3" />}
               skills={ownerSkills}
               onView={setViewSkill}
@@ -201,7 +203,7 @@ export function AgentSkills({ agentId }: AgentSkillsProps) {
           )}
           {agentSkills.length > 0 && (
             <SkillGroup
-              label="Agent"
+              label={t("skills.scope.agent")}
               icon={<Link2 className="w-3 h-3" />}
               skills={agentSkills}
               onView={setViewSkill}
@@ -221,14 +223,18 @@ export function AgentSkills({ agentId }: AgentSkillsProps) {
             <div className="space-y-3">
               <p className="text-sm text-muted-foreground">{viewSkill.description}</p>
               <div className="flex gap-2 flex-wrap">
-                <Badge variant="secondary">{viewSkill.scope}</Badge>
-                {viewSkill.category && <Badge variant="outline">{viewSkill.category}</Badge>}
-                {viewSkill.alwaysInject && <Badge>always loaded</Badge>}
+                <Badge variant="secondary">{t(`skills.scope.${viewSkill.scope}`, viewSkill.scope)}</Badge>
+                {viewSkill.category && (
+                  <Badge variant="outline">
+                    {t(`skills.category.${viewSkill.category}`, viewSkill.category)}
+                  </Badge>
+                )}
+                {viewSkill.alwaysInject && <Badge>{t("skills.alwaysLoaded")}</Badge>}
                 {viewSkill.visibility === "public" && (
-                  <Badge variant="default" className="bg-success">public</Badge>
+                  <Badge variant="default" className="bg-success">{t("skills.visibility.public")}</Badge>
                 )}
                 {viewSkill.visibility === "unlisted" && (
-                  <Badge variant="secondary">unlisted</Badge>
+                  <Badge variant="secondary">{t("skills.visibility.unlisted")}</Badge>
                 )}
                 {viewSkill.tags?.map((t) => (
                   <Badge key={t} variant="outline" className="text-xs">{t}</Badge>
@@ -237,10 +243,15 @@ export function AgentSkills({ agentId }: AgentSkillsProps) {
               {(viewSkill.ratingAvg || viewSkill.installCount) && (
                 <div className="flex gap-4 text-xs text-muted-foreground">
                   {viewSkill.ratingAvg != null && (
-                    <span>Rating: {viewSkill.ratingAvg.toFixed(1)}/5 ({viewSkill.ratingCount} reviews)</span>
+                    <span>
+                      {t("skills.rating", {
+                        rating: viewSkill.ratingAvg.toFixed(1),
+                        count: viewSkill.ratingCount,
+                      })}
+                    </span>
                   )}
                   {viewSkill.installCount != null && viewSkill.installCount > 0 && (
-                    <span>{viewSkill.installCount} installs</span>
+                    <span>{t("skills.installs", { count: viewSkill.installCount })}</span>
                   )}
                 </div>
               )}
@@ -248,7 +259,7 @@ export function AgentSkills({ agentId }: AgentSkillsProps) {
               {/* Action buttons */}
               <div className="flex gap-2">
                 <Button size="sm" variant="outline" className="flex-1" onClick={() => setEditingSkill(true)}>
-                  <Pencil className="w-3.5 h-3.5 mr-1.5" /> Edit
+                  <Pencil className="w-3.5 h-3.5 mr-1.5" /> {t("common:edit")}
                 </Button>
                 <Button
                   size="sm"
@@ -256,7 +267,7 @@ export function AgentSkills({ agentId }: AgentSkillsProps) {
                   className="flex-1 text-muted-foreground hover:text-foreground"
                   onClick={() => handleUnassign(viewSkill)}
                 >
-                  <Unlink className="w-3.5 h-3.5 mr-1.5" /> Remove
+                  <Unlink className="w-3.5 h-3.5 mr-1.5" /> {t("common:remove")}
                 </Button>
               </div>
 
@@ -264,7 +275,7 @@ export function AgentSkills({ agentId }: AgentSkillsProps) {
               {confirmingDelete ? (
                 <div className="flex items-center gap-2 p-2.5 rounded-lg border border-destructive/30 bg-destructive/5">
                   <p className="text-xs text-destructive flex-1">
-                    Permanently delete this skill? This cannot be undone.
+                    {t("skills.deleteConfirm")}
                   </p>
                   <Button
                     size="sm"
@@ -272,14 +283,14 @@ export function AgentSkills({ agentId }: AgentSkillsProps) {
                     onClick={() => handleDelete(viewSkill)}
                     disabled={deleting}
                   >
-                    {deleting ? "Deleting..." : "Delete"}
+                    {deleting ? t("common:deleting") : t("common:delete")}
                   </Button>
                   <Button
                     size="sm"
                     variant="outline"
                     onClick={() => setConfirmingDelete(false)}
                   >
-                    Cancel
+                    {t("common:cancel")}
                   </Button>
                 </div>
               ) : (
@@ -289,7 +300,7 @@ export function AgentSkills({ agentId }: AgentSkillsProps) {
                   className="w-full text-destructive hover:text-destructive/90"
                   onClick={() => setConfirmingDelete(true)}
                 >
-                  <Trash2 className="w-3.5 h-3.5 mr-1.5" /> Delete Skill
+                  <Trash2 className="w-3.5 h-3.5 mr-1.5" /> {t("skills.deleteSkill")}
                 </Button>
               )}
 
@@ -306,9 +317,9 @@ export function AgentSkills({ agentId }: AgentSkillsProps) {
                   }}
                 >
                   {copied ? (
-                    <><Check className="w-3.5 h-3.5 mr-1.5 text-success" /> Copied!</>
+                    <><Check className="w-3.5 h-3.5 mr-1.5 text-success" /> {t("common:copied")}</>
                   ) : (
-                    <><Copy className="w-3.5 h-3.5 mr-1.5" /> Copy Skill ID to Share</>
+                    <><Copy className="w-3.5 h-3.5 mr-1.5" /> {t("skills.copyIdToShare")}</>
                   )}
                 </Button>
               )}
@@ -389,6 +400,7 @@ function SkillGroup({
   skills: Skill[];
   onView: (s: Skill) => void;
 }) {
+  const { t } = useTranslation("agents");
   return (
     <div>
       <div className="flex items-center gap-1.5 mb-2">
@@ -409,7 +421,7 @@ function SkillGroup({
                 <span className="text-sm font-medium truncate">{skill.displayName}</span>
                 {skill.alwaysInject && (
                   <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
-                    auto
+                    {t("skills.autoBadge")}
                   </Badge>
                 )}
               </div>
@@ -445,6 +457,7 @@ function AddSkillDialog({
   assigningId: string | null;
   error: string | null;
 }) {
+  const { t } = useTranslation("agents");
   const [search, setSearch] = useState("");
 
   const filtered = skills.filter(
@@ -458,10 +471,10 @@ function AddSkillDialog({
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Add Skill</DialogTitle>
+          <DialogTitle>{t("skills.addSkill")}</DialogTitle>
         </DialogHeader>
         <Input
-          placeholder="Search skills..."
+          placeholder={t("skills.searchPlaceholder")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="mb-3"
@@ -473,7 +486,7 @@ function AddSkillDialog({
         )}
         {filtered.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-4">
-            {skills.length === 0 ? "All available skills are already attached." : "No matching skills."}
+            {skills.length === 0 ? t("skills.allAttached") : t("skills.noMatches")}
           </p>
         ) : (
           <div className="space-y-1 max-h-60 overflow-y-auto">
@@ -490,7 +503,7 @@ function AddSkillDialog({
                   </p>
                 </div>
                 {assigningId === skill.id ? (
-                  <span className="text-xs text-muted-foreground flex-shrink-0 ml-2">Adding...</span>
+                  <span className="text-xs text-muted-foreground flex-shrink-0 ml-2">{t("skills.adding")}</span>
                 ) : (
                   <Plus className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0 ml-2" />
                 )}
@@ -514,6 +527,7 @@ function CreateSkillDialog({
   onClose: () => void;
   agentId: string;
 }) {
+  const { t } = useTranslation("agents");
   const [name, setName] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [description, setDescription] = useState("");
@@ -549,7 +563,7 @@ function CreateSkillDialog({
       }
       onClose();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to create skill");
+      setError(e instanceof Error ? e.message : t("skills.errors.createFailed"));
     } finally {
       setCreating(false);
     }
@@ -567,20 +581,20 @@ function CreateSkillDialog({
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Create Skill</DialogTitle>
+          <DialogTitle>{t("skills.createSkill")}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label className="text-xs">Display Name</Label>
+              <Label className="text-xs">{t("skills.fields.displayName")}</Label>
               <Input
                 value={displayName}
                 onChange={(e) => handleDisplayNameChange(e.target.value)}
-                placeholder="Gmail Integration"
+                placeholder={t("skills.fields.displayNamePlaceholder")}
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs">Name (slug)</Label>
+              <Label className="text-xs">{t("skills.fields.nameSlug")}</Label>
               <Input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -591,35 +605,35 @@ function CreateSkillDialog({
           </div>
 
           <div className="space-y-1.5">
-            <Label className="text-xs">Description</Label>
+            <Label className="text-xs">{t("skills.fields.description")}</Label>
             <Input
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="What this skill does and when to use it..."
+              placeholder={t("skills.fields.descriptionPlaceholder")}
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label className="text-xs">Category</Label>
+              <Label className="text-xs">{t("skills.fields.category")}</Label>
               <Select value={category} onValueChange={(v) => setCategory(v ?? "integration")}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="integration">Integration</SelectItem>
-                  <SelectItem value="formatting">Formatting</SelectItem>
-                  <SelectItem value="workflow">Workflow</SelectItem>
-                  <SelectItem value="api">API</SelectItem>
+                  <SelectItem value="integration">{t("skills.category.integration")}</SelectItem>
+                  <SelectItem value="formatting">{t("skills.category.formatting")}</SelectItem>
+                  <SelectItem value="workflow">{t("skills.category.workflow")}</SelectItem>
+                  <SelectItem value="api">{t("skills.category.api")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs">Scope</Label>
+              <Label className="text-xs">{t("skills.fields.scope")}</Label>
               <Select value={scope} onValueChange={(v) => setScope(v ?? "owner")}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="owner">All My Agents</SelectItem>
-                  <SelectItem value="agent">This Agent Only</SelectItem>
-                  <SelectItem value="global">Global</SelectItem>
+                  <SelectItem value="owner">{t("skills.scopeOption.owner")}</SelectItem>
+                  <SelectItem value="agent">{t("skills.scopeOption.agent")}</SelectItem>
+                  <SelectItem value="global">{t("skills.scopeOption.global")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -628,28 +642,28 @@ function CreateSkillDialog({
           <div className="grid grid-cols-2 gap-3">
             <div className="flex items-center gap-2">
               <Switch checked={alwaysInject} onCheckedChange={setAlwaysInject} />
-              <Label className="text-xs">Always inject</Label>
+              <Label className="text-xs">{t("skills.alwaysInject")}</Label>
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs">Visibility</Label>
+              <Label className="text-xs">{t("skills.fields.visibility")}</Label>
               <Select value={visibility} onValueChange={(v) => setVisibility(v ?? "private")}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="private">Private</SelectItem>
-                  <SelectItem value="public">Public (Marketplace)</SelectItem>
-                  <SelectItem value="unlisted">Unlisted</SelectItem>
+                  <SelectItem value="private">{t("skills.visibilityOption.private")}</SelectItem>
+                  <SelectItem value="public">{t("skills.visibilityOption.publicMarketplace")}</SelectItem>
+                  <SelectItem value="unlisted">{t("skills.visibilityOption.unlisted")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <Label className="text-xs">Instructions (prompt content)</Label>
+            <Label className="text-xs">{t("skills.fields.instructions")}</Label>
             <Textarea
               className="min-h-[200px] font-mono text-sm leading-relaxed resize-y"
               value={promptContent}
               onChange={(e) => setPromptContent(e.target.value)}
-              placeholder={"### Skill Name\n\nInstructions for the agent..."}
+              placeholder={t("skills.fields.instructionsPlaceholder")}
             />
           </div>
 
@@ -660,7 +674,7 @@ function CreateSkillDialog({
             disabled={creating || !name || !description || !promptContent}
             className="w-full"
           >
-            {creating ? "Creating..." : "Create Skill"}
+            {creating ? t("skills.creating") : t("skills.createSkill")}
           </Button>
         </div>
       </DialogContent>
@@ -677,6 +691,7 @@ function ImportSkillDialog({
   open: boolean;
   onClose: () => void;
 }) {
+  const { t } = useTranslation("agents");
   const [url, setUrl] = useState("");
   const [rawContent, setRawContent] = useState("");
   const [importing, setImporting] = useState(false);
@@ -694,7 +709,7 @@ function ImportSkillDialog({
       }
       onClose();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Import failed");
+      setError(e instanceof Error ? e.message : t("skills.errors.importFailed"));
     } finally {
       setImporting(false);
     }
@@ -704,7 +719,7 @@ function ImportSkillDialog({
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle>Import Skill</DialogTitle>
+          <DialogTitle>{t("skills.importSkill")}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <div className="flex gap-2">
@@ -713,32 +728,32 @@ function ImportSkillDialog({
               variant={mode === "url" ? "default" : "outline"}
               onClick={() => setMode("url")}
             >
-              From URL
+              {t("skills.importFromUrl")}
             </Button>
             <Button
               size="sm"
               variant={mode === "paste" ? "default" : "outline"}
               onClick={() => setMode("paste")}
             >
-              Paste SKILL.md
+              {t("skills.importPaste")}
             </Button>
           </div>
 
           {mode === "url" ? (
             <div className="space-y-1.5">
-              <Label className="text-xs">GitHub URL</Label>
+              <Label className="text-xs">{t("skills.fields.githubUrl")}</Label>
               <Input
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="https://github.com/anthropics/skills/tree/main/skills/pdf"
               />
               <p className="text-[11px] text-muted-foreground">
-                Paste a GitHub URL pointing to a skill directory or SKILL.md file.
+                {t("skills.importUrlHint")}
               </p>
             </div>
           ) : (
             <div className="space-y-1.5">
-              <Label className="text-xs">SKILL.md Content</Label>
+              <Label className="text-xs">{t("skills.fields.skillMdContent")}</Label>
               <Textarea
                 className="min-h-[200px] font-mono text-sm leading-relaxed resize-y"
                 value={rawContent}
@@ -755,7 +770,7 @@ function ImportSkillDialog({
             disabled={importing || (mode === "url" ? !url : !rawContent)}
             className="w-full"
           >
-            {importing ? "Importing..." : "Import Skill"}
+            {importing ? t("skills.importing") : t("skills.importSkill")}
           </Button>
         </div>
       </DialogContent>
@@ -774,6 +789,7 @@ function EditSkillForm({
   onSave: (updated: Skill) => void;
   onCancel: () => void;
 }) {
+  const { t } = useTranslation("agents");
   const [displayName, setDisplayName] = useState(skill.displayName);
   const [description, setDescription] = useState(skill.description);
   const [promptContent, setPromptContent] = useState(skill.promptContent);
@@ -797,7 +813,7 @@ function EditSkillForm({
       });
       onSave(updated);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to save");
+      setError(e instanceof Error ? e.message : t("skills.errors.saveFailed"));
     } finally {
       setSaving(false);
     }
@@ -806,38 +822,38 @@ function EditSkillForm({
   return (
     <div className="space-y-4">
       <div className="space-y-1.5">
-        <Label className="text-xs">Display Name</Label>
+        <Label className="text-xs">{t("skills.fields.displayName")}</Label>
         <Input value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
       </div>
 
       <div className="space-y-1.5">
-        <Label className="text-xs">Description</Label>
+        <Label className="text-xs">{t("skills.fields.description")}</Label>
         <Input value={description} onChange={(e) => setDescription(e.target.value)} />
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1.5">
-          <Label className="text-xs">Category</Label>
+          <Label className="text-xs">{t("skills.fields.category")}</Label>
           <Select value={category} onValueChange={(v) => setCategory(v ?? "integration")}>
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="integration">Integration</SelectItem>
-              <SelectItem value="formatting">Formatting</SelectItem>
-              <SelectItem value="workflow">Workflow</SelectItem>
-              <SelectItem value="api">API</SelectItem>
-              <SelectItem value="development">Development</SelectItem>
-              <SelectItem value="testing">Testing</SelectItem>
+              <SelectItem value="integration">{t("skills.category.integration")}</SelectItem>
+              <SelectItem value="formatting">{t("skills.category.formatting")}</SelectItem>
+              <SelectItem value="workflow">{t("skills.category.workflow")}</SelectItem>
+              <SelectItem value="api">{t("skills.category.api")}</SelectItem>
+              <SelectItem value="development">{t("skills.category.development")}</SelectItem>
+              <SelectItem value="testing">{t("skills.category.testing")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
         <div className="space-y-1.5">
-          <Label className="text-xs">Visibility</Label>
+          <Label className="text-xs">{t("skills.fields.visibility")}</Label>
           <Select value={visibility} onValueChange={(v) => setVisibility(v ?? "private")}>
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="private">Private</SelectItem>
-              <SelectItem value="public">Public (Marketplace)</SelectItem>
-              <SelectItem value="unlisted">Unlisted (Shareable)</SelectItem>
+              <SelectItem value="private">{t("skills.visibilityOption.private")}</SelectItem>
+              <SelectItem value="public">{t("skills.visibilityOption.publicMarketplace")}</SelectItem>
+              <SelectItem value="unlisted">{t("skills.visibilityOption.unlistedShareable")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -845,11 +861,11 @@ function EditSkillForm({
 
       <div className="flex items-center gap-2">
         <Switch checked={alwaysInject} onCheckedChange={setAlwaysInject} />
-        <Label className="text-xs">Always inject into prompt</Label>
+        <Label className="text-xs">{t("skills.alwaysInjectIntoPrompt")}</Label>
       </div>
 
       <div className="space-y-1.5">
-        <Label className="text-xs">Instructions (prompt content)</Label>
+        <Label className="text-xs">{t("skills.fields.instructions")}</Label>
         <Textarea
           className="min-h-[200px] font-mono text-sm leading-relaxed resize-y"
           value={promptContent}

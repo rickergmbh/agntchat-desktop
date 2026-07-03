@@ -1,4 +1,5 @@
 import type { ResponseTemplate } from "../lib/api";
+import { useTranslation } from "react-i18next";
 import { sanitizeHtml } from "../lib/sanitizeHtml";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -248,10 +249,11 @@ export function TemplateCardPreview({ template, data: overrideData }: Props) {
 }
 
 function EmptyPreview({ template }: { template: ResponseTemplate }) {
+  const { t } = useTranslation("templates");
   return (
     <div className="border rounded-xl bg-card p-4 max-w-sm">
       <p className="text-sm font-medium font-mono">{template.name}</p>
-      <p className="text-xs text-muted-foreground mt-1">No sample data — add sampleData to see a preview</p>
+      <p className="text-xs text-muted-foreground mt-1">{t("noSampleData")}</p>
       <div className="flex flex-wrap gap-1 mt-3">
         {template.fields.map(f => (
           <Badge key={f.key} variant="outline" className="text-[10px]">

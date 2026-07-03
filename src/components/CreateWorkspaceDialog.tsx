@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { X, Loader2 } from "lucide-react";
 import { useWorkspaceStore } from "../stores/workspaceStore";
 
@@ -12,6 +13,7 @@ interface Props {
  * auto-switches into the new workspace on success.
  */
 export function CreateWorkspaceDialog({ onClose }: Props) {
+  const { t } = useTranslation("settings");
   const createWorkspace = useWorkspaceStore((s) => s.createWorkspace);
   const [name, setName] = useState("");
   const [creating, setCreating] = useState(false);
@@ -26,7 +28,7 @@ export function CreateWorkspaceDialog({ onClose }: Props) {
       await createWorkspace(name.trim());
       onClose();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not create workspace");
+      setError(e instanceof Error ? e.message : t("workspace.errors.create"));
     } finally {
       setCreating(false);
     }
@@ -43,11 +45,11 @@ export function CreateWorkspaceDialog({ onClose }: Props) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-base font-semibold">New workspace</h2>
+          <h2 className="text-base font-semibold">{t("workspace.new")}</h2>
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close"
+            aria-label={t("common:close")}
             className="rounded-md p-1 text-muted-foreground hover:bg-accent hover:text-foreground"
           >
             <X className="h-4 w-4" />
@@ -57,19 +59,19 @@ export function CreateWorkspaceDialog({ onClose }: Props) {
         <form onSubmit={handleSubmit} className="space-y-3">
           <div className="space-y-1.5">
             <label htmlFor="ws-name" className="text-xs font-medium">
-              Name
+              {t("common:name")}
             </label>
             <input
               id="ws-name"
               autoFocus
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Acme Engineering"
+              placeholder={t("workspace.namePlaceholder")}
               maxLength={100}
               className="h-9 w-full rounded-md border border-border bg-background px-3 text-sm"
             />
             <p className="text-[11px] text-muted-foreground">
-              You can rename it later. URL slug is derived from this.
+              {t("workspace.nameHint")}
             </p>
           </div>
 
@@ -85,7 +87,7 @@ export function CreateWorkspaceDialog({ onClose }: Props) {
               onClick={onClose}
               className="rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:bg-accent hover:text-foreground"
             >
-              Cancel
+              {t("common:cancel")}
             </button>
             <button
               type="submit"
@@ -93,7 +95,7 @@ export function CreateWorkspaceDialog({ onClose }: Props) {
               className="flex items-center rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
             >
               {creating && <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />}
-              Create
+              {t("common:create")}
             </button>
           </div>
         </form>

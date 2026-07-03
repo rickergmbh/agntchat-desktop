@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import i18n from "../i18n"
 import type { Conversation } from "./api"
 
 export function cn(...inputs: ClassValue[]) {
@@ -17,15 +18,15 @@ export function getConversationTitle(
   if (conversation.title) return conversation.title;
   const others = (conversation.members ?? [])
     .filter((m) => m.participantId !== currentUserId)
-    .map((m) => m.participant?.displayName ?? "Unknown");
+    .map((m) => m.participant?.displayName ?? i18n.t("common:unknown"));
   if (others.length > 0) return others.join(", ");
   // ConversationMember rows cascade-delete when a participant is hard-
   // deleted, so a DM/group can be left with only the current user as a
   // member. Surface that as "Deleted Agent(s)" rather than a generic
   // "Conversation".
-  if (conversation.type === "direct") return "Deleted Agent";
-  if (conversation.type === "group") return "Deleted Agents";
-  return "Conversation";
+  if (conversation.type === "direct") return i18n.t("chat:deletedAgent");
+  if (conversation.type === "group") return i18n.t("chat:deletedAgents");
+  return i18n.t("chat:conversation");
 }
 
 /**
@@ -50,10 +51,15 @@ export function formatConversationTime(iso: string | undefined): string {
 }
 
 export function formatUptime(seconds: number): string {
-  if (seconds < 60) return `${seconds}s`;
-  if (seconds < 3600) return `${Math.floor(seconds / 60)}m`;
-  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ${Math.floor((seconds % 3600) / 60)}m`;
-  return `${Math.floor(seconds / 86400)}d ${Math.floor((seconds % 86400) / 3600)}h`;
+  const s = (count: number) => i18n.t("common:time.secondsShort", { count });
+  const m = (count: number) => i18n.t("common:time.minutesShort", { count });
+  const h = (count: number) => i18n.t("common:time.hoursShort", { count });
+  const d = (count: number) => i18n.t("common:time.daysShort", { count });
+  if (seconds < 60) return s(seconds);
+  if (seconds < 3600) return m(Math.floor(seconds / 60));
+  if (seconds < 86400)
+    return `${h(Math.floor(seconds / 3600))} ${m(Math.floor((seconds % 3600) / 60))}`;
+  return `${d(Math.floor(seconds / 86400))} ${h(Math.floor((seconds % 86400) / 3600))}`;
 }
 
 /**
@@ -65,10 +71,13 @@ export function formatRelativeShort(iso: string | undefined): string {
   const then = new Date(iso).getTime();
   if (Number.isNaN(then)) return "";
   const diffSec = Math.max(0, (Date.now() - then) / 1000);
-  if (diffSec < 45) return "now";
-  if (diffSec < 3600) return `${Math.floor(diffSec / 60)}m`;
-  if (diffSec < 86400) return `${Math.floor(diffSec / 3600)}h`;
-  if (diffSec < 86400 * 7) return `${Math.floor(diffSec / 86400)}d`;
+  if (diffSec < 45) return i18n.t("common:time.nowShort");
+  if (diffSec < 3600)
+    return i18n.t("common:time.minutesShort", { count: Math.floor(diffSec / 60) });
+  if (diffSec < 86400)
+    return i18n.t("common:time.hoursShort", { count: Math.floor(diffSec / 3600) });
+  if (diffSec < 86400 * 7)
+    return i18n.t("common:time.daysShort", { count: Math.floor(diffSec / 86400) });
   return new Date(iso).toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
 
@@ -126,8 +135,8 @@ export function formatDayLabel(iso: string | undefined): string {
   const today = new Date();
   const yday = new Date();
   yday.setDate(today.getDate() - 1);
-  if (dayKey(iso) === dayKey(today.toISOString())) return "Today";
-  if (dayKey(iso) === dayKey(yday.toISOString())) return "Yesterday";
+  if (dayKey(iso) === dayKey(today.toISOString())) return i18n.t("common:today");
+  if (dayKey(iso) === dayKey(yday.toISOString())) return i18n.t("common:yesterday");
   const sameYear = d.getFullYear() === today.getFullYear();
   return d.toLocaleDateString(undefined, {
     weekday: "short",

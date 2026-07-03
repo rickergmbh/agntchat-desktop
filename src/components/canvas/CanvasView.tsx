@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   LayoutDashboard,
   Lock,
@@ -26,6 +27,7 @@ function openExternal(url: string) {
 }
 
 export function CanvasView() {
+  const { t } = useTranslation("canvas");
   const definitions = useCanvasStore((s) => s.definitions);
   const loading = useCanvasStore((s) => s.loading);
   const loadedAt = useCanvasStore((s) => s.loadedAt);
@@ -102,13 +104,13 @@ export function CanvasView() {
             <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center shrink-0">
               <LayoutDashboard className="w-3.5 h-3.5 text-primary-foreground" />
             </div>
-            <h2 className="text-sm font-semibold text-foreground">Canvases</h2>
+            <h2 className="text-sm font-semibold text-foreground">{t("title")}</h2>
           </div>
           <button
             type="button"
             onClick={() => selectCanvas("new")}
-            title="New canvas"
-            aria-label="New canvas"
+            title={t("new")}
+            aria-label={t("new")}
             className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
             style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
           >
@@ -123,7 +125,7 @@ export function CanvasView() {
           <div className="relative">
             <Search className="absolute left-2.5 top-2 h-3.5 w-3.5 text-muted-foreground" />
             <Input
-              placeholder="Search canvases..."
+              placeholder={t("searchPlaceholder")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="h-8 pl-8 text-xs"
@@ -144,7 +146,7 @@ export function CanvasView() {
                 onClick={() => fetchDefinitions()}
                 className="mt-1 text-[11px] text-destructive underline hover:no-underline"
               >
-                Retry
+                {t("common:retry")}
               </button>
             </div>
           </div>
@@ -163,7 +165,7 @@ export function CanvasView() {
           ) : (
             <>
               {owned.length > 0 && (
-                <SectionHeader label="Your Canvases" count={owned.length} />
+                <SectionHeader label={t("yourCanvases")} count={owned.length} />
               )}
               {owned.map((d) => (
                 <CanvasRow
@@ -174,7 +176,7 @@ export function CanvasView() {
                 />
               ))}
               {builtin.length > 0 && (
-                <SectionHeader label="Built-in" count={builtin.length} />
+                <SectionHeader label={t("status.builtIn")} count={builtin.length} />
               )}
               {builtin.map((d) => (
                 <CanvasRow
@@ -194,7 +196,7 @@ export function CanvasView() {
         resizing={resizing}
         onResizeStart={onResizeStart}
         onResizeReset={onResizeReset}
-        label="Resize canvas list"
+        label={t("resizeList")}
       />
 
       <section className="relative z-10 -ml-2 flex-1 flex flex-col bg-card overflow-hidden surface-panel rounded-l-2xl">

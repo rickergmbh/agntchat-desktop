@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { AlertCircle, Copy as CopyIcon, Loader2, Plus, RefreshCw, Trash2 } from "lucide-react";
+import { Trans, useTranslation } from "react-i18next";
 import * as api from "../lib/api";
 import { cn } from "../lib/utils";
 import { Button } from "@/components/ui/button";
@@ -34,6 +35,7 @@ interface Props {
  * permitted.
  */
 export function HostsManagement({ orgId, title, subtitle }: Props) {
+  const { t } = useTranslation("platform");
   const [hosts, setHosts] = useState<api.OrganizationHost[]>([]);
   const [hostsLoading, setHostsLoading] = useState(false);
   const [hostsError, setHostsError] = useState<string | null>(null);
@@ -58,7 +60,7 @@ export function HostsManagement({ orgId, title, subtitle }: Props) {
       .catch((e) => {
         if (!cancelled) {
           setHosts([]);
-          setHostsError(e instanceof Error ? e.message : "Failed to load hosts");
+          setHostsError(e instanceof Error ? e.message : t("hosts.errors.loadFailed"));
         }
       })
       .finally(() => {
@@ -73,7 +75,7 @@ export function HostsManagement({ orgId, title, subtitle }: Props) {
     setHostError(null);
     const trimmed = hostName.trim();
     if (trimmed.length === 0) {
-      setHostError("Host name is required.");
+      setHostError(t("hosts.errors.nameRequired"));
       return;
     }
     setRegisteringHost(true);
@@ -84,19 +86,14 @@ export function HostsManagement({ orgId, title, subtitle }: Props) {
       const rows = await api.listOrganizationHosts(orgId).catch(() => null);
       if (rows) setHosts(rows);
     } catch (e) {
-      setHostError(e instanceof Error ? e.message : "Could not register host");
+      setHostError(e instanceof Error ? e.message : t("hosts.errors.registerFailed"));
     } finally {
       setRegisteringHost(false);
     }
   };
 
   const handleRegenerateHostKey = async (host: api.OrganizationHost) => {
-    if (
-      !confirm(
-        `Regenerate API key for "${host.name}"? The current key stops working immediately. ` +
-          `You'll need to update host.env on the VM and restart agentgram-host.`
-      )
-    ) {
+    if (!confirm(t("hosts.confirmRegenerateKey", { name: host.name }))) {
       return;
     }
     try {
@@ -104,24 +101,19 @@ export function HostsManagement({ orgId, title, subtitle }: Props) {
       setRevealedHost({ id: result.host.id, apiKey: result.apiKey });
       setHostModalOpen(true);
     } catch (e) {
-      setHostsError(e instanceof Error ? e.message : "Could not regenerate key");
+      setHostsError(e instanceof Error ? e.message : t("hosts.errors.regenerateFailed"));
     }
   };
 
   const handleDeleteHost = async (host: api.OrganizationHost) => {
-    if (
-      !confirm(
-        `Delete host "${host.name}"? Any agents assigned to this host will stop ` +
-          `running there. This can't be undone.`
-      )
-    ) {
+    if (!confirm(t("hosts.confirmDelete", { name: host.name }))) {
       return;
     }
     try {
       await api.deleteOrganizationHost(orgId, host.id);
       setHosts((prev) => prev.filter((h) => h.id !== host.id));
     } catch (e) {
-      setHostsError(e instanceof Error ? e.message : "Could not delete host");
+      setHostsError(e instanceof Error ? e.message : t("hosts.errors.deleteFailed"));
     }
   };
 
@@ -151,7 +143,7 @@ export function HostsManagement({ orgId, title, subtitle }: Props) {
         </div>
       ) : hosts.length === 0 ? (
         <div className="text-sm text-muted-foreground mb-3">
-          No hosts registered yet.
+          {t("hosts.empty")}
         </div>
       ) : (
         <ul className="space-y-2 mb-3">
@@ -176,7 +168,7 @@ export function HostsManagement({ orgId, title, subtitle }: Props) {
         }}
       >
         <Plus className="w-4 h-4" />
-        Register host
+        {t("hosts.registerHost")}
       </Button>
 
       <Dialog
@@ -192,7 +184,7 @@ export function HostsManagement({ orgId, title, subtitle }: Props) {
         <DialogContent showCloseButton={!revealedHost}>
           <DialogHeader>
             <DialogTitle>
-              {revealedHost ? "Host credentials" : "Register host"}
+              {revealedHost ? t("hosts.credentialsTitle") : t("hosts.registerHost")}
             </DialogTitle>
           </DialogHeader>
 
@@ -207,7 +199,7 @@ export function HostsManagement({ orgId, title, subtitle }: Props) {
           ) : (
             <div className="space-y-3 py-2">
               <div className="space-y-1">
-                <Label htmlFor="host-name">Host name</Label>
+                <Label htmlFor="host-name">{t("hosts.hostName")}</Label>
                 <Input
                   id="host-name"
                   value={hostName}
@@ -224,13 +216,13 @@ export function HostsManagement({ orgId, title, subtitle }: Props) {
                   onClick={() => setHostModalOpen(false)}
                   disabled={registeringHost}
                 >
-                  Cancel
+                  {t("common:cancel")}
                 </Button>
                 <Button
                   onClick={() => void handleRegisterHost()}
                   disabled={registeringHost}
                 >
-                  {registeringHost ? "Registering…" : "Register"}
+                  {registeringHost ? t("hosts.registering") : t("hosts.register")}
                 </Button>
               </DialogFooter>
             </div>
@@ -250,13 +242,19 @@ function HostRow({
   onRegenerate: () => void;
   onDelete: () => void;
 }) {
+  const { t } = useTranslation("platform");
+  // Known host statuses map to shared labels; anything new falls back to the raw value.
+  const statusLabel = (status: string) =>
+    ["online", "offline", "disabled"].includes(status)
+      ? t(`common:${status}`)
+      : status;
   return (
     <li className="rounded-md border border-border px-3 py-2 space-y-1.5">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0 flex-1">
           <div className="font-medium truncate">{host.name}</div>
           <div className="text-xs text-muted-foreground">
-            {host.status}
+            {statusLabel(host.status)}
             {host.hostname ? ` · ${host.hostname}` : ""}
             {host.version ? ` · v${host.version}` : ""}
           </div>
@@ -270,7 +268,7 @@ function HostRow({
             host.status === "disabled" && "border-destructive/30 text-destructive bg-destructive/10"
           )}
         >
-          {host.status}
+          {statusLabel(host.status)}
         </Badge>
       </div>
 
@@ -282,7 +280,7 @@ function HostRow({
           size="sm"
           className="h-5 w-5 p-0"
           onClick={() => void navigator.clipboard.writeText(host.id)}
-          aria-label="Copy host ID"
+          aria-label={t("hosts.copyHostId")}
         >
           <CopyIcon className="w-3 h-3" />
         </Button>
@@ -293,10 +291,10 @@ function HostRow({
           variant="ghost"
           size="sm"
           onClick={onRegenerate}
-          title="Generate a new API key (UUID stays the same)"
+          title={t("hosts.rotateKeyTitle")}
         >
           <RefreshCw className="w-3.5 h-3.5" />
-          Rotate key
+          {t("hosts.rotateKey")}
         </Button>
         <Button
           variant="ghost"
@@ -305,7 +303,7 @@ function HostRow({
           className="text-destructive hover:bg-destructive/10 hover:text-destructive"
         >
           <Trash2 className="w-3.5 h-3.5" />
-          Delete
+          {t("common:delete")}
         </Button>
       </div>
     </li>
@@ -319,14 +317,17 @@ function HostCredentialsReveal({
   host: { id: string; apiKey: string };
   onClose: () => void;
 }) {
+  const { t } = useTranslation("platform");
   const envBlock = `ORG_HOST_ID=${host.id}\nORG_HOST_API_KEY=${host.apiKey}\n`;
 
   return (
     <div className="space-y-3 py-2">
       <p className="text-sm">
-        Copy these now — the API key is shown <strong>once</strong>. Set
-        both as env vars on the host VM (<code>ORG_HOST_ID</code> and{" "}
-        <code>ORG_HOST_API_KEY</code>).
+        <Trans
+          i18nKey="hosts.credentialsIntro"
+          ns="platform"
+          components={{ strong: <strong />, code: <code /> }}
+        />
       </p>
 
       <CredentialField label="ORG_HOST_ID" value={host.id} />
@@ -338,15 +339,16 @@ function HostCredentialsReveal({
           onClick={() => void navigator.clipboard.writeText(envBlock)}
         >
           <CopyIcon className="w-3.5 h-3.5" />
-          Copy as .env
+          {t("hosts.copyAsEnv")}
         </Button>
-        <Button onClick={onClose}>I&apos;ve copied them</Button>
+        <Button onClick={onClose}>{t("hosts.copiedThem")}</Button>
       </DialogFooter>
     </div>
   );
 }
 
 function CredentialField({ label, value }: { label: string; value: string }) {
+  const { t } = useTranslation("platform");
   return (
     <div className="space-y-1">
       <Label className="text-xs font-mono">{label}</Label>
@@ -356,7 +358,7 @@ function CredentialField({ label, value }: { label: string; value: string }) {
           variant="ghost"
           size="sm"
           onClick={() => void navigator.clipboard.writeText(value)}
-          aria-label={`Copy ${label}`}
+          aria-label={t("common:copyLabel", { label })}
         >
           <CopyIcon className="w-3.5 h-3.5" />
         </Button>

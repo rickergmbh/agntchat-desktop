@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { type ResponseTemplate, listResponseTemplates } from "../lib/api";
 import { TemplateCardPreview } from "./TemplateCardPreview";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export function TemplateGallery({ onClose }: Props) {
+  const { t } = useTranslation("templates");
   const [templates, setTemplates] = useState<ResponseTemplate[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<ResponseTemplate | null>(null);
@@ -43,7 +45,7 @@ export function TemplateGallery({ onClose }: Props) {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full text-sm text-muted-foreground">
-        Loading templates...
+        {t("loading")}
       </div>
     );
   }
@@ -54,8 +56,10 @@ export function TemplateGallery({ onClose }: Props) {
       <div className="flex items-center justify-between px-4 py-2.5 border-b bg-muted/30">
         <div className="flex items-center gap-2.5">
           <LayoutTemplate className="w-4 h-4 text-primary" />
-          <h2 className="text-sm font-semibold">Template Gallery</h2>
-          <span className="text-xs text-muted-foreground">{templates.length} templates</span>
+          <h2 className="text-sm font-semibold">{t("gallery")}</h2>
+          <span className="text-xs text-muted-foreground">
+            {t("count", { count: templates.length })}
+          </span>
         </div>
         <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClose}>
           <X className="w-4 h-4" />
@@ -69,7 +73,7 @@ export function TemplateGallery({ onClose }: Props) {
           className="cursor-pointer text-[10px] shrink-0"
           onClick={() => setFilterType(null)}
         >
-          All ({templates.length})
+          {t("filterAll", { count: templates.length })}
         </Badge>
         {resultTypes.map(type => {
           const count = templates.filter(t => t.resultType === type).length;
@@ -108,7 +112,9 @@ export function TemplateGallery({ onClose }: Props) {
               </div>
               <div className="flex items-center gap-1.5 mt-1">
                 <Badge variant="secondary" className="text-[9px] px-1 py-0">{template.resultType}</Badge>
-                <span className="text-[9px] text-muted-foreground">{template.fields.length} fields</span>
+                <span className="text-[9px] text-muted-foreground">
+                  {t("fieldCount", { count: template.fields.length })}
+                </span>
               </div>
             </button>
           ))}
@@ -132,7 +138,7 @@ export function TemplateGallery({ onClose }: Props) {
               {/* Card preview */}
               <div>
                 <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-                  Card Preview
+                  {t("cardPreview")}
                 </p>
                 <TemplateCardPreview template={selected} />
               </div>
@@ -140,7 +146,7 @@ export function TemplateGallery({ onClose }: Props) {
               {/* Field schema */}
               <div>
                 <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-                  Fields ({selected.fields.length})
+                  {t("fieldsWithCount", { count: selected.fields.length })}
                 </p>
                 <div className="space-y-1">
                   {selected.fields.map(f => (
@@ -164,7 +170,7 @@ export function TemplateGallery({ onClose }: Props) {
               {selected.sampleData && (
                 <div>
                   <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-                    Sample Data
+                    {t("sampleData")}
                   </p>
                   <pre className="bg-muted rounded-lg p-3 text-[10px] font-mono overflow-x-auto leading-relaxed">
                     {JSON.stringify(selected.sampleData, null, 2)}
@@ -174,7 +180,7 @@ export function TemplateGallery({ onClose }: Props) {
             </div>
           ) : (
             <div className="flex items-center justify-center h-full text-sm text-muted-foreground">
-              Select a template to preview
+              {t("selectToPreview")}
             </div>
           )}
         </div>

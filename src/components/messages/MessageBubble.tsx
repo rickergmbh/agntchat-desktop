@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 import { useAuthStore } from "../../stores/authStore";
 import { useChatStore } from "../../stores/chatStore";
 import { cn, formatClockTime } from "../../lib/utils";
@@ -66,6 +67,7 @@ function SenderHeader({
   isAgent: boolean;
   modelLabel: string | null;
 }) {
+  const { t } = useTranslation("common");
   return (
     <MessageHeader className="mb-0.5 flex-col items-start gap-0 px-1">
       <span className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
@@ -73,7 +75,7 @@ function SenderHeader({
         {isAgent && (
           <span className="inline-flex items-center gap-1 rounded bg-bubble-agent-accent/10 px-1.5 py-0.5 text-[10px] font-bold text-bubble-agent-accent">
             <Bot className="h-3 w-3" />
-            Agent
+            {t("agent")}
           </span>
         )}
       </span>
@@ -127,6 +129,7 @@ export const MessageBubble = memo(function MessageBubble({
   /** Right-click handler — bubbles the message + cursor up to the thread. */
   onContextMenu?: (message: Message, e: React.MouseEvent) => void;
 }) {
+  const { t } = useTranslation("chat");
   const myId = useAuthStore((s) => s.participant?.id);
   const isOwn = message.senderId === myId;
   const isAgent = message.sender?.type === "agent";
@@ -247,7 +250,7 @@ export const MessageBubble = memo(function MessageBubble({
             <div className="flex items-center gap-1">
               <ReplyIcon className="h-2.5 w-2.5" />
               <span className="font-medium text-foreground">
-                {parent.sender?.displayName ?? "Unknown"}
+                {parent.sender?.displayName ?? t("common:unknown")}
               </span>
             </div>
             <p className="truncate">{parent.content}</p>
@@ -277,7 +280,7 @@ export const MessageBubble = memo(function MessageBubble({
 
         <MessageFooter className="mt-0.5 px-1 text-[10px] font-normal">
           {formatClockTime(message.insertedAt)}
-          {message.pending && " · sending"}
+          {message.pending && ` · ${t("sending")}`}
         </MessageFooter>
       </MessageContent>
     </MessageRow>

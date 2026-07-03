@@ -21,6 +21,8 @@ import {
   X,
 } from "lucide-react";
 import { open as tauriOpen } from "@tauri-apps/plugin-shell";
+import { Trans, useTranslation } from "react-i18next";
+import i18n from "../i18n";
 import * as api from "../lib/api";
 import { cn } from "../lib/utils";
 import { ws } from "../services/websocket";
@@ -47,6 +49,7 @@ import {
  * come from the host's WebSocket heartbeat.
  */
 export function FleetView() {
+  const { t } = useTranslation("platform");
   const participant = useAuthStore((s) => s.participant);
   const workspaces = useWorkspaces();
   const orgId =
@@ -71,9 +74,9 @@ export function FleetView() {
       setAnthropicConnected(fleet.anthropicConnected);
       setError(null);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to load fleet");
+      setError(e instanceof Error ? e.message : t("fleet.errors.loadFailed"));
     }
-  }, [orgId]);
+  }, [orgId, t]);
 
   useEffect(() => {
     if (!orgId) return;
@@ -97,7 +100,7 @@ export function FleetView() {
   if (!orgId) {
     return (
       <div className="flex flex-1 items-center justify-center text-sm text-muted-foreground">
-        Loading workspace…
+        {t("fleet.loadingWorkspace")}
       </div>
     );
   }
@@ -108,16 +111,16 @@ export function FleetView() {
         <div className="flex items-center gap-2">
           <Server className="h-5 w-5 text-muted-foreground" />
           <div>
-            <h1 className="text-base font-semibold leading-none">Fleet</h1>
+            <h1 className="text-base font-semibold leading-none">{t("fleet.title")}</h1>
             <p className="mt-1 text-xs text-muted-foreground">
-              Org hosts running your agents — managed over SSH.
+              {t("fleet.subtitle")}
             </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={() => void refresh()}>
             <RefreshCw className="h-3.5 w-3.5" />
-            Refresh
+            {t("common:refresh")}
           </Button>
           <Button variant="outline" size="sm" onClick={() => setAnthropicOpen(true)}>
             <ShieldCheck
@@ -126,15 +129,15 @@ export function FleetView() {
                 anthropicConnected ? "text-success" : "text-muted-foreground"
               )}
             />
-            {anthropicConnected ? "Anthropic connected" : "Connect Anthropic"}
+            {anthropicConnected ? t("fleet.anthropicConnected") : t("fleet.connectAnthropic")}
           </Button>
           <Button variant="outline" size="sm" onClick={() => setProvisionOpen(true)}>
             <Cloud className="h-3.5 w-3.5" />
-            Spin up VM
+            {t("fleet.spinUpVm")}
           </Button>
           <Button size="sm" onClick={() => setConnectOpen(true)}>
             <Plus className="h-3.5 w-3.5" />
-            Add host
+            {t("fleet.addHost")}
           </Button>
         </div>
       </header>
@@ -153,8 +156,11 @@ export function FleetView() {
           </div>
         ) : hosts.length === 0 ? (
           <div className="rounded-lg border border-dashed border-border py-12 text-center text-sm text-muted-foreground">
-            No hosts yet. <span className="font-medium">Add host</span> to connect
-            a machine over SSH, or <span className="font-medium">Spin up VM</span>.
+            <Trans
+              i18nKey="fleet.empty"
+              ns="platform"
+              components={{ b: <span className="font-medium" /> }}
+            />
           </div>
         ) : (
           <ul className="space-y-3">
@@ -196,16 +202,16 @@ export function FleetView() {
 }
 
 export function relativeAge(iso?: string | null): string {
-  if (!iso) return "never";
+  if (!iso) return i18n.t("common:time.never");
   const then = new Date(iso).getTime();
-  if (Number.isNaN(then)) return "unknown";
+  if (Number.isNaN(then)) return i18n.t("common:unknown");
   const secs = Math.max(0, Math.round((Date.now() - then) / 1000));
-  if (secs < 60) return `${secs}s ago`;
+  if (secs < 60) return i18n.t("common:time.justNow");
   const mins = Math.round(secs / 60);
-  if (mins < 60) return `${mins}m ago`;
+  if (mins < 60) return i18n.t("common:time.minutesAgo", { count: mins });
   const hrs = Math.round(mins / 60);
-  if (hrs < 24) return `${hrs}h ago`;
-  return `${Math.round(hrs / 24)}d ago`;
+  if (hrs < 24) return i18n.t("common:time.hoursAgo", { count: hrs });
+  return i18n.t("common:time.daysAgo", { count: Math.round(hrs / 24) });
 }
 
 function HostCard({
@@ -217,6 +223,7 @@ function HostCard({
   host: api.OrganizationHost;
   onChanged: () => void;
 }) {
+  const { t } = useTranslation("platform");
   const [expanded, setExpanded] = useState(false);
   const [agents, setAgents] = useState<api.HostAgent[] | null>(null);
   const [agentsError, setAgentsError] = useState<string | null>(null);
@@ -238,9 +245,9 @@ function HostCard({
       setOps(o);
       setAgentsError(null);
     } catch (e) {
-      setAgentsError(e instanceof Error ? e.message : "Failed to load host detail");
+      setAgentsError(e instanceof Error ? e.message : t("fleet.errors.detailFailed"));
     }
-  }, [orgId, host.id]);
+  }, [orgId, host.id, t]);
 
   useEffect(() => {
     if (expanded) void loadDetail();
@@ -261,7 +268,7 @@ function HostCard({
       if (!expanded) setExpanded(true);
       await loadDetail();
     } catch (e) {
-      alert(e instanceof Error ? e.message : "Operation failed");
+      alert(e instanceof Error ? e.message : t("fleet.errors.opFailed"));
     } finally {
       setBusy(null);
     }
@@ -280,7 +287,7 @@ function HostCard({
       setEditing(false);
       onChanged();
     } catch (e) {
-      alert(e instanceof Error ? e.message : "Could not rename host");
+      alert(e instanceof Error ? e.message : t("fleet.errors.renameFailed"));
       setNameInput(host.name);
     } finally {
       setRenameBusy(false);
@@ -293,19 +300,19 @@ function HostCard({
     try {
       setPubKey(await api.getHostPublicKey(orgId, host.id));
     } catch (e) {
-      alert(e instanceof Error ? e.message : "Could not load public key");
+      alert(e instanceof Error ? e.message : t("fleet.errors.keyLoadFailed"));
     }
   };
 
   const handleDelete = async () => {
-    if (!confirm(`Delete host "${host.name}"? Agents assigned here stop running on it.`))
+    if (!confirm(t("fleet.confirmDelete", { name: host.name })))
       return;
     setBusy("delete");
     try {
       await api.deleteOrganizationHost(orgId, host.id);
       onChanged();
     } catch (e) {
-      alert(e instanceof Error ? e.message : "Could not delete host");
+      alert(e instanceof Error ? e.message : t("fleet.errors.deleteFailed"));
     } finally {
       setBusy(null);
     }
@@ -318,7 +325,7 @@ function HostCard({
           type="button"
           onClick={() => setExpanded((v) => !v)}
           className="flex-shrink-0 text-muted-foreground"
-          aria-label={expanded ? "Collapse" : "Expand"}
+          aria-label={expanded ? t("common:collapse") : t("common:expand")}
         >
           {expanded ? (
             <ChevronDown className="h-4 w-4" />
@@ -383,7 +390,7 @@ function HostCard({
                     setNameInput(host.name);
                     setEditing(true);
                   }}
-                  title="Rename host"
+                  title={t("fleet.renameHost")}
                 >
                   <Pencil className="h-3 w-3" />
                 </Button>
@@ -398,11 +405,13 @@ function HostCard({
                       "border-destructive/30 bg-destructive/10 text-destructive"
                   )}
                 >
-                  {host.status}
+                  {["online", "offline", "disabled"].includes(host.status)
+                    ? t(`common:${host.status}`)
+                    : host.status}
                 </Badge>
                 {!bootstrapped && (
                   <Badge variant="outline" className="shrink-0 border-amber-500/30 text-amber-600">
-                    not bootstrapped
+                    {t("fleet.notBootstrapped")}
                   </Badge>
                 )}
               </>
@@ -416,9 +425,11 @@ function HostCard({
             <span className={cn("tabular-nums", onlineCount > 0 && "text-success")}>
               {onlineCount}
             </span>
-            <span className="tabular-nums">/{assignedCount}</span> agent
-            {assignedCount === 1 ? "" : "s"} online
-            {host.sshHost ? ` · ${host.sshUser || "root"}@${host.sshHost}` : " · no SSH target"}
+            <span className="tabular-nums">/{assignedCount}</span>{" "}
+            {t("fleet.agentsOnlineSuffix", { count: assignedCount })}
+            {host.sshHost
+              ? ` · ${host.sshUser || "root"}@${host.sshHost}`
+              : ` · ${t("fleet.noSshTarget")}`}
             {host.provider
               ? ` · ${host.provider}${host.providerVmId ? ` vm ${host.providerVmId}` : ""}${
                   host.datacenter ? ` (${host.datacenter})` : ""
@@ -426,7 +437,7 @@ function HostCard({
               : ""}
             {host.version ? ` · v${host.version}` : ""}
             {host.hostGitSha ? ` · ${host.hostGitSha}` : ""}
-            {` · seen ${relativeAge(host.lastSeenAt)}`}
+            {` · ${t("fleet.seen", { age: relativeAge(host.lastSeenAt) })}`}
           </button>
         </div>
 
@@ -437,10 +448,10 @@ function HostCard({
               size="sm"
               onClick={() => void showKey()}
               disabled={busy !== null}
-              title="Show the SSH public key to authorize on the host"
+              title={t("fleet.keyTitle")}
             >
               <KeyRound className="h-3.5 w-3.5" />
-              Key
+              {t("fleet.key")}
             </Button>
           )}
           {!bootstrapped && host.sshHost && (
@@ -449,50 +460,50 @@ function HostCard({
               size="sm"
               onClick={() => void op("bootstrap")}
               disabled={busy !== null}
-              title="Install the runtime over SSH"
+              title={t("fleet.bootstrapTitle")}
             >
               {busy === "bootstrap" ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
               ) : (
                 <DownloadCloud className="h-3.5 w-3.5" />
               )}
-              Bootstrap
+              {t("fleet.bootstrap")}
             </Button>
           )}
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => void op("update", `Update "${host.name}"? Pulls latest + restarts.`)}
+            onClick={() => void op("update", t("fleet.confirmUpdate", { name: host.name }))}
             disabled={busy !== null || !host.sshHost}
-            title="Pull latest code + restart"
+            title={t("fleet.updateTitle")}
           >
             {busy === "update" ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
             ) : (
               <DownloadCloud className="h-3.5 w-3.5" />
             )}
-            Update
+            {t("common:update")}
           </Button>
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => void op("restart", `Restart "${host.name}"?`)}
+            onClick={() => void op("restart", t("fleet.confirmRestart", { name: host.name }))}
             disabled={busy !== null || !host.sshHost}
-            title="Restart the host service"
+            title={t("fleet.restartTitle")}
           >
             {busy === "restart" ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
             ) : (
               <RotateCw className="h-3.5 w-3.5" />
             )}
-            Restart
+            {t("fleet.restart")}
           </Button>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => void op("probe")}
             disabled={busy !== null || !host.sshHost}
-            title="Probe status over SSH"
+            title={t("fleet.probeTitle")}
           >
             {busy === "probe" ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -506,7 +517,7 @@ function HostCard({
             onClick={() => void handleDelete()}
             disabled={busy !== null}
             className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-            title="Delete host"
+            title={t("fleet.deleteHost")}
           >
             <Trash2 className="h-3.5 w-3.5" />
           </Button>
@@ -529,28 +540,31 @@ function HostCard({
       <Dialog open={keyOpen} onOpenChange={setKeyOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Authorize "{host.name}"</DialogTitle>
+            <DialogTitle>{t("fleet.authorizeTitle", { name: host.name })}</DialogTitle>
             <DialogDescription>
-              AgentGram connects to your VM over SSH using its own key — not your root password.
-              Add this public key to {host.sshUser || "root"}@{host.sshHost}, then bootstrap.
+              {t("fleet.authorizeDescription", {
+                target: `${host.sshUser || "root"}@${host.sshHost}`,
+              })}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 py-1">
             {pubKey ? (
               <>
-                <CopyField label="Public key" value={pubKey} mono />
+                <CopyField label={t("fleet.publicKey")} value={pubKey} mono />
                 <CopyField
-                  label={`Run this on the host (ssh ${host.sshUser || "root"}@${host.sshHost})`}
+                  label={t("fleet.runOnHost", {
+                    target: `${host.sshUser || "root"}@${host.sshHost}`,
+                  })}
                   value={`mkdir -p ~/.ssh && echo '${pubKey}' >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys`}
                   mono
                 />
                 <p className="text-xs text-muted-foreground">
-                  Bootstrap needs Ubuntu 22.04+/Debian 12 with outbound internet (GitHub + PyPI).
+                  {t("fleet.bootstrapRequirements")}
                 </p>
               </>
             ) : (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Loader2 className="h-4 w-4 animate-spin" /> Loading key…
+                <Loader2 className="h-4 w-4 animate-spin" /> {t("fleet.loadingKey")}
               </div>
             )}
           </div>
@@ -562,7 +576,7 @@ function HostCard({
               }}
               disabled={busy !== null || !pubKey}
             >
-              Bootstrap now
+              {t("fleet.bootstrapNow")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -578,35 +592,36 @@ function HostAgentList({
   agents: api.HostAgent[] | null;
   error: string | null;
 }) {
+  const { t } = useTranslation("platform");
   const grouped = useMemo(() => {
     if (!agents) return [];
     const byOwner = new Map<string, { ownerName: string; agents: api.HostAgent[] }>();
     for (const a of agents) {
       const key = a.owner?.id ?? "unknown";
-      const name = a.owner?.display_name ?? "Unknown owner";
+      const name = a.owner?.display_name ?? t("fleet.unknownOwner");
       if (!byOwner.has(key)) byOwner.set(key, { ownerName: name, agents: [] });
       byOwner.get(key)!.agents.push(a);
     }
     return Array.from(byOwner.values()).sort((a, b) =>
       a.ownerName.localeCompare(b.ownerName)
     );
-  }, [agents]);
+  }, [agents, t]);
 
   if (error) return <p className="text-sm text-destructive">{error}</p>;
   if (agents === null)
     return (
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <Loader2 className="h-3.5 w-3.5 animate-spin" /> Loading agents…
+        <Loader2 className="h-3.5 w-3.5 animate-spin" /> {t("fleet.loadingAgents")}
       </div>
     );
   if (agents.length === 0)
-    return <p className="text-sm text-muted-foreground">No agents assigned to this host.</p>;
+    return <p className="text-sm text-muted-foreground">{t("fleet.noAgentsAssigned")}</p>;
 
   return (
     <div className="space-y-3">
       <p className="text-xs text-muted-foreground">
-        {agents.length} agent{agents.length === 1 ? "" : "s"} across {grouped.length} owner
-        {grouped.length === 1 ? "" : "s"}
+        {t("fleet.agentCount", { count: agents.length })}{" "}
+        {t("fleet.acrossOwners", { count: grouped.length })}
       </p>
       {grouped.map((g) => (
         <div key={g.ownerName}>
@@ -627,7 +642,7 @@ function HostAgentList({
                       "h-2 w-2 rounded-full",
                       a.running ? "bg-success" : "bg-muted-foreground/40"
                     )}
-                    title={a.running ? "running" : "idle"}
+                    title={a.running ? t("agents:status.running") : t("agents:status.idle")}
                   />
                 </span>
               </li>
@@ -659,6 +674,7 @@ export function HostOpLog({
    *  (e.g. for non-admins). Returns once the op is cleared so the row refreshes. */
   onCancel?: (operationId: string) => Promise<void> | void;
 }) {
+  const { t } = useTranslation("platform");
   // Auto-expand a running/pending op so its output streams without a click;
   // otherwise honour whatever the user last toggled open.
   const activeId =
@@ -673,7 +689,7 @@ export function HostOpLog({
 
   const cancel = async (id: string) => {
     if (!onCancel) return;
-    if (!confirm("Cancel this operation? It's marked canceled so the host's status reflects reality.")) return;
+    if (!confirm(t("fleet.confirmCancelOp"))) return;
     setCancelingId(id);
     try {
       await onCancel(id);
@@ -683,12 +699,12 @@ export function HostOpLog({
   };
 
   if (ops.length === 0)
-    return <p className="text-sm text-muted-foreground">No operations yet.</p>;
+    return <p className="text-sm text-muted-foreground">{t("fleet.noOperations")}</p>;
 
   return (
     <div>
       <div className="mb-1 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-        <Terminal className="h-3 w-3" /> Recent operations
+        <Terminal className="h-3 w-3" /> {t("fleet.recentOperations")}
       </div>
       <ul className="space-y-1">
         {ops.map((o) => {
@@ -711,14 +727,16 @@ export function HostOpLog({
                         running && "bg-amber-500 animate-pulse"
                       )}
                     />
-                    <span className="font-medium">{o.kind}</span>
+                    <span className="font-medium">
+                      {t(`fleet.opKind.${o.kind}`, { defaultValue: o.kind })}
+                    </span>
                     <span
                       className={cn(
                         "text-xs",
                         o.status === "failed" ? "text-destructive" : "text-muted-foreground"
                       )}
                     >
-                      {o.status}
+                      {t(`status.${o.status}`, { defaultValue: o.status })}
                     </span>
                   </span>
                   <span className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -733,14 +751,14 @@ export function HostOpLog({
                     className="h-6 shrink-0 gap-1 px-1.5 text-xs text-muted-foreground hover:text-destructive"
                     disabled={cancelingId === o.id}
                     onClick={() => void cancel(o.id)}
-                    title="Cancel this stuck operation"
+                    title={t("fleet.cancelOpTitle")}
                   >
                     {cancelingId === o.id ? (
                       <Loader2 className="h-3 w-3 animate-spin" />
                     ) : (
                       <X className="h-3 w-3" />
                     )}
-                    Cancel
+                    {t("common:cancel")}
                   </Button>
                 )}
               </div>
@@ -751,7 +769,7 @@ export function HostOpLog({
                   </pre>
                 ) : running ? (
                   <div className="flex items-center gap-1.5 border-t border-border px-2.5 py-2 text-[11px] text-muted-foreground">
-                    <Loader2 className="h-3 w-3 animate-spin" /> Running…
+                    <Loader2 className="h-3 w-3 animate-spin" /> {t("fleet.runningEllipsis")}
                   </div>
                 ) : null)}
             </li>
@@ -792,6 +810,7 @@ export function ConnectHostDialog({
    *  clicked on a specific unmanaged VM row). Autofills name + SSH host. */
   initialVmId?: string;
 }) {
+  const { t } = useTranslation("platform");
   const [name, setName] = useState("");
   const [sshHost, setSshHost] = useState("");
   const [sshUser, setSshUser] = useState("root");
@@ -844,7 +863,7 @@ export function ConnectHostDialog({
   const handleConnect = async () => {
     const host = normalizeSshHost(sshHost);
     if (!name.trim() || !host) {
-      setError("Name and SSH host are required.");
+      setError(t("fleet.errors.nameAndHostRequired"));
       return;
     }
     setSubmitting(true);
@@ -864,7 +883,7 @@ export function ConnectHostDialog({
       setCreated({ hostId: res.host.id, publicKey: res.publicKey });
       onChanged();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not connect host");
+      setError(e instanceof Error ? e.message : t("fleet.errors.connectFailed"));
     } finally {
       setSubmitting(false);
     }
@@ -879,7 +898,7 @@ export function ConnectHostDialog({
       reset();
       onOpenChange(false);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Bootstrap failed");
+      setError(e instanceof Error ? e.message : t("fleet.errors.bootstrapFailed"));
     } finally {
       setBootstrapping(false);
     }
@@ -895,22 +914,27 @@ export function ConnectHostDialog({
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{created ? "Authorize + bootstrap" : "Add host"}</DialogTitle>
+          <DialogTitle>
+            {created ? t("fleet.authorizeBootstrap") : t("fleet.addHost")}
+          </DialogTitle>
           <DialogDescription>
             {created
-              ? "Add this key to the machine, then bootstrap to install the runtime over SSH."
-              : "Connect a Linux machine the backend manages over SSH."}
+              ? t("fleet.addHostCreatedDescription")
+              : t("fleet.addHostDescription")}
           </DialogDescription>
         </DialogHeader>
 
         {created ? (
           <div className="space-y-3 py-1">
             <p className="text-sm">
-              On the host, append this to{" "}
-              <code>~/.ssh/authorized_keys</code> for the{" "}
-              <code>{sshUser || "root"}</code> user:
+              <Trans
+                i18nKey="fleet.appendKeyInstruction"
+                ns="platform"
+                values={{ user: sshUser || "root" }}
+                components={{ code: <code /> }}
+              />
             </p>
-            <CopyField label="Public key" value={created.publicKey} mono />
+            <CopyField label={t("fleet.publicKey")} value={created.publicKey} mono />
             {error && <p className="text-sm text-destructive">{error}</p>}
             <DialogFooter>
               <Button
@@ -921,10 +945,10 @@ export function ConnectHostDialog({
                 }}
                 disabled={bootstrapping}
               >
-                Later
+                {t("fleet.later")}
               </Button>
               <Button onClick={() => void handleBootstrap()} disabled={bootstrapping}>
-                {bootstrapping ? "Bootstrapping…" : "Bootstrap now"}
+                {bootstrapping ? t("fleet.bootstrapping") : t("fleet.bootstrapNow")}
               </Button>
             </DialogFooter>
           </div>
@@ -932,7 +956,7 @@ export function ConnectHostDialog({
           <div className="space-y-3 py-1">
             {vms.length > 0 && (
               <div className="space-y-1">
-                <Label htmlFor="ch-vm">Virtual machine</Label>
+                <Label htmlFor="ch-vm">{t("fleet.virtualMachine")}</Label>
                 <select
                   id="ch-vm"
                   value={selectedVmId}
@@ -944,7 +968,7 @@ export function ConnectHostDialog({
                   }}
                   className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 >
-                  <option value="">Enter a host manually…</option>
+                  <option value="">{t("fleet.enterHostManually")}</option>
                   {vms.map((v) => (
                     <option key={v.id} value={v.id}>
                       {v.hostname || v.id}
@@ -954,12 +978,12 @@ export function ConnectHostDialog({
                   ))}
                 </select>
                 <p className="text-xs text-muted-foreground">
-                  Pick one of your Hostinger VMs to auto-fill its IP, or enter a host manually.
+                  {t("fleet.pickVmHint")}
                 </p>
               </div>
             )}
             <div className="space-y-1">
-              <Label htmlFor="ch-name">Name</Label>
+              <Label htmlFor="ch-name">{t("common:name")}</Label>
               <Input
                 id="ch-name"
                 value={name}
@@ -969,16 +993,16 @@ export function ConnectHostDialog({
             </div>
             <div className="grid grid-cols-[1fr_auto_auto] gap-2">
               <div className="space-y-1">
-                <Label htmlFor="ch-host">SSH host / IP</Label>
+                <Label htmlFor="ch-host">{t("fleet.sshHostIp")}</Label>
                 <Input
                   id="ch-host"
                   value={sshHost}
                   onChange={(e) => setSshHost(e.target.value)}
-                  placeholder="203.0.113.10 (IP only — no 'ssh' or user@)"
+                  placeholder={t("fleet.sshHostPlaceholder")}
                 />
               </div>
               <div className="space-y-1">
-                <Label htmlFor="ch-user">User</Label>
+                <Label htmlFor="ch-user">{t("fleet.user")}</Label>
                 <Input
                   id="ch-user"
                   value={sshUser}
@@ -987,7 +1011,7 @@ export function ConnectHostDialog({
                 />
               </div>
               <div className="space-y-1">
-                <Label htmlFor="ch-port">Port</Label>
+                <Label htmlFor="ch-port">{t("fleet.port")}</Label>
                 <Input
                   id="ch-port"
                   value={sshPort}
@@ -1006,10 +1030,10 @@ export function ConnectHostDialog({
                 }}
                 disabled={submitting}
               >
-                Cancel
+                {t("common:cancel")}
               </Button>
               <Button onClick={() => void handleConnect()} disabled={submitting}>
-                {submitting ? "Connecting…" : "Continue"}
+                {submitting ? t("fleet.connecting") : t("common:continue")}
               </Button>
             </DialogFooter>
           </div>

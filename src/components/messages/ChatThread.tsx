@@ -1,4 +1,5 @@
 import { Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ArrowDown, Loader2 } from "lucide-react";
 import { useChatStore } from "../../stores/chatStore";
 import { useAuthStore } from "../../stores/authStore";
@@ -98,14 +99,15 @@ const STATUS_RANK: Record<string, number> = {
 };
 
 // Screen-reader phase announcements — mirrors StreamingBubble's visual
-// phase labels without exposing the token stream to aria-live.
-const STREAM_PHASE_ANNOUNCEMENT: Record<string, string> = {
-  thinking: "Agent is thinking",
-  tool_call: "Agent is using tools",
-  writing: "Agent is writing",
-  analyzing: "Agent is analyzing",
-  queued: "Agent is queued",
-  waiting: "Agent is waiting",
+// phase labels without exposing the token stream to aria-live. Holds i18n
+// KEYS (resolved with t() at render) so live language switching works.
+const STREAM_PHASE_ANNOUNCEMENT_KEYS: Record<string, string> = {
+  thinking: "streamAnnounce.thinking",
+  tool_call: "streamAnnounce.toolCall",
+  writing: "streamAnnounce.writing",
+  analyzing: "streamAnnounce.analyzing",
+  queued: "streamAnnounce.queued",
+  waiting: "streamAnnounce.waiting",
 };
 
 function isThreadCreationAckMessage(message: Message): boolean {
@@ -316,6 +318,7 @@ function linkedSourceMessageId(conversation: Conversation): string | undefined {
 }
 
 export function ChatThread({ conversationId }: { conversationId: string }) {
+  const { t } = useTranslation("chat");
   const messagesRaw = useChatStore((s) => s.messages[conversationId]);
   const rawMessages = messagesRaw ?? EMPTY_MESSAGES;
 
@@ -824,10 +827,10 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
     return Array.from(typingIds)
       .filter((id) => id !== myId && (!stream || stream.senderId !== id))
       .map((id) => ({
-        name: typingNames[id] || "Someone",
+        name: typingNames[id] || t("someone"),
         type: typingTypes[id] || "human",
       }));
-  }, [typingIds, typingNames, typingTypes, stream, myId]);
+  }, [typingIds, typingNames, typingTypes, stream, myId, t]);
 
   const typingHasAgent = typingEntries.some((e) => e.type === "agent");
   const typingLabel = buildTypingText(typingEntries);
@@ -904,7 +907,7 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
           </div>
         ) : threadItems.length === 0 && !stream && !typingLabel ? (
           <div className="flex items-center justify-center py-16 text-sm text-muted-foreground">
-            No messages yet
+            {t("noMessages")}
           </div>
         ) : (
           <div ref={contentRef}>
@@ -914,7 +917,7 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
                   <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
                 ) : (
                   <span className="text-[11px] text-muted-foreground">
-                    Scroll up for more
+                    {t("scrollUpForMore")}
                   </span>
                 )}
               </div>
@@ -923,7 +926,7 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
                 excludes the StreamingBubble below — its token-by-token text
                 updates would flood a screen reader; phase changes are
                 announced by the sr-only status node outside the scroller. */}
-            <div role="log" aria-live="polite" aria-relevant="additions" aria-label="Messages">
+            <div role="log" aria-live="polite" aria-relevant="additions" aria-label={t("messagesLabel")}>
             {threadItems.map((item, i) => {
               const prevItem = threadItems[i - 1];
               const dayChanged =
@@ -1001,7 +1004,7 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
           (thinking → writing …) without exposing the token stream. */}
       {stream && (
         <span role="status" className="sr-only">
-          {STREAM_PHASE_ANNOUNCEMENT[stream.phase] ?? "Agent is responding"}
+          {t(STREAM_PHASE_ANNOUNCEMENT_KEYS[stream.phase] ?? "streamAnnounce.responding")}
         </span>
       )}
 
@@ -1028,11 +1031,11 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
             "flex items-center gap-1 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium shadow-md",
             "hover:bg-muted transition-colors"
           )}
-          title="Jump to latest"
-          aria-label={showNewPill ? "New messages — jump to latest" : "Jump to latest"}
+          title={t("jumpToLatest")}
+          aria-label={showNewPill ? t("newMessagesJump") : t("jumpToLatest")}
         >
           <ArrowDown className="h-3.5 w-3.5" />
-          {showNewPill ? "New messages" : "Latest"}
+          {showNewPill ? t("newMessages") : t("latest")}
         </button>
       )}
 
@@ -1046,7 +1049,7 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
           onCopy={(m) => navigator.clipboard?.writeText(m.content ?? "")}
           onCopyId={(m) => navigator.clipboard?.writeText(m.id)}
           onDelete={(m) => {
-            if (confirm("Delete this message?")) {
+            if (confirm(t("deleteMessageConfirm"))) {
               deleteMessage(conversationId, m.id);
             }
           }}
@@ -1068,6 +1071,7 @@ function DaySeparator({ iso }: { iso: string }) {
 }
 
 function UnreadDivider() {
+  const { t } = useTranslation("chat");
   return (
     // data-unread-divider is the open-at-unread scroll anchor — keep it.
     <Marker
@@ -1076,7 +1080,7 @@ function UnreadDivider() {
       className="px-4 py-2 text-primary before:bg-primary/40 after:bg-primary/40"
     >
       <MarkerContent className="px-1 text-[10px] font-semibold uppercase tracking-wider">
-        New messages
+        {t("newMessages")}
       </MarkerContent>
     </Marker>
   );

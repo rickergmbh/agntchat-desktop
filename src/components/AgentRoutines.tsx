@@ -1,4 +1,6 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
+import { useTranslation } from "react-i18next";
+import i18n from "../i18n";
 import { useAgentStore } from "../stores/agentStore";
 import { useChatStore } from "../stores/chatStore";
 import { useAuthStore } from "../stores/authStore";
@@ -45,7 +47,10 @@ const HOURS = Array.from({ length: 24 }, (_, i) => ({
   label: i === 0 ? "12:00 AM" : i < 12 ? `${i}:00 AM` : i === 12 ? "12:00 PM" : `${i - 12}:00 PM`,
 }));
 
-const SHORT_DOW_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+// Key suffixes only — resolved via i18n.t at call time so language
+// switches stay live (never t() at module scope).
+const DOW_KEYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+const dowShort = (i: number) => i18n.t(`common:time.dowShort.${DOW_KEYS[i]}`);
 
 // Parse a cron day-of-week field ("*", "1-5", "0,6", "1,3,5") into a sorted
 // list of 0..6 (Sunday=0).
@@ -162,31 +167,35 @@ function buildScheduleConfig(state: ScheduleState): {
   }
 }
 
-const SCHEDULE_MODES: Array<{ key: ScheduleMode; label: string }> = [
-  { key: "interval", label: "Interval" },
-  { key: "hourly", label: "Hourly" },
-  { key: "datetime", label: "Day & Time" },
-  { key: "custom", label: "Custom cron" },
+const SCHEDULE_MODES: Array<{ key: ScheduleMode; labelKey: string }> = [
+  { key: "interval", labelKey: "routines.modes.interval" },
+  { key: "hourly", labelKey: "routines.modes.hourly" },
+  { key: "datetime", labelKey: "routines.modes.datetime" },
+  { key: "custom", labelKey: "routines.modes.custom" },
 ];
 
-const DAY_PRESETS: Array<{ key: string; label: string; days: number[] }> = [
-  { key: "all", label: "Every day", days: [0, 1, 2, 3, 4, 5, 6] },
-  { key: "weekdays", label: "Weekdays", days: [1, 2, 3, 4, 5] },
-  { key: "weekends", label: "Weekends", days: [0, 6] },
+const DAY_PRESETS: Array<{ key: string; labelKey: string; days: number[] }> = [
+  { key: "all", labelKey: "routines.everyDay", days: [0, 1, 2, 3, 4, 5, 6] },
+  { key: "weekdays", labelKey: "routines.weekdays", days: [1, 2, 3, 4, 5] },
+  { key: "weekends", labelKey: "routines.weekends", days: [0, 6] },
 ];
 
 function describeSchedule(state: ScheduleState): string {
   switch (state.mode) {
     case "interval": {
       const m = state.intervalMinutes;
-      if (m >= 1440) return `Every ${Math.round(m / 1440)} day(s)`;
-      if (m >= 60 && m % 60 === 0) return `Every ${m / 60} hour(s)`;
-      return `Every ${m} minute(s)`;
+      if (m >= 1440)
+        return i18n.t("agents:routines.everyDays", { count: Math.round(m / 1440) });
+      if (m >= 60 && m % 60 === 0)
+        return i18n.t("agents:routines.everyHours", { count: m / 60 });
+      return i18n.t("agents:routines.everyMinutes", { count: m });
     }
     case "hourly":
-      return `Every hour at :${(state.cronMinute || "0").padStart(2, "0")}`;
+      return i18n.t("agents:routines.everyHourAt", {
+        minute: (state.cronMinute || "0").padStart(2, "0"),
+      });
     case "custom":
-      return "Custom cron expression";
+      return i18n.t("agents:routines.customCronExpression");
     case "datetime":
     default: {
       const hourLabel =
@@ -196,14 +205,14 @@ function describeSchedule(state: ScheduleState): string {
         ) || `${state.cronHour}:${(state.cronMinute || "0").padStart(2, "0")}`;
       const days = state.selectedDays;
       let dayLabel: string;
-      if (days.length === 7) dayLabel = "Every day";
+      if (days.length === 7) dayLabel = i18n.t("agents:routines.everyDay");
       else if (days.length === 5 && [1, 2, 3, 4, 5].every((d) => days.includes(d)))
-        dayLabel = "Weekdays";
+        dayLabel = i18n.t("agents:routines.weekdays");
       else if (days.length === 2 && days.includes(0) && days.includes(6))
-        dayLabel = "Weekends";
-      else if (days.length === 0) dayLabel = "(no days selected)";
-      else dayLabel = days.map((d) => SHORT_DOW_NAMES[d]).join(", ");
-      return `${dayLabel} at ${hourLabel} (UTC)`;
+        dayLabel = i18n.t("agents:routines.weekends");
+      else if (days.length === 0) dayLabel = i18n.t("agents:routines.noDaysSelected");
+      else dayLabel = days.map((d) => dowShort(d)).join(", ");
+      return i18n.t("agents:routines.daysAtTimeUtc", { days: dayLabel, time: hourLabel });
     }
   }
 }
@@ -227,20 +236,25 @@ function humanizeCron(expr: string): string {
   const hour = parseInt(hourStr, 10);
 
   if (hourStr === "*" && dom === "*" && mon === "*" && dow === "*" && !isNaN(minute)) {
-    return minute === 0 ? "Every hour" : `Every hour at :${String(minute).padStart(2, "0")}`;
+    return minute === 0
+      ? i18n.t("agents:routines.everyHour")
+      : i18n.t("agents:routines.everyHourAt", {
+          minute: String(minute).padStart(2, "0"),
+        });
   }
 
   if (isNaN(hour) || isNaN(minute)) return expr;
   const time = formatHourMinute12h(hour, minute);
 
   if (dom === "*" && mon === "*") {
-    if (dow === "*") return `Every day at ${time}`;
-    if (dow === "1-5") return `Weekdays at ${time}`;
-    if (dow === "0,6" || dow === "6,0") return `Weekends at ${time}`;
+    if (dow === "*") return i18n.t("agents:routines.everyDayAt", { time });
+    if (dow === "1-5") return i18n.t("agents:routines.weekdaysAt", { time });
+    if (dow === "0,6" || dow === "6,0")
+      return i18n.t("agents:routines.weekendsAt", { time });
     const days = parseDowField(dow);
     if (days.length > 0) {
-      const labels = days.map((d) => SHORT_DOW_NAMES[d]).join(", ");
-      return `${labels} at ${time}`;
+      const labels = days.map((d) => dowShort(d)).join(", ");
+      return i18n.t("agents:routines.daysAtTime", { days: labels, time });
     }
   }
 
@@ -254,6 +268,7 @@ function ScheduleFields({
   state: ScheduleState;
   setState: (next: ScheduleState) => void;
 }) {
+  const { t } = useTranslation("agents");
   const setMode = (mode: ScheduleMode) => setState({ ...state, mode });
   const toggleDay = (d: number) => {
     if (state.selectedDays.includes(d)) {
@@ -274,7 +289,7 @@ function ScheduleFields({
   return (
     <div className="space-y-3">
       <div className="space-y-1.5">
-        <Label className="text-xs">Schedule</Label>
+        <Label className="text-xs">{t("routines.schedule")}</Label>
         <div className="grid grid-cols-4 gap-1.5">
           {SCHEDULE_MODES.map((opt) => {
             const active = state.mode === opt.key;
@@ -290,7 +305,7 @@ function ScheduleFields({
                     : "border-border bg-background text-foreground hover:bg-accent/40",
                 ].join(" ")}
               >
-                {opt.label}
+                {t(opt.labelKey)}
               </button>
             );
           })}
@@ -299,7 +314,7 @@ function ScheduleFields({
 
       {state.mode === "interval" && (
         <div className="space-y-1.5">
-          <Label className="text-xs">Run every</Label>
+          <Label className="text-xs">{t("routines.runEvery")}</Label>
           <div className="flex items-center gap-2">
             <Input
               type="number"
@@ -310,14 +325,14 @@ function ScheduleFields({
               }
               className="w-24"
             />
-            <span className="text-xs text-muted-foreground">minutes</span>
+            <span className="text-xs text-muted-foreground">{t("routines.minutes")}</span>
           </div>
         </div>
       )}
 
       {state.mode === "hourly" && (
         <div className="space-y-1.5">
-          <Label className="text-xs">At minute</Label>
+          <Label className="text-xs">{t("routines.atMinute")}</Label>
           <div className="flex items-center gap-1.5">
             <span className="text-xs text-muted-foreground">:</span>
             <Input
@@ -337,7 +352,7 @@ function ScheduleFields({
       {state.mode === "datetime" && (
         <>
           <div className="space-y-1.5">
-            <Label className="text-xs">Days</Label>
+            <Label className="text-xs">{t("routines.days")}</Label>
             <div className="flex flex-wrap gap-1.5">
               {DAY_PRESETS.map((p) => {
                 const active = matchesPreset(p.days);
@@ -353,13 +368,14 @@ function ScheduleFields({
                         : "border-border bg-background text-foreground hover:bg-accent/40",
                     ].join(" ")}
                   >
-                    {p.label}
+                    {t(p.labelKey)}
                   </button>
                 );
               })}
             </div>
             <div className="flex gap-1.5">
-              {SHORT_DOW_NAMES.map((label, idx) => {
+              {DOW_KEYS.map((_, idx) => {
+                const label = dowShort(idx);
                 const active = state.selectedDays.includes(idx);
                 return (
                   <button
@@ -382,13 +398,13 @@ function ScheduleFields({
             </div>
             {state.selectedDays.length === 0 && (
               <p className="text-[11px] text-warning">
-                Pick at least one day for this routine to run.
+                {t("routines.pickAtLeastOneDay")}
               </p>
             )}
           </div>
 
           <div className="space-y-1.5">
-            <Label className="text-xs">Time of day (UTC)</Label>
+            <Label className="text-xs">{t("routines.timeOfDayUtc")}</Label>
             <div className="flex items-center gap-2">
               <Select
                 value={state.cronHour}
@@ -425,7 +441,7 @@ function ScheduleFields({
 
       {state.mode === "custom" && (
         <div className="space-y-1.5">
-          <Label className="text-xs">Cron expression</Label>
+          <Label className="text-xs">{t("routines.cronExpression")}</Label>
           <Input
             value={state.customCron}
             onChange={(e) => setState({ ...state, customCron: e.target.value })}
@@ -433,7 +449,7 @@ function ScheduleFields({
             className="font-mono text-xs"
           />
           <p className="text-[11px] text-muted-foreground">
-            5-field cron: minute hour day-of-month month day-of-week
+            {t("routines.cronHint")}
           </p>
         </div>
       )}
@@ -461,7 +477,9 @@ function conversationDisplayLabel(
     .map((m) => m.participant?.displayName)
     .filter(Boolean) as string[];
   if (names.length > 0) return names.join(", ");
-  return conv.type === "group" ? "Group" : "Direct message";
+  return conv.type === "group"
+    ? i18n.t("chat:groupConversation")
+    : i18n.t("chat:directMessage");
 }
 
 function ReportToPicker({
@@ -475,6 +493,7 @@ function ReportToPicker({
   value: string;
   onChange: (id: string) => void;
 }) {
+  const { t } = useTranslation("agents");
   const conversations = useChatStore((s) => s.conversations);
   const currentParticipantId = useAuthStore((s) => s.participant?.id);
   const ownerDmId = useMemo(
@@ -498,11 +517,13 @@ function ReportToPicker({
         })),
     [conversations, currentParticipantId, ownerDmId],
   );
-  const defaultLabel = `Your DM with ${agentName || "this agent"} (default)`;
+  const defaultLabel = t("routines.reportDefaultOption", {
+    name: agentName || t("routines.thisAgent"),
+  });
 
   return (
     <div className="space-y-1.5">
-      <Label className="text-xs">Where to report</Label>
+      <Label className="text-xs">{t("routines.whereToReport")}</Label>
       <Select
         value={value || "__default__"}
         onValueChange={(v) => onChange(v === "__default__" ? "" : (v ?? ""))}
@@ -520,8 +541,9 @@ function ReportToPicker({
         </SelectContent>
       </Select>
       <p className="text-[11px] text-muted-foreground">
-        By default, each run's result posts to your DM with{" "}
-        {agentName || "this agent"}. Pick another conversation to override.
+        {t("routines.reportDefaultHint", {
+          name: agentName || t("routines.thisAgent"),
+        })}
       </p>
     </div>
   );
@@ -530,13 +552,14 @@ function ReportToPicker({
 function formatSchedule(scheduleType: string, scheduleConfig: Record<string, unknown>): string {
   if (scheduleType === "interval") {
     const minutes = Number(scheduleConfig.minutes || scheduleConfig.interval_minutes || scheduleConfig.every_minutes || 0);
-    if (minutes === 60) return "Every hour";
-    if (minutes > 60 && minutes % 60 === 0) return `Every ${minutes / 60} hours`;
-    return `Every ${minutes} minute${minutes !== 1 ? "s" : ""}`;
+    if (minutes === 60) return i18n.t("agents:routines.everyHour");
+    if (minutes > 60 && minutes % 60 === 0)
+      return i18n.t("agents:routines.everyHours", { count: minutes / 60 });
+    return i18n.t("agents:routines.everyMinutes", { count: minutes });
   }
   if (scheduleType === "cron") {
     const expr = String(scheduleConfig.expression || scheduleConfig.cron || "");
-    return expr ? humanizeCron(expr) : "Custom";
+    return expr ? humanizeCron(expr) : i18n.t("agents:routines.customSchedule");
   }
   return scheduleType;
 }
@@ -581,6 +604,7 @@ function statusColor(status: string): string {
 }
 
 export function AgentRoutines({ agentId }: AgentRoutinesProps) {
+  const { t } = useTranslation("agents");
   const [routines, setRoutines] = useState<Routine[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
@@ -595,7 +619,7 @@ export function AgentRoutines({ agentId }: AgentRoutinesProps) {
       setRoutines(data || []);
     } catch (e) {
       console.error("Failed to fetch routines:", e);
-      setError(e instanceof Error ? e.message : "Failed to load routines");
+      setError(e instanceof Error ? e.message : i18n.t("agents:routines.errors.loadFailed"));
     } finally {
       setLoading(false);
     }
@@ -616,7 +640,7 @@ export function AgentRoutines({ agentId }: AgentRoutinesProps) {
       }
     } catch (e) {
       console.error("Failed to toggle routine:", e);
-      window.alert(e instanceof Error ? e.message : "Failed to update routine");
+      window.alert(e instanceof Error ? e.message : i18n.t("agents:routines.errors.updateFailed"));
     }
   };
 
@@ -627,14 +651,14 @@ export function AgentRoutines({ agentId }: AgentRoutinesProps) {
       setConfirmDelete(null);
     } catch (e) {
       console.error("Failed to delete routine:", e);
-      window.alert(e instanceof Error ? e.message : "Failed to delete routine");
+      window.alert(e instanceof Error ? e.message : i18n.t("agents:routines.errors.deleteFailed"));
     }
   };
 
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12 text-sm text-muted-foreground">
-        Loading routines...
+        {t("routines.loading")}
       </div>
     );
   }
@@ -651,12 +675,12 @@ export function AgentRoutines({ agentId }: AgentRoutinesProps) {
       {routines.length === 0 ? (
         <div className="text-center py-8">
           <Timer className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
-          <p className="text-sm font-medium">No routines configured</p>
+          <p className="text-sm font-medium">{t("routines.emptyTitle")}</p>
           <p className="text-xs text-muted-foreground mt-1">
-            Routines run on a schedule — check status, send reports, perform maintenance.
+            {t("routines.emptyDescription")}
           </p>
           <Button size="sm" className="mt-4" onClick={() => setShowCreate(true)}>
-            <Plus className="w-3.5 h-3.5 mr-1.5" /> Create Routine
+            <Plus className="w-3.5 h-3.5 mr-1.5" /> {t("routines.create")}
           </Button>
         </div>
       ) : (
@@ -674,12 +698,12 @@ export function AgentRoutines({ agentId }: AgentRoutinesProps) {
                       variant={statusVariant(routine.status)}
                       className={`text-[10px] px-1.5 py-0 ${routine.status === "active" ? statusColor(routine.status) : ""}`}
                     >
-                      {routine.status}
+                      {t(`status.${routine.status}`, { defaultValue: routine.status })}
                     </Badge>
                     {routine.consecutiveFailures > 0 && (
                       <Badge variant="destructive" className="text-[10px] px-1.5 py-0">
                         <AlertTriangle className="w-2.5 h-2.5 mr-0.5" />
-                        {routine.consecutiveFailures} fail{routine.consecutiveFailures !== 1 ? "s" : ""}
+                        {t("routines.failCount", { count: routine.consecutiveFailures })}
                       </Badge>
                     )}
                   </div>
@@ -689,9 +713,9 @@ export function AgentRoutines({ agentId }: AgentRoutinesProps) {
                       {formatSchedule(routine.scheduleType, routine.scheduleConfig)}
                     </span>
                     {routine.nextRunAt && (
-                      <span>Next: {formatDateTime(routine.nextRunAt)}</span>
+                      <span>{t("routines.nextRun", { time: formatDateTime(routine.nextRunAt) })}</span>
                     )}
-                    <span>Runs: {routine.runCount}{routine.maxRuns ? `/${routine.maxRuns}` : ""}</span>
+                    <span>{t("routines.runCount", { count: routine.runCount })}{routine.maxRuns ? `/${routine.maxRuns}` : ""}</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-1 ml-3 shrink-0">
@@ -701,7 +725,7 @@ export function AgentRoutines({ agentId }: AgentRoutinesProps) {
                       size="icon"
                       className="h-7 w-7"
                       onClick={() => handlePauseResume(routine)}
-                      title={routine.status === "active" ? "Pause" : "Resume"}
+                      title={routine.status === "active" ? t("common:pause") : t("common:resume")}
                     >
                       {routine.status === "active" ? (
                         <Pause className="w-3.5 h-3.5" />
@@ -715,7 +739,7 @@ export function AgentRoutines({ agentId }: AgentRoutinesProps) {
                     size="icon"
                     className="h-7 w-7"
                     onClick={() => setEditingRoutine(routine)}
-                    title="Edit"
+                    title={t("common:edit")}
                   >
                     <Pencil className="w-3.5 h-3.5" />
                   </Button>
@@ -727,7 +751,7 @@ export function AgentRoutines({ agentId }: AgentRoutinesProps) {
                         className="h-7 text-xs px-2"
                         onClick={() => handleDelete(routine.id)}
                       >
-                        Confirm
+                        {t("common:confirm")}
                       </Button>
                       <Button
                         variant="ghost"
@@ -735,7 +759,7 @@ export function AgentRoutines({ agentId }: AgentRoutinesProps) {
                         className="h-7 text-xs px-2"
                         onClick={() => setConfirmDelete(null)}
                       >
-                        Cancel
+                        {t("common:cancel")}
                       </Button>
                     </div>
                   ) : (
@@ -744,7 +768,7 @@ export function AgentRoutines({ agentId }: AgentRoutinesProps) {
                       size="icon"
                       className="h-7 w-7 text-destructive hover:text-destructive/90"
                       onClick={() => setConfirmDelete(routine.id)}
-                      title="Delete"
+                      title={t("common:delete")}
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </Button>
@@ -755,7 +779,7 @@ export function AgentRoutines({ agentId }: AgentRoutinesProps) {
           </div>
 
           <Button size="sm" variant="outline" onClick={() => setShowCreate(true)}>
-            <Plus className="w-3.5 h-3.5 mr-1.5" /> Create Routine
+            <Plus className="w-3.5 h-3.5 mr-1.5" /> {t("routines.create")}
           </Button>
         </>
       )}
@@ -793,6 +817,7 @@ function CreateRoutineDialog({
   onClose: () => void;
   agentId: string;
 }) {
+  const { t } = useTranslation("agents");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [instructions, setInstructions] = useState("");
@@ -849,7 +874,7 @@ function CreateRoutineDialog({
       resetForm();
       onClose();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to create routine");
+      setError(e instanceof Error ? e.message : t("routines.errors.createFailed"));
     } finally {
       setCreating(false);
     }
@@ -864,34 +889,34 @@ function CreateRoutineDialog({
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="w-[90vw] sm:max-w-3xl max-h-[85vh] flex flex-col gap-0 p-0">
         <DialogHeader className="px-6 pt-6 pb-4 border-b shrink-0">
-          <DialogTitle>Create Routine</DialogTitle>
+          <DialogTitle>{t("routines.create")}</DialogTitle>
         </DialogHeader>
         <div className="flex-1 min-h-0 overflow-y-auto px-6 py-4 space-y-4">
           <div className="space-y-1.5">
-            <Label className="text-xs">Name</Label>
+            <Label className="text-xs">{t("common:name")}</Label>
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Daily status check"
+              placeholder={t("routines.namePlaceholder")}
             />
           </div>
 
           <div className="space-y-1.5">
-            <Label className="text-xs">Description (optional)</Label>
+            <Label className="text-xs">{t("routines.descriptionOptional")}</Label>
             <Input
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="What this routine does..."
+              placeholder={t("routines.descriptionPlaceholder")}
             />
           </div>
 
           <div className="space-y-1.5">
-            <Label className="text-xs">Instructions</Label>
+            <Label className="text-xs">{t("routines.instructions")}</Label>
             <Textarea
               className="min-h-[220px] font-mono text-sm leading-relaxed resize-y"
               value={instructions}
               onChange={(e) => setInstructions(e.target.value)}
-              placeholder="Check the status of all pending tasks and send a summary..."
+              placeholder={t("routines.instructionsPlaceholder")}
             />
           </div>
 
@@ -905,35 +930,35 @@ function CreateRoutineDialog({
               onChange={setReportTo}
             />
             <div className="space-y-1.5">
-              <Label className="text-xs">Max Runs (optional)</Label>
+              <Label className="text-xs">{t("routines.maxRunsOptional")}</Label>
               <Input
                 type="number"
                 min={1}
                 value={maxRuns}
                 onChange={(e) => setMaxRuns(e.target.value)}
-                placeholder="Unlimited"
+                placeholder={t("routines.unlimited")}
               />
             </div>
           </div>
 
           {templateNames.length > 0 && (
             <div className="space-y-1.5">
-              <Label className="text-xs">Response Template (optional)</Label>
+              <Label className="text-xs">{t("routines.responseTemplateOptional")}</Label>
               <Select value={responseTemplate} onValueChange={(v) => setResponseTemplate(v ?? "")}>
                 <SelectTrigger>
-                  <SelectValue placeholder="No template — plain text output" />
+                  <SelectValue placeholder={t("routines.noTemplatePlainText")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">None</SelectItem>
-                  {templateNames.map((t) => (
-                    <SelectItem key={t} value={t}>
-                      {t.replace(/_/g, " ")}
+                  <SelectItem value="">{t("common:none")}</SelectItem>
+                  {templateNames.map((tpl) => (
+                    <SelectItem key={tpl} value={tpl}>
+                      {tpl.replace(/_/g, " ")}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
               <p className="text-xs text-muted-foreground">
-                Agent will format output using this template's card layout
+                {t("routines.templateHint")}
               </p>
             </div>
           )}
@@ -943,13 +968,13 @@ function CreateRoutineDialog({
 
         <div className="px-6 py-4 border-t shrink-0 flex gap-2 justify-end">
           <Button variant="outline" onClick={handleClose}>
-            Cancel
+            {t("common:cancel")}
           </Button>
           <Button
             onClick={handleCreate}
             disabled={creating || !name || !instructions || !scheduleValid}
           >
-            {creating ? "Creating..." : "Create Routine"}
+            {creating ? t("common:creating") : t("routines.create")}
           </Button>
         </div>
       </DialogContent>
@@ -966,6 +991,7 @@ function EditRoutineDialog({
   routine: Routine | null;
   onClose: () => void;
 }) {
+  const { t } = useTranslation("agents");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [instructions, setInstructions] = useState("");
@@ -1036,7 +1062,7 @@ function EditRoutineDialog({
       });
       onClose();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to save routine");
+      setError(e instanceof Error ? e.message : t("routines.errors.saveFailed"));
     } finally {
       setSaving(false);
     }
@@ -1046,11 +1072,11 @@ function EditRoutineDialog({
     <Dialog open={!!routine} onOpenChange={() => onClose()}>
       <DialogContent className="w-[90vw] sm:max-w-3xl max-h-[85vh] flex flex-col gap-0 p-0">
         <DialogHeader className="px-6 pt-6 pb-4 border-b shrink-0">
-          <DialogTitle>Edit Routine</DialogTitle>
+          <DialogTitle>{t("routines.edit")}</DialogTitle>
         </DialogHeader>
         <div className="flex-1 min-h-0 overflow-y-auto px-6 py-4 space-y-4">
           <div className="space-y-1.5">
-            <Label className="text-xs">Name</Label>
+            <Label className="text-xs">{t("common:name")}</Label>
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -1058,16 +1084,16 @@ function EditRoutineDialog({
           </div>
 
           <div className="space-y-1.5">
-            <Label className="text-xs">Description</Label>
+            <Label className="text-xs">{t("common:description")}</Label>
             <Input
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="What this routine does..."
+              placeholder={t("routines.descriptionPlaceholder")}
             />
           </div>
 
           <div className="space-y-1.5">
-            <Label className="text-xs">Instructions</Label>
+            <Label className="text-xs">{t("routines.instructions")}</Label>
             <Textarea
               className="min-h-[220px] font-mono text-sm leading-relaxed resize-y"
               value={instructions}
@@ -1079,13 +1105,13 @@ function EditRoutineDialog({
 
           {templateNames.length > 0 && (
             <div className="space-y-1.5">
-              <Label className="text-xs">Response Template</Label>
+              <Label className="text-xs">{t("routines.responseTemplate")}</Label>
               <Select value={responseTemplate} onValueChange={(v) => setResponseTemplate(v ?? "")}>
-                <SelectTrigger><SelectValue placeholder="No template" /></SelectTrigger>
+                <SelectTrigger><SelectValue placeholder={t("routines.noTemplate")} /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">None</SelectItem>
-                  {templateNames.map((t) => (
-                    <SelectItem key={t} value={t}>{t.replace(/_/g, " ")}</SelectItem>
+                  <SelectItem value="">{t("common:none")}</SelectItem>
+                  {templateNames.map((tpl) => (
+                    <SelectItem key={tpl} value={tpl}>{tpl.replace(/_/g, " ")}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -1097,13 +1123,13 @@ function EditRoutineDialog({
 
         <div className="px-6 py-4 border-t shrink-0 flex gap-2 justify-end">
           <Button variant="outline" onClick={onClose}>
-            Cancel
+            {t("common:cancel")}
           </Button>
           <Button
             onClick={handleSave}
             disabled={saving || !name || !instructions || !scheduleValid || !isDirty}
           >
-            {saving ? "Saving..." : "Save Changes"}
+            {saving ? t("common:saving") : t("common:saveChanges")}
           </Button>
         </div>
       </DialogContent>

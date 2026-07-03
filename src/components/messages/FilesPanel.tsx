@@ -8,6 +8,7 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   getFileDownloadUrl,
   type ConversationFile,
@@ -39,6 +40,7 @@ function iconFor(contentType: string) {
 }
 
 export function FilesPanel({ files, open, onClose, onRefresh }: Props) {
+  const { t } = useTranslation("files");
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [opening, setOpening] = useState<string | null>(null);
 
@@ -103,16 +105,16 @@ export function FilesPanel({ files, open, onClose, onRefresh }: Props) {
     >
       <div className="flex items-start justify-between gap-2 px-4 py-3 border-b border-border">
         <div>
-          <p className="text-sm font-semibold">Files in this chat</p>
+          <p className="text-sm font-semibold">{t("inThisChat")}</p>
           <p className="text-xs text-muted-foreground">
-            {files.length} file{files.length === 1 ? "" : "s"}
+            {t("count", { count: files.length })}
           </p>
         </div>
         <button
           type="button"
           onClick={onClose}
           className="rounded p-1 text-muted-foreground hover:bg-accent hover:text-foreground"
-          aria-label="Close files panel"
+          aria-label={t("closePanel")}
         >
           <X className="h-4 w-4" />
         </button>
@@ -122,7 +124,7 @@ export function FilesPanel({ files, open, onClose, onRefresh }: Props) {
         {files.length === 0 ? (
           <div className="px-4 py-6 text-center text-xs text-muted-foreground">
             <Paperclip className="mx-auto mb-2 h-6 w-6 text-muted-foreground/50" />
-            No files uploaded yet.
+            {t("emptyLabel")}
           </div>
         ) : (
           files.map((file) => (
@@ -142,7 +144,7 @@ export function FilesPanel({ files, open, onClose, onRefresh }: Props) {
                 </span>
                 <span className="block truncate text-xs text-muted-foreground">
                   {formatFileSize(file.sizeBytes)} ·{" "}
-                  {file.uploader?.displayName ?? "Unknown"} ·{" "}
+                  {file.uploader?.displayName ?? t("common:unknown")} ·{" "}
                   {formatConversationTime(file.insertedAt)}
                 </span>
               </span>

@@ -1,5 +1,6 @@
 import { Paperclip } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { cn } from "../../lib/utils";
 import {
   listConversationFiles,
@@ -26,6 +27,7 @@ export function FilesBar({
   conversationId: string;
   isThread?: boolean;
 }) {
+  const { t } = useTranslation("files");
   const [open, setOpen] = useState(false);
   const [files, setFiles] = useState<ConversationFile[]>([]);
   const [loading, setLoading] = useState(false);
@@ -84,12 +86,10 @@ export function FilesBar({
         )}
         style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
         aria-expanded={open}
-        aria-label={`${files.length} file${files.length === 1 ? "" : "s"}`}
+        aria-label={t("count", { count: files.length })}
       >
         <Paperclip className="h-3.5 w-3.5" />
-        <span>
-          {files.length} file{files.length === 1 ? "" : "s"}
-        </span>
+        <span>{t("count", { count: files.length })}</span>
       </button>
 
       <FilesPanel

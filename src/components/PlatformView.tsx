@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Activity,
   AlertCircle,
@@ -24,6 +25,7 @@ import {
   X,
 } from "lucide-react";
 import * as api from "../lib/api";
+import i18n from "../i18n";
 import { cn } from "../lib/utils";
 import { useAuthStore } from "../stores/authStore";
 import { useModelCatalog, type CatalogProvider } from "../stores/modelCatalogStore";
@@ -58,6 +60,7 @@ import {
  * provisioning.
  */
 export function PlatformView() {
+  const { t } = useTranslation("platform");
   const [tab, setTab] = useState("overview");
 
   return (
@@ -65,19 +68,17 @@ export function PlatformView() {
       <header className="flex items-center gap-2 border-b border-border px-6 py-4">
         <ShieldHalf className="h-5 w-5 text-muted-foreground" />
         <div>
-          <h1 className="text-base font-semibold leading-none">Platform</h1>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Operator console — fleet, users, and allocation across all workspaces.
-          </p>
+          <h1 className="text-base font-semibold leading-none">{t("nav:platform")}</h1>
+          <p className="mt-1 text-xs text-muted-foreground">{t("subtitle")}</p>
         </div>
       </header>
 
       <Tabs value={tab} onValueChange={setTab} className="flex flex-1 flex-col overflow-hidden">
         <TabsList className="mx-6 mt-3 w-fit">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="hosts">Hosts</TabsTrigger>
-          <TabsTrigger value="users">Users</TabsTrigger>
-          <TabsTrigger value="features">Feature Flags</TabsTrigger>
+          <TabsTrigger value="overview">{t("tabs.overview")}</TabsTrigger>
+          <TabsTrigger value="hosts">{t("tabs.hosts")}</TabsTrigger>
+          <TabsTrigger value="users">{t("tabs.users")}</TabsTrigger>
+          <TabsTrigger value="features">{t("tabs.features")}</TabsTrigger>
         </TabsList>
 
         <div className="flex-1 overflow-y-auto px-6 py-4">
@@ -114,8 +115,8 @@ function fmtTokens(n?: number): string {
 
 /** "Local", "Hosted", etc. from an agent's runtime. */
 function runtimeLabel(runtime?: string): string {
-  if (runtime === "org_host") return "Hosted";
-  if (runtime === "local") return "Local";
+  if (runtime === "org_host") return i18n.t("platform:runtime.hosted");
+  if (runtime === "local") return i18n.t("platform:runtime.local");
   return runtime ?? "—";
 }
 
@@ -141,13 +142,15 @@ function memberFor(iso?: string | null): string {
   const start = new Date(iso).getTime();
   if (Number.isNaN(start)) return "—";
   const days = Math.floor((Date.now() - start) / 86_400_000);
-  if (days <= 0) return "today";
-  if (days < 31) return `${days}d`;
+  if (days <= 0) return i18n.t("common:today");
+  if (days < 31) return i18n.t("common:time.shortDays", { count: days });
   const months = Math.floor(days / 30.44);
-  if (months < 12) return `${months}mo`;
+  if (months < 12) return i18n.t("common:time.shortMonths", { count: months });
   const years = Math.floor(months / 12);
   const rem = months % 12;
-  return rem ? `${years}y ${rem}mo` : `${years}y`;
+  return rem
+    ? i18n.t("common:time.shortYearsMonths", { years, months: rem })
+    : i18n.t("common:time.shortYears", { count: years });
 }
 
 /** Tiny inline sparkline of a daily-token series. */
@@ -195,12 +198,13 @@ function ErrorBox({ message }: { message: string }) {
 }
 
 function OverviewTab() {
+  const { t } = useTranslation("platform");
   const [stats, setStats] = useState<api.PlatformStats | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     api.getAdminStats().then(setStats).catch((e) =>
-      setError(e instanceof Error ? e.message : "Failed to load stats")
+      setError(e instanceof Error ? e.message : i18n.t("platform:errors.loadStats"))
     );
   }, []);
 
@@ -208,7 +212,7 @@ function OverviewTab() {
   if (!stats)
     return (
       <div className="flex items-center gap-2 py-8 text-sm text-muted-foreground">
-        <Loader2 className="h-4 w-4 animate-spin" /> Loading…
+        <Loader2 className="h-4 w-4 animate-spin" /> {t("common:loading")}
       </div>
     );
 
@@ -228,11 +232,27 @@ function OverviewTab() {
     }).format(cents / 100);
 
   const cards = [
-    { label: "Users", value: stats.users, sub: `${stats.usersOnline ?? 0} online · ${stats.payingUsers} paying` },
-    { label: "Agents", value: stats.agents, sub: `${stats.agentsOnline ?? 0} online · ${hosted} hosted · ${local} local` },
-    { label: "Workspaces", value: stats.organizations, sub: `${workspaces.length} total` },
-    { label: "Hosts online", value: `${onlineHosts}/${totalHosts}`, sub: "by heartbeat" },
-    { label: "MRR", value: fmtUsdCents(rev.mrrCents, rev.currency), sub: `${rev.tiers.reduce((n, t) => n + t.count, 0)} subs` },
+    {
+      label: t("tabs.users"),
+      value: stats.users,
+      sub: t("overview.usersSub", { online: stats.usersOnline ?? 0, paying: stats.payingUsers }),
+    },
+    {
+      label: t("nav:agents"),
+      value: stats.agents,
+      sub: t("overview.agentsSub", { online: stats.agentsOnline ?? 0, hosted, local }),
+    },
+    {
+      label: t("overview.workspaces"),
+      value: stats.organizations,
+      sub: t("overview.workspacesTotal", { count: workspaces.length }),
+    },
+    { label: t("overview.hostsOnline"), value: `${onlineHosts}/${totalHosts}`, sub: t("overview.byHeartbeat") },
+    {
+      label: t("overview.mrr"),
+      value: fmtUsdCents(rev.mrrCents, rev.currency),
+      sub: t("overview.subsCount", { count: rev.tiers.reduce((n, tier) => n + tier.count, 0) }),
+    },
   ];
 
   return (
@@ -251,35 +271,35 @@ function OverviewTab() {
         {/* Revenue per tier */}
         <section className="rounded-lg border border-border">
           <div className="flex items-center justify-between border-b border-border px-4 py-2 text-xs font-medium text-muted-foreground">
-            <span>Revenue by tier</span>
+            <span>{t("overview.revenueByTier")}</span>
             {rev.unpricedCount > 0 && (
-              <span className="text-amber-500" title="Run Release.backfill_subscription_amounts() to populate amounts from Stripe">
-                {rev.unpricedCount} unpriced
+              <span className="text-amber-500" title={t("overview.unpricedHint")}>
+                {t("overview.unpriced", { count: rev.unpricedCount })}
               </span>
             )}
           </div>
           {rev.tiers.length === 0 ? (
-            <p className="px-4 py-3 text-sm text-muted-foreground">No active subscriptions.</p>
+            <p className="px-4 py-3 text-sm text-muted-foreground">{t("overview.noSubscriptions")}</p>
           ) : (
             <table className="w-full text-sm">
               <thead className="text-left text-xs text-muted-foreground">
                 <tr>
-                  <th className="px-4 py-1.5 font-medium">Tier</th>
-                  <th className="px-4 py-1.5 text-right font-medium">Subs</th>
-                  <th className="px-4 py-1.5 text-right font-medium">MRR</th>
+                  <th className="px-4 py-1.5 font-medium">{t("overview.tier")}</th>
+                  <th className="px-4 py-1.5 text-right font-medium">{t("overview.subs")}</th>
+                  <th className="px-4 py-1.5 text-right font-medium">{t("overview.mrr")}</th>
                 </tr>
               </thead>
               <tbody>
-                {rev.tiers.map((t) => (
-                  <tr key={t.plan ?? t.tier} className="border-t border-border">
-                    <td className="px-4 py-1.5 truncate" title={t.plan ?? undefined}>{t.tier ?? t.plan ?? "—"}</td>
-                    <td className="px-4 py-1.5 text-right tabular-nums">{t.count}</td>
-                    <td className="px-4 py-1.5 text-right tabular-nums">{fmtUsdCents(t.mrrCents, rev.currency)}</td>
+                {rev.tiers.map((tier) => (
+                  <tr key={tier.plan ?? tier.tier} className="border-t border-border">
+                    <td className="px-4 py-1.5 truncate" title={tier.plan ?? undefined}>{tier.tier ?? tier.plan ?? "—"}</td>
+                    <td className="px-4 py-1.5 text-right tabular-nums">{tier.count}</td>
+                    <td className="px-4 py-1.5 text-right tabular-nums">{fmtUsdCents(tier.mrrCents, rev.currency)}</td>
                   </tr>
                 ))}
                 <tr className="border-t border-border font-medium">
-                  <td className="px-4 py-1.5">Total</td>
-                  <td className="px-4 py-1.5 text-right tabular-nums">{rev.tiers.reduce((n, t) => n + t.count, 0)}</td>
+                  <td className="px-4 py-1.5">{t("overview.total")}</td>
+                  <td className="px-4 py-1.5 text-right tabular-nums">{rev.tiers.reduce((n, tier) => n + tier.count, 0)}</td>
                   <td className="px-4 py-1.5 text-right tabular-nums">{fmtUsdCents(rev.mrrCents, rev.currency)}</td>
                 </tr>
               </tbody>
@@ -290,10 +310,10 @@ function OverviewTab() {
         {/* Agents per workspace */}
         <section className="rounded-lg border border-border">
           <div className="border-b border-border px-4 py-2 text-xs font-medium text-muted-foreground">
-            Agents by workspace
+            {t("overview.agentsByWorkspace")}
           </div>
           {workspaces.length === 0 ? (
-            <p className="px-4 py-3 text-sm text-muted-foreground">No workspaces.</p>
+            <p className="px-4 py-3 text-sm text-muted-foreground">{t("overview.noWorkspaces")}</p>
           ) : (
             <ul className="max-h-72 overflow-y-auto">
               {workspaces.map((w) => (
@@ -303,7 +323,7 @@ function OverviewTab() {
                 >
                   <span className="min-w-0 flex-1 truncate">{w.name ?? w.id.slice(0, 8)}</span>
                   <span className="shrink-0 tabular-nums text-muted-foreground">
-                    {w.agentCount} agent{w.agentCount === 1 ? "" : "s"}
+                    {t("agentsCount", { count: w.agentCount })}
                   </span>
                 </li>
               ))}
@@ -316,6 +336,7 @@ function OverviewTab() {
 }
 
 function HostsTab() {
+  const { t } = useTranslation("platform");
   // Operator's own org — backs the org-scoped management endpoints (add host,
   // Anthropic seat, provider VM picker). Cross-org hosts are still listed via
   // the admin endpoint; each row's SSH ops key on the host's own org id. Same
@@ -356,7 +377,9 @@ function HostsTab() {
       setError(null);
     } else {
       setError(
-        hostsRes.reason instanceof Error ? hostsRes.reason.message : "Failed to load hosts"
+        hostsRes.reason instanceof Error
+          ? hostsRes.reason.message
+          : i18n.t("platform:errors.loadHosts")
       );
     }
 
@@ -368,7 +391,7 @@ function HostsTab() {
       setVmsError(
         vmsRes.reason instanceof Error
           ? vmsRes.reason.message
-          : "Failed to load Hostinger VMs"
+          : i18n.t("platform:errors.loadVms")
       );
     }
 
@@ -416,28 +439,28 @@ function HostsTab() {
     <div className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2 text-sm font-medium">
-          <ServerIcon className="h-4 w-4" /> Hosts &amp; VMs
+          <ServerIcon className="h-4 w-4" /> {t("hosts.title")}
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Button variant="outline" size="sm" onClick={() => void refresh()}>
             <RefreshCw className="h-3.5 w-3.5" />
-            Refresh
+            {t("common:refresh")}
           </Button>
           {operatorOrgId && (
             <Button
               variant="outline"
               size="sm"
               onClick={() => setAnthropicOpen(true)}
-              title="Set a shared Claude seat for the whole org — applied to every host. Use a host's “Anthropic” button to re-push it to just that host."
+              title={t("hosts.connectAnthropicHint")}
             >
               <ShieldCheck className="h-3.5 w-3.5 text-muted-foreground" />
-              Connect Anthropic
+              {t("hosts.connectAnthropic")}
             </Button>
           )}
           {operatorOrgId && (
             <Button size="sm" onClick={() => openAddHost()}>
               <Plus className="h-3.5 w-3.5" />
-              Add host
+              {t("hosts.addHost")}
             </Button>
           )}
         </div>
@@ -447,7 +470,7 @@ function HostsTab() {
 
       {loading ? (
         <div className="flex items-center gap-2 py-8 text-sm text-muted-foreground">
-          <Loader2 className="h-4 w-4 animate-spin" /> Loading…
+          <Loader2 className="h-4 w-4 animate-spin" /> {t("common:loading")}
         </div>
       ) : (
         <>
@@ -479,7 +502,7 @@ function HostsTab() {
 
           {vmsError && (
             <p className="text-xs text-muted-foreground">
-              Couldn’t load the Hostinger VM inventory: {vmsError}
+              {t("hosts.vmInventoryError", { error: vmsError })}
             </p>
           )}
 
@@ -487,7 +510,7 @@ function HostsTab() {
           {otherHosts.length > 0 && (
             <div className="space-y-2 pt-2">
               <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Other hosts (no Hostinger VM)
+                {t("hosts.otherHosts")}
               </div>
               <ul className="space-y-2">
                 {otherHosts.map((h) => (
@@ -498,7 +521,7 @@ function HostsTab() {
           )}
 
           {vms.length === 0 && otherHosts.length === 0 && (
-            <p className="text-sm text-muted-foreground">No hosts or VMs yet.</p>
+            <p className="text-sm text-muted-foreground">{t("hosts.empty")}</p>
           )}
         </>
       )}
@@ -538,6 +561,7 @@ function UnmanagedVmRow({
   canAdd: boolean;
   onAdd: () => void;
 }) {
+  const { t } = useTranslation("platform");
   return (
     <li className="flex items-center gap-3 rounded-lg border border-dashed border-border px-4 py-3">
       <Cloud className="h-4 w-4 shrink-0 text-muted-foreground" />
@@ -545,10 +569,10 @@ function UnmanagedVmRow({
         <div className="flex items-center gap-2">
           <span className="truncate font-medium">{vm.hostname || vm.id}</span>
           <Badge variant={vm.state === "running" ? "default" : "outline"} className="shrink-0">
-            {vm.state || "unknown"}
+            {vm.state || t("common:unknown")}
           </Badge>
           <Badge variant="outline" className="shrink-0 text-muted-foreground">
-            Not added
+            {t("hosts.notAdded")}
           </Badge>
         </div>
         <div className="mt-0.5 truncate text-xs text-muted-foreground">
@@ -558,7 +582,7 @@ function UnmanagedVmRow({
       {canAdd && (
         <Button variant="outline" size="sm" className="shrink-0" onClick={onAdd}>
           <Plus className="h-3.5 w-3.5" />
-          Add host
+          {t("hosts.addHost")}
         </Button>
       )}
     </li>
@@ -587,6 +611,7 @@ function MergedHostRow({
    *  live power-state next to the host's AgentGram status. */
   vm?: api.ProviderVm;
 }) {
+  const { t } = useTranslation("platform");
   const hostOrgId = host.organizationId;
   const [expanded, setExpanded] = useState(false);
   // Which inner panel shows once expanded — residents vs the SSH op log.
@@ -618,7 +643,7 @@ function MergedHostRow({
       setOps(o);
       setDetailError(null);
     } catch (e) {
-      setDetailError(e instanceof Error ? e.message : "Failed to load host detail");
+      setDetailError(e instanceof Error ? e.message : i18n.t("platform:errors.loadHostDetail"));
     }
   }, [host.id, hostOrgId]);
 
@@ -656,7 +681,7 @@ function MergedHostRow({
       setExpanded(true);
       await loadDetail();
     } catch (e) {
-      alert(e instanceof Error ? e.message : "Operation failed");
+      alert(e instanceof Error ? e.message : i18n.t("platform:errors.operationFailed"));
     } finally {
       setBusy(null);
     }
@@ -675,7 +700,7 @@ function MergedHostRow({
       setEditing(false);
       await onChanged();
     } catch (e) {
-      alert(e instanceof Error ? e.message : "Could not rename host");
+      alert(e instanceof Error ? e.message : i18n.t("platform:errors.renameHost"));
       setName(host.name);
     } finally {
       setRenameBusy(false);
@@ -688,7 +713,7 @@ function MergedHostRow({
       await api.setHostShared(host.id, next);
     } catch (e) {
       setShared(!next);
-      alert(e instanceof Error ? e.message : "Could not update host");
+      alert(e instanceof Error ? e.message : i18n.t("platform:errors.updateHost"));
     }
   };
 
@@ -698,18 +723,18 @@ function MergedHostRow({
     try {
       setPubKey(await api.getHostPublicKey(hostOrgId, host.id));
     } catch (e) {
-      alert(e instanceof Error ? e.message : "Could not load public key");
+      alert(e instanceof Error ? e.message : i18n.t("platform:errors.loadPublicKey"));
     }
   };
 
   const handleDelete = async () => {
-    if (!confirm(`Delete host "${host.name}"? Agents assigned here stop running on it.`)) return;
+    if (!confirm(t("hosts.deleteConfirm", { name: host.name }))) return;
     setBusy("delete");
     try {
       await api.deleteOrganizationHost(hostOrgId, host.id);
       await onChanged();
     } catch (e) {
-      alert(e instanceof Error ? e.message : "Could not delete host");
+      alert(e instanceof Error ? e.message : i18n.t("platform:errors.deleteHost"));
     } finally {
       setBusy(null);
     }
@@ -722,7 +747,7 @@ function MergedHostRow({
           type="button"
           onClick={() => setExpanded((v) => !v)}
           className="shrink-0 text-muted-foreground"
-          aria-label={expanded ? "Collapse" : "Expand"}
+          aria-label={expanded ? t("common:collapse") : t("common:expand")}
         >
           {expanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
         </button>
@@ -774,7 +799,7 @@ function MergedHostRow({
                   size="sm"
                   className="h-6 w-6 shrink-0 p-0 text-muted-foreground"
                   onClick={() => setEditing(true)}
-                  title="Rename host"
+                  title={t("hosts.renameHost")}
                 >
                   <Pencil className="h-3 w-3" />
                 </Button>
@@ -787,36 +812,36 @@ function MergedHostRow({
                     host.status === "disabled" && "border-destructive/30 bg-destructive/10 text-destructive"
                   )}
                 >
-                  {host.status}
+                  {t(`status.${host.status}`, { defaultValue: host.status })}
                 </Badge>
                 {vm?.state && (
                   <Badge
                     variant="outline"
                     className="shrink-0 text-muted-foreground"
-                    title="Hostinger power state"
+                    title={t("hosts.vmStateHint")}
                   >
-                    VM: {vm.state}
+                    {t("hosts.vmState", { state: vm.state })}
                   </Badge>
                 )}
                 {shared && (
                   <Badge variant="outline" className="shrink-0 border-primary/30 text-primary">
-                    shared
+                    {t("hosts.sharedBadge")}
                   </Badge>
                 )}
                 {!bootstrapped && (
                   <Badge variant="outline" className="shrink-0 border-amber-500/30 text-amber-600">
-                    not bootstrapped
+                    {t("hosts.notBootstrapped")}
                   </Badge>
                 )}
                 {opRunning && (
                   <Badge
                     variant="outline"
                     className="shrink-0 gap-1 border-amber-500/30 text-amber-600"
-                    title="An SSH operation is in progress — open Operations to watch it"
+                    title={t("hosts.opRunningHint")}
                   >
                     <Loader2 className="h-3 w-3 animate-spin" />
                     {ops.find((o) => o.status === "pending" || o.status === "running")?.kind ??
-                      "running"}
+                      t("status.running")}
                   </Badge>
                 )}
               </>
@@ -828,48 +853,51 @@ function MergedHostRow({
             className="mt-0.5 block w-full truncate text-left text-xs text-muted-foreground"
           >
             <span className={cn("tabular-nums", online > 0 && "text-success")}>{online}</span>
-            <span className="tabular-nums">/{assigned}</span> agent{assigned === 1 ? "" : "s"} online
-            {` · ${users} user${users === 1 ? "" : "s"}`}
+            <span className="tabular-nums">/{assigned}</span>{" "}
+            {t("hosts.agentsOnlineSuffix", { count: assigned })}
+            {` · ${t("hosts.usersCount", { count: users })}`}
             {host.orgName ? ` · ${host.orgName}` : ""}
-            {host.sshHost ? ` · ${host.sshUser || "root"}@${host.sshHost}` : " · no SSH target"}
+            {host.sshHost
+              ? ` · ${host.sshUser || "root"}@${host.sshHost}`
+              : ` · ${t("hosts.noSshTarget")}`}
             {host.provider ? ` · ${host.provider}${host.providerVmId ? ` vm ${host.providerVmId}` : ""}` : ""}
             {host.version ? ` · v${host.version}` : ""}
-            {` · seen ${relativeAge(host.lastSeenAt)}`}
+            {` · ${t("hosts.seen", { age: relativeAge(host.lastSeenAt) })}`}
           </button>
         </div>
 
         <div className="flex shrink-0 items-center gap-1">
           {!bootstrapped && host.sshHost && (
-            <Button variant="outline" size="sm" onClick={() => void showKey()} disabled={busy !== null} title="Show the SSH public key to authorize on the host">
+            <Button variant="outline" size="sm" onClick={() => void showKey()} disabled={busy !== null} title={t("hosts.keyHint")}>
               <KeyRound className="h-3.5 w-3.5" />
-              Key
+              {t("hosts.key")}
             </Button>
           )}
           {!bootstrapped && host.sshHost && (
-            <Button variant="default" size="sm" onClick={() => void op("bootstrap")} disabled={busy !== null} title="Install the runtime over SSH">
+            <Button variant="default" size="sm" onClick={() => void op("bootstrap")} disabled={busy !== null} title={t("hosts.bootstrapHint")}>
               {busy === "bootstrap" ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <DownloadCloud className="h-3.5 w-3.5" />}
-              Bootstrap
+              {t("hosts.bootstrap")}
             </Button>
           )}
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => void op("update", `Update "${host.name}"? Pulls latest + restarts.`)}
+            onClick={() => void op("update", t("hosts.updateConfirm", { name: host.name }))}
             disabled={busy !== null || !host.sshHost}
-            title="Pull latest code + restart"
+            title={t("hosts.updateHint")}
           >
             {busy === "update" ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <DownloadCloud className="h-3.5 w-3.5" />}
-            Update
+            {t("common:update")}
           </Button>
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => void op("restart", `Restart "${host.name}"?`)}
+            onClick={() => void op("restart", t("hosts.restartConfirm", { name: host.name }))}
             disabled={busy !== null || !host.sshHost}
-            title="Restart the host service"
+            title={t("hosts.restartHint")}
           >
             {busy === "restart" ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RotateCw className="h-3.5 w-3.5" />}
-            Restart
+            {t("hosts.restart")}
           </Button>
           {bootstrapped && (
             <Button
@@ -877,7 +905,7 @@ function MergedHostRow({
               size="sm"
               onClick={() => setLoginOpen(true)}
               disabled={busy !== null || !host.sshHost}
-              title="Sign in to Claude on this host (runs `claude /login` over SSH)"
+              title={t("hosts.anthropicHint")}
             >
               <ShieldCheck className="h-3.5 w-3.5" />
               Anthropic
@@ -889,14 +917,14 @@ function MergedHostRow({
               size="sm"
               onClick={() => void op("set_token")}
               disabled={busy !== null || !host.sshHost}
-              title="Re-push the org's shared Claude seat token to this host (set_token op)"
+              title={t("hosts.seatHint")}
             >
               {busy === "set_token" ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
               ) : (
                 <RefreshCw className="h-3.5 w-3.5" />
               )}
-              Seat
+              {t("hosts.seat")}
             </Button>
           )}
           <Button
@@ -904,12 +932,12 @@ function MergedHostRow({
             size="sm"
             onClick={() => void op("probe")}
             disabled={busy !== null || !host.sshHost}
-            title="Probe status over SSH"
+            title={t("hosts.probeHint")}
           >
             {busy === "probe" ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Activity className="h-3.5 w-3.5" />}
           </Button>
-          <label className="ml-1 flex items-center gap-1.5 text-xs text-muted-foreground" title="Shared (multi-tenant) host">
-            Shared
+          <label className="ml-1 flex items-center gap-1.5 text-xs text-muted-foreground" title={t("hosts.sharedHint")}>
+            {t("hosts.shared")}
             <Switch checked={shared} onCheckedChange={(v) => void toggleShared(v)} />
           </label>
           <Button
@@ -918,7 +946,7 @@ function MergedHostRow({
             onClick={() => void handleDelete()}
             disabled={busy !== null}
             className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-            title="Delete host"
+            title={t("hosts.deleteHost")}
           >
             <Trash2 className="h-3.5 w-3.5" />
           </Button>
@@ -941,9 +969,9 @@ function MergedHostRow({
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              Residents
+              {t("hosts.residents")}
               <span className="ml-1.5 tabular-nums text-xs text-muted-foreground">
-                {users}u · {assigned}a
+                {t("hosts.residentsSummary", { users, agents: assigned })}
               </span>
             </button>
             <button
@@ -956,7 +984,7 @@ function MergedHostRow({
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              Operations
+              {t("hosts.operations")}
               {opRunning ? (
                 <Loader2 className="h-3 w-3 animate-spin text-amber-500" />
               ) : (
@@ -991,23 +1019,24 @@ function MergedHostRow({
       <Dialog open={keyOpen} onOpenChange={setKeyOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Authorize "{host.name}"</DialogTitle>
+            <DialogTitle>{t("hosts.authorizeTitle", { name: host.name })}</DialogTitle>
             <DialogDescription>
-              AgentGram connects to the VM over SSH using its own key. Add this public key to{" "}
-              {host.sshUser || "root"}@{host.sshHost}, then bootstrap.
+              {t("hosts.authorizeDescription", {
+                target: `${host.sshUser || "root"}@${host.sshHost}`,
+              })}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 py-1">
             {pubKey ? (
               <div className="space-y-1">
-                <Label className="text-xs">Public key</Label>
+                <Label className="text-xs">{t("hosts.publicKey")}</Label>
                 <div className="flex items-center gap-2 rounded-md border border-border bg-muted px-2.5 py-2 font-mono text-xs break-all">
                   <span className="flex-1 select-all">{pubKey}</span>
                 </div>
               </div>
             ) : (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Loader2 className="h-4 w-4 animate-spin" /> Loading key…
+                <Loader2 className="h-4 w-4 animate-spin" /> {t("hosts.loadingKey")}
               </div>
             )}
           </div>
@@ -1019,7 +1048,7 @@ function MergedHostRow({
               }}
               disabled={busy !== null || !pubKey}
             >
-              Bootstrap now
+              {t("hosts.bootstrapNow")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -1053,6 +1082,7 @@ function HostResidents({
   reload: () => Promise<void>;
   onChanged: () => Promise<void> | void;
 }) {
+  const { t } = useTranslation("platform");
   const [busyAgent, setBusyAgent] = useState<string | null>(null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [bulkBusy, setBulkBusy] = useState(false);
@@ -1134,7 +1164,7 @@ function HostResidents({
       await reload();
       await onChanged();
     } catch (e) {
-      alert(e instanceof Error ? e.message : "Bulk move failed");
+      alert(e instanceof Error ? e.message : i18n.t("platform:errors.bulkMoveFailed"));
     } finally {
       setBulkBusy(false);
     }
@@ -1154,7 +1184,7 @@ function HostResidents({
       await reload();
       await onChanged();
     } catch (e) {
-      alert(e instanceof Error ? e.message : "Move failed");
+      alert(e instanceof Error ? e.message : i18n.t("platform:errors.moveFailed"));
     } finally {
       setBusyAgent(null);
     }
@@ -1167,11 +1197,15 @@ function HostResidents({
       const r = await api.resetAgent(agentId);
       if (!r.reset) {
         unmarkRestarting([agentId]);
-        alert(`No remote reset: ${r.reason ?? "unavailable"}`);
+        alert(
+          i18n.t("platform:errors.noRemoteReset", {
+            reason: r.reason ?? i18n.t("platform:errors.unavailable"),
+          })
+        );
       }
     } catch (e) {
       unmarkRestarting([agentId]);
-      alert(e instanceof Error ? e.message : "Reset failed");
+      alert(e instanceof Error ? e.message : i18n.t("platform:errors.resetFailed"));
     } finally {
       setBusyAgent(null);
     }
@@ -1195,7 +1229,7 @@ function HostResidents({
       void onChanged();
     } catch (e) {
       unmarkRestarting(ids);
-      alert(e instanceof Error ? e.message : "Bulk reset failed");
+      alert(e instanceof Error ? e.message : i18n.t("platform:errors.bulkResetFailed"));
     } finally {
       setBulkBusy(false);
     }
@@ -1205,7 +1239,7 @@ function HostResidents({
   if (!detail)
     return (
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <Loader2 className="h-3.5 w-3.5 animate-spin" /> Loading residents…
+        <Loader2 className="h-3.5 w-3.5 animate-spin" /> {t("hosts.loadingResidents")}
       </div>
     );
 
@@ -1213,10 +1247,10 @@ function HostResidents({
     <div className="space-y-5">
             <section>
               <div className="mb-2 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-                <UsersIcon className="h-3.5 w-3.5" /> Users ({detail.users.length})
+                <UsersIcon className="h-3.5 w-3.5" /> {t("hosts.usersHeader", { count: detail.users.length })}
               </div>
               {detail.users.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No users on this host.</p>
+                <p className="text-sm text-muted-foreground">{t("hosts.noUsers")}</p>
               ) : (
                 <ul className="space-y-1">
                   {detail.users.map((u) => (
@@ -1227,12 +1261,15 @@ function HostResidents({
                       <span className="min-w-0 flex-1 truncate">
                         {u.displayName ?? u.email ?? u.id.slice(0, 8)}
                         <span className="ml-2 text-xs text-muted-foreground">
-                          {u.agentCount} agent{u.agentCount === 1 ? "" : "s"}
+                          {t("agentsCount", { count: u.agentCount })}
                         </span>
                       </span>
                       <Sparkline values={u.series} />
                       <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
-                        {fmtTokens(u.tokens?.totalTokens)} tok · {fmtUsd(u.tokens?.costUsd)}
+                        {t("hosts.tokenUsage", {
+                          tokens: fmtTokens(u.tokens?.totalTokens),
+                          cost: fmtUsd(u.tokens?.costUsd),
+                        })}
                       </span>
                     </li>
                   ))}
@@ -1244,8 +1281,12 @@ function HostResidents({
               <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-medium text-muted-foreground">
-                    Agents ({visibleAgents.length}
-                    {ownerFilter ? ` of ${detail.agents.length}` : ""})
+                    {ownerFilter
+                      ? t("hosts.agentsHeaderFiltered", {
+                          shown: visibleAgents.length,
+                          total: detail.agents.length,
+                        })
+                      : t("hosts.agentsHeader", { count: visibleAgents.length })}
                   </span>
                   {detail.users.length > 1 && (
                     <select
@@ -1253,7 +1294,7 @@ function HostResidents({
                       onChange={(e) => setOwnerFilter(e.target.value)}
                       className="h-8 rounded-md border border-input bg-transparent px-2 text-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                     >
-                      <option value="">All owners</option>
+                      <option value="">{t("hosts.allOwners")}</option>
                       {detail.users.map((u) => (
                         <option key={u.id} value={u.id}>
                           {u.displayName ?? u.email ?? u.id.slice(0, 8)} ({u.agentCount})
@@ -1268,30 +1309,32 @@ function HostResidents({
                       className="h-8"
                       disabled={bulkBusy}
                       onClick={() => void bulkReset(offlineVisible.map((a) => a.id))}
-                      title="Stop + respawn every offline agent shown (after a host restart)"
+                      title={t("hosts.restartOfflineHint")}
                     >
                       {bulkBusy ? (
                         <Loader2 className="h-3.5 w-3.5 animate-spin" />
                       ) : (
                         <RotateCw className="h-3.5 w-3.5" />
                       )}
-                      Restart offline ({offlineVisible.length})
+                      {t("hosts.restartOffline", { count: offlineVisible.length })}
                     </Button>
                   )}
                 </div>
                 {selected.size > 0 && (
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-muted-foreground">{selected.size} selected</span>
+                    <span className="text-xs text-muted-foreground">
+                      {t("common:selectedCount", { count: selected.size })}
+                    </span>
                     <Button
                       variant="outline"
                       size="sm"
                       className="h-8"
                       disabled={bulkBusy}
                       onClick={() => void bulkReset([...selected])}
-                      title="Stop + respawn the selected agents"
+                      title={t("hosts.resetSelectedHint")}
                     >
                       <RotateCw className="h-3.5 w-3.5" />
-                      Reset
+                      {t("hosts.resetAgent")}
                     </Button>
                     <select
                       value=""
@@ -1299,8 +1342,8 @@ function HostResidents({
                       onChange={(e) => void bulkMove(e.target.value)}
                       className="h-8 rounded-md border border-input bg-transparent px-2 text-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                     >
-                      <option value="">Move selected to…</option>
-                      <option value="local">Local (off host)</option>
+                      <option value="">{t("hosts.moveSelectedTo")}</option>
+                      <option value="local">{t("hosts.localOffHost")}</option>
                       {moveTargets.map((h) => (
                         <option key={h.id} value={h.id}>
                           {h.name}
@@ -1313,8 +1356,8 @@ function HostResidents({
               {visibleAgents.length === 0 ? (
                 <p className="text-sm text-muted-foreground">
                   {detail.agents.length === 0
-                    ? "No agents pinned to this host."
-                    : "No agents for this owner."}
+                    ? t("hosts.noAgentsPinned")
+                    : t("hosts.noAgentsForOwner")}
                 </p>
               ) : (
                 <div className="overflow-x-auto rounded-lg border border-border">
@@ -1327,16 +1370,16 @@ function HostResidents({
                             checked={allVisibleSelected}
                             onChange={toggleSelectAllVisible}
                             className="h-3.5 w-3.5 accent-primary"
-                            title="Select all shown"
+                            title={t("hosts.selectAllShown")}
                           />
                         </th>
-                        <th className="px-3 py-2 font-medium">Agent</th>
-                        <th className="px-3 py-2 font-medium">Owner</th>
-                        <th className="px-3 py-2 font-medium">Model</th>
-                        <th className="px-3 py-2 font-medium">Tokens (30d)</th>
-                        <th className="px-3 py-2 font-medium">Cost</th>
-                        <th className="px-3 py-2 font-medium">Trend</th>
-                        <th className="px-3 py-2 font-medium">Move to</th>
+                        <th className="px-3 py-2 font-medium">{t("table.agent")}</th>
+                        <th className="px-3 py-2 font-medium">{t("table.owner")}</th>
+                        <th className="px-3 py-2 font-medium">{t("table.model")}</th>
+                        <th className="px-3 py-2 font-medium">{t("table.tokens30d")}</th>
+                        <th className="px-3 py-2 font-medium">{t("table.cost")}</th>
+                        <th className="px-3 py-2 font-medium">{t("table.trend")}</th>
+                        <th className="px-3 py-2 font-medium">{t("table.moveTo")}</th>
                         <th className="px-3 py-2" />
                       </tr>
                     </thead>
@@ -1356,7 +1399,7 @@ function HostResidents({
                               {restarting.has(a.id) && !a.running ? (
                                 <Loader2
                                   className="h-3 w-3 animate-spin text-amber-500"
-                                  aria-label="restarting"
+                                  aria-label={t("status.restarting")}
                                 />
                               ) : (
                                 <span
@@ -1364,13 +1407,13 @@ function HostResidents({
                                     "h-1.5 w-1.5 rounded-full",
                                     a.running ? "bg-success" : "bg-muted-foreground/40"
                                   )}
-                                  title={a.running ? "running" : "not running"}
+                                  title={a.running ? t("status.running") : t("status.notRunning")}
                                 />
                               )}
                               {a.displayName}
                               {restarting.has(a.id) && !a.running && (
                                 <span className="text-xs font-normal text-amber-500">
-                                  restarting…
+                                  {t("status.restarting")}
                                 </span>
                               )}
                             </div>
@@ -1393,8 +1436,8 @@ function HostResidents({
                               onChange={(e) => void move(a.id, e.target.value)}
                               className="h-8 rounded-md border border-input bg-transparent px-2 text-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                             >
-                              <option value="">Rebalance…</option>
-                              <option value="local">Local (off host)</option>
+                              <option value="">{t("hosts.rebalance")}</option>
+                              <option value="local">{t("hosts.localOffHost")}</option>
                               {moveTargets.map((h) => (
                                 <option key={h.id} value={h.id}>
                                   {h.name}
@@ -1409,7 +1452,7 @@ function HostResidents({
                               className="h-7 px-2"
                               disabled={busyAgent === a.id}
                               onClick={() => void reset(a.id)}
-                              title="Reset (stop + respawn)"
+                              title={t("hosts.resetHint")}
                             >
                               <RotateCcw className="h-3.5 w-3.5" />
                             </Button>

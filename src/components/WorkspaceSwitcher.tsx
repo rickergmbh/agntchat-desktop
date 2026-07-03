@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Check, Loader2, User, Building2, Settings, Plus } from "lucide-react";
 import {
   useWorkspaceStore,
@@ -20,6 +21,7 @@ import { cn } from "../lib/utils";
  * Mirrors `web/src/components/WorkspaceSwitcher.tsx`.
  */
 export function WorkspaceSwitcher() {
+  const { t } = useTranslation("settings");
   const workspaces = useWorkspaces();
   const active = useActiveWorkspace();
   const switchWorkspace = useWorkspaceStore((s) => s.switch);
@@ -52,7 +54,7 @@ export function WorkspaceSwitcher() {
     return (
       <div
         className="flex h-9 w-9 items-center justify-center rounded-md bg-muted text-muted-foreground"
-        title="Loading workspace…"
+        title={t("workspace.loadingWorkspace")}
         style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
       >
         <Loader2 className="h-3 w-3 animate-spin" />
@@ -60,7 +62,7 @@ export function WorkspaceSwitcher() {
     );
   }
 
-  const activeName = active?.name ?? "Workspace";
+  const activeName = active?.name ?? t("workspace.workspace");
   const activeIsPersonal = active?.isPersonal ?? false;
 
   const otherWorkspaceAgents = workspaces
@@ -94,9 +96,9 @@ export function WorkspaceSwitcher() {
         {otherWorkspaceAgents > 0 && (
           <span
             className="absolute right-0.5 top-0.5 h-1.5 w-1.5 rounded-full bg-primary ring-2 ring-rail"
-            title={`${otherWorkspaceAgents} agent${
-              otherWorkspaceAgents === 1 ? "" : "s"
-            } in other workspace${otherWorkspaceAgents === 1 ? "" : "s"}`}
+            title={t("workspace.agentsInOtherWorkspaces", {
+              count: otherWorkspaceAgents,
+            })}
           />
         )}
       </button>
@@ -144,15 +146,15 @@ export function WorkspaceSwitcher() {
                   <div className="flex min-w-0 flex-1 flex-col">
                     <span className="truncate font-medium">{w.name}</span>
                     {!w.isPersonal && (
-                      <span className="text-[10px] text-muted-foreground capitalize">
-                        {w.role}
+                      <span className="text-[10px] text-muted-foreground">
+                        {t(`workspace.roles.${w.role}`)}
                       </span>
                     )}
                   </div>
                   {(w.agentCount ?? 0) > 0 && !isActive && (
                     <span
                       className="shrink-0 rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground"
-                      title={`${w.agentCount} agent${w.agentCount === 1 ? "" : "s"}`}
+                      title={t("agents:count", { count: w.agentCount })}
                     >
                       {w.agentCount}
                     </span>
@@ -173,8 +175,8 @@ export function WorkspaceSwitcher() {
                       setOpen(false);
                     }}
                     className="shrink-0 rounded-sm p-1 text-muted-foreground opacity-0 transition-opacity hover:bg-accent hover:text-foreground group-hover:opacity-100 focus:opacity-100"
-                    aria-label={`${w.name} settings`}
-                    title="Workspace settings"
+                    aria-label={t("workspace.settingsFor", { name: w.name })}
+                    title={t("workspace.title")}
                   >
                     <Settings className="h-3 w-3" />
                   </button>
@@ -194,7 +196,7 @@ export function WorkspaceSwitcher() {
             className="flex w-full items-center gap-2 px-2 py-1.5 text-left text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
           >
             <Plus className="h-3.5 w-3.5 shrink-0" />
-            <span>Create workspace</span>
+            <span>{t("workspace.create")}</span>
           </button>
         </div>
       )}
@@ -216,6 +218,7 @@ export function WorkspaceSwitcher() {
  * switch failed mid-fetch) and `refresh` were written but never read.
  */
 function ErrorBanner() {
+  const { t } = useTranslation("common");
   const lastError = useWorkspaceStore((s) => s.lastError);
   if (!lastError) return null;
 
@@ -225,7 +228,7 @@ function ErrorBanner() {
       <button
         type="button"
         onClick={() => useWorkspaceStore.setState({ lastError: null })}
-        aria-label="Dismiss error"
+        aria-label={t("dismiss")}
         className="shrink-0 hover:opacity-70"
       >
         ×

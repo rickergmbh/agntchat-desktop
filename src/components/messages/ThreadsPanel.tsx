@@ -1,5 +1,7 @@
 import { CheckCircle2, MessageSquare, X } from "lucide-react";
 import { useEffect, useMemo, useRef } from "react";
+import { useTranslation } from "react-i18next";
+import i18n from "../../i18n";
 import type { Conversation, ConversationMember } from "../../lib/api";
 import {
   isResolvedThread,
@@ -35,7 +37,7 @@ function threadDisplayTitle(conv: Conversation, myId?: string): string {
     .map((m) => m.participant?.displayName)
     .filter(Boolean)
     .join(" ↔ ");
-  return names || "Agent thread";
+  return names || i18n.t("chat:threads.agentThread");
 }
 
 function threadSubtitle(conv: Conversation, myId?: string): string {
@@ -52,6 +54,7 @@ function threadSubtitle(conv: Conversation, myId?: string): string {
 }
 
 export function ThreadsPanel({ parentConversationId, open, onClose }: Props) {
+  const { t } = useTranslation("chat");
   const myId = useAuthStore((s) => s.participant?.id);
   const setActiveConversation = useChatStore((s) => s.setActiveConversation);
   const setView = useNavStore((s) => s.setView);
@@ -130,11 +133,11 @@ export function ThreadsPanel({ parentConversationId, open, onClose }: Props) {
     >
       <div className="flex items-start justify-between gap-2 px-4 py-3 border-b border-border">
         <div>
-          <p className="text-sm font-semibold">Threads in this chat</p>
+          <p className="text-sm font-semibold">{t("threads.inThisChat")}</p>
           <p className="text-xs text-muted-foreground">
-            {openThreads.length} open
+            {t("threads.openCount", { count: openThreads.length })}
             {resolvedThreads.length > 0
-              ? ` · ${resolvedThreads.length} resolved`
+              ? ` · ${t("threads.resolvedCount", { count: resolvedThreads.length })}`
               : ""}
           </p>
         </div>
@@ -142,7 +145,7 @@ export function ThreadsPanel({ parentConversationId, open, onClose }: Props) {
           type="button"
           onClick={onClose}
           className="rounded p-1 text-muted-foreground hover:bg-accent hover:text-foreground"
-          aria-label="Close threads panel"
+          aria-label={t("threads.closePanel")}
         >
           <X className="h-4 w-4" />
         </button>
@@ -152,8 +155,7 @@ export function ThreadsPanel({ parentConversationId, open, onClose }: Props) {
         {openThreads.length === 0 && resolvedThreads.length === 0 ? (
           <div className="px-4 py-6 text-center text-xs text-muted-foreground">
             <MessageSquare className="mx-auto mb-2 h-6 w-6 text-muted-foreground/50" />
-            No agent threads yet. When agents open a side conversation, it
-            appears here.
+            {t("threads.empty")}
           </div>
         ) : null}
 
@@ -170,7 +172,7 @@ export function ThreadsPanel({ parentConversationId, open, onClose }: Props) {
 
         {resolvedThreads.length > 0 ? (
           <div className="px-4 pt-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-            Resolved
+            {t("threads.resolved")}
           </div>
         ) : null}
 

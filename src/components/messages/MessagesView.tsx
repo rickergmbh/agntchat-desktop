@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { MessageSquare, MessageCircle, ChevronRight, ChevronLeft, SquarePen, RefreshCw, Power, Loader2 } from "lucide-react";
 import { wakeAgent } from "../../lib/api";
 import { useResizableWidth } from "../../hooks/useResizableWidth";
@@ -31,6 +32,7 @@ function readDetailsPref(): boolean {
 }
 
 export function MessagesView() {
+  const { t } = useTranslation("chat");
   const activeId = useChatStore((s) => s.activeConversationId);
   const fetchConversations = useChatStore((s) => s.fetchConversations);
   const fetchAgentConversations = useChatStore((s) => s.fetchAgentConversations);
@@ -108,15 +110,15 @@ export function MessagesView() {
             <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center shrink-0">
               <MessageCircle className="w-3.5 h-3.5 text-primary-foreground" />
             </div>
-            <h2 className="text-sm font-semibold text-foreground">Chats</h2>
+            <h2 className="text-sm font-semibold text-foreground">{t("nav:chats")}</h2>
           </div>
           <div className="flex items-center gap-1">
             <button
               type="button"
               onClick={handleRefresh}
               disabled={refreshing}
-              title="Refresh conversations"
-              aria-label="Refresh conversations"
+              title={t("refreshConversations")}
+              aria-label={t("refreshConversations")}
               className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors disabled:opacity-50"
             >
               <RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
@@ -124,8 +126,8 @@ export function MessagesView() {
             <button
               type="button"
               onClick={() => setShowNew(true)}
-              title="New conversation"
-              aria-label="New conversation"
+              title={t("newConversation")}
+              aria-label={t("newConversation")}
               className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
             >
               <SquarePen className="h-4 w-4" />
@@ -146,7 +148,7 @@ export function MessagesView() {
         resizing={resizing}
         onResizeStart={onResizeStart}
         onResizeReset={onResizeReset}
-        label="Resize conversation list"
+        label={t("resizeList")}
       />
 
       {/* Elevated conversation panel — physically laps 8px over the recessed
@@ -197,6 +199,7 @@ function ActiveConversation({
   showDetails: boolean;
   onToggleDetails: () => void;
 }) {
+  const { t } = useTranslation("chat");
   const conversation = useChatStore(
     (s) =>
       s.conversations.find((c) => c.id === conversationId) ??
@@ -221,24 +224,43 @@ function ActiveConversation({
   const headerTitle =
     conversation?.title ||
     otherParticipant?.displayName ||
-    (conversation?.type === "group" ? "Group" : "Conversation");
+    (conversation?.type === "group" ? t("type.group") : t("conversationFallback"));
 
-  const presenceLine = useMemo(() => {
+  // Presence as structured data (kind + counts) so the label AND the status
+  // dot both derive from it — the label itself is localized at render.
+  const presenceInfo = useMemo(():
+    | { kind: "online" | "offline" | "group"; onlineCount: number; total: number }
+    | null => {
     if (!conversation) return null;
     const members = conversation.members ?? [];
     const others = members.filter((m) => m.participantId !== myId);
     const onlineCount = others.filter((m) => online.has(m.participantId)).length;
     const isDM = conversation.type === "direct" || others.length === 1;
     if (isDM) {
-      return onlineCount > 0 ? "Online" : "Offline";
+      return {
+        kind: onlineCount > 0 ? "online" : "offline",
+        onlineCount,
+        total: others.length + 1,
+      };
     }
     if (conversation.type === "channel" || conversation.type === "group") {
-      return onlineCount > 0
-        ? `${onlineCount} online · ${others.length + 1} members`
-        : `${others.length + 1} members`;
+      return { kind: "group", onlineCount, total: others.length + 1 };
     }
     return null;
   }, [conversation, online, myId]);
+
+  const presenceLine =
+    presenceInfo == null
+      ? null
+      : presenceInfo.kind === "online"
+      ? t("common:online")
+      : presenceInfo.kind === "offline"
+      ? t("common:offline")
+      : presenceInfo.onlineCount > 0
+      ? `${t("onlineCount", { count: presenceInfo.onlineCount })} · ${t("members", {
+          count: presenceInfo.total,
+        })}`
+      : t("members", { count: presenceInfo.total });
 
   // Busiest agent member's live activity — shown in the header where the
   // status normally reads "Online", so the user sees "Thinking…/Working…".
@@ -308,8 +330,8 @@ function ActiveConversation({
           <button
             type="button"
             onClick={handleBackToParent}
-            title="Back to parent conversation"
-            aria-label="Back to parent conversation"
+            title={t("backToParent")}
+            aria-label={t("backToParent")}
             className="shrink-0 -ml-1 flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
             style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
           >
@@ -321,7 +343,7 @@ function ActiveConversation({
           type="button"
           onClick={onToggleDetails}
           aria-pressed={showDetails}
-          title={showDetails ? "Hide details" : "Show conversation details"}
+          title={showDetails ? t("hideDetails") : t("showDetails")}
           className="group/header flex items-center gap-3 min-w-0 flex-1 rounded-md px-1 py-1 -ml-1 hover:bg-accent/50 text-left transition-colors"
           style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
         >
@@ -350,9 +372,10 @@ function ActiveConversation({
               <AgentActivityIndicator activity={headerActivity} />
             ) : presenceLine ? (
               <p className="text-[11px] text-muted-foreground flex items-center gap-1">
-                {presenceLine === "Online" || presenceLine.includes("online ·") ? (
+                {presenceInfo!.kind === "online" ||
+                (presenceInfo!.kind === "group" && presenceInfo!.onlineCount > 0) ? (
                   <span className="h-1.5 w-1.5 rounded-full bg-success" />
-                ) : presenceLine === "Offline" ? (
+                ) : presenceInfo!.kind === "offline" ? (
                   <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/40" />
                 ) : null}
                 {presenceLine}
@@ -385,8 +408,8 @@ function ActiveConversation({
             type="button"
             onClick={handleWake}
             disabled={waking}
-            title="Bring this agent back online"
-            aria-label="Bring this agent back online"
+            title={t("bringAgentOnline")}
+            aria-label={t("bringAgentOnline")}
             className="shrink-0 flex h-7 items-center gap-1.5 rounded-md border border-border-strong px-2 text-[11px] font-medium text-foreground hover:bg-accent transition-colors disabled:opacity-60"
             style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
           >
@@ -395,7 +418,7 @@ function ActiveConversation({
             ) : (
               <Power className="h-3.5 w-3.5" />
             )}
-            {waking ? "Waking…" : "Bring online"}
+            {waking ? t("waking") : t("bringOnline")}
           </button>
         )}
 
@@ -458,12 +481,13 @@ function DetailsPanelWrapper({
 }
 
 function EmptyState() {
+  const { t } = useTranslation("chat");
   return (
     <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
       <MessageSquare className="w-12 h-12 text-muted-foreground/40 mb-3" />
-      <p className="text-sm font-medium text-foreground">Select a conversation</p>
+      <p className="text-sm font-medium text-foreground">{t("selectConversation")}</p>
       <p className="text-xs text-muted-foreground mt-1 max-w-xs">
-        Your recent conversations with agents appear on the left. Pick one to jump in.
+        {t("selectConversationHint")}
       </p>
     </div>
   );

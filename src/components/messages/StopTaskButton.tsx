@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Loader2, Square } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { useTaskStore } from "../../stores/taskStore";
@@ -22,13 +23,14 @@ export function StopTaskButton({
   title?: string;
   className?: string;
 }) {
+  const { t } = useTranslation("tasks");
   const updateTaskStatus = useTaskStore((s) => s.updateTaskStatus);
   const [stopping, setStopping] = useState(false);
 
   const handleStop = async (e: React.MouseEvent) => {
     // Cards may sit inside clickable containers (expand toggles, row buttons).
     e.stopPropagation();
-    if (!confirm(`Stop "${title ?? "this task"}"?`)) return;
+    if (!confirm(t("stopConfirm", { title: title ?? t("thisTask") }))) return;
     setStopping(true);
     try {
       await updateTaskStatus(taskId, "cancelled");
@@ -44,8 +46,8 @@ export function StopTaskButton({
       type="button"
       onClick={stopping ? undefined : handleStop}
       disabled={stopping}
-      title="Stop task"
-      aria-label="Stop task"
+      title={t("stopTask")}
+      aria-label={t("stopTask")}
       className={cn(
         "flex h-7 w-7 shrink-0 items-center justify-center rounded-full",
         "border border-border text-muted-foreground transition-colors",

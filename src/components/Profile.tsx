@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { useAuthStore } from "../stores/authStore";
 import { useThemeStore, type ThemePreference } from "../stores/themeStore";
 import { useLocaleStore } from "../stores/localeStore";
@@ -109,25 +109,25 @@ type CredentialStatus = api.UserCredential["status"];
 
 const STATUS_CONFIG: Record<
   CredentialStatus,
-  { label: string; dot: string; text: string }
+  { labelKey: string; dot: string; text: string }
 > = {
   active: {
-    label: "Connected",
+    labelKey: "connections.status.active",
     dot: "bg-success",
     text: "text-muted-foreground",
   },
   expired: {
-    label: "Expired",
+    labelKey: "connections.status.expired",
     dot: "bg-warning",
     text: "text-warning",
   },
   revoked: {
-    label: "Revoked",
+    labelKey: "connections.status.revoked",
     dot: "bg-destructive",
     text: "text-destructive",
   },
   refresh_failed: {
-    label: "Refresh failed",
+    labelKey: "connections.status.refreshFailed",
     dot: "bg-destructive",
     text: "text-destructive",
   },
@@ -248,12 +248,12 @@ export function Profile({ onClose }: { onClose: () => void }) {
       setIntegrationError(null);
     } catch (e) {
       setIntegrationError(
-        e instanceof Error ? e.message : "Failed to load integrations"
+        e instanceof Error ? e.message : t("connections.errors.loadFailed")
       );
     } finally {
       setLoadingIntegrations(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     fetchIntegrations();
@@ -322,7 +322,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
       setTimeout(() => setProfileSaved(false), 2000);
     } catch (e) {
       setProfileError(
-        e instanceof Error ? e.message : "Failed to update profile"
+        e instanceof Error ? e.message : t("profile.updateFailed")
       );
     } finally {
       setSavingProfile(false);
@@ -343,7 +343,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
       persistParticipant(updated);
     } catch (err) {
       setAvatarError(
-        err instanceof Error ? err.message : "Failed to upload avatar"
+        err instanceof Error ? err.message : t("profile.avatarUploadFailed")
       );
     } finally {
       setUploadingAvatar(false);
@@ -382,7 +382,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
     } catch (e) {
       setConnectingProvider(null);
       setIntegrationError(
-        e instanceof Error ? e.message : "Failed to start authorization"
+        e instanceof Error ? e.message : t("connections.errors.authorizeFailed")
       );
     }
   };
@@ -410,7 +410,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
       setTokenValue("");
     } catch (e) {
       setTokenError(
-        e instanceof Error ? e.message : "Failed to store token"
+        e instanceof Error ? e.message : t("connections.errors.storeTokenFailed")
       );
     } finally {
       setSavingToken(false);
@@ -428,7 +428,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
       setDisconnectProvider(null);
     } catch (e) {
       setIntegrationError(
-        e instanceof Error ? e.message : "Failed to disconnect"
+        e instanceof Error ? e.message : t("connections.errors.disconnectFailed")
       );
       setDisconnectProvider(null);
     } finally {
@@ -487,7 +487,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
 
   const handleSaveCustomApi = async () => {
     if (!customEndpoint.trim()) {
-      setCustomApiError("Service endpoint is required");
+      setCustomApiError(t("customApis.errors.endpointRequired"));
       return;
     }
     // On CREATE the API key is required (it's the credential's access_token).
@@ -495,11 +495,11 @@ export function Profile({ onClose }: { onClose: () => void }) {
     // PATCH, leaving the stored token and secrets untouched.
     const editing = !!customCredential;
     if (!customApiKey.trim() && !editing) {
-      setCustomApiError("API key is required");
+      setCustomApiError(t("customApis.errors.apiKeyRequired"));
       return;
     }
     if (customAuthMode === "header" && !customAuthHeader.trim()) {
-      setCustomApiError("Header name is required when sending the key as a header");
+      setCustomApiError(t("customApis.errors.headerNameRequired"));
       return;
     }
 
@@ -541,7 +541,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
       setCustomApiDialog(false);
     } catch (e) {
       setCustomApiError(
-        e instanceof Error ? e.message : "Failed to save custom API"
+        e instanceof Error ? e.message : t("customApis.errors.saveFailed")
       );
     } finally {
       setSavingCustomApi(false);
@@ -554,7 +554,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
       setCredentials((prev) => prev.filter((c) => c.provider !== "custom"));
     } catch (e) {
       setIntegrationError(
-        e instanceof Error ? e.message : "Failed to delete custom API"
+        e instanceof Error ? e.message : t("customApis.errors.deleteFailed")
       );
     } finally {
       setDeleteCustomApi(false);
@@ -857,8 +857,8 @@ export function Profile({ onClose }: { onClose: () => void }) {
                 (encrypted, agent-usable) under the `custom` provider. */}
             <section>
               <SectionHeader
-                title="Custom API"
-                subtitle="Connect a custom service endpoint for agent use"
+                title={t("customApis.title")}
+                subtitle={t("customApis.sectionSubtitle")}
               />
 
               <div className="rounded-xl border border-border bg-card divide-y divide-border overflow-hidden">
@@ -872,14 +872,14 @@ export function Profile({ onClose }: { onClose: () => void }) {
                         {customCredential.label &&
                         customCredential.label !== "custom"
                           ? customCredential.label
-                          : customCredential.endpoint || "Custom endpoint"}
+                          : customCredential.endpoint || t("customApis.customEndpoint")}
                       </p>
                       <p className="text-xs text-muted-foreground truncate mt-0.5">
-                        {customCredential.endpoint || "API key"}
+                        {customCredential.endpoint || t("common:apiKey")}
                         {(customCredential.fieldDefs?.length ?? 0) > 0
-                          ? ` · ${customCredential.fieldDefs!.length} value${
-                              customCredential.fieldDefs!.length === 1 ? "" : "s"
-                            }`
+                          ? ` · ${t("customApis.values", {
+                              count: customCredential.fieldDefs!.length,
+                            })}`
                           : ""}
                       </p>
                     </div>
@@ -910,7 +910,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
                     <span className="w-8 h-8 rounded-md border border-dashed border-border flex items-center justify-center flex-shrink-0">
                       <Plus className="w-4 h-4" />
                     </span>
-                    <span className="text-sm font-medium">Add Custom API</span>
+                    <span className="text-sm font-medium">{t("customApis.add")}</span>
                   </button>
                 )}
               </div>
@@ -919,8 +919,8 @@ export function Profile({ onClose }: { onClose: () => void }) {
             {/* Connected Accounts */}
             <section>
               <SectionHeader
-                title="Connected Accounts"
-                subtitle="Link external services to enable agent integrations"
+                title={t("manage.connectedAccounts")}
+                subtitle={t("connections.subtitle")}
               />
 
               {integrationError && (
@@ -980,16 +980,20 @@ export function Profile({ onClose }: { onClose: () => void }) {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>
-              Connect {tokenDialogProvider?.displayName}
+              {t("connections.connectProvider", {
+                provider: tokenDialogProvider?.displayName ?? "",
+              })}
             </DialogTitle>
             <DialogDescription>
               {tokenDialogProvider?.description ??
-                `Enter your API token to connect ${tokenDialogProvider?.displayName}.`}
+                t("connections.tokenDialogDescription", {
+                  provider: tokenDialogProvider?.displayName ?? "",
+                })}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 py-2">
             <div className="space-y-1.5">
-              <Label className="text-xs">API Token</Label>
+              <Label className="text-xs">{t("connections.apiToken")}</Label>
               <Input
                 type="password"
                 value={tokenValue}
@@ -1001,7 +1005,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
                   if (e.key === "Enter" && tokenValue.trim())
                     handleSubmitToken();
                 }}
-                placeholder="Paste your API token..."
+                placeholder={t("connections.tokenPlaceholder")}
                 autoFocus
               />
               {tokenError && (
@@ -1019,7 +1023,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
                 setTokenError(null);
               }}
             >
-              Cancel
+              {t("common:cancel")}
             </Button>
             <Button
               size="sm"
@@ -1029,10 +1033,10 @@ export function Profile({ onClose }: { onClose: () => void }) {
               {savingToken ? (
                 <>
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  Connecting...
+                  {t("common:connecting")}
                 </>
               ) : (
-                "Connect"
+                t("common:connect")
               )}
             </Button>
           </DialogFooter>
@@ -1050,14 +1054,20 @@ export function Profile({ onClose }: { onClose: () => void }) {
       >
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
-            <DialogTitle>Disconnect Account</DialogTitle>
+            <DialogTitle>{t("connections.disconnectTitle")}</DialogTitle>
             <DialogDescription>
-              Are you sure you want to disconnect{" "}
-              <span className="font-medium text-foreground">
-                {providers.find((p) => p.name === disconnectProvider)
-                  ?.displayName ?? disconnectProvider}
-              </span>
-              ? Agents will no longer be able to use this integration.
+              <Trans
+                i18nKey="connections.disconnectConfirm"
+                ns="settings"
+                values={{
+                  provider:
+                    providers.find((p) => p.name === disconnectProvider)
+                      ?.displayName ?? disconnectProvider,
+                }}
+                components={{
+                  b: <span className="font-medium text-foreground" />,
+                }}
+              />
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -1066,7 +1076,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
               size="sm"
               onClick={() => setDisconnectProvider(null)}
             >
-              Cancel
+              {t("common:cancel")}
             </Button>
             <Button
               variant="destructive"
@@ -1077,10 +1087,10 @@ export function Profile({ onClose }: { onClose: () => void }) {
               {disconnecting ? (
                 <>
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  Disconnecting...
+                  {t("common:disconnecting")}
                 </>
               ) : (
-                "Disconnect"
+                t("common:disconnect")
               )}
             </Button>
           </DialogFooter>
@@ -1099,28 +1109,27 @@ export function Profile({ onClose }: { onClose: () => void }) {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>
-              {customCredential ? "Edit Custom API" : "Add Custom API"}
+              {customCredential ? t("customApis.editTitle") : t("customApis.add")}
             </DialogTitle>
             <DialogDescription>
-              Configure a custom service endpoint your agents can use. Extra
-              values marked secret are stored encrypted.
+              {t("customApis.dialogDescription")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 py-2">
             <div className="space-y-1.5">
-              <Label className="text-xs">Name</Label>
+              <Label className="text-xs">{t("common:name")}</Label>
               <Input
                 value={customName}
                 onChange={(e) => {
                   setCustomName(e.target.value);
                   setCustomApiError(null);
                 }}
-                placeholder="e.g. My Weather API"
+                placeholder={t("customApis.namePlaceholder")}
                 autoFocus
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs">Service Endpoint</Label>
+              <Label className="text-xs">{t("customApis.endpoint")}</Label>
               <Input
                 value={customEndpoint}
                 onChange={(e) => {
@@ -1133,11 +1142,11 @@ export function Profile({ onClose }: { onClose: () => void }) {
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs">
-                API Key
+                {t("common:apiKey")}
                 {customCredential ? (
                   <span className="text-muted-foreground font-normal">
                     {" "}
-                    — leave blank to keep current
+                    — {t("llmKeys.leaveBlankHint")}
                   </span>
                 ) : null}
               </Label>
@@ -1148,7 +1157,11 @@ export function Profile({ onClose }: { onClose: () => void }) {
                   setCustomApiKey(e.target.value);
                   setCustomApiError(null);
                 }}
-                placeholder={customCredential ? "Unchanged" : "Your API key"}
+                placeholder={
+                  customCredential
+                    ? t("customApis.unchanged")
+                    : t("customApis.apiKeyPlaceholder")
+                }
                 className="font-mono text-xs"
               />
             </div>
@@ -1167,7 +1180,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
                   customAdvancedOpen ? "rotate-90" : ""
                 }`}
               />
-              Advanced options
+              {t("customApis.advancedOptions")}
             </button>
 
             {customAdvancedOpen ? (
@@ -1176,7 +1189,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
                 default; header-auth endpoints (e.g. x-agent-key-id) pick
                 "Custom header" and name it. */}
             <div className="space-y-1.5">
-              <Label className="text-xs">Send key as</Label>
+              <Label className="text-xs">{t("customApis.sendKeyAs")}</Label>
               <Select
                 value={customAuthMode}
                 onValueChange={(v) => {
@@ -1189,10 +1202,10 @@ export function Profile({ onClose }: { onClose: () => void }) {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="bearer">
-                    Authorization: Bearer (default)
+                    {t("customApis.authBearer")}
                   </SelectItem>
-                  <SelectItem value="header">Custom header</SelectItem>
-                  <SelectItem value="none">Don't send automatically</SelectItem>
+                  <SelectItem value="header">{t("customApis.authHeader")}</SelectItem>
+                  <SelectItem value="none">{t("customApis.authNone")}</SelectItem>
                 </SelectContent>
               </Select>
               {customAuthMode === "header" ? (
@@ -1202,20 +1215,19 @@ export function Profile({ onClose }: { onClose: () => void }) {
                     setCustomAuthHeader(e.target.value);
                     setCustomApiError(null);
                   }}
-                  placeholder="Header name (e.g. x-agent-key-id)"
+                  placeholder={t("customApis.headerNamePlaceholder")}
                   className="font-mono text-xs"
                 />
               ) : null}
               {customAuthMode === "none" ? (
                 <p className="text-[11px] text-muted-foreground">
-                  The key won't be attached automatically — reference it in your
-                  agent's request headers instead.
+                  {t("customApis.authNoneHint")}
                 </p>
               ) : null}
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs">Additional values</Label>
+              <Label className="text-xs">{t("customApis.additionalValues")}</Label>
               {customFields.map((field, index) => (
                 <div key={index} className="flex items-start gap-1.5">
                   <div className="flex-1 space-y-1.5">
@@ -1232,7 +1244,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
                               .replace(/\s+/g, "_"),
                         })
                       }
-                      placeholder="Name (e.g. App ID)"
+                      placeholder={t("customApis.fieldNamePlaceholder")}
                       className="text-xs"
                     />
                     <Input
@@ -1241,7 +1253,11 @@ export function Profile({ onClose }: { onClose: () => void }) {
                       onChange={(e) =>
                         updateCustomField(index, { value: e.target.value })
                       }
-                      placeholder={field.secret ? "Value (encrypted)" : "Value"}
+                      placeholder={
+                        field.secret
+                          ? t("customApis.valueEncryptedPlaceholder")
+                          : t("customApis.valuePlaceholder")
+                      }
                       className="font-mono text-xs"
                     />
                   </div>
@@ -1254,7 +1270,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
                       updateCustomField(index, { secret: !field.secret })
                     }
                   >
-                    Secret
+                    {t("customApis.secret")}
                   </Button>
                   <Button
                     type="button"
@@ -1275,7 +1291,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
                 onClick={addCustomField}
               >
                 <Plus className="w-3.5 h-3.5" />
-                Add value
+                {t("customApis.addValue")}
               </Button>
             </div>
               </>
@@ -1292,18 +1308,18 @@ export function Profile({ onClose }: { onClose: () => void }) {
               onClick={() => setCustomApiDialog(false)}
               disabled={savingCustomApi}
             >
-              Cancel
+              {t("common:cancel")}
             </Button>
             <Button size="sm" onClick={handleSaveCustomApi} disabled={savingCustomApi}>
               {savingCustomApi ? (
                 <>
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  Saving...
+                  {t("common:saving")}
                 </>
               ) : customCredential ? (
-                "Save"
+                t("common:save")
               ) : (
-                "Add"
+                t("common:add")
               )}
             </Button>
           </DialogFooter>
@@ -1321,13 +1337,19 @@ export function Profile({ onClose }: { onClose: () => void }) {
       >
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
-            <DialogTitle>Delete Custom API</DialogTitle>
+            <DialogTitle>{t("customApis.deleteTitle")}</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete{" "}
-              <span className="font-medium text-foreground">
-                {customCredential?.endpoint || "this custom endpoint"}
-              </span>
-              ? Agents will no longer be able to use it. This cannot be undone.
+              <Trans
+                i18nKey="customApis.deleteConfirm"
+                ns="settings"
+                values={{
+                  name:
+                    customCredential?.endpoint || t("customApis.thisEndpoint"),
+                }}
+                components={{
+                  b: <span className="font-medium text-foreground" />,
+                }}
+              />
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -1336,14 +1358,14 @@ export function Profile({ onClose }: { onClose: () => void }) {
               size="sm"
               onClick={() => setDeleteCustomApi(false)}
             >
-              Cancel
+              {t("common:cancel")}
             </Button>
             <Button
               variant="destructive"
               size="sm"
               onClick={handleDeleteCustomApi}
             >
-              Delete
+              {t("common:delete")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -1620,6 +1642,7 @@ function AppearanceSection() {
 // ---------------------------------------------------------------------------
 
 function LlmApiKeysSection() {
+  const { t } = useTranslation("settings");
   const keys = useLlmKeyStore((s) => s.keys);
   const loading = useLlmKeyStore((s) => s.loading);
   const loaded = useLlmKeyStore((s) => s.loaded);
@@ -1681,7 +1704,7 @@ function LlmApiKeysSection() {
       setNewLabel("");
       setNewApiKey("");
     } catch (e) {
-      setOpError(e instanceof Error ? e.message : "Failed to save key");
+      setOpError(e instanceof Error ? e.message : t("llmKeys.errors.saveFailed"));
     } finally {
       setBusy(null);
     }
@@ -1706,7 +1729,7 @@ function LlmApiKeysSection() {
       flashSaved(editing);
       setEditing(null);
     } catch (e) {
-      setOpError(e instanceof Error ? e.message : "Failed to update key");
+      setOpError(e instanceof Error ? e.message : t("llmKeys.errors.updateFailed"));
     } finally {
       setBusy(null);
     }
@@ -1719,7 +1742,7 @@ function LlmApiKeysSection() {
       await removeKey(id);
       setConfirmDelete(null);
     } catch (e) {
-      setOpError(e instanceof Error ? e.message : "Failed to delete key");
+      setOpError(e instanceof Error ? e.message : t("llmKeys.errors.deleteFailed"));
     } finally {
       setBusy(null);
     }
@@ -1731,7 +1754,7 @@ function LlmApiKeysSection() {
     try {
       await setDefault(provider, keyId);
     } catch (e) {
-      setOpError(e instanceof Error ? e.message : "Failed to set default");
+      setOpError(e instanceof Error ? e.message : t("llmKeys.errors.setDefaultFailed"));
     } finally {
       setBusy(null);
     }
@@ -1742,15 +1765,15 @@ function LlmApiKeysSection() {
       case "anthropic": return "sk-ant-...";
       case "openai": return "sk-...";
       case "xai": return "xai-...";
-      default: return "API key";
+      default: return t("common:apiKey");
     }
   };
 
   return (
     <section>
       <SectionHeader
-        title="LLM API Keys"
-        subtitle="Manage multiple keys per provider. The default key is used by all agents unless overridden."
+        title={t("sections.llmKeys")}
+        subtitle={t("llmKeys.subtitle")}
       />
       {opError && (
         <div className="mb-4 flex items-start gap-2 text-xs text-destructive bg-destructive/10 border border-destructive/20 px-3 py-2 rounded-md">
@@ -1772,7 +1795,7 @@ function LlmApiKeysSection() {
                 <div className="flex items-center gap-2 mb-2">
                   <Label className="text-sm font-medium">{provider.label}</Label>
                   <Badge variant="secondary" className="text-[10px] py-0">
-                    {providerKeys.length} key{providerKeys.length !== 1 ? "s" : ""}
+                    {t("llmKeys.keys", { count: providerKeys.length })}
                   </Badge>
                 </div>
 
@@ -1781,17 +1804,17 @@ function LlmApiKeysSection() {
                   {adding === provider.id && (
                     <div className="px-4 py-3 bg-primary/5 space-y-2">
                       <div className="space-y-1.5">
-                        <Label className="text-xs">Label</Label>
+                        <Label className="text-xs">{t("llmKeys.label")}</Label>
                         <Input
                           value={newLabel}
                           onChange={(e) => setNewLabel(e.target.value)}
-                          placeholder="e.g. Work, Personal, Project X"
+                          placeholder={t("llmKeys.labelPlaceholder")}
                           className="text-xs"
                           autoFocus
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <Label className="text-xs">API Key</Label>
+                        <Label className="text-xs">{t("common:apiKey")}</Label>
                         <Input
                           type="password"
                           value={newApiKey}
@@ -1812,10 +1835,10 @@ function LlmApiKeysSection() {
                           ) : (
                             <Check className="w-3 h-3" />
                           )}
-                          Add
+                          {t("common:add")}
                         </Button>
                         <Button size="sm" variant="ghost" onClick={() => setAdding(null)} className="h-7 text-xs">
-                          Cancel
+                          {t("common:cancel")}
                         </Button>
                       </div>
                     </div>
@@ -1831,7 +1854,7 @@ function LlmApiKeysSection() {
                       return (
                         <div key={key.id} className="px-4 py-3 bg-primary/5 space-y-2">
                           <div className="space-y-1.5">
-                            <Label className="text-xs">Label</Label>
+                            <Label className="text-xs">{t("llmKeys.label")}</Label>
                             <Input
                               value={editLabel}
                               onChange={(e) => setEditLabel(e.target.value)}
@@ -1840,16 +1863,16 @@ function LlmApiKeysSection() {
                             />
                           </div>
                           <div className="space-y-1.5">
-                            <Label className="text-xs">Rotate API key (optional)</Label>
+                            <Label className="text-xs">{t("llmKeys.rotateLabel")}</Label>
                             <Input
                               type="password"
                               value={editApiKey}
                               onChange={(e) => setEditApiKey(e.target.value)}
-                              placeholder={`${keyPlaceholder(provider.id)} — leave blank to keep current`}
+                              placeholder={`${keyPlaceholder(provider.id)} — ${t("llmKeys.leaveBlankHint")}`}
                               className="font-mono text-xs"
                             />
                             <p className="text-[11px] text-muted-foreground">
-                              Stored encrypted on the backend. We never display the value back.
+                              {t("llmKeys.storedEncryptedNeverShown")}
                             </p>
                           </div>
                           <div className="flex gap-2 pt-1">
@@ -1864,10 +1887,10 @@ function LlmApiKeysSection() {
                               ) : (
                                 <Check className="w-3 h-3" />
                               )}
-                              Save
+                              {t("common:save")}
                             </Button>
                             <Button size="sm" variant="ghost" onClick={() => setEditing(null)} className="h-7 text-xs">
-                              Cancel
+                              {t("common:cancel")}
                             </Button>
                           </div>
                         </div>
@@ -1892,23 +1915,23 @@ function LlmApiKeysSection() {
                               <span className="text-sm font-medium truncate">{key.label}</span>
                               {isDefault && (
                                 <Badge variant="secondary" className="text-[10px] py-0 bg-primary/10 text-primary">
-                                  Default
+                                  {t("llmKeys.default")}
                                 </Badge>
                               )}
                               {key.status === "revoked" && (
                                 <Badge variant="secondary" className="text-[10px] py-0 bg-destructive/10 text-destructive">
-                                  Revoked
+                                  {t("connections.status.revoked")}
                                 </Badge>
                               )}
                               {isSaved && (
                                 <Badge variant="secondary" className="text-[10px] py-0">
                                   <Check className="w-3 h-3 mr-0.5" />
-                                  Saved
+                                  {t("common:saved")}
                                 </Badge>
                               )}
                             </div>
                             <p className="text-xs text-muted-foreground truncate mt-0.5">
-                              Stored encrypted on the backend. Rotate to update.
+                              {t("llmKeys.storedEncryptedRotate")}
                             </p>
                           </div>
 
@@ -1920,9 +1943,9 @@ function LlmApiKeysSection() {
                                 onClick={() => handleSetDefault(provider.id, key.id)}
                                 disabled={isBusy}
                                 className="h-7 text-xs text-muted-foreground"
-                                title="Set as default"
+                                title={t("llmKeys.setDefault")}
                               >
-                                {isBusy ? <Loader2 className="w-3 h-3 animate-spin" /> : "Set Default"}
+                                {isBusy ? <Loader2 className="w-3 h-3 animate-spin" /> : t("llmKeys.setDefault")}
                               </Button>
                             )}
                             <Button
@@ -1931,7 +1954,7 @@ function LlmApiKeysSection() {
                               className="h-7 w-7 text-muted-foreground hover:text-foreground"
                               onClick={() => handleStartEdit(key)}
                               disabled={isBusy}
-                              title="Edit / rotate"
+                              title={t("llmKeys.editRotate")}
                             >
                               <Pencil className="w-3 h-3" />
                             </Button>
@@ -1944,7 +1967,7 @@ function LlmApiKeysSection() {
                                   onClick={() => handleDelete(key.id)}
                                   disabled={isBusy}
                                 >
-                                  {isBusy ? <Loader2 className="w-3 h-3 animate-spin" /> : "Confirm"}
+                                  {isBusy ? <Loader2 className="w-3 h-3 animate-spin" /> : t("common:confirm")}
                                 </Button>
                                 <Button
                                   variant="ghost"
@@ -1952,7 +1975,7 @@ function LlmApiKeysSection() {
                                   className="h-7 text-xs"
                                   onClick={() => setConfirmDelete(null)}
                                 >
-                                  Cancel
+                                  {t("common:cancel")}
                                 </Button>
                               </div>
                             ) : (
@@ -1962,7 +1985,7 @@ function LlmApiKeysSection() {
                                 className="h-7 w-7 text-muted-foreground hover:text-destructive/90"
                                 onClick={() => setConfirmDelete(key.id)}
                                 disabled={isBusy}
-                                title="Delete"
+                                title={t("common:delete")}
                               >
                                 <Trash2 className="w-3 h-3" />
                               </Button>
@@ -1982,7 +2005,7 @@ function LlmApiKeysSection() {
                         <Plus className="w-4 h-4" />
                       </span>
                       <span className="text-sm font-medium">
-                        Add {provider.label} Key
+                        {t("llmKeys.addProviderKey", { provider: provider.label })}
                       </span>
                     </button>
                   )}
@@ -1995,9 +2018,7 @@ function LlmApiKeysSection() {
           <p className="text-xs text-destructive">{error}</p>
         )}
         <p className="text-xs text-muted-foreground">
-          The default key for each provider is used by all agents automatically.
-          You can override which key an agent uses in that agent's config, or
-          enter a custom key there.
+          {t("llmKeys.footer")}
         </p>
       </div>
     </section>
@@ -2300,6 +2321,7 @@ function ProviderRow({
   onConnectToken: () => void;
   onDisconnect: () => void;
 }) {
+  const { t } = useTranslation("settings");
   const isConnected = !!credential;
   const status = credential?.status;
   const statusConfig = status ? STATUS_CONFIG[status] : null;
@@ -2342,7 +2364,7 @@ function ProviderRow({
                 )}
               />
               <span className="truncate">
-                {statusConfig.label}
+                {t(statusConfig.labelKey)}
                 {credential?.providerUid && (
                   <span className="text-muted-foreground">
                     {" · "}

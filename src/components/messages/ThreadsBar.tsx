@@ -1,5 +1,6 @@
 import { MessagesSquare } from "lucide-react";
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { cn } from "../../lib/utils";
 import {
   isResolvedThread,
@@ -22,6 +23,7 @@ import { ThreadsPanel } from "./ThreadsPanel";
  * Mirrors mobile/components/ThreadsBar.tsx.
  */
 export function ThreadsBar({ conversationId }: { conversationId: string }) {
+  const { t } = useTranslation("chat");
   const [open, setOpen] = useState(false);
   const agentConversations = useChatStore((s) => s.agentConversations);
   const unreadCounts = useChatStore((s) => s.unreadCounts);
@@ -44,8 +46,8 @@ export function ThreadsBar({ conversationId }: { conversationId: string }) {
 
   const allResolved = openThreads.length === 0;
   const chipLabel = allResolved
-    ? `${resolvedThreads.length} resolved`
-    : `${openThreads.length} thread${openThreads.length === 1 ? "" : "s"}`;
+    ? t("threads.resolvedCount", { count: resolvedThreads.length })
+    : t("threads.count", { count: openThreads.length });
 
   return (
     <>

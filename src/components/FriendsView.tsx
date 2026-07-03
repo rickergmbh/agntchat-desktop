@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Search,
   User,
@@ -22,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "../lib/utils";
+import i18n from "../i18n";
 import * as api from "../lib/api";
 import { useAuthStore } from "../stores/authStore";
 import { useChatStore } from "../stores/chatStore";
@@ -111,17 +113,18 @@ function mutualsSummary(preview: api.Participant[], total: number): string {
   const names = preview.slice(0, 2).map((m) => m.displayName.split(" ")[0]);
   const remainder = total - names.length;
   if (remainder <= 0) {
-    if (names.length === 1) return `Followed by ${names[0]}`;
-    return `Followed by ${names[0]} and ${names[1]}`;
+    if (names.length === 1) return i18n.t("friends:followedByOne", { name: names[0] });
+    return i18n.t("friends:followedByTwo", { name1: names[0], name2: names[1] });
   }
   const named = names.length === 1 ? names[0] : `${names[0]}, ${names[1]}`;
-  return `Followed by ${named} and ${remainder} ${remainder === 1 ? "other" : "others"}`;
+  return i18n.t("friends:followedByMore", { names: named, count: remainder });
 }
 
 // `onNavigate` fires when the view switches to a chat (e.g. "Message" on a
 // friend) — the Profile drawer passes its close handler so the drawer doesn't
 // stay open over the conversation it just navigated to.
 export function FriendsView({ onNavigate }: { onNavigate?: () => void } = {}) {
+  const { t } = useTranslation("friends");
   const currentUserId = useAuthStore((s) => s.participant?.id);
   const setView = useNavStore((s) => s.setView);
   const conversations = useChatStore((s) => s.conversations);
@@ -225,7 +228,7 @@ export function FriendsView({ onNavigate }: { onNavigate?: () => void } = {}) {
         canRequest: false,
       });
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not send friend request");
+      setError(e instanceof Error ? e.message : t("errors.sendRequest"));
     } finally {
       setBusyId(null);
     }
@@ -237,36 +240,37 @@ export function FriendsView({ onNavigate }: { onNavigate?: () => void } = {}) {
     try {
       await respondFriend(id, decision);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not update request");
+      setError(e instanceof Error ? e.message : t("errors.updateRequest"));
     } finally {
       setBusyId(null);
     }
   };
 
   const handleRevoke = async (connection: api.UserConnection) => {
-    const label = connection.status === "accepted" ? "Unfriend" : "Cancel request";
-    if (!confirm(`${label}?`)) return;
+    const question =
+      connection.status === "accepted" ? t("confirmUnfriend") : t("confirmCancelRequest");
+    if (!confirm(question)) return;
     setBusyId(connection.id);
     setError(null);
     try {
       await revokeFriend(connection.id);
       if (selectedConnectionId === connection.id) setSelectedConnectionId(null);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not update connection");
+      setError(e instanceof Error ? e.message : t("errors.updateConnection"));
     } finally {
       setBusyId(null);
     }
   };
 
   const handleBlock = async (connection: api.UserConnection) => {
-    if (!confirm("Block this user? This blocks search, requests, DMs, and shared access.")) return;
+    if (!confirm(t("confirmBlock"))) return;
     setBusyId(connection.id);
     setError(null);
     try {
       await blockFriend(connection.id);
       if (selectedConnectionId === connection.id) setSelectedConnectionId(null);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not block user");
+      setError(e instanceof Error ? e.message : t("errors.blockUser"));
     } finally {
       setBusyId(null);
     }
@@ -289,7 +293,7 @@ export function FriendsView({ onNavigate }: { onNavigate?: () => void } = {}) {
       setView("chat");
       onNavigate?.();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not start chat");
+      setError(e instanceof Error ? e.message : t("errors.startChat"));
     } finally {
       setBusyId(null);
     }
@@ -321,11 +325,13 @@ export function FriendsView({ onNavigate }: { onNavigate?: () => void } = {}) {
               <Users className="w-3.5 h-3.5 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-sm font-semibold leading-tight">Friends</h1>
+              <h1 className="text-sm font-semibold leading-tight">{t("nav:friends")}</h1>
               <p className="text-[11px] text-muted-foreground">
-                {friends.length} friend{friends.length === 1 ? "" : "s"}
+                {t("friendCount", { count: friends.length })}
                 {pendingCount > 0 && (
-                  <span className="ml-1.5 text-warning">· {pendingCount} pending</span>
+                  <span className="ml-1.5 text-warning">
+                    · {t("pendingCount", { count: pendingCount })}
+                  </span>
                 )}
               </p>
             </div>
@@ -344,13 +350,13 @@ export function FriendsView({ onNavigate }: { onNavigate?: () => void } = {}) {
                   key={value}
                   onClick={() => setSegment(value)}
                   className={cn(
-                    "flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-semibold capitalize transition-colors",
+                    "flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-semibold transition-colors",
                     active
                       ? "bg-foreground text-background"
                       : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   )}
                 >
-                  {value}
+                  {t(`segments.${value}`)}
                   {count > 0 && (
                     <span
                       className={cn(
@@ -373,7 +379,7 @@ export function FriendsView({ onNavigate }: { onNavigate?: () => void } = {}) {
               ref={searchInputRef}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search people…"
+              placeholder={t("searchPeoplePlaceholder")}
               className="h-8 w-[220px] pl-8 text-xs"
             />
           </div>
@@ -382,7 +388,7 @@ export function FriendsView({ onNavigate }: { onNavigate?: () => void } = {}) {
             size="sm"
             onClick={() => { fetchConnections(); fetchPendingCount(); }}
           >
-            Refresh
+            {t("common:refresh")}
           </Button>
         </div>
       </header>
@@ -397,14 +403,14 @@ export function FriendsView({ onNavigate }: { onNavigate?: () => void } = {}) {
         {search.trim().length >= 2 && (
           <section className="border-b border-border bg-card/30">
             <div className="border-b border-border px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-              People · search
+              {t("peopleSearchHeader")}
             </div>
             {searching ? (
               <div className="flex items-center gap-2 px-4 py-3 text-sm text-muted-foreground">
-                <Loader2 className="h-4 w-4 animate-spin" /> Searching people…
+                <Loader2 className="h-4 w-4 animate-spin" /> {t("searchingPeople")}
               </div>
             ) : people.length === 0 ? (
-              <div className="px-4 py-3 text-sm text-muted-foreground">No people found.</div>
+              <div className="px-4 py-3 text-sm text-muted-foreground">{t("noPeopleFound")}</div>
             ) : (
               people.map((person) => (
                 <PersonSearchRow
@@ -424,7 +430,7 @@ export function FriendsView({ onNavigate }: { onNavigate?: () => void } = {}) {
 
         {loading && connections.length === 0 ? (
           <div className="py-20 text-center text-sm text-muted-foreground">
-            Loading friends…
+            {t("loadingFriends")}
           </div>
         ) : currentList.length === 0 ? (
           <FriendsEmptyState
@@ -491,6 +497,7 @@ export function FriendsView({ onNavigate }: { onNavigate?: () => void } = {}) {
 }
 
 function PresenceDot({ online, className }: { online: boolean; className?: string }) {
+  const { t } = useTranslation("common");
   return (
     <span
       className={cn(
@@ -498,7 +505,7 @@ function PresenceDot({ online, className }: { online: boolean; className?: strin
         online ? "bg-success" : "bg-muted-foreground/60",
         className
       )}
-      aria-label={online ? "Online" : "Offline"}
+      aria-label={online ? t("online") : t("offline")}
     />
   );
 }
@@ -520,6 +527,7 @@ function PersonSearchRow({
   onConnect: () => void;
   onOpenRequests: () => void;
 }) {
+  const { t } = useTranslation("friends");
   const connection =
     connections.find((c) => c.id === person.connectionId) ??
     connections.find((c) => c.requesterId === person.id || c.addresseeId === person.id);
@@ -545,13 +553,13 @@ function PersonSearchRow({
       {busy ? (
         <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
       ) : status === "accepted" ? (
-        <Badge variant="secondary" className="bg-success/10 text-success">Friends</Badge>
+        <Badge variant="secondary" className="bg-success/10 text-success">{t("nav:friends")}</Badge>
       ) : incoming ? (
-        <Button size="sm" variant="outline" onClick={onOpenRequests}>Respond</Button>
+        <Button size="sm" variant="outline" onClick={onOpenRequests}>{t("respond")}</Button>
       ) : canRequest ? (
-        <Button size="sm" onClick={onConnect}><UserPlus className="mr-1 h-3 w-3" />Connect</Button>
+        <Button size="sm" onClick={onConnect}><UserPlus className="mr-1 h-3 w-3" />{t("connect")}</Button>
       ) : (
-        <Badge variant="outline" className="capitalize">{status}</Badge>
+        <Badge variant="outline">{t(`status.${status}`, { defaultValue: status })}</Badge>
       )}
     </div>
   );
@@ -564,19 +572,20 @@ function FriendsEmptyState({
   segment: Segment;
   onFindPeople: () => void;
 }) {
+  const { t } = useTranslation("friends");
   const Icon = segment === "requests" ? UserPlus : segment === "sent" ? Clock : Users;
   const title =
     segment === "friends"
-      ? "No friends yet"
+      ? t("empty.friendsTitle")
       : segment === "requests"
-        ? "No friend requests"
-        : "No sent requests";
+        ? t("empty.requestsTitle")
+        : t("empty.sentTitle");
   const body =
     segment === "friends"
-      ? "Find people by name or email and send them a friend request to start chatting and sharing agents."
+      ? t("empty.friendsBody")
       : segment === "requests"
-        ? "Incoming friend requests will appear here. We'll badge the tab when someone wants to connect."
-        : "Requests you've sent are listed here until they're accepted or declined.";
+        ? t("empty.requestsBody")
+        : t("empty.sentBody");
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-8 text-center">
@@ -588,7 +597,7 @@ function FriendsEmptyState({
       {segment === "friends" && (
         <Button size="sm" className="mt-4" onClick={onFindPeople}>
           <UserPlus className="mr-1.5 h-3.5 w-3.5" />
-          Find people
+          {t("findPeople")}
         </Button>
       )}
     </div>
@@ -612,6 +621,7 @@ function FriendCard({
   onMessage: () => void;
   onOpenProfile: () => void;
 }) {
+  const { t } = useTranslation("friends");
   const person = otherParticipant(connection, currentUserId);
   const handle = makeHandle(person);
   const tagline = extractTagline(person);
@@ -644,12 +654,14 @@ function FriendCard({
           {online && (
             <span
               className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-card bg-success"
-              aria-label="Online"
+              aria-label={t("common:online")}
             />
           )}
         </div>
         <div className="min-w-0 flex-1 leading-tight">
-          <p className="truncate text-sm font-semibold">{person?.displayName ?? "Unknown"}</p>
+          <p className="truncate text-sm font-semibold">
+            {person?.displayName ?? t("common:unknown")}
+          </p>
           <p className="truncate text-[11px] text-muted-foreground">{handle}</p>
           <div className="mt-1 flex items-center gap-1.5 text-[11px]">
             <span
@@ -659,7 +671,7 @@ function FriendCard({
               )}
             />
             <span className={online ? "font-medium text-success" : "text-muted-foreground"}>
-              {online ? "Online" : "Offline"}
+              {online ? t("common:online") : t("common:offline")}
             </span>
           </div>
         </div>
@@ -667,7 +679,7 @@ function FriendCard({
 
       {/* Bio — fixed two-line slot so cards stay the same height */}
       <p className="mt-3 line-clamp-2 min-h-[2rem] text-xs leading-snug text-muted-foreground">
-        {bio || <span className="text-muted-foreground/40">No bio yet.</span>}
+        {bio || <span className="text-muted-foreground/40">{t("noBio")}</span>}
       </p>
 
       <div className="mt-3 flex items-center justify-between gap-2 border-t border-border pt-3">
@@ -683,14 +695,14 @@ function FriendCard({
               <button
                 onClick={onMessage}
                 className="flex h-8 w-8 items-center justify-center rounded-full bg-foreground text-background transition-opacity hover:opacity-85"
-                title={`Message ${person?.displayName ?? "friend"}`}
+                title={t("messageUser", { name: person?.displayName ?? t("fallbackFriend") })}
               >
                 <MessageCircle className="h-4 w-4" />
               </button>
               <button
                 onClick={onRevoke}
                 className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card transition-colors hover:border-destructive/40 hover:bg-muted"
-                title={`Unfriend ${person?.displayName ?? "friend"}`}
+                title={t("unfriendUser", { name: person?.displayName ?? t("fallbackFriend") })}
               >
                 <UserMinus className="h-4 w-4 text-destructive" />
               </button>
@@ -721,6 +733,7 @@ function FriendProfileDrawer({
   onUnfriend: () => void;
   onBlock: () => void;
 }) {
+  const { t } = useTranslation("friends");
   if (!connection) return null;
   const person = otherParticipant(connection, currentUserId);
   if (!person) return null;
@@ -744,7 +757,7 @@ function FriendProfileDrawer({
         <button
           onClick={onClose}
           className="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-md transition-colors hover:bg-black/60"
-          title="Close"
+          title={t("common:close")}
         >
           <X className="h-4 w-4" />
         </button>
@@ -776,6 +789,7 @@ function FriendProfileBody({
   onUnfriend: () => void;
   onBlock: () => void;
 }) {
+  const { t } = useTranslation("friends");
   const [listings, setListings] = useState<api.DirectoryListing[] | null>(null);
   const [loadingAgents, setLoadingAgents] = useState(true);
   const [agentsError, setAgentsError] = useState<string | null>(null);
@@ -791,7 +805,7 @@ function FriendProfileBody({
         if (!cancelled) setListings(res.listings ?? []);
       })
       .catch((e) => {
-        if (!cancelled) setAgentsError(e instanceof Error ? e.message : "Could not load shared agents");
+        if (!cancelled) setAgentsError(e instanceof Error ? e.message : t("errors.loadAgents"));
       })
       .finally(() => {
         if (!cancelled) setLoadingAgents(false);
@@ -856,7 +870,9 @@ function FriendProfileBody({
         <div className="flex items-center gap-2">
           <h2 className="truncate text-2xl font-extrabold tracking-tight">{person.displayName}</h2>
           {connection.status === "accepted" && (
-            <Badge variant="secondary" className="bg-success/10 text-success">Friend</Badge>
+            <Badge variant="secondary" className="bg-success/10 text-success">
+              {t("friendBadge")}
+            </Badge>
           )}
         </div>
         <p className="mt-0.5 text-sm text-muted-foreground">{handle}</p>
@@ -874,7 +890,7 @@ function FriendProfileBody({
               )}
             />
             <span className={cn(isOnline && "font-semibold text-success")}>
-              {isOnline ? "Online now" : "Offline"}
+              {isOnline ? t("onlineNow") : t("common:offline")}
             </span>
           </span>
           {person.timezone && (
@@ -886,15 +902,15 @@ function FriendProfileBody({
           {sharingLocation && (
             <span className="flex items-center gap-1.5">
               <MapPin className="h-3.5 w-3.5" />
-              Sharing location
+              {t("sharingLocation")}
             </span>
           )}
         </div>
 
         <div className="mt-5 grid grid-cols-3 divide-x divide-border border-y border-border py-3">
-          <StatCell label="Agents" value={agentsCount} />
-          <StatCell label="Mutuals" value={mutuals?.count ?? "—"} />
-          <StatCell label="Joined" value={joinedShort ?? "—"} />
+          <StatCell label={t("nav:agents")} value={agentsCount} />
+          <StatCell label={t("mutuals")} value={mutuals?.count ?? "—"} />
+          <StatCell label={t("joined")} value={joinedShort ?? "—"} />
         </div>
 
         {mutuals && mutuals.count > 0 && (
@@ -922,7 +938,7 @@ function FriendProfileBody({
         <div className="mt-5 flex gap-2">
           <Button className="flex-1" onClick={onMessage} disabled={busy}>
             <MessageCircle className="mr-1.5 h-4 w-4" />
-            Message
+            {t("message")}
           </Button>
           <Button
             variant="outline"
@@ -931,14 +947,14 @@ function FriendProfileBody({
             className="flex-1 text-destructive hover:bg-destructive/10 hover:text-destructive"
           >
             <UserMinus className="mr-1.5 h-4 w-4" />
-            {connection.status === "accepted" ? "Unfriend" : "Cancel"}
+            {connection.status === "accepted" ? t("unfriend") : t("common:cancel")}
           </Button>
           <Button
             variant="outline"
             size="icon"
             onClick={onBlock}
             disabled={busy}
-            title="Block"
+            title={t("blockAction")}
             className="text-destructive hover:bg-destructive/10 hover:text-destructive"
           >
             <Ban className="h-4 w-4" />
@@ -949,10 +965,10 @@ function FriendProfileBody({
           <div className="flex items-end justify-between">
             <div>
               <h3 className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-                Available Agents
+                {t("availableAgents")}
               </h3>
               <p className="mt-1 text-xs text-muted-foreground">
-                Public agents and ones {firstName} shares with friends.
+                {t("availableAgentsSubtitle", { name: firstName })}
               </p>
             </div>
             {agentsCount > 0 && (
@@ -964,7 +980,7 @@ function FriendProfileBody({
             {loadingAgents ? (
               <div className="flex items-center gap-2 rounded-xl border border-border bg-card p-4 text-sm text-muted-foreground">
                 <Loader2 className="h-4 w-4 animate-spin" />
-                Loading shared agents…
+                {t("loadingSharedAgents")}
               </div>
             ) : agentsError ? (
               <div className="rounded-xl border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive">
@@ -972,7 +988,7 @@ function FriendProfileBody({
               </div>
             ) : !listings || listings.length === 0 ? (
               <div className="rounded-xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
-                No agents shared yet.
+                {t("noSharedAgents")}
               </div>
             ) : (
               listings.map((listing) => {
@@ -1002,10 +1018,12 @@ function FriendProfileBody({
                           )}
                         >
                           {friendsOnly ? <Users className="h-2.5 w-2.5" /> : <Globe className="h-2.5 w-2.5" />}
-                          {friendsOnly ? "Friends" : "Public"}
+                          {friendsOnly ? t("visibility.friends") : t("visibility.public")}
                         </span>
                         {listing.verified && (
-                          <Badge variant="secondary" className="h-4 px-1.5 text-[10px]">Verified</Badge>
+                          <Badge variant="secondary" className="h-4 px-1.5 text-[10px]">
+                            {t("verified")}
+                          </Badge>
                         )}
                       </div>
                       {(listing.listingDescription || listing.agent?.description) && (

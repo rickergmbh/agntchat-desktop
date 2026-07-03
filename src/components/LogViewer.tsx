@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import { useTranslation } from "react-i18next";
 import { cn } from "../lib/utils";
 import { Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function LogViewer({ agentId }: { agentId: string }) {
+  const { t } = useTranslation("platform");
   const [logs, setLogs] = useState<string[]>([]);
   const [filter, setFilter] = useState<"all" | "error" | "task" | "message">("all");
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -58,7 +60,7 @@ export function LogViewer({ agentId }: { agentId: string }) {
             )}
             onClick={() => setFilter(f)}
           >
-            {f.charAt(0).toUpperCase() + f.slice(1)}
+            {t(`logs.filter.${f}`)}
           </Button>
         ))}
         <div className="flex-1" />
@@ -67,7 +69,7 @@ export function LogViewer({ agentId }: { agentId: string }) {
           size="icon"
           className="w-7 h-7"
           onClick={() => navigator.clipboard.writeText(filtered.join("\n"))}
-          title="Copy logs"
+          title={t("logs.copyLogs")}
         >
           <Copy className="w-3.5 h-3.5" />
         </Button>
@@ -75,7 +77,7 @@ export function LogViewer({ agentId }: { agentId: string }) {
 
       <div className="flex-1 overflow-y-auto p-4 font-mono text-xs leading-relaxed" ref={scrollRef}>
         {filtered.length === 0 ? (
-          <div className="text-center text-text-muted py-10">No logs yet</div>
+          <div className="text-center text-text-muted py-10">{t("logs.empty")}</div>
         ) : (
           filtered.map((line, i) => (
             <div

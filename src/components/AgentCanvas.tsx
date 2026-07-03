@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import {
   type CanvasDefinitionSummary,
   listCanvasDefinitions,
@@ -30,6 +31,7 @@ function getApiUrl(): string {
 }
 
 export function AgentCanvas({ managed }: AgentCanvasProps) {
+  const { t } = useTranslation("canvas");
   const { fetchAgents } = useAgentStore();
   const [definitions, setDefinitions] = useState<CanvasDefinitionSummary[]>([]);
   const [loading, setLoading] = useState(true);
@@ -109,7 +111,7 @@ export function AgentCanvas({ managed }: AgentCanvasProps) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12 text-sm text-muted-foreground">
-        Loading canvases...
+        {t("loading")}
       </div>
     );
   }
@@ -119,7 +121,7 @@ export function AgentCanvas({ managed }: AgentCanvasProps) {
       {/* Current canvas */}
       <div>
         <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
-          Active Canvas
+          {t("active")}
         </span>
         {currentCanvas ? (
           <div className="mt-2 p-3 rounded-lg border bg-card">
@@ -129,12 +131,12 @@ export function AgentCanvas({ managed }: AgentCanvasProps) {
                   <span className="text-sm font-medium">{currentCanvas.name}</span>
                   {currentCanvas.isBuiltin && (
                     <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-                      builtin
+                      {t("status.builtin")}
                     </Badge>
                   )}
                   {currentCanvas.isPublished && (
                     <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
-                      published
+                      {t("status.published")}
                     </Badge>
                   )}
                 </div>
@@ -150,23 +152,23 @@ export function AgentCanvas({ managed }: AgentCanvasProps) {
                   size="icon"
                   className="h-7 w-7 text-muted-foreground hover:text-destructive/90"
                   onClick={handleRemove}
-                  title="Remove canvas"
+                  title={t("remove")}
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </Button>
               </div>
             </div>
             <p className="text-[10px] text-muted-foreground mt-2 font-mono">
-              ID: {currentCanvas.id}
+              {t("idLabel", { id: currentCanvas.id })}
             </p>
           </div>
         ) : currentDefinitionId ? (
           <div className="mt-2 p-3 rounded-lg border bg-card">
             <p className="text-sm text-muted-foreground">
-              Canvas assigned but not found in your definitions
+              {t("assignedNotFound")}
             </p>
             <p className="text-[10px] text-muted-foreground mt-1 font-mono">
-              ID: {currentDefinitionId}
+              {t("idLabel", { id: currentDefinitionId })}
             </p>
             <Button
               size="sm"
@@ -174,16 +176,15 @@ export function AgentCanvas({ managed }: AgentCanvasProps) {
               className="mt-2"
               onClick={handleRemove}
             >
-              <Trash2 className="w-3.5 h-3.5 mr-1.5" /> Remove
+              <Trash2 className="w-3.5 h-3.5 mr-1.5" /> {t("common:remove")}
             </Button>
           </div>
         ) : (
           <div className="mt-2 text-center py-6">
             <Palette className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
-            <p className="text-sm font-medium">No canvas assigned</p>
+            <p className="text-sm font-medium">{t("none")}</p>
             <p className="text-xs text-muted-foreground mt-1">
-              This agent uses the default chat screen.
-              Assign a canvas for a custom experience.
+              {t("noneDescription")}
             </p>
           </div>
         )}
@@ -193,7 +194,7 @@ export function AgentCanvas({ managed }: AgentCanvasProps) {
       <div className="flex gap-2">
         <Button size="sm" variant="outline" onClick={() => setShowPicker(true)}>
           <Palette className="w-3.5 h-3.5 mr-1.5" />
-          {currentDefinitionId ? "Change Canvas" : "Assign Canvas"}
+          {currentDefinitionId ? t("change") : t("assign")}
         </Button>
         <Button
           size="sm"
@@ -203,14 +204,14 @@ export function AgentCanvas({ managed }: AgentCanvasProps) {
           }}
         >
           <ExternalLink className="w-3.5 h-3.5 mr-1.5" />
-          Canvas Studio
+          {t("studio")}
         </Button>
       </div>
 
       {/* Available canvases list */}
       <div>
         <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
-          Available Canvases ({definitions.length})
+          {t("availableWithCount", { count: definitions.length })}
         </span>
         <div className="space-y-1 mt-2">
           {definitions.map((def) => {
@@ -231,12 +232,12 @@ export function AgentCanvas({ managed }: AgentCanvasProps) {
                     </span>
                     {def.isBuiltin && (
                       <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-                        builtin
+                        {t("status.builtin")}
                       </Badge>
                     )}
                     {!def.isPublished && (
                       <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
-                        draft
+                        {t("status.draft")}
                       </Badge>
                     )}
                     {isActive && (
@@ -255,7 +256,7 @@ export function AgentCanvas({ managed }: AgentCanvasProps) {
                     variant="ghost"
                     onClick={() => handleAssign(def)}
                   >
-                    Apply
+                    {t("common:apply")}
                   </Button>
                 )}
               </div>
@@ -263,7 +264,7 @@ export function AgentCanvas({ managed }: AgentCanvasProps) {
           })}
           {definitions.length === 0 && (
             <p className="text-sm text-muted-foreground text-center py-4">
-              No canvases created yet. Open Canvas Studio to build one.
+              {t("emptyList")}
             </p>
           )}
         </div>
