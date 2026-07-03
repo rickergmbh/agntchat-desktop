@@ -214,46 +214,46 @@ export function getProviderLabel(providerId: string): string {
   return provider?.label || providerId;
 }
 
+// Labels/descriptions are i18n KEYS (namespace-qualified), resolved with t()
+// at render — never English literals. Ids are the canonical values stored on
+// the agent's model_config and must not change.
 export const EFFORT_LEVELS = [
   {
     id: "low",
-    label: "Low",
-    description: "Minimal reasoning — fastest responses, best for simple tasks.",
+    labelKey: "agents:effort.low.label",
+    descriptionKey: "agents:effort.low.description",
   },
   {
     id: "medium",
-    label: "Medium",
-    description: "Balanced reasoning — good speed with decent thoroughness.",
+    labelKey: "agents:effort.medium.label",
+    descriptionKey: "agents:effort.medium.description",
   },
   {
     id: "high",
-    label: "High",
-    description: "Full reasoning — default behavior, thorough and careful.",
+    labelKey: "agents:effort.high.label",
+    descriptionKey: "agents:effort.high.description",
   },
   {
     id: "max",
-    label: "Max",
-    description: "Maximum reasoning — deepest thinking, slowest. Opus only.",
+    labelKey: "agents:effort.max.label",
+    descriptionKey: "agents:effort.max.description",
   },
 ];
 
 export const EXECUTION_MODES = [
   {
     id: "single_shot",
-    label: "Single Shot",
-    description:
-      "The agent sends one prompt to the LLM and returns the response. Tools are invoked via XML tags in the output. Best for simple Q&A agents.",
+    labelKey: "agents:executionModes.single_shot.label",
+    descriptionKey: "agents:executionModes.single_shot.description",
   },
   {
     id: "tool_use",
-    label: "Tool Use",
-    description:
-      "The agent runs an agentic loop — the LLM can call tools natively (API-level tool calling), see the results, and iterate until done. Best for agents that need to search, fetch data, or take actions.",
+    labelKey: "agents:executionModes.tool_use.label",
+    descriptionKey: "agents:executionModes.tool_use.description",
   },
   {
     id: "code_action",
-    label: "Code Action",
-    description:
-      "The agent generates Python code which runs in a sandboxed environment. The output is returned as the result. Best for data processing or computation tasks.",
+    labelKey: "agents:executionModes.code_action.label",
+    descriptionKey: "agents:executionModes.code_action.description",
   },
 ];

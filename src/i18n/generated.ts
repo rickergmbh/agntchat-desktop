@@ -647,25 +647,13 @@ export const resources = {
       },
       "executionMode": "Execution Mode",
       "executionModes": {
-        "codeAction": {
-          "description": "The agent generates Python that runs in a sandboxed environment. Best for data processing or computation tasks.",
-          "label": "Code Action"
-        },
         "code_action": {
           "description": "The agent generates Python that runs in a sandboxed environment. Best for data processing or computation tasks.",
           "label": "Code Action"
         },
-        "singleShot": {
-          "description": "One prompt, one response. Tools are invoked via XML tags in the output. Best for simple Q&A agents.",
-          "label": "Single Shot"
-        },
         "single_shot": {
           "description": "One prompt, one response. Tools are invoked via XML tags in the output. Best for simple Q&A agents.",
           "label": "Single Shot"
-        },
-        "toolUse": {
-          "description": "Agentic loop — the LLM calls tools natively, sees the results, and iterates until done. Best for agents that fetch data or take actions.",
-          "label": "Tool Use"
         },
         "tool_use": {
           "description": "Agentic loop — the LLM calls tools natively, sees the results, and iterates until done. Best for agents that fetch data or take actions.",
@@ -5033,25 +5021,13 @@ export const resources = {
       },
       "executionMode": "Modo de ejecución",
       "executionModes": {
-        "codeAction": {
-          "description": "El agente genera Python que se ejecuta en un entorno aislado. Ideal para tareas de procesamiento de datos o de cálculo.",
-          "label": "Acción de código"
-        },
         "code_action": {
           "description": "El agente genera código Python que se ejecuta en un entorno aislado. Ideal para tareas de procesamiento de datos o de cálculo.",
           "label": "Acción de código"
         },
-        "singleShot": {
-          "description": "Una instrucción, una respuesta. Las herramientas se invocan mediante etiquetas XML en la salida. Ideal para agentes sencillos de preguntas y respuestas.",
-          "label": "Respuesta única"
-        },
         "single_shot": {
           "description": "Una instrucción, una respuesta. Las herramientas se invocan mediante etiquetas XML en la salida. Ideal para agentes sencillos de preguntas y respuestas.",
           "label": "Respuesta única"
-        },
-        "toolUse": {
-          "description": "Bucle agéntico: el LLM llama a las herramientas de forma nativa, ve los resultados e itera hasta terminar. Ideal para agentes que consultan datos o realizan acciones.",
-          "label": "Uso de herramientas"
         },
         "tool_use": {
           "description": "Bucle agéntico: el LLM llama a las herramientas de forma nativa, ve los resultados e itera hasta terminar. Ideal para agentes que consultan datos o realizan acciones.",

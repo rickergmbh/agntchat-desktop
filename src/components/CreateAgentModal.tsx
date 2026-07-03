@@ -970,7 +970,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                             supportedModes.includes(m.id)
                           ).map((m) => (
                             <SelectItem key={m.id} value={m.id}>
-                              {m.label}
+                              {t(m.labelKey)}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -989,7 +989,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                           <SelectContent>
                             {EFFORT_LEVELS.map((e) => (
                               <SelectItem key={e.id} value={e.id}>
-                                {e.label}
+                                {t(e.labelKey)}
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -1195,18 +1195,24 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                     <ReviewRow label={t("create.review.brain")} value={`${providerLabel ?? "—"} · ${models.find((m) => m.id === model)?.label ?? model ?? "—"}`} />
                     <ReviewRow
                       label={t("create.review.mode")}
-                      value={
-                        EXECUTION_MODES.find((m) => m.id === executionMode)
-                          ?.label ?? executionMode
-                      }
+                      value={(() => {
+                        const foundMode = EXECUTION_MODES.find(
+                          (m) => m.id === executionMode
+                        );
+                        return foundMode ? t(foundMode.labelKey) : executionMode;
+                      })()}
                     />
                     {showEffort && (
                       <ReviewRow
                         label={t("effortLabel")}
-                        value={
-                          EFFORT_LEVELS.find((e) => e.id === (effort || "high"))
-                            ?.label ?? effort ?? "high"
-                        }
+                        value={(() => {
+                          const foundEffort = EFFORT_LEVELS.find(
+                            (e) => e.id === (effort || "high")
+                          );
+                          return foundEffort
+                            ? t(foundEffort.labelKey)
+                            : effort ?? "high";
+                        })()}
                       />
                     )}
                     <ReviewRow

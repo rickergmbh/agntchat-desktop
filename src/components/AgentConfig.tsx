@@ -843,7 +843,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                           value={m.id}
                           disabled={!supported}
                         >
-                          {m.label}
+                          {t(m.labelKey)}
                           {!supported && ` ${t("config.mode.notAvailable")}`}
                         </SelectItem>
                       );
@@ -851,11 +851,12 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                   </SelectContent>
                 </Select>
                 <p className="text-xs text-muted-foreground">
-                  {
-                    EXECUTION_MODES.find(
+                  {(() => {
+                    const selectedMode = EXECUTION_MODES.find(
                       (m) => m.id === executionMode
-                    )?.description
-                  }
+                    );
+                    return selectedMode ? t(selectedMode.descriptionKey) : "";
+                  })()}
                 </p>
                 {!supportedModes.includes(executionMode) && (
                   <p className="text-xs text-destructive">
@@ -903,15 +904,20 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                       <SelectItem value="default">{t("config.effort.defaultOption")}</SelectItem>
                       {EFFORT_LEVELS.map((level) => (
                         <SelectItem key={level.id} value={level.id}>
-                          {level.label}
+                          {t(level.labelKey)}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                   <p className="text-xs text-muted-foreground">
-                    {config.effort
-                      ? EFFORT_LEVELS.find((l) => l.id === config.effort)?.description
-                      : t("config.effort.defaultDescription")}
+                    {(() => {
+                      const selectedEffort = config.effort
+                        ? EFFORT_LEVELS.find((l) => l.id === config.effort)
+                        : null;
+                      return selectedEffort
+                        ? t(selectedEffort.descriptionKey)
+                        : t("config.effort.defaultDescription");
+                    })()}
                   </p>
                 </div>
               </div>
