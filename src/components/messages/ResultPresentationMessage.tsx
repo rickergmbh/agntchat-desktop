@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import type { Message } from "../../lib/api";
 import { cn } from "../../lib/utils";
+import { sanitizeHtml } from "../../lib/sanitizeHtml";
 import { MarkdownContent } from "./MarkdownContent";
 import { ScreenplayBody, isScreenplayTemplate } from "./ScreenplayBody";
 import {
@@ -34,6 +35,14 @@ import {
   Briefcase,
   CircleDot,
   Contact,
+  Inbox,
+  Building2,
+  Landmark,
+  ArrowLeftRight,
+  Target,
+  Newspaper,
+  Banknote,
+  BarChart3,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -126,6 +135,9 @@ interface RPData {
 // Icon registry
 // ---------------------------------------------------------------------------
 
+// Keep in sync with web's ResultPresentationMessage ICON_MAP, mobile's
+// lib/detailTemplate/icons.tsx, and the backend catalog
+// (ResponseTemplates.Schema.icon_catalog/0).
 const ICON_MAP: Record<string, LucideIcon> = {
   bed: Bed,
   "map-pin": MapPin,
@@ -139,6 +151,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
   "dollar-sign": DollarSign,
   mail: Mail,
   send: Send,
+  inbox: Inbox,
   tag: Tag,
   "check-circle": CheckCircle,
   user: User,
@@ -151,6 +164,13 @@ const ICON_MAP: Record<string, LucideIcon> = {
   globe: Globe,
   briefcase: Briefcase,
   "circle-dot": CircleDot,
+  "building-2": Building2,
+  landmark: Landmark,
+  "arrow-left-right": ArrowLeftRight,
+  target: Target,
+  newspaper: Newspaper,
+  banknote: Banknote,
+  "bar-chart-3": BarChart3,
 };
 
 const RESULT_TYPE_ICONS: Record<string, LucideIcon> = {
@@ -413,7 +433,7 @@ function RichBody({
     return (
       <div
         className="text-sm leading-relaxed [&_p]:mb-1 [&_p:last-child]:mb-0 [&_ul]:my-1 [&_ul]:list-disc [&_ul]:pl-4 [&_ol]:my-1 [&_ol]:list-decimal [&_ol]:pl-4 [&_li]:my-0.5 [&_strong]:font-semibold [&_b]:font-semibold [&_a]:underline [&_h1]:text-base [&_h1]:font-bold [&_h2]:text-[15px] [&_h2]:font-bold [&_h3]:text-sm [&_h3]:font-semibold [&_blockquote]:border-l-2 [&_blockquote]:border-current/30 [&_blockquote]:pl-2"
-        dangerouslySetInnerHTML={{ __html: content }}
+        dangerouslySetInnerHTML={{ __html: sanitizeHtml(content) }}
       />
     );
   }
@@ -679,34 +699,160 @@ function DetailSection({
 // CTA Buttons
 // ---------------------------------------------------------------------------
 
+// Direct REST execution for email actions; anything else without a URL is
+// relayed to the agent as a UserAction event. Mirrors web/mobile.
+async function executeCTAAction(
+  action: string,
+  itemTitle: string | undefined,
+  itemDetails: Record<string, unknown>
+): Promise<string | null> {
+  if (action === "send_email" || action === "save_draft") {
+    const { request } = await import("../../lib/api");
+    const to = String(itemDetails.to ?? "");
+    const subject = itemTitle || String(itemDetails.subject ?? "");
+    const body = String(itemDetails.body ?? "");
+
+    if (action === "send_email" && (!to || !body)) {
+      return "Cannot send — missing recipient or body.";
+    }
+    if (action === "save_draft" && !body) {
+      return "Cannot save draft — no email body.";
+    }
+
+    const contentType = /<[a-z][\s\S]*>/i.test(body) ? "text/html" : "text/plain";
+    const payload = {
+      to,
+      subject,
+      body,
+      ...(itemDetails.cc ? { cc: itemDetails.cc } : {}),
+      ...(itemDetails.bcc ? { bcc: itemDetails.bcc } : {}),
+      content_type: contentType,
+    };
+
+    if (action === "send_email") {
+      const result = await request<{ sent_to?: string }>("/api/google/gmail/send", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+      return `Email sent to ${result?.sent_to || to}`;
+    }
+    await request("/api/google/gmail/drafts", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+    return `Draft saved to Gmail: "${subject}"`;
+  }
+
+  return null; // unknown action — caller falls through to the WS relay
+}
+
+function CTAButton({
+  cta,
+  primary,
+  itemTitle,
+  itemDetails,
+  conversationId,
+}: {
+  cta: ResultCTA;
+  primary?: boolean;
+  itemTitle?: string;
+  itemDetails: Record<string, unknown>;
+  conversationId?: string;
+}) {
+  const [busy, setBusy] = useState(false);
+  const [done, setDone] = useState<string | null>(null);
+
+  const className = cn(
+    "inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium",
+    primary
+      ? "bg-primary text-primary-foreground hover:bg-primary/90"
+      : "border border-border text-foreground hover:bg-muted",
+    (busy || done) && "opacity-60 pointer-events-none"
+  );
+
+  if (cta.url) {
+    return (
+      <a href={cta.url} target="_blank" rel="noopener noreferrer" className={className}>
+        {cta.label}
+        {primary && <ExternalLink className="h-3 w-3" />}
+      </a>
+    );
+  }
+
+  if (!cta.action) return null;
+
+  const handleClick = async () => {
+    if (busy || done) return;
+    setBusy(true);
+    try {
+      const result = await executeCTAAction(cta.action!, itemTitle, itemDetails);
+      if (result != null) {
+        setDone(result);
+        return;
+      }
+      // Unknown action: relay to the agent as a structured UserAction event.
+      if (conversationId) {
+        const { ws } = await import("../../services/websocket");
+        await ws.sendAction(conversationId, cta.action!, {
+          label: cta.label,
+          details: itemDetails,
+        });
+        setDone(cta.label);
+      }
+    } catch (e) {
+      console.error("CTA action failed:", e);
+      setDone("Action failed");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <button type="button" onClick={handleClick} className={className} title={done ?? undefined}>
+      {done ? (
+        <>
+          <CheckCircle className="h-3 w-3" /> {done}
+        </>
+      ) : (
+        <>
+          {cta.label}
+          {cta.action === "send_email" && <Send className="h-3 w-3" />}
+        </>
+      )}
+    </button>
+  );
+}
+
 function CTAButtons({
   cta,
+  itemTitle,
+  itemDetails,
+  conversationId,
 }: {
   cta: { primary?: ResultCTA; secondary?: ResultCTA[] };
+  itemTitle?: string;
+  itemDetails: Record<string, unknown>;
+  conversationId?: string;
 }) {
   return (
     <div className="flex flex-wrap gap-2">
       {cta.primary && (
-        <a
-          href={cta.primary.url ?? "#"}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
-        >
-          {cta.primary.label}
-          <ExternalLink className="h-3 w-3" />
-        </a>
+        <CTAButton
+          cta={cta.primary}
+          primary
+          itemTitle={itemTitle}
+          itemDetails={itemDetails}
+          conversationId={conversationId}
+        />
       )}
       {cta.secondary?.map((s, i) => (
-        <a
+        <CTAButton
           key={i}
-          href={s.url ?? "#"}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted"
-        >
-          {s.label}
-        </a>
+          cta={s}
+          itemTitle={itemTitle}
+          itemDetails={itemDetails}
+          conversationId={conversationId}
+        />
       ))}
     </div>
   );
@@ -757,9 +903,11 @@ function Citations({
 function ResultCard({
   item,
   resultType,
+  conversationId,
 }: {
   item: ResultItem;
   resultType?: string;
+  conversationId?: string;
 }) {
   const TypeIcon = resultTypeIcon(item.type ?? resultType);
   const details = (item.details ?? {}) as Record<string, unknown>;
@@ -840,7 +988,14 @@ function ResultCard({
         )}
 
         {/* CTA buttons */}
-        {item.cta && <CTAButtons cta={item.cta} />}
+        {item.cta && (
+          <CTAButtons
+            cta={item.cta}
+            itemTitle={item.title}
+            itemDetails={details}
+            conversationId={conversationId}
+          />
+        )}
 
         {/* Fallback booking URL when no CTA provided */}
         {!item.cta && item.booking_url && (
@@ -892,9 +1047,17 @@ export function ResultPresentationMessage({
 
       {/* Cards — single item stacks, multiple items carousel */}
       {singleItem ? (
-        <ResultCard item={items[0]!} resultType={data.result_type} />
+        <ResultCard
+          item={items[0]!}
+          resultType={data.result_type}
+          conversationId={message.conversationId}
+        />
       ) : (
-        <Carousel items={items} resultType={data.result_type} />
+        <Carousel
+          items={items}
+          resultType={data.result_type}
+          conversationId={message.conversationId}
+        />
       )}
 
       {/* Citations */}
@@ -914,9 +1077,11 @@ export function ResultPresentationMessage({
 function Carousel({
   items,
   resultType,
+  conversationId,
 }: {
   items: ResultItem[];
   resultType?: string;
+  conversationId?: string;
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -928,7 +1093,11 @@ function Carousel({
 
   return (
     <div>
-      <ResultCard item={items[activeIndex]!} resultType={resultType} />
+      <ResultCard
+        item={items[activeIndex]!}
+        resultType={resultType}
+        conversationId={conversationId}
+      />
 
       {/* Navigation bar */}
       <div className="flex items-center justify-between pt-2 px-1">

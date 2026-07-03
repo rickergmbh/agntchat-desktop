@@ -2,7 +2,7 @@ import { X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "../../lib/utils";
-import type { DetailField, DisplayType, HighlightColor } from "../../lib/api";
+import type { DetailField, DisplayType, FieldLink, HighlightColor } from "../../lib/api";
 
 const DISPLAY_TYPES: DisplayType[] = [
   "row",
@@ -12,6 +12,8 @@ const DISPLAY_TYPES: DisplayType[] = [
   "change",
   "sparkline",
 ];
+
+const LINK_TYPES: FieldLink[] = ["tel", "mailto", "url", "map"];
 
 const HIGHLIGHT_COLORS: { value: HighlightColor; label: string; cls: string }[] = [
   { value: "success", label: "Green", cls: "bg-success" },
@@ -101,7 +103,7 @@ export function FieldEditor({ field, onChange, onDelete }: Props) {
             onChange={(e) =>
               onChange({ ...field, format: e.target.value || undefined })
             }
-            placeholder="e.g. currency, date"
+            placeholder="route, stops, or percent"
             className="h-8 text-xs"
           />
         </div>
@@ -130,6 +132,39 @@ export function FieldEditor({ field, onChange, onDelete }: Props) {
           </div>
         </div>
       )}
+
+      <div className="flex items-end justify-between gap-3">
+        <div className="space-y-1">
+          <Label className="text-xs">Link</Label>
+          <div className="flex flex-wrap gap-1.5">
+            {LINK_TYPES.map((lt) => (
+              <button
+                key={lt}
+                type="button"
+                onClick={() =>
+                  onChange({ ...field, link: field.link === lt ? undefined : lt })
+                }
+                className={cn(
+                  "rounded-full border px-2.5 py-0.5 text-[10px] font-medium transition-colors",
+                  field.link === lt
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-border text-muted-foreground hover:bg-accent"
+                )}
+              >
+                {lt}
+              </button>
+            ))}
+          </div>
+        </div>
+        <label className="flex items-center gap-1.5 text-[10px] font-medium text-muted-foreground">
+          <input
+            type="checkbox"
+            checked={field.hidden ?? false}
+            onChange={(e) => onChange({ ...field, hidden: e.target.checked || undefined })}
+          />
+          Hidden
+        </label>
+      </div>
     </div>
   );
 }

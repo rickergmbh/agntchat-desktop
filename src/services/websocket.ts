@@ -253,6 +253,36 @@ class WebSocketService {
     });
   }
 
+  // Structured card-button action (CTA without a URL): emits a UserAction
+  // message the agent can react to. Mirrors web/mobile sendAction.
+  sendAction(
+    conversationId: string,
+    action: string,
+    opts?: { label?: string; result?: string; details?: Record<string, unknown> }
+  ): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const channel = this.conversationChannels.get(conversationId);
+      if (!channel) return reject(new Error("Not joined to conversation"));
+
+      const contentStructured: Record<string, unknown> = { action };
+      if (opts?.label) contentStructured.label = opts.label;
+      if (opts?.result) contentStructured.result = opts.result;
+      if (opts?.details) contentStructured.details = opts.details;
+
+      channel
+        .push("new_message", {
+          content: opts?.label || action,
+          content_type: "structured",
+          message_type: "UserAction",
+          content_structured: contentStructured,
+          metadata: { cta_action: action },
+        })
+        .receive("ok", () => resolve())
+        .receive("error", reject)
+        .receive("timeout", () => reject(new Error("Action send timeout")));
+    });
+  }
+
   deleteMessage(conversationId: string, messageId: string): Promise<void> {
     return new Promise((resolve, reject) => {
       const channel = this.conversationChannels.get(conversationId);

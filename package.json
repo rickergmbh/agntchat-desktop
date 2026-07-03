@@ -19,6 +19,7 @@
     "@tauri-apps/plugin-dialog": "^2.6.0",
     "@tauri-apps/plugin-notification": "^2.3.3",
     "@tauri-apps/plugin-shell": "^2.2.0",
+    "dompurify": "^3.4.11",
     "i18next": "^26.3.4",
     "phoenix": "^1.8.5",
     "react": "^19.1.0",

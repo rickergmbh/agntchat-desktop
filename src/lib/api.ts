@@ -2697,6 +2697,8 @@ export type ResultType =
   | "contact"
   | "generic";
 
+export type FieldLink = "tel" | "mailto" | "url" | "map";
+
 export interface DetailField {
   key: string;
   label?: string;
@@ -2705,6 +2707,7 @@ export interface DetailField {
   color?: HighlightColor | string;
   format?: string;
   hidden?: boolean;
+  link?: FieldLink;
 }
 
 export interface ResponseTemplate {
@@ -2714,7 +2717,6 @@ export interface ResponseTemplate {
   resultType: ResultType;
   fields: DetailField[];
   sampleData?: Record<string, unknown>;
-  flowTemplate?: Record<string, unknown>;
   insertedAt: string;
   updatedAt: string;
 }

@@ -25,6 +25,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { cn, formatRelativeShort } from "../../lib/utils";
+import { sanitizeHtml } from "../../lib/sanitizeHtml";
 import { useTemplateStore } from "../../stores/templateStore";
 import { FieldEditor } from "./FieldEditor";
 import { TemplateCardPreview } from "../TemplateCardPreview";
@@ -435,7 +436,7 @@ export function TemplateEditor({ template, isNew }: Props) {
                 <div
                   className="p-4"
                   dangerouslySetInnerHTML={{
-                    __html: `<style>${previewCss}</style>${previewHtml}`,
+                    __html: sanitizeHtml(`<style>${previewCss}</style>${previewHtml}`),
                   }}
                 />
               </div>

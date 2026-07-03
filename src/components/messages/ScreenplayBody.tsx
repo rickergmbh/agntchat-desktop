@@ -1,3 +1,5 @@
+import { sanitizeHtml } from "../../lib/sanitizeHtml";
+
 type ScreenplayBlockKind =
   | "scene"
   | "action"
@@ -145,7 +147,7 @@ export function ScreenplayBody({ content }: { content: string }) {
     return (
       <div
         className="mx-auto max-w-[46rem] font-mono text-[13px] leading-[1.6] text-foreground [&_p]:my-3"
-        dangerouslySetInnerHTML={{ __html: content }}
+        dangerouslySetInnerHTML={{ __html: sanitizeHtml(content) }}
       />
     );
   }
