@@ -1,10 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Paperclip, Send, X, Image as ImageIcon, FileIcon, Loader2 } from "lucide-react";
-import {
-  COMPOSER_PLACEHOLDER,
-  COMPOSER_PLACEHOLDER_IMAGE,
-  COMPOSER_PLACEHOLDER_FILE,
-} from "../../lib/uiStrings";
+import { useTranslation } from "react-i18next";
 import { useChatStore } from "../../stores/chatStore";
 import { useAgentStore } from "../../stores/agentStore";
 import { useAuthStore } from "../../stores/authStore";
@@ -53,6 +49,7 @@ interface PastedText {
 const EMPTY_MEMBERS: ConversationMember[] = [];
 
 export function MessageComposer({ conversationId }: { conversationId: string }) {
+  const { t } = useTranslation("chat");
   const draft = useChatStore((s) => s.drafts[conversationId] ?? "");
   const setDraft = useChatStore((s) => s.setDraft);
   const sendMessage = useChatStore((s) => s.sendMessage);
@@ -472,9 +469,9 @@ export function MessageComposer({ conversationId }: { conversationId: string }) 
             placeholder={
               attachment
                 ? attachment.isImage
-                  ? COMPOSER_PLACEHOLDER_IMAGE
-                  : COMPOSER_PLACEHOLDER_FILE
-                : COMPOSER_PLACEHOLDER
+                  ? t("composerPlaceholderImage")
+                  : t("composerPlaceholderFile")
+                : t("composerPlaceholder")
             }
             rows={1}
             className="flex-1 resize-none rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground scrollbar-autohide"

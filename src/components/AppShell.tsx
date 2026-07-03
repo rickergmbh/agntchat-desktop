@@ -13,6 +13,7 @@ import {
   Monitor,
   LogOut,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { cn } from "../lib/utils";
 import { useWebSocket } from "../hooks/useWebSocket";
 import { useChatStore } from "../stores/chatStore";
@@ -155,6 +156,7 @@ function LeftRail({
   onChange: (v: View) => void;
   onOpenProfile: () => void;
 }) {
+  const { t } = useTranslation("nav");
   const unread = useChatStore((s) => s.unreadCounts);
   const personalConversations = useChatStore((s) => s.conversations);
   // Only count unread against conversations in the personal "Chats" list —
@@ -226,7 +228,7 @@ function LeftRail({
   };
 
   const handleLogout = () => {
-    if (confirm("Sign out?")) logout();
+    if (confirm(t("settings:signOutConfirm"))) logout();
   };
 
   return (
@@ -252,14 +254,14 @@ function LeftRail({
 
         <RailButton
           icon={MessageCircle}
-          label="Chat"
+          label={t("chats")}
           active={view === "chat"}
           onClick={() => onChange("chat")}
           badge={totalUnread > 0 ? totalUnread : undefined}
         />
         <RailButton
           icon={Zap}
-          label="Tasks"
+          label={t("tasks")}
           active={view === "tasks"}
           onClick={() => onChange("tasks")}
           badge={activeTaskCount > 0 ? activeTaskCount : undefined}
@@ -268,7 +270,7 @@ function LeftRail({
         {showFriendsRail && (
           <RailButton
             icon={Users}
-            label={isWorkspaceMode ? "Members" : "Friends"}
+            label={isWorkspaceMode ? t("members") : t("friends")}
             active={view === "friends"}
             onClick={() => onChange("friends")}
             badge={!isWorkspaceMode && pendingFriends > 0 ? pendingFriends : undefined}
@@ -278,8 +280,11 @@ function LeftRail({
           icon={Bot}
           label={
             agentStats.total > 0
-              ? `Agents (${agentStats.online}/${agentStats.total} online)`
-              : "Agents"
+              ? t("agentsOnline", {
+                  online: agentStats.online,
+                  total: agentStats.total,
+                })
+              : t("agents")
           }
           active={view === "agents"}
           onClick={() => onChange("agents")}
@@ -295,7 +300,7 @@ function LeftRail({
         />
         <RailButton
           icon={FolderOpen}
-          label="Files"
+          label={t("files")}
           active={view === "files"}
           onClick={() => onChange("files")}
         />
@@ -307,7 +312,7 @@ function LeftRail({
         {participant?.platformAdmin && (
           <RailButton
             icon={LayoutTemplate}
-            label="Templates"
+            label={t("templates")}
             active={view === "templates"}
             onClick={() => onChange("templates")}
           />
@@ -315,7 +320,7 @@ function LeftRail({
         {participant?.platformAdmin && (
           <RailButton
             icon={ShieldHalf}
-            label="Platform"
+            label={t("platform")}
             active={view === "platform" || view === "fleet"}
             onClick={() => onChange("platform")}
           />
@@ -333,13 +338,16 @@ function LeftRail({
             "h-2 w-2 rounded-full my-1",
             connected ? "bg-success" : "bg-muted-foreground/50"
           )}
-          title={connected ? "Connected" : "Disconnected"}
-          aria-label={connected ? "Connected" : "Disconnected"}
+          title={connected ? t("common:connected") : t("common:disconnected")}
+          aria-label={connected ? t("common:connected") : t("common:disconnected")}
         />
 
         <RailButton
           icon={ThemeIcon}
-          label={`Theme: ${themePreference} (now ${resolvedTheme})`}
+          label={t("settings:theme.railTooltip", {
+            preference: t(`settings:theme.${themePreference}`),
+            resolved: t(`settings:theme.${resolvedTheme}`),
+          })}
           active={false}
           onClick={cycleTheme}
         />
@@ -348,7 +356,7 @@ function LeftRail({
         <button
           type="button"
           onClick={onOpenProfile}
-          title="Profile & Settings"
+          title={t("settings:title")}
           className="flex items-center justify-center w-10 h-10 rounded-lg text-rail-foreground hover:bg-rail-hover hover:text-rail-accent-foreground transition-colors"
         >
           <Avatar className="h-7 w-7">
@@ -365,8 +373,8 @@ function LeftRail({
         <button
           type="button"
           onClick={handleLogout}
-          title="Sign out"
-          aria-label="Sign out"
+          title={t("signOut")}
+          aria-label={t("signOut")}
           className="flex items-center justify-center w-10 h-10 rounded-lg text-rail-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
         >
           <LogOut className="w-4 h-4" />

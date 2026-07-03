@@ -1,6 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { useAuthStore } from "../stores/authStore";
 import { useThemeStore, type ThemePreference } from "../stores/themeStore";
+import { useLocaleStore } from "../stores/localeStore";
+import type { LocalePreference } from "../i18n";
+import { LOCALE_LABELS, SUPPORTED_LOCALES } from "../i18n/generated";
 import { isDesignSystemDebugOn, setDesignSystemDebug } from "../lib/designSystemDebug";
 import * as api from "../lib/api";
 import { cn } from "../lib/utils";
@@ -63,6 +67,7 @@ import {
   Monitor,
   Palette,
   ChevronRight,
+  Languages,
 } from "lucide-react";
 import { deviceTimezone, filterTimezones, formatTimezoneLabel } from "../lib/timezones";
 import { getInitials } from "../lib/utils";
@@ -133,13 +138,13 @@ const STATUS_CONFIG: Record<
 // Other workspace-level config (models, members, invites) returns to the
 // Workspace settings modal when the workspaces feature flag is enabled.
 const SECTIONS = [
-  { value: "profile", label: "Profile", icon: User },
-  { value: "friends", label: "Friends", icon: Users },
-  { value: "appearance", label: "Appearance", icon: Palette },
-  { value: "region", label: "Region", icon: Globe },
-  { value: "memory", label: "Memory", icon: Brain },
-  { value: "llm-keys", label: "LLM Keys", icon: Key },
-  { value: "connections", label: "Connections", icon: Link2 },
+  { value: "profile", labelKey: "sections.profile", icon: User },
+  { value: "friends", labelKey: "sections.friends", icon: Users },
+  { value: "appearance", labelKey: "sections.appearance", icon: Palette },
+  { value: "region", labelKey: "sections.region", icon: Globe },
+  { value: "memory", labelKey: "sections.memory", icon: Brain },
+  { value: "llm-keys", labelKey: "sections.llmKeys", icon: Key },
+  { value: "connections", labelKey: "sections.connections", icon: Link2 },
 ] as const;
 
 type SectionValue = (typeof SECTIONS)[number]["value"];
@@ -159,6 +164,7 @@ type CustomFieldRow = api.CredentialFieldInput;
 // ---------------------------------------------------------------------------
 
 export function Profile({ onClose }: { onClose: () => void }) {
+  const { t } = useTranslation("settings");
   const { participant, logout } = useAuthStore();
   const [activeSection, setActiveSection] = useState<SectionValue>("profile");
   // Friends is behind a per-user runtime flag (resolved on /me) — hide its
@@ -614,7 +620,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
                 }
               />
               <TooltipContent side="right" className="text-xs">
-                {section.label}
+                {t(section.labelKey)}
               </TooltipContent>
             </Tooltip>
           ))}
@@ -633,7 +639,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
                 }
               />
               <TooltipContent side="right" className="text-xs">
-                Close
+                {t("common:close")}
               </TooltipContent>
             </Tooltip>
           </div>
@@ -646,7 +652,10 @@ export function Profile({ onClose }: { onClose: () => void }) {
         <div className="px-5 py-3 border-b border-border flex items-center gap-2.5 flex-shrink-0">
           <div className="min-w-0">
             <h2 className="text-sm font-semibold truncate">
-              {SECTIONS.find((s) => s.value === activeSection)?.label}
+              {(() => {
+                const key = SECTIONS.find((s) => s.value === activeSection)?.labelKey;
+                return key ? t(key) : null;
+              })()}
             </h2>
             <p className="text-[11px] text-muted-foreground truncate">
               {participant?.email}
@@ -704,7 +713,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
             {/* First / Last name */}
             <div className="flex gap-3">
               <div className="flex-1 space-y-1.5">
-                <Label className="text-xs">First Name</Label>
+                <Label className="text-xs">{t("profile.firstName")}</Label>
                 <Input
                   value={firstName}
                   maxLength={50}
@@ -716,11 +725,11 @@ export function Profile({ onClose }: { onClose: () => void }) {
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && profileDirty) handleSaveProfile();
                   }}
-                  placeholder="First name"
+                  placeholder={t("profile.firstName")}
                 />
               </div>
               <div className="flex-1 space-y-1.5">
-                <Label className="text-xs">Last Name</Label>
+                <Label className="text-xs">{t("profile.lastName")}</Label>
                 <Input
                   value={lastName}
                   maxLength={50}
@@ -732,7 +741,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && profileDirty) handleSaveProfile();
                   }}
-                  placeholder="Last name"
+                  placeholder={t("profile.lastName")}
                 />
               </div>
             </div>
@@ -741,7 +750,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
                 Otherwise display name is derived from first + last on save. */}
             {displayNameFieldEnabled && (
               <div className="space-y-1.5">
-                <Label className="text-xs">Display Name</Label>
+                <Label className="text-xs">{t("auth:displayName")}</Label>
                 <Input
                   value={displayName}
                   onChange={(e) => {
@@ -752,7 +761,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && profileDirty) handleSaveProfile();
                   }}
-                  placeholder="Your display name"
+                  placeholder={t("auth:placeholders.yourName")}
                 />
               </div>
             )}
@@ -771,13 +780,13 @@ export function Profile({ onClose }: { onClose: () => void }) {
               ) : profileSaved ? (
                 <Check className="w-3.5 h-3.5" />
               ) : (
-                "Save Changes"
+                t("common:save")
               )}
             </Button>
 
             {/* Email (read-only) */}
             <div className="space-y-1.5">
-              <Label className="text-xs">Email</Label>
+              <Label className="text-xs">{t("auth:email")}</Label>
               <Input
                 value={participant?.email ?? ""}
                 readOnly
@@ -794,7 +803,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
               className="text-destructive border-destructive/30 hover:bg-destructive/10 hover:text-destructive/90"
             >
               <LogOut className="w-3.5 h-3.5" />
-              Sign Out
+              {t("nav:signOut")}
             </Button>
           </div>
         )}
@@ -815,6 +824,8 @@ export function Profile({ onClose }: { onClose: () => void }) {
 
         {activeSection === "region" && (
           <div className="flex-1 overflow-y-auto p-5 space-y-6">
+            <LanguageSection />
+            <Separator />
             <TimezoneSection />
           </div>
         )}
@@ -1347,16 +1358,17 @@ export function Profile({ onClose }: { onClose: () => void }) {
 
 const THEME_OPTIONS: {
   value: ThemePreference;
-  label: string;
-  description: string;
+  labelKey: string;
+  descriptionKey: string;
   icon: React.ElementType;
 }[] = [
-  { value: "light", label: "Light", description: "Always light", icon: Sun },
-  { value: "dark", label: "Dark", description: "Always dark", icon: Moon },
-  { value: "system", label: "System", description: "Match OS setting", icon: Monitor },
+  { value: "light", labelKey: "theme.light", descriptionKey: "theme.alwaysLight", icon: Sun },
+  { value: "dark", labelKey: "theme.dark", descriptionKey: "theme.alwaysDark", icon: Moon },
+  { value: "system", labelKey: "theme.system", descriptionKey: "theme.matchSystem", icon: Monitor },
 ];
 
 function TimezoneSection() {
+  const { t } = useTranslation("settings");
   const participant = useAuthStore((s) => s.participant);
   const current = participant?.timezone || "Etc/UTC";
   const browserTz = deviceTimezone();
@@ -1389,13 +1401,11 @@ function TimezoneSection() {
   return (
     <div className="space-y-4">
       <div>
-        <Label className="text-xs">Current timezone</Label>
+        <Label className="text-xs">{t("timezone.current")}</Label>
         <p className="mt-1 text-sm font-medium">{formatTimezoneLabel(current)}</p>
         <p className="text-[11px] text-muted-foreground">{current}</p>
         <p className="mt-2 text-[11px] text-muted-foreground">
-          Drives how agents interpret &ldquo;today&rdquo; and &ldquo;tomorrow&rdquo;, and the
-          local time used by routine schedules. Auto-detected from your device on
-          login — change it here if it&rsquo;s wrong or you&rsquo;re traveling.
+          {t("timezone.detail")}
         </p>
       </div>
 
@@ -1405,7 +1415,7 @@ function TimezoneSection() {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search timezones (e.g. New York, Tokyo)"
+            placeholder={t("timezone.searchPlaceholder")}
             className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
           />
         </div>
@@ -1419,7 +1429,7 @@ function TimezoneSection() {
           >
             <Monitor className="h-4 w-4 text-primary" />
             <div className="flex-1">
-              <p className="text-sm font-medium text-primary">Use device timezone</p>
+              <p className="text-sm font-medium text-primary">{t("timezone.useDevice")}</p>
               <p className="text-[11px] text-muted-foreground">{browserTz}</p>
             </div>
             {saving === browserTz && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
@@ -1429,7 +1439,7 @@ function TimezoneSection() {
         <div className="max-h-80 overflow-y-auto">
           {items.length === 0 ? (
             <p className="px-3 py-4 text-center text-xs text-muted-foreground">
-              No timezones match &ldquo;{query}&rdquo;
+              {t("timezone.noMatches", { query })}
             </p>
           ) : (
             items.slice(0, 200).map((tz) => {
@@ -1464,7 +1474,68 @@ function TimezoneSection() {
   );
 }
 
+// ---------------------------------------------------------------------------
+// Language — system default or an explicit supported locale.
+// Locale names are endonyms (each language named in itself) — never translated.
+// ---------------------------------------------------------------------------
+
+function LanguageSection() {
+  const { t } = useTranslation("settings");
+  const preference = useLocaleStore((s) => s.preference);
+  const setPreference = useLocaleStore((s) => s.setPreference);
+
+  const options: {
+    value: LocalePreference;
+    label: string;
+    icon: React.ElementType;
+  }[] = [
+    { value: "system", label: t("language.system"), icon: Monitor },
+    ...SUPPORTED_LOCALES.map((locale) => ({
+      value: locale as LocalePreference,
+      label: LOCALE_LABELS[locale],
+      icon: Languages as React.ElementType,
+    })),
+  ];
+
+  return (
+    <div className="space-y-4">
+      <div className="space-y-1">
+        <Label className="text-xs">{t("language.label")}</Label>
+        <p className="text-[11px] text-muted-foreground">
+          {t("language.description")}
+        </p>
+      </div>
+
+      <div className="grid grid-cols-3 gap-2">
+        {options.map((opt) => {
+          const Icon = opt.icon;
+          const selected = preference === opt.value;
+          return (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => setPreference(opt.value)}
+              className={cn(
+                "flex flex-col items-center gap-1.5 rounded-lg border px-3 py-3 text-xs transition-colors",
+                "hover:bg-muted/50",
+                selected
+                  ? "border-primary bg-primary/10 text-foreground"
+                  : "border-border text-muted-foreground"
+              )}
+              aria-pressed={selected}
+            >
+              <Icon className="h-4 w-4" />
+              <span className="font-medium text-foreground">{opt.label}</span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function AppearanceSection() {
+  const { t } = useTranslation("settings");
   const preference = useThemeStore((s) => s.preference);
   const resolved = useThemeStore((s) => s.resolved);
   const setPreference = useThemeStore((s) => s.setPreference);
@@ -1479,10 +1550,10 @@ function AppearanceSection() {
   return (
     <div className="space-y-4">
       <div className="space-y-1">
-        <Label className="text-xs">Theme</Label>
+        <Label className="text-xs">{t("theme.label")}</Label>
         <p className="text-[11px] text-muted-foreground">
-          Currently showing <span className="font-medium capitalize">{resolved}</span>
-          {preference === "system" && " (from system)"}
+          {t("theme.currentlyShowing", { theme: t(`theme.${resolved}`) })}
+          {preference === "system" && ` ${t("theme.fromSystem")}`}
         </p>
       </div>
 
@@ -1505,8 +1576,8 @@ function AppearanceSection() {
               aria-pressed={selected}
             >
               <Icon className="h-4 w-4" />
-              <span className="font-medium text-foreground">{opt.label}</span>
-              <span className="text-[10px] text-muted-foreground">{opt.description}</span>
+              <span className="font-medium text-foreground">{t(opt.labelKey)}</span>
+              <span className="text-[10px] text-muted-foreground">{t(opt.descriptionKey)}</span>
             </button>
           );
         })}
@@ -1527,17 +1598,17 @@ function AppearanceSection() {
         <span className="flex items-center gap-2">
           <Palette className="h-4 w-4 text-muted-foreground" />
           <span className="flex flex-col items-start">
-            <span className="font-medium text-foreground">Design-system debug</span>
-            <span className="text-[10px] text-muted-foreground">Also toggles with ⌘⇧D</span>
+            <span className="font-medium text-foreground">{t("designDebug.label")}</span>
+            <span className="text-[10px] text-muted-foreground">{t("designDebug.hint")}</span>
           </span>
         </span>
         <span
           className={cn(
-            "rounded-full px-2 py-0.5 text-[10px] font-semibold",
+            "rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase",
             dsDebug ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
           )}
         >
-          {dsDebug ? "ON" : "OFF"}
+          {dsDebug ? t("common:on") : t("common:off")}
         </span>
       </button>
     </div>

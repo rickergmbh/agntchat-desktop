@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useAuthStore } from "../stores/authStore";
 import { Bot } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -7,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 
 export function LoginScreen() {
+  const { t } = useTranslation("auth");
   const { login, signup, loading, error } = useAuthStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,26 +33,24 @@ export function LoginScreen() {
           </div>
           <h1 className="text-xl font-semibold text-text">Simplifi</h1>
         </div>
-        <p className="text-text-secondary text-sm mb-8">
-          Agent Management System
-        </p>
+        <p className="text-text-secondary text-sm mb-8">{t("tagline")}</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {isSignup && (
             <div className="space-y-1.5">
-              <Label htmlFor="displayName">Display Name</Label>
+              <Label htmlFor="displayName">{t("displayName")}</Label>
               <Input
                 id="displayName"
                 type="text"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
-                placeholder="Your name"
+                placeholder={t("placeholders.yourName")}
               />
             </div>
           )}
 
           <div className="space-y-1.5">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t("email")}</Label>
             <Input
               id="email"
               type="email"
@@ -62,13 +62,13 @@ export function LoginScreen() {
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">{t("password")}</Label>
             <Input
               id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
+              placeholder={t("password")}
               required
             />
           </div>
@@ -80,7 +80,11 @@ export function LoginScreen() {
           )}
 
           <Button type="submit" disabled={loading} className="w-full">
-            {loading ? "..." : isSignup ? "Create Account" : "Sign In"}
+            {loading
+              ? t("signingIn")
+              : isSignup
+                ? t("createAccount")
+                : t("signIn")}
           </Button>
         </form>
 
@@ -93,8 +97,8 @@ export function LoginScreen() {
           }}
         >
           {isSignup
-            ? "Already have an account? Sign in"
-            : "Create an account"}
+            ? `${t("alreadyHaveAccount")} ${t("signIn")}`
+            : `${t("dontHaveAccount")} ${t("signUp")}`}
         </Button>
       </Card>
     </div>

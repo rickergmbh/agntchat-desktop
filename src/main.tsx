@@ -2,6 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import { initDesignSystemDebug } from "./lib/designSystemDebug";
+// Side-effect: initialize i18next (reads the persisted locale preference
+// synchronously) before anything renders.
+import "./i18n";
 import "./styles.css";
 
 initDesignSystemDebug();

@@ -3,6 +3,7 @@ import * as api from "../lib/api";
 import { resetAvatarPolicyCache } from "../lib/imageProcessor";
 import { resetFieldLimitsCache } from "../lib/fieldLimits";
 import { resetAgentTypesCache } from "../lib/agentTypes";
+import { useLocaleStore } from "./localeStore";
 
 // Push the device's IANA tz to the backend if it differs from what's stored.
 // Best-effort. Updates the in-memory participant on success so the profile
@@ -33,6 +34,14 @@ function syncDeviceTimezone(participant: api.Participant): void {
     .catch((err) => {
       console.warn("[Tz] sync failed:", err?.message || err);
     });
+}
+
+// Adopt the server's stored UI locale (from /api/me) into the locale store.
+// Null means "follow device language" — hydrate leaves the local preference
+// untouched in that case and never pushes back to the server.
+function syncServerLocale(participant: api.Participant): void {
+  if (participant.type !== "human") return;
+  useLocaleStore.getState().hydrateFromServer(participant.locale ?? null);
 }
 
 interface AuthState {
@@ -66,6 +75,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         loading: false,
       });
       syncDeviceTimezone(result.participant);
+      syncServerLocale(result.participant);
     } catch (e) {
       set({
         loading: false,
@@ -86,6 +96,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         loading: false,
       });
       syncDeviceTimezone(result.participant);
+      syncServerLocale(result.participant);
     } catch (e) {
       set({
         loading: false,
@@ -129,6 +140,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       localStorage.setItem("participant", JSON.stringify(participant));
       set({ participant });
       syncDeviceTimezone(participant);
+      syncServerLocale(participant);
     } catch {
       // Silently fail — stale data is fine as fallback
     }

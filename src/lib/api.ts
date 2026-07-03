@@ -2127,6 +2127,9 @@ export interface Participant {
   avatarUrl?: string;
   online?: boolean;
   timezone?: string;
+  /** UI locale stored on the backend (self-view only); null = follow the
+   *  device language. */
+  locale?: string | null;
   description?: string;
   location?: unknown;
   insertedAt?: string;
