@@ -1,6 +1,11 @@
 import { create } from "zustand";
 import { ws } from "../services/websocket";
 import type { ActiveStream, StreamPhase } from "../lib/api";
+import {
+  STALE_STREAM_MS,
+  STREAM_COMPLETE_LINGER_MS,
+  STREAM_SWEEP_INTERVAL_MS,
+} from "../lib/status-contract.generated";
 import { useAuthStore } from "./authStore";
 
 /**
@@ -30,7 +35,6 @@ function streamTextEnabled(): boolean {
  *    was missed.
  */
 
-const STALE_STREAM_MS = 75_000;
 const MAX_STREAM_THOUGHTS = 6;
 /** Don't preserve trivial fragments (single tokens, partial words). */
 const MIN_THOUGHT_CHARS = 12;
@@ -180,7 +184,7 @@ export const useStreamingStore = create<StreamingState>((set, get) => ({
           }
           return s;
         });
-      }, 3000);
+      }, STREAM_COMPLETE_LINGER_MS);
       return;
     }
 
@@ -326,7 +330,7 @@ export const useStreamingStore = create<StreamingState>((set, get) => ({
           return { streams: next, _lastUpdate: nextTs };
         });
       }
-    }, 10_000);
+    }, STREAM_SWEEP_INTERVAL_MS);
 
     return () => {
       unsub();

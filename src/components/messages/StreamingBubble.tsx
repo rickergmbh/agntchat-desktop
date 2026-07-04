@@ -1,6 +1,12 @@
-import { Bot, Brain, Wrench, Pen, Search, Clock, Users, Loader2, Square } from "lucide-react";
+import { Bot, Brain, Loader2, Square } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import type { ActiveStream, StreamPhase } from "../../lib/api";
+import type { ActiveStream } from "../../lib/api";
+import {
+  PHASE_ICONS,
+  PHASE_IS_ACTIVE,
+  STREAM_PHASE_FALLBACK_LABEL_KEY,
+  STREAM_PHASE_LABEL_KEYS,
+} from "../../lib/status-contract.generated";
 import { cn } from "../../lib/utils";
 import { Bubble, BubbleContent } from "@/components/ui/bubble";
 import {
@@ -9,24 +15,6 @@ import {
   MessageContent,
   MessageHeader,
 } from "@/components/ui/message";
-
-const phaseIcons: Record<StreamPhase, typeof Brain> = {
-  thinking: Brain,
-  tool_call: Wrench,
-  writing: Pen,
-  analyzing: Search,
-  queued: Clock,
-  waiting: Users,
-};
-
-const phaseLabelKeys: Record<StreamPhase, string> = {
-  thinking: "streamPhase.thinking",
-  tool_call: "streamPhase.toolCall",
-  writing: "streamPhase.writing",
-  analyzing: "streamPhase.analyzing",
-  queued: "streamPhase.queued",
-  waiting: "streamPhase.waiting",
-};
 
 export function StreamingBubble({
   stream,
@@ -40,11 +28,11 @@ export function StreamingBubble({
   stopping?: boolean;
 }) {
   const { t } = useTranslation("chat");
-  const Icon = phaseIcons[stream.phase] ?? Brain;
+  const Icon = PHASE_ICONS[stream.phase] ?? Brain;
   const label =
     stream.phaseDetail ??
-    t(phaseLabelKeys[stream.phase] ?? "streamPhase.working");
-  const animated = stream.phase !== "queued" && stream.phase !== "waiting";
+    t(STREAM_PHASE_LABEL_KEYS[stream.phase] ?? STREAM_PHASE_FALLBACK_LABEL_KEY);
+  const animated = PHASE_IS_ACTIVE[stream.phase] ?? true;
 
   return (
     <MessageRow className="mt-2 px-4">

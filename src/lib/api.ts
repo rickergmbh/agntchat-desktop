@@ -1,3 +1,10 @@
+import type {
+  AgentPresence,
+  AgentRuntime,
+  PresenceMode,
+  StreamPhase,
+} from "./status-contract.generated";
+
 const DEFAULT_API_URL = "https://agentchat-backend.fly.dev";
 
 export function getApiUrl(): string {
@@ -2368,13 +2375,8 @@ export async function requestTaskRevisionRest(
 
 // --- Streaming ---
 
-export type StreamPhase =
-  | "thinking"
-  | "tool_call"
-  | "writing"
-  | "analyzing"
-  | "queued"
-  | "waiting";
+// Canonical streaming vocabulary lives in the shared status contract.
+export type { StreamPhase, StreamStatus } from "./status-contract.generated";
 
 export interface ActiveStream {
   streamId: string;
@@ -2800,7 +2802,7 @@ export interface Agent {
   soulMdInherited?: boolean;
   soulMdSourceName?: string;
   soulMdSourceId?: string;
-  presence?: "online_local" | "offline";
+  presence?: AgentPresence;
   /** Machine name the agent's bridge reported (local-runtime agents only,
    *  present while online). Lets the UI say "running on Jamess-MacBook"
    *  instead of an ambiguous "local". */
@@ -2809,8 +2811,8 @@ export interface Agent {
    *  agent_bridge.py as a subprocess. `"org_host"` → a registered Linux
    *  host VM runs the bridge; process_manager skips local spawn and
    *  returns AgentStatus::Remote. Set via PATCH /api/agents/:id/runtime. */
-  runtime?: "local" | "org_host";
-  presenceMode?: "always_on" | "wake_on_demand" | "manual";
+  runtime?: AgentRuntime;
+  presenceMode?: PresenceMode;
   idleTimeoutSeconds?: number | null;
   organizationId?: string | null;
   assignedHostId?: string | null;

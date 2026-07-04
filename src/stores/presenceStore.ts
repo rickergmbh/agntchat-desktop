@@ -1,9 +1,10 @@
 import { create } from "zustand";
 import { ws } from "../services/websocket";
 import type { AgentActivity } from "../lib/agent-activity";
-
-const HUMAN_TYPING_TTL_MS = 3_000;
-const AGENT_TYPING_TTL_MS = 30_000;
+import {
+  TYPING_TIMEOUT_AGENT_MS,
+  TYPING_TIMEOUT_HUMAN_MS,
+} from "../lib/status-contract.generated";
 
 interface PresenceState {
   connected: boolean;
@@ -120,7 +121,7 @@ export const usePresenceStore = create<PresenceState>((set) => {
     const key = `${convId}:${participantId}`;
     const prev = typingTimers.get(key);
     if (prev) clearTimeout(prev);
-    const ttl = isAgent ? AGENT_TYPING_TTL_MS : HUMAN_TYPING_TTL_MS;
+    const ttl = isAgent ? TYPING_TIMEOUT_AGENT_MS : TYPING_TIMEOUT_HUMAN_MS;
     typingTimers.set(
       key,
       setTimeout(() => clearTyping(convId, participantId), ttl)
