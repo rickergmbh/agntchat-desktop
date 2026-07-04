@@ -2358,6 +2358,70 @@ function PrivacyDataSection() {
     }
   };
 
+  // ---- Agent memories (search & forget) ----
+  const [memoryQuery, setMemoryQuery] = useState("");
+  const [memorySearching, setMemorySearching] = useState(false);
+  // null = no search performed yet (renders nothing, not the empty state)
+  const [memoryResults, setMemoryResults] = useState<
+    api.MemorySearchResult[] | null
+  >(null);
+  // Keys are `${type}:${id}` — ids are only unique within a store type.
+  const [memorySelected, setMemorySelected] = useState<Set<string>>(new Set());
+  const [memoryError, setMemoryError] = useState<"search" | "forget" | null>(
+    null
+  );
+  const [forgetting, setForgetting] = useState(false);
+  const [forgotten, setForgotten] = useState(false);
+  const canSearchMemories = memoryQuery.trim().length >= 2;
+  const memoryKey = (r: api.MemorySearchResult) => `${r.type}:${r.id}`;
+
+  const handleMemorySearch = async () => {
+    if (!canSearchMemories || memorySearching) return;
+    setMemorySearching(true);
+    setMemoryError(null);
+    setForgotten(false);
+    try {
+      const { results } = await api.searchMemories(memoryQuery.trim());
+      setMemoryResults(results);
+      setMemorySelected(new Set());
+    } catch {
+      setMemoryError("search");
+    } finally {
+      setMemorySearching(false);
+    }
+  };
+
+  const toggleMemory = (key: string) => {
+    setMemorySelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
+
+  const handleForgetMemories = async () => {
+    if (!memoryResults || memorySelected.size === 0 || forgetting) return;
+    setForgetting(true);
+    setMemoryError(null);
+    setForgotten(false);
+    const items = memoryResults
+      .filter((r) => memorySelected.has(memoryKey(r)))
+      .map(({ type, id }) => ({ type, id }));
+    try {
+      await api.forgetMemories(items);
+      setMemoryResults((prev) =>
+        prev ? prev.filter((r) => !memorySelected.has(memoryKey(r))) : prev
+      );
+      setMemorySelected(new Set());
+      setForgotten(true);
+    } catch {
+      setMemoryError("forget");
+    } finally {
+      setForgetting(false);
+    }
+  };
+
   // ---- Policy re-accept ----
   const [reaccepting, setReaccepting] = useState(false);
   const [reacceptError, setReacceptError] = useState(false);
@@ -2507,6 +2571,120 @@ function PrivacyDataSection() {
           disabled={savingMarketing}
           onCheckedChange={(v) => void handleToggleMarketing(v)}
         />
+      </div>
+
+      {/* What your agents remember — search & forget */}
+      <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+        <div className="min-w-0">
+          <p className="text-sm font-medium">{t("privacy.memories")}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            {t("privacy.memoriesDesc")}
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Input
+            value={memoryQuery}
+            onChange={(e) => setMemoryQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") void handleMemorySearch();
+            }}
+            placeholder={t("privacy.memoriesSearchPlaceholder")}
+            autoComplete="off"
+          />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => void handleMemorySearch()}
+            disabled={!canSearchMemories || memorySearching}
+            className="flex-shrink-0"
+          >
+            {memorySearching ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Search className="w-3.5 h-3.5" />
+            )}
+          </Button>
+        </div>
+        {memoryError === "search" && (
+          <p className="text-xs text-destructive flex items-center gap-1.5">
+            <AlertCircle className="w-3.5 h-3.5" />
+            {t("privacy.memoriesSearchFailed")}
+          </p>
+        )}
+        {memoryResults !== null && memoryResults.length === 0 && (
+          <p className="text-xs text-muted-foreground">
+            {t("privacy.memoriesEmpty")}
+          </p>
+        )}
+        {memoryResults !== null && memoryResults.length > 0 && (
+          <>
+            <div className="max-h-56 overflow-y-auto rounded-lg border border-border divide-y divide-border">
+              {memoryResults.map((r) => {
+                const key = memoryKey(r);
+                return (
+                  <label
+                    key={key}
+                    className="flex items-start gap-2.5 px-3 py-2 cursor-pointer hover:bg-muted/50"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={memorySelected.has(key)}
+                      onChange={() => toggleMemory(key)}
+                      className="mt-0.5 h-3.5 w-3.5 accent-primary flex-shrink-0"
+                    />
+                    <span className="min-w-0">
+                      <span className="block text-xs font-medium truncate">
+                        {r.title || r.type.replace(/_/g, " ")}
+                      </span>
+                      {r.snippet && (
+                        <span className="block text-xs text-muted-foreground truncate">
+                          {r.snippet}
+                        </span>
+                      )}
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => void handleForgetMemories()}
+                disabled={memorySelected.size === 0 || forgetting}
+              >
+                {forgetting ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Trash2 className="w-3.5 h-3.5" />
+                )}
+                {t("privacy.memoriesForget")}
+              </Button>
+              {memorySelected.size > 0 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setMemorySelected(new Set())}
+                  disabled={forgetting}
+                >
+                  {t("privacy.cancel")}
+                </Button>
+              )}
+            </div>
+          </>
+        )}
+        {memoryError === "forget" && (
+          <p className="text-xs text-destructive flex items-center gap-1.5">
+            <AlertCircle className="w-3.5 h-3.5" />
+            {t("privacy.updateFailed")}
+          </p>
+        )}
+        {forgotten && (
+          <p className="text-xs text-success flex items-center gap-1.5">
+            <Check className="w-3.5 h-3.5" />
+            {t("privacy.memoriesForgotten")}
+          </p>
+        )}
       </div>
 
       {/* Delete account */}

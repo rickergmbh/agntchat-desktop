@@ -190,6 +190,34 @@ export async function updateConsent(body: {
   });
 }
 
+/** One row an agent remembers about the caller, across memory stores. */
+export interface MemorySearchResult {
+  type: "memory" | "family_memory" | "annotation" | "knowledge_article";
+  id: string;
+  agentId: string | null;
+  title: string | null;
+  snippet: string | null;
+  updatedAt: string | null;
+}
+
+/** Search everything the caller's agents remember about them.
+ *  Requires q ≥ 2 chars (422 otherwise); results capped at 200. */
+export async function searchMemories(
+  q: string
+): Promise<{ results: MemorySearchResult[] }> {
+  return request(`/api/me/memories/search?q=${encodeURIComponent(q)}`);
+}
+
+/** Delete the selected remembered items. Returns how many were deleted. */
+export async function forgetMemories(
+  items: Pick<MemorySearchResult, "type" | "id">[]
+): Promise<{ deleted: number }> {
+  return request("/api/me/memories/forget", {
+    method: "POST",
+    body: JSON.stringify({ items }),
+  });
+}
+
 // Profile
 export async function getProfile(): Promise<Participant> {
   return request("/api/me");
