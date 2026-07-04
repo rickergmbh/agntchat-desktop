@@ -209,6 +209,7 @@ function ActiveConversation({
 
   const online = usePresenceStore((s) => s.online);
   const agentActivity = usePresenceStore((s) => s.agentActivity);
+  const agentActivityConvs = usePresenceStore((s) => s.agentActivityConvs);
 
   // Match web's ChatView header — show a stacked GroupAvatar for group
   // conversations or whenever there's more than one other participant.
@@ -264,14 +265,21 @@ function ActiveConversation({
 
   // Busiest agent member's live activity — shown in the header where the
   // status normally reads "Online", so the user sees "Thinking…/Working…".
+  // Scoped to THIS conversation via agentActivityConvs (like the
+  // conversation list): work in another conversation must not make this
+  // header claim the agent is thinking here.
   const headerActivity = useMemo(
     () =>
       otherMembers
         .map((m) =>
-          m.participant?.type === "agent" ? agentActivity[m.participantId] : undefined
+          m.participant?.type === "agent" &&
+          conversation &&
+          agentActivityConvs[m.participantId]?.includes(conversation.id)
+            ? agentActivity[m.participantId]
+            : undefined
         )
         .find(Boolean),
-    [otherMembers, agentActivity]
+    [otherMembers, agentActivity, agentActivityConvs, conversation]
   );
 
   // When the active conversation is an agent thread, surface a back-to-parent

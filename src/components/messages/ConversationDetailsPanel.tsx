@@ -335,6 +335,7 @@ export function ConversationDetailsPanel({
               <MemberRow
                 key={m.participantId}
                 member={m}
+                conversationId={conversation.id}
                 presence={presenceFor(m.participantId)}
                 isSelf={m.participantId === currentUserId}
                 isAdmin={isAdmin}
@@ -491,6 +492,7 @@ export function ConversationDetailsPanel({
 
 function MemberRow({
   member,
+  conversationId,
   presence,
   isSelf,
   isAdmin,
@@ -498,6 +500,7 @@ function MemberRow({
   onRemove,
 }: {
   member: ConversationMember;
+  conversationId: string;
   presence: "online_local" | "offline";
   isSelf: boolean;
   isAdmin: boolean;
@@ -509,11 +512,13 @@ function MemberRow({
   const name = p?.displayName ?? t("common:unknown");
   const isAgent = p?.type === "agent";
   const isOnline = presence !== "offline";
-  // Live activity (thinking / working / writing) read reactively per row so
-  // the members list reflects what an agent is doing right now, even when
-  // that work is happening in a different conversation.
+  // Live activity (thinking / working / writing) read reactively per row,
+  // scoped to THIS conversation via agentActivityConvs — work happening in
+  // another conversation must not light this member up here.
   const activity = usePresenceStore((s) =>
-    isAgent ? s.agentActivity[member.participantId] : undefined
+    isAgent && s.agentActivityConvs[member.participantId]?.includes(conversationId)
+      ? s.agentActivity[member.participantId]
+      : undefined
   );
 
   return (
