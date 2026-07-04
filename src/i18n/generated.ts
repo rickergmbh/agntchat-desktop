@@ -3862,7 +3862,8 @@ export const resources = {
         "memoriesSearchPlaceholder": "Search remembered facts (e.g. a name)",
         "openDownload": "Open download",
         "reacceptBody": "We've updated our Terms of Service and Privacy Policy. Please review and accept to continue.",
-        "reacceptCta": "Review & accept",
+        "reacceptCta": "Agree & continue",
+        "reacceptDone": "Thanks — your acceptance has been recorded.",
         "reacceptTitle": "Our terms have changed",
         "title": "Privacy & data",
         "updateFailed": "Couldn't save your preference. Please try again."
@@ -8335,7 +8336,8 @@ export const resources = {
         "memoriesSearchPlaceholder": "Busca datos recordados (p. ej., un nombre)",
         "openDownload": "Abrir descarga",
         "reacceptBody": "Hemos actualizado nuestros Términos del servicio y Política de privacidad. Revísalos y acéptalos para continuar.",
-        "reacceptCta": "Revisar y aceptar",
+        "reacceptCta": "Aceptar y continuar",
+        "reacceptDone": "Gracias: tu aceptación ha quedado registrada.",
         "reacceptTitle": "Nuestros términos han cambiado",
         "title": "Privacidad y datos",
         "updateFailed": "No se pudo guardar tu preferencia. Inténtalo de nuevo."
@@ -12808,7 +12810,8 @@ export const resources = {
         "memoriesSearchPlaceholder": "Gemerkte Fakten durchsuchen (z. B. einen Namen)",
         "openDownload": "Download öffnen",
         "reacceptBody": "Wir haben unsere Nutzungsbedingungen und Datenschutzerklärung aktualisiert. Bitte prüfen und akzeptieren Sie diese, um fortzufahren.",
-        "reacceptCta": "Prüfen und akzeptieren",
+        "reacceptCta": "Zustimmen und fortfahren",
+        "reacceptDone": "Vielen Dank — Ihre Zustimmung wurde gespeichert.",
         "reacceptTitle": "Unsere Bedingungen haben sich geändert",
         "title": "Datenschutz & Daten",
         "updateFailed": "Ihre Einstellung konnte nicht gespeichert werden. Bitte versuchen Sie es erneut."
@@ -17281,7 +17284,8 @@ export const resources = {
         "memoriesSearchPlaceholder": "Rechercher les informations retenues (p. ex. un nom)",
         "openDownload": "Ouvrir le téléchargement",
         "reacceptBody": "Nous avons mis à jour nos Conditions d'utilisation et notre Politique de confidentialité. Veuillez les consulter et les accepter pour continuer.",
-        "reacceptCta": "Consulter et accepter",
+        "reacceptCta": "Accepter et continuer",
+        "reacceptDone": "Merci — votre acceptation a bien été enregistrée.",
         "reacceptTitle": "Nos conditions ont changé",
         "title": "Confidentialité et données",
         "updateFailed": "Impossible d'enregistrer votre préférence. Veuillez réessayer."
@@ -21754,7 +21758,8 @@ export const resources = {
         "memoriesSearchPlaceholder": "Pesquisar fatos lembrados (ex.: um nome)",
         "openDownload": "Abrir download",
         "reacceptBody": "Atualizamos nossos Termos de Serviço e Política de Privacidade. Revise e aceite para continuar.",
-        "reacceptCta": "Revisar e aceitar",
+        "reacceptCta": "Aceitar e continuar",
+        "reacceptDone": "Obrigado — sua aceitação foi registrada.",
         "reacceptTitle": "Nossos termos mudaram",
         "title": "Privacidade e dados",
         "updateFailed": "Não foi possível salvar sua preferência. Tente novamente."
@@ -26227,7 +26232,8 @@ export const resources = {
         "memoriesSearchPlaceholder": "記憶された情報を検索（例：名前）",
         "openDownload": "ダウンロードを開く",
         "reacceptBody": "利用規約とプライバシーポリシーを更新しました。続行するには内容をご確認のうえ同意してください。",
-        "reacceptCta": "確認して同意",
+        "reacceptCta": "同意して続行",
+        "reacceptDone": "ご同意ありがとうございました。記録しました。",
         "reacceptTitle": "規約が変更されました",
         "title": "プライバシーとデータ",
         "updateFailed": "設定を保存できませんでした。もう一度お試しください。"
@@ -30700,7 +30706,8 @@ export const resources = {
         "memoriesSearchPlaceholder": "搜索已记住的信息（例如某个名字）",
         "openDownload": "打开下载",
         "reacceptBody": "我们已更新《服务条款》和《隐私政策》。请查看并接受以继续。",
-        "reacceptCta": "查看并接受",
+        "reacceptCta": "同意并继续",
+        "reacceptDone": "感谢您的同意，已记录。",
         "reacceptTitle": "我们的条款已更新",
         "title": "隐私与数据",
         "updateFailed": "无法保存您的偏好设置。请重试。"
@@ -35173,7 +35180,8 @@ export const resources = {
         "memoriesSearchPlaceholder": "기억된 정보 검색 (예: 이름)",
         "openDownload": "다운로드 열기",
         "reacceptBody": "서비스 약관 및 개인정보 처리방침을 업데이트했습니다. 계속하려면 검토 후 동의해 주세요.",
-        "reacceptCta": "검토 후 동의",
+        "reacceptCta": "동의하고 계속",
+        "reacceptDone": "감사합니다. 동의가 기록되었습니다.",
         "reacceptTitle": "약관이 변경되었습니다",
         "title": "개인정보 및 데이터",
         "updateFailed": "설정을 저장하지 못했습니다. 다시 시도해 주세요."
@@ -39646,7 +39654,8 @@ export const resources = {
         "memoriesSearchPlaceholder": "Cerca informazioni memorizzate (ad es. un nome)",
         "openDownload": "Apri il download",
         "reacceptBody": "Abbiamo aggiornato i nostri Termini di servizio e l'Informativa sulla privacy. Esaminali e accettali per continuare.",
-        "reacceptCta": "Esamina e accetta",
+        "reacceptCta": "Accetta e continua",
+        "reacceptDone": "Grazie: la tua accettazione è stata registrata.",
         "reacceptTitle": "I nostri termini sono cambiati",
         "title": "Privacy e dati",
         "updateFailed": "Impossibile salvare la tua preferenza. Riprova."
@@ -44119,7 +44128,8 @@ export const resources = {
         "memoriesSearchPlaceholder": "याद रखे गए तथ्य खोजें (जैसे कोई नाम)",
         "openDownload": "डाउनलोड खोलें",
         "reacceptBody": "हमने अपनी सेवा की शर्तें और गोपनीयता नीति अपडेट की है। जारी रखने के लिए कृपया समीक्षा करें और स्वीकार करें।",
-        "reacceptCta": "समीक्षा करें और स्वीकार करें",
+        "reacceptCta": "सहमत होकर जारी रखें",
+        "reacceptDone": "धन्यवाद — आपकी सहमति दर्ज कर ली गई है।",
         "reacceptTitle": "हमारी शर्तें बदल गई हैं",
         "title": "गोपनीयता और डेटा",
         "updateFailed": "आपकी प्राथमिकता सहेजी नहीं जा सकी। कृपया पुनः प्रयास करें।"
