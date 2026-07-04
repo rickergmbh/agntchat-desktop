@@ -482,6 +482,22 @@ export async function updateAgentRuntime(
   return res.agent;
 }
 
+/** Patch the agent's sub-agent spawn policy. The endpoint validates + merges
+ *  the sparse patch and returns the resolved stored policy. */
+export async function updateSubAgentPolicy(
+  id: string,
+  policy: SubAgentPolicy
+): Promise<SubAgentPolicy> {
+  const res = await request<{ subAgentPolicy: SubAgentPolicy }>(
+    `/api/agents/${id}/sub-agent-policy`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({ policy }),
+    }
+  );
+  return res.subAgentPolicy;
+}
+
 /** The LLM backend a hosted agent inherits from its assigned host. Hosted
  *  agents don't pick their own auth — they run under the host's seat, so the
  *  config UI locks the provider/connection to this and filters models to it. */
@@ -2809,6 +2825,17 @@ export interface ResponseTemplate {
   updatedAt: string;
 }
 
+/** The human-owned sub-agent spawn policy. Stored sparsely — any unset key
+ *  falls back to the platform default (see SUB_AGENT_POLICY_DEFAULTS in
+ *  AgentConfig.tsx, mirroring Agentchat.Accounts.SubAgentPolicy). */
+export interface SubAgentPolicy {
+  spawning_enabled?: boolean;
+  allowed_runtimes?: "local"[];
+  max_concurrent?: number;
+  max_depth?: number;
+  default_ttl_minutes?: number;
+}
+
 export interface Agent {
   id: string;
   displayName: string;
@@ -2845,6 +2872,9 @@ export interface Agent {
   idleTimeoutSeconds?: number | null;
   organizationId?: string | null;
   assignedHostId?: string | null;
+  /** Human-set policy gating how/where this agent may spawn sub-agents.
+   *  Absent when never set (the agent then inherits up the ownership tree). */
+  subAgentPolicy?: SubAgentPolicy;
   /** Present only on ephemeral spawned sub-agents. They are started and
    *  retired by their parent agent's bridge — not run from the desktop app —
    *  so the desktop never holds their API key locally. */

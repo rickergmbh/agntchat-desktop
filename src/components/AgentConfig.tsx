@@ -26,7 +26,9 @@ import {
   revisePulseMd,
   updateAgentRuntime,
   getAgentRuntimeOptions,
+  updateSubAgentPolicy,
   type AgentRuntimeOptions,
+  type SubAgentPolicy,
   getListingByAgent,
   createDirectoryListing,
   deleteDirectoryListing,
@@ -962,6 +964,13 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
             </Section>
             )}
 
+            {/* Sub-agents — whether & where this agent may spawn ephemeral
+                helpers. Backend-owned policy, so it shows for local AND
+                hosted agents. Hidden for clones and for spawned sub-agents
+                themselves (gated inside the component). */}
+            <SubAgentsSection agent={agent} />
+
+
             {/* Agent API Key — only needed to run the agent from this machine
                 (local runtime). Hosted agents authenticate to the backend via
                 a host-minted delegation token, so the key is irrelevant. */}
@@ -1327,6 +1336,198 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
           <HealthPanel managed={managed} />
         )}
       </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Sub-agents — whether & where this agent may spawn ephemeral helpers
+// ---------------------------------------------------------------------------
+
+// Platform defaults for the sub-agent spawn policy — mirror
+// Agentchat.Accounts.SubAgentPolicy on the backend. A stored policy is
+// sparse, so the UI merges over these for display.
+const SUB_AGENT_POLICY_DEFAULTS = {
+  spawning_enabled: true,
+  allowed_runtimes: ["local"] as "local"[],
+  max_concurrent: 5,
+  max_depth: 2,
+  default_ttl_minutes: 1440,
+};
+
+function SubAgentsSection({ agent }: { agent: Agent }) {
+  const { t } = useTranslation("agents");
+  const fetchAgents = useAgentStore((s) => s.fetchAgents);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  // Optimistic overlay on top of the store's copy: patched immediately on
+  // edit, replaced by the server's resolved policy on success, reverted on
+  // failure. Keyed per agent — reset when the pane switches agents.
+  const [override, setOverride] = useState<SubAgentPolicy | null>(null);
+  useEffect(() => {
+    setOverride(null);
+    setError(null);
+  }, [agent.id]);
+
+  // The stored policy is sparse; merge over defaults for display.
+  const policy = useMemo(
+    () => ({
+      ...SUB_AGENT_POLICY_DEFAULTS,
+      ...(agent.subAgentPolicy ?? {}),
+      ...(override ?? {}),
+    }),
+    [agent.subAgentPolicy, override]
+  );
+
+  const savePolicy = useCallback(
+    async (patch: SubAgentPolicy) => {
+      const prev = override;
+      // Optimistic — the control reflects the edit immediately.
+      setOverride({ ...(prev ?? {}), ...patch });
+      setSaving(true);
+      setError(null);
+      try {
+        const confirmed = await updateSubAgentPolicy(agent.id, patch);
+        setOverride(confirmed);
+        // Sync the store's agent so other surfaces see the new policy.
+        void fetchAgents();
+      } catch (e) {
+        // Revert the optimistic value and surface the failure inline.
+        setOverride(prev);
+        setError(e instanceof Error ? e.message : t("common:tryAgain"));
+      } finally {
+        setSaving(false);
+      }
+    },
+    [agent.id, override, fetchAgents, t]
+  );
+
+  const toggleRuntime = useCallback(
+    (runtime: "local", on: boolean) => {
+      const next = new Set(policy.allowed_runtimes);
+      if (on) next.add(runtime);
+      else next.delete(runtime);
+      if (next.size === 0) {
+        setError(t("policy.atLeastOneRuntimeMessage"));
+        return;
+      }
+      void savePolicy({ allowed_runtimes: Array.from(next) as "local"[] });
+    },
+    [policy.allowed_runtimes, savePolicy, t]
+  );
+
+  // Clones inherit their source's policy surface elsewhere, and spawned
+  // sub-agents can't spawn their own policy-bearing children from here —
+  // same gating as the mobile agent-detail screen.
+  const isClone = !!(agent.metadata as Record<string, unknown> | undefined)
+    ?.cloned_from;
+  if (isClone || agent.spawn) return null;
+
+  return (
+    <Section title={t("subAgents.title")}>
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <Label className="text-sm">{t("subAgents.allowSpawning")}</Label>
+          <Switch
+            checked={policy.spawning_enabled}
+            disabled={saving}
+            onCheckedChange={(v) => void savePolicy({ spawning_enabled: v })}
+          />
+        </div>
+
+        {policy.spawning_enabled && (
+          <>
+            <div className="flex items-center justify-between">
+              <Label className="text-sm">{t("subAgents.runLocally")}</Label>
+              <Switch
+                checked={policy.allowed_runtimes.includes("local")}
+                disabled={saving}
+                onCheckedChange={(v) => toggleRuntime("local", v)}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <PolicyNumberField
+                label={t("subAgents.maxConcurrent")}
+                value={policy.max_concurrent}
+                min={1}
+                max={50}
+                disabled={saving}
+                onCommit={(n) => void savePolicy({ max_concurrent: n })}
+              />
+              <PolicyNumberField
+                label={t("subAgents.maxDepth")}
+                value={policy.max_depth}
+                min={1}
+                max={5}
+                disabled={saving}
+                onCommit={(n) => void savePolicy({ max_depth: n })}
+              />
+            </div>
+          </>
+        )}
+
+        <p className="text-xs text-muted-foreground">
+          {policy.spawning_enabled
+            ? t("subAgents.enabledHint")
+            : t("subAgents.disabledHint")}
+        </p>
+        {error && <p className="text-xs text-destructive">{error}</p>}
+      </div>
+    </Section>
+  );
+}
+
+// Numeric policy field — same look as the pane's other numeric inputs
+// (Input type="number", see the pulse schedule). Edits are held in a local
+// draft and committed clamped-to-bounds on blur/Enter so we don't PATCH on
+// every keystroke.
+function PolicyNumberField({
+  label,
+  value,
+  min,
+  max,
+  disabled,
+  onCommit,
+}: {
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  disabled: boolean;
+  onCommit: (n: number) => void;
+}) {
+  const [draft, setDraft] = useState(String(value));
+  useEffect(() => {
+    setDraft(String(value));
+  }, [value]);
+
+  const commit = () => {
+    const n = Math.round(Number(draft));
+    if (!Number.isFinite(n)) {
+      setDraft(String(value));
+      return;
+    }
+    const clamped = Math.min(max, Math.max(min, n));
+    setDraft(String(clamped));
+    if (clamped !== value) onCommit(clamped);
+  };
+
+  return (
+    <div className="space-y-1.5">
+      <Label className="text-xs">{label}</Label>
+      <Input
+        type="number"
+        min={min}
+        max={max}
+        value={draft}
+        disabled={disabled}
+        onChange={(e) => setDraft(e.target.value)}
+        onBlur={commit}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") (e.target as HTMLInputElement).blur();
+        }}
+      />
     </div>
   );
 }
