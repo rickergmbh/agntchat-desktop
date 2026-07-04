@@ -149,7 +149,6 @@ class WebSocketService {
 
     const convEvents = [
       "new_message",
-      "typing",
       "typing_indicator",
       "presence_state",
       "presence_diff",

@@ -6,6 +6,7 @@ import { useAgentStore } from "../../stores/agentStore";
 // useAgentStore is needed for the "add member" picker which lists this user's
 // own agents.
 import { useMemoryStore } from "../../stores/memoryStore";
+import { useModelCatalog } from "../../stores/modelCatalogStore";
 import { uploadAvatar } from "../../lib/imageProcessor";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -754,12 +755,15 @@ function ParticipantContextRow({
 }) {
   const { t } = useTranslation("memory");
   const isAgent = entry.type === "agent";
+  // Model display name via the backend catalog — same resolver as the
+  // agents rail, so the memory panel never shows a raw model id.
+  const modelLabel = useModelCatalog((s) => s.modelLabel);
   const meta = [
     entry.role,
     entry.message_count != null
       ? t("messageCount", { count: entry.message_count })
       : null,
-    isAgent && entry.model ? entry.model : null,
+    isAgent && entry.model ? (modelLabel(entry.model) ?? entry.model) : null,
     isAgent && entry.trust_level ? t("trustLevel", { level: entry.trust_level }) : null,
   ].filter(Boolean) as string[];
 

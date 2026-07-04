@@ -4,6 +4,7 @@ import type { AgentActivity } from "../lib/agent-activity";
 import {
   TYPING_TIMEOUT_AGENT_MS,
   TYPING_TIMEOUT_HUMAN_MS,
+  WAKING_TIMEOUT_MS,
 } from "../lib/status-contract.generated";
 
 interface PresenceState {
@@ -60,7 +61,6 @@ interface PresenceState {
 // online (e.g. its host is down). Generous — a bulk "bring online" restarts a
 // host's bridges staggered (~5s apart) so a large fleet's later agents respawn
 // well after the click — but bounded so the row doesn't spin forever.
-const WAKING_TIMEOUT_MS = 150_000;
 
 export const usePresenceStore = create<PresenceState>((set) => {
   // Per-key timer (keyed "convId:participantId") so we can cancel/refresh
@@ -210,14 +210,10 @@ export const usePresenceStore = create<PresenceState>((set) => {
         ws.on("agent_status_changed", (payload) => {
           const agentId = payload.agentId as string | undefined;
           if (!agentId) return;
-          const presence = payload.presence as
-            | "online_local"
-            | "offline"
-            | undefined;
-          // Fall back to the boolean for older servers that didn't include
-          // the presence field.
-          const effective: "online_local" | "offline" =
-            presence ?? (payload.online ? "online_local" : "offline");
+          // `presence` is the only online vocabulary on this event (no
+          // boolean) — see Agentchat.StatusContract.presences/0.
+          const effective = payload.presence as "online_local" | "offline";
+          if (!effective) return;
 
           // The agent we were waiting on just came online — drop its spinner.
           if (effective === "online_local") clearWaking(agentId);
@@ -358,41 +354,29 @@ export const usePresenceStore = create<PresenceState>((set) => {
         })
       );
 
-      // In-conversation typing: backend broadcasts "typing" (snake_case
-      // payload) on the conversation channel; the websocket service forwards
-      // it as "conv:typing". This is what fires while the user is viewing
-      // the conversation. There is no explicit "stopped typing" event —
-      // the per-participant TTL inside setTyping clears it (and chatStore
-      // also clears it the moment the sender's message arrives).
-      unsubs.push(
-        ws.on("conv:typing", (payload) => {
-          const convId = payload._conversationId as string;
-          const participantId = payload.participant_id as string | undefined;
-          const displayName = payload.display_name as string | undefined;
-          const participantType = payload.participant_type as string | undefined;
-          if (!convId || !participantId) return;
+      // ONE typing shape platform-wide: `typing_indicator` (camelCase) on
+      // both the conversation channel (in-chat bubbles, forwarded as
+      // "conv:typing_indicator") and the user channel (conversation-list
+      // markers). No explicit "stopped typing" event in-conversation — the
+      // per-participant TTL inside setTyping clears it (and chatStore also
+      // clears it the moment the sender's message arrives).
+      const onTypingIndicator = (payload: Record<string, unknown>) => {
+        const convId = (payload.conversationId ?? payload._conversationId) as
+          | string
+          | undefined;
+        const participantId = payload.participantId as string | undefined;
+        const displayName = payload.participantName as string | undefined;
+        const participantType = payload.participantType as string | undefined;
+        const isTyping = Boolean(payload.isTyping);
+        if (!convId || !participantId) return;
+        if (isTyping) {
           setTyping(convId, participantId, displayName, participantType === "agent");
-        })
-      );
-
-      // Cross-conversation typing: backend pushes "typing_indicator"
-      // (camelCase payload) on the user channel — drives typing markers
-      // in the conversation list for conversations the user isn't open in.
-      unsubs.push(
-        ws.on("typing_indicator", (payload) => {
-          const convId = payload.conversationId as string | undefined;
-          const participantId = payload.participantId as string | undefined;
-          const displayName = payload.participantName as string | undefined;
-          const participantType = payload.participantType as string | undefined;
-          const isTyping = Boolean(payload.isTyping);
-          if (!convId || !participantId) return;
-          if (isTyping) {
-            setTyping(convId, participantId, displayName, participantType === "agent");
-          } else {
-            clearTyping(convId, participantId);
-          }
-        })
-      );
+        } else {
+          clearTyping(convId, participantId);
+        }
+      };
+      unsubs.push(ws.on("conv:typing_indicator", onTypingIndicator));
+      unsubs.push(ws.on("typing_indicator", onTypingIndicator));
 
       return () => {
         unsubs.forEach((u) => u());

@@ -96,3 +96,8 @@ export const STREAM_COMPLETE_LINGER_MS = 3000;
 
 // Reaper sweep cadence for the above.
 export const STREAM_SWEEP_INTERVAL_MS = 10000;
+
+// Safety timeout for the client-local "waking" overlay (a hosted-agent
+// restart request is in flight): if the agent never reports online, the
+// spinner clears after this long so the UI can't get stuck.
+export const WAKING_TIMEOUT_MS = 150000;
