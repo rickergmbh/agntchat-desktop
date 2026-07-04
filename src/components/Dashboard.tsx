@@ -649,13 +649,14 @@ export function Dashboard() {
 
   // For local-runtime agents "running" tracks the local subprocess.
   // For org-host runtime there is no local subprocess — the bridge
-  // lives on a registered VM and reports presence via the WS push.
-  // Without the runtime branch every org-hosted agent silently shows
-  // as "stopped" and gets bulk-started, which would no-op locally but
-  // be confusing UX.
+  // lives on a registered VM and reports presence via the WS push
+  // (presenceStore, the single runtime presence truth). Without the
+  // runtime branch every org-hosted agent silently shows as "stopped"
+  // and gets bulk-started, which would no-op locally but be confusing UX.
+  const presenceOnline = usePresenceStore((s) => s.online);
   const isRunningForUI = (m: typeof agents[string]) =>
     m.agent.runtime === "org_host"
-      ? m.agent.presence != null && m.agent.presence !== "offline"
+      ? presenceOnline.has(m.agent.id)
       : m.processStatus === "running";
 
   const runningCount = Object.values(agents).filter(isRunningForUI).length;
@@ -673,7 +674,7 @@ export function Dashboard() {
       m.processStatus === "stopped" &&
       m.apiKey &&
       m.agent.runtime !== "org_host" &&
-      runningElsewhereOn(m, agentDevices[m.agent.id], myDevice) === null
+      runningElsewhereOn(m, presenceOnline.has(m.agent.id), agentDevices[m.agent.id], myDevice) === null
   );
   // "Stop All" mirrors Start All — only acts on local subprocesses.
   // stopAgent on an org-host agent is a no-op (the Tauri stop command

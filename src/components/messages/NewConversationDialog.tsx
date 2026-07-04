@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAgentStore } from "../../stores/agentStore";
+import { usePresenceStore } from "../../stores/presenceStore";
 import { useChatStore } from "../../stores/chatStore";
 import { useFriendStore } from "../../stores/friendStore";
 import { useAuthStore } from "../../stores/authStore";
@@ -552,6 +553,8 @@ function AgentRow({
   isSelected: boolean;
   onClick: () => void;
 }) {
+  // Live presence only (presenceStore) — never the stale REST flags.
+  const isAgentOnline = usePresenceStore((s) => s.online.has(agent.id));
   return (
     <button
       onClick={onClick}
@@ -572,13 +575,7 @@ function AgentRow({
         )}
       </div>
       <div className="flex items-center gap-2">
-        {(() => {
-          const presence = agent.presence ?? (agent.online ? "online_local" : "offline");
-          if (presence === "online_local") {
-            return <span className="h-2 w-2 rounded-full bg-success" />;
-          }
-          return null;
-        })()}
+        {isAgentOnline && <span className="h-2 w-2 rounded-full bg-success" />}
         {isSelected && (
           <div className="flex h-5 w-5 items-center justify-center rounded-full bg-primary">
             <Check className="h-3 w-3 text-primary-foreground" />

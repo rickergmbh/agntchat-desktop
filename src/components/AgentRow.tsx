@@ -53,18 +53,15 @@ const ACTIVITY_DOT_COLORS = {
 function PresenceDot({
   processStatus,
   presence,
-  online,
 }: {
   processStatus: ManagedAgent["processStatus"];
-  presence: "online_local" | "offline" | undefined;
-  online: boolean | undefined;
+  presence: "online_local" | "offline";
 }) {
   const { t } = useTranslation("agents");
   const locallyRunning = processStatus === "running";
-  const effective: "online_local" | "offline" =
-    locallyRunning
-      ? "online_local"
-      : presence ?? (online ? "online_local" : "offline");
+  const effective: "online_local" | "offline" = locallyRunning
+    ? "online_local"
+    : presence;
 
   return (
     <span
@@ -322,12 +319,17 @@ export function AgentRow({
   // Whether a "bring online" restart we requested for this agent is in flight
   // (shared across the row + the bulk button via the presence store).
   const waking = usePresenceStore((s) => s.wakingAgents.has(managed.agent.id));
-  // Machine the agent's bridge reported (from the agent payload, kept live
-  // by agent_status_changed; the presence store covers peers' agents).
+  // Live presence + device from presenceStore — the single runtime presence
+  // truth (WS events + authoritative presence_snapshot). REST agent.online/
+  // presence/deviceName are point-in-time and never read for liveness.
+  const liveOnline = usePresenceStore((s) => s.online.has(managed.agent.id));
+  const livePresence: "online_local" | "offline" = liveOnline
+    ? "online_local"
+    : "offline";
   const presenceDevice = usePresenceStore(
     (s) => s.agentDevices[managed.agent.id]
   );
-  const deviceName = managed.agent.deviceName ?? presenceDevice ?? null;
+  const deviceName = presenceDevice ?? null;
   const myDevice = useLocalDeviceName();
   const markWaking = usePresenceStore((s) => s.markWaking);
   const [error, setError] = useState<string | null>(null);
@@ -364,7 +366,7 @@ export function AgentRow({
       } else {
         // The bridge is alive on another of the user's machines — starting
         // here takes the agent over and stops it there. Confirm first.
-        const elsewhere = runningElsewhereOn(managed, presenceDevice, myDevice);
+        const elsewhere = runningElsewhereOn(managed, liveOnline, presenceDevice, myDevice);
         if (elsewhere !== null) {
           setConfirmMoveFrom(elsewhere);
           return;
@@ -400,8 +402,7 @@ export function AgentRow({
   // restart the bridge on its host. We optimistically mark it waking so the
   // row spins immediately; the presence store clears it when the agent reports
   // online (or after a safety timeout).
-  const remoteOnline =
-    managed.agent.presence != null && managed.agent.presence !== "offline";
+  const remoteOnline = liveOnline;
   const handleBringOnline = async (e: React.MouseEvent) => {
     e.stopPropagation();
     setError(null);
@@ -493,8 +494,7 @@ export function AgentRow({
             </Avatar>
             <PresenceDot
               processStatus={managed.processStatus}
-              presence={managed.agent.presence}
-              online={managed.agent.online}
+              presence={livePresence}
             />
           </div>
           <div className="min-w-0">
@@ -606,7 +606,7 @@ export function AgentRow({
               <StatusBadge
                 status={managed.processStatus}
                 uptimeSecs={liveUptimeSecs}
-                presence={managed.agent.presence}
+                presence={livePresence}
                 runtime={managed.agent.runtime}
                 waking={waking}
                 deviceName={deviceName}

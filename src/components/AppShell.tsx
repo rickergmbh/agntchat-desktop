@@ -198,21 +198,22 @@ function LeftRail({
   // we exclude them from the "online" count. Shown on the Agents rail
   // button as a muted "N/M" ratio; hidden when there are no agents.
   const agentsMap = useAgentStore((s) => s.agents);
+  const presenceOnline = usePresenceStore((s) => s.online);
   const agentStats = useMemo(() => {
     const all = Object.values(agentsMap);
     const online = all.filter((m) => {
       // Local-runtime agents are "online" when the local subprocess is
-      // running. Org-host agents have no local process — they're
-      // online when the server-side presence says a bridge (on the VM)
-      // is connected. Without this branch, every org-hosted agent
-      // would silently undercount in the rail's N/M badge.
+      // running. Org-host agents have no local process — they're online
+      // when live presence (presenceStore, the single runtime truth) says
+      // a bridge on the VM is connected. Without this branch, every
+      // org-hosted agent would silently undercount in the rail's N/M badge.
       if (m.agent.runtime === "org_host") {
-        return m.agent.presence != null && m.agent.presence !== "offline";
+        return presenceOnline.has(m.agent.id);
       }
       return m.processStatus === "running";
     }).length;
     return { online, total: all.length };
-  }, [agentsMap]);
+  }, [agentsMap, presenceOnline]);
 
   // Theme quick-toggle. Cycles system → light → dark → system so the
   // rail matches web's three-state ThemeToggle.

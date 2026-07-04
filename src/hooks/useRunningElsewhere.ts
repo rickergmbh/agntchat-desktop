@@ -24,9 +24,13 @@ export function useLocalDeviceName(): string | null {
  * predates device reporting), or `null` when there is nothing to take over:
  * agent offline, hosted, already running here, or the online executor is
  * this device's own (a stale row from a previous session here).
+ *
+ * `liveOnline` / `presenceDevice` come from presenceStore — the single
+ * runtime presence truth (never REST `agent.online`, which can be stale).
  */
 export function runningElsewhereOn(
   managed: ManagedAgent,
+  liveOnline: boolean,
   presenceDevice: string | undefined,
   myDevice: string | null
 ): string | null {
@@ -37,10 +41,8 @@ export function runningElsewhereOn(
   ) {
     return null;
   }
-  const presence =
-    managed.agent.presence ?? (managed.agent.online ? "online_local" : "offline");
-  if (presence !== "online_local") return null;
-  const device = managed.agent.deviceName ?? presenceDevice ?? null;
+  if (!liveOnline) return null;
+  const device = presenceDevice ?? null;
   if (device && myDevice && device === myDevice) return null;
   return device ?? "";
 }

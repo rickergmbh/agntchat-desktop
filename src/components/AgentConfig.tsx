@@ -2,6 +2,7 @@ import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import i18n from "../i18n";
 import { useAgentStore, type ManagedAgent } from "../stores/agentStore";
+import { usePresenceStore } from "../stores/presenceStore";
 import { useAuthStore } from "../stores/authStore";
 import { useActiveWorkspace, useWorkspaces } from "../stores/workspaceStore";
 import { listOrganizationHosts, type OrganizationHost } from "../lib/api";
@@ -284,10 +285,9 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
       await regenerateKey(agent.id);
       // If the agent's bridge is still alive on another machine, stop it
       // now — regenerating alone leaves it running on its cached session
-      // for up to an hour, and two bridges must never run at once.
-      const presence =
-        agent.presence ?? (agent.online ? "online_local" : "offline");
-      if (presence === "online_local") {
+      // for up to an hour, and two bridges must never run at once. Live
+      // presence from presenceStore, never the stale REST flags.
+      if (usePresenceStore.getState().online.has(agent.id)) {
         try {
           await forceResetAgent(agent.id);
         } catch {

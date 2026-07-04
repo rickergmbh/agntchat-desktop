@@ -1043,46 +1043,14 @@ export const useAgentStore = create<AgentState>((set, get) => ({
     };
 
     // Backend pushes `agent_status_changed` on the user channel whenever an
-    // agent's WS executor presence flips. Mirror it into `agent.online` so
-    // the Agents rail chip + per-agent dots reflect reality in real time.
+    // agent's executor presence flips. Runtime presence lives ONLY in
+    // presenceStore (which also handles this event) — mirroring it onto
+    // Agent objects created a second, divergent source of truth. Here we
+    // only refresh the health snapshot.
     unsubs.push(
       ws.on("agent_status_changed", (payload) => {
-        const agentId = payload.agentId as string | undefined;
-        if (!agentId) return;
+        if (!payload.agentId) return;
         scheduleHealthRefresh();
-        const isOnline = Boolean(payload.online);
-        const presence = payload.presence as
-          | "online_local"
-          | "offline"
-          | undefined;
-        const deviceName = isOnline
-          ? ((payload.deviceName as string | undefined) ?? null)
-          : null;
-        set((s) => {
-          const managed = s.agents[agentId];
-          if (!managed) return s;
-          if (
-            managed.agent.online === isOnline &&
-            (presence === undefined || managed.agent.presence === presence) &&
-            (managed.agent.deviceName ?? null) === deviceName
-          ) {
-            return s;
-          }
-          return {
-            agents: {
-              ...s.agents,
-              [agentId]: {
-                ...managed,
-                agent: {
-                  ...managed.agent,
-                  online: isOnline,
-                  ...(presence ? { presence } : {}),
-                  deviceName,
-                },
-              },
-            },
-          };
-        });
       })
     );
 
@@ -1136,6 +1104,10 @@ export const useAgentStore = create<AgentState>((set, get) => ({
   reconcileStaleExecutors: async () => {
     const managed = Object.values(get().agents);
     const myDevice = await getLocalDeviceName();
+    // Deliberately reads the fetch-time REST `agent.online`/`deviceName`
+    // snapshot (NOT presenceStore): this reconciles the SERVER's executor
+    // rows against local reality at startup, before live presence has
+    // necessarily arrived. UI liveness must never read these fields.
     const stale = managed.filter(
       (m) =>
         m.agent.online === true &&
