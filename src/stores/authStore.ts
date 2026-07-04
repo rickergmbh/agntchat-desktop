@@ -59,7 +59,7 @@ interface AuthState {
     email: string,
     password: string,
     displayName: string | undefined,
-    opts: { acceptedTerms: boolean; marketingOptIn?: boolean }
+    opts: { acceptedTerms: boolean; birthDate: string; marketingOptIn?: boolean }
   ) => Promise<void>;
   logout: () => void;
   restoreSession: () => void;

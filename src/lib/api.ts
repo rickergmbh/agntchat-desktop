@@ -140,7 +140,7 @@ export async function signup(
   email: string,
   password: string,
   displayName: string | undefined,
-  opts: { acceptedTerms: boolean; marketingOptIn?: boolean }
+  opts: { acceptedTerms: boolean; birthDate: string; marketingOptIn?: boolean }
 ): Promise<SignupResult> {
   return request("/api/auth/signup", {
     method: "POST",
@@ -149,6 +149,7 @@ export async function signup(
       password,
       displayName,
       acceptedTerms: opts.acceptedTerms,
+      birthDate: opts.birthDate,
       marketingOptIn: opts.marketingOptIn,
     }),
   });

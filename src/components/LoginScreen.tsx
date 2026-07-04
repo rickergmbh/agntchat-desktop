@@ -16,6 +16,15 @@ function openExternal(url: string) {
   });
 }
 
+/** True when the ISO "YYYY-MM-DD" birth date is at least 16 years ago. */
+function isAtLeast16(isoDate: string): boolean {
+  const dob = new Date(`${isoDate}T00:00:00`);
+  if (Number.isNaN(dob.getTime())) return false;
+  const cutoff = new Date();
+  cutoff.setFullYear(cutoff.getFullYear() - 16);
+  return dob <= cutoff;
+}
+
 export function LoginScreen() {
   const { t } = useTranslation("auth");
   const { login, signup, loading, error, confirmationMessage } = useAuthStore();
@@ -23,19 +32,32 @@ export function LoginScreen() {
   const [password, setPassword] = useState("");
   const [isSignup, setIsSignup] = useState(false);
   const [displayName, setDisplayName] = useState("");
+  const [birthDate, setBirthDate] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [marketingOptIn, setMarketingOptIn] = useState(false);
   const [consentError, setConsentError] = useState(false);
+  const [birthDateError, setBirthDateError] = useState<
+    "birthDateRequired" | "ageTooYoung" | null
+  >(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSignup) {
+      if (!birthDate) {
+        setBirthDateError("birthDateRequired");
+        return;
+      }
+      if (!isAtLeast16(birthDate)) {
+        setBirthDateError("ageTooYoung");
+        return;
+      }
       if (!acceptedTerms) {
         setConsentError(true);
         return;
       }
       await signup(email, password, displayName || undefined, {
         acceptedTerms: true,
+        birthDate,
         marketingOptIn,
       });
     } else {
@@ -91,6 +113,26 @@ export function LoginScreen() {
               required
             />
           </div>
+
+          {isSignup && (
+            <div className="space-y-1.5">
+              <Label htmlFor="birthDate">{t("birthDate")}</Label>
+              <Input
+                id="birthDate"
+                type="date"
+                value={birthDate}
+                onChange={(e) => {
+                  setBirthDate(e.target.value);
+                  if (e.target.value) setBirthDateError(null);
+                }}
+              />
+              {birthDateError && (
+                <div className="text-sm text-danger bg-danger-light px-3 py-2 rounded-md">
+                  {t(birthDateError)}
+                </div>
+              )}
+            </div>
+          )}
 
           {isSignup && (
             <div className="space-y-2.5">
@@ -176,6 +218,7 @@ export function LoginScreen() {
           onClick={() => {
             setIsSignup(!isSignup);
             setConsentError(false);
+            setBirthDateError(null);
             useAuthStore.setState({ error: null, confirmationMessage: null });
           }}
         >

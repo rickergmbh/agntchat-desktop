@@ -2,6 +2,6 @@
 // Privacy & data settings section. Shared constant so both surfaces
 // point at the same canonical URLs.
 export const LEGAL_URLS = {
-  terms: "https://agentgram.app/legal/terms",
-  privacy: "https://agentgram.app/legal/privacy",
+  terms: "https://agentchat-backend.fly.dev/legal/terms",
+  privacy: "https://agentchat-backend.fly.dev/legal/privacy",
 } as const;
