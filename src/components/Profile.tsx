@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   Dialog,
@@ -68,6 +69,8 @@ import {
   Palette,
   ChevronRight,
   Languages,
+  ShieldCheck,
+  Download,
 } from "lucide-react";
 import { deviceTimezone, filterTimezones, formatTimezoneLabel } from "../lib/timezones";
 import { getInitials } from "../lib/utils";
@@ -145,6 +148,7 @@ const SECTIONS = [
   { value: "memory", labelKey: "sections.memory", icon: Brain },
   { value: "llm-keys", labelKey: "sections.llmKeys", icon: Key },
   { value: "connections", labelKey: "sections.connections", icon: Link2 },
+  { value: "privacy", labelKey: "privacy.title", icon: ShieldCheck },
 ] as const;
 
 type SectionValue = (typeof SECTIONS)[number]["value"];
@@ -960,6 +964,12 @@ export function Profile({ onClose }: { onClose: () => void }) {
                 </div>
               )}
             </section>
+          </div>
+        )}
+
+        {activeSection === "privacy" && (
+          <div className="flex-1 overflow-y-auto p-5 space-y-6">
+            <PrivacyDataSection />
           </div>
         )}
       </div>
@@ -2284,6 +2294,311 @@ function MemorySection({
 // ---------------------------------------------------------------------------
 // Sub-components
 // ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// Privacy & data — GDPR self-service (export, marketing consent, delete)
+// ---------------------------------------------------------------------------
+
+type ExportState = "idle" | "preparing" | "ready" | "failed";
+
+function PrivacyDataSection() {
+  const { t } = useTranslation("settings");
+  const participant = useAuthStore((s) => s.participant);
+  const logout = useAuthStore((s) => s.logout);
+
+  // Persist an updated participant_self payload the same way fetchProfile does,
+  // so the rail/other consumers see consent changes without a reload.
+  const persist = (updated: api.Participant) => {
+    localStorage.setItem("participant", JSON.stringify(updated));
+    useAuthStore.setState({ participant: updated });
+  };
+
+  // ---- Data export ----
+  const [exportState, setExportState] = useState<ExportState>("idle");
+  // Non-empty incompleteSections → warn that the export is partial.
+  const [exportIncomplete, setExportIncomplete] = useState(false);
+  // Kept when opening the browser failed, so the user can click the
+  // signed URL directly as a fallback.
+  const [exportUrl, setExportUrl] = useState<string | null>(null);
+  const handleExport = async () => {
+    setExportState("preparing");
+    setExportIncomplete(false);
+    setExportUrl(null);
+    try {
+      const { url, incompleteSections } = await api.exportMyData();
+      setExportIncomplete((incompleteSections?.length ?? 0) > 0);
+      setExportState("ready");
+      try {
+        await tauriOpen(url);
+      } catch {
+        // Shell plugin failed/blocked — try the webview fallback, and if
+        // that is blocked too, render the URL as a clickable link.
+        const opened = window.open(url, "_blank");
+        if (!opened) setExportUrl(url);
+      }
+    } catch {
+      setExportState("failed");
+    }
+  };
+
+  // ---- Marketing consent ----
+  const [savingMarketing, setSavingMarketing] = useState(false);
+  const [marketingError, setMarketingError] = useState(false);
+  const handleToggleMarketing = async (value: boolean) => {
+    setSavingMarketing(true);
+    setMarketingError(false);
+    try {
+      const updated = await api.updateConsent({ marketingOptIn: value });
+      persist(updated);
+    } catch {
+      // toggle keeps reflecting the (unchanged) stored value; say why
+      setMarketingError(true);
+    } finally {
+      setSavingMarketing(false);
+    }
+  };
+
+  // ---- Policy re-accept ----
+  const [reaccepting, setReaccepting] = useState(false);
+  const [reacceptError, setReacceptError] = useState(false);
+  const handleReaccept = async () => {
+    setReaccepting(true);
+    setReacceptError(false);
+    try {
+      const updated = await api.updateConsent({ reaccept: true });
+      persist(updated);
+    } catch {
+      // stay on the prompt so the user can retry
+      setReacceptError(true);
+    } finally {
+      setReaccepting(false);
+    }
+  };
+
+  // ---- Account deletion ----
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [confirmText, setConfirmText] = useState("");
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const canDelete = confirmText === "DELETE";
+
+  const handleDelete = async () => {
+    if (!canDelete) return;
+    setDeleting(true);
+    setDeleteError(null);
+    try {
+      await api.deleteAccount();
+      // Clears token + participant → App routes to the signed-out LoginScreen.
+      logout();
+    } catch (e) {
+      setDeleteError(
+        e instanceof Error ? e.message : t("privacy.deleteConfirmTitle")
+      );
+      setDeleting(false);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Re-consent prompt — only when the current policy version is newer
+          than what the user last accepted. */}
+      {participant?.policyReacceptRequired && (
+        <div className="rounded-xl border border-warning/40 bg-warning/10 p-4 space-y-3">
+          <div className="flex items-start gap-3">
+            <ShieldCheck className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
+            <div className="min-w-0">
+              <p className="text-sm font-semibold">{t("privacy.reacceptTitle")}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {t("privacy.reacceptBody")}
+              </p>
+            </div>
+          </div>
+          <Button size="sm" onClick={handleReaccept} disabled={reaccepting}>
+            {reaccepting ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              t("privacy.reacceptCta")
+            )}
+          </Button>
+          {reacceptError && (
+            <p className="text-xs text-destructive flex items-center gap-1.5">
+              <AlertCircle className="w-3.5 h-3.5" />
+              {t("privacy.updateFailed")}
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* Download my data */}
+      <div className="rounded-xl border border-border bg-card p-4">
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <p className="text-sm font-medium">{t("privacy.downloadData")}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {t("privacy.downloadDataDesc")}
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExport}
+            disabled={exportState === "preparing"}
+            className="flex-shrink-0"
+          >
+            {exportState === "preparing" ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Download className="w-3.5 h-3.5" />
+            )}
+            {t("privacy.downloadData")}
+          </Button>
+        </div>
+        {exportState === "preparing" && (
+          <p className="text-xs text-muted-foreground mt-2">
+            {t("privacy.downloadPreparing")}
+          </p>
+        )}
+        {exportState === "ready" && (
+          <p className="text-xs text-success mt-2 flex items-center gap-1.5">
+            <Check className="w-3.5 h-3.5" />
+            {t("privacy.downloadReady")}
+          </p>
+        )}
+        {exportState === "ready" && exportIncomplete && (
+          <p className="text-xs text-warning mt-2 flex items-center gap-1.5">
+            <AlertCircle className="w-3.5 h-3.5" />
+            {t("privacy.downloadIncomplete")}
+          </p>
+        )}
+        {exportState === "ready" && exportUrl && (
+          <a
+            href={exportUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-primary hover:underline mt-2 inline-block"
+          >
+            {t("privacy.openDownload")}
+          </a>
+        )}
+        {exportState === "failed" && (
+          <p className="text-xs text-destructive mt-2 flex items-center gap-1.5">
+            <AlertCircle className="w-3.5 h-3.5" />
+            {t("privacy.downloadFailed")}
+          </p>
+        )}
+      </div>
+
+      {/* Marketing emails */}
+      <div className="rounded-xl border border-border bg-card p-4 flex items-center justify-between gap-4">
+        <div className="min-w-0">
+          <p className="text-sm font-medium">{t("privacy.marketingEmails")}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            {t("auth:consent.marketing")}
+          </p>
+          {marketingError && (
+            <p className="text-xs text-destructive mt-1 flex items-center gap-1.5">
+              <AlertCircle className="w-3.5 h-3.5" />
+              {t("privacy.updateFailed")}
+            </p>
+          )}
+        </div>
+        <Switch
+          checked={participant?.marketingOptIn === true}
+          disabled={savingMarketing}
+          onCheckedChange={(v) => void handleToggleMarketing(v)}
+        />
+      </div>
+
+      {/* Delete account */}
+      <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-4">
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <p className="text-sm font-medium text-destructive">
+              {t("privacy.deleteAccount")}
+            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {t("privacy.deleteAccountDesc")}
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              setConfirmText("");
+              setDeleteError(null);
+              setDeleteOpen(true);
+            }}
+            className="flex-shrink-0 text-destructive border-destructive/30 hover:bg-destructive/10 hover:text-destructive/90"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+            {t("privacy.deleteAccount")}
+          </Button>
+        </div>
+      </div>
+
+      {/* Delete confirmation dialog */}
+      <Dialog
+        open={deleteOpen}
+        onOpenChange={(open) => {
+          if (!open && !deleting) setDeleteOpen(false);
+        }}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t("privacy.deleteConfirmTitle")}</DialogTitle>
+            <DialogDescription>
+              {t("privacy.deleteConfirmBody")}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2 py-2">
+            <Label className="text-xs">{t("privacy.deleteConfirmPrompt")}</Label>
+            <Input
+              value={confirmText}
+              onChange={(e) => {
+                setConfirmText(e.target.value);
+                setDeleteError(null);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && canDelete) handleDelete();
+              }}
+              placeholder="DELETE"
+              autoFocus
+              autoComplete="off"
+            />
+            {deleteError && (
+              <p className="text-xs text-destructive">{deleteError}</p>
+            )}
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setDeleteOpen(false)}
+              disabled={deleting}
+            >
+              {t("privacy.cancel")}
+            </Button>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={handleDelete}
+              disabled={!canDelete || deleting}
+            >
+              {deleting ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  {t("privacy.deleting")}
+                </>
+              ) : (
+                t("privacy.deleteConfirmCta")
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
 
 function SectionHeader({
   title,

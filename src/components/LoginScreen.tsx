@@ -6,19 +6,38 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import { open as tauriOpen } from "@tauri-apps/plugin-shell";
+import { LEGAL_URLS } from "../lib/legal";
+
+/** Open a URL in the system browser — Tauri native with window.open fallback. */
+function openExternal(url: string) {
+  tauriOpen(url).catch(() => {
+    window.open(url, "_blank");
+  });
+}
 
 export function LoginScreen() {
   const { t } = useTranslation("auth");
-  const { login, signup, loading, error } = useAuthStore();
+  const { login, signup, loading, error, confirmationMessage } = useAuthStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSignup, setIsSignup] = useState(false);
   const [displayName, setDisplayName] = useState("");
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [marketingOptIn, setMarketingOptIn] = useState(false);
+  const [consentError, setConsentError] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSignup) {
-      await signup(email, password, displayName || undefined);
+      if (!acceptedTerms) {
+        setConsentError(true);
+        return;
+      }
+      await signup(email, password, displayName || undefined, {
+        acceptedTerms: true,
+        marketingOptIn,
+      });
     } else {
       await login(email, password);
     }
@@ -73,9 +92,72 @@ export function LoginScreen() {
             />
           </div>
 
+          {isSignup && (
+            <div className="space-y-2.5">
+              <label className="flex items-start gap-2.5 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  checked={acceptedTerms}
+                  onChange={(e) => {
+                    setAcceptedTerms(e.target.checked);
+                    if (e.target.checked) setConsentError(false);
+                  }}
+                  className="mt-0.5 rounded border-border"
+                />
+                <div className="flex-1 min-w-0">
+                  <span className="text-sm text-text">{t("consent.label")}</span>
+                  <div className="mt-1 flex items-center gap-2 text-xs">
+                    <button
+                      type="button"
+                      onClick={() => openExternal(LEGAL_URLS.terms)}
+                      className="text-accent hover:text-accent-hover underline"
+                    >
+                      {t("consent.terms")}
+                    </button>
+                    <span className="text-text-secondary">·</span>
+                    <button
+                      type="button"
+                      onClick={() => openExternal(LEGAL_URLS.privacy)}
+                      className="text-accent hover:text-accent-hover underline"
+                    >
+                      {t("consent.privacy")}
+                    </button>
+                  </div>
+                </div>
+              </label>
+
+              <label className="flex items-start gap-2.5 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={marketingOptIn}
+                  onChange={(e) => setMarketingOptIn(e.target.checked)}
+                  className="mt-0.5 rounded border-border"
+                />
+                <span className="flex-1 min-w-0 text-sm text-text-secondary">
+                  {t("consent.marketing")}
+                </span>
+              </label>
+
+              {consentError && (
+                <div className="text-sm text-danger bg-danger-light px-3 py-2 rounded-md">
+                  {t("consent.required")}
+                </div>
+              )}
+            </div>
+          )}
+
           {error && (
             <div className="text-sm text-danger bg-danger-light px-3 py-2 rounded-md">
               {error}
+            </div>
+          )}
+
+          {/* Signup succeeded but the account needs email confirmation —
+              no token was issued, so stay on this form and tell the user
+              to check their inbox, then sign in. */}
+          {confirmationMessage !== null && (
+            <div className="text-sm text-info bg-info/10 px-3 py-2 rounded-md">
+              {confirmationMessage || t("confirmationSent")}
             </div>
           )}
 
@@ -93,7 +175,8 @@ export function LoginScreen() {
           className="w-full mt-4 text-accent hover:text-accent-hover"
           onClick={() => {
             setIsSignup(!isSignup);
-            useAuthStore.setState({ error: null });
+            setConsentError(false);
+            useAuthStore.setState({ error: null, confirmationMessage: null });
           }}
         >
           {isSignup

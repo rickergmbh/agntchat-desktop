@@ -122,14 +122,64 @@ export async function login(
   });
 }
 
+/** Signup can auto-login (token + participant) or — when email confirmation
+ *  is enabled — return 200 with NO token and a "check your email" status the
+ *  UI must surface instead of storing `undefined` as a token. */
+export type SignupResult =
+  | { token: string; participant: Participant }
+  | { status: "confirmation_required"; message?: string };
+
 export async function signup(
   email: string,
   password: string,
-  displayName?: string
-): Promise<{ token: string; participant: Participant }> {
+  displayName: string | undefined,
+  opts: { acceptedTerms: boolean; marketingOptIn?: boolean }
+): Promise<SignupResult> {
   return request("/api/auth/signup", {
     method: "POST",
-    body: JSON.stringify({ email, password, displayName }),
+    body: JSON.stringify({
+      email,
+      password,
+      displayName,
+      acceptedTerms: opts.acceptedTerms,
+      marketingOptIn: opts.marketingOptIn,
+    }),
+  });
+}
+
+// GDPR / account data controls (human self-service). All operate on the
+// authenticated participant via the existing Bearer JWT.
+
+/** Permanently delete the caller's account. 204 on success; 422 if the
+ *  confirmation string is wrong. Caller should log out on success. */
+export async function deleteAccount(): Promise<void> {
+  await request("/api/me", {
+    method: "DELETE",
+    body: JSON.stringify({ confirm: "DELETE" }),
+  });
+}
+
+/** Request a personal-data export. Returns a signed URL the client opens
+ *  so the user can save the file (valid for `expiresIn` seconds).
+ *  `incompleteSections` lists any data sections the backend couldn't
+ *  include — non-empty means the export is partial. */
+export async function exportMyData(): Promise<{
+  url: string;
+  expiresIn: number;
+  incompleteSections: string[];
+}> {
+  return request("/api/me/export", { method: "POST" });
+}
+
+/** Update consent flags — marketing opt-in and/or re-accepting the current
+ *  policy version. Returns the refreshed participant_self payload. */
+export async function updateConsent(body: {
+  marketingOptIn?: boolean;
+  reaccept?: boolean;
+}): Promise<Participant> {
+  return request("/api/me/consent", {
+    method: "PATCH",
+    body: JSON.stringify(body),
   });
 }
 
@@ -2154,6 +2204,13 @@ export interface Participant {
   /** For paying users: the host new agents should default to running on
    *  ("hosted" runtime). Null when the user has no host available. */
   hostedHostId?: string | null;
+  /** Consent / policy state (self-view only). `marketingOptIn` reflects the
+   *  product-updates email preference; `acceptedPolicyVersion` is the version
+   *  the user last accepted; `policyReacceptRequired` is true when the current
+   *  policy version is newer than what they accepted. */
+  marketingOptIn?: boolean;
+  acceptedPolicyVersion?: string | null;
+  policyReacceptRequired?: boolean;
 }
 
 /** Start a Stripe subscription Checkout; returns a URL to open in a browser. */

@@ -49,9 +49,18 @@ interface AuthState {
   participant: api.Participant | null;
   loading: boolean;
   error: string | null;
+  /** Non-null after a signup that requires email confirmation (backend
+   *  returned 200 with no token). Holds the server's message ("" when the
+   *  server sent none — the UI falls back to a localized default). */
+  confirmationMessage: string | null;
 
   login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string, displayName?: string) => Promise<void>;
+  signup: (
+    email: string,
+    password: string,
+    displayName: string | undefined,
+    opts: { acceptedTerms: boolean; marketingOptIn?: boolean }
+  ) => Promise<void>;
   logout: () => void;
   restoreSession: () => void;
   fetchProfile: () => Promise<void>;
@@ -62,9 +71,10 @@ export const useAuthStore = create<AuthState>((set) => ({
   participant: null,
   loading: false,
   error: null,
+  confirmationMessage: null,
 
   login: async (email, password) => {
-    set({ loading: true, error: null });
+    set({ loading: true, error: null, confirmationMessage: null });
     try {
       const result = await api.login(email, password);
       localStorage.setItem("authToken", result.token);
@@ -84,10 +94,16 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
   },
 
-  signup: async (email, password, displayName) => {
-    set({ loading: true, error: null });
+  signup: async (email, password, displayName, opts) => {
+    set({ loading: true, error: null, confirmationMessage: null });
     try {
-      const result = await api.signup(email, password, displayName);
+      const result = await api.signup(email, password, displayName, opts);
+      if ("status" in result) {
+        // No token was issued — do NOT store anything. Surface the
+        // "check your email" state to the LoginScreen instead.
+        set({ loading: false, confirmationMessage: result.message ?? "" });
+        return;
+      }
       localStorage.setItem("authToken", result.token);
       localStorage.setItem("participant", JSON.stringify(result.participant));
       set({
