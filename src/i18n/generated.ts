@@ -419,14 +419,20 @@ export const resources = {
         "desktopOnlyTitle": "Runs from the desktop app",
         "detailsHint": "Custom instructions and preferences.",
         "detailsTitle": "Any extra details?",
+        "discardAction": "Discard",
+        "discardMessage": "Your setup so far will be lost.",
+        "discardTitle": "Discard this agent?",
         "effort": "Effort",
         "errors": {
           "apiKeyRequired": "API key is required for this provider",
+          "backToReview": "Back to review",
           "createFailed": "Failed to create agent.",
           "keySaveMessage": "Check the key and try again. The agent has not been created.",
           "keySaveTitle": "Couldn't save API key",
           "nameRequired": "Name is required.",
           "saveKeyFailed": "Failed to save the API key",
+          "timeoutMessage": "We couldn't confirm your agent was created. Check your connection and try again.",
+          "timeoutTitle": "Agent creation timed out",
           "uploadFailed": "Upload failed"
         },
         "executionMode": "Execution Mode",
@@ -452,6 +458,7 @@ export const resources = {
         },
         "inputRequirements": "Input Requirements",
         "instructionsPlaceholder": "Anything else this agent should know? Tools to prefer, things to avoid…",
+        "keepEditing": "Keep editing",
         "keyCustom": "Custom Key for this agent…",
         "keyCustomSavedHint": "Saved for this agent only — your provider default stays as-is.",
         "keyDefault": "Provider Default",
@@ -491,6 +498,7 @@ export const resources = {
         "providerDefault": "Provider default (Anthropic)",
         "removeCustomTone": "Remove custom tone",
         "removeSpecialty": "Remove {{name}}",
+        "responseTemplates": "Response Templates",
         "review": {
           "brain": "Brain",
           "computerUse": "Computer use",
@@ -527,6 +535,7 @@ export const resources = {
           "reviewer": "What do they review?",
           "worker": "What are they good at?"
         },
+        "startChat": "Start a chat",
         "status": {
           "abilities": "Configuring abilities...",
           "almostReady": "Almost ready...",
@@ -787,6 +796,7 @@ export const resources = {
         "connection": "Connection",
         "listedAgo": "Listed {{timeAgo}}",
         "listedInDirectory": "Listed in directory",
+        "loadFailed": "Failed to load listing",
         "notFound": "Listing not found",
         "requiresLocation": "Requires your location",
         "tags": "Tags"
@@ -1346,6 +1356,8 @@ export const resources = {
         "ratingSummaryWithCount": "Rating: {{rating}}/5 ({{count}})",
         "rating_one": "★ {{rating}} ({{count}} rating)",
         "rating_other": "★ {{rating}} ({{count}} ratings)",
+        "removeConfirm": "Remove this skill from this agent? The skill itself won't be deleted.",
+        "removeTitle": "Remove Skill",
         "scope": {
           "agent": "Agent",
           "global": "Global",
@@ -1635,6 +1647,14 @@ export const resources = {
         "passwordMin": "Min. 6 characters",
         "yourName": "Your name"
       },
+      "resetPassword": {
+        "emailRequired": "Please enter your email address.",
+        "emailSent": "If an account exists for {{email}}, we've sent a password reset link. Open it in your browser to set a new password, then come back here to sign in.",
+        "failed": "Could not send the reset email. Please try again.",
+        "sendLink": "Send reset link",
+        "subtitle": "Enter your email address and we'll send you a link to reset your password.",
+        "title": "Reset your password"
+      },
       "signIn": "Sign In",
       "signInSubtitle": "Sign in to Simplifi",
       "signInToAcceptInvite": "Sign in to accept your invitation",
@@ -1818,6 +1838,7 @@ export const resources = {
       "emptyHint": "Create one to get started.",
       "emptyLabel": "No canvases yet",
       "errors": {
+        "deleteFailed": "Failed to delete canvas",
         "loadFailed": "Failed to load canvases",
         "nameFormat": "Name must be lowercase, start with a letter, and use only letters, numbers, and underscores",
         "nameRequired": "Name is required",
@@ -1825,6 +1846,10 @@ export const resources = {
         "widgetRequired": "Add at least one widget"
       },
       "example": "Example",
+      "fieldPlaceholders": {
+        "description": "What this canvas layout does...",
+        "name": "my_canvas_name"
+      },
       "format": "Format",
       "hideJson": "Hide JSON",
       "idLabel": "ID: {{id}}",
@@ -1968,6 +1993,10 @@ export const resources = {
         "openWorkRoom": "Open work room",
         "title": "{{name}} is busy"
       },
+      "approvalApprove": "Approve",
+      "approvalReject": "Reject",
+      "approvalRequested": "Approval requested",
+      "approvalRespondedWith": "✓ Responded: {{option}}",
       "approvalResponse": {
         "decision": {
           "approved": "Approved",
@@ -1976,6 +2005,7 @@ export const resources = {
         },
         "invalid": "Invalid approval response"
       },
+      "approvalSendFailed": "Couldn't send your response. Please try again.",
       "attachmentCaptionHint": "Add a description for context...",
       "backToParent": "Back to parent conversation",
       "branch": {
@@ -1990,6 +2020,11 @@ export const resources = {
         "showBranches_other": "Show {{count}} branches",
         "totalDuration": "Total: {{duration}}"
       },
+      "branchCompleted": "Branch completed",
+      "branchDetails": "Details",
+      "branchDuration": "Duration: {{duration}}",
+      "branchLess": "Less",
+      "branchResult": "Branch Result",
       "bringAgentOnline": "Bring this agent back online",
       "bringOnline": "Bring online",
       "cancelReply": "Cancel reply",
@@ -2019,6 +2054,7 @@ export const resources = {
       "confirmDeleteConversation": "Delete this conversation? This cannot be undone.",
       "conversation": "Conversation",
       "conversationFallback": "Conversation",
+      "conversationsLoadFailed": "Couldn't load conversations. Check your connection and try again.",
       "copyId": "Copy ID",
       "createChannel": "Create Channel",
       "createChannelHint": "Open a shared channel for your agents",
@@ -2097,6 +2133,7 @@ export const resources = {
       "groupInfoLabel": "Group Info",
       "groupNamePlaceholder": "e.g. Project Planning",
       "hideDetails": "Hide details",
+      "historyLoadFailed": "Couldn't load messages. Check your connection and try again.",
       "hotelSearch": {
         "allPrices": "All prices",
         "any": "Any",
@@ -2130,6 +2167,7 @@ export const resources = {
         "title": "Leave Conversation"
       },
       "leaveFailed": "Failed to leave conversation",
+      "loadOlderFailed": "Couldn't load older messages. Scroll up to try again.",
       "loadOlderMessages": "Load older messages",
       "loadingConversations": "Loading conversations...",
       "location": {
@@ -2298,6 +2336,7 @@ export const resources = {
         "placeholder": "Search messages...",
         "prompt": "Search your messages"
       },
+      "searchJumpNotFound": "Couldn't find that message in this conversation's history.",
       "searchPeopleOrAgents": "Search people or agents...",
       "searchingPeople": "Searching people...",
       "selectConversation": "Select a conversation",
@@ -2310,6 +2349,7 @@ export const resources = {
         "validation": "That message couldn't be sent. Please edit it and try again."
       },
       "sendFailed": "Failed to send",
+      "sendMessage": "Send message",
       "sendWithEnter": "Send (Enter)",
       "sending": "sending",
       "sentAMessage": "sent a message",
@@ -2575,6 +2615,7 @@ export const resources = {
       "preview": "Preview",
       "progress": "Progress",
       "provider": "Provider",
+      "reconnecting": "Reconnecting...",
       "refresh": "Refresh",
       "reject": "Reject",
       "reloadApp": "Reload app",
@@ -2994,6 +3035,7 @@ export const resources = {
       "agentsOnline": "Agents ({{online}}/{{total}} online)",
       "agentsOnlineTitle": "{{online}}/{{total}} online",
       "canvas": "Canvas",
+      "canvases": "Canvases",
       "chats": "Chats",
       "files": "Files",
       "friends": "Friends",
@@ -3558,7 +3600,13 @@ export const resources = {
       "advanced": {
         "flowDebug": "Flow Control Debug",
         "flowDebugDescription": "Show real-time flow control events (backoff, suppression) in chat",
+        "reminderSetFailed": "Couldn't set test reminder",
+        "reminderSetMessage": "It should pop in ~5 seconds.",
+        "reminderSetTitle": "Reminder set",
         "startFresh": "Start Fresh / Replay Onboarding",
+        "startFreshConfirmCta": "Start Fresh",
+        "startFreshConfirmMessage": "This wipes ALL your agents and their memories, your routines, reminders, location sharing, and notification settings, then starts onboarding over from scratch. Your name and connected accounts (e.g. Google) are kept. This can't be undone. Continue?",
+        "startFreshConfirmTitle": "Start Fresh",
         "startFreshDescription": "Wipe all agents, memories, routines & settings, then start onboarding over",
         "testReminder": "Test Reminder",
         "testReminderDescription": "Fire a sample reminder in ~5 seconds to check the toast + push"
@@ -3735,6 +3783,7 @@ export const resources = {
         "title": "LLM API Keys"
       },
       "location": {
+        "currentLocation": "Current Location",
         "enable": "Enable Location",
         "enablePrompt": "Enable location to see your position on the map. Your location can be shared with agents you grant access to.",
         "enabling": "Enabling...",
@@ -3742,15 +3791,21 @@ export const resources = {
         "grantedSummary": "{{granted}} of {{total}} granted",
         "perAgentAccess": "Per-Agent Access",
         "perAgentAccessDescription": "Choose which agents can see your location",
+        "permissionRequiredMessage": "Location permission is needed to share your location with agents.",
+        "permissionRequiredTitle": "Permission Required",
         "pinDropped": "Pin Dropped",
         "shareWithAgents": "Share with agents",
         "shareWithAgentsDescription": "Your agents can access your location for local search, weather, and navigation",
         "sharingOff": "Location sharing is off",
         "turnOn": "Turn On Location Sharing",
         "turnOnPrompt": "Turn on location sharing so your agents can help with location-aware tasks.",
-        "turningOn": "Turning on..."
+        "turningOn": "Turning on...",
+        "updateGrantFailed": "Failed to update location grant",
+        "updateSharingFailed": "Failed to update location sharing"
       },
       "manage": {
+        "canvases": "Canvases",
+        "canvasesDescription": "Create and edit canvas layouts for your agents",
         "connectedAccounts": "Connected Accounts",
         "connectedAccountsDescription": "Link external services for your agents to use",
         "friendsDescription": "Search people, respond to requests, and manage friends",
@@ -3814,6 +3869,7 @@ export const resources = {
       },
       "profile": {
         "avatarUploadFailed": "Failed to upload avatar",
+        "displayNameEmpty": "Display name cannot be empty",
         "firstName": "First Name",
         "lastName": "Last Name",
         "tapToChangePhoto": "Tap to change photo",
@@ -3861,6 +3917,7 @@ export const resources = {
         "searchPlaceholder": "Search timezones (e.g. New York, Tokyo)",
         "selectTitle": "Select Timezone",
         "tapToChange": "{{timezone}} — tap to change",
+        "updateFailed": "Failed to update timezone",
         "useBrowser": "Use browser timezone",
         "useDevice": "Use device timezone"
       },
@@ -4140,6 +4197,7 @@ export const resources = {
       "errors": {
         "cancelFailed": "Cancel failed",
         "createFailed": "Failed to create task.",
+        "listLoadFailed": "Couldn't load your actions. Check your connection and try again.",
         "loadFailed": "Failed to load task",
         "revisionFailed": "Revision failed",
         "titleRequired": "Task title is required."
@@ -4834,14 +4892,20 @@ export const resources = {
         "desktopOnlyTitle": "Se ejecuta desde la app de escritorio",
         "detailsHint": "Instrucciones y preferencias personalizadas.",
         "detailsTitle": "¿Algún detalle más?",
+        "discardAction": "Descartar",
+        "discardMessage": "Se perderá la configuración realizada hasta ahora.",
+        "discardTitle": "¿Descartar este agente?",
         "effort": "Esfuerzo",
         "errors": {
           "apiKeyRequired": "Se requiere una clave de API para este proveedor",
+          "backToReview": "Volver al resumen",
           "createFailed": "No se pudo crear el agente.",
           "keySaveMessage": "Comprueba la clave e inténtalo de nuevo. El agente no se ha creado.",
           "keySaveTitle": "No se pudo guardar la clave API",
           "nameRequired": "El nombre es obligatorio.",
           "saveKeyFailed": "No se pudo guardar la clave de API",
+          "timeoutMessage": "No pudimos confirmar que tu agente se haya creado. Comprueba tu conexión e inténtalo de nuevo.",
+          "timeoutTitle": "Se agotó el tiempo al crear el agente",
           "uploadFailed": "Error al subir el archivo"
         },
         "executionMode": "Modo de ejecución",
@@ -4867,6 +4931,7 @@ export const resources = {
         },
         "inputRequirements": "Requisitos de entrada",
         "instructionsPlaceholder": "¿Algo más que este agente deba saber? Herramientas preferidas, cosas que evitar…",
+        "keepEditing": "Seguir editando",
         "keyCustom": "Clave personalizada para este agente…",
         "keyCustomSavedHint": "Se guarda solo para este agente — tu predeterminada del proveedor no cambia.",
         "keyDefault": "Predeterminada del proveedor",
@@ -4906,6 +4971,7 @@ export const resources = {
         "providerDefault": "Proveedor predeterminado (Anthropic)",
         "removeCustomTone": "Quitar el tono personalizado",
         "removeSpecialty": "Quitar {{name}}",
+        "responseTemplates": "Plantillas de respuesta",
         "review": {
           "brain": "Cerebro",
           "computerUse": "Uso del ordenador",
@@ -4942,6 +5008,7 @@ export const resources = {
           "reviewer": "¿Qué revisan?",
           "worker": "¿En qué son buenos?"
         },
+        "startChat": "Iniciar un chat",
         "status": {
           "abilities": "Configurando habilidades...",
           "almostReady": "Casi listo...",
@@ -5202,6 +5269,7 @@ export const resources = {
         "connection": "Conexión",
         "listedAgo": "Publicado {{timeAgo}}",
         "listedInDirectory": "Publicado en el directorio",
+        "loadFailed": "No se pudo cargar el listado",
         "notFound": "Publicación no encontrada",
         "requiresLocation": "Requiere tu ubicación",
         "tags": "Etiquetas"
@@ -5761,6 +5829,8 @@ export const resources = {
         "ratingSummaryWithCount": "Calificación: {{rating}}/5 ({{count}})",
         "rating_one": "★ {{rating}} ({{count}} valoración)",
         "rating_other": "★ {{rating}} ({{count}} valoraciones)",
+        "removeConfirm": "¿Quitar esta habilidad de este agente? La habilidad en sí no se eliminará.",
+        "removeTitle": "Quitar habilidad",
         "scope": {
           "agent": "Agente",
           "global": "Global",
@@ -6050,6 +6120,14 @@ export const resources = {
         "passwordMin": "Mín. 6 caracteres",
         "yourName": "Tu nombre"
       },
+      "resetPassword": {
+        "emailRequired": "Por favor, introduce tu correo electrónico.",
+        "emailSent": "Si existe una cuenta para {{email}}, hemos enviado un enlace para restablecer la contraseña. Ábrelo en tu navegador para establecer una nueva contraseña y luego vuelve aquí para iniciar sesión.",
+        "failed": "No se pudo enviar el correo de restablecimiento. Inténtalo de nuevo.",
+        "sendLink": "Enviar enlace de restablecimiento",
+        "subtitle": "Introduce tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.",
+        "title": "Restablecer tu contraseña"
+      },
       "signIn": "Iniciar sesión",
       "signInSubtitle": "Inicia sesión en Simplifi",
       "signInToAcceptInvite": "Inicia sesión para aceptar tu invitación",
@@ -6233,6 +6311,7 @@ export const resources = {
       "emptyHint": "Crea uno para empezar.",
       "emptyLabel": "Aún no hay lienzos",
       "errors": {
+        "deleteFailed": "No se pudo eliminar el lienzo",
         "loadFailed": "No se pudieron cargar los lienzos",
         "nameFormat": "El nombre debe estar en minúsculas, empezar por una letra y usar solo letras, números y guiones bajos",
         "nameRequired": "El nombre es obligatorio",
@@ -6240,6 +6319,10 @@ export const resources = {
         "widgetRequired": "Añade al menos un widget"
       },
       "example": "Ejemplo",
+      "fieldPlaceholders": {
+        "description": "Qué hace este diseño de canvas...",
+        "name": "my_canvas_name"
+      },
       "format": "Formatear",
       "hideJson": "Ocultar JSON",
       "idLabel": "ID: {{id}}",
@@ -6383,6 +6466,10 @@ export const resources = {
         "openWorkRoom": "Abrir sala de trabajo",
         "title": "{{name}} está ocupado"
       },
+      "approvalApprove": "Aprobar",
+      "approvalReject": "Rechazar",
+      "approvalRequested": "Aprobación solicitada",
+      "approvalRespondedWith": "✓ Respondido: {{option}}",
       "approvalResponse": {
         "decision": {
           "approved": "Aprobado",
@@ -6391,6 +6478,7 @@ export const resources = {
         },
         "invalid": "Respuesta de aprobación no válida"
       },
+      "approvalSendFailed": "No se pudo enviar tu respuesta. Vuelve a intentarlo.",
       "attachmentCaptionHint": "Añade una descripción para dar contexto...",
       "backToParent": "Volver a la conversación principal",
       "branch": {
@@ -6405,6 +6493,11 @@ export const resources = {
         "showBranches_other": "Mostrar {{count}} ramas",
         "totalDuration": "Total: {{duration}}"
       },
+      "branchCompleted": "Rama completada",
+      "branchDetails": "Detalles",
+      "branchDuration": "Duración: {{duration}}",
+      "branchLess": "Menos",
+      "branchResult": "Resultado de la rama",
       "bringAgentOnline": "Volver a poner este agente en línea",
       "bringOnline": "Poner en línea",
       "cancelReply": "Cancelar respuesta",
@@ -6434,6 +6527,7 @@ export const resources = {
       "confirmDeleteConversation": "¿Eliminar esta conversación? Esto no se puede deshacer.",
       "conversation": "Conversación",
       "conversationFallback": "Conversación",
+      "conversationsLoadFailed": "No se pudieron cargar las conversaciones. Comprueba tu conexión y vuelve a intentarlo.",
       "copyId": "Copiar ID",
       "createChannel": "Crear canal",
       "createChannelHint": "Abre un canal compartido para tus agentes",
@@ -6512,6 +6606,7 @@ export const resources = {
       "groupInfoLabel": "Información del grupo",
       "groupNamePlaceholder": "p. ej. Planificación del proyecto",
       "hideDetails": "Ocultar detalles",
+      "historyLoadFailed": "No se pudieron cargar los mensajes. Comprueba tu conexión y vuelve a intentarlo.",
       "hotelSearch": {
         "allPrices": "Todos los precios",
         "any": "Cualquiera",
@@ -6545,6 +6640,7 @@ export const resources = {
         "title": "Salir de la conversación"
       },
       "leaveFailed": "No se pudo salir de la conversación",
+      "loadOlderFailed": "No se pudieron cargar los mensajes anteriores. Desplázate hacia arriba para volver a intentarlo.",
       "loadOlderMessages": "Cargar mensajes anteriores",
       "loadingConversations": "Cargando conversaciones...",
       "location": {
@@ -6713,6 +6809,7 @@ export const resources = {
         "placeholder": "Buscar mensajes...",
         "prompt": "Busca en tus mensajes"
       },
+      "searchJumpNotFound": "No se pudo encontrar ese mensaje en el historial de esta conversación.",
       "searchPeopleOrAgents": "Buscar personas o agentes...",
       "searchingPeople": "Buscando personas...",
       "selectConversation": "Selecciona una conversación",
@@ -6725,6 +6822,7 @@ export const resources = {
         "validation": "No se pudo enviar ese mensaje. Edítalo e inténtalo de nuevo."
       },
       "sendFailed": "No se pudo enviar",
+      "sendMessage": "Enviar mensaje",
       "sendWithEnter": "Enviar (Intro)",
       "sending": "enviando",
       "sentAMessage": "envió un mensaje",
@@ -6990,6 +7088,7 @@ export const resources = {
       "preview": "Vista previa",
       "progress": "Progreso",
       "provider": "Proveedor",
+      "reconnecting": "Reconectando...",
       "refresh": "Actualizar",
       "reject": "Rechazar",
       "reloadApp": "Recargar la aplicación",
@@ -7409,6 +7508,7 @@ export const resources = {
       "agentsOnline": "Agentes ({{online}}/{{total}} en línea)",
       "agentsOnlineTitle": "{{online}}/{{total}} en línea",
       "canvas": "Lienzo",
+      "canvases": "Lienzos",
       "chats": "Chats",
       "files": "Archivos",
       "friends": "Amigos",
@@ -7973,7 +8073,13 @@ export const resources = {
       "advanced": {
         "flowDebug": "Depuración de control de flujo",
         "flowDebugDescription": "Muestra eventos de control de flujo en tiempo real (espera, supresión) en el chat",
+        "reminderSetFailed": "No se pudo crear el recordatorio de prueba",
+        "reminderSetMessage": "Debería aparecer en unos 5 segundos.",
+        "reminderSetTitle": "Recordatorio creado",
         "startFresh": "Empezar de cero / Repetir la configuración inicial",
+        "startFreshConfirmCta": "Empezar de cero",
+        "startFreshConfirmMessage": "Esto borra TODOS tus agentes y sus memorias, tus rutinas, recordatorios, el uso compartido de ubicación y los ajustes de notificaciones, y vuelve a empezar la configuración inicial desde cero. Tu nombre y las cuentas conectadas (p. ej., Google) se conservan. Esto no se puede deshacer. ¿Continuar?",
+        "startFreshConfirmTitle": "Empezar de cero",
         "startFreshDescription": "Borra todos los agentes, memorias, rutinas y ajustes, y vuelve a empezar la configuración inicial",
         "testReminder": "Probar recordatorio",
         "testReminderDescription": "Lanza un recordatorio de prueba en ~5 segundos para comprobar el aviso y la notificación push"
@@ -8150,6 +8256,7 @@ export const resources = {
         "title": "Claves API de LLM"
       },
       "location": {
+        "currentLocation": "Ubicación actual",
         "enable": "Activar ubicación",
         "enablePrompt": "Activa la ubicación para ver tu posición en el mapa. Tu ubicación puede compartirse con los agentes a los que des acceso.",
         "enabling": "Activando...",
@@ -8157,15 +8264,21 @@ export const resources = {
         "grantedSummary": "{{granted}} de {{total}} con acceso",
         "perAgentAccess": "Acceso por agente",
         "perAgentAccessDescription": "Elige qué agentes pueden ver tu ubicación",
+        "permissionRequiredMessage": "Se necesita el permiso de ubicación para compartir tu ubicación con los agentes.",
+        "permissionRequiredTitle": "Permiso necesario",
         "pinDropped": "Marcador colocado",
         "shareWithAgents": "Compartir con agentes",
         "shareWithAgentsDescription": "Tus agentes pueden acceder a tu ubicación para búsquedas locales, el tiempo y la navegación",
         "sharingOff": "El uso compartido de ubicación está desactivado",
         "turnOn": "Activar el uso compartido de ubicación",
         "turnOnPrompt": "Activa el uso compartido de ubicación para que tus agentes puedan ayudarte con tareas basadas en tu ubicación.",
-        "turningOn": "Activando..."
+        "turningOn": "Activando...",
+        "updateGrantFailed": "No se pudo actualizar el acceso a la ubicación",
+        "updateSharingFailed": "No se pudo actualizar el uso compartido de ubicación"
       },
       "manage": {
+        "canvases": "Lienzos",
+        "canvasesDescription": "Crea y edita diseños de lienzo para tus agentes",
         "connectedAccounts": "Cuentas conectadas",
         "connectedAccountsDescription": "Vincula servicios externos para que los usen tus agentes",
         "friendsDescription": "Busca personas, responde a solicitudes y gestiona tus amigos",
@@ -8229,6 +8342,7 @@ export const resources = {
       },
       "profile": {
         "avatarUploadFailed": "No se pudo subir el avatar",
+        "displayNameEmpty": "El nombre para mostrar no puede estar vacío",
         "firstName": "Nombre",
         "lastName": "Apellidos",
         "tapToChangePhoto": "Toca para cambiar la foto",
@@ -8276,6 +8390,7 @@ export const resources = {
         "searchPlaceholder": "Buscar zonas horarias (p. ej. Nueva York, Tokio)",
         "selectTitle": "Seleccionar zona horaria",
         "tapToChange": "{{timezone}} — toca para cambiar",
+        "updateFailed": "No se pudo actualizar la zona horaria",
         "useBrowser": "Usar la zona horaria del navegador",
         "useDevice": "Usar la zona horaria del dispositivo"
       },
@@ -8555,6 +8670,7 @@ export const resources = {
       "errors": {
         "cancelFailed": "No se pudo cancelar",
         "createFailed": "No se pudo crear la tarea.",
+        "listLoadFailed": "No se pudieron cargar tus acciones. Comprueba tu conexión e inténtalo de nuevo.",
         "loadFailed": "No se pudo cargar la tarea",
         "revisionFailed": "No se pudo solicitar la revisión",
         "titleRequired": "El título de la tarea es obligatorio."
@@ -9249,14 +9365,20 @@ export const resources = {
         "desktopOnlyTitle": "Läuft über die Desktop-App",
         "detailsHint": "Benutzerdefinierte Anweisungen und Präferenzen.",
         "detailsTitle": "Noch weitere Details?",
+        "discardAction": "Verwerfen",
+        "discardMessage": "Ihre bisherigen Eingaben gehen verloren.",
+        "discardTitle": "Diesen Agenten verwerfen?",
         "effort": "Aufwand",
         "errors": {
           "apiKeyRequired": "Für diesen Anbieter ist ein API-Schlüssel erforderlich",
+          "backToReview": "Zurück zur Übersicht",
           "createFailed": "Agent konnte nicht erstellt werden.",
           "keySaveMessage": "Überprüfen Sie den Schlüssel und versuchen Sie es erneut. Der Agent wurde nicht erstellt.",
           "keySaveTitle": "API-Schlüssel konnte nicht gespeichert werden",
           "nameRequired": "Name ist erforderlich.",
           "saveKeyFailed": "API-Schlüssel konnte nicht gespeichert werden",
+          "timeoutMessage": "Wir konnten nicht bestätigen, dass Ihr Agent erstellt wurde. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
+          "timeoutTitle": "Zeitüberschreitung beim Erstellen des Agenten",
           "uploadFailed": "Upload fehlgeschlagen"
         },
         "executionMode": "Ausführungsmodus",
@@ -9282,6 +9404,7 @@ export const resources = {
         },
         "inputRequirements": "Eingabeanforderungen",
         "instructionsPlaceholder": "Was sollte dieser Agent noch wissen? Bevorzugte Tools, Dinge, die vermieden werden sollen…",
+        "keepEditing": "Weiter bearbeiten",
         "keyCustom": "Benutzerdefinierter Schlüssel für diesen Agenten…",
         "keyCustomSavedHint": "Nur für diesen Agenten gespeichert — Ihr Standardanbieter bleibt unverändert.",
         "keyDefault": "Anbieter-Standard",
@@ -9321,6 +9444,7 @@ export const resources = {
         "providerDefault": "Anbieter-Standard (Anthropic)",
         "removeCustomTone": "Benutzerdefinierten Tonfall entfernen",
         "removeSpecialty": "{{name}} entfernen",
+        "responseTemplates": "Antwortvorlagen",
         "review": {
           "brain": "Gehirn",
           "computerUse": "Computernutzung",
@@ -9357,6 +9481,7 @@ export const resources = {
           "reviewer": "Was überprüfen sie?",
           "worker": "Worin sind sie gut?"
         },
+        "startChat": "Chat starten",
         "status": {
           "abilities": "Fähigkeiten werden konfiguriert...",
           "almostReady": "Fast fertig...",
@@ -9617,6 +9742,7 @@ export const resources = {
         "connection": "Verbindung",
         "listedAgo": "Gelistet {{timeAgo}}",
         "listedInDirectory": "Im Verzeichnis gelistet",
+        "loadFailed": "Eintrag konnte nicht geladen werden",
         "notFound": "Eintrag nicht gefunden",
         "requiresLocation": "Erfordert Ihren Standort",
         "tags": "Tags"
@@ -10176,6 +10302,8 @@ export const resources = {
         "ratingSummaryWithCount": "Bewertung: {{rating}}/5 ({{count}})",
         "rating_one": "★ {{rating}} ({{count}} Bewertung)",
         "rating_other": "★ {{rating}} ({{count}} Bewertungen)",
+        "removeConfirm": "Diese Fähigkeit von diesem Agenten entfernen? Die Fähigkeit selbst wird nicht gelöscht.",
+        "removeTitle": "Fähigkeit entfernen",
         "scope": {
           "agent": "Agent",
           "global": "Global",
@@ -10465,6 +10593,14 @@ export const resources = {
         "passwordMin": "Min. 6 Zeichen",
         "yourName": "Ihr Name"
       },
+      "resetPassword": {
+        "emailRequired": "Bitte geben Sie Ihre E-Mail-Adresse ein.",
+        "emailSent": "Falls ein Konto für {{email}} existiert, haben wir einen Link zum Zurücksetzen des Passworts gesendet. Öffnen Sie ihn in Ihrem Browser, um ein neues Passwort festzulegen, und melden Sie sich dann hier an.",
+        "failed": "Die E-Mail zum Zurücksetzen konnte nicht gesendet werden. Bitte versuchen Sie es erneut.",
+        "sendLink": "Link zum Zurücksetzen senden",
+        "subtitle": "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen Ihres Passworts.",
+        "title": "Passwort zurücksetzen"
+      },
       "signIn": "Anmelden",
       "signInSubtitle": "Bei Simplifi anmelden",
       "signInToAcceptInvite": "Melden Sie sich an, um Ihre Einladung anzunehmen",
@@ -10648,6 +10784,7 @@ export const resources = {
       "emptyHint": "Erstellen Sie eins, um loszulegen.",
       "emptyLabel": "Noch keine Canvases",
       "errors": {
+        "deleteFailed": "Canvas konnte nicht gelöscht werden",
         "loadFailed": "Canvases konnten nicht geladen werden",
         "nameFormat": "Der Name muss klein geschrieben sein, mit einem Buchstaben beginnen und darf nur Buchstaben, Zahlen und Unterstriche enthalten",
         "nameRequired": "Name ist erforderlich",
@@ -10655,6 +10792,10 @@ export const resources = {
         "widgetRequired": "Fügen Sie mindestens ein Widget hinzu"
       },
       "example": "Beispiel",
+      "fieldPlaceholders": {
+        "description": "Was dieses Canvas-Layout macht …",
+        "name": "my_canvas_name"
+      },
       "format": "Format",
       "hideJson": "JSON ausblenden",
       "idLabel": "ID: {{id}}",
@@ -10798,6 +10939,10 @@ export const resources = {
         "openWorkRoom": "Arbeitsraum öffnen",
         "title": "{{name}} ist beschäftigt"
       },
+      "approvalApprove": "Genehmigen",
+      "approvalReject": "Ablehnen",
+      "approvalRequested": "Genehmigung angefordert",
+      "approvalRespondedWith": "✓ Beantwortet: {{option}}",
       "approvalResponse": {
         "decision": {
           "approved": "Genehmigt",
@@ -10806,6 +10951,7 @@ export const resources = {
         },
         "invalid": "Ungültige Genehmigungsantwort"
       },
+      "approvalSendFailed": "Ihre Antwort konnte nicht gesendet werden. Bitte versuchen Sie es erneut.",
       "attachmentCaptionHint": "Beschreibung zum Kontext hinzufügen...",
       "backToParent": "Zurück zur übergeordneten Unterhaltung",
       "branch": {
@@ -10820,6 +10966,11 @@ export const resources = {
         "showBranches_other": "{{count}} Branches anzeigen",
         "totalDuration": "Gesamt: {{duration}}"
       },
+      "branchCompleted": "Branch abgeschlossen",
+      "branchDetails": "Details",
+      "branchDuration": "Dauer: {{duration}}",
+      "branchLess": "Weniger",
+      "branchResult": "Branch-Ergebnis",
       "bringAgentOnline": "Diesen Agenten wieder online bringen",
       "bringOnline": "Online bringen",
       "cancelReply": "Antwort abbrechen",
@@ -10849,6 +11000,7 @@ export const resources = {
       "confirmDeleteConversation": "Diese Unterhaltung löschen? Dies kann nicht rückgängig gemacht werden.",
       "conversation": "Unterhaltung",
       "conversationFallback": "Unterhaltung",
+      "conversationsLoadFailed": "Unterhaltungen konnten nicht geladen werden. Überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
       "copyId": "ID kopieren",
       "createChannel": "Kanal erstellen",
       "createChannelHint": "Einen gemeinsamen Kanal für Ihre Agenten öffnen",
@@ -10927,6 +11079,7 @@ export const resources = {
       "groupInfoLabel": "Gruppeninfo",
       "groupNamePlaceholder": "z. B. Projektplanung",
       "hideDetails": "Details ausblenden",
+      "historyLoadFailed": "Nachrichten konnten nicht geladen werden. Überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
       "hotelSearch": {
         "allPrices": "Alle Preise",
         "any": "Beliebig",
@@ -10960,6 +11113,7 @@ export const resources = {
         "title": "Unterhaltung verlassen"
       },
       "leaveFailed": "Verlassen der Unterhaltung fehlgeschlagen",
+      "loadOlderFailed": "Ältere Nachrichten konnten nicht geladen werden. Scrollen Sie nach oben, um es erneut zu versuchen.",
       "loadOlderMessages": "Ältere Nachrichten laden",
       "loadingConversations": "Unterhaltungen werden geladen...",
       "location": {
@@ -11128,6 +11282,7 @@ export const resources = {
         "placeholder": "Nachrichten durchsuchen...",
         "prompt": "Durchsuchen Sie Ihre Nachrichten"
       },
+      "searchJumpNotFound": "Diese Nachricht konnte im Verlauf dieser Unterhaltung nicht gefunden werden.",
       "searchPeopleOrAgents": "Personen oder Agenten suchen...",
       "searchingPeople": "Personen werden gesucht...",
       "selectConversation": "Wählen Sie eine Unterhaltung aus",
@@ -11140,6 +11295,7 @@ export const resources = {
         "validation": "Diese Nachricht konnte nicht gesendet werden. Bitte bearbeiten Sie sie und versuchen Sie es erneut."
       },
       "sendFailed": "Senden fehlgeschlagen",
+      "sendMessage": "Nachricht senden",
       "sendWithEnter": "Senden (Eingabetaste)",
       "sending": "sendet",
       "sentAMessage": "hat eine Nachricht gesendet",
@@ -11405,6 +11561,7 @@ export const resources = {
       "preview": "Vorschau",
       "progress": "Fortschritt",
       "provider": "Anbieter",
+      "reconnecting": "Verbindung wird wiederhergestellt...",
       "refresh": "Aktualisieren",
       "reject": "Ablehnen",
       "reloadApp": "App neu laden",
@@ -11824,6 +11981,7 @@ export const resources = {
       "agentsOnline": "Agenten ({{online}}/{{total}} online)",
       "agentsOnlineTitle": "{{online}}/{{total}} online",
       "canvas": "Canvas",
+      "canvases": "Canvases",
       "chats": "Chats",
       "files": "Dateien",
       "friends": "Freunde",
@@ -12388,7 +12546,13 @@ export const resources = {
       "advanced": {
         "flowDebug": "Flusskontrolle-Debug",
         "flowDebugDescription": "Zeigt Flusskontroll-Ereignisse in Echtzeit (Backoff, Unterdrückung) im Chat an",
+        "reminderSetFailed": "Test-Erinnerung konnte nicht gesetzt werden",
+        "reminderSetMessage": "Sie sollte in ca. 5 Sekunden erscheinen.",
+        "reminderSetTitle": "Erinnerung gesetzt",
         "startFresh": "Neu starten / Onboarding wiederholen",
+        "startFreshConfirmCta": "Neu starten",
+        "startFreshConfirmMessage": "Dadurch werden ALLE Ihre Agenten und ihr Gedächtnis, Ihre Routinen, Erinnerungen, die Standortfreigabe und die Benachrichtigungseinstellungen gelöscht, und das Onboarding beginnt von vorn. Ihr Name und verbundene Konten (z. B. Google) bleiben erhalten. Dies kann nicht rückgängig gemacht werden. Fortfahren?",
+        "startFreshConfirmTitle": "Neu starten",
         "startFreshDescription": "Löscht alle Agenten, Erinnerungen, Routinen und Einstellungen und startet das Onboarding neu",
         "testReminder": "Test-Erinnerung",
         "testReminderDescription": "Löst in ca. 5 Sekunden eine Beispiel-Erinnerung aus, um Toast und Push-Benachrichtigung zu testen"
@@ -12565,6 +12729,7 @@ export const resources = {
         "title": "LLM-API-Schlüssel"
       },
       "location": {
+        "currentLocation": "Aktueller Standort",
         "enable": "Standort aktivieren",
         "enablePrompt": "Aktivieren Sie den Standort, um Ihre Position auf der Karte zu sehen. Ihr Standort kann mit Agenten geteilt werden, denen Sie Zugriff gewähren.",
         "enabling": "Wird aktiviert...",
@@ -12572,15 +12737,21 @@ export const resources = {
         "grantedSummary": "{{granted}} von {{total}} gewährt",
         "perAgentAccess": "Zugriff pro Agent",
         "perAgentAccessDescription": "Wählen Sie, welche Agenten Ihren Standort sehen können",
+        "permissionRequiredMessage": "Die Standortberechtigung wird benötigt, um Ihren Standort mit Agenten zu teilen.",
+        "permissionRequiredTitle": "Berechtigung erforderlich",
         "pinDropped": "Pin gesetzt",
         "shareWithAgents": "Mit Agenten teilen",
         "shareWithAgentsDescription": "Ihre Agenten können auf Ihren Standort zugreifen für lokale Suche, Wetter und Navigation",
         "sharingOff": "Standortfreigabe ist deaktiviert",
         "turnOn": "Standortfreigabe aktivieren",
         "turnOnPrompt": "Aktivieren Sie die Standortfreigabe, damit Ihre Agenten bei standortbezogenen Aufgaben helfen können.",
-        "turningOn": "Wird aktiviert..."
+        "turningOn": "Wird aktiviert...",
+        "updateGrantFailed": "Standortzugriff konnte nicht aktualisiert werden",
+        "updateSharingFailed": "Standortfreigabe konnte nicht aktualisiert werden"
       },
       "manage": {
+        "canvases": "Canvases",
+        "canvasesDescription": "Canvas-Layouts für Ihre Agenten erstellen und bearbeiten",
         "connectedAccounts": "Verbundene Konten",
         "connectedAccountsDescription": "Verknüpfen Sie externe Dienste zur Nutzung durch Ihre Agenten",
         "friendsDescription": "Suchen Sie nach Personen, beantworten Sie Anfragen und verwalten Sie Freunde",
@@ -12644,6 +12815,7 @@ export const resources = {
       },
       "profile": {
         "avatarUploadFailed": "Avatar konnte nicht hochgeladen werden",
+        "displayNameEmpty": "Der Anzeigename darf nicht leer sein",
         "firstName": "Vorname",
         "lastName": "Nachname",
         "tapToChangePhoto": "Tippen, um das Foto zu ändern",
@@ -12691,6 +12863,7 @@ export const resources = {
         "searchPlaceholder": "Zeitzonen durchsuchen (z. B. New York, Tokio)",
         "selectTitle": "Zeitzone auswählen",
         "tapToChange": "{{timezone}} — zum Ändern tippen",
+        "updateFailed": "Zeitzone konnte nicht aktualisiert werden",
         "useBrowser": "Zeitzone des Browsers verwenden",
         "useDevice": "Zeitzone des Geräts verwenden"
       },
@@ -12970,6 +13143,7 @@ export const resources = {
       "errors": {
         "cancelFailed": "Abbrechen fehlgeschlagen",
         "createFailed": "Aufgabe konnte nicht erstellt werden.",
+        "listLoadFailed": "Aktionen konnten nicht geladen werden. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
         "loadFailed": "Aufgabe konnte nicht geladen werden",
         "revisionFailed": "Überarbeitung fehlgeschlagen",
         "titleRequired": "Aufgabentitel ist erforderlich."
@@ -13664,14 +13838,20 @@ export const resources = {
         "desktopOnlyTitle": "S'exécute depuis l'application de bureau",
         "detailsHint": "Instructions personnalisées et préférences.",
         "detailsTitle": "Des détails supplémentaires ?",
+        "discardAction": "Abandonner",
+        "discardMessage": "La configuration effectuée jusqu'ici sera perdue.",
+        "discardTitle": "Abandonner cet agent ?",
         "effort": "Effort",
         "errors": {
           "apiKeyRequired": "Une clé API est requise pour ce fournisseur",
+          "backToReview": "Retour au récapitulatif",
           "createFailed": "Échec de la création de l'agent.",
           "keySaveMessage": "Vérifiez la clé et réessayez. L'agent n'a pas été créé.",
           "keySaveTitle": "Impossible d'enregistrer la clé API",
           "nameRequired": "Le nom est requis.",
           "saveKeyFailed": "Échec de l'enregistrement de la clé API",
+          "timeoutMessage": "Nous n'avons pas pu confirmer la création de votre agent. Vérifiez votre connexion et réessayez.",
+          "timeoutTitle": "La création de l'agent a expiré",
           "uploadFailed": "Échec du téléversement"
         },
         "executionMode": "Mode d'exécution",
@@ -13697,6 +13877,7 @@ export const resources = {
         },
         "inputRequirements": "Exigences d'entrée",
         "instructionsPlaceholder": "Autre chose que cet agent devrait savoir ? Outils à privilégier, choses à éviter…",
+        "keepEditing": "Continuer la modification",
         "keyCustom": "Clé personnalisée pour cet agent…",
         "keyCustomSavedHint": "Enregistrée pour cet agent uniquement — votre clé par défaut du fournisseur reste inchangée.",
         "keyDefault": "Clé par défaut du fournisseur",
@@ -13736,6 +13917,7 @@ export const resources = {
         "providerDefault": "Fournisseur par défaut (Anthropic)",
         "removeCustomTone": "Retirer le ton personnalisé",
         "removeSpecialty": "Retirer {{name}}",
+        "responseTemplates": "Modèles de réponse",
         "review": {
           "brain": "Cerveau",
           "computerUse": "Utilisation de l'ordinateur",
@@ -13772,6 +13954,7 @@ export const resources = {
           "reviewer": "Que révisent-ils ?",
           "worker": "Dans quoi excellent-ils ?"
         },
+        "startChat": "Démarrer une discussion",
         "status": {
           "abilities": "Configuration des capacités...",
           "almostReady": "Presque prêt...",
@@ -14032,6 +14215,7 @@ export const resources = {
         "connection": "Connexion",
         "listedAgo": "Listé {{timeAgo}}",
         "listedInDirectory": "Listé dans l'annuaire",
+        "loadFailed": "Impossible de charger l'annonce",
         "notFound": "Annonce introuvable",
         "requiresLocation": "Nécessite votre localisation",
         "tags": "Étiquettes"
@@ -14591,6 +14775,8 @@ export const resources = {
         "ratingSummaryWithCount": "Note : {{rating}}/5 ({{count}})",
         "rating_one": "★ {{rating}} ({{count}} note)",
         "rating_other": "★ {{rating}} ({{count}} notes)",
+        "removeConfirm": "Retirer cette compétence de cet agent ? La compétence elle-même ne sera pas supprimée.",
+        "removeTitle": "Retirer la compétence",
         "scope": {
           "agent": "Agent",
           "global": "Global",
@@ -14880,6 +15066,14 @@ export const resources = {
         "passwordMin": "Min. 6 caractères",
         "yourName": "Votre nom"
       },
+      "resetPassword": {
+        "emailRequired": "Veuillez saisir votre adresse e-mail.",
+        "emailSent": "Si un compte existe pour {{email}}, nous avons envoyé un lien de réinitialisation du mot de passe. Ouvrez-le dans votre navigateur pour définir un nouveau mot de passe, puis revenez ici pour vous connecter.",
+        "failed": "Impossible d'envoyer l'e-mail de réinitialisation. Veuillez réessayer.",
+        "sendLink": "Envoyer le lien de réinitialisation",
+        "subtitle": "Saisissez votre adresse e-mail et nous vous enverrons un lien pour réinitialiser votre mot de passe.",
+        "title": "Réinitialiser votre mot de passe"
+      },
       "signIn": "Se connecter",
       "signInSubtitle": "Connectez-vous à Simplifi",
       "signInToAcceptInvite": "Connectez-vous pour accepter votre invitation",
@@ -15063,6 +15257,7 @@ export const resources = {
       "emptyHint": "Créez-en un pour commencer.",
       "emptyLabel": "Aucun canvas pour le moment",
       "errors": {
+        "deleteFailed": "Échec de la suppression du canvas",
         "loadFailed": "Échec du chargement des canvas",
         "nameFormat": "Le nom doit être en minuscules, commencer par une lettre, et ne contenir que des lettres, des chiffres et des underscores",
         "nameRequired": "Le nom est requis",
@@ -15070,6 +15265,10 @@ export const resources = {
         "widgetRequired": "Ajoutez au moins un widget"
       },
       "example": "Exemple",
+      "fieldPlaceholders": {
+        "description": "Ce que fait cette disposition de canvas...",
+        "name": "my_canvas_name"
+      },
       "format": "Format",
       "hideJson": "Masquer le JSON",
       "idLabel": "ID : {{id}}",
@@ -15213,6 +15412,10 @@ export const resources = {
         "openWorkRoom": "Ouvrir la salle de travail",
         "title": "{{name}} est occupé"
       },
+      "approvalApprove": "Approuver",
+      "approvalReject": "Refuser",
+      "approvalRequested": "Approbation demandée",
+      "approvalRespondedWith": "✓ Répondu : {{option}}",
       "approvalResponse": {
         "decision": {
           "approved": "Approuvé",
@@ -15221,6 +15424,7 @@ export const resources = {
         },
         "invalid": "Réponse d'approbation invalide"
       },
+      "approvalSendFailed": "Impossible d'envoyer votre réponse. Veuillez réessayer.",
       "attachmentCaptionHint": "Ajoutez une description pour le contexte...",
       "backToParent": "Retour à la conversation parente",
       "branch": {
@@ -15235,6 +15439,11 @@ export const resources = {
         "showBranches_other": "Afficher {{count}} branches",
         "totalDuration": "Total : {{duration}}"
       },
+      "branchCompleted": "Branche terminée",
+      "branchDetails": "Détails",
+      "branchDuration": "Durée : {{duration}}",
+      "branchLess": "Moins",
+      "branchResult": "Résultat de la branche",
       "bringAgentOnline": "Remettre cet agent en ligne",
       "bringOnline": "Mettre en ligne",
       "cancelReply": "Annuler la réponse",
@@ -15264,6 +15473,7 @@ export const resources = {
       "confirmDeleteConversation": "Supprimer cette conversation ? Cette action est irréversible.",
       "conversation": "Conversation",
       "conversationFallback": "Conversation",
+      "conversationsLoadFailed": "Impossible de charger les conversations. Vérifiez votre connexion et réessayez.",
       "copyId": "Copier l'ID",
       "createChannel": "Créer un canal",
       "createChannelHint": "Ouvrez un canal partagé pour vos agents",
@@ -15342,6 +15552,7 @@ export const resources = {
       "groupInfoLabel": "Infos du groupe",
       "groupNamePlaceholder": "ex. Planification de projet",
       "hideDetails": "Masquer les détails",
+      "historyLoadFailed": "Impossible de charger les messages. Vérifiez votre connexion et réessayez.",
       "hotelSearch": {
         "allPrices": "Tous les prix",
         "any": "Peu importe",
@@ -15375,6 +15586,7 @@ export const resources = {
         "title": "Quitter la conversation"
       },
       "leaveFailed": "Échec pour quitter la conversation",
+      "loadOlderFailed": "Impossible de charger les messages plus anciens. Faites défiler vers le haut pour réessayer.",
       "loadOlderMessages": "Charger les messages plus anciens",
       "loadingConversations": "Chargement des conversations...",
       "location": {
@@ -15543,6 +15755,7 @@ export const resources = {
         "placeholder": "Rechercher des messages...",
         "prompt": "Recherchez dans vos messages"
       },
+      "searchJumpNotFound": "Impossible de trouver ce message dans l'historique de cette conversation.",
       "searchPeopleOrAgents": "Rechercher des personnes ou des agents...",
       "searchingPeople": "Recherche de personnes...",
       "selectConversation": "Sélectionnez une conversation",
@@ -15555,6 +15768,7 @@ export const resources = {
         "validation": "Ce message n'a pas pu être envoyé. Modifiez-le puis réessayez."
       },
       "sendFailed": "Échec de l'envoi",
+      "sendMessage": "Envoyer le message",
       "sendWithEnter": "Envoyer (Entrée)",
       "sending": "envoi en cours",
       "sentAMessage": "a envoyé un message",
@@ -15820,6 +16034,7 @@ export const resources = {
       "preview": "Aperçu",
       "progress": "Progression",
       "provider": "Fournisseur",
+      "reconnecting": "Reconnexion...",
       "refresh": "Actualiser",
       "reject": "Rejeter",
       "reloadApp": "Recharger l'application",
@@ -16239,6 +16454,7 @@ export const resources = {
       "agentsOnline": "Agents ({{online}}/{{total}} en ligne)",
       "agentsOnlineTitle": "{{online}}/{{total}} en ligne",
       "canvas": "Canvas",
+      "canvases": "Canvas",
       "chats": "Discussions",
       "files": "Fichiers",
       "friends": "Amis",
@@ -16803,7 +17019,13 @@ export const resources = {
       "advanced": {
         "flowDebug": "Débogage du contrôle de flux",
         "flowDebugDescription": "Afficher les événements de contrôle de flux en temps réel (recul, suppression) dans le chat",
+        "reminderSetFailed": "Impossible de programmer le rappel de test",
+        "reminderSetMessage": "Il devrait apparaître dans environ 5 secondes.",
+        "reminderSetTitle": "Rappel programmé",
         "startFresh": "Repartir à zéro / Rejouer l'intégration",
+        "startFreshConfirmCta": "Repartir à zéro",
+        "startFreshConfirmMessage": "Cela efface TOUS vos agents et leurs souvenirs, vos routines, rappels, le partage de position et les paramètres de notification, puis recommence l'intégration depuis le début. Votre nom et vos comptes connectés (p. ex. Google) sont conservés. Cette action est irréversible. Continuer ?",
+        "startFreshConfirmTitle": "Repartir à zéro",
         "startFreshDescription": "Effacer tous les agents, souvenirs, routines et paramètres, puis recommencer l'intégration",
         "testReminder": "Tester un rappel",
         "testReminderDescription": "Déclenche un rappel d'exemple dans ~5 secondes pour vérifier la notification toast et push"
@@ -16980,6 +17202,7 @@ export const resources = {
         "title": "Clés API LLM"
       },
       "location": {
+        "currentLocation": "Position actuelle",
         "enable": "Activer la localisation",
         "enablePrompt": "Activez la localisation pour voir votre position sur la carte. Votre position peut être partagée avec les agents auxquels vous accordez l'accès.",
         "enabling": "Activation...",
@@ -16987,15 +17210,21 @@ export const resources = {
         "grantedSummary": "{{granted}} sur {{total}} accordé(s)",
         "perAgentAccess": "Accès par agent",
         "perAgentAccessDescription": "Choisissez quels agents peuvent voir votre position",
+        "permissionRequiredMessage": "L'autorisation de localisation est nécessaire pour partager votre position avec les agents.",
+        "permissionRequiredTitle": "Autorisation requise",
         "pinDropped": "Épingle placée",
         "shareWithAgents": "Partager avec les agents",
         "shareWithAgentsDescription": "Vos agents peuvent accéder à votre position pour la recherche locale, la météo et la navigation",
         "sharingOff": "Le partage de localisation est désactivé",
         "turnOn": "Activer le partage de localisation",
         "turnOnPrompt": "Activez le partage de localisation pour que vos agents puissent vous aider dans les tâches liées à la localisation.",
-        "turningOn": "Activation en cours..."
+        "turningOn": "Activation en cours...",
+        "updateGrantFailed": "Échec de la mise à jour de l'accès à la position",
+        "updateSharingFailed": "Échec de la mise à jour du partage de position"
       },
       "manage": {
+        "canvases": "Canvas",
+        "canvasesDescription": "Créez et modifiez des mises en page de canvas pour vos agents",
         "connectedAccounts": "Comptes connectés",
         "connectedAccountsDescription": "Associez des services externes pour que vos agents puissent les utiliser",
         "friendsDescription": "Recherchez des personnes, répondez aux demandes et gérez vos amis",
@@ -17059,6 +17288,7 @@ export const resources = {
       },
       "profile": {
         "avatarUploadFailed": "Échec du téléchargement de l'avatar",
+        "displayNameEmpty": "Le nom d'affichage ne peut pas être vide",
         "firstName": "Prénom",
         "lastName": "Nom",
         "tapToChangePhoto": "Appuyez pour changer la photo",
@@ -17106,6 +17336,7 @@ export const resources = {
         "searchPlaceholder": "Rechercher un fuseau horaire (ex. New York, Tokyo)",
         "selectTitle": "Sélectionner un fuseau horaire",
         "tapToChange": "{{timezone}} — appuyez pour changer",
+        "updateFailed": "Échec de la mise à jour du fuseau horaire",
         "useBrowser": "Utiliser le fuseau horaire du navigateur",
         "useDevice": "Utiliser le fuseau horaire de l'appareil"
       },
@@ -17385,6 +17616,7 @@ export const resources = {
       "errors": {
         "cancelFailed": "Échec de l'annulation",
         "createFailed": "Échec de la création de la tâche.",
+        "listLoadFailed": "Impossible de charger vos actions. Vérifiez votre connexion et réessayez.",
         "loadFailed": "Échec du chargement de la tâche",
         "revisionFailed": "Échec de la révision",
         "titleRequired": "Le titre de la tâche est requis."
@@ -18079,14 +18311,20 @@ export const resources = {
         "desktopOnlyTitle": "Executa a partir do app desktop",
         "detailsHint": "Instruções personalizadas e preferências.",
         "detailsTitle": "Algum detalhe extra?",
+        "discardAction": "Descartar",
+        "discardMessage": "A configuração feita até agora será perdida.",
+        "discardTitle": "Descartar este agente?",
         "effort": "Esforço",
         "errors": {
           "apiKeyRequired": "A chave de API é obrigatória para este provedor",
+          "backToReview": "Voltar à revisão",
           "createFailed": "Falha ao criar agente.",
           "keySaveMessage": "Verifique a chave e tente novamente. O agente não foi criado.",
           "keySaveTitle": "Não foi possível salvar a chave de API",
           "nameRequired": "O nome é obrigatório.",
           "saveKeyFailed": "Falha ao salvar a chave de API",
+          "timeoutMessage": "Não foi possível confirmar se seu agente foi criado. Verifique sua conexão e tente novamente.",
+          "timeoutTitle": "Tempo esgotado ao criar o agente",
           "uploadFailed": "Falha no envio"
         },
         "executionMode": "Modo de Execução",
@@ -18112,6 +18350,7 @@ export const resources = {
         },
         "inputRequirements": "Requisitos de Entrada",
         "instructionsPlaceholder": "Mais alguma coisa que este agente deveria saber? Ferramentas a preferir, coisas a evitar…",
+        "keepEditing": "Continuar editando",
         "keyCustom": "Chave personalizada para este agente…",
         "keyCustomSavedHint": "Salva apenas para este agente — o padrão do seu provedor permanece o mesmo.",
         "keyDefault": "Padrão do Provedor",
@@ -18151,6 +18390,7 @@ export const resources = {
         "providerDefault": "Padrão do provedor (Anthropic)",
         "removeCustomTone": "Remover tom personalizado",
         "removeSpecialty": "Remover {{name}}",
+        "responseTemplates": "Modelos de Resposta",
         "review": {
           "brain": "Cérebro",
           "computerUse": "Uso do computador",
@@ -18187,6 +18427,7 @@ export const resources = {
           "reviewer": "O que eles revisam?",
           "worker": "Em que eles são bons?"
         },
+        "startChat": "Iniciar um chat",
         "status": {
           "abilities": "Configurando habilidades...",
           "almostReady": "Quase pronto...",
@@ -18447,6 +18688,7 @@ export const resources = {
         "connection": "Conexão",
         "listedAgo": "Listado {{timeAgo}}",
         "listedInDirectory": "Listado no diretório",
+        "loadFailed": "Falha ao carregar o anúncio",
         "notFound": "Anúncio não encontrado",
         "requiresLocation": "Requer sua localização",
         "tags": "Tags"
@@ -19006,6 +19248,8 @@ export const resources = {
         "ratingSummaryWithCount": "Avaliação: {{rating}}/5 ({{count}})",
         "rating_one": "★ {{rating}} ({{count}} avaliação)",
         "rating_other": "★ {{rating}} ({{count}} avaliações)",
+        "removeConfirm": "Remover esta habilidade deste agente? A habilidade em si não será excluída.",
+        "removeTitle": "Remover habilidade",
         "scope": {
           "agent": "Agente",
           "global": "Global",
@@ -19295,6 +19539,14 @@ export const resources = {
         "passwordMin": "Mín. 6 caracteres",
         "yourName": "Seu nome"
       },
+      "resetPassword": {
+        "emailRequired": "Por favor, digite seu e-mail.",
+        "emailSent": "Se existir uma conta para {{email}}, enviamos um link de redefinição de senha. Abra-o no navegador para definir uma nova senha e depois volte aqui para fazer login.",
+        "failed": "Não foi possível enviar o e-mail de redefinição. Tente novamente.",
+        "sendLink": "Enviar link de redefinição",
+        "subtitle": "Digite seu e-mail e enviaremos um link para redefinir sua senha.",
+        "title": "Redefinir sua senha"
+      },
       "signIn": "Entrar",
       "signInSubtitle": "Entre no Simplifi",
       "signInToAcceptInvite": "Entre para aceitar seu convite",
@@ -19478,6 +19730,7 @@ export const resources = {
       "emptyHint": "Crie um para começar.",
       "emptyLabel": "Ainda não há canvases",
       "errors": {
+        "deleteFailed": "Falha ao excluir o canvas",
         "loadFailed": "Falha ao carregar canvases",
         "nameFormat": "O nome deve ser em minúsculas, começar com uma letra e usar apenas letras, números e underscores",
         "nameRequired": "O nome é obrigatório",
@@ -19485,6 +19738,10 @@ export const resources = {
         "widgetRequired": "Adicione pelo menos um widget"
       },
       "example": "Exemplo",
+      "fieldPlaceholders": {
+        "description": "O que este layout de canvas faz...",
+        "name": "my_canvas_name"
+      },
       "format": "Formato",
       "hideJson": "Ocultar JSON",
       "idLabel": "ID: {{id}}",
@@ -19628,6 +19885,10 @@ export const resources = {
         "openWorkRoom": "Abrir sala de trabalho",
         "title": "{{name}} está ocupado"
       },
+      "approvalApprove": "Aprovar",
+      "approvalReject": "Rejeitar",
+      "approvalRequested": "Aprovação solicitada",
+      "approvalRespondedWith": "✓ Respondido: {{option}}",
       "approvalResponse": {
         "decision": {
           "approved": "Aprovado",
@@ -19636,6 +19897,7 @@ export const resources = {
         },
         "invalid": "Resposta de aprovação inválida"
       },
+      "approvalSendFailed": "Não foi possível enviar sua resposta. Tente novamente.",
       "attachmentCaptionHint": "Adicione uma descrição para contexto...",
       "backToParent": "Voltar à conversa principal",
       "branch": {
@@ -19650,6 +19912,11 @@ export const resources = {
         "showBranches_other": "Mostrar {{count}} ramificações",
         "totalDuration": "Total: {{duration}}"
       },
+      "branchCompleted": "Branch concluído",
+      "branchDetails": "Detalhes",
+      "branchDuration": "Duração: {{duration}}",
+      "branchLess": "Menos",
+      "branchResult": "Resultado do branch",
       "bringAgentOnline": "Colocar este agente online novamente",
       "bringOnline": "Colocar online",
       "cancelReply": "Cancelar resposta",
@@ -19679,6 +19946,7 @@ export const resources = {
       "confirmDeleteConversation": "Excluir esta conversa? Isso não pode ser desfeito.",
       "conversation": "Conversa",
       "conversationFallback": "Conversa",
+      "conversationsLoadFailed": "Não foi possível carregar as conversas. Verifique sua conexão e tente novamente.",
       "copyId": "Copiar ID",
       "createChannel": "Criar canal",
       "createChannelHint": "Abra um canal compartilhado para seus agentes",
@@ -19757,6 +20025,7 @@ export const resources = {
       "groupInfoLabel": "Informações do grupo",
       "groupNamePlaceholder": "ex.: Planejamento de Projeto",
       "hideDetails": "Ocultar detalhes",
+      "historyLoadFailed": "Não foi possível carregar as mensagens. Verifique sua conexão e tente novamente.",
       "hotelSearch": {
         "allPrices": "Todos os preços",
         "any": "Qualquer",
@@ -19790,6 +20059,7 @@ export const resources = {
         "title": "Sair da conversa"
       },
       "leaveFailed": "Falha ao sair da conversa",
+      "loadOlderFailed": "Não foi possível carregar mensagens mais antigas. Role para cima para tentar novamente.",
       "loadOlderMessages": "Carregar mensagens anteriores",
       "loadingConversations": "Carregando conversas...",
       "location": {
@@ -19958,6 +20228,7 @@ export const resources = {
         "placeholder": "Buscar mensagens...",
         "prompt": "Busque suas mensagens"
       },
+      "searchJumpNotFound": "Não foi possível encontrar essa mensagem no histórico desta conversa.",
       "searchPeopleOrAgents": "Buscar pessoas ou agentes...",
       "searchingPeople": "Buscando pessoas...",
       "selectConversation": "Selecione uma conversa",
@@ -19970,6 +20241,7 @@ export const resources = {
         "validation": "Não foi possível enviar essa mensagem. Edite-a e tente novamente."
       },
       "sendFailed": "Falha ao enviar",
+      "sendMessage": "Enviar mensagem",
       "sendWithEnter": "Enviar (Enter)",
       "sending": "enviando",
       "sentAMessage": "enviou uma mensagem",
@@ -20235,6 +20507,7 @@ export const resources = {
       "preview": "Prévia",
       "progress": "Progresso",
       "provider": "Provedor",
+      "reconnecting": "Reconectando...",
       "refresh": "Atualizar",
       "reject": "Rejeitar",
       "reloadApp": "Recarregar app",
@@ -20654,6 +20927,7 @@ export const resources = {
       "agentsOnline": "Agentes ({{online}}/{{total}} online)",
       "agentsOnlineTitle": "{{online}}/{{total}} online",
       "canvas": "Canvas",
+      "canvases": "Canvases",
       "chats": "Chats",
       "files": "Arquivos",
       "friends": "Amigos",
@@ -21218,7 +21492,13 @@ export const resources = {
       "advanced": {
         "flowDebug": "Depuração de Controle de Fluxo",
         "flowDebugDescription": "Mostra eventos de controle de fluxo em tempo real (backoff, supressão) no chat",
+        "reminderSetFailed": "Não foi possível definir o lembrete de teste",
+        "reminderSetMessage": "Deve aparecer em cerca de 5 segundos.",
+        "reminderSetTitle": "Lembrete definido",
         "startFresh": "Começar do zero / Repetir integração",
+        "startFreshConfirmCta": "Começar do zero",
+        "startFreshConfirmMessage": "Isso apaga TODOS os seus agentes e suas memórias, suas rotinas, lembretes, compartilhamento de localização e configurações de notificação, e reinicia a integração do zero. Seu nome e as contas conectadas (por exemplo, Google) são mantidos. Isso não pode ser desfeito. Continuar?",
+        "startFreshConfirmTitle": "Começar do zero",
         "startFreshDescription": "Apaga todos os agentes, memórias, rotinas e configurações, e reinicia a integração",
         "testReminder": "Testar lembrete",
         "testReminderDescription": "Dispara um lembrete de exemplo em ~5 segundos para verificar o toast + notificação push"
@@ -21395,6 +21675,7 @@ export const resources = {
         "title": "Chaves de API de LLM"
       },
       "location": {
+        "currentLocation": "Localização atual",
         "enable": "Ativar localização",
         "enablePrompt": "Ative a localização para ver sua posição no mapa. Sua localização pode ser compartilhada com os agentes aos quais você conceder acesso.",
         "enabling": "Ativando...",
@@ -21402,15 +21683,21 @@ export const resources = {
         "grantedSummary": "{{granted}} de {{total}} concedidos",
         "perAgentAccess": "Acesso por agente",
         "perAgentAccessDescription": "Escolha quais agentes podem ver sua localização",
+        "permissionRequiredMessage": "A permissão de localização é necessária para compartilhar sua localização com os agentes.",
+        "permissionRequiredTitle": "Permissão necessária",
         "pinDropped": "Pino adicionado",
         "shareWithAgents": "Compartilhar com agentes",
         "shareWithAgentsDescription": "Seus agentes podem acessar sua localização para busca local, previsão do tempo e navegação",
         "sharingOff": "O compartilhamento de localização está desativado",
         "turnOn": "Ativar compartilhamento de localização",
         "turnOnPrompt": "Ative o compartilhamento de localização para que seus agentes possam ajudar em tarefas que dependem de localização.",
-        "turningOn": "Ativando..."
+        "turningOn": "Ativando...",
+        "updateGrantFailed": "Falha ao atualizar o acesso à localização",
+        "updateSharingFailed": "Falha ao atualizar o compartilhamento de localização"
       },
       "manage": {
+        "canvases": "Canvases",
+        "canvasesDescription": "Crie e edite layouts de canvas para seus agentes",
         "connectedAccounts": "Contas conectadas",
         "connectedAccountsDescription": "Vincule serviços externos para uso dos seus agentes",
         "friendsDescription": "Pesquise pessoas, responda a solicitações e gerencie amigos",
@@ -21474,6 +21761,7 @@ export const resources = {
       },
       "profile": {
         "avatarUploadFailed": "Falha ao enviar o avatar",
+        "displayNameEmpty": "O nome de exibição não pode ficar vazio",
         "firstName": "Nome",
         "lastName": "Sobrenome",
         "tapToChangePhoto": "Toque para alterar a foto",
@@ -21521,6 +21809,7 @@ export const resources = {
         "searchPlaceholder": "Pesquisar fusos horários (ex.: Nova York, Tóquio)",
         "selectTitle": "Selecionar fuso horário",
         "tapToChange": "{{timezone}} — toque para alterar",
+        "updateFailed": "Falha ao atualizar o fuso horário",
         "useBrowser": "Usar fuso horário do navegador",
         "useDevice": "Usar fuso horário do dispositivo"
       },
@@ -21800,6 +22089,7 @@ export const resources = {
       "errors": {
         "cancelFailed": "Falha ao cancelar",
         "createFailed": "Falha ao criar tarefa.",
+        "listLoadFailed": "Não foi possível carregar suas ações. Verifique sua conexão e tente novamente.",
         "loadFailed": "Falha ao carregar tarefa",
         "revisionFailed": "Falha na revisão",
         "titleRequired": "O título da tarefa é obrigatório."
@@ -22494,14 +22784,20 @@ export const resources = {
         "desktopOnlyTitle": "デスクトップアプリから実行",
         "detailsHint": "カスタム指示と設定。",
         "detailsTitle": "他に詳細はありますか？",
+        "discardAction": "破棄",
+        "discardMessage": "ここまでの設定内容は失われます。",
+        "discardTitle": "このエージェントを破棄しますか？",
         "effort": "処理量",
         "errors": {
           "apiKeyRequired": "このプロバイダーにはAPIキーが必要です",
+          "backToReview": "確認画面に戻る",
           "createFailed": "エージェントの作成に失敗しました。",
           "keySaveMessage": "キーを確認してもう一度お試しください。エージェントは作成されていません。",
           "keySaveTitle": "APIキーを保存できませんでした",
           "nameRequired": "名前は必須です。",
           "saveKeyFailed": "APIキーの保存に失敗しました",
+          "timeoutMessage": "エージェントが作成されたことを確認できませんでした。接続を確認して、もう一度お試しください。",
+          "timeoutTitle": "エージェントの作成がタイムアウトしました",
           "uploadFailed": "アップロードに失敗しました"
         },
         "executionMode": "実行モード",
@@ -22527,6 +22823,7 @@ export const resources = {
         },
         "inputRequirements": "入力要件",
         "instructionsPlaceholder": "このエージェントが知っておくべきことは他にありますか？優先するツール、避けるべきことなど…",
+        "keepEditing": "編集を続ける",
         "keyCustom": "このエージェント用のカスタムキー…",
         "keyCustomSavedHint": "このエージェント専用に保存されました — プロバイダーの既定値はそのままです。",
         "keyDefault": "プロバイダーの既定値",
@@ -22566,6 +22863,7 @@ export const resources = {
         "providerDefault": "プロバイダーの既定値（Anthropic）",
         "removeCustomTone": "カスタムトーンを削除",
         "removeSpecialty": "{{name}}を削除",
+        "responseTemplates": "レスポンステンプレート",
         "review": {
           "brain": "頭脳",
           "computerUse": "コンピュータ操作",
@@ -22602,6 +22900,7 @@ export const resources = {
           "reviewer": "何をレビューしますか？",
           "worker": "何が得意ですか？"
         },
+        "startChat": "チャットを開始",
         "status": {
           "abilities": "能力を設定しています…",
           "almostReady": "もうすぐ完了です…",
@@ -22862,6 +23161,7 @@ export const resources = {
         "connection": "接続",
         "listedAgo": "{{timeAgo}}に掲載",
         "listedInDirectory": "ディレクトリに掲載済み",
+        "loadFailed": "掲載情報を読み込めませんでした",
         "notFound": "掲載情報が見つかりません",
         "requiresLocation": "位置情報が必要です",
         "tags": "タグ"
@@ -23421,6 +23721,8 @@ export const resources = {
         "ratingSummaryWithCount": "評価：{{rating}}/5（{{count}}件）",
         "rating_one": "★ {{rating}}（{{count}}件の評価）",
         "rating_other": "★ {{rating}}（{{count}}件の評価）",
+        "removeConfirm": "このスキルをこのエージェントから解除しますか？スキル自体は削除されません。",
+        "removeTitle": "スキルを解除",
         "scope": {
           "agent": "エージェント",
           "global": "グローバル",
@@ -23710,6 +24012,14 @@ export const resources = {
         "passwordMin": "6文字以上",
         "yourName": "お名前"
       },
+      "resetPassword": {
+        "emailRequired": "メールアドレスを入力してください。",
+        "emailSent": "{{email}} のアカウントが存在する場合、パスワードリセットリンクを送信しました。ブラウザでリンクを開いて新しいパスワードを設定し、こちらに戻ってサインインしてください。",
+        "failed": "リセットメールを送信できませんでした。もう一度お試しください。",
+        "sendLink": "リセットリンクを送信",
+        "subtitle": "メールアドレスを入力すると、パスワードをリセットするためのリンクをお送りします。",
+        "title": "パスワードをリセット"
+      },
       "signIn": "ログイン",
       "signInSubtitle": "Simplifiにログイン",
       "signInToAcceptInvite": "ログインして招待を承認",
@@ -23893,6 +24203,7 @@ export const resources = {
       "emptyHint": "作成して始めましょう。",
       "emptyLabel": "まだキャンバスがありません",
       "errors": {
+        "deleteFailed": "キャンバスを削除できませんでした",
         "loadFailed": "キャンバスの読み込みに失敗しました",
         "nameFormat": "名前は小文字で、英字から始まり、英字・数字・アンダースコアのみを使用できます",
         "nameRequired": "名前は必須です",
@@ -23900,6 +24211,10 @@ export const resources = {
         "widgetRequired": "ウィジェットを1つ以上追加してください"
       },
       "example": "例",
+      "fieldPlaceholders": {
+        "description": "このキャンバスレイアウトの説明...",
+        "name": "my_canvas_name"
+      },
       "format": "フォーマット",
       "hideJson": "JSONを隠す",
       "idLabel": "ID: {{id}}",
@@ -24043,6 +24358,10 @@ export const resources = {
         "openWorkRoom": "作業ルームを開く",
         "title": "{{name}}は取り込み中です"
       },
+      "approvalApprove": "承認",
+      "approvalReject": "拒否",
+      "approvalRequested": "承認がリクエストされました",
+      "approvalRespondedWith": "✓ 回答済み: {{option}}",
       "approvalResponse": {
         "decision": {
           "approved": "承認済み",
@@ -24051,6 +24370,7 @@ export const resources = {
         },
         "invalid": "無効な承認応答です"
       },
+      "approvalSendFailed": "回答を送信できませんでした。もう一度お試しください。",
       "attachmentCaptionHint": "コンテキストのための説明を追加…",
       "backToParent": "親会話に戻る",
       "branch": {
@@ -24065,6 +24385,11 @@ export const resources = {
         "showBranches_other": "{{count}}件の分岐を表示",
         "totalDuration": "合計: {{duration}}"
       },
+      "branchCompleted": "ブランチが完了しました",
+      "branchDetails": "詳細",
+      "branchDuration": "所要時間: {{duration}}",
+      "branchLess": "折りたたむ",
+      "branchResult": "ブランチ結果",
       "bringAgentOnline": "このエージェントをオンラインに戻す",
       "bringOnline": "オンラインにする",
       "cancelReply": "返信をキャンセル",
@@ -24094,6 +24419,7 @@ export const resources = {
       "confirmDeleteConversation": "この会話を削除しますか?元に戻せません。",
       "conversation": "会話",
       "conversationFallback": "会話",
+      "conversationsLoadFailed": "会話を読み込めませんでした。接続を確認して再試行してください。",
       "copyId": "IDをコピー",
       "createChannel": "チャンネルを作成",
       "createChannelHint": "エージェント用の共有チャンネルを開きます",
@@ -24172,6 +24498,7 @@ export const resources = {
       "groupInfoLabel": "グループ情報",
       "groupNamePlaceholder": "例: プロジェクト計画",
       "hideDetails": "詳細を非表示",
+      "historyLoadFailed": "メッセージを読み込めませんでした。接続を確認して再試行してください。",
       "hotelSearch": {
         "allPrices": "すべての価格",
         "any": "指定なし",
@@ -24205,6 +24532,7 @@ export const resources = {
         "title": "会話から退出"
       },
       "leaveFailed": "会話からの退出に失敗しました",
+      "loadOlderFailed": "以前のメッセージを読み込めませんでした。上にスクロールして再試行してください。",
       "loadOlderMessages": "以前のメッセージを読み込む",
       "loadingConversations": "会話を読み込み中…",
       "location": {
@@ -24373,6 +24701,7 @@ export const resources = {
         "placeholder": "メッセージを検索…",
         "prompt": "メッセージを検索"
       },
+      "searchJumpNotFound": "この会話の履歴でそのメッセージが見つかりませんでした。",
       "searchPeopleOrAgents": "ユーザーまたはエージェントを検索…",
       "searchingPeople": "ユーザーを検索中…",
       "selectConversation": "会話を選択",
@@ -24385,6 +24714,7 @@ export const resources = {
         "validation": "そのメッセージは送信できませんでした。編集してもう一度お試しください。"
       },
       "sendFailed": "送信に失敗しました",
+      "sendMessage": "メッセージを送信",
       "sendWithEnter": "送信 (Enter)",
       "sending": "送信中",
       "sentAMessage": "メッセージを送信しました",
@@ -24650,6 +24980,7 @@ export const resources = {
       "preview": "プレビュー",
       "progress": "進行状況",
       "provider": "プロバイダー",
+      "reconnecting": "再接続中...",
       "refresh": "更新",
       "reject": "拒否",
       "reloadApp": "アプリを再読み込み",
@@ -25069,6 +25400,7 @@ export const resources = {
       "agentsOnline": "エージェント（{{online}}/{{total}} オンライン）",
       "agentsOnlineTitle": "{{online}}/{{total}} オンライン",
       "canvas": "キャンバス",
+      "canvases": "キャンバス",
       "chats": "チャット",
       "files": "ファイル",
       "friends": "フレンド",
@@ -25633,7 +25965,13 @@ export const resources = {
       "advanced": {
         "flowDebug": "フローコントロールデバッグ",
         "flowDebugDescription": "チャット内にフロー制御イベント（バックオフ、抑制）をリアルタイムで表示します",
+        "reminderSetFailed": "テストリマインダーを設定できませんでした",
+        "reminderSetMessage": "約5秒後に表示されます。",
+        "reminderSetTitle": "リマインダーを設定しました",
         "startFresh": "初期状態に戻す／オンボーディングをやり直す",
+        "startFreshConfirmCta": "初期状態に戻す",
+        "startFreshConfirmMessage": "すべてのエージェントとそのメモリ、ルーティン、リマインダー、位置情報の共有、通知設定が消去され、オンボーディングを最初からやり直します。名前と連携済みアカウント（Google など）は保持されます。この操作は取り消せません。続行しますか？",
+        "startFreshConfirmTitle": "初期状態に戻す",
         "startFreshDescription": "すべてのエージェント、メモリ、ルーティン、設定を消去し、オンボーディングを最初からやり直します",
         "testReminder": "テストリマインダー",
         "testReminderDescription": "約5秒後にサンプルのリマインダーを送信し、トースト通知とプッシュ通知を確認します"
@@ -25810,6 +26148,7 @@ export const resources = {
         "title": "LLM APIキー"
       },
       "location": {
+        "currentLocation": "現在地",
         "enable": "位置情報を有効にする",
         "enablePrompt": "位置情報を有効にすると、地図上で自分の位置を確認できます。アクセスを許可したエージェントと位置情報を共有できます。",
         "enabling": "有効にしています...",
@@ -25817,15 +26156,21 @@ export const resources = {
         "grantedSummary": "{{total}}件中{{granted}}件に許可",
         "perAgentAccess": "エージェントごとのアクセス",
         "perAgentAccessDescription": "自分の位置情報を見られるエージェントを選択します",
+        "permissionRequiredMessage": "エージェントと位置情報を共有するには位置情報の権限が必要です。",
+        "permissionRequiredTitle": "権限が必要です",
         "pinDropped": "ピンを設置しました",
         "shareWithAgents": "エージェントと共有",
         "shareWithAgentsDescription": "エージェントは、周辺検索、天気、ナビゲーションのためにあなたの位置情報にアクセスできます",
         "sharingOff": "位置情報の共有はオフです",
         "turnOn": "位置情報の共有をオンにする",
         "turnOnPrompt": "位置情報の共有をオンにすると、エージェントが位置情報を活用したタスクをサポートできます。",
-        "turningOn": "オンにしています..."
+        "turningOn": "オンにしています...",
+        "updateGrantFailed": "位置情報のアクセス権を更新できませんでした",
+        "updateSharingFailed": "位置情報の共有を更新できませんでした"
       },
       "manage": {
+        "canvases": "キャンバス",
+        "canvasesDescription": "エージェント用のキャンバスレイアウトを作成・編集します",
         "connectedAccounts": "連携アカウント",
         "connectedAccountsDescription": "エージェントが使用する外部サービスを連携します",
         "friendsDescription": "人を検索し、リクエストに応答し、フレンドを管理します",
@@ -25889,6 +26234,7 @@ export const resources = {
       },
       "profile": {
         "avatarUploadFailed": "アバターのアップロードに失敗しました",
+        "displayNameEmpty": "表示名を空にすることはできません",
         "firstName": "名",
         "lastName": "姓",
         "tapToChangePhoto": "タップして写真を変更",
@@ -25936,6 +26282,7 @@ export const resources = {
         "searchPlaceholder": "タイムゾーンを検索（例: ニューヨーク、東京）",
         "selectTitle": "タイムゾーンを選択",
         "tapToChange": "{{timezone}} — タップして変更",
+        "updateFailed": "タイムゾーンを更新できませんでした",
         "useBrowser": "ブラウザのタイムゾーンを使用",
         "useDevice": "デバイスのタイムゾーンを使用"
       },
@@ -26215,6 +26562,7 @@ export const resources = {
       "errors": {
         "cancelFailed": "キャンセルに失敗しました",
         "createFailed": "タスクの作成に失敗しました。",
+        "listLoadFailed": "アクションを読み込めませんでした。接続を確認して、もう一度お試しください。",
         "loadFailed": "タスクの読み込みに失敗しました",
         "revisionFailed": "修正依頼に失敗しました",
         "titleRequired": "タスクのタイトルは必須です。"
@@ -26909,14 +27257,20 @@ export const resources = {
         "desktopOnlyTitle": "从桌面应用运行",
         "detailsHint": "自定义说明和偏好设置。",
         "detailsTitle": "还有其他细节吗？",
+        "discardAction": "放弃",
+        "discardMessage": "目前的设置内容将丢失。",
+        "discardTitle": "放弃此智能体？",
         "effort": "处理强度",
         "errors": {
           "apiKeyRequired": "此提供商需要 API 密钥",
+          "backToReview": "返回确认页",
           "createFailed": "创建智能体失败。",
           "keySaveMessage": "请检查密钥后重试。智能体尚未创建。",
           "keySaveTitle": "无法保存 API 密钥",
           "nameRequired": "名称为必填项。",
           "saveKeyFailed": "保存 API 密钥失败",
+          "timeoutMessage": "无法确认您的智能体已创建。请检查网络连接后重试。",
+          "timeoutTitle": "创建智能体超时",
           "uploadFailed": "上传失败"
         },
         "executionMode": "执行模式",
@@ -26942,6 +27296,7 @@ export const resources = {
         },
         "inputRequirements": "输入要求",
         "instructionsPlaceholder": "此智能体还应了解哪些信息？偏好使用的工具、应避免的事项……",
+        "keepEditing": "继续编辑",
         "keyCustom": "此智能体的自定义密钥……",
         "keyCustomSavedHint": "仅为此智能体保存 — 您的提供商默认设置保持不变。",
         "keyDefault": "提供商默认值",
@@ -26981,6 +27336,7 @@ export const resources = {
         "providerDefault": "提供商默认值（Anthropic）",
         "removeCustomTone": "移除自定义语气",
         "removeSpecialty": "移除 {{name}}",
+        "responseTemplates": "响应模板",
         "review": {
           "brain": "大脑",
           "computerUse": "计算机使用",
@@ -27017,6 +27373,7 @@ export const resources = {
           "reviewer": "他们审查什么？",
           "worker": "他们擅长什么？"
         },
+        "startChat": "开始聊天",
         "status": {
           "abilities": "正在配置能力……",
           "almostReady": "即将就绪……",
@@ -27277,6 +27634,7 @@ export const resources = {
         "connection": "连接",
         "listedAgo": "已上架 {{timeAgo}}",
         "listedInDirectory": "已列入目录",
+        "loadFailed": "加载列表失败",
         "notFound": "未找到该列表",
         "requiresLocation": "需要你的位置信息",
         "tags": "标签"
@@ -27836,6 +28194,8 @@ export const resources = {
         "ratingSummaryWithCount": "评分：{{rating}}/5（{{count}}）",
         "rating_one": "★ {{rating}}（{{count}} 个评分）",
         "rating_other": "★ {{rating}}（{{count}} 个评分）",
+        "removeConfirm": "从此智能体移除该技能？技能本身不会被删除。",
+        "removeTitle": "移除技能",
         "scope": {
           "agent": "智能体",
           "global": "全局",
@@ -28125,6 +28485,14 @@ export const resources = {
         "passwordMin": "至少 6 个字符",
         "yourName": "你的名字"
       },
+      "resetPassword": {
+        "emailRequired": "请输入您的电子邮箱。",
+        "emailSent": "如果 {{email}} 对应的账户存在，我们已发送密码重置链接。请在浏览器中打开链接设置新密码，然后返回此处登录。",
+        "failed": "无法发送重置邮件。请重试。",
+        "sendLink": "发送重置链接",
+        "subtitle": "输入您的电子邮箱，我们将向您发送重置密码的链接。",
+        "title": "重置密码"
+      },
       "signIn": "登录",
       "signInSubtitle": "登录 Simplifi",
       "signInToAcceptInvite": "登录以接受邀请",
@@ -28308,6 +28676,7 @@ export const resources = {
       "emptyHint": "创建一个以开始使用。",
       "emptyLabel": "暂无画布",
       "errors": {
+        "deleteFailed": "删除画布失败",
         "loadFailed": "加载画布失败",
         "nameFormat": "名称必须为小写，以字母开头，且只能包含字母、数字和下划线",
         "nameRequired": "名称为必填项",
@@ -28315,6 +28684,10 @@ export const resources = {
         "widgetRequired": "请至少添加一个组件"
       },
       "example": "示例",
+      "fieldPlaceholders": {
+        "description": "这个画布布局的用途...",
+        "name": "my_canvas_name"
+      },
       "format": "格式",
       "hideJson": "隐藏 JSON",
       "idLabel": "ID：{{id}}",
@@ -28458,6 +28831,10 @@ export const resources = {
         "openWorkRoom": "打开工作室",
         "title": "{{name}} 正忙"
       },
+      "approvalApprove": "批准",
+      "approvalReject": "拒绝",
+      "approvalRequested": "已请求批准",
+      "approvalRespondedWith": "✓ 已回复：{{option}}",
       "approvalResponse": {
         "decision": {
           "approved": "已批准",
@@ -28466,6 +28843,7 @@ export const resources = {
         },
         "invalid": "无效的批准回复"
       },
+      "approvalSendFailed": "无法发送您的回复。请重试。",
       "attachmentCaptionHint": "添加说明以提供背景信息…",
       "backToParent": "返回上级对话",
       "branch": {
@@ -28480,6 +28858,11 @@ export const resources = {
         "showBranches_other": "显示 {{count}} 个分支",
         "totalDuration": "总计：{{duration}}"
       },
+      "branchCompleted": "分支已完成",
+      "branchDetails": "详情",
+      "branchDuration": "耗时：{{duration}}",
+      "branchLess": "收起",
+      "branchResult": "分支结果",
       "bringAgentOnline": "让此智能体重新上线",
       "bringOnline": "上线",
       "cancelReply": "取消回复",
@@ -28509,6 +28892,7 @@ export const resources = {
       "confirmDeleteConversation": "删除此对话？此操作无法撤销。",
       "conversation": "对话",
       "conversationFallback": "对话",
+      "conversationsLoadFailed": "无法加载会话。请检查网络连接后重试。",
       "copyId": "复制 ID",
       "createChannel": "创建频道",
       "createChannelHint": "为你的智能体开一个共享频道",
@@ -28587,6 +28971,7 @@ export const resources = {
       "groupInfoLabel": "群组信息",
       "groupNamePlaceholder": "例如：项目规划",
       "hideDetails": "隐藏详情",
+      "historyLoadFailed": "无法加载消息。请检查网络连接后重试。",
       "hotelSearch": {
         "allPrices": "所有价位",
         "any": "不限",
@@ -28620,6 +29005,7 @@ export const resources = {
         "title": "退出对话"
       },
       "leaveFailed": "退出对话失败",
+      "loadOlderFailed": "无法加载更早的消息。向上滚动以重试。",
       "loadOlderMessages": "加载更早的消息",
       "loadingConversations": "正在加载对话…",
       "location": {
@@ -28788,6 +29174,7 @@ export const resources = {
         "placeholder": "搜索消息…",
         "prompt": "搜索你的消息"
       },
+      "searchJumpNotFound": "在此会话的历史记录中找不到该消息。",
       "searchPeopleOrAgents": "搜索联系人或智能体…",
       "searchingPeople": "正在搜索联系人…",
       "selectConversation": "选择一个对话",
@@ -28800,6 +29187,7 @@ export const resources = {
         "validation": "该消息无法发送。请编辑后重试。"
       },
       "sendFailed": "发送失败",
+      "sendMessage": "发送消息",
       "sendWithEnter": "发送（Enter）",
       "sending": "发送中",
       "sentAMessage": "发送了一条消息",
@@ -29065,6 +29453,7 @@ export const resources = {
       "preview": "预览",
       "progress": "进度",
       "provider": "提供商",
+      "reconnecting": "正在重新连接...",
       "refresh": "刷新",
       "reject": "拒绝",
       "reloadApp": "重新加载应用",
@@ -29484,6 +29873,7 @@ export const resources = {
       "agentsOnline": "智能体（{{online}}/{{total}} 在线）",
       "agentsOnlineTitle": "{{online}}/{{total}} 在线",
       "canvas": "画布",
+      "canvases": "画布",
       "chats": "聊天",
       "files": "文件",
       "friends": "好友",
@@ -30048,7 +30438,13 @@ export const resources = {
       "advanced": {
         "flowDebug": "流量控制调试",
         "flowDebugDescription": "在聊天中显示实时流量控制事件（退避、抑制）",
+        "reminderSetFailed": "无法设置测试提醒",
+        "reminderSetMessage": "大约 5 秒后会弹出。",
+        "reminderSetTitle": "提醒已设置",
         "startFresh": "重新开始 / 重播引导流程",
+        "startFreshConfirmCta": "重新开始",
+        "startFreshConfirmMessage": "这将清除你的所有智能体及其记忆、例程、提醒、位置共享和通知设置，然后从头重新开始引导流程。你的姓名和已连接的账户（如 Google）将保留。此操作无法撤销。是否继续？",
+        "startFreshConfirmTitle": "重新开始",
         "startFreshDescription": "清除所有智能体、记忆、例程和设置，然后重新开始引导流程",
         "testReminder": "测试提醒",
         "testReminderDescription": "约 5 秒后触发一条示例提醒，用于检查提示消息和推送通知"
@@ -30225,6 +30621,7 @@ export const resources = {
         "title": "LLM API 密钥"
       },
       "location": {
+        "currentLocation": "当前位置",
         "enable": "启用位置",
         "enablePrompt": "启用位置以在地图上查看你的位置。你可以将位置共享给你授权的智能体。",
         "enabling": "正在启用…",
@@ -30232,15 +30629,21 @@ export const resources = {
         "grantedSummary": "已授权 {{granted}} / {{total}} 个",
         "perAgentAccess": "按智能体授权",
         "perAgentAccessDescription": "选择哪些智能体可以查看你的位置",
+        "permissionRequiredMessage": "需要位置权限才能与智能体共享你的位置。",
+        "permissionRequiredTitle": "需要权限",
         "pinDropped": "已放置标记",
         "shareWithAgents": "与智能体共享",
         "shareWithAgentsDescription": "你的智能体可以访问你的位置，用于本地搜索、天气和导航",
         "sharingOff": "位置共享已关闭",
         "turnOn": "开启位置共享",
         "turnOnPrompt": "开启位置共享，让你的智能体能够协助处理与位置相关的任务。",
-        "turningOn": "正在开启…"
+        "turningOn": "正在开启…",
+        "updateGrantFailed": "无法更新位置授权",
+        "updateSharingFailed": "无法更新位置共享"
       },
       "manage": {
+        "canvases": "画布",
+        "canvasesDescription": "为您的智能体创建和编辑画布布局",
         "connectedAccounts": "已连接的账户",
         "connectedAccountsDescription": "关联外部服务，供你的智能体使用",
         "friendsDescription": "搜索用户、回应请求并管理好友",
@@ -30304,6 +30707,7 @@ export const resources = {
       },
       "profile": {
         "avatarUploadFailed": "上传头像失败",
+        "displayNameEmpty": "显示名称不能为空",
         "firstName": "名",
         "lastName": "姓",
         "tapToChangePhoto": "点按以更换照片",
@@ -30351,6 +30755,7 @@ export const resources = {
         "searchPlaceholder": "搜索时区（例如纽约、东京）",
         "selectTitle": "选择时区",
         "tapToChange": "{{timezone}}——点按以更改",
+        "updateFailed": "无法更新时区",
         "useBrowser": "使用浏览器时区",
         "useDevice": "使用设备时区"
       },
@@ -30630,6 +31035,7 @@ export const resources = {
       "errors": {
         "cancelFailed": "取消失败",
         "createFailed": "创建任务失败。",
+        "listLoadFailed": "无法加载您的操作。请检查网络连接后重试。",
         "loadFailed": "加载任务失败",
         "revisionFailed": "修订失败",
         "titleRequired": "任务标题为必填项。"
@@ -31324,14 +31730,20 @@ export const resources = {
         "desktopOnlyTitle": "데스크톱 앱에서 실행됩니다",
         "detailsHint": "사용자 지정 지침 및 환경 설정.",
         "detailsTitle": "추가로 알려줄 세부정보가 있나요?",
+        "discardAction": "취소하기",
+        "discardMessage": "지금까지 설정한 내용이 사라집니다.",
+        "discardTitle": "이 에이전트를 취소할까요?",
         "effort": "처리 강도",
         "errors": {
           "apiKeyRequired": "이 제공업체에는 API 키가 필요합니다",
+          "backToReview": "검토 화면으로 돌아가기",
           "createFailed": "에이전트 생성 실패.",
           "keySaveMessage": "키를 확인하고 다시 시도하세요. 에이전트가 생성되지 않았습니다.",
           "keySaveTitle": "API 키를 저장하지 못했습니다",
           "nameRequired": "이름은 필수입니다.",
           "saveKeyFailed": "API 키 저장 실패",
+          "timeoutMessage": "에이전트가 생성되었는지 확인할 수 없습니다. 연결을 확인하고 다시 시도해 주세요.",
+          "timeoutTitle": "에이전트 생성 시간이 초과되었습니다",
           "uploadFailed": "업로드 실패"
         },
         "executionMode": "실행 모드",
@@ -31357,6 +31769,7 @@ export const resources = {
         },
         "inputRequirements": "입력 요구사항",
         "instructionsPlaceholder": "이 에이전트가 알아야 할 다른 사항이 있나요? 선호하는 도구, 피해야 할 것들…",
+        "keepEditing": "계속 편집",
         "keyCustom": "이 에이전트 전용 사용자 지정 키…",
         "keyCustomSavedHint": "이 에이전트에만 저장됩니다 — 제공업체 기본값은 그대로 유지됩니다.",
         "keyDefault": "제공업체 기본값",
@@ -31396,6 +31809,7 @@ export const resources = {
         "providerDefault": "제공업체 기본값(Anthropic)",
         "removeCustomTone": "사용자 지정 어조 제거",
         "removeSpecialty": "{{name}} 제거",
+        "responseTemplates": "응답 템플릿",
         "review": {
           "brain": "브레인",
           "computerUse": "컴퓨터 사용",
@@ -31432,6 +31846,7 @@ export const resources = {
           "reviewer": "무엇을 검토하나요?",
           "worker": "무엇을 잘하나요?"
         },
+        "startChat": "채팅 시작",
         "status": {
           "abilities": "능력 구성 중...",
           "almostReady": "거의 완료되었습니다...",
@@ -31692,6 +32107,7 @@ export const resources = {
         "connection": "연결",
         "listedAgo": "{{timeAgo}}에 등록됨",
         "listedInDirectory": "디렉토리에 등록됨",
+        "loadFailed": "리스팅을 불러오지 못했습니다",
         "notFound": "리스팅을 찾을 수 없습니다",
         "requiresLocation": "위치 정보가 필요합니다",
         "tags": "태그"
@@ -32251,6 +32667,8 @@ export const resources = {
         "ratingSummaryWithCount": "평점: {{rating}}/5 ({{count}})",
         "rating_one": "★ {{rating}} (평점 {{count}}개)",
         "rating_other": "★ {{rating}} (평점 {{count}}개)",
+        "removeConfirm": "이 에이전트에서 이 스킬을 제거할까요? 스킬 자체는 삭제되지 않습니다.",
+        "removeTitle": "스킬 제거",
         "scope": {
           "agent": "에이전트",
           "global": "전역",
@@ -32540,6 +32958,14 @@ export const resources = {
         "passwordMin": "최소 6자",
         "yourName": "이름"
       },
+      "resetPassword": {
+        "emailRequired": "이메일 주소를 입력해 주세요.",
+        "emailSent": "{{email}} 계정이 존재하는 경우 비밀번호 재설정 링크를 보냈습니다. 브라우저에서 링크를 열어 새 비밀번호를 설정한 후 다시 돌아와 로그인해 주세요.",
+        "failed": "재설정 이메일을 보낼 수 없습니다. 다시 시도해 주세요.",
+        "sendLink": "재설정 링크 보내기",
+        "subtitle": "이메일 주소를 입력하시면 비밀번호 재설정 링크를 보내드립니다.",
+        "title": "비밀번호 재설정"
+      },
       "signIn": "로그인",
       "signInSubtitle": "Simplifi에 로그인",
       "signInToAcceptInvite": "로그인하여 초대를 수락하세요",
@@ -32723,6 +33149,7 @@ export const resources = {
       "emptyHint": "시작하려면 하나를 만들어 보세요.",
       "emptyLabel": "아직 캔버스가 없습니다",
       "errors": {
+        "deleteFailed": "캔버스를 삭제하지 못했습니다",
         "loadFailed": "캔버스 로드 실패",
         "nameFormat": "이름은 소문자로 시작해야 하며, 문자, 숫자, 밑줄만 사용할 수 있습니다",
         "nameRequired": "이름이 필요합니다",
@@ -32730,6 +33157,10 @@ export const resources = {
         "widgetRequired": "위젯을 하나 이상 추가하세요"
       },
       "example": "예시",
+      "fieldPlaceholders": {
+        "description": "이 캔버스 레이아웃의 역할...",
+        "name": "my_canvas_name"
+      },
       "format": "형식",
       "hideJson": "JSON 숨기기",
       "idLabel": "ID: {{id}}",
@@ -32873,6 +33304,10 @@ export const resources = {
         "openWorkRoom": "작업방 열기",
         "title": "{{name}}이(가) 사용 중입니다"
       },
+      "approvalApprove": "승인",
+      "approvalReject": "거부",
+      "approvalRequested": "승인 요청됨",
+      "approvalRespondedWith": "✓ 응답함: {{option}}",
       "approvalResponse": {
         "decision": {
           "approved": "승인됨",
@@ -32881,6 +33316,7 @@ export const resources = {
         },
         "invalid": "잘못된 승인 응답입니다"
       },
+      "approvalSendFailed": "응답을 보내지 못했습니다. 다시 시도하세요.",
       "attachmentCaptionHint": "설명을 추가하세요...",
       "backToParent": "상위 대화로 돌아가기",
       "branch": {
@@ -32895,6 +33331,11 @@ export const resources = {
         "showBranches_other": "브랜치 {{count}}개 표시",
         "totalDuration": "총 소요 시간: {{duration}}"
       },
+      "branchCompleted": "브랜치 완료됨",
+      "branchDetails": "자세히",
+      "branchDuration": "소요 시간: {{duration}}",
+      "branchLess": "접기",
+      "branchResult": "브랜치 결과",
       "bringAgentOnline": "이 에이전트를 다시 온라인으로 전환",
       "bringOnline": "온라인으로 전환",
       "cancelReply": "답장 취소",
@@ -32924,6 +33365,7 @@ export const resources = {
       "confirmDeleteConversation": "이 대화를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
       "conversation": "대화",
       "conversationFallback": "대화",
+      "conversationsLoadFailed": "대화를 불러오지 못했습니다. 연결을 확인하고 다시 시도하세요.",
       "copyId": "ID 복사",
       "createChannel": "채널 만들기",
       "createChannelHint": "에이전트를 위한 공유 채널을 엽니다",
@@ -33002,6 +33444,7 @@ export const resources = {
       "groupInfoLabel": "그룹 정보",
       "groupNamePlaceholder": "예: Project Planning",
       "hideDetails": "상세 정보 숨기기",
+      "historyLoadFailed": "메시지를 불러오지 못했습니다. 연결을 확인하고 다시 시도하세요.",
       "hotelSearch": {
         "allPrices": "모든 가격",
         "any": "상관없음",
@@ -33035,6 +33478,7 @@ export const resources = {
         "title": "대화 나가기"
       },
       "leaveFailed": "대화 나가기 실패",
+      "loadOlderFailed": "이전 메시지를 불러오지 못했습니다. 위로 스크롤하여 다시 시도하세요.",
       "loadOlderMessages": "이전 메시지 불러오기",
       "loadingConversations": "대화 목록을 불러오는 중...",
       "location": {
@@ -33203,6 +33647,7 @@ export const resources = {
         "placeholder": "메시지 검색...",
         "prompt": "메시지 검색"
       },
+      "searchJumpNotFound": "이 대화의 기록에서 해당 메시지를 찾을 수 없습니다.",
       "searchPeopleOrAgents": "사람 또는 에이전트 검색...",
       "searchingPeople": "사람 검색 중...",
       "selectConversation": "대화를 선택하세요",
@@ -33215,6 +33660,7 @@ export const resources = {
         "validation": "메시지를 보낼 수 없습니다. 내용을 수정한 후 다시 시도해 주세요."
       },
       "sendFailed": "전송 실패",
+      "sendMessage": "메시지 보내기",
       "sendWithEnter": "보내기 (Enter)",
       "sending": "전송 중",
       "sentAMessage": "메시지를 보냈습니다",
@@ -33480,6 +33926,7 @@ export const resources = {
       "preview": "미리보기",
       "progress": "진행률",
       "provider": "제공업체",
+      "reconnecting": "다시 연결하는 중...",
       "refresh": "새로고침",
       "reject": "거부",
       "reloadApp": "앱 다시 로드",
@@ -33899,6 +34346,7 @@ export const resources = {
       "agentsOnline": "에이전트 ({{online}}/{{total}} 온라인)",
       "agentsOnlineTitle": "{{online}}/{{total}} 온라인",
       "canvas": "캔버스",
+      "canvases": "캔버스",
       "chats": "채팅",
       "files": "파일",
       "friends": "친구",
@@ -34463,7 +34911,13 @@ export const resources = {
       "advanced": {
         "flowDebug": "흐름 제어 디버그",
         "flowDebugDescription": "채팅에 실시간 흐름 제어 이벤트(백오프, 억제)를 표시합니다",
+        "reminderSetFailed": "테스트 리마인더를 설정할 수 없습니다",
+        "reminderSetMessage": "약 5초 후에 표시됩니다.",
+        "reminderSetTitle": "리마인더 설정됨",
         "startFresh": "초기화 / 온보딩 다시 보기",
+        "startFreshConfirmCta": "초기화",
+        "startFreshConfirmMessage": "모든 에이전트와 그 메모리, 루틴, 리마인더, 위치 공유 및 알림 설정이 삭제되고 온보딩을 처음부터 다시 시작합니다. 이름과 연결된 계정(예: Google)은 유지됩니다. 이 작업은 되돌릴 수 없습니다. 계속하시겠습니까?",
+        "startFreshConfirmTitle": "초기화",
         "startFreshDescription": "모든 에이전트, 메모리, 루틴 및 설정을 삭제한 뒤 온보딩을 다시 시작합니다",
         "testReminder": "테스트 알림",
         "testReminderDescription": "약 5초 후 샘플 알림을 실행하여 토스트와 푸시 알림을 확인합니다"
@@ -34640,6 +35094,7 @@ export const resources = {
         "title": "LLM API 키"
       },
       "location": {
+        "currentLocation": "현재 위치",
         "enable": "위치 활성화",
         "enablePrompt": "지도에서 내 위치를 확인하려면 위치를 활성화하세요. 액세스 권한을 부여한 에이전트와 위치를 공유할 수 있습니다.",
         "enabling": "활성화 중...",
@@ -34647,15 +35102,21 @@ export const resources = {
         "grantedSummary": "{{total}}개 중 {{granted}}개 허용됨",
         "perAgentAccess": "에이전트별 액세스",
         "perAgentAccessDescription": "내 위치를 볼 수 있는 에이전트를 선택하세요",
+        "permissionRequiredMessage": "에이전트와 위치를 공유하려면 위치 권한이 필요합니다.",
+        "permissionRequiredTitle": "권한 필요",
         "pinDropped": "핀이 지정되었습니다",
         "shareWithAgents": "에이전트와 공유",
         "shareWithAgentsDescription": "에이전트가 지역 검색, 날씨, 내비게이션을 위해 내 위치에 액세스할 수 있습니다",
         "sharingOff": "위치 공유가 꺼져 있습니다",
         "turnOn": "위치 공유 켜기",
         "turnOnPrompt": "에이전트가 위치 기반 작업을 도울 수 있도록 위치 공유를 켜세요.",
-        "turningOn": "켜는 중..."
+        "turningOn": "켜는 중...",
+        "updateGrantFailed": "위치 접근 권한을 업데이트하지 못했습니다",
+        "updateSharingFailed": "위치 공유를 업데이트하지 못했습니다"
       },
       "manage": {
+        "canvases": "캔버스",
+        "canvasesDescription": "에이전트를 위한 캔버스 레이아웃을 만들고 편집하세요",
         "connectedAccounts": "연결된 계정",
         "connectedAccountsDescription": "에이전트가 사용할 외부 서비스를 연결하세요",
         "friendsDescription": "사람 검색, 요청 응답, 친구 관리",
@@ -34719,6 +35180,7 @@ export const resources = {
       },
       "profile": {
         "avatarUploadFailed": "아바타 업로드 실패",
+        "displayNameEmpty": "표시 이름은 비워둘 수 없습니다",
         "firstName": "이름",
         "lastName": "성",
         "tapToChangePhoto": "탭하여 사진 변경",
@@ -34766,6 +35228,7 @@ export const resources = {
         "searchPlaceholder": "시간대 검색 (예: 뉴욕, 도쿄)",
         "selectTitle": "시간대 선택",
         "tapToChange": "{{timezone}} — 탭하여 변경",
+        "updateFailed": "시간대를 업데이트하지 못했습니다",
         "useBrowser": "브라우저 시간대 사용",
         "useDevice": "기기 시간대 사용"
       },
@@ -35045,6 +35508,7 @@ export const resources = {
       "errors": {
         "cancelFailed": "취소 실패",
         "createFailed": "작업 생성 실패.",
+        "listLoadFailed": "작업을 불러오지 못했습니다. 연결을 확인하고 다시 시도해 주세요.",
         "loadFailed": "작업 로드 실패",
         "revisionFailed": "수정 요청 실패",
         "titleRequired": "작업 제목이 필요합니다."
@@ -35739,14 +36203,20 @@ export const resources = {
         "desktopOnlyTitle": "Si avvia dall'app desktop",
         "detailsHint": "Istruzioni personalizzate e preferenze.",
         "detailsTitle": "Altri dettagli?",
+        "discardAction": "Scarta",
+        "discardMessage": "La configurazione effettuata finora andrà persa.",
+        "discardTitle": "Scartare questo agente?",
         "effort": "Sforzo",
         "errors": {
           "apiKeyRequired": "La chiave API è obbligatoria per questo provider",
+          "backToReview": "Torna al riepilogo",
           "createFailed": "Impossibile creare l'agente.",
           "keySaveMessage": "Controlla la chiave e riprova. L'agente non è stato creato.",
           "keySaveTitle": "Impossibile salvare la chiave API",
           "nameRequired": "Il nome è obbligatorio.",
           "saveKeyFailed": "Impossibile salvare la chiave API",
+          "timeoutMessage": "Non siamo riusciti a confermare la creazione del tuo agente. Controlla la connessione e riprova.",
+          "timeoutTitle": "Tempo scaduto durante la creazione dell'agente",
           "uploadFailed": "Caricamento non riuscito"
         },
         "executionMode": "Modalità di esecuzione",
@@ -35772,6 +36242,7 @@ export const resources = {
         },
         "inputRequirements": "Requisiti di input",
         "instructionsPlaceholder": "Cos'altro dovrebbe sapere questo agente? Strumenti da preferire, cose da evitare…",
+        "keepEditing": "Continua a modificare",
         "keyCustom": "Chiave personalizzata per questo agente…",
         "keyCustomSavedHint": "Salvata solo per questo agente — il tuo provider predefinito resta invariato.",
         "keyDefault": "Provider predefinito",
@@ -35811,6 +36282,7 @@ export const resources = {
         "providerDefault": "Provider predefinito (Anthropic)",
         "removeCustomTone": "Rimuovi tono personalizzato",
         "removeSpecialty": "Rimuovi {{name}}",
+        "responseTemplates": "Modelli di risposta",
         "review": {
           "brain": "Cervello",
           "computerUse": "Uso del computer",
@@ -35847,6 +36319,7 @@ export const resources = {
           "reviewer": "Cosa rivedono?",
           "worker": "In cosa sono bravi?"
         },
+        "startChat": "Avvia una chat",
         "status": {
           "abilities": "Configurazione delle abilità...",
           "almostReady": "Quasi pronto...",
@@ -36107,6 +36580,7 @@ export const resources = {
         "connection": "Connessione",
         "listedAgo": "Elencato {{timeAgo}}",
         "listedInDirectory": "Elencato nella directory",
+        "loadFailed": "Impossibile caricare l'annuncio",
         "notFound": "Annuncio non trovato",
         "requiresLocation": "Richiede la tua posizione",
         "tags": "Tag"
@@ -36666,6 +37140,8 @@ export const resources = {
         "ratingSummaryWithCount": "Valutazione: {{rating}}/5 ({{count}})",
         "rating_one": "★ {{rating}} ({{count}} valutazione)",
         "rating_other": "★ {{rating}} ({{count}} valutazioni)",
+        "removeConfirm": "Rimuovere questa competenza da questo agente? La competenza stessa non verrà eliminata.",
+        "removeTitle": "Rimuovi competenza",
         "scope": {
           "agent": "Agente",
           "global": "Globale",
@@ -36955,6 +37431,14 @@ export const resources = {
         "passwordMin": "Min. 6 caratteri",
         "yourName": "Il tuo nome"
       },
+      "resetPassword": {
+        "emailRequired": "Inserisci il tuo indirizzo email.",
+        "emailSent": "Se esiste un account per {{email}}, abbiamo inviato un link per reimpostare la password. Aprilo nel browser per impostare una nuova password, poi torna qui per accedere.",
+        "failed": "Impossibile inviare l'email di reimpostazione. Riprova.",
+        "sendLink": "Invia link di reimpostazione",
+        "subtitle": "Inserisci il tuo indirizzo email e ti invieremo un link per reimpostare la password.",
+        "title": "Reimposta la tua password"
+      },
       "signIn": "Accedi",
       "signInSubtitle": "Accedi a Simplifi",
       "signInToAcceptInvite": "Accedi per accettare il tuo invito",
@@ -37138,6 +37622,7 @@ export const resources = {
       "emptyHint": "Creane uno per iniziare.",
       "emptyLabel": "Ancora nessun Canvas",
       "errors": {
+        "deleteFailed": "Impossibile eliminare il canvas",
         "loadFailed": "Impossibile caricare i Canvas",
         "nameFormat": "Il nome deve essere in minuscolo, iniziare con una lettera e contenere solo lettere, numeri e trattini bassi",
         "nameRequired": "Il nome è obbligatorio",
@@ -37145,6 +37630,10 @@ export const resources = {
         "widgetRequired": "Aggiungi almeno un widget"
       },
       "example": "Esempio",
+      "fieldPlaceholders": {
+        "description": "Cosa fa questo layout canvas...",
+        "name": "my_canvas_name"
+      },
       "format": "Formato",
       "hideJson": "Nascondi JSON",
       "idLabel": "ID: {{id}}",
@@ -37288,6 +37777,10 @@ export const resources = {
         "openWorkRoom": "Apri stanza di lavoro",
         "title": "{{name}} è occupato"
       },
+      "approvalApprove": "Approva",
+      "approvalReject": "Rifiuta",
+      "approvalRequested": "Approvazione richiesta",
+      "approvalRespondedWith": "✓ Risposto: {{option}}",
       "approvalResponse": {
         "decision": {
           "approved": "Approvato",
@@ -37296,6 +37789,7 @@ export const resources = {
         },
         "invalid": "Risposta di approvazione non valida"
       },
+      "approvalSendFailed": "Impossibile inviare la tua risposta. Riprova.",
       "attachmentCaptionHint": "Aggiungi una descrizione per contesto...",
       "backToParent": "Torna alla conversazione principale",
       "branch": {
@@ -37310,6 +37804,11 @@ export const resources = {
         "showBranches_other": "Mostra {{count}} rami",
         "totalDuration": "Totale: {{duration}}"
       },
+      "branchCompleted": "Branch completato",
+      "branchDetails": "Dettagli",
+      "branchDuration": "Durata: {{duration}}",
+      "branchLess": "Meno",
+      "branchResult": "Risultato del branch",
       "bringAgentOnline": "Riporta questo agente online",
       "bringOnline": "Porta online",
       "cancelReply": "Annulla risposta",
@@ -37339,6 +37838,7 @@ export const resources = {
       "confirmDeleteConversation": "Eliminare questa conversazione? Questa azione non può essere annullata.",
       "conversation": "Conversazione",
       "conversationFallback": "Conversazione",
+      "conversationsLoadFailed": "Impossibile caricare le conversazioni. Controlla la connessione e riprova.",
       "copyId": "Copia ID",
       "createChannel": "Crea canale",
       "createChannelHint": "Apri un canale condiviso per i tuoi agenti",
@@ -37417,6 +37917,7 @@ export const resources = {
       "groupInfoLabel": "Info gruppo",
       "groupNamePlaceholder": "es. Pianificazione progetto",
       "hideDetails": "Nascondi dettagli",
+      "historyLoadFailed": "Impossibile caricare i messaggi. Controlla la connessione e riprova.",
       "hotelSearch": {
         "allPrices": "Tutti i prezzi",
         "any": "Qualsiasi",
@@ -37450,6 +37951,7 @@ export const resources = {
         "title": "Abbandona conversazione"
       },
       "leaveFailed": "Impossibile abbandonare la conversazione",
+      "loadOlderFailed": "Impossibile caricare i messaggi precedenti. Scorri verso l'alto per riprovare.",
       "loadOlderMessages": "Carica messaggi precedenti",
       "loadingConversations": "Caricamento conversazioni...",
       "location": {
@@ -37618,6 +38120,7 @@ export const resources = {
         "placeholder": "Cerca messaggi...",
         "prompt": "Cerca nei tuoi messaggi"
       },
+      "searchJumpNotFound": "Impossibile trovare quel messaggio nella cronologia di questa conversazione.",
       "searchPeopleOrAgents": "Cerca persone o agenti...",
       "searchingPeople": "Ricerca persone in corso...",
       "selectConversation": "Seleziona una conversazione",
@@ -37630,6 +38133,7 @@ export const resources = {
         "validation": "Impossibile inviare quel messaggio. Modificalo e riprova."
       },
       "sendFailed": "Invio non riuscito",
+      "sendMessage": "Invia messaggio",
       "sendWithEnter": "Invia (Invio)",
       "sending": "invio in corso",
       "sentAMessage": "ha inviato un messaggio",
@@ -37895,6 +38399,7 @@ export const resources = {
       "preview": "Anteprima",
       "progress": "Avanzamento",
       "provider": "Provider",
+      "reconnecting": "Riconnessione...",
       "refresh": "Aggiorna",
       "reject": "Rifiuta",
       "reloadApp": "Ricarica l'app",
@@ -38314,6 +38819,7 @@ export const resources = {
       "agentsOnline": "Agenti ({{online}}/{{total}} online)",
       "agentsOnlineTitle": "{{online}}/{{total}} online",
       "canvas": "Canvas",
+      "canvases": "Canvas",
       "chats": "Chat",
       "files": "File",
       "friends": "Amici",
@@ -38878,7 +39384,13 @@ export const resources = {
       "advanced": {
         "flowDebug": "Debug controllo di flusso",
         "flowDebugDescription": "Mostra eventi di controllo di flusso in tempo reale (backoff, soppressione) in chat",
+        "reminderSetFailed": "Impossibile impostare il promemoria di prova",
+        "reminderSetMessage": "Dovrebbe comparire tra circa 5 secondi.",
+        "reminderSetTitle": "Promemoria impostato",
         "startFresh": "Ricomincia da zero / Rivedi onboarding",
+        "startFreshConfirmCta": "Ricomincia da zero",
+        "startFreshConfirmMessage": "Questa operazione cancella TUTTI i tuoi agenti e le loro memorie, le tue routine, i promemoria, la condivisione della posizione e le impostazioni di notifica, poi riavvia l'onboarding da zero. Il tuo nome e gli account collegati (ad es. Google) vengono mantenuti. L'operazione non può essere annullata. Continuare?",
+        "startFreshConfirmTitle": "Ricomincia da zero",
         "startFreshDescription": "Cancella tutti gli agenti, le memorie, le routine e le impostazioni, poi rifai l'onboarding",
         "testReminder": "Test promemoria",
         "testReminderDescription": "Genera un promemoria di prova tra ~5 secondi per verificare il toast e la push"
@@ -39055,6 +39567,7 @@ export const resources = {
         "title": "Chiavi API LLM"
       },
       "location": {
+        "currentLocation": "Posizione attuale",
         "enable": "Attiva posizione",
         "enablePrompt": "Attiva la posizione per vedere dove ti trovi sulla mappa. La tua posizione può essere condivisa con gli agenti a cui concedi l'accesso.",
         "enabling": "Attivazione in corso...",
@@ -39062,15 +39575,21 @@ export const resources = {
         "grantedSummary": "{{granted}} di {{total}} concessi",
         "perAgentAccess": "Accesso per agente",
         "perAgentAccessDescription": "Scegli quali agenti possono vedere la tua posizione",
+        "permissionRequiredMessage": "L'autorizzazione alla posizione è necessaria per condividere la tua posizione con gli agenti.",
+        "permissionRequiredTitle": "Autorizzazione richiesta",
         "pinDropped": "Segnaposto inserito",
         "shareWithAgents": "Condividi con gli agenti",
         "shareWithAgentsDescription": "I tuoi agenti possono accedere alla tua posizione per ricerche locali, meteo e navigazione",
         "sharingOff": "La condivisione della posizione è disattivata",
         "turnOn": "Attiva condivisione posizione",
         "turnOnPrompt": "Attiva la condivisione della posizione così i tuoi agenti possono aiutarti con attività basate sulla posizione.",
-        "turningOn": "Attivazione in corso..."
+        "turningOn": "Attivazione in corso...",
+        "updateGrantFailed": "Impossibile aggiornare l'accesso alla posizione",
+        "updateSharingFailed": "Impossibile aggiornare la condivisione della posizione"
       },
       "manage": {
+        "canvases": "Canvas",
+        "canvasesDescription": "Crea e modifica layout canvas per i tuoi agenti",
         "connectedAccounts": "Account collegati",
         "connectedAccountsDescription": "Collega servizi esterni da usare con i tuoi agenti",
         "friendsDescription": "Cerca persone, rispondi alle richieste e gestisci gli amici",
@@ -39134,6 +39653,7 @@ export const resources = {
       },
       "profile": {
         "avatarUploadFailed": "Impossibile caricare l'avatar",
+        "displayNameEmpty": "Il nome visualizzato non può essere vuoto",
         "firstName": "Nome",
         "lastName": "Cognome",
         "tapToChangePhoto": "Tocca per cambiare foto",
@@ -39181,6 +39701,7 @@ export const resources = {
         "searchPlaceholder": "Cerca fusi orari (es. New York, Tokyo)",
         "selectTitle": "Seleziona fuso orario",
         "tapToChange": "{{timezone}} — tocca per cambiare",
+        "updateFailed": "Impossibile aggiornare il fuso orario",
         "useBrowser": "Usa fuso orario del browser",
         "useDevice": "Usa fuso orario del dispositivo"
       },
@@ -39460,6 +39981,7 @@ export const resources = {
       "errors": {
         "cancelFailed": "Annullamento non riuscito",
         "createFailed": "Impossibile creare l'attività.",
+        "listLoadFailed": "Impossibile caricare le tue azioni. Controlla la connessione e riprova.",
         "loadFailed": "Impossibile caricare l'attività",
         "revisionFailed": "Revisione non riuscita",
         "titleRequired": "Il titolo dell'attività è obbligatorio."
@@ -40154,14 +40676,20 @@ export const resources = {
         "desktopOnlyTitle": "डेस्कटॉप ऐप से चलता है",
         "detailsHint": "कस्टम निर्देश और प्राथमिकताएँ।",
         "detailsTitle": "कोई अतिरिक्त विवरण?",
+        "discardAction": "छोड़ें",
+        "discardMessage": "अब तक की गई आपकी सेटअप जानकारी खो जाएगी।",
+        "discardTitle": "इस एजेंट को छोड़ दें?",
         "effort": "प्रयास",
         "errors": {
           "apiKeyRequired": "इस प्रोवाइडर के लिए API कुंजी आवश्यक है",
+          "backToReview": "समीक्षा पर वापस जाएँ",
           "createFailed": "एजेंट बनाना विफल।",
           "keySaveMessage": "कुंजी जांचें और फिर से प्रयास करें। एजेंट अभी तक नहीं बनाया गया है।",
           "keySaveTitle": "API कुंजी सहेजी नहीं जा सकी",
           "nameRequired": "नाम आवश्यक है।",
           "saveKeyFailed": "API कुंजी सहेजना विफल",
+          "timeoutMessage": "हम पुष्टि नहीं कर सके कि आपका एजेंट बन गया है। अपना कनेक्शन जाँचें और फिर से प्रयास करें।",
+          "timeoutTitle": "एजेंट बनाने का समय समाप्त हो गया",
           "uploadFailed": "अपलोड विफल"
         },
         "executionMode": "एग्ज़ीक्यूशन मोड",
@@ -40187,6 +40715,7 @@ export const resources = {
         },
         "inputRequirements": "इनपुट आवश्यकताएँ",
         "instructionsPlaceholder": "इस एजेंट को और क्या जानना चाहिए? पसंदीदा टूल, बचने योग्य बातें…",
+        "keepEditing": "संपादन जारी रखें",
         "keyCustom": "इस एजेंट के लिए कस्टम कुंजी…",
         "keyCustomSavedHint": "केवल इस एजेंट के लिए सहेजा गया — आपका प्रोवाइडर डिफ़ॉल्ट यथावत रहता है।",
         "keyDefault": "प्रोवाइडर डिफ़ॉल्ट",
@@ -40226,6 +40755,7 @@ export const resources = {
         "providerDefault": "प्रोवाइडर डिफ़ॉल्ट (Anthropic)",
         "removeCustomTone": "कस्टम लहज़ा हटाएँ",
         "removeSpecialty": "{{name}} हटाएँ",
+        "responseTemplates": "रिस्पॉन्स टेम्पलेट",
         "review": {
           "brain": "ब्रेन",
           "computerUse": "कंप्यूटर उपयोग",
@@ -40262,6 +40792,7 @@ export const resources = {
           "reviewer": "वे क्या समीक्षा करते हैं?",
           "worker": "वे किसमें अच्छे हैं?"
         },
+        "startChat": "चैट शुरू करें",
         "status": {
           "abilities": "क्षमताएँ कॉन्फ़िगर की जा रही हैं...",
           "almostReady": "लगभग तैयार...",
@@ -40522,6 +41053,7 @@ export const resources = {
         "connection": "कनेक्शन",
         "listedAgo": "{{timeAgo}} सूचीबद्ध किया गया",
         "listedInDirectory": "डायरेक्ट्री में सूचीबद्ध",
+        "loadFailed": "लिस्टिंग लोड करने में विफल",
         "notFound": "लिस्टिंग नहीं मिली",
         "requiresLocation": "आपकी लोकेशन आवश्यक है",
         "tags": "टैग्स"
@@ -41081,6 +41613,8 @@ export const resources = {
         "ratingSummaryWithCount": "रेटिंग: {{rating}}/5 ({{count}})",
         "rating_one": "★ {{rating}} ({{count}} रेटिंग)",
         "rating_other": "★ {{rating}} ({{count}} रेटिंग्स)",
+        "removeConfirm": "इस एजेंट से यह कौशल हटाएँ? कौशल स्वयं हटाया नहीं जाएगा।",
+        "removeTitle": "कौशल हटाएँ",
         "scope": {
           "agent": "एजेंट",
           "global": "ग्लोबल",
@@ -41370,6 +41904,14 @@ export const resources = {
         "passwordMin": "न्यूनतम 6 वर्ण",
         "yourName": "आपका नाम"
       },
+      "resetPassword": {
+        "emailRequired": "कृपया अपना ईमेल पता दर्ज करें।",
+        "emailSent": "यदि {{email}} के लिए कोई खाता मौजूद है, तो हमने पासवर्ड रीसेट लिंक भेज दिया है। नया पासवर्ड सेट करने के लिए इसे अपने ब्राउज़र में खोलें, फिर साइन इन करने के लिए यहाँ वापस आएँ।",
+        "failed": "रीसेट ईमेल नहीं भेजा जा सका। कृपया पुनः प्रयास करें।",
+        "sendLink": "रीसेट लिंक भेजें",
+        "subtitle": "अपना ईमेल पता दर्ज करें और हम आपको पासवर्ड रीसेट करने के लिए एक लिंक भेजेंगे।",
+        "title": "अपना पासवर्ड रीसेट करें"
+      },
       "signIn": "साइन इन",
       "signInSubtitle": "Simplifi में साइन इन करें",
       "signInToAcceptInvite": "अपना आमंत्रण स्वीकार करने के लिए साइन इन करें",
@@ -41553,6 +42095,7 @@ export const resources = {
       "emptyHint": "शुरू करने के लिए एक बनाएँ।",
       "emptyLabel": "अभी तक कोई कैनवास नहीं",
       "errors": {
+        "deleteFailed": "कैनवास हटाने में विफल",
         "loadFailed": "कैनवास लोड करने में विफल",
         "nameFormat": "नाम लोअरकेस में होना चाहिए, अक्षर से शुरू होना चाहिए, और केवल अक्षर, अंक और अंडरस्कोर का उपयोग करना चाहिए",
         "nameRequired": "नाम आवश्यक है",
@@ -41560,6 +42103,10 @@ export const resources = {
         "widgetRequired": "कम से कम एक विजेट जोड़ें"
       },
       "example": "उदाहरण",
+      "fieldPlaceholders": {
+        "description": "यह कैनवास लेआउट क्या करता है...",
+        "name": "my_canvas_name"
+      },
       "format": "फ़ॉर्मेट",
       "hideJson": "JSON छुपाएँ",
       "idLabel": "आईडी: {{id}}",
@@ -41703,6 +42250,10 @@ export const resources = {
         "openWorkRoom": "वर्करूम खोलें",
         "title": "{{name}} व्यस्त है"
       },
+      "approvalApprove": "स्वीकृत करें",
+      "approvalReject": "अस्वीकार करें",
+      "approvalRequested": "स्वीकृति का अनुरोध किया गया",
+      "approvalRespondedWith": "✓ उत्तर दिया गया: {{option}}",
       "approvalResponse": {
         "decision": {
           "approved": "स्वीकृत",
@@ -41711,6 +42262,7 @@ export const resources = {
         },
         "invalid": "अमान्य स्वीकृति प्रतिक्रिया"
       },
+      "approvalSendFailed": "आपका उत्तर नहीं भेजा जा सका। कृपया पुनः प्रयास करें।",
       "attachmentCaptionHint": "संदर्भ के लिए विवरण जोड़ें...",
       "backToParent": "मूल बातचीत पर वापस जाएँ",
       "branch": {
@@ -41725,6 +42277,11 @@ export const resources = {
         "showBranches_other": "{{count}} शाखाएँ दिखाएँ",
         "totalDuration": "कुल: {{duration}}"
       },
+      "branchCompleted": "ब्रांच पूर्ण हुआ",
+      "branchDetails": "विवरण",
+      "branchDuration": "अवधि: {{duration}}",
+      "branchLess": "कम",
+      "branchResult": "ब्रांच परिणाम",
       "bringAgentOnline": "इस एजेंट को फिर से ऑनलाइन लाएँ",
       "bringOnline": "ऑनलाइन लाएँ",
       "cancelReply": "जवाब रद्द करें",
@@ -41754,6 +42311,7 @@ export const resources = {
       "confirmDeleteConversation": "यह बातचीत हटाएँ? इसे पूर्ववत नहीं किया जा सकता।",
       "conversation": "बातचीत",
       "conversationFallback": "बातचीत",
+      "conversationsLoadFailed": "बातचीत लोड नहीं हो सकीं। अपना कनेक्शन जांचें और पुनः प्रयास करें।",
       "copyId": "ID कॉपी करें",
       "createChannel": "चैनल बनाएँ",
       "createChannelHint": "अपने एजेंटों के लिए एक साझा चैनल खोलें",
@@ -41832,6 +42390,7 @@ export const resources = {
       "groupInfoLabel": "समूह जानकारी",
       "groupNamePlaceholder": "जैसे Project Planning",
       "hideDetails": "विवरण छिपाएँ",
+      "historyLoadFailed": "संदेश लोड नहीं हो सके। अपना कनेक्शन जांचें और पुनः प्रयास करें।",
       "hotelSearch": {
         "allPrices": "सभी कीमतें",
         "any": "कोई भी",
@@ -41865,6 +42424,7 @@ export const resources = {
         "title": "बातचीत छोड़ें"
       },
       "leaveFailed": "बातचीत छोड़ना विफल",
+      "loadOlderFailed": "पुराने संदेश लोड नहीं हो सके। पुनः प्रयास करने के लिए ऊपर स्क्रॉल करें।",
       "loadOlderMessages": "पुराने संदेश लोड करें",
       "loadingConversations": "बातचीतें लोड हो रही हैं...",
       "location": {
@@ -42033,6 +42593,7 @@ export const resources = {
         "placeholder": "संदेश खोजें...",
         "prompt": "अपने संदेश खोजें"
       },
+      "searchJumpNotFound": "इस बातचीत के इतिहास में वह संदेश नहीं मिला।",
       "searchPeopleOrAgents": "लोगों या एजेंटों को खोजें...",
       "searchingPeople": "लोगों को खोजा जा रहा है...",
       "selectConversation": "एक बातचीत चुनें",
@@ -42045,6 +42606,7 @@ export const resources = {
         "validation": "वह संदेश भेजा नहीं जा सका। कृपया इसे संपादित करें और फिर से प्रयास करें।"
       },
       "sendFailed": "भेजना विफल",
+      "sendMessage": "संदेश भेजें",
       "sendWithEnter": "भेजें (Enter)",
       "sending": "भेजा जा रहा है",
       "sentAMessage": "ने एक संदेश भेजा",
@@ -42310,6 +42872,7 @@ export const resources = {
       "preview": "पूर्वावलोकन",
       "progress": "प्रगति",
       "provider": "प्रदाता",
+      "reconnecting": "पुनः कनेक्ट हो रहा है...",
       "refresh": "रीफ़्रेश करें",
       "reject": "अस्वीकार करें",
       "reloadApp": "ऐप पुनः लोड करें",
@@ -42729,6 +43292,7 @@ export const resources = {
       "agentsOnline": "एजेंट ({{online}}/{{total}} ऑनलाइन)",
       "agentsOnlineTitle": "{{online}}/{{total}} ऑनलाइन",
       "canvas": "कैनवास",
+      "canvases": "कैनवास",
       "chats": "चैट",
       "files": "फ़ाइलें",
       "friends": "मित्र",
@@ -43293,7 +43857,13 @@ export const resources = {
       "advanced": {
         "flowDebug": "फ़्लो कंट्रोल डीबग",
         "flowDebugDescription": "चैट में रीयल-टाइम फ़्लो कंट्रोल इवेंट (बैकऑफ़, सप्रेशन) दिखाएँ",
+        "reminderSetFailed": "टेस्ट रिमाइंडर सेट नहीं किया जा सका",
+        "reminderSetMessage": "यह लगभग 5 सेकंड में दिखना चाहिए।",
+        "reminderSetTitle": "रिमाइंडर सेट किया गया",
         "startFresh": "नए सिरे से शुरू करें / ऑनबोर्डिंग फिर से चलाएँ",
+        "startFreshConfirmCta": "नए सिरे से शुरू करें",
+        "startFreshConfirmMessage": "इससे आपके सभी एजेंट और उनकी मेमोरी, आपके रूटीन, रिमाइंडर, लोकेशन साझाकरण और सूचना सेटिंग्स मिट जाएँगी, और ऑनबोर्डिंग नए सिरे से शुरू होगी। आपका नाम और कनेक्टेड खाते (जैसे Google) बने रहेंगे। इसे पूर्ववत नहीं किया जा सकता। जारी रखें?",
+        "startFreshConfirmTitle": "नए सिरे से शुरू करें",
         "startFreshDescription": "सभी एजेंट, मेमोरी, रूटीन और सेटिंग्स मिटाएँ, फिर ऑनबोर्डिंग फिर से शुरू करें",
         "testReminder": "टेस्ट रिमाइंडर",
         "testReminderDescription": "टोस्ट + पुश जाँचने के लिए ~5 सेकंड में एक सैंपल रिमाइंडर भेजें"
@@ -43470,6 +44040,7 @@ export const resources = {
         "title": "LLM API कुंजियाँ"
       },
       "location": {
+        "currentLocation": "वर्तमान स्थान",
         "enable": "लोकेशन सक्षम करें",
         "enablePrompt": "मानचित्र पर अपनी स्थिति देखने के लिए लोकेशन सक्षम करें। आपकी लोकेशन उन एजेंट के साथ साझा की जा सकती है जिन्हें आप पहुँच देते हैं।",
         "enabling": "सक्षम किया जा रहा है...",
@@ -43477,15 +44048,21 @@ export const resources = {
         "grantedSummary": "{{total}} में से {{granted}} स्वीकृत",
         "perAgentAccess": "प्रति-एजेंट पहुँच",
         "perAgentAccessDescription": "चुनें कि कौन-से एजेंट आपकी लोकेशन देख सकते हैं",
+        "permissionRequiredMessage": "एजेंट के साथ अपनी लोकेशन साझा करने के लिए लोकेशन अनुमति आवश्यक है।",
+        "permissionRequiredTitle": "अनुमति आवश्यक",
         "pinDropped": "पिन लगाया गया",
         "shareWithAgents": "एजेंट के साथ साझा करें",
         "shareWithAgentsDescription": "आपके एजेंट स्थानीय खोज, मौसम और नेविगेशन के लिए आपकी लोकेशन का उपयोग कर सकते हैं",
         "sharingOff": "लोकेशन साझाकरण बंद है",
         "turnOn": "लोकेशन साझाकरण चालू करें",
         "turnOnPrompt": "लोकेशन साझाकरण चालू करें ताकि आपके एजेंट लोकेशन-आधारित कार्यों में मदद कर सकें।",
-        "turningOn": "चालू किया जा रहा है..."
+        "turningOn": "चालू किया जा रहा है...",
+        "updateGrantFailed": "लोकेशन एक्सेस अपडेट नहीं हो सका",
+        "updateSharingFailed": "लोकेशन साझाकरण अपडेट नहीं हो सका"
       },
       "manage": {
+        "canvases": "कैनवास",
+        "canvasesDescription": "अपने एजेंटों के लिए कैनवास लेआउट बनाएँ और संपादित करें",
         "connectedAccounts": "कनेक्टेड खाते",
         "connectedAccountsDescription": "अपने एजेंट के उपयोग के लिए बाहरी सेवाएँ लिंक करें",
         "friendsDescription": "लोगों को खोजें, अनुरोधों का जवाब दें और मित्रों को प्रबंधित करें",
@@ -43549,6 +44126,7 @@ export const resources = {
       },
       "profile": {
         "avatarUploadFailed": "अवतार अपलोड करना विफल",
+        "displayNameEmpty": "प्रदर्शित नाम खाली नहीं हो सकता",
         "firstName": "पहला नाम",
         "lastName": "अंतिम नाम",
         "tapToChangePhoto": "फ़ोटो बदलने के लिए टैप करें",
@@ -43596,6 +44174,7 @@ export const resources = {
         "searchPlaceholder": "समय क्षेत्र खोजें (जैसे New York, Tokyo)",
         "selectTitle": "समय क्षेत्र चुनें",
         "tapToChange": "{{timezone}} — बदलने के लिए टैप करें",
+        "updateFailed": "समय क्षेत्र अपडेट नहीं हो सका",
         "useBrowser": "ब्राउज़र समय क्षेत्र उपयोग करें",
         "useDevice": "डिवाइस समय क्षेत्र उपयोग करें"
       },
@@ -43875,6 +44454,7 @@ export const resources = {
       "errors": {
         "cancelFailed": "रद्द करना विफल",
         "createFailed": "कार्य बनाने में विफल।",
+        "listLoadFailed": "आपकी कार्रवाइयाँ लोड नहीं हो सकीं। अपना कनेक्शन जाँचें और फिर से प्रयास करें।",
         "loadFailed": "कार्य लोड करने में विफल",
         "revisionFailed": "संशोधन विफल",
         "titleRequired": "कार्य शीर्षक आवश्यक है।"
