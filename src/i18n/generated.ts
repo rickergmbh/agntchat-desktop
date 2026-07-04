@@ -884,6 +884,7 @@ export const resources = {
       "noAgentsMatchSearch": "No agents match your search",
       "noSearchMatches": "No agents match your search.",
       "notFound": "Agent not found",
+      "onlineCount": "{{online}} of {{total}} agents online",
       "openWorkRoom": "Open work room",
       "owner": "Owner",
       "policy": {
@@ -5288,6 +5289,7 @@ export const resources = {
       "noAgentsMatchSearch": "Ningún agente coincide con tu búsqueda",
       "noSearchMatches": "Ningún agente coincide con tu búsqueda.",
       "notFound": "Agente no encontrado",
+      "onlineCount": "{{online}} de {{total}} agentes en línea",
       "openWorkRoom": "Abrir sala de trabajo",
       "owner": "Propietario",
       "policy": {
@@ -9692,6 +9694,7 @@ export const resources = {
       "noAgentsMatchSearch": "Keine Agenten entsprechen Ihrer Suche",
       "noSearchMatches": "Keine Agenten entsprechen Ihrer Suche.",
       "notFound": "Agent nicht gefunden",
+      "onlineCount": "{{online}} von {{total}} Agenten online",
       "openWorkRoom": "Arbeitsraum öffnen",
       "owner": "Eigentümer",
       "policy": {
@@ -14096,6 +14099,7 @@ export const resources = {
       "noAgentsMatchSearch": "Aucun agent ne correspond à votre recherche",
       "noSearchMatches": "Aucun agent ne correspond à votre recherche.",
       "notFound": "Agent introuvable",
+      "onlineCount": "{{online}} agents en ligne sur {{total}}",
       "openWorkRoom": "Ouvrir la salle de travail",
       "owner": "Propriétaire",
       "policy": {
@@ -18500,6 +18504,7 @@ export const resources = {
       "noAgentsMatchSearch": "Nenhum agente corresponde à sua busca",
       "noSearchMatches": "Nenhum agente corresponde à sua busca.",
       "notFound": "Agente não encontrado",
+      "onlineCount": "{{online}} de {{total}} agentes online",
       "openWorkRoom": "Abrir sala de trabalho",
       "owner": "Proprietário",
       "policy": {
@@ -22904,6 +22909,7 @@ export const resources = {
       "noAgentsMatchSearch": "検索条件に一致するエージェントはありません",
       "noSearchMatches": "検索条件に一致するエージェントはありません。",
       "notFound": "エージェントが見つかりません",
+      "onlineCount": "エージェント{{total}}件中{{online}}件がオンライン",
       "openWorkRoom": "ワークルームを開く",
       "owner": "オーナー",
       "policy": {
@@ -27308,6 +27314,7 @@ export const resources = {
       "noAgentsMatchSearch": "没有符合搜索条件的智能体",
       "noSearchMatches": "没有符合搜索条件的智能体。",
       "notFound": "未找到智能体",
+      "onlineCount": "{{total}} 个智能体中 {{online}} 个在线",
       "openWorkRoom": "打开工作室",
       "owner": "所有者",
       "policy": {
@@ -31712,6 +31719,7 @@ export const resources = {
       "noAgentsMatchSearch": "검색과 일치하는 에이전트가 없습니다",
       "noSearchMatches": "검색과 일치하는 에이전트가 없습니다.",
       "notFound": "에이전트를 찾을 수 없습니다",
+      "onlineCount": "에이전트 {{total}}개 중 {{online}}개 온라인",
       "openWorkRoom": "작업방 열기",
       "owner": "소유자",
       "policy": {
@@ -36116,6 +36124,7 @@ export const resources = {
       "noAgentsMatchSearch": "Nessun agente corrisponde alla tua ricerca",
       "noSearchMatches": "Nessun agente corrisponde alla tua ricerca.",
       "notFound": "Agente non trovato",
+      "onlineCount": "{{online}} agenti online su {{total}}",
       "openWorkRoom": "Apri stanza di lavoro",
       "owner": "Proprietario",
       "policy": {
@@ -40520,6 +40529,7 @@ export const resources = {
       "noAgentsMatchSearch": "आपकी खोज से कोई एजेंट मेल नहीं खाता",
       "noSearchMatches": "आपकी खोज से कोई एजेंट मेल नहीं खाता।",
       "notFound": "एजेंट नहीं मिला",
+      "onlineCount": "{{total}} में से {{online}} एजेंट ऑनलाइन",
       "openWorkRoom": "वर्क रूम खोलें",
       "owner": "स्वामी",
       "policy": {

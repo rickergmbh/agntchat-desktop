@@ -201,17 +201,14 @@ function LeftRail({
   const presenceOnline = usePresenceStore((s) => s.online);
   const agentStats = useMemo(() => {
     const all = Object.values(agentsMap);
-    const online = all.filter((m) => {
-      // Local-runtime agents are "online" when the local subprocess is
-      // running. Org-host agents have no local process — they're online
-      // when live presence (presenceStore, the single runtime truth) says
-      // a bridge on the VM is connected. Without this branch, every
-      // org-hosted agent would silently undercount in the rail's N/M badge.
-      if (m.agent.runtime === "org_host") {
-        return presenceOnline.has(m.agent.id);
-      }
-      return m.processStatus === "running";
-    }).length;
+    // "Online" = live presence (the same signal web/mobile count), so the
+    // rail's N/M matches every other client — an agent whose bridge runs on
+    // another device or was started outside this app still counts. The
+    // local processStatus OR only covers the seconds between a local start
+    // and the executor's first heartbeat.
+    const online = all.filter(
+      (m) => presenceOnline.has(m.agent.id) || m.processStatus === "running"
+    ).length;
     return { online, total: all.length };
   }, [agentsMap, presenceOnline]);
 
