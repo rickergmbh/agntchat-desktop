@@ -8,6 +8,23 @@ use tauri::State;
 
 const MAX_LOG_LINES: usize = 1000;
 
+/// `Command::new` that never flashes a console window on Windows. Every
+/// spawn in this file must go through this: a GUI app spawning a
+/// console-subsystem program (python, pip, hostname) otherwise pops a
+/// visible terminal — and the long-lived bridge python leaves one open
+/// for the app's entire lifetime.
+fn hidden_command<S: AsRef<std::ffi::OsStr>>(program: S) -> Command {
+    #[allow(unused_mut)]
+    let mut cmd = Command::new(program);
+    #[cfg(target_os = "windows")]
+    {
+        use std::os::windows::process::CommandExt;
+        const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+        cmd.creation_flags(CREATE_NO_WINDOW);
+    }
+    cmd
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AgentProcess {
@@ -162,7 +179,7 @@ impl ProcessManager {
 pub fn compute_device_name() -> String {
     #[cfg(target_os = "macos")]
     {
-        if let Ok(out) = Command::new("scutil").args(["--get", "ComputerName"]).output() {
+        if let Ok(out) = hidden_command("scutil").args(["--get", "ComputerName"]).output() {
             if out.status.success() {
                 let name = String::from_utf8_lossy(&out.stdout).trim().to_string();
                 if !name.is_empty() {
@@ -177,7 +194,7 @@ pub fn compute_device_name() -> String {
             return name;
         }
     }
-    if let Ok(out) = Command::new("hostname").output() {
+    if let Ok(out) = hidden_command("hostname").output() {
         if out.status.success() {
             let name = String::from_utf8_lossy(&out.stdout).trim().to_string();
             if !name.is_empty() {
@@ -379,7 +396,7 @@ pub fn start_agent(
         .parent()
         .ok_or("Cannot determine bridge directory")?;
     let python = ensure_venv(bridge_dir)?;
-    let mut cmd = Command::new(&python);
+    let mut cmd = hidden_command(&python);
     cmd.arg(&bridge_path);
 
     // The agentchat SDK is co-located with the bridge script in bridge/.
@@ -675,7 +692,7 @@ fn graceful_kill(child: &mut Child) {
 fn kill_orphan_bridges() {
     #[cfg(unix)]
     {
-        if let Ok(output) = Command::new("pgrep")
+        if let Ok(output) = hidden_command("pgrep")
             .args(["-f", "agent_bridge\\.py"])
             .output()
         {
@@ -796,7 +813,7 @@ fn ensure_venv(bridge_dir: &std::path::Path) -> Result<String, String> {
     // Create venv if it doesn't exist
     if !venv_python.exists() {
         eprintln!("[ProcessManager] Creating Python venv at {:?}", venv_dir);
-        let output = Command::new(system_python)
+        let output = hidden_command(system_python)
             .args(["-m", "venv", &venv_dir.to_string_lossy()])
             .output()
             .map_err(|e| {
@@ -822,7 +839,7 @@ fn ensure_venv(bridge_dir: &std::path::Path) -> Result<String, String> {
 
     if req_file.exists() && needs_dep_install(&req_file, &marker) {
         eprintln!("[ProcessManager] Installing Python dependencies from requirements.txt");
-        let output = Command::new(&venv_python)
+        let output = hidden_command(&venv_python)
             .args(["-m", "pip", "install", "--quiet", "-r", &req_file.to_string_lossy()])
             .output()
             .map_err(|e| format!("Failed to install Python dependencies: {}", e))?;
@@ -927,7 +944,7 @@ pub fn check_computer_use_deps(app: tauri::AppHandle) -> bool {
     } else {
         "import PIL.ImageGrab"
     };
-    let ok = Command::new(&python)
+    let ok = hidden_command(&python)
         .args(["-c", probe])
         .output()
         .map(|o| o.status.success())
@@ -1013,7 +1030,7 @@ pub fn install_computer_use_deps(app: tauri::AppHandle) -> Result<(), String> {
             "[ProcessManager] installing computer-use deps via pip from {}",
             req_file.display()
         );
-        let result = Command::new(&python)
+        let result = hidden_command(&python)
             .args([
                 "-m",
                 "pip",
