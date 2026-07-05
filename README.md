@@ -33,10 +33,17 @@ npm run dev        # http://localhost:1420
 ## Build for Production
 
 ```bash
+npm run bump patch   # or minor / major / an explicit x.y.z — ALWAYS first
 npm run tauri build
 ```
 
 This produces a native installer in `src-tauri/target/release/bundle/` (.dmg on macOS, .msi on Windows, .deb/.AppImage on Linux).
+
+The bump step updates package.json, package-lock.json, tauri.conf.json, and
+Cargo.toml together. It is not optional: the tauri.conf.json version is what
+installed apps report to product analytics, so a release without a bump is
+invisible on the "Desktop users by app version" migration chart. Commit the
+bump with the release.
 
 ## Configuration
 
