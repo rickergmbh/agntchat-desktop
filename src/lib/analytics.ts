@@ -11,7 +11,11 @@ type PostHog = typeof import("posthog-js").default;
 let posthog: PostHog | null = null;
 let loadPromise: Promise<PostHog | null> | null = null;
 
-const KEY = import.meta.env.VITE_POSTHOG_KEY;
+// The PostHog project API key is write-only and public by design (it ships
+// in every client bundle), so a committed default is fine; the env var is an
+// override for forks/other environments.
+const DEFAULT_KEY = "phc_nNXaeotVcJvuuW2zBseyPnENT4BanBJ8JFqpKjhPEdLj";
+const KEY = import.meta.env.VITE_POSTHOG_KEY ?? DEFAULT_KEY;
 const HOST = import.meta.env.VITE_POSTHOG_HOST ?? "https://eu.i.posthog.com";
 const APP_VERSION = import.meta.env.VITE_GIT_COMMIT ?? "dev";
 
