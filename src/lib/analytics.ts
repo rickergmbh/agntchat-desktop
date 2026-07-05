@@ -4,6 +4,7 @@
 // identified. Person profiles are deliberately pseudonymous — participant id,
 // never email or display name, and never message content.
 
+import { getVersion } from "@tauri-apps/api/app";
 import type { Participant } from "./api";
 
 type PostHog = typeof import("posthog-js").default;
@@ -17,7 +18,11 @@ let loadPromise: Promise<PostHog | null> | null = null;
 const DEFAULT_KEY = "phc_nNXaeotVcJvuuW2zBseyPnENT4BanBJ8JFqpKjhPEdLj";
 const KEY = import.meta.env.VITE_POSTHOG_KEY ?? DEFAULT_KEY;
 const HOST = import.meta.env.VITE_POSTHOG_HOST ?? "https://eu.i.posthog.com";
-const APP_VERSION = import.meta.env.VITE_GIT_COMMIT ?? "dev";
+
+// The version of the installed binary (src-tauri/tauri.conf.json), i.e. what
+// "which version are users on" actually means for a desktop app. Resolved
+// once; identify() awaits it so the super prop is never a placeholder.
+const appVersion: Promise<string> = getVersion().catch(() => "unknown");
 
 const PLATFORM = "desktop";
 
@@ -93,7 +98,7 @@ export async function identifyAnalytics(p: Participant | null): Promise<void> {
   // convention, so insights can break down by our (backend-owned) flags.
   ph.register({
     platform: PLATFORM,
-    app_version: APP_VERSION,
+    app_version: await appVersion,
     ...featureProps(p.features),
   });
 
