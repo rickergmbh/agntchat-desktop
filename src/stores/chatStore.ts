@@ -489,9 +489,16 @@ export const useChatStore = create<ChatState>((set, get) => ({
         attachments,
       });
       // Properties only — never message content.
+      const conv =
+        get().conversations.find((c) => c.id === conversationId) ??
+        get().agentConversations.find((c) => c.id === conversationId) ??
+        (get().pendingConversation?.id === conversationId
+          ? get().pendingConversation
+          : undefined);
       track(ANALYTICS_EVENTS.MESSAGE_SENT, {
         has_attachments: (attachments?.length ?? 0) > 0,
         is_reply: !!parentMessageId,
+        conversation_kind: conv?.type ?? null,
       });
     } catch (e) {
       console.warn(`[chat] sendMessage failed, removing placeholder`, e);
