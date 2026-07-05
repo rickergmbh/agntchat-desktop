@@ -1608,6 +1608,7 @@ export const resources = {
       "confirmPassword": "Confirm Password",
       "confirmationSent": "We sent a confirmation link to your email. Please confirm your account, then sign in.",
       "consent": {
+        "analytics": "Share anonymous usage data to help improve the app (optional)",
         "label": "I agree to the Terms of Service and Privacy Policy",
         "marketing": "Email me occasional product updates (optional)",
         "privacy": "Privacy Policy",
@@ -3866,7 +3867,9 @@ export const resources = {
         "reacceptDone": "Thanks — your acceptance has been recorded.",
         "reacceptTitle": "Our terms have changed",
         "title": "Privacy & data",
-        "updateFailed": "Couldn't save your preference. Please try again."
+        "updateFailed": "Couldn't save your preference. Please try again.",
+        "usageAnalytics": "Usage analytics",
+        "usageAnalyticsDesc": "Share anonymous usage data to help us improve the app. Message content is never collected."
       },
       "profile": {
         "avatarUploadFailed": "Failed to upload avatar",
@@ -6082,6 +6085,7 @@ export const resources = {
       "confirmPassword": "Confirmar contraseña",
       "confirmationSent": "Te enviamos un enlace de confirmación a tu correo. Confirma tu cuenta y luego inicia sesión.",
       "consent": {
+        "analytics": "Compartir datos de uso anónimos para ayudar a mejorar la aplicación (opcional)",
         "label": "Acepto los Términos del servicio y la Política de privacidad",
         "marketing": "Envíame novedades del producto de vez en cuando (opcional)",
         "privacy": "Política de privacidad",
@@ -8340,7 +8344,9 @@ export const resources = {
         "reacceptDone": "Gracias: tu aceptación ha quedado registrada.",
         "reacceptTitle": "Nuestros términos han cambiado",
         "title": "Privacidad y datos",
-        "updateFailed": "No se pudo guardar tu preferencia. Inténtalo de nuevo."
+        "updateFailed": "No se pudo guardar tu preferencia. Inténtalo de nuevo.",
+        "usageAnalytics": "Analítica de uso",
+        "usageAnalyticsDesc": "Comparte datos de uso anónimos para ayudarnos a mejorar la aplicación. El contenido de los mensajes nunca se recopila."
       },
       "profile": {
         "avatarUploadFailed": "No se pudo subir el avatar",
@@ -10556,6 +10562,7 @@ export const resources = {
       "confirmPassword": "Passwort bestätigen",
       "confirmationSent": "Wir haben einen Bestätigungslink an Ihre E-Mail-Adresse gesendet. Bitte bestätigen Sie Ihr Konto und melden Sie sich dann an.",
       "consent": {
+        "analytics": "Anonyme Nutzungsdaten teilen, um die App zu verbessern (optional)",
         "label": "Ich stimme den Nutzungsbedingungen und der Datenschutzerklärung zu",
         "marketing": "Gelegentliche Produkt-Updates per E-Mail senden (optional)",
         "privacy": "Datenschutzerklärung",
@@ -12814,7 +12821,9 @@ export const resources = {
         "reacceptDone": "Vielen Dank — Ihre Zustimmung wurde gespeichert.",
         "reacceptTitle": "Unsere Bedingungen haben sich geändert",
         "title": "Datenschutz & Daten",
-        "updateFailed": "Ihre Einstellung konnte nicht gespeichert werden. Bitte versuchen Sie es erneut."
+        "updateFailed": "Ihre Einstellung konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.",
+        "usageAnalytics": "Nutzungsanalyse",
+        "usageAnalyticsDesc": "Anonyme Nutzungsdaten teilen, damit wir die App verbessern können. Nachrichteninhalte werden niemals erfasst."
       },
       "profile": {
         "avatarUploadFailed": "Avatar konnte nicht hochgeladen werden",
@@ -15030,6 +15039,7 @@ export const resources = {
       "confirmPassword": "Confirmer le mot de passe",
       "confirmationSent": "Nous avons envoyé un lien de confirmation à votre adresse e-mail. Veuillez confirmer votre compte, puis vous connecter.",
       "consent": {
+        "analytics": "Partager des données d'utilisation anonymes pour améliorer l'application (facultatif)",
         "label": "J'accepte les Conditions d'utilisation et la Politique de confidentialité",
         "marketing": "Recevoir occasionnellement des nouveautés produit par e-mail (facultatif)",
         "privacy": "Politique de confidentialité",
@@ -17288,7 +17298,9 @@ export const resources = {
         "reacceptDone": "Merci — votre acceptation a bien été enregistrée.",
         "reacceptTitle": "Nos conditions ont changé",
         "title": "Confidentialité et données",
-        "updateFailed": "Impossible d'enregistrer votre préférence. Veuillez réessayer."
+        "updateFailed": "Impossible d'enregistrer votre préférence. Veuillez réessayer.",
+        "usageAnalytics": "Statistiques d'utilisation",
+        "usageAnalyticsDesc": "Partagez des données d'utilisation anonymes pour nous aider à améliorer l'application. Le contenu des messages n'est jamais collecté."
       },
       "profile": {
         "avatarUploadFailed": "Échec du téléchargement de l'avatar",
@@ -19504,6 +19516,7 @@ export const resources = {
       "confirmPassword": "Confirmar senha",
       "confirmationSent": "Enviamos um link de confirmação para seu e-mail. Confirme sua conta e, em seguida, faça login.",
       "consent": {
+        "analytics": "Compartilhar dados de uso anônimos para ajudar a melhorar o app (opcional)",
         "label": "Concordo com os Termos de Serviço e a Política de Privacidade",
         "marketing": "Envie-me novidades do produto de vez em quando (opcional)",
         "privacy": "Política de Privacidade",
@@ -21762,7 +21775,9 @@ export const resources = {
         "reacceptDone": "Obrigado — sua aceitação foi registrada.",
         "reacceptTitle": "Nossos termos mudaram",
         "title": "Privacidade e dados",
-        "updateFailed": "Não foi possível salvar sua preferência. Tente novamente."
+        "updateFailed": "Não foi possível salvar sua preferência. Tente novamente.",
+        "usageAnalytics": "Análise de uso",
+        "usageAnalyticsDesc": "Compartilhe dados de uso anônimos para nos ajudar a melhorar o app. O conteúdo das mensagens nunca é coletado."
       },
       "profile": {
         "avatarUploadFailed": "Falha ao enviar o avatar",
@@ -23978,6 +23993,7 @@ export const resources = {
       "confirmPassword": "パスワード（確認）",
       "confirmationSent": "確認リンクをメールアドレスに送信しました。アカウントを確認してからログインしてください。",
       "consent": {
+        "analytics": "匿名の利用データを共有してアプリの改善に協力する（任意）",
         "label": "利用規約とプライバシーポリシーに同意します",
         "marketing": "製品の最新情報をときどきメールで受け取る（任意）",
         "privacy": "プライバシーポリシー",
@@ -26236,7 +26252,9 @@ export const resources = {
         "reacceptDone": "ご同意ありがとうございました。記録しました。",
         "reacceptTitle": "規約が変更されました",
         "title": "プライバシーとデータ",
-        "updateFailed": "設定を保存できませんでした。もう一度お試しください。"
+        "updateFailed": "設定を保存できませんでした。もう一度お試しください。",
+        "usageAnalytics": "利用状況の分析",
+        "usageAnalyticsDesc": "匿名の利用データを共有して、アプリの改善にご協力ください。メッセージの内容が収集されることはありません。"
       },
       "profile": {
         "avatarUploadFailed": "アバターのアップロードに失敗しました",
@@ -28452,6 +28470,7 @@ export const resources = {
       "confirmPassword": "确认密码",
       "confirmationSent": "我们已向你的邮箱发送了确认链接。请确认账号后登录。",
       "consent": {
+        "analytics": "分享匿名使用数据以帮助改进应用（可选）",
         "label": "我同意《服务条款》和《隐私政策》",
         "marketing": "偶尔通过电子邮件向我发送产品更新（可选）",
         "privacy": "隐私政策",
@@ -30710,7 +30729,9 @@ export const resources = {
         "reacceptDone": "感谢您的同意，已记录。",
         "reacceptTitle": "我们的条款已更新",
         "title": "隐私与数据",
-        "updateFailed": "无法保存您的偏好设置。请重试。"
+        "updateFailed": "无法保存您的偏好设置。请重试。",
+        "usageAnalytics": "使用情况分析",
+        "usageAnalyticsDesc": "分享匿名使用数据，帮助我们改进应用。绝不会收集消息内容。"
       },
       "profile": {
         "avatarUploadFailed": "上传头像失败",
@@ -32926,6 +32947,7 @@ export const resources = {
       "confirmPassword": "비밀번호 확인",
       "confirmationSent": "이메일로 확인 링크를 보냈습니다. 계정을 인증한 후 로그인하세요.",
       "consent": {
+        "analytics": "익명 사용 데이터를 공유하여 앱 개선에 참여 (선택 사항)",
         "label": "서비스 약관 및 개인정보 처리방침에 동의합니다",
         "marketing": "가끔 제품 업데이트를 이메일로 받기 (선택 사항)",
         "privacy": "개인정보 처리방침",
@@ -35184,7 +35206,9 @@ export const resources = {
         "reacceptDone": "감사합니다. 동의가 기록되었습니다.",
         "reacceptTitle": "약관이 변경되었습니다",
         "title": "개인정보 및 데이터",
-        "updateFailed": "설정을 저장하지 못했습니다. 다시 시도해 주세요."
+        "updateFailed": "설정을 저장하지 못했습니다. 다시 시도해 주세요.",
+        "usageAnalytics": "사용 분석",
+        "usageAnalyticsDesc": "익명 사용 데이터를 공유하여 앱 개선에 도움을 주세요. 메시지 내용은 절대 수집되지 않습니다."
       },
       "profile": {
         "avatarUploadFailed": "아바타 업로드 실패",
@@ -37400,6 +37424,7 @@ export const resources = {
       "confirmPassword": "Conferma password",
       "confirmationSent": "Abbiamo inviato un link di conferma alla tua email. Conferma il tuo account, poi accedi.",
       "consent": {
+        "analytics": "Condividi dati di utilizzo anonimi per aiutarci a migliorare l'app (facoltativo)",
         "label": "Accetto i Termini di servizio e l'Informativa sulla privacy",
         "marketing": "Inviami occasionali aggiornamenti sul prodotto via e-mail (facoltativo)",
         "privacy": "Informativa sulla privacy",
@@ -39658,7 +39683,9 @@ export const resources = {
         "reacceptDone": "Grazie: la tua accettazione è stata registrata.",
         "reacceptTitle": "I nostri termini sono cambiati",
         "title": "Privacy e dati",
-        "updateFailed": "Impossibile salvare la tua preferenza. Riprova."
+        "updateFailed": "Impossibile salvare la tua preferenza. Riprova.",
+        "usageAnalytics": "Analisi dell'utilizzo",
+        "usageAnalyticsDesc": "Condividi dati di utilizzo anonimi per aiutarci a migliorare l'app. Il contenuto dei messaggi non viene mai raccolto."
       },
       "profile": {
         "avatarUploadFailed": "Impossibile caricare l'avatar",
@@ -41874,6 +41901,7 @@ export const resources = {
       "confirmPassword": "पासवर्ड की पुष्टि करें",
       "confirmationSent": "हमने आपके ईमेल पर एक पुष्टिकरण लिंक भेजा है। कृपया अपने खाते की पुष्टि करें, फिर साइन इन करें।",
       "consent": {
+        "analytics": "ऐप को बेहतर बनाने के लिए गुमनाम उपयोग डेटा साझा करें (वैकल्पिक)",
         "label": "मैं सेवा की शर्तों और गोपनीयता नीति से सहमत हूँ",
         "marketing": "मुझे कभी-कभी उत्पाद अपडेट ईमेल करें (वैकल्पिक)",
         "privacy": "गोपनीयता नीति",
@@ -44132,7 +44160,9 @@ export const resources = {
         "reacceptDone": "धन्यवाद — आपकी सहमति दर्ज कर ली गई है।",
         "reacceptTitle": "हमारी शर्तें बदल गई हैं",
         "title": "गोपनीयता और डेटा",
-        "updateFailed": "आपकी प्राथमिकता सहेजी नहीं जा सकी। कृपया पुनः प्रयास करें।"
+        "updateFailed": "आपकी प्राथमिकता सहेजी नहीं जा सकी। कृपया पुनः प्रयास करें।",
+        "usageAnalytics": "उपयोग विश्लेषण",
+        "usageAnalyticsDesc": "ऐप को बेहतर बनाने में हमारी मदद के लिए गुमनाम उपयोग डेटा साझा करें। संदेश की सामग्री कभी एकत्र नहीं की जाती।"
       },
       "profile": {
         "avatarUploadFailed": "अवतार अपलोड करना विफल",

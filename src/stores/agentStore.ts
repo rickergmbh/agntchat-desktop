@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { invoke } from "@tauri-apps/api/core";
 import * as api from "../lib/api";
+import { track, ANALYTICS_EVENTS } from "../lib/analytics";
 import { providerRequiresLlmKey } from "../lib/models";
 import { ws } from "../services/websocket";
 import { useAuthStore } from "./authStore";
@@ -956,6 +957,10 @@ export const useAgentStore = create<AgentState>((set, get) => ({
     // (computer_use_enabled etc.) live in metadata; the modal composes
     // the right snake_case keys directly.
     const result = await api.createAgent(apiData);
+    track(ANALYTICS_EVENTS.AGENT_CREATED, {
+      agent_type: result.agent.agentType,
+      runtime: result.agent.runtime,
+    });
     const config = {
       ...DEFAULT_CONFIG,
       ...(selectedBackend ? { backend: selectedBackend } : {}),

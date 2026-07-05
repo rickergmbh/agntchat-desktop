@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { trackScreen } from "../lib/analytics";
 
 export type View =
   | "chat"
@@ -18,5 +19,8 @@ interface NavState {
 
 export const useNavStore = create<NavState>((set) => ({
   view: "chat",
-  setView: (view) => set({ view }),
+  setView: (view) => {
+    trackScreen(view);
+    set({ view });
+  },
 }));

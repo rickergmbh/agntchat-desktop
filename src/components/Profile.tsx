@@ -7,6 +7,7 @@ import type { LocalePreference } from "../i18n";
 import { LOCALE_LABELS, SUPPORTED_LOCALES } from "../i18n/generated";
 import { isDesignSystemDebugOn, setDesignSystemDebug } from "../lib/designSystemDebug";
 import * as api from "../lib/api";
+import { identifyAnalytics, track, ANALYTICS_EVENTS } from "../lib/analytics";
 import { cn } from "../lib/utils";
 import { PaymentWalletRow } from "./PaymentWalletRow";
 import { Button } from "@/components/ui/button";
@@ -376,6 +377,9 @@ export function Profile({ onClose }: { onClose: () => void }) {
           );
           if (found) {
             setCredentials(updated);
+            if (providerName === "google") {
+              track(ANALYTICS_EVENTS.GOOGLE_ACCOUNT_CONNECTED);
+            }
             if (pollRef.current) clearInterval(pollRef.current);
             setConnectingProvider(null);
           }
@@ -2311,6 +2315,9 @@ function PrivacyDataSection() {
   const persist = (updated: api.Participant) => {
     localStorage.setItem("participant", JSON.stringify(updated));
     useAuthStore.setState({ participant: updated });
+    // Consent changes land here — re-sync so an analytics opt-out stops
+    // capture immediately (and an opt-in starts it).
+    void identifyAnalytics(updated);
   };
 
   // ---- Data export ----
@@ -2355,6 +2362,22 @@ function PrivacyDataSection() {
       setMarketingError(true);
     } finally {
       setSavingMarketing(false);
+    }
+  };
+
+  // ---- Usage-analytics consent ----
+  const [savingAnalytics, setSavingAnalytics] = useState(false);
+  const [analyticsError, setAnalyticsError] = useState(false);
+  const handleToggleAnalytics = async (value: boolean) => {
+    setSavingAnalytics(true);
+    setAnalyticsError(false);
+    try {
+      const updated = await api.updateConsent({ analyticsOptIn: value });
+      persist(updated);
+    } catch {
+      setAnalyticsError(true);
+    } finally {
+      setSavingAnalytics(false);
     }
   };
 
@@ -2570,6 +2593,27 @@ function PrivacyDataSection() {
           checked={participant?.marketingOptIn === true}
           disabled={savingMarketing}
           onCheckedChange={(v) => void handleToggleMarketing(v)}
+        />
+      </div>
+
+      {/* Usage analytics (product analytics consent) */}
+      <div className="rounded-xl border border-border bg-card p-4 flex items-center justify-between gap-4">
+        <div className="min-w-0">
+          <p className="text-sm font-medium">{t("privacy.usageAnalytics")}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            {t("privacy.usageAnalyticsDesc")}
+          </p>
+          {analyticsError && (
+            <p className="text-xs text-destructive mt-1 flex items-center gap-1.5">
+              <AlertCircle className="w-3.5 h-3.5" />
+              {t("privacy.updateFailed")}
+            </p>
+          )}
+        </div>
+        <Switch
+          checked={participant?.analyticsOptIn === true}
+          disabled={savingAnalytics}
+          onCheckedChange={(v) => void handleToggleAnalytics(v)}
         />
       </div>
 

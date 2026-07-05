@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import * as api from "../lib/api";
 import type { Conversation, Message } from "../lib/api";
+import { track, ANALYTICS_EVENTS } from "../lib/analytics";
 import { ws } from "../services/websocket";
 import { useAuthStore } from "./authStore";
 import { useStreamingStore } from "./streamingStore";
@@ -328,6 +329,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
   createConversation: async (attrs) => {
     const created = await api.createConversationRest(attrs);
+    track(ANALYTICS_EVENTS.CONVERSATION_CREATED, { kind: created.type });
     // Refetch with full nested member/participant data
     const full = await api.getConversation(created.id);
     set({ pendingConversation: full });
@@ -485,6 +487,11 @@ export const useChatStore = create<ChatState>((set, get) => ({
         metadata: { client_nonce: nonce },
         parentMessageId,
         attachments,
+      });
+      // Properties only — never message content.
+      track(ANALYTICS_EVENTS.MESSAGE_SENT, {
+        has_attachments: (attachments?.length ?? 0) > 0,
+        is_reply: !!parentMessageId,
       });
     } catch (e) {
       console.warn(`[chat] sendMessage failed, removing placeholder`, e);

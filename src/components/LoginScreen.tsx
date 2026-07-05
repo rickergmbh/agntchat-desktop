@@ -35,6 +35,7 @@ export function LoginScreen() {
   const [birthDate, setBirthDate] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [marketingOptIn, setMarketingOptIn] = useState(false);
+  const [analyticsOptIn, setAnalyticsOptIn] = useState(false);
   const [consentError, setConsentError] = useState(false);
   const [birthDateError, setBirthDateError] = useState<
     "birthDateRequired" | "ageTooYoung" | null
@@ -59,6 +60,7 @@ export function LoginScreen() {
         acceptedTerms: true,
         birthDate,
         marketingOptIn,
+        analyticsOptIn,
       });
     } else {
       await login(email, password);
@@ -177,6 +179,18 @@ export function LoginScreen() {
                 />
                 <span className="flex-1 min-w-0 text-sm text-text-secondary">
                   {t("consent.marketing")}
+                </span>
+              </label>
+
+              <label className="flex items-start gap-2.5 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={analyticsOptIn}
+                  onChange={(e) => setAnalyticsOptIn(e.target.checked)}
+                  className="mt-0.5 rounded border-border"
+                />
+                <span className="flex-1 min-w-0 text-sm text-text-secondary">
+                  {t("consent.analytics")}
                 </span>
               </label>
 

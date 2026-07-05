@@ -140,7 +140,12 @@ export async function signup(
   email: string,
   password: string,
   displayName: string | undefined,
-  opts: { acceptedTerms: boolean; birthDate: string; marketingOptIn?: boolean }
+  opts: {
+    acceptedTerms: boolean;
+    birthDate: string;
+    marketingOptIn?: boolean;
+    analyticsOptIn?: boolean;
+  }
 ): Promise<SignupResult> {
   return request("/api/auth/signup", {
     method: "POST",
@@ -151,6 +156,7 @@ export async function signup(
       acceptedTerms: opts.acceptedTerms,
       birthDate: opts.birthDate,
       marketingOptIn: opts.marketingOptIn,
+      analyticsOptIn: opts.analyticsOptIn,
     }),
   });
 }
@@ -179,10 +185,11 @@ export async function exportMyData(): Promise<{
   return request("/api/me/export", { method: "POST" });
 }
 
-/** Update consent flags — marketing opt-in and/or re-accepting the current
- *  policy version. Returns the refreshed participant_self payload. */
+/** Update consent flags — marketing/analytics opt-in and/or re-accepting the
+ *  current policy version. Returns the refreshed participant_self payload. */
 export async function updateConsent(body: {
   marketingOptIn?: boolean;
+  analyticsOptIn?: boolean;
   reaccept?: boolean;
 }): Promise<Participant> {
   return request("/api/me/consent", {
@@ -2257,10 +2264,12 @@ export interface Participant {
    *  ("hosted" runtime). Null when the user has no host available. */
   hostedHostId?: string | null;
   /** Consent / policy state (self-view only). `marketingOptIn` reflects the
-   *  product-updates email preference; `acceptedPolicyVersion` is the version
-   *  the user last accepted; `policyReacceptRequired` is true when the current
-   *  policy version is newer than what they accepted. */
+   *  product-updates email preference; `analyticsOptIn` gates product
+   *  analytics (no PostHog init until true); `acceptedPolicyVersion` is the
+   *  version the user last accepted; `policyReacceptRequired` is true when
+   *  the current policy version is newer than what they accepted. */
   marketingOptIn?: boolean;
+  analyticsOptIn?: boolean;
   acceptedPolicyVersion?: string | null;
   policyReacceptRequired?: boolean;
 }

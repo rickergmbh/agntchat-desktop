@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import * as api from "../lib/api";
+import { identifyAnalytics, track, ANALYTICS_EVENTS } from "../lib/analytics";
 import { resetAvatarPolicyCache } from "../lib/imageProcessor";
 import { resetFieldLimitsCache } from "../lib/fieldLimits";
 import { resetAgentTypesCache } from "../lib/agentTypes";
@@ -59,7 +60,12 @@ interface AuthState {
     email: string,
     password: string,
     displayName: string | undefined,
-    opts: { acceptedTerms: boolean; birthDate: string; marketingOptIn?: boolean }
+    opts: {
+      acceptedTerms: boolean;
+      birthDate: string;
+      marketingOptIn?: boolean;
+      analyticsOptIn?: boolean;
+    }
   ) => Promise<void>;
   logout: () => void;
   restoreSession: () => void;
@@ -79,6 +85,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       const result = await api.login(email, password);
       localStorage.setItem("authToken", result.token);
       localStorage.setItem("participant", JSON.stringify(result.participant));
+      void identifyAnalytics(result.participant);
+      track(ANALYTICS_EVENTS.LOGIN_COMPLETED);
       set({
         token: result.token,
         participant: result.participant,
@@ -106,6 +114,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       }
       localStorage.setItem("authToken", result.token);
       localStorage.setItem("participant", JSON.stringify(result.participant));
+      void identifyAnalytics(result.participant);
+      track(ANALYTICS_EVENTS.SIGNUP_COMPLETED);
       set({
         token: result.token,
         participant: result.participant,
@@ -131,6 +141,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     resetAgentTypesCache();
     localStorage.removeItem("authToken");
     localStorage.removeItem("participant");
+    track(ANALYTICS_EVENTS.LOGOUT);
+    void identifyAnalytics(null);
     set({ token: null, participant: null });
   },
 
@@ -154,6 +166,9 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       const participant = await api.getProfile();
       localStorage.setItem("participant", JSON.stringify(participant));
+      // Re-sync analytics on every self-participant refresh — consent
+      // changes flow through here, so an opt-out takes effect immediately.
+      void identifyAnalytics(participant);
       set({ participant });
       syncDeviceTimezone(participant);
       syncServerLocale(participant);
