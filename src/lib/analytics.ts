@@ -50,6 +50,10 @@ function load(): Promise<PostHog | null> {
           capture_pageview: false,
           capture_pageleave: false,
           disable_session_recording: true,
+          // Flags are backend-owned (feature_flags table + Platform console);
+          // PostHog's flag product is unused, so don't fetch (billable) flag
+          // definitions. Our $feature/* super props still tag events.
+          advanced_disable_feature_flags: true,
           persistence: "localStorage+cookie",
         });
         posthog = ph;
