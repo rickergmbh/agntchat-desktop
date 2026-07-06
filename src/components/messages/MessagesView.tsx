@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { MessageSquare, MessageCircle, MessagesSquare, ChevronRight, SquarePen, RefreshCw, Power, Loader2, X, CheckCircle2, Radio } from "lucide-react";
 import { wakeAgent } from "../../lib/api";
-import { useResizableWidth } from "../../hooks/useResizableWidth";
+import { useResizableWidth, useRightPaneWidth } from "../../hooks/useResizableWidth";
 import { ResizeHandle } from "../ResizeHandle";
 import { useChatStore } from "../../stores/chatStore";
 import { useAuthStore } from "../../stores/authStore";
@@ -456,21 +456,15 @@ function ThreadSidePane({ threadId }: { threadId: string }) {
   );
   const stream = useStreamingStore((s) => s.streams[threadId]);
 
-  // Drag-to-resize from the pane's left (inner) edge. Right-docked, so the
-  // hook measures width from the right edge and dragging outward widens it.
+  // Drag-to-resize from the pane's left (inner) edge. Shares its width with
+  // the details pane (same storage key) so switching between them is seamless.
   const {
     width,
     ref: paneRef,
     resizing,
     onResizeStart,
     onResizeReset,
-  } = useResizableWidth({
-    storageKey: "agentchat:threadPaneWidth",
-    defaultWidth: 416, // matches the previous fixed w-[26rem]
-    min: 320,
-    max: 640,
-    side: "right",
-  });
+  } = useRightPaneWidth();
 
   // Pull full member/participant data on open (list payloads can be thin).
   useEffect(() => {

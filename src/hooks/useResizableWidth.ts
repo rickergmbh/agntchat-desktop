@@ -103,3 +103,20 @@ export function useResizableWidth({
 
   return { width, ref, resizing, onResizeStart, onResizeReset };
 }
+
+/**
+ * Shared width for the right-docked panes (the thread side pane and the
+ * conversation-details pane). Both call this with the SAME storage key, so a
+ * width dragged on one applies to the other — switching between a thread and
+ * details never jolts. Only one pane is mounted at a time, so they don't
+ * fight over the ref.
+ */
+export function useRightPaneWidth(): ResizableWidth {
+  return useResizableWidth({
+    storageKey: "agentchat:rightPaneWidth",
+    defaultWidth: 416,
+    min: 320,
+    max: 640,
+    side: "right",
+  });
+}

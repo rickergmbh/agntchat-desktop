@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useRightPaneWidth } from "../../hooks/useResizableWidth";
+import { ResizeHandle } from "../ResizeHandle";
 import { useChatStore } from "../../stores/chatStore";
 import { usePresenceStore } from "../../stores/presenceStore";
 import { useAgentStore } from "../../stores/agentStore";
@@ -56,6 +58,15 @@ export function ConversationDetailsPanel({
   onAfterLeave,
 }: Props) {
   const { t } = useTranslation("chat");
+  // Shares its width with the thread side pane (same storage key), so
+  // switching between details and a thread never jolts.
+  const {
+    width,
+    ref: paneRef,
+    resizing,
+    onResizeStart,
+    onResizeReset,
+  } = useRightPaneWidth();
   const online = usePresenceStore((s) => s.online);
   const updateTitle = useChatStore((s) => s.updateConversationTitle);
   const updateAvatar = useChatStore((s) => s.updateConversationAvatar);
@@ -241,7 +252,19 @@ export function ConversationDetailsPanel({
   );
 
   return (
-    <aside className="surface-panel-strong relative z-20 -ml-3 flex h-full w-80 shrink-0 flex-col overflow-hidden rounded-l-lg bg-card">
+    <>
+    <ResizeHandle
+      right={width}
+      resizing={resizing}
+      onResizeStart={onResizeStart}
+      onResizeReset={onResizeReset}
+      label={t("details.resizePane")}
+    />
+    <aside
+      ref={paneRef}
+      className="surface-panel-strong relative z-20 -ml-3 flex h-full shrink-0 flex-col overflow-hidden rounded-l-lg bg-card"
+      style={{ width } as React.CSSProperties}
+    >
       {/* Header — h-14 to line up with the sidebar's Messages header and the
           conversation header across the three vertical columns. */}
       <div className="relative flex h-14 items-center justify-between px-4 shrink-0 after:absolute after:bottom-0 after:left-4 after:right-4 after:h-px after:bg-border">
@@ -488,6 +511,7 @@ export function ConversationDetailsPanel({
         )}
       </div>
     </aside>
+    </>
   );
 }
 
