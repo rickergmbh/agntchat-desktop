@@ -107,6 +107,11 @@ class WebSocketService {
       // Date reminders — platform-elevated notification, not a chat message.
       // ReminderToast listens and raises a native OS notification.
       "reminder_fired",
+      // Permission prompts (#67) — a gated agent action awaits the owner's
+      // approve/deny. PermissionToast renders the prompt; permission_resolved
+      // dismisses it across devices (also fires on expiry).
+      "permission_request",
+      "permission_resolved",
       // Slack-style multi-workspace cross-device sync. workspaceStore listens.
       "active_organization_changed",
       // Cross-device read sync: another of the user's devices marked a

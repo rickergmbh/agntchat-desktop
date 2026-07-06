@@ -2271,6 +2271,16 @@ export const resources = {
       "onlineOnDevice": "Online · on {{device}}",
       "openExisting": "Open Existing Conversation",
       "participant": "Participant",
+      "permissionToast": {
+        "allowed": "Approved",
+        "always": "Always allow this tool",
+        "approve": "Approve",
+        "denied": "Denied",
+        "deny": "Deny",
+        "expired": "Request expired",
+        "subtitle": "{{agent}} wants to run an action",
+        "title": "Permission needed"
+      },
       "phase": {
         "analyzing": "Analyzing...",
         "queued": "Message queued — agent is offline",
@@ -6798,6 +6808,16 @@ export const resources = {
       "onlineOnDevice": "En línea · en {{device}}",
       "openExisting": "Abrir conversación existente",
       "participant": "Participante",
+      "permissionToast": {
+        "allowed": "Aprobado",
+        "always": "Permitir siempre esta herramienta",
+        "approve": "Aprobar",
+        "denied": "Denegado",
+        "deny": "Denegar",
+        "expired": "Solicitud caducada",
+        "subtitle": "{{agent}} quiere ejecutar una acción",
+        "title": "Se necesita permiso"
+      },
       "phase": {
         "analyzing": "Analizando...",
         "queued": "Mensaje en cola — el agente está desconectado",
@@ -11325,6 +11345,16 @@ export const resources = {
       "onlineOnDevice": "Online · auf {{device}}",
       "openExisting": "Bestehende Unterhaltung öffnen",
       "participant": "Teilnehmer",
+      "permissionToast": {
+        "allowed": "Zugelassen",
+        "always": "Dieses Tool immer zulassen",
+        "approve": "Zulassen",
+        "denied": "Abgelehnt",
+        "deny": "Ablehnen",
+        "expired": "Anfrage abgelaufen",
+        "subtitle": "{{agent}} möchte eine Aktion ausführen",
+        "title": "Erlaubnis erforderlich"
+      },
       "phase": {
         "analyzing": "Analysiert...",
         "queued": "Nachricht in Warteschlange — Agent ist offline",
@@ -15852,6 +15882,16 @@ export const resources = {
       "onlineOnDevice": "En ligne · sur {{device}}",
       "openExisting": "Ouvrir une conversation existante",
       "participant": "Participant",
+      "permissionToast": {
+        "allowed": "Approuvé",
+        "always": "Toujours autoriser cet outil",
+        "approve": "Approuver",
+        "denied": "Refusé",
+        "deny": "Refuser",
+        "expired": "Demande expirée",
+        "subtitle": "{{agent}} veut exécuter une action",
+        "title": "Autorisation requise"
+      },
       "phase": {
         "analyzing": "Analyse...",
         "queued": "Message en attente — l'agent est hors ligne",
@@ -20379,6 +20419,16 @@ export const resources = {
       "onlineOnDevice": "Online · em {{device}}",
       "openExisting": "Abrir conversa existente",
       "participant": "Participante",
+      "permissionToast": {
+        "allowed": "Aprovado",
+        "always": "Permitir sempre esta ferramenta",
+        "approve": "Aprovar",
+        "denied": "Negado",
+        "deny": "Negar",
+        "expired": "Pedido expirado",
+        "subtitle": "{{agent}} quer executar uma ação",
+        "title": "Permissão necessária"
+      },
       "phase": {
         "analyzing": "Analisando...",
         "queued": "Mensagem na fila — agente está offline",
@@ -24906,6 +24956,16 @@ export const resources = {
       "onlineOnDevice": "オンライン · {{device}}で使用中",
       "openExisting": "既存の会話を開く",
       "participant": "参加者",
+      "permissionToast": {
+        "allowed": "承認済み",
+        "always": "このツールを常に許可",
+        "approve": "承認",
+        "denied": "拒否済み",
+        "deny": "拒否",
+        "expired": "リクエストの有効期限が切れました",
+        "subtitle": "{{agent}} がアクションを実行しようとしています",
+        "title": "許可が必要です"
+      },
       "phase": {
         "analyzing": "分析中…",
         "queued": "メッセージをキューに追加しました — エージェントはオフラインです",
@@ -29433,6 +29493,16 @@ export const resources = {
       "onlineOnDevice": "在线 · 于 {{device}}",
       "openExisting": "打开现有对话",
       "participant": "参与者",
+      "permissionToast": {
+        "allowed": "已批准",
+        "always": "始终允许此工具",
+        "approve": "批准",
+        "denied": "已拒绝",
+        "deny": "拒绝",
+        "expired": "请求已过期",
+        "subtitle": "{{agent}} 想要执行一个操作",
+        "title": "需要授权"
+      },
       "phase": {
         "analyzing": "分析中…",
         "queued": "消息已排队——智能体离线",
@@ -33960,6 +34030,16 @@ export const resources = {
       "onlineOnDevice": "온라인 · {{device}}에서",
       "openExisting": "기존 대화 열기",
       "participant": "참가자",
+      "permissionToast": {
+        "allowed": "승인됨",
+        "always": "이 도구 항상 허용",
+        "approve": "승인",
+        "denied": "거부됨",
+        "deny": "거부",
+        "expired": "요청이 만료되었습니다",
+        "subtitle": "{{agent}}이(가) 작업을 실행하려고 합니다",
+        "title": "권한이 필요합니다"
+      },
       "phase": {
         "analyzing": "분석 중...",
         "queued": "메시지 대기 중 — 에이전트가 오프라인입니다",
@@ -38487,6 +38567,16 @@ export const resources = {
       "onlineOnDevice": "Online · su {{device}}",
       "openExisting": "Apri conversazione esistente",
       "participant": "Partecipante",
+      "permissionToast": {
+        "allowed": "Approvato",
+        "always": "Consenti sempre questo strumento",
+        "approve": "Approva",
+        "denied": "Negato",
+        "deny": "Nega",
+        "expired": "Richiesta scaduta",
+        "subtitle": "{{agent}} vuole eseguire un'azione",
+        "title": "Autorizzazione necessaria"
+      },
       "phase": {
         "analyzing": "Analisi in corso...",
         "queued": "Messaggio in coda — l'agente è offline",
@@ -43014,6 +43104,16 @@ export const resources = {
       "onlineOnDevice": "ऑनलाइन · {{device}} पर",
       "openExisting": "मौजूदा बातचीत खोलें",
       "participant": "प्रतिभागी",
+      "permissionToast": {
+        "allowed": "स्वीकृत",
+        "always": "इस टूल को हमेशा अनुमति दें",
+        "approve": "स्वीकृत करें",
+        "denied": "अस्वीकृत",
+        "deny": "अस्वीकार करें",
+        "expired": "अनुरोध समाप्त हो गया",
+        "subtitle": "{{agent}} एक क्रिया चलाना चाहता है",
+        "title": "अनुमति आवश्यक है"
+      },
       "phase": {
         "analyzing": "विश्लेषण हो रहा है...",
         "queued": "संदेश कतार में है — एजेंट ऑफ़लाइन है",

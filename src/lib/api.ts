@@ -89,6 +89,47 @@ export async function snoozeReminder(
   });
 }
 
+// Permission prompts (#67)
+/** A gated agent action awaiting the owner's approve/deny decision. */
+export interface PermissionRequest {
+  id: string;
+  agentId: string;
+  ownerId: string;
+  conversationId?: string | null;
+  taskId?: string | null;
+  toolName: string;
+  toolInput?: Record<string, unknown>;
+  description?: string | null;
+  status: "pending" | "approved" | "denied" | "expired";
+  decisionScope?: string | null;
+  expiresAt: string;
+  insertedAt: string;
+}
+
+/** Pending permission prompts for the current human — hydrates toasts on (re)connect. */
+export async function listPendingPermissions(): Promise<PermissionRequest[]> {
+  const { requests } = await request<{ requests: PermissionRequest[] }>(
+    `/api/permission-requests`
+  );
+  return requests;
+}
+
+/**
+ * Approve or deny a gated agent action. When `always` is true on approve, the
+ * backend persists a standing grant for this (agent, tool) so future requests
+ * auto-approve without prompting.
+ */
+export async function resolvePermission(
+  requestId: string,
+  decision: "approve" | "deny",
+  always = false
+): Promise<PermissionRequest> {
+  return request(`/api/permission-requests/${requestId}/resolve`, {
+    method: "POST",
+    body: JSON.stringify({ decision, always }),
+  });
+}
+
 // Agents
 /**
  * Ask the backend to bring an offline agent back online.
