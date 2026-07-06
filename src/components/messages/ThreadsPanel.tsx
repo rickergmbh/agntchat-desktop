@@ -56,7 +56,7 @@ function threadSubtitle(conv: Conversation, myId?: string): string {
 export function ThreadsPanel({ parentConversationId, open, onClose }: Props) {
   const { t } = useTranslation("chat");
   const myId = useAuthStore((s) => s.participant?.id);
-  const setActiveConversation = useChatStore((s) => s.setActiveConversation);
+  const openThreadInPane = useChatStore((s) => s.openThread);
   const setView = useNavStore((s) => s.setView);
   const agentConversations = useChatStore((s) => s.agentConversations);
   const unreadCounts = useChatStore((s) => s.unreadCounts);
@@ -120,8 +120,8 @@ export function ThreadsPanel({ parentConversationId, open, onClose }: Props) {
   if (!open) return null;
 
   const openThread = (id: string) => {
-    setActiveConversation(id);
     setView("chat");
+    openThreadInPane(id);
     onClose();
   };
 

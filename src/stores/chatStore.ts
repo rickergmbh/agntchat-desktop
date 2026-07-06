@@ -6,6 +6,7 @@ import { ws } from "../services/websocket";
 import { useAuthStore } from "./authStore";
 import { useStreamingStore } from "./streamingStore";
 import { usePresenceStore } from "./presenceStore";
+import { agentConversationSourceId } from "../lib/thread-selectors";
 
 // Seed the shared online-set from `conversation.members[].participant.online`
 // — but only for *humans*. Human presence is tracked through a live Phoenix
@@ -31,6 +32,42 @@ function seedOnlineFromConversations(convos: Conversation[]) {
 }
 
 const PENDING_PREFIX = "pending-";
+
+/**
+ * Capture the first-unread message id for a conversation at open time so
+ * ChatThread can render a one-shot "New messages" divider. Returns the next
+ * `firstUnreadIds` map (unchanged reference when there's nothing to update).
+ * Shared by setActiveConversation (main pane) and openThread (side pane).
+ */
+function captureFirstUnread(
+  firstUnreadIds: Record<string, string | undefined>,
+  messages: Record<string, Message[]>,
+  unreadCounts: Record<string, number>,
+  id: string | null
+): Record<string, string | undefined> {
+  if (!id) return firstUnreadIds;
+  const existing = messages[id] ?? [];
+  const unread = unreadCounts[id] ?? 0;
+  if (unread > 0 && existing.length >= unread) {
+    return { ...firstUnreadIds, [id]: existing[existing.length - unread]?.id };
+  }
+  // Clear any stale divider from a prior open.
+  if (firstUnreadIds[id] !== undefined) {
+    const copy = { ...firstUnreadIds };
+    delete copy[id];
+    return copy;
+  }
+  return firstUnreadIds;
+}
+
+/** Mark a conversation read over WS, falling back to REST if not joined. */
+function markRead(id: string) {
+  if (!ws.markConversationRead(id)) {
+    api.markConversationReadRest(id).catch((err) =>
+      console.warn("[chat] mark-read REST fallback failed", id, err)
+    );
+  }
+}
 
 function dedup(messages: Message[]): Message[] {
   const seen = new Set<string>();
@@ -107,6 +144,11 @@ interface ChatState {
 
   // Session
   activeConversationId: string | null;
+  /** The agent thread currently open in the right side pane (Slack-style),
+   *  or null when the details pane / nothing is shown there. Its parent is
+   *  always the `activeConversationId` (openThread promotes the parent into
+   *  the main pane), so both are live and joined at once. */
+  activeThreadId: string | null;
   unreadCounts: Record<string, number>;
   /** When set (via setActiveConversation with a target), ChatThread scrolls to
    *  and highlights this message once it's loaded, then clears it. Drives
@@ -175,6 +217,13 @@ interface ChatState {
     id: string | null,
     opts?: { scrollToMessageId?: string }
   ) => void;
+  /** Open an agent thread in the side pane. Promotes the thread's parent into
+   *  the main pane (if not already there) and keeps BOTH conversations joined
+   *  so the parent stays live beside the thread (Slack "two conversations"). */
+  openThread: (threadId: string) => void;
+  /** Close the side-pane thread. Leaves its WS channel unless it's also the
+   *  current main conversation. */
+  closeThread: () => void;
   /** Clear the pending scroll target once ChatThread has handled (or given up
    *  on) it, so re-opening the same conversation doesn't re-trigger a jump. */
   clearScrollTarget: () => void;
@@ -200,6 +249,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
   replyingTo: {},
   firstUnreadIds: {},
   activeConversationId: null,
+  activeThreadId: null,
   unreadCounts: {},
   scrollTargetMessageId: null,
 
@@ -421,6 +471,8 @@ export const useChatStore = create<ChatState>((set, get) => ({
         drafts: remainingDrafts,
         activeConversationId:
           s.activeConversationId === conversationId ? null : s.activeConversationId,
+        activeThreadId:
+          s.activeThreadId === conversationId ? null : s.activeThreadId,
       };
     });
     ws.leaveConversation(conversationId);
@@ -440,6 +492,8 @@ export const useChatStore = create<ChatState>((set, get) => ({
       agentConversations: s.agentConversations.filter((c) => c.id !== conversationId),
       activeConversationId:
         s.activeConversationId === conversationId ? null : s.activeConversationId,
+      activeThreadId:
+        s.activeThreadId === conversationId ? null : s.activeThreadId,
     }));
     ws.leaveConversation(conversationId);
   },
@@ -652,48 +706,77 @@ export const useChatStore = create<ChatState>((set, get) => ({
   },
 
   setActiveConversation: (id, opts) => {
+    // Opening an agent thread never replaces the main pane — it belongs in
+    // the side pane. Redirect legacy callers (sidebar rows, deep-links) so a
+    // thread id always lands as a side-pane thread with its parent in the
+    // main pane, rather than swallowing the main conversation.
+    if (id) {
+      const conv = get().getConversation(id);
+      if (conv && agentConversationSourceId(conv)) {
+        get().openThread(id);
+        if (opts?.scrollToMessageId) set({ scrollTargetMessageId: opts.scrollToMessageId });
+        return;
+      }
+    }
+
     const prev = get().activeConversationId;
     if (prev && prev !== id) {
       ws.leaveConversation(prev);
     }
-    set((s) => {
-      // Capture first unread message id for this conversation at open time,
-      // so we can render a "New messages" divider. If there were no unread
-      // messages we leave the slot undefined.
-      let firstUnreadIds = s.firstUnreadIds;
-      if (id) {
-        const existing = s.messages[id] ?? [];
-        const unread = s.unreadCounts[id] ?? 0;
-        if (unread > 0 && existing.length >= unread) {
-          const firstUnread = existing[existing.length - unread];
-          firstUnreadIds = {
-            ...s.firstUnreadIds,
-            [id]: firstUnread?.id,
-          };
-        } else {
-          // Clear any stale divider from a prior open
-          if (s.firstUnreadIds[id] !== undefined) {
-            const copy = { ...s.firstUnreadIds };
-            delete copy[id];
-            firstUnreadIds = copy;
-          }
-        }
-      }
-      return {
-        activeConversationId: id,
-        unreadCounts: id ? { ...s.unreadCounts, [id]: 0 } : s.unreadCounts,
-        firstUnreadIds,
-        scrollTargetMessageId: opts?.scrollToMessageId ?? null,
-      };
-    });
+    // Switching the main conversation tears down any open side-pane thread —
+    // otherwise its channel leaks and the pane clings to an unrelated parent.
+    const openThreadId = get().activeThreadId;
+    if (openThreadId && openThreadId !== id && openThreadId !== prev) {
+      ws.leaveConversation(openThreadId);
+    }
+
+    set((s) => ({
+      activeConversationId: id,
+      activeThreadId: null,
+      unreadCounts: id ? { ...s.unreadCounts, [id]: 0 } : s.unreadCounts,
+      firstUnreadIds: captureFirstUnread(s.firstUnreadIds, s.messages, s.unreadCounts, id),
+      scrollTargetMessageId: opts?.scrollToMessageId ?? null,
+    }));
     if (id) {
       ws.joinConversation(id);
-      if (!ws.markConversationRead(id)) {
-        api.markConversationReadRest(id).catch((err) =>
-          console.warn("[chat] mark-read REST fallback failed", id, err)
-        );
-      }
+      markRead(id);
     }
+  },
+
+  openThread: (threadId) => {
+    const thread = get().getConversation(threadId);
+    const parentId = thread ? agentConversationSourceId(thread) : undefined;
+
+    // Bring the parent into the main pane if a different conversation is
+    // active (e.g. opened from a sidebar deep-link). Keep it joined.
+    if (parentId && parentId !== get().activeConversationId) {
+      get().setActiveConversation(parentId);
+    }
+
+    // Tear down a previously-open thread that isn't the parent or the target.
+    const prevThread = get().activeThreadId;
+    if (prevThread && prevThread !== threadId && prevThread !== get().activeConversationId) {
+      ws.leaveConversation(prevThread);
+    }
+
+    set((s) => ({
+      activeThreadId: threadId,
+      unreadCounts: { ...s.unreadCounts, [threadId]: 0 },
+      firstUnreadIds: captureFirstUnread(s.firstUnreadIds, s.messages, s.unreadCounts, threadId),
+    }));
+
+    ws.joinConversation(threadId);
+    markRead(threadId);
+  },
+
+  closeThread: () => {
+    const threadId = get().activeThreadId;
+    if (!threadId) return;
+    // Leave the channel unless it doubles as the main conversation.
+    if (threadId !== get().activeConversationId) {
+      ws.leaveConversation(threadId);
+    }
+    set({ activeThreadId: null });
   },
 
   clearScrollTarget: () => {

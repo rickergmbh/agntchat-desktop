@@ -218,6 +218,7 @@ async function refetchOrgScoped() {
     agentConversationsLoaded: false,
     pendingConversation: null,
     activeConversationId: null,
+    activeThreadId: null,
     messages: {},
     messagesLoading: {},
     hasMore: {},

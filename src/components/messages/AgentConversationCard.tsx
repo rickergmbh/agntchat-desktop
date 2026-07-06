@@ -26,7 +26,7 @@ export function AgentConversationCard({
   conversation: Conversation;
 }) {
   const myId = useAuthStore((s) => s.participant?.id);
-  const setActiveConversation = useChatStore((s) => s.setActiveConversation);
+  const openThread = useChatStore((s) => s.openThread);
   const setView = useNavStore((s) => s.setView);
 
   const loadedMessageCount = useChatStore(
@@ -68,8 +68,8 @@ export function AgentConversationCard({
     : null;
 
   const open = () => {
-    setActiveConversation(conversation.id);
     setView("chat");
+    openThread(conversation.id);
   };
 
   return (

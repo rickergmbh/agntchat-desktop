@@ -1,15 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { MessageSquare, MessageCircle, ChevronRight, ChevronLeft, SquarePen, RefreshCw, Power, Loader2 } from "lucide-react";
+import { MessageSquare, MessageCircle, MessagesSquare, ChevronRight, SquarePen, RefreshCw, Power, Loader2, X, CheckCircle2, Radio } from "lucide-react";
 import { wakeAgent } from "../../lib/api";
 import { useResizableWidth } from "../../hooks/useResizableWidth";
 import { ResizeHandle } from "../ResizeHandle";
 import { useChatStore } from "../../stores/chatStore";
 import { useAuthStore } from "../../stores/authStore";
 import { usePresenceStore } from "../../stores/presenceStore";
+import { useStreamingStore } from "../../stores/streamingStore";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "../../lib/utils";
-import { agentConversationSourceId, isAgentThread } from "../../lib/thread-selectors";
+import {
+  isResolvedThread,
+  threadStatus,
+  threadTopic,
+} from "../../lib/thread-selectors";
 import { ConversationList } from "./ConversationList";
 import { ChatThread } from "./ChatThread";
 import { MessageComposer } from "./MessageComposer";
@@ -34,6 +39,7 @@ function readDetailsPref(): boolean {
 export function MessagesView() {
   const { t } = useTranslation("chat");
   const activeId = useChatStore((s) => s.activeConversationId);
+  const activeThreadId = useChatStore((s) => s.activeThreadId);
   const fetchConversations = useChatStore((s) => s.fetchConversations);
   const fetchAgentConversations = useChatStore((s) => s.fetchAgentConversations);
   const fetchUnreadCounts = useChatStore((s) => s.fetchUnreadCounts);
@@ -164,11 +170,11 @@ export function MessagesView() {
       <section
         className={cn(
           "relative z-10 -ml-2 flex-1 flex flex-col bg-card overflow-hidden surface-panel rounded-l-2xl",
-          activeId && showDetails && "pr-5"
+          activeId && (showDetails || activeThreadId) && "pr-5"
         )}
       >
         {activeId ? (
-          <ActiveConversation
+          <ConversationPane
             conversationId={activeId}
             showDetails={showDetails}
             onToggleDetails={() => setShowDetails((v) => !v)}
@@ -178,19 +184,23 @@ export function MessagesView() {
         )}
       </section>
 
-      {activeId && showDetails && (
+      {/* Right pane: a thread (Slack-style side pane) takes precedence over the
+          conversation-details pane. Only one is ever shown. */}
+      {activeId && activeThreadId ? (
+        <ThreadSidePane threadId={activeThreadId} />
+      ) : activeId && showDetails ? (
         <DetailsPanelWrapper
           conversationId={activeId}
           onClose={() => setShowDetails(false)}
         />
-      )}
+      ) : null}
 
       {showNew && <NewConversationDialog onClose={() => setShowNew(false)} />}
     </div>
   );
 }
 
-function ActiveConversation({
+function ConversationPane({
   conversationId,
   showDetails,
   onToggleDetails,
@@ -282,18 +292,6 @@ function ActiveConversation({
     [otherMembers, agentActivity, agentActivityConvs, conversation]
   );
 
-  // When the active conversation is an agent thread, surface a back-to-parent
-  // button so the user can pop out of the thread without scrolling the
-  // sidebar. Mirrors mobile's behavior of always offering a clear exit.
-  const isThread = isAgentThread(conversation);
-  const parentId = conversation ? agentConversationSourceId(conversation) : undefined;
-
-  const setActiveConversation = useChatStore((s) => s.setActiveConversation);
-
-  const handleBackToParent = () => {
-    if (parentId) setActiveConversation(parentId);
-  };
-
   // In a 1:1 conversation with an offline agent, offer a "bring online"
   // affordance (mirrors mobile's "tap to wake"). For an org-host agent the
   // backend turns this into a forced bridge restart, so it recovers an
@@ -334,19 +332,6 @@ function ActiveConversation({
         className="relative h-14 shrink-0 px-4 bg-card flex items-center gap-3 after:absolute after:bottom-0 after:left-4 after:right-4 after:h-px after:bg-border"
         style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
       >
-        {isThread && parentId ? (
-          <button
-            type="button"
-            onClick={handleBackToParent}
-            title={t("backToParent")}
-            aria-label={t("backToParent")}
-            className="shrink-0 -ml-1 flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
-            style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </button>
-        ) : null}
-
         <button
           type="button"
           onClick={onToggleDetails}
@@ -442,15 +427,103 @@ function ActiveConversation({
       </header>
 
       {/* Relative wrapper lets ThreadsBar float absolutely over the
-          message list without consuming a row. Only renders the bar for
-          parent conversations — threads themselves get the back-to-parent
-          button in the header instead. */}
+          message list without consuming a row. The main pane always shows
+          parent conversations, so the bar is always eligible here. */}
       <div className="relative flex flex-1 min-h-0 flex-col">
-        {!isThread ? <ThreadsBar conversationId={conversationId} /> : null}
-        <FilesBar conversationId={conversationId} isThread={isThread} />
+        <ThreadsBar conversationId={conversationId} />
+        <FilesBar conversationId={conversationId} isThread={false} />
         <ChatThread conversationId={conversationId} />
       </div>
       <MessageComposer conversationId={conversationId} />
+    </>
+  );
+}
+
+/**
+ * Slack-style thread pane. Replaces the conversation-details pane on the
+ * right while a thread is open. Renders the thread as a full, live
+ * conversation (its own ChatThread + MessageComposer) beside the parent in
+ * the main pane — both channels stay joined, so you can converse in both.
+ */
+function ThreadSidePane({ threadId }: { threadId: string }) {
+  const { t } = useTranslation("chat");
+  const closeThread = useChatStore((s) => s.closeThread);
+  const refreshConversation = useChatStore((s) => s.refreshConversation);
+  const conversation = useChatStore(
+    (s) =>
+      s.conversations.find((c) => c.id === threadId) ??
+      s.agentConversations.find((c) => c.id === threadId)
+  );
+  const stream = useStreamingStore((s) => s.streams[threadId]);
+
+  // Pull full member/participant data on open (list payloads can be thin).
+  useEffect(() => {
+    refreshConversation(threadId);
+  }, [threadId, refreshConversation]);
+
+  const resolved = conversation ? isResolvedThread(conversation) : false;
+  const isLive = Boolean(stream);
+  const topic = conversation ? threadTopic(conversation) : null;
+  const title =
+    topic || conversation?.title || t("threads.agentThread");
+  const statusLabel = resolved
+    ? conversation && threadStatus(conversation) === "abandoned"
+      ? t("threads.abandoned")
+      : t("threads.resolvedLabel")
+    : isLive
+    ? t("threads.live")
+    : null;
+
+  return (
+    <>
+      <aside
+        // Wider than the details pane (w-80) — a thread is a full conversation
+        // with its own composer, so it needs room to breathe beside the parent.
+        className="surface-panel-strong relative z-20 -ml-3 flex h-full w-[26rem] shrink-0 flex-col overflow-hidden rounded-l-lg bg-card"
+      >
+        <header
+          className="relative h-14 shrink-0 px-4 bg-card flex items-center gap-3 after:absolute after:bottom-0 after:left-4 after:right-4 after:h-px after:bg-border"
+          style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
+        >
+          <span
+            className={cn(
+              "flex h-8 w-8 shrink-0 items-center justify-center rounded-md",
+              resolved ? "bg-muted-foreground/15" : "bg-primary/15"
+            )}
+          >
+            {resolved ? (
+              <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
+            ) : isLive ? (
+              <Radio className="h-4 w-4 text-primary" />
+            ) : (
+              <MessagesSquare className="h-4 w-4 text-primary" />
+            )}
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              {t("threads.threadLabel")}
+              {statusLabel ? ` · ${statusLabel}` : ""}
+            </p>
+            <p className="truncate text-sm font-semibold text-foreground">
+              {title}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={closeThread}
+            title={t("threads.closePane")}
+            aria-label={t("threads.closePane")}
+            className="shrink-0 flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </header>
+
+        <div className="relative flex flex-1 min-h-0 flex-col">
+          <ChatThread conversationId={threadId} />
+        </div>
+        <MessageComposer conversationId={threadId} />
+      </aside>
     </>
   );
 }
