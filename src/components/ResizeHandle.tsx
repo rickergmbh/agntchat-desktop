@@ -12,18 +12,28 @@ import { cn } from "../lib/utils";
  */
 export function ResizeHandle({
   left,
+  right,
   resizing,
   onResizeStart,
   onResizeReset,
   label = "Resize list",
 }: {
-  /** X position of the seam (the resizable pane's current width, in px). */
-  left: number;
+  /** X position of the seam from the left (a left-docked pane's width, px). */
+  left?: number;
+  /** Distance from the container's right edge (a right-docked pane's width,
+   *  px). Use instead of `left` for a right-docked pane so the handle sits on
+   *  its inner (left) edge. */
+  right?: number;
   resizing: boolean;
   onResizeStart: (e: React.PointerEvent) => void;
   onResizeReset: () => void;
   label?: string;
 }) {
+  const isRight = right != null;
+  const style = {
+    WebkitAppRegion: "no-drag",
+    ...(isRight ? { right } : { left }),
+  } as unknown as React.CSSProperties;
   return (
     <div
       role="separator"
@@ -31,8 +41,11 @@ export function ResizeHandle({
       aria-label={label}
       onPointerDown={onResizeStart}
       onDoubleClick={onResizeReset}
-      className="group/resize absolute top-0 bottom-0 z-30 w-3 -translate-x-1/2 cursor-col-resize"
-      style={{ left, WebkitAppRegion: "no-drag" } as React.CSSProperties}
+      className={cn(
+        "group/resize absolute top-0 bottom-0 z-30 w-3 cursor-col-resize",
+        isRight ? "translate-x-1/2" : "-translate-x-1/2"
+      )}
+      style={style}
     >
       {/* Grip pill — always visible; brightens on hover, turns primary while
           dragging. */}

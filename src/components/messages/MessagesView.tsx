@@ -456,6 +456,22 @@ function ThreadSidePane({ threadId }: { threadId: string }) {
   );
   const stream = useStreamingStore((s) => s.streams[threadId]);
 
+  // Drag-to-resize from the pane's left (inner) edge. Right-docked, so the
+  // hook measures width from the right edge and dragging outward widens it.
+  const {
+    width,
+    ref: paneRef,
+    resizing,
+    onResizeStart,
+    onResizeReset,
+  } = useResizableWidth({
+    storageKey: "agentchat:threadPaneWidth",
+    defaultWidth: 416, // matches the previous fixed w-[26rem]
+    min: 320,
+    max: 640,
+    side: "right",
+  });
+
   // Pull full member/participant data on open (list payloads can be thin).
   useEffect(() => {
     refreshConversation(threadId);
@@ -476,10 +492,20 @@ function ThreadSidePane({ threadId }: { threadId: string }) {
 
   return (
     <>
+      <ResizeHandle
+        right={width}
+        resizing={resizing}
+        onResizeStart={onResizeStart}
+        onResizeReset={onResizeReset}
+        label={t("threads.resizePane")}
+      />
       <aside
+        ref={paneRef}
         // Wider than the details pane (w-80) — a thread is a full conversation
         // with its own composer, so it needs room to breathe beside the parent.
-        className="surface-panel-strong relative z-20 -ml-3 flex h-full w-[26rem] shrink-0 flex-col overflow-hidden rounded-l-lg bg-card"
+        // Width is drag-resizable (useResizableWidth, right-docked).
+        className="surface-panel-strong relative z-20 -ml-3 flex h-full shrink-0 flex-col overflow-hidden rounded-l-lg bg-card"
+        style={{ width } as React.CSSProperties}
       >
         <header
           className="relative h-14 shrink-0 px-4 bg-card flex items-center gap-3 after:absolute after:bottom-0 after:left-4 after:right-4 after:h-px after:bg-border"

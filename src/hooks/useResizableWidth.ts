@@ -27,11 +27,17 @@ export function useResizableWidth({
   defaultWidth,
   min,
   max,
+  side = "left",
 }: {
   storageKey: string;
   defaultWidth: number;
   min: number;
   max: number;
+  /** Which edge the pane is docked to. `"left"` (default) grows rightward
+   *  from the pane's left edge (list panes); `"right"` grows leftward from the
+   *  pane's right edge (right-docked panes like the thread side pane), so
+   *  dragging the left handle outward widens it. */
+  side?: "left" | "right";
 }): ResizableWidth {
   const clamp = useCallback(
     (px: number) => Math.max(min, Math.min(max, px)),
@@ -59,10 +65,14 @@ export function useResizableWidth({
   const onResizeStart = useCallback(
     (e: React.PointerEvent) => {
       e.preventDefault();
-      const left = ref.current?.getBoundingClientRect().left ?? 0;
+      const rect = ref.current?.getBoundingClientRect();
+      const left = rect?.left ?? 0;
+      const right = rect?.right ?? 0;
 
       const onMove = (ev: PointerEvent) => {
-        setWidth(clamp(ev.clientX - left));
+        // Left-docked: width = pointer distance from the left edge. Right-docked:
+        // width = distance from the right edge (pointer moving left widens it).
+        setWidth(clamp(side === "right" ? right - ev.clientX : ev.clientX - left));
       };
       const onUp = () => {
         setResizing(false);
@@ -78,7 +88,7 @@ export function useResizableWidth({
       window.addEventListener("pointermove", onMove);
       window.addEventListener("pointerup", onUp);
     },
-    [clamp]
+    [clamp, side]
   );
 
   const onResizeReset = useCallback(() => {
