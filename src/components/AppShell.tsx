@@ -22,6 +22,7 @@ import { useAgentStore } from "../stores/agentStore";
 import { useTaskStore, countActiveTasks } from "../stores/taskStore";
 import { useNavStore } from "../stores/navStore";
 import { usePresenceStore } from "../stores/presenceStore";
+import { isAgentOnline } from "../lib/agentOnline";
 import { useThemeStore } from "../stores/themeStore";
 import { useFriendStore } from "../stores/friendStore";
 import { useActiveWorkspace } from "../stores/workspaceStore";
@@ -201,14 +202,12 @@ function LeftRail({
   const presenceOnline = usePresenceStore((s) => s.online);
   const agentStats = useMemo(() => {
     const all = Object.values(agentsMap);
-    // "Online" = live presence (the same signal web/mobile count), so the
-    // rail's N/M matches every other client — an agent whose bridge runs on
-    // another device or was started outside this app still counts. The
-    // local processStatus OR only covers the seconds between a local start
-    // and the executor's first heartbeat.
-    const online = all.filter(
-      (m) => presenceOnline.has(m.agent.id) || m.processStatus === "running"
-    ).length;
+    // "Online" via the canonical `isAgentOnline` helper — the SAME rule the
+    // Agents-tab header count and per-row dots use, so the rail's N/M can
+    // never drift from the Agents tab (issue #64). Live WS presence (the
+    // signal every client counts) OR a local subprocess in its pre-heartbeat
+    // window; org-host agents are presence-only.
+    const online = all.filter((m) => isAgentOnline(m, presenceOnline)).length;
     return { online, total: all.length };
   }, [agentsMap, presenceOnline]);
 

@@ -26,6 +26,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { usePresenceStore } from "../stores/presenceStore";
+import { isAgentOnline } from "../lib/agentOnline";
 import { useModelCatalog } from "../stores/modelCatalogStore";
 import { restartHostedAgents } from "../lib/api";
 import { runningElsewhereOn, useLocalDeviceName } from "../hooks/useRunningElsewhere";
@@ -647,19 +648,16 @@ export function Dashboard() {
     return () => window.removeEventListener("keydown", onKey);
   }, [drawerOpen, selectAgent, selectedListingId]);
 
-  // For local-runtime agents "running" tracks the local subprocess.
-  // For org-host runtime there is no local subprocess — the bridge
-  // lives on a registered VM and reports presence via the WS push
-  // (presenceStore, the single runtime presence truth). Without the
-  // runtime branch every org-hosted agent silently shows as "stopped"
-  // and gets bulk-started, which would no-op locally but be confusing UX.
+  // Online count via the canonical `isAgentOnline` helper — the SAME rule the
+  // rail counter and per-row dots use, so the header count can't drift from
+  // the rest of the UI (issue #64). Presence (WS) OR, for local agents only, a
+  // local subprocess in its pre-heartbeat window; org-host agents are
+  // presence-only (their bridge runs on a remote VM, no local subprocess).
   const presenceOnline = usePresenceStore((s) => s.online);
-  const isRunningForUI = (m: typeof agents[string]) =>
-    m.agent.runtime === "org_host"
-      ? presenceOnline.has(m.agent.id)
-      : m.processStatus === "running";
 
-  const runningCount = Object.values(agents).filter(isRunningForUI).length;
+  const onlineCount = Object.values(agents).filter((m) =>
+    isAgentOnline(m, presenceOnline)
+  ).length;
   const totalCount = Object.keys(agents).length;
   const agentDevices = usePresenceStore((s) => s.agentDevices);
   const myDevice = useLocalDeviceName();
@@ -676,12 +674,13 @@ export function Dashboard() {
       m.agent.runtime !== "org_host" &&
       runningElsewhereOn(m, presenceOnline.has(m.agent.id), agentDevices[m.agent.id], myDevice) === null
   );
-  // "Stop All" mirrors Start All — only acts on local subprocesses.
-  // stopAgent on an org-host agent is a no-op (the Tauri stop command
-  // returns "not found" and we already skip markAgentOffline), but
-  // including them here lies about the bulk action's scope.
+  // "Stop All" mirrors Start All — only acts on LOCAL subprocesses this
+  // desktop can actually stop. This is deliberately NOT `isAgentOnline`: an
+  // agent merely online via WS presence (running on another device / org
+  // host) has no local subprocess here, so stopAgent would be a no-op. Gate
+  // the button on the true local-subprocess set, not the display-online count.
   const runningAgents = Object.values(agents).filter(
-    (m) => isRunningForUI(m) && m.agent.runtime !== "org_host"
+    (m) => m.processStatus === "running" && m.agent.runtime !== "org_host"
   );
 
   const handleStartAll = async () => {
@@ -720,7 +719,7 @@ export function Dashboard() {
   // back via the server, which restarts each bridge on its host. Common after a
   // host restart leaves a whole fleet offline.
   const offlineHosted = Object.values(agents).filter(
-    (m) => m.agent.runtime === "org_host" && !isRunningForUI(m)
+    (m) => m.agent.runtime === "org_host" && !isAgentOnline(m, presenceOnline)
   );
 
   const handleBringHostedOnline = async () => {
@@ -806,9 +805,9 @@ export function Dashboard() {
             >
               {t("directory")}
             </button>
-            {activeTab === "agents" && runningCount > 0 && (
+            {activeTab === "agents" && onlineCount > 0 && (
               <span className="ml-2 hidden @min-[560px]:inline text-[11px] text-success whitespace-nowrap">
-                {t("runningCount", { count: runningCount })}
+                {t("runningCount", { count: onlineCount })}
               </span>
             )}
           </div>
@@ -835,7 +834,7 @@ export function Dashboard() {
                 </div>
                 {/* Action labels collapse to icon-only when the header is tight;
                     the `title` tooltips carry the meaning. */}
-                {runningCount < totalCount && stoppedWithKeys.length > 0 && (
+                {onlineCount < totalCount && stoppedWithKeys.length > 0 && (
                   <Button
                     size="sm"
                     variant="outline"
@@ -869,13 +868,13 @@ export function Dashboard() {
                     </span>
                   </Button>
                 )}
-                {runningCount > 0 && (
+                {runningAgents.length > 0 && (
                   <Button
                     size="sm"
                     variant="outline"
                     onClick={handleStopAll}
                     disabled={stoppingAll}
-                    title={t("bulk.stopRunningTitle", { count: runningCount })}
+                    title={t("bulk.stopRunningTitle", { count: runningAgents.length })}
                   >
                     <Square className="w-3.5 h-3.5" />
                     <span className="hidden @min-[820px]:inline">
