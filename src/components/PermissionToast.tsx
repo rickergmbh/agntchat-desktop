@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ShieldQuestion } from "lucide-react";
 
 import { ws } from "../services/websocket";
@@ -21,6 +22,7 @@ import {
  * AppShell.
  */
 export function PermissionToast() {
+  const { t } = useTranslation("chat");
   const [requests, setRequests] = useState<PermissionRequest[]>([]);
   // Ids we've locally acted on, so an in-flight resolve doesn't flash back.
   const [resolving, setResolving] = useState<Set<string>>(new Set());
@@ -85,9 +87,10 @@ export function PermissionToast() {
               <ShieldQuestion size={16} />
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-medium">Permission needed</p>
+              <p className="text-sm font-medium">{t("permissionToast.title")}</p>
               <p className="mt-1 break-words text-xs text-muted-foreground">
-                {req.description || `Use tool: ${req.toolName}`}
+                {req.description ||
+                  t("permissionToast.subtitle", { agent: req.toolName })}
               </p>
               <p className="mt-1 font-mono text-[10px] uppercase tracking-wide text-muted-foreground/70">
                 {req.toolName}
@@ -100,21 +103,21 @@ export function PermissionToast() {
               disabled={resolving.has(req.id)}
               className="rounded-md px-3 py-1 text-xs font-medium text-muted-foreground hover:bg-accent disabled:opacity-50"
             >
-              Deny
+              {t("permissionToast.deny")}
             </button>
             <button
               onClick={() => decide(req.id, "approve", true)}
               disabled={resolving.has(req.id)}
               className="rounded-md px-3 py-1 text-xs font-medium text-muted-foreground hover:bg-accent disabled:opacity-50"
             >
-              Always allow
+              {t("permissionToast.always")}
             </button>
             <button
               onClick={() => decide(req.id, "approve")}
               disabled={resolving.has(req.id)}
               className="rounded-md bg-primary px-3 py-1 text-xs font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
             >
-              Approve
+              {t("permissionToast.approve")}
             </button>
           </div>
         </div>
