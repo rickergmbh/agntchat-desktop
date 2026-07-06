@@ -1874,9 +1874,17 @@ export interface UserCredential {
   // "header" (custom header named by authHeader) | "none".
   authMode?: CustomAuthMode;
   authHeader?: string;
+  // Per-agent scoping (issue #66). "family" = every owned agent (default);
+  // "agents" = only grantedAgentIds (plus their sub-agents). isDefault marks
+  // the primary row when a provider has multiple keys.
+  grantScope?: CredentialGrantScope;
+  grantedAgentIds?: string[];
+  isDefault?: boolean;
   insertedAt: string;
   updatedAt: string;
 }
+
+export type CredentialGrantScope = "family" | "agents";
 
 export type CustomAuthMode = "bearer" | "header" | "none";
 
@@ -1910,6 +1918,11 @@ export async function storeProviderToken(
     label?: string;
     authMode?: CustomAuthMode;
     authHeader?: string;
+    grantScope?: CredentialGrantScope;
+    grantedAgentIds?: string[];
+    // Store a SECOND key for the same service (non-default row) bound to
+    // different agents, rather than upserting the default.
+    additional?: boolean;
   }
 ): Promise<{ credential: UserCredential }> {
   return request(`/api/integrations/${provider}/token`, {
@@ -1922,6 +1935,9 @@ export async function storeProviderToken(
       label: extras?.label,
       authMode: extras?.authMode,
       authHeader: extras?.authHeader,
+      grantScope: extras?.grantScope,
+      grantedAgentIds: extras?.grantedAgentIds,
+      additional: extras?.additional,
     }),
   });
 }
@@ -1937,6 +1953,8 @@ export async function updateProviderConnection(
     fields?: CredentialFieldInput[];
     authMode?: CustomAuthMode;
     authHeader?: string;
+    grantScope?: CredentialGrantScope;
+    grantedAgentIds?: string[];
   }
 ): Promise<{ credential: UserCredential }> {
   return request(`/api/integrations/${provider}`, {
@@ -1947,12 +1965,29 @@ export async function updateProviderConnection(
       fields: changes.fields,
       authMode: changes.authMode,
       authHeader: changes.authHeader,
+      grantScope: changes.grantScope,
+      grantedAgentIds: changes.grantedAgentIds,
     }),
   });
 }
 
-export async function disconnectProvider(provider: string): Promise<void> {
-  await request(`/api/integrations/${provider}`, { method: "DELETE" });
+// Set per-agent scope on a connection (issue #66). `keyId` targets a specific
+// row when the provider has multiple keys.
+export async function setConnectionGrant(
+  provider: string,
+  grantScope: CredentialGrantScope,
+  grantedAgentIds: string[],
+  keyId?: string
+): Promise<{ credential: UserCredential }> {
+  return request(`/api/integrations/${provider}`, {
+    method: "PATCH",
+    body: JSON.stringify({ grantScope, grantedAgentIds, keyId }),
+  });
+}
+
+export async function disconnectProvider(provider: string, keyId?: string): Promise<void> {
+  const query = keyId ? `?keyId=${encodeURIComponent(keyId)}` : "";
+  await request(`/api/integrations/${provider}${query}`, { method: "DELETE" });
 }
 
 export async function getProviderStatus(provider: string): Promise<{

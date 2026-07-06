@@ -3715,6 +3715,17 @@ export const resources = {
         "label": "Design-system debug"
       },
       "integrations": {
+        "access": {
+          "allAgents": "All agents",
+          "button": "Access",
+          "editTitle": "{{name}} access",
+          "help": "Choose which agents can use this connection.",
+          "noAgents": "You don't have any agents yet.",
+          "selectAgents": "Select agents…",
+          "someAgents_one": "{{count}} agent",
+          "someAgents_other": "{{count}} agents",
+          "title": "Agent access"
+        },
         "addValue": "Add value",
         "additionalValues": "Additional values",
         "additionalValuesHelp": "Add any extra keys or IDs this endpoint needs. Mark secrets to store them encrypted.",
@@ -8223,6 +8234,17 @@ export const resources = {
         "label": "Depuración del sistema de diseño"
       },
       "integrations": {
+        "access": {
+          "allAgents": "Todos los agentes",
+          "button": "Acceso",
+          "editTitle": "Acceso de {{name}}",
+          "help": "Elige qué agentes pueden usar esta conexión.",
+          "noAgents": "Aún no tienes agentes.",
+          "selectAgents": "Seleccionar agentes…",
+          "someAgents_one": "{{count}} agente",
+          "someAgents_other": "{{count}} agentes",
+          "title": "Acceso de agentes"
+        },
         "addValue": "Añadir valor",
         "additionalValues": "Valores adicionales",
         "additionalValuesHelp": "Añade cualquier clave o ID adicional que necesite este endpoint. Marca los secretos para guardarlos cifrados.",
@@ -12731,6 +12753,17 @@ export const resources = {
         "label": "Design-System-Debug"
       },
       "integrations": {
+        "access": {
+          "allAgents": "Alle Agenten",
+          "button": "Zugriff",
+          "editTitle": "Zugriff auf {{name}}",
+          "help": "Wählen Sie, welche Agenten diese Verbindung nutzen dürfen.",
+          "noAgents": "Sie haben noch keine Agenten.",
+          "selectAgents": "Agenten auswählen …",
+          "someAgents_one": "{{count}} Agent",
+          "someAgents_other": "{{count}} Agenten",
+          "title": "Agenten-Zugriff"
+        },
         "addValue": "Wert hinzufügen",
         "additionalValues": "Zusätzliche Werte",
         "additionalValuesHelp": "Fügen Sie zusätzliche Schlüssel oder IDs hinzu, die dieser Endpunkt benötigt. Markieren Sie Geheimnisse, um sie verschlüsselt zu speichern.",
@@ -17239,6 +17272,17 @@ export const resources = {
         "label": "Débogage du système de design"
       },
       "integrations": {
+        "access": {
+          "allAgents": "Tous les agents",
+          "button": "Accès",
+          "editTitle": "Accès de {{name}}",
+          "help": "Choisissez quels agents peuvent utiliser cette connexion.",
+          "noAgents": "Vous n'avez pas encore d'agents.",
+          "selectAgents": "Sélectionner des agents…",
+          "someAgents_one": "{{count}} agent",
+          "someAgents_other": "{{count}} agents",
+          "title": "Accès des agents"
+        },
         "addValue": "Ajouter une valeur",
         "additionalValues": "Valeurs supplémentaires",
         "additionalValuesHelp": "Ajoutez toute clé ou ID supplémentaire requis par ce point de terminaison. Marquez les secrets pour les stocker chiffrés.",
@@ -21747,6 +21791,17 @@ export const resources = {
         "label": "Depuração do design system"
       },
       "integrations": {
+        "access": {
+          "allAgents": "Todos os agentes",
+          "button": "Acesso",
+          "editTitle": "Acesso de {{name}}",
+          "help": "Escolha quais agentes podem usar esta conexão.",
+          "noAgents": "Você ainda não tem agentes.",
+          "selectAgents": "Selecionar agentes…",
+          "someAgents_one": "{{count}} agente",
+          "someAgents_other": "{{count}} agentes",
+          "title": "Acesso de agentes"
+        },
         "addValue": "Adicionar valor",
         "additionalValues": "Valores adicionais",
         "additionalValuesHelp": "Adicione quaisquer chaves ou IDs extras que esse endpoint precise. Marque os segredos para armazená-los criptografados.",
@@ -26255,6 +26310,17 @@ export const resources = {
         "label": "デザインシステムデバッグ"
       },
       "integrations": {
+        "access": {
+          "allAgents": "すべてのエージェント",
+          "button": "アクセス",
+          "editTitle": "{{name}} のアクセス",
+          "help": "この接続を使用できるエージェントを選択します。",
+          "noAgents": "まだエージェントがありません。",
+          "selectAgents": "エージェントを選択…",
+          "someAgents_one": "{{count}} エージェント",
+          "someAgents_other": "{{count}} エージェント",
+          "title": "エージェントのアクセス"
+        },
         "addValue": "値を追加",
         "additionalValues": "追加の値",
         "additionalValuesHelp": "このエンドポイントに必要な追加のキーやIDを入力してください。シークレットとしてマークすると暗号化して保存されます。",
@@ -30763,6 +30829,17 @@ export const resources = {
         "label": "设计系统调试"
       },
       "integrations": {
+        "access": {
+          "allAgents": "所有代理",
+          "button": "访问",
+          "editTitle": "{{name}} 访问",
+          "help": "选择哪些代理可以使用此连接。",
+          "noAgents": "您还没有任何代理。",
+          "selectAgents": "选择代理…",
+          "someAgents_one": "{{count}} 个代理",
+          "someAgents_other": "{{count}} 个代理",
+          "title": "代理访问"
+        },
         "addValue": "添加值",
         "additionalValues": "附加值",
         "additionalValuesHelp": "添加此端点所需的任何额外密钥或 ID。将其标记为密文以加密存储。",
@@ -35271,6 +35348,17 @@ export const resources = {
         "label": "디자인 시스템 디버그"
       },
       "integrations": {
+        "access": {
+          "allAgents": "모든 에이전트",
+          "button": "액세스",
+          "editTitle": "{{name}} 액세스",
+          "help": "이 연결을 사용할 수 있는 에이전트를 선택하세요.",
+          "noAgents": "아직 에이전트가 없습니다.",
+          "selectAgents": "에이전트 선택…",
+          "someAgents_one": "에이전트 {{count}}개",
+          "someAgents_other": "에이전트 {{count}}개",
+          "title": "에이전트 액세스"
+        },
         "addValue": "값 추가",
         "additionalValues": "추가 값",
         "additionalValuesHelp": "이 엔드포인트에 필요한 추가 키나 ID를 입력하세요. 비밀 값으로 표시하면 암호화되어 저장됩니다.",
@@ -39779,6 +39867,17 @@ export const resources = {
         "label": "Debug design system"
       },
       "integrations": {
+        "access": {
+          "allAgents": "Tutti gli agenti",
+          "button": "Accesso",
+          "editTitle": "Accesso di {{name}}",
+          "help": "Scegli quali agenti possono usare questa connessione.",
+          "noAgents": "Non hai ancora agenti.",
+          "selectAgents": "Seleziona agenti…",
+          "someAgents_one": "{{count}} agente",
+          "someAgents_other": "{{count}} agenti",
+          "title": "Accesso agenti"
+        },
         "addValue": "Aggiungi valore",
         "additionalValues": "Valori aggiuntivi",
         "additionalValuesHelp": "Aggiungi eventuali chiavi o ID extra richiesti da questo endpoint. Contrassegna i segreti per salvarli crittografati.",
@@ -44287,6 +44386,17 @@ export const resources = {
         "label": "डिज़ाइन-सिस्टम डीबग"
       },
       "integrations": {
+        "access": {
+          "allAgents": "सभी एजेंट",
+          "button": "एक्सेस",
+          "editTitle": "{{name}} एक्सेस",
+          "help": "चुनें कि कौन से एजेंट इस कनेक्शन का उपयोग कर सकते हैं।",
+          "noAgents": "आपके पास अभी तक कोई एजेंट नहीं है।",
+          "selectAgents": "एजेंट चुनें…",
+          "someAgents_one": "{{count}} एजेंट",
+          "someAgents_other": "{{count}} एजेंट",
+          "title": "एजेंट एक्सेस"
+        },
         "addValue": "मान जोड़ें",
         "additionalValues": "अतिरिक्त मान",
         "additionalValuesHelp": "इस एंडपॉइंट को जिन अतिरिक्त कुंजियों या ID की ज़रूरत हो, वे जोड़ें। उन्हें एन्क्रिप्टेड रूप में सहेजने के लिए गुप्त के रूप में चिह्नित करें।",

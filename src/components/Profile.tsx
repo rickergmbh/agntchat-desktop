@@ -223,6 +223,22 @@ export function Profile({ onClose }: { onClose: () => void }) {
   );
   const [disconnecting, setDisconnecting] = useState(false);
 
+  // ---- Per-agent access (issue #66) ----
+  const [ownedAgents, setOwnedAgents] = useState<api.Agent[]>([]);
+  // Connect-time scope, carried into the token dialog.
+  const [connectScope, setConnectScope] =
+    useState<api.CredentialGrantScope>("family");
+  const [connectAgentIds, setConnectAgentIds] = useState<string[]>([]);
+  // Standalone "Access" editor for an already-connected provider.
+  const [accessDialog, setAccessDialog] = useState<{
+    provider: api.ProviderInfo;
+    credential: api.UserCredential;
+  } | null>(null);
+  const [accessScope, setAccessScope] =
+    useState<api.CredentialGrantScope>("family");
+  const [accessAgentIds, setAccessAgentIds] = useState<string[]>([]);
+  const [savingAccess, setSavingAccess] = useState(false);
+
   // ---- Custom API state (backend `custom` provider) ----
   const [customApiDialog, setCustomApiDialog] = useState(false);
   const [customName, setCustomName] = useState("");
@@ -244,12 +260,14 @@ export function Profile({ onClose }: { onClose: () => void }) {
   // ---- Fetch providers & credentials on mount ----
   const fetchIntegrations = useCallback(async () => {
     try {
-      const [provRes, credRes] = await Promise.all([
+      const [provRes, credRes, agentRes] = await Promise.all([
         api.listProviders(),
         api.listCredentials(),
+        api.listAgents().catch(() => ({ agents: [] as api.Agent[] })),
       ]);
       setProviders(provRes.providers);
       setCredentials(credRes.credentials);
+      setOwnedAgents(agentRes.agents ?? []);
       setIntegrationError(null);
     } catch (e) {
       setIntegrationError(
@@ -399,6 +417,10 @@ export function Profile({ onClose }: { onClose: () => void }) {
     setTokenDialogProvider(provider);
     setTokenValue("");
     setTokenError(null);
+    // Seed the access selector from any existing grant, else family-wide.
+    const existing = credentials.find((c) => c.provider === provider.name);
+    setConnectScope(existing?.grantScope === "agents" ? "agents" : "family");
+    setConnectAgentIds(existing?.grantedAgentIds ?? []);
   };
 
   const handleSubmitToken = async () => {
@@ -408,7 +430,11 @@ export function Profile({ onClose }: { onClose: () => void }) {
     try {
       const { credential } = await api.storeProviderToken(
         tokenDialogProvider.name,
-        tokenValue.trim()
+        tokenValue.trim(),
+        {
+          grantScope: connectScope,
+          grantedAgentIds: connectScope === "agents" ? connectAgentIds : [],
+        }
       );
       setCredentials((prev) => [
         ...prev.filter((c) => c.provider !== tokenDialogProvider.name),
@@ -422,6 +448,38 @@ export function Profile({ onClose }: { onClose: () => void }) {
       );
     } finally {
       setSavingToken(false);
+    }
+  };
+
+  const openAccessDialog = (
+    provider: api.ProviderInfo,
+    credential: api.UserCredential
+  ) => {
+    setAccessScope(credential.grantScope === "agents" ? "agents" : "family");
+    setAccessAgentIds(credential.grantedAgentIds ?? []);
+    setAccessDialog({ provider, credential });
+  };
+
+  const handleSaveAccess = async () => {
+    if (!accessDialog) return;
+    setSavingAccess(true);
+    try {
+      const { credential } = await api.setConnectionGrant(
+        accessDialog.provider.name,
+        accessScope,
+        accessScope === "agents" ? accessAgentIds : [],
+        accessDialog.credential.id
+      );
+      setCredentials((prev) =>
+        prev.map((c) => (c.id === credential.id ? credential : c))
+      );
+      setAccessDialog(null);
+    } catch (e) {
+      setIntegrationError(
+        e instanceof Error ? e.message : t("connections.errors.saveFailed")
+      );
+    } finally {
+      setSavingAccess(false);
     }
   };
 
@@ -890,8 +948,34 @@ export function Profile({ onClose }: { onClose: () => void }) {
                             })}`
                           : ""}
                       </p>
+                      <p className="flex items-center gap-1 text-[11px] text-muted-foreground truncate mt-0.5">
+                        <Users className="w-3 h-3 flex-shrink-0" />
+                        {customCredential.grantScope === "agents"
+                          ? t("integrations.access.someAgents", {
+                              count: customCredential.grantedAgentIds?.length ?? 0,
+                            })
+                          : t("integrations.access.allAgents")}
+                      </p>
                     </div>
                     <div className="flex items-center gap-1 flex-shrink-0">
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        className="text-muted-foreground hover:text-foreground"
+                        onClick={() =>
+                          openAccessDialog(
+                            providers.find((p) => p.name === "custom") ?? {
+                              name: "custom",
+                              type: "api_token",
+                              displayName: t("customApis.title"),
+                            },
+                            customCredential
+                          )
+                        }
+                        title={t("integrations.access.button")}
+                      >
+                        <Users className="w-3.5 h-3.5" />
+                      </Button>
                       <Button
                         variant="ghost"
                         size="icon-sm"
@@ -958,6 +1042,9 @@ export function Profile({ onClose }: { onClose: () => void }) {
                         isConnecting={isConnecting}
                         onConnectOAuth={() => handleConnectOAuth(provider.name)}
                         onConnectToken={() => handleConnectToken(provider)}
+                        onEditAccess={() =>
+                          credential && openAccessDialog(provider, credential)
+                        }
                         onDisconnect={() =>
                           setDisconnectProvider(provider.name)
                         }
@@ -1026,6 +1113,27 @@ export function Profile({ onClose }: { onClose: () => void }) {
                 <p className="text-xs text-destructive">{tokenError}</p>
               )}
             </div>
+
+            {/* Per-agent access (issue #66). Defaults to All agents. */}
+            <div className="space-y-1.5">
+              <Label className="text-xs">{t("integrations.access.title")}</Label>
+              <p className="text-[11px] text-muted-foreground">
+                {t("integrations.access.help")}
+              </p>
+              <ScopeSelector
+                scope={connectScope}
+                onScope={setConnectScope}
+                agentIds={connectAgentIds}
+                onToggleAgent={(id) =>
+                  setConnectAgentIds((prev) =>
+                    prev.includes(id)
+                      ? prev.filter((x) => x !== id)
+                      : [...prev, id]
+                  )
+                }
+                agents={ownedAgents}
+              />
+            </div>
           </div>
           <DialogFooter>
             <Button
@@ -1051,6 +1159,63 @@ export function Profile({ onClose }: { onClose: () => void }) {
                 </>
               ) : (
                 t("common:connect")
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ================================================================= */}
+      {/* AGENT ACCESS DIALOG (issue #66)                                   */}
+      {/* ================================================================= */}
+      <Dialog
+        open={!!accessDialog}
+        onOpenChange={(open) => {
+          if (!open) setAccessDialog(null);
+        }}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {t("integrations.access.editTitle", {
+                name: accessDialog?.provider.displayName ?? "",
+              })}
+            </DialogTitle>
+            <DialogDescription>
+              {t("integrations.access.help")}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-2">
+            <ScopeSelector
+              scope={accessScope}
+              onScope={setAccessScope}
+              agentIds={accessAgentIds}
+              onToggleAgent={(id) =>
+                setAccessAgentIds((prev) =>
+                  prev.includes(id)
+                    ? prev.filter((x) => x !== id)
+                    : [...prev, id]
+                )
+              }
+              agents={ownedAgents}
+            />
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setAccessDialog(null)}
+            >
+              {t("common:cancel")}
+            </Button>
+            <Button size="sm" onClick={handleSaveAccess} disabled={savingAccess}>
+              {savingAccess ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  {t("common:saving")}
+                </>
+              ) : (
+                t("common:save")
               )}
             </Button>
           </DialogFooter>
@@ -2841,6 +3006,82 @@ function SectionHeader({
   );
 }
 
+// Reusable "All agents / Select agents…" selector plus an agent checkbox list.
+// Per-agent scoping for connected accounts (issue #66).
+function ScopeSelector({
+  scope,
+  onScope,
+  agentIds,
+  onToggleAgent,
+  agents,
+}: {
+  scope: api.CredentialGrantScope;
+  onScope: (s: api.CredentialGrantScope) => void;
+  agentIds: string[];
+  onToggleAgent: (id: string) => void;
+  agents: api.Agent[];
+}) {
+  const { t } = useTranslation("settings");
+
+  return (
+    <div className="space-y-3">
+      <div className="flex gap-2">
+        <Button
+          type="button"
+          variant={scope === "family" ? "default" : "outline"}
+          size="sm"
+          className="flex-1"
+          onClick={() => onScope("family")}
+        >
+          {t("integrations.access.allAgents")}
+        </Button>
+        <Button
+          type="button"
+          variant={scope === "agents" ? "default" : "outline"}
+          size="sm"
+          className="flex-1"
+          onClick={() => onScope("agents")}
+        >
+          {t("integrations.access.selectAgents")}
+        </Button>
+      </div>
+
+      {scope === "agents" &&
+        (agents.length === 0 ? (
+          <p className="text-xs text-muted-foreground">
+            {t("integrations.access.noAgents")}
+          </p>
+        ) : (
+          <div className="max-h-48 overflow-y-auto rounded-md border border-border divide-y divide-border">
+            {agents.map((a) => {
+              const on = agentIds.includes(a.id);
+              return (
+                <button
+                  key={a.id}
+                  type="button"
+                  onClick={() => onToggleAgent(a.id)}
+                  className="flex w-full items-center gap-2.5 px-3 py-2 text-left hover:bg-muted/50"
+                >
+                  <span
+                    className={cn(
+                      "flex h-4 w-4 flex-shrink-0 items-center justify-center rounded border",
+                      on
+                        ? "bg-primary border-primary text-primary-foreground"
+                        : "border-border"
+                    )}
+                  >
+                    {on && <Check className="h-3 w-3" />}
+                  </span>
+                  <span className="truncate text-sm">{a.displayName}</span>
+                </button>
+              );
+            })}
+          </div>
+        ))}
+    </div>
+  );
+}
+
 function ProviderRow({
   provider,
   credential,
@@ -2848,6 +3089,7 @@ function ProviderRow({
   isConnecting,
   onConnectOAuth,
   onConnectToken,
+  onEditAccess,
   onDisconnect,
 }: {
   provider: api.ProviderInfo;
@@ -2856,12 +3098,19 @@ function ProviderRow({
   isConnecting: boolean;
   onConnectOAuth: () => void;
   onConnectToken: () => void;
+  onEditAccess: () => void;
   onDisconnect: () => void;
 }) {
   const { t } = useTranslation("settings");
   const isConnected = !!credential;
   const status = credential?.status;
   const statusConfig = status ? STATUS_CONFIG[status] : null;
+  const accessSummary =
+    credential?.grantScope === "agents"
+      ? t("integrations.access.someAgents", {
+          count: credential.grantedAgentIds?.length ?? 0,
+        })
+      : t("integrations.access.allAgents");
 
   // Strip OAuth URL prefixes so token scopes read as "repo, gist" instead of
   // full https://... identifiers.
@@ -2924,14 +3173,25 @@ function ProviderRow({
               Waiting...
             </Button>
           ) : isConnected ? (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onDisconnect}
-              className="text-muted-foreground hover:text-destructive"
-            >
-              Disconnect
-            </Button>
+            <>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onEditAccess}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <Users className="w-3.5 h-3.5" />
+                {t("integrations.access.button")}
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onDisconnect}
+                className="text-muted-foreground hover:text-destructive"
+              >
+                Disconnect
+              </Button>
+            </>
           ) : provider.type === "oauth2" ? (
             <Button variant="outline" size="sm" onClick={onConnectOAuth}>
               <ExternalLink className="w-3.5 h-3.5" />
@@ -2958,6 +3218,14 @@ function ProviderRow({
       {credential && provider.name !== "google" && credential.scopes.length > 0 && (
         <p className="ml-11 mt-1 text-[11px] text-muted-foreground truncate">
           Scopes: {shortScopes}
+        </p>
+      )}
+
+      {/* Per-agent access summary (issue #66) */}
+      {credential && (
+        <p className="ml-11 mt-1 flex items-center gap-1 text-[11px] text-muted-foreground truncate">
+          <Users className="w-3 h-3 flex-shrink-0" />
+          {accessSummary}
         </p>
       )}
     </div>
