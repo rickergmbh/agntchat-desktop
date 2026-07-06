@@ -2575,6 +2575,24 @@ export async function updateConversationAvatarRest(
   });
 }
 
+/** Answer a "Rename to group" prompt raised by the DM→group auto-name flow.
+ *  `accept` commits `title`; `skip` leaves the group untitled. `autoAccept`,
+ *  when provided, persists the per-user preference. */
+export async function respondToRenameSuggestion(
+  conversationId: string,
+  action: "accept" | "skip",
+  title?: string,
+  autoAccept?: boolean
+): Promise<void> {
+  const body: Record<string, unknown> = { action };
+  if (action === "accept" && title != null) body.title = title;
+  if (typeof autoAccept === "boolean") body.autoAccept = autoAccept;
+  await request(`/api/conversations/${conversationId}/rename-suggestion`, {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+}
+
 export async function addConversationMember(
   conversationId: string,
   participantId: string

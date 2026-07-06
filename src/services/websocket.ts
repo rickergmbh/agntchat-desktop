@@ -82,6 +82,8 @@ class WebSocketService {
       "conversation_updated",
       "conversation_type_changed",
       "conversation_title_changed",
+      "conversation_rename_suggested",
+      "conversation_rename_resolved",
       "conversation_avatar_changed",
       "new_conversation",
       "new_message",

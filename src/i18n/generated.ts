@@ -2292,6 +2292,14 @@ export const resources = {
         "title": "Reminder"
       },
       "removePastedText": "Remove pasted text",
+      "renameToGroup": {
+        "description": "This chat just became a group. Use the suggested name or set your own.",
+        "placeholder": "Group name",
+        "rememberChoice": "Automatically rename future groups",
+        "save": "Rename",
+        "skip": "Not now",
+        "title": "Name this group"
+      },
       "reply": "Reply",
       "replyingTo": "Replying to",
       "resizeList": "Resize conversation list",
@@ -6792,6 +6800,14 @@ export const resources = {
         "title": "Recordatorio"
       },
       "removePastedText": "Quitar el texto pegado",
+      "renameToGroup": {
+        "description": "Este chat acaba de convertirse en un grupo. Usa el nombre sugerido o elige el tuyo.",
+        "placeholder": "Nombre del grupo",
+        "rememberChoice": "Renombrar automáticamente los grupos futuros",
+        "save": "Renombrar",
+        "skip": "Ahora no",
+        "title": "Nombra este grupo"
+      },
       "reply": "Responder",
       "replyingTo": "Respondiendo a",
       "resizeList": "Redimensionar la lista de conversaciones",
@@ -11292,6 +11308,14 @@ export const resources = {
         "title": "Erinnerung"
       },
       "removePastedText": "Eingefügten Text entfernen",
+      "renameToGroup": {
+        "description": "Dieser Chat ist jetzt eine Gruppe. Verwende den vorgeschlagenen Namen oder wähle einen eigenen.",
+        "placeholder": "Gruppenname",
+        "rememberChoice": "Zukünftige Gruppen automatisch umbenennen",
+        "save": "Umbenennen",
+        "skip": "Nicht jetzt",
+        "title": "Diese Gruppe benennen"
+      },
       "reply": "Antworten",
       "replyingTo": "Antwort an",
       "resizeList": "Größe der Unterhaltungsliste ändern",
@@ -15792,6 +15816,14 @@ export const resources = {
         "title": "Rappel"
       },
       "removePastedText": "Supprimer le texte collé",
+      "renameToGroup": {
+        "description": "Cette conversation est devenue un groupe. Utilisez le nom suggéré ou définissez le vôtre.",
+        "placeholder": "Nom du groupe",
+        "rememberChoice": "Renommer automatiquement les futurs groupes",
+        "save": "Renommer",
+        "skip": "Pas maintenant",
+        "title": "Nommer ce groupe"
+      },
       "reply": "Répondre",
       "replyingTo": "Réponse à",
       "resizeList": "Redimensionner la liste des conversations",
@@ -20292,6 +20324,14 @@ export const resources = {
         "title": "Lembrete"
       },
       "removePastedText": "Remover texto colado",
+      "renameToGroup": {
+        "description": "Esta conversa virou um grupo. Use o nome sugerido ou defina o seu.",
+        "placeholder": "Nome do grupo",
+        "rememberChoice": "Renomear grupos futuros automaticamente",
+        "save": "Renomear",
+        "skip": "Agora não",
+        "title": "Nomeie este grupo"
+      },
       "reply": "Responder",
       "replyingTo": "Respondendo a",
       "resizeList": "Redimensionar lista de conversas",
@@ -24792,6 +24832,14 @@ export const resources = {
         "title": "リマインダー"
       },
       "removePastedText": "貼り付けたテキストを削除",
+      "renameToGroup": {
+        "description": "このチャットはグループになりました。提案された名前を使うか、独自の名前を設定してください。",
+        "placeholder": "グループ名",
+        "rememberChoice": "今後のグループを自動的に名前変更する",
+        "save": "名前を変更",
+        "skip": "後で",
+        "title": "このグループに名前を付ける"
+      },
       "reply": "返信",
       "replyingTo": "返信先",
       "resizeList": "会話リストのサイズを変更",
@@ -29292,6 +29340,14 @@ export const resources = {
         "title": "提醒"
       },
       "removePastedText": "移除粘贴的文本",
+      "renameToGroup": {
+        "description": "此聊天已变为群组。使用建议的名称或自定义名称。",
+        "placeholder": "群组名称",
+        "rememberChoice": "自动重命名以后的群组",
+        "save": "重命名",
+        "skip": "暂不",
+        "title": "为该群组命名"
+      },
       "reply": "回复",
       "replyingTo": "正在回复",
       "resizeList": "调整对话列表大小",
@@ -33792,6 +33848,14 @@ export const resources = {
         "title": "리마인더"
       },
       "removePastedText": "붙여넣은 텍스트 제거",
+      "renameToGroup": {
+        "description": "이 채팅이 그룹이 되었습니다. 제안된 이름을 사용하거나 직접 지정하세요.",
+        "placeholder": "그룹 이름",
+        "rememberChoice": "향후 그룹 자동으로 이름 변경",
+        "save": "이름 변경",
+        "skip": "나중에",
+        "title": "이 그룹 이름 지정"
+      },
       "reply": "답장",
       "replyingTo": "답장 대상",
       "resizeList": "대화 목록 크기 조정",
@@ -38292,6 +38356,14 @@ export const resources = {
         "title": "Promemoria"
       },
       "removePastedText": "Rimuovi testo incollato",
+      "renameToGroup": {
+        "description": "Questa chat è diventata un gruppo. Usa il nome suggerito o impostane uno tuo.",
+        "placeholder": "Nome del gruppo",
+        "rememberChoice": "Rinomina automaticamente i gruppi futuri",
+        "save": "Rinomina",
+        "skip": "Non ora",
+        "title": "Assegna un nome a questo gruppo"
+      },
       "reply": "Rispondi",
       "replyingTo": "In risposta a",
       "resizeList": "Ridimensiona elenco conversazioni",
@@ -42792,6 +42864,14 @@ export const resources = {
         "title": "रिमाइंडर"
       },
       "removePastedText": "पेस्ट किया गया टेक्स्ट हटाएँ",
+      "renameToGroup": {
+        "description": "यह चैट अब एक समूह बन गई है। सुझाया गया नाम उपयोग करें या अपना नाम रखें।",
+        "placeholder": "समूह का नाम",
+        "rememberChoice": "भविष्य के समूहों का स्वतः नाम बदलें",
+        "save": "नाम बदलें",
+        "skip": "अभी नहीं",
+        "title": "इस समूह को नाम दें"
+      },
       "reply": "जवाब दें",
       "replyingTo": "जवाब दे रहे हैं",
       "resizeList": "बातचीत सूची का आकार बदलें",

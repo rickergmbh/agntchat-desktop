@@ -93,6 +93,11 @@ interface ChatState {
    *  (new_message / conversation_updated) arrives for it. Prevents the
    *  list cluttering when a user opens "New Chat" then backs out. */
   pendingConversation: Conversation | null;
+  /** Server-suggested name for a DM that just became a group, awaiting the
+   *  user's confirm/edit/skip via the "Rename to group" modal. Set by the
+   *  `conversation_rename_suggested` WS event, cleared on
+   *  `conversation_rename_resolved` or once answered. */
+  pendingRename: { conversationId: string; suggestedTitle: string } | null;
 
   // Messages (per conversation)
   messages: Record<string, Message[]>;
@@ -122,6 +127,16 @@ interface ChatState {
   }) => Promise<Conversation>;
   updateConversationTitle: (id: string, title: string) => Promise<void>;
   updateConversationAvatar: (id: string, avatarUrl: string | null) => Promise<void>;
+  /** Answer the "Rename to group" prompt. `accept` commits `title` (possibly
+   *  edited); `skip` leaves the group untitled. `autoAccept`, when set, also
+   *  persists the per-user preference. Clears `pendingRename`. */
+  respondToRename: (
+    conversationId: string,
+    action: "accept" | "skip",
+    title?: string,
+    autoAccept?: boolean
+  ) => Promise<void>;
+  clearPendingRename: (conversationId: string) => void;
   addMember: (conversationId: string, participantId: string) => Promise<void>;
   removeMember: (conversationId: string, participantId: string) => Promise<void>;
   deleteConversation: (conversationId: string) => Promise<void>;
@@ -177,6 +192,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
   agentConversationsLoading: false,
   agentConversationsLoaded: false,
   pendingConversation: null,
+  pendingRename: null,
   messages: {},
   messagesLoading: {},
   hasMore: {},
@@ -344,6 +360,30 @@ export const useChatStore = create<ChatState>((set, get) => ({
       conversations: update(s.conversations),
       agentConversations: update(s.agentConversations),
     }));
+  },
+
+  respondToRename: async (conversationId, action, title, autoAccept) => {
+    // Clear locally first so the modal closes immediately; the server
+    // broadcasts conversation_rename_resolved to our other devices.
+    set((s) =>
+      s.pendingRename?.conversationId === conversationId
+        ? { pendingRename: null }
+        : {}
+    );
+    await api.respondToRenameSuggestion(
+      conversationId,
+      action,
+      action === "accept" ? title?.trim() : undefined,
+      autoAccept
+    );
+  },
+
+  clearPendingRename: (conversationId) => {
+    set((s) =>
+      s.pendingRename?.conversationId === conversationId
+        ? { pendingRename: null }
+        : {}
+    );
   },
 
   updateConversationAvatar: async (id, avatarUrl) => {
@@ -812,6 +852,27 @@ export const useChatStore = create<ChatState>((set, get) => ({
           conversations: update(s.conversations),
           agentConversations: update(s.agentConversations),
         }));
+      })
+    );
+
+    // DM→group produced an auto-name the user should confirm. Stash the
+    // suggestion; RenameToGroupModal renders off `pendingRename`.
+    unsubs.push(
+      ws.on("conversation_rename_suggested", (payload) => {
+        const convId = payload.conversationId as string;
+        const suggestedTitle = payload.suggestedTitle as string;
+        if (!convId || !suggestedTitle) return;
+        set({ pendingRename: { conversationId: convId, suggestedTitle } });
+      })
+    );
+
+    // Answered on this or another device — dismiss the modal.
+    unsubs.push(
+      ws.on("conversation_rename_resolved", (payload) => {
+        const convId = payload.conversationId as string;
+        set((s) =>
+          s.pendingRename?.conversationId === convId ? { pendingRename: null } : {}
+        );
       })
     );
 
