@@ -336,13 +336,22 @@ export const useChatStore = create<ChatState>((set, get) => ({
     // a new agent would briefly leak its workspace into the agent list.
     if (isPulseConversation(conv)) return;
     set((s) => {
+      // Clear a matching pending so a later first-send promotion can't re-add
+      // this id (the two-DM-rows race). upsertConversation already dedups by
+      // id, so the list side is safe; this keeps the pending slot consistent.
+      const pendingConversation =
+        s.pendingConversation?.id === conv.id ? null : s.pendingConversation;
       if (isAgentScopedConversation(conv)) {
         return {
+          pendingConversation,
           agentConversations: upsertConversation(s.agentConversations, conv),
         };
       }
-      if (conv.parentConversationId || conv.type === "task") return s;
-      return { conversations: upsertConversation(s.conversations, conv) };
+      if (conv.parentConversationId || conv.type === "task") return { pendingConversation };
+      return {
+        pendingConversation,
+        conversations: upsertConversation(s.conversations, conv),
+      };
     });
   },
 
@@ -550,11 +559,16 @@ export const useChatStore = create<ChatState>((set, get) => ({
     };
 
     set((s) => {
-      // Promote a pending (just-created) conversation to the list on first send
+      // Promote a pending (just-created) conversation to the list on first send.
+      // Guard against a double-insert: a WS `new_conversation` for the same id
+      // may have already materialized it via addConversation (the race that
+      // showed two DM rows until a refetch). Only prepend if it's absent.
       let conversations = s.conversations;
       let pendingConversation = s.pendingConversation;
       if (pendingConversation?.id === conversationId) {
-        conversations = sortConversations([pendingConversation, ...conversations]);
+        if (!conversations.some((c) => c.id === conversationId)) {
+          conversations = sortConversations([pendingConversation, ...conversations]);
+        }
         pendingConversation = null;
       }
       const nextReplyingTo = { ...s.replyingTo };
