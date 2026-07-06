@@ -77,6 +77,10 @@ function parseServerModelConfig(
     // the agent profile, not the local --model arg, so we don't surface it
     // in AgentConfig — but list it as "known" so it doesn't warn.
     "runtime_api_id",
+    // Skip-permissions is server-owned so the toggle takes effect live for a
+    // running bridge (issue #68) — the backend delivers it as a per-turn
+    // directive and the bridge resolves it each turn (no restart).
+    "dangerously_skip_permissions",
   ]);
 
   const takeString = (key: string, target: keyof AgentConfig) => {
@@ -99,6 +103,16 @@ function parseServerModelConfig(
       );
     }
   };
+  const takeBoolean = (key: string, target: keyof AgentConfig) => {
+    if (mc[key] == null) return;
+    if (typeof mc[key] === "boolean") {
+      (out as Record<string, unknown>)[target] = mc[key];
+    } else {
+      console.warn(
+        `[agentStore] agent ${agentId} modelConfig.${key} expected boolean, got ${typeof mc[key]}`
+      );
+    }
+  };
 
   takeString("backend", "backend");
   takeString("model", "model");
@@ -110,6 +124,7 @@ function parseServerModelConfig(
   takeString("aws_region", "awsRegion");
   takeString("vertex_region", "vertexRegion");
   takeString("vertex_project", "vertexProject");
+  takeBoolean("dangerously_skip_permissions", "dangerouslySkipPermissions");
 
   for (const key of Object.keys(mc)) {
     if (!knownKeys.has(key)) {
@@ -312,8 +327,14 @@ const ORPHAN_LOCAL_CONFIG_KEYS = ["computerUseEnabled"] as const;
 // split-brain where the desktop showed an old model while the server / web
 // showed the real one). They're stripped from the local override at load
 // time; the merge then always takes the server's value. Genuinely
-// device-local fields (raw llmApiKey, dangerouslySkipPermissions, autoRestart,
-// autoStart, addDirs, maxTokens, historyLimit) are left untouched.
+// device-local fields (raw llmApiKey, autoRestart, autoStart, addDirs,
+// maxTokens, historyLimit) are left untouched.
+//
+// dangerouslySkipPermissions moved here (issue #68): it used to be
+// device-local and baked into the spawn CLI flag at boot, so toggling it never
+// reached a running bridge. It's now server-owned — synced to model_config,
+// resolved server-side into a per-turn directive, and applied live by the
+// bridge with no restart (matching how web/mobile already persist it).
 const SERVER_OWNED_CONFIG_KEYS: readonly (keyof AgentConfig)[] = [
   "backend",
   "model",
@@ -324,6 +345,7 @@ const SERVER_OWNED_CONFIG_KEYS: readonly (keyof AgentConfig)[] = [
   "awsRegion",
   "vertexRegion",
   "vertexProject",
+  "dangerouslySkipPermissions",
 ];
 
 function loadLocalConfig(agentId: string): Partial<AgentConfig> {
@@ -811,7 +833,12 @@ export const useAgentStore = create<AgentState>((set, get) => ({
           maxTokens: managed.config.maxTokens,
           historyLimit: managed.config.historyLimit,
           executionMode: managed.config.executionMode,
-          dangerouslySkipPermissions: managed.config.dangerouslySkipPermissions,
+          // Skip-permissions is NO LONGER passed at spawn (issue #68). It's
+          // server-owned: the bridge reads the boot value from the agent
+          // profile and then resolves it live from per-turn directives, so
+          // toggling it takes effect without a restart. The Tauri --dangerously
+          // -skip-permissions flag is now reserved for a true operator override
+          // (the headless org-host sets it; desktop local agents never do).
           // Computer use is the source of truth in agent.metadata so the
           // setting follows the user across desktops (per-device toggle
           // was a v1 shortcut). Read it here and forward to Tauri so the
@@ -912,6 +939,11 @@ export const useAgentStore = create<AgentState>((set, get) => ({
       if ("awsRegion" in partial) mcPatch.aws_region = partial.awsRegion;
       if ("vertexRegion" in partial) mcPatch.vertex_region = partial.vertexRegion;
       if ("vertexProject" in partial) mcPatch.vertex_project = partial.vertexProject;
+      // Skip-permissions is server-owned (issue #68): persist so the backend
+      // delivers it as a per-turn directive and the running bridge picks up the
+      // toggle live — no restart. `"in" partial` so toggling OFF writes false.
+      if ("dangerouslySkipPermissions" in partial)
+        mcPatch.dangerously_skip_permissions = partial.dangerouslySkipPermissions;
       if (Object.keys(mcPatch).length > 0) {
         // Persist to the backend and TRACK the outcome. This sync is what
         // keeps the spawn env (local config) and the resolved model id
@@ -1003,6 +1035,9 @@ export const useAgentStore = create<AgentState>((set, get) => ({
     if (selectedMode) modelConfigPatch.execution_mode = selectedMode;
     if (selectedEffort) modelConfigPatch.effort = selectedEffort;
     if (selectedKeyId) modelConfigPatch.llm_api_key_id = selectedKeyId;
+    // Skip-permissions is server-owned (issue #68) — persist it at create so
+    // the bridge resolves it from the profile at boot and live per turn.
+    if (skipPerms) modelConfigPatch.dangerously_skip_permissions = true;
     if (Object.keys(modelConfigPatch).length > 0) {
       const newId = result.agent.id;
       api.updateModelConfig(newId, modelConfigPatch).catch((err) => {
