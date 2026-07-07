@@ -22,7 +22,7 @@ export const LOCALE_LABELS: Record<SupportedLocale, string> = {
   "hi": "हिन्दी"
 };
 
-export const NAMESPACES = ["agents","auth","canvas","chat","common","files","friends","memory","nav","onboarding","platform","settings","tasks","templates"] as const;
+export const NAMESPACES = ["agents","artifacts","auth","canvas","chat","common","files","friends","memory","nav","onboarding","platform","settings","tasks","templates"] as const;
 
 export type Namespace = (typeof NAMESPACES)[number];
 
@@ -1595,6 +1595,31 @@ export const resources = {
           "thisWorkspace": "this workspace"
         }
       }
+    },
+    "artifacts": {
+      "backToLatest": "Back to latest",
+      "badge": "Artifact",
+      "by": "by {{name}}",
+      "commentFailed": "Couldn't post your comment.",
+      "commentPlaceholder": "Add a comment…",
+      "comments": "Comments",
+      "edited": "edited {{time}}",
+      "kindCode": "Code",
+      "kindDocument": "Document",
+      "kindHtml": "HTML",
+      "kindMarkdown": "Markdown",
+      "kindText": "Text",
+      "latest": "Latest",
+      "loadFailed": "Couldn't load this artifact.",
+      "noChangeNote": "No change note",
+      "noComments": "No comments yet. Start the discussion.",
+      "post": "Post",
+      "screenTitle": "Artifact",
+      "unknownAuthor": "Unknown",
+      "untitled": "Untitled",
+      "versionHistory": "Version history",
+      "versionShort": "v{{version}}",
+      "viewingOlder": "Viewing v{{version}} of {{total}}"
     },
     "auth": {
       "acceptInvitation": "Accept your invitation",
@@ -6133,6 +6158,31 @@ export const resources = {
         }
       }
     },
+    "artifacts": {
+      "backToLatest": "Volver a la última",
+      "badge": "Artefacto",
+      "by": "por {{name}}",
+      "commentFailed": "No se pudo publicar tu comentario.",
+      "commentPlaceholder": "Añade un comentario…",
+      "comments": "Comentarios",
+      "edited": "editado {{time}}",
+      "kindCode": "Código",
+      "kindDocument": "Documento",
+      "kindHtml": "HTML",
+      "kindMarkdown": "Markdown",
+      "kindText": "Texto",
+      "latest": "Última",
+      "loadFailed": "No se pudo cargar este artefacto.",
+      "noChangeNote": "Sin nota de cambios",
+      "noComments": "Aún no hay comentarios. Inicia la conversación.",
+      "post": "Publicar",
+      "screenTitle": "Artefacto",
+      "unknownAuthor": "Desconocido",
+      "untitled": "Sin título",
+      "versionHistory": "Historial de versiones",
+      "versionShort": "v{{version}}",
+      "viewingOlder": "Viendo la v{{version}} de {{total}}"
+    },
     "auth": {
       "acceptInvitation": "Acepta tu invitación",
       "ageTooYoung": "Debes tener al menos 16 años para usar AgentGram.",
@@ -10669,6 +10719,31 @@ export const resources = {
           "thisWorkspace": "diesen Workspace"
         }
       }
+    },
+    "artifacts": {
+      "backToLatest": "Zurück zur aktuellen",
+      "badge": "Artefakt",
+      "by": "von {{name}}",
+      "commentFailed": "Dein Kommentar konnte nicht gesendet werden.",
+      "commentPlaceholder": "Kommentar hinzufügen…",
+      "comments": "Kommentare",
+      "edited": "bearbeitet {{time}}",
+      "kindCode": "Code",
+      "kindDocument": "Dokument",
+      "kindHtml": "HTML",
+      "kindMarkdown": "Markdown",
+      "kindText": "Text",
+      "latest": "Aktuell",
+      "loadFailed": "Dieses Artefakt konnte nicht geladen werden.",
+      "noChangeNote": "Keine Änderungsnotiz",
+      "noComments": "Noch keine Kommentare. Starte die Diskussion.",
+      "post": "Senden",
+      "screenTitle": "Artefakt",
+      "unknownAuthor": "Unbekannt",
+      "untitled": "Ohne Titel",
+      "versionHistory": "Versionsverlauf",
+      "versionShort": "v{{version}}",
+      "viewingOlder": "Version v{{version}} von {{total}} wird angezeigt"
     },
     "auth": {
       "acceptInvitation": "Ihre Einladung annehmen",
@@ -15207,6 +15282,31 @@ export const resources = {
         }
       }
     },
+    "artifacts": {
+      "backToLatest": "Revenir à la dernière",
+      "badge": "Artefact",
+      "by": "par {{name}}",
+      "commentFailed": "Impossible de publier votre commentaire.",
+      "commentPlaceholder": "Ajouter un commentaire…",
+      "comments": "Commentaires",
+      "edited": "modifié {{time}}",
+      "kindCode": "Code",
+      "kindDocument": "Document",
+      "kindHtml": "HTML",
+      "kindMarkdown": "Markdown",
+      "kindText": "Texte",
+      "latest": "Dernière",
+      "loadFailed": "Impossible de charger cet artefact.",
+      "noChangeNote": "Aucune note de modification",
+      "noComments": "Aucun commentaire pour l'instant. Lancez la discussion.",
+      "post": "Publier",
+      "screenTitle": "Artefact",
+      "unknownAuthor": "Inconnu",
+      "untitled": "Sans titre",
+      "versionHistory": "Historique des versions",
+      "versionShort": "v{{version}}",
+      "viewingOlder": "Affichage de la v{{version}} sur {{total}}"
+    },
     "auth": {
       "acceptInvitation": "Accepter votre invitation",
       "ageTooYoung": "Vous devez avoir au moins 16 ans pour utiliser AgentGram.",
@@ -19743,6 +19843,31 @@ export const resources = {
           "thisWorkspace": "este espaço de trabalho"
         }
       }
+    },
+    "artifacts": {
+      "backToLatest": "Voltar à mais recente",
+      "badge": "Artefato",
+      "by": "por {{name}}",
+      "commentFailed": "Não foi possível publicar seu comentário.",
+      "commentPlaceholder": "Adicionar um comentário…",
+      "comments": "Comentários",
+      "edited": "editado {{time}}",
+      "kindCode": "Código",
+      "kindDocument": "Documento",
+      "kindHtml": "HTML",
+      "kindMarkdown": "Markdown",
+      "kindText": "Texto",
+      "latest": "Mais recente",
+      "loadFailed": "Não foi possível carregar este artefato.",
+      "noChangeNote": "Sem nota de alteração",
+      "noComments": "Ainda sem comentários. Comece a conversa.",
+      "post": "Publicar",
+      "screenTitle": "Artefato",
+      "unknownAuthor": "Desconhecido",
+      "untitled": "Sem título",
+      "versionHistory": "Histórico de versões",
+      "versionShort": "v{{version}}",
+      "viewingOlder": "Vendo a v{{version}} de {{total}}"
     },
     "auth": {
       "acceptInvitation": "Aceitar seu convite",
@@ -24281,6 +24406,31 @@ export const resources = {
         }
       }
     },
+    "artifacts": {
+      "backToLatest": "最新に戻る",
+      "badge": "アーティファクト",
+      "by": "作成者 {{name}}",
+      "commentFailed": "コメントを投稿できませんでした。",
+      "commentPlaceholder": "コメントを追加…",
+      "comments": "コメント",
+      "edited": "編集 {{time}}",
+      "kindCode": "コード",
+      "kindDocument": "ドキュメント",
+      "kindHtml": "HTML",
+      "kindMarkdown": "Markdown",
+      "kindText": "テキスト",
+      "latest": "最新",
+      "loadFailed": "このアーティファクトを読み込めませんでした。",
+      "noChangeNote": "変更メモなし",
+      "noComments": "まだコメントはありません。会話を始めましょう。",
+      "post": "投稿",
+      "screenTitle": "アーティファクト",
+      "unknownAuthor": "不明",
+      "untitled": "無題",
+      "versionHistory": "バージョン履歴",
+      "versionShort": "v{{version}}",
+      "viewingOlder": "v{{version}}／全{{total}}件を表示中"
+    },
     "auth": {
       "acceptInvitation": "招待を承認する",
       "ageTooYoung": "AgentGramをご利用いただくには、16歳以上である必要があります。",
@@ -28817,6 +28967,31 @@ export const resources = {
           "thisWorkspace": "此工作区"
         }
       }
+    },
+    "artifacts": {
+      "backToLatest": "返回最新",
+      "badge": "工件",
+      "by": "作者 {{name}}",
+      "commentFailed": "无法发布您的评论。",
+      "commentPlaceholder": "添加评论…",
+      "comments": "评论",
+      "edited": "编辑于 {{time}}",
+      "kindCode": "代码",
+      "kindDocument": "文档",
+      "kindHtml": "HTML",
+      "kindMarkdown": "Markdown",
+      "kindText": "文本",
+      "latest": "最新",
+      "loadFailed": "无法加载此工件。",
+      "noChangeNote": "无变更说明",
+      "noComments": "还没有评论。来发起讨论吧。",
+      "post": "发布",
+      "screenTitle": "工件",
+      "unknownAuthor": "未知",
+      "untitled": "无标题",
+      "versionHistory": "版本历史",
+      "versionShort": "v{{version}}",
+      "viewingOlder": "正在查看第 v{{version}} 版，共 {{total}} 版"
     },
     "auth": {
       "acceptInvitation": "接受邀请",
@@ -33355,6 +33530,31 @@ export const resources = {
         }
       }
     },
+    "artifacts": {
+      "backToLatest": "최신으로 돌아가기",
+      "badge": "아티팩트",
+      "by": "작성자 {{name}}",
+      "commentFailed": "댓글을 게시할 수 없습니다.",
+      "commentPlaceholder": "댓글 추가…",
+      "comments": "댓글",
+      "edited": "편집됨 {{time}}",
+      "kindCode": "코드",
+      "kindDocument": "문서",
+      "kindHtml": "HTML",
+      "kindMarkdown": "Markdown",
+      "kindText": "텍스트",
+      "latest": "최신",
+      "loadFailed": "이 아티팩트를 불러올 수 없습니다.",
+      "noChangeNote": "변경 메모 없음",
+      "noComments": "아직 댓글이 없습니다. 대화를 시작해 보세요.",
+      "post": "게시",
+      "screenTitle": "아티팩트",
+      "unknownAuthor": "알 수 없음",
+      "untitled": "제목 없음",
+      "versionHistory": "버전 기록",
+      "versionShort": "v{{version}}",
+      "viewingOlder": "전체 {{total}}개 중 v{{version}} 보는 중"
+    },
     "auth": {
       "acceptInvitation": "초대 수락하기",
       "ageTooYoung": "AgentGram을 사용하려면 만 16세 이상이어야 합니다.",
@@ -37892,6 +38092,31 @@ export const resources = {
         }
       }
     },
+    "artifacts": {
+      "backToLatest": "Torna all'ultima",
+      "badge": "Artefatto",
+      "by": "di {{name}}",
+      "commentFailed": "Impossibile pubblicare il tuo commento.",
+      "commentPlaceholder": "Aggiungi un commento…",
+      "comments": "Commenti",
+      "edited": "modificato {{time}}",
+      "kindCode": "Codice",
+      "kindDocument": "Documento",
+      "kindHtml": "HTML",
+      "kindMarkdown": "Markdown",
+      "kindText": "Testo",
+      "latest": "Ultima",
+      "loadFailed": "Impossibile caricare questo artefatto.",
+      "noChangeNote": "Nessuna nota di modifica",
+      "noComments": "Ancora nessun commento. Avvia la discussione.",
+      "post": "Pubblica",
+      "screenTitle": "Artefatto",
+      "unknownAuthor": "Sconosciuto",
+      "untitled": "Senza titolo",
+      "versionHistory": "Cronologia versioni",
+      "versionShort": "v{{version}}",
+      "viewingOlder": "Visualizzazione della v{{version}} di {{total}}"
+    },
     "auth": {
       "acceptInvitation": "Accetta il tuo invito",
       "ageTooYoung": "Per usare AgentGram devi avere almeno 16 anni.",
@@ -42428,6 +42653,31 @@ export const resources = {
           "thisWorkspace": "यह वर्कस्पेस"
         }
       }
+    },
+    "artifacts": {
+      "backToLatest": "नवीनतम पर लौटें",
+      "badge": "आर्टिफ़ैक्ट",
+      "by": "{{name}} द्वारा",
+      "commentFailed": "आपकी टिप्पणी पोस्ट नहीं हो सकी।",
+      "commentPlaceholder": "टिप्पणी जोड़ें…",
+      "comments": "टिप्पणियाँ",
+      "edited": "{{time}} संपादित",
+      "kindCode": "कोड",
+      "kindDocument": "दस्तावेज़",
+      "kindHtml": "HTML",
+      "kindMarkdown": "Markdown",
+      "kindText": "टेक्स्ट",
+      "latest": "नवीनतम",
+      "loadFailed": "यह आर्टिफ़ैक्ट लोड नहीं हो सका।",
+      "noChangeNote": "कोई परिवर्तन टिप्पणी नहीं",
+      "noComments": "अभी तक कोई टिप्पणी नहीं। चर्चा शुरू करें।",
+      "post": "पोस्ट करें",
+      "screenTitle": "आर्टिफ़ैक्ट",
+      "unknownAuthor": "अज्ञात",
+      "untitled": "शीर्षकहीन",
+      "versionHistory": "संस्करण इतिहास",
+      "versionShort": "v{{version}}",
+      "viewingOlder": "{{total}} में से v{{version}} देख रहे हैं"
     },
     "auth": {
       "acceptInvitation": "अपना आमंत्रण स्वीकार करें",
