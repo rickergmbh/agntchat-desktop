@@ -463,6 +463,10 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
   // while the user is scrolled up; cleared whenever they reach the bottom.
   const [showNewPill, setShowNewPill] = useState(false);
   const lastItemIdRef = useRef<string | null>(null);
+  // Last observed scrollTop — lets handleScroll tell a genuine upward user
+  // scroll (releases the pin) apart from a programmatic re-snap or load-time
+  // content growth (must NOT release it). See handleScroll for why.
+  const lastScrollTopRef = useRef(0);
   // Scroller metrics captured when an older-history fetch fires, consumed by
   // the prepend-compensation layout effect so pagination doesn't shove the
   // viewport. convId/firstId guard against stale anchors.
@@ -614,6 +618,7 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
     pinnedRef.current = pinned;
     setNearBottom(pinned);
     lastItemIdRef.current = null;
+    lastScrollTopRef.current = 0;
     prependAnchorRef.current = null;
     turnAnchorArmedRef.current = false;
     turnAnchorIdRef.current = null;
@@ -681,14 +686,23 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const el = e.currentTarget;
-    const distanceFromBottom = el.scrollHeight - el.clientHeight - el.scrollTop;
-    // Release the pin the moment the user scrolls meaningfully up; re-arm it
-    // when they return to within a tight band of the bottom. The 24px band
-    // (vs the larger button threshold) avoids a half-settled mid-load
-    // measurement latching the pin off — the bug that stranded long threads.
-    const pinned = distanceFromBottom < 24;
-    pinnedRef.current = pinned;
-    if (pinned) {
+    const top = el.scrollTop;
+    // Only a genuine upward user scroll releases the pin. Programmatic
+    // re-snaps (snapToBottom / the ResizeObserver) and load-time content
+    // growth move scrollTop DOWN or leave it unchanged — never up — so they
+    // can no longer flip the pin off on a half-settled mid-load measurement.
+    // That flip-off was the regression that stranded long conversations blank
+    // below the fold once the pending-message row started perturbing the
+    // height mid-load (#50). Re-arming at the bottom stays unconditional.
+    const movedUp = top < lastScrollTopRef.current - 1;
+    lastScrollTopRef.current = top;
+    const distanceFromBottom = el.scrollHeight - el.clientHeight - top;
+    if (distanceFromBottom < 24) {
+      pinnedRef.current = true;
+    } else if (movedUp) {
+      pinnedRef.current = false;
+    }
+    if (pinnedRef.current) {
       setShowNewPill(false);
       // Reaching the bottom ends the turn-anchored reading position — the
       // user asked to follow the latest again, so collapse the spacer.
