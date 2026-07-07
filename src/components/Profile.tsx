@@ -16,6 +16,8 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import { getVersion } from "@tauri-apps/api/app";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   Dialog,
@@ -72,6 +74,8 @@ import {
   Languages,
   ShieldCheck,
   Download,
+  Bug,
+  Send,
 } from "lucide-react";
 import { deviceTimezone, filterTimezones, formatTimezoneLabel } from "../lib/timezones";
 import { getInitials } from "../lib/utils";
@@ -150,6 +154,7 @@ const SECTIONS = [
   { value: "llm-keys", labelKey: "sections.llmKeys", icon: Key },
   { value: "connections", labelKey: "sections.connections", icon: Link2 },
   { value: "privacy", labelKey: "privacy.title", icon: ShieldCheck },
+  { value: "help", labelKey: "sections.help", icon: Bug },
 ] as const;
 
 type SectionValue = (typeof SECTIONS)[number]["value"];
@@ -1061,6 +1066,12 @@ export function Profile({ onClose }: { onClose: () => void }) {
         {activeSection === "privacy" && (
           <div className="flex-1 overflow-y-auto p-5 space-y-6">
             <PrivacyDataSection />
+          </div>
+        )}
+
+        {activeSection === "help" && (
+          <div className="flex-1 overflow-y-auto p-5 space-y-6">
+            <BugReportSection />
           </div>
         )}
       </div>
@@ -2983,6 +2994,179 @@ function PrivacyDataSection() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Report a Bug (#81) — user-facing bug report form.
+// ---------------------------------------------------------------------------
+
+type BugSeverity = "critical" | "high" | "medium" | "low" | "info";
+
+const BUG_SEVERITIES: { value: BugSeverity; labelKey: string }[] = [
+  { value: "critical", labelKey: "bugReport.severityCritical" },
+  { value: "high", labelKey: "bugReport.severityHigh" },
+  { value: "medium", labelKey: "bugReport.severityMedium" },
+  { value: "low", labelKey: "bugReport.severityLow" },
+  { value: "info", labelKey: "bugReport.severityInfo" },
+];
+
+/**
+ * Report-a-Bug form (desktop slice of #63). Submits to the async
+ * POST /api/bug-reports (202) via api.reportBug; client metadata
+ * (platform / app_version / screen / timestamp) is attached
+ * automatically. Optimistic "filed!" feedback on 2xx.
+ */
+function BugReportSection() {
+  const { t } = useTranslation("settings");
+  const [title, setTitle] = useState("");
+  const [details, setDetails] = useState("");
+  const [severity, setSeverity] = useState<BugSeverity>("medium");
+  const [status, setStatus] = useState<
+    "idle" | "sending" | "sent" | "error" | "rate_limited"
+  >("idle");
+  const [titleError, setTitleError] = useState(false);
+
+  const reset = useCallback(() => {
+    setTitle("");
+    setDetails("");
+    setSeverity("medium");
+    setStatus("idle");
+    setTitleError(false);
+  }, []);
+
+  const submit = useCallback(async () => {
+    const trimmed = title.trim();
+    if (!trimmed) {
+      setTitleError(true);
+      return;
+    }
+    setTitleError(false);
+    setStatus("sending");
+    try {
+      const appVersion = await getVersion().catch(() => "unknown");
+      await api.reportBug({
+        title: trimmed,
+        description: details.trim() || undefined,
+        severity,
+        platform: "desktop",
+        app_version: appVersion,
+        screen: window.location.hash || window.location.pathname,
+        client_timestamp: new Date().toISOString(),
+      });
+      setStatus("sent");
+    } catch (err) {
+      const httpStatus = (err as { status?: number })?.status;
+      setStatus(httpStatus === 429 ? "rate_limited" : "error");
+    }
+  }, [title, details, severity]);
+
+  if (status === "sent") {
+    return (
+      <div className="space-y-3">
+        <SectionHeader title={t("bugReport.title")} />
+        <div className="flex items-start gap-2 rounded-lg border border-primary/30 bg-primary/5 p-4">
+          <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+          <div className="space-y-1">
+            <p className="text-sm font-medium">{t("bugReport.sentTitle")}</p>
+            <p className="text-xs text-muted-foreground">
+              {t("bugReport.sentMessage")}
+            </p>
+          </div>
+        </div>
+        <Button variant="outline" size="sm" onClick={reset}>
+          {t("bugReport.title")}
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4 max-w-lg">
+      <SectionHeader
+        title={t("bugReport.title")}
+        subtitle={t("bugReport.subtitle")}
+      />
+
+      <div className="space-y-1.5">
+        <Label htmlFor="bug-title">{t("bugReport.titleLabel")}</Label>
+        <Input
+          id="bug-title"
+          value={title}
+          onChange={(e) => {
+            setTitle(e.target.value);
+            if (titleError) setTitleError(false);
+          }}
+          placeholder={t("bugReport.titlePlaceholder")}
+          maxLength={200}
+        />
+        {titleError && (
+          <p className="flex items-center gap-1 text-xs text-destructive">
+            <AlertCircle className="h-3 w-3" />
+            {t("bugReport.titleRequired")}
+          </p>
+        )}
+      </div>
+
+      <div className="space-y-1.5">
+        <Label htmlFor="bug-details">{t("bugReport.detailsLabel")}</Label>
+        <Textarea
+          id="bug-details"
+          value={details}
+          onChange={(e) => setDetails(e.target.value)}
+          placeholder={t("bugReport.detailsPlaceholder")}
+          rows={4}
+        />
+      </div>
+
+      <div className="space-y-1.5">
+        <Label>{t("bugReport.severityLabel")}</Label>
+        <div className="flex flex-wrap gap-2">
+          {BUG_SEVERITIES.map(({ value, labelKey }) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => setSeverity(value)}
+              className={cn(
+                "rounded-md border px-3 py-1.5 text-xs font-medium transition-colors",
+                severity === value
+                  ? "border-primary bg-primary/5 text-primary"
+                  : "border-border hover:bg-accent"
+              )}
+            >
+              {t(labelKey)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {status === "error" && (
+        <p className="flex items-center gap-1 text-xs text-destructive">
+          <AlertCircle className="h-3 w-3" />
+          {t("bugReport.errorMessage")}
+        </p>
+      )}
+      {status === "rate_limited" && (
+        <p className="flex items-center gap-1 text-xs text-destructive">
+          <AlertCircle className="h-3 w-3" />
+          {t("bugReport.rateLimited")}
+        </p>
+      )}
+
+      <Button size="sm" onClick={submit} disabled={status === "sending"}>
+        {status === "sending" ? (
+          <>
+            <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />
+            {t("bugReport.submitting")}
+          </>
+        ) : (
+          <>
+            <Send className="mr-1.5 h-3 w-3" />
+            {t("bugReport.submit")}
+          </>
+        )}
+      </Button>
     </div>
   );
 }

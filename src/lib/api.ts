@@ -289,6 +289,27 @@ export async function updateProfile(data: {
   });
 }
 
+// Bug reports (#63 / #81) — user-facing "Report a Bug". Fires the async
+// POST /api/bug-reports (202) which files a labeled GitHub issue with a
+// server-side context sweep. Client metadata is attached by the caller.
+export interface BugReportInput {
+  title: string;
+  description?: string;
+  severity?: "critical" | "high" | "medium" | "low" | "info";
+  platform: string;
+  app_version: string;
+  screen: string;
+  conversation_id?: string;
+  client_timestamp: string;
+}
+
+export async function reportBug(input: BugReportInput): Promise<void> {
+  await request<unknown>("/api/bug-reports", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+}
+
 export async function setActiveOrganization(orgId: string): Promise<Participant> {
   return request("/api/me/active-organization", {
     method: "PATCH",
