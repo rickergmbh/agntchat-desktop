@@ -3319,3 +3319,107 @@ export async function createDirectoryListing(data: {
 export async function deleteDirectoryListing(id: string): Promise<void> {
   await request(`/api/directory/${id}`, { method: "DELETE" });
 }
+
+// --- Artifacts (#59) — versioned documents agents author in a conversation ---
+// REST wrappers for the artifact primitive. All endpoints are membership-scoped
+// server-side (non-members get 403). The live path is WebSocket
+// (artifact_created / artifact_updated / artifact_comment_added on
+// conversation:{id}); these calls back the initial load + comment posting.
+// Mirrors web/src/services/artifactService.ts.
+
+export type ArtifactKind = "document" | "markdown" | "code" | "html" | "text";
+
+export interface ArtifactVersion {
+  id: string;
+  artifactId: string;
+  version: number;
+  content: string;
+  authorId: string;
+  changeNote?: string;
+  insertedAt: string;
+  updatedAt: string;
+}
+
+export interface Artifact {
+  id: string;
+  conversationId: string;
+  authorId: string;
+  title: string;
+  kind: ArtifactKind;
+  currentVersion: number;
+  /** Current version with content — present on show/create/update payloads,
+   *  may be absent on defensive merges (Serializer reject_nil). */
+  current?: ArtifactVersion;
+  insertedAt: string;
+  updatedAt: string;
+}
+
+export interface ArtifactComment {
+  id: string;
+  artifactId: string;
+  authorId: string;
+  body: string;
+  insertedAt: string;
+  updatedAt: string;
+}
+
+/** List artifacts in a conversation, newest first. */
+export async function listArtifacts(
+  conversationId: string,
+  opts: { limit?: number } = {}
+): Promise<Artifact[]> {
+  const params = new URLSearchParams({ conversationId });
+  if (typeof opts.limit === "number") params.set("limit", String(opts.limit));
+  const { artifacts } = await request<{ artifacts: Artifact[] }>(
+    `/api/artifacts?${params.toString()}`
+  );
+  return artifacts ?? [];
+}
+
+/** Get a single artifact with its current version content loaded. */
+export async function getArtifact(id: string): Promise<Artifact> {
+  const { artifact } = await request<{ artifact: Artifact }>(
+    `/api/artifacts/${id}`
+  );
+  return artifact;
+}
+
+/** Full version history for an artifact, newest first. */
+export async function listArtifactVersions(id: string): Promise<ArtifactVersion[]> {
+  const { versions } = await request<{ versions: ArtifactVersion[] }>(
+    `/api/artifacts/${id}/versions`
+  );
+  return versions ?? [];
+}
+
+/** Get a specific version (with content) of an artifact. */
+export async function getArtifactVersion(
+  id: string,
+  version: number
+): Promise<ArtifactVersion> {
+  const { version: v } = await request<{ version: ArtifactVersion }>(
+    `/api/artifacts/${id}/versions/${version}`
+  );
+  return v;
+}
+
+/** List comments on an artifact, oldest first. */
+export async function listArtifactComments(id: string): Promise<ArtifactComment[]> {
+  const { comments } = await request<{ comments: ArtifactComment[] }>(
+    `/api/artifacts/${id}/comments`
+  );
+  return comments ?? [];
+}
+
+/** Post a comment on an artifact. The server also broadcasts
+ *  artifact_comment_added, so the live append handles other viewers. */
+export async function addArtifactComment(
+  id: string,
+  body: string
+): Promise<ArtifactComment> {
+  const { comment } = await request<{ comment: ArtifactComment }>(
+    `/api/artifacts/${id}/comments`,
+    { method: "POST", body: JSON.stringify({ body }) }
+  );
+  return comment;
+}

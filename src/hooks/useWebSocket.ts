@@ -8,6 +8,7 @@ import { useAgentStore } from "../stores/agentStore";
 import { useMemoryStore } from "../stores/memoryStore";
 import { useFriendStore } from "../stores/friendStore";
 import { useWorkspaceStore } from "../stores/workspaceStore";
+import { useArtifactStore } from "../stores/artifactStore";
 import { ws } from "../services/websocket";
 
 /**
@@ -38,6 +39,7 @@ export function useWebSocket() {
     const unsubMemory = useMemoryStore.getState().initWsListeners();
     const unsubFriends = useFriendStore.getState().initWsListeners();
     const unsubWorkspace = useWorkspaceStore.getState().initWsListeners();
+    const unsubArtifacts = useArtifactStore.getState().initWsListeners();
 
     // Re-join whichever conversation is currently open whenever the socket
     // comes up. Fixes a missed-message bug where `disconnect()` clears the
@@ -134,6 +136,7 @@ export function useWebSocket() {
       unsubMemory();
       unsubFriends();
       unsubWorkspace();
+      unsubArtifacts();
       ws.disconnect();
     };
   }, [token, participantId]);

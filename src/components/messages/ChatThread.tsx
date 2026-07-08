@@ -12,17 +12,20 @@ import { isTaskMessage } from "./TaskMessages";
 import { MessageContextMenu } from "./MessageContextMenu";
 import { StreamingBubble } from "./StreamingBubble";
 import { AgentConversationCard } from "./AgentConversationCard";
+import { ArtifactCard } from "./ArtifactCard";
 import { Marker, MarkerContent } from "@/components/ui/marker";
 import { cn, dayKey, formatDayLabel } from "../../lib/utils";
 import { buildTypingText } from "../../lib/typing-indicator";
 import { agentConversationSourceId } from "../../lib/thread-selectors";
-import type { Conversation, Message } from "../../lib/api";
+import type { Artifact, Conversation, Message } from "../../lib/api";
+import { useArtifactStore } from "../../stores/artifactStore";
 import { ws } from "../../services/websocket";
 
 const SENDER_RUN_BREAK_MS = 2 * 60 * 1000;
 const SCROLL_BOTTOM_THRESHOLD = 120;
 
 const EMPTY_MESSAGES: Message[] = [];
+const EMPTY_ARTIFACTS: Artifact[] = [];
 
 // --- Task-message consolidation (ported from web/src/components/ChatView.tsx)
 //
@@ -222,11 +225,13 @@ type ThreadItem =
       id: string;
       insertedAt: string;
       conversation: Conversation;
-    };
+    }
+  | { kind: "artifact"; id: string; insertedAt: string; artifact: Artifact };
 
 function buildThreadItems(
   messages: Message[],
-  agentConversations: Conversation[]
+  agentConversations: Conversation[],
+  artifacts: Artifact[]
 ): ThreadItem[] {
   const messageIds = new Set(messages.map((message) => message.id));
   const conversationsByMessage = new Map<string, Conversation[]>();
@@ -253,8 +258,19 @@ function buildThreadItems(
     conversation,
   });
 
+  // Artifacts anchor at their CREATION position (insertedAt, not updatedAt) —
+  // an edit updates the card in place, it never jumps down the stream.
+  // Mirrors mobile's mergeArtifactsIntoTimeline.
+  const artifactItems: ThreadItem[] = artifacts.map((artifact) => ({
+    kind: "artifact",
+    id: `artifact:${artifact.id}`,
+    insertedAt: artifact.insertedAt,
+    artifact,
+  }));
+
   const unanchoredItems = unanchoredConversations
     .map(itemForConversation)
+    .concat(artifactItems)
     .sort((a, b) => {
       const diff =
         new Date(a.insertedAt).getTime() - new Date(b.insertedAt).getTime();
@@ -407,6 +423,26 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
   const conversationType = useChatStore(
     (s) => s.conversations.find((c) => c.id === conversationId)?.type
   );
+  const conversationMembers = useChatStore(
+    (s) =>
+      (
+        s.conversations.find((c) => c.id === conversationId) ??
+        s.agentConversations.find((c) => c.id === conversationId)
+      )?.members
+  );
+  const artifacts = useArtifactStore(
+    (s) => s.artifacts[conversationId] ?? EMPTY_ARTIFACTS
+  );
+
+  // Artifacts interleave into the timeline at their creation position.
+  // Initial load per conversation; live changes arrive via the artifact
+  // store's WS listeners (artifact_created / artifact_updated).
+  useEffect(() => {
+    useArtifactStore
+      .getState()
+      .fetchArtifactsIfNeeded(conversationId)
+      .catch(() => {});
+  }, [conversationId]);
 
   const typingIds = usePresenceStore((s) => s.typing[conversationId]);
   const typingNames = usePresenceStore((s) => s.typingNames);
@@ -448,8 +484,8 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
   );
 
   const threadItems = useMemo(
-    () => buildThreadItems(messages, childAgentConversations),
-    [messages, childAgentConversations]
+    () => buildThreadItems(messages, childAgentConversations, artifacts),
+    [messages, childAgentConversations, artifacts]
   );
 
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -946,6 +982,18 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
               const dayChanged =
                 !prevItem ||
                 dayKey(prevItem.insertedAt) !== dayKey(item.insertedAt);
+
+              if (item.kind === "artifact") {
+                return (
+                  <Fragment key={item.id}>
+                    {dayChanged && <DaySeparator iso={item.insertedAt} />}
+                    <ArtifactCard
+                      artifact={item.artifact}
+                      members={conversationMembers}
+                    />
+                  </Fragment>
+                );
+              }
 
               if (item.kind === "agent_conversation") {
                 return (

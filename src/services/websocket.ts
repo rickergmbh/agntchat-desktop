@@ -170,6 +170,9 @@ class WebSocketService {
       "conversation_memory",
       "memory_updated",
       "sub_conversation_created",
+      "artifact_created",
+      "artifact_updated",
+      "artifact_comment_added",
     ];
 
     for (const event of convEvents) {

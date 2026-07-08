@@ -25,6 +25,7 @@ import { GroupAvatar } from "./GroupAvatar";
 import { AgentActivityIndicator } from "../AgentActivityIndicator";
 import { ThreadsBar } from "./ThreadsBar";
 import { FilesBar } from "./FilesBar";
+import { ArtifactViewer } from "./ArtifactViewer";
 
 const DETAILS_KEY = "agentchat:showDetails";
 
@@ -196,6 +197,9 @@ export function MessagesView() {
       ) : null}
 
       {showNew && <NewConversationDialog onClose={() => setShowNew(false)} />}
+
+      {/* Single store-driven viewer instance — cards in either pane open it. */}
+      <ArtifactViewer />
     </div>
   );
 }
