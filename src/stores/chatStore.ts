@@ -69,6 +69,25 @@ function markRead(id: string) {
   }
 }
 
+/** Only auto-mark-read while this window is actually in front of the user, so
+ * an open-but-backgrounded conversation doesn't silently clear the unread
+ * signal on every device. */
+function windowFocused(): boolean {
+  if (typeof document === "undefined") return true;
+  return document.visibilityState === "visible" && document.hasFocus();
+}
+
+// Trailing debounce per conversation so a burst of streamed messages collapses
+// into one mark-read round-trip instead of one per message.
+const readDebounceTimers: Record<string, ReturnType<typeof setTimeout>> = {};
+function markReadDebounced(id: string) {
+  clearTimeout(readDebounceTimers[id]);
+  readDebounceTimers[id] = setTimeout(() => {
+    delete readDebounceTimers[id];
+    markRead(id);
+  }, 500);
+}
+
 function dedup(messages: Message[]): Message[] {
   const seen = new Set<string>();
   return messages.filter((m) => {
@@ -229,6 +248,12 @@ interface ChatState {
   clearScrollTarget: () => void;
   fetchUnreadCounts: () => Promise<void>;
   incrementUnread: (conversationId: string) => void;
+  /** Mark a conversation read *only* if it's the one currently open (main pane
+   * or side thread) AND this window is focused/visible. Called as messages
+   * stream in so the server re-broadcasts `conversation_read` and our other
+   * devices' badges clear while we read here. Debounced; no-ops when
+   * backgrounded. */
+  markReadIfActiveAndFocused: (conversationId: string) => void;
 
   // WS wiring — returns cleanup
   initWsListeners: () => () => void;
@@ -834,8 +859,35 @@ export const useChatStore = create<ChatState>((set, get) => ({
     }));
   },
 
+  markReadIfActiveAndFocused: (conversationId) => {
+    const { activeConversationId, activeThreadId } = get();
+    if (conversationId !== activeConversationId && conversationId !== activeThreadId) {
+      return;
+    }
+    if (!windowFocused()) return;
+    markReadDebounced(conversationId);
+  },
+
   initWsListeners: () => {
     const unsubs: (() => void)[] = [];
+
+    // Returning focus to a conversation left open (messages may have arrived
+    // while the window was backgrounded, when the new_message path deliberately
+    // skips the mark) should mark it read now, so our other devices' badges
+    // clear once we're actually looking at it again.
+    const markActiveReadOnFocus = () => {
+      const { activeThreadId, activeConversationId } = get();
+      const id = activeThreadId ?? activeConversationId;
+      if (id) get().markReadIfActiveAndFocused(id);
+    };
+    if (typeof window !== "undefined") {
+      window.addEventListener("focus", markActiveReadOnFocus);
+      document.addEventListener("visibilitychange", markActiveReadOnFocus);
+      unsubs.push(() => {
+        window.removeEventListener("focus", markActiveReadOnFocus);
+        document.removeEventListener("visibilitychange", markActiveReadOnFocus);
+      });
+    }
 
     // thread_completed StatusUpdates don't render a card — the thread's
     // inline pill (AgentConversationCard) flips to its resolved state
@@ -877,6 +929,12 @@ export const useChatStore = create<ChatState>((set, get) => ({
         });
         get().addMessage(convId, msg);
         applyThreadCompletion(msg);
+
+        // Keep an open+focused conversation marked read as messages stream in,
+        // not only at open time. Otherwise the server never re-broadcasts
+        // `conversation_read`, and our OTHER devices' unread badges climb while
+        // we're actively reading the thread here.
+        get().markReadIfActiveAndFocused(convId);
 
         // Clear any active streaming bubble for this sender/stream — the
         // real message has landed, so the "is writing" placeholder should
