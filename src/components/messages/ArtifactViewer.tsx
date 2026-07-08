@@ -13,6 +13,9 @@ import {
 import { cn, formatRelativeShort } from "../../lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MarkdownContent } from "./MarkdownContent";
+import { ArtifactKindIcon } from "./ArtifactCard";
+import { ResizeHandle } from "../ResizeHandle";
+import { useRightPaneWidth } from "../../hooks/useResizableWidth";
 import {
   getArtifact,
   getArtifactVersion,
@@ -83,16 +86,28 @@ function ArtifactContent({
 }
 
 /**
- * Full artifact viewer — centered modal opened from an inline ArtifactCard
- * (store-driven; MessagesView renders one instance). Shows the current
- * version's content rendered by kind, a collapsible version history (any
- * prior version viewable read-only), and a live comment thread with
- * composer. Mirrors web's ArtifactViewer.
+ * Full artifact viewer — a right-docked side pane opened from an inline
+ * ArtifactCard (store-driven; MessagesView renders it in the right-pane slot,
+ * taking precedence over the thread / details panes like a thread does over
+ * details). Same resizable-width chrome as ThreadSidePane /
+ * ConversationDetailsPanel. Shows the current version's content rendered by
+ * kind, a collapsible version history (any prior version viewable read-only),
+ * and a live comment thread with composer. Mirrors web's ArtifactViewer.
  */
 export function ArtifactViewer() {
   const { t } = useTranslation("artifacts");
   const viewer = useArtifactStore((s) => s.viewer);
   const closeViewer = useArtifactStore((s) => s.closeViewer);
+
+  // Shares its width with the thread / details panes (same storage key), so
+  // switching between them never jolts.
+  const {
+    width,
+    ref: paneRef,
+    resizing,
+    onResizeStart,
+    onResizeReset,
+  } = useRightPaneWidth();
 
   const artifactId = viewer?.artifactId;
   const conversationId = viewer?.conversationId;
@@ -236,48 +251,51 @@ export function ArtifactViewer() {
   const author = artifact ? memberInfo[artifact.authorId] : undefined;
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-      onClick={closeViewer}
-    >
-      <div
-        role="dialog"
-        aria-modal="true"
+    <>
+      <ResizeHandle
+        right={width}
+        resizing={resizing}
+        onResizeStart={onResizeStart}
+        onResizeReset={onResizeReset}
+        label={t("screenTitle")}
+      />
+      <aside
+        ref={paneRef}
         aria-label={t("screenTitle")}
-        className="flex max-h-[88vh] w-full max-w-2xl flex-col overflow-hidden rounded-xl border border-border bg-card shadow-xl"
-        onClick={(e) => e.stopPropagation()}
+        className="surface-panel-strong relative z-20 -ml-3 flex h-full shrink-0 flex-col overflow-hidden rounded-l-lg bg-card"
+        style={{ width } as React.CSSProperties}
       >
-        {/* Header */}
-        <div className="flex items-start gap-3 border-b border-border px-5 py-4">
+        {/* Header — mirrors the thread pane's label + title + close layout. */}
+        <header
+          className="relative flex h-14 shrink-0 items-center gap-3 bg-card px-4 after:absolute after:bottom-0 after:left-4 after:right-4 after:h-px after:bg-border"
+          style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
+        >
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary/15">
+            <ArtifactKindIcon kind={artifact?.kind ?? "document"} />
+          </span>
           <div className="min-w-0 flex-1">
-            <h2 className="truncate text-lg font-bold text-foreground">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              {t("badge")}
+              {artifact
+                ? ` · ${t("versionShort", { version: artifact.currentVersion })}`
+                : ""}
+            </p>
+            <p className="truncate text-sm font-semibold text-foreground">
               {artifact ? artifact.title?.trim() || t("untitled") : t("screenTitle")}
-            </h2>
-            {artifact && (
-              <p className="mt-0.5 text-xs text-muted-foreground">
-                {t(kindKey(artifact.kind))}
-                {" · "}
-                {t("versionShort", { version: artifact.currentVersion })}
-                {author ? ` · ${t("by", { name: author.name })}` : ""}
-                {" · "}
-                {t("edited", {
-                  time: formatRelativeShort(artifact.updatedAt || artifact.insertedAt),
-                })}
-              </p>
-            )}
+            </p>
           </div>
           <button
             type="button"
             onClick={closeViewer}
             aria-label={t("common:close")}
-            className="rounded-md p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
           >
             <X className="h-4 w-4" />
           </button>
-        </div>
+        </header>
 
         {/* Body */}
-        <div className="flex-1 overflow-y-auto px-5 py-4">
+        <div className="flex-1 overflow-y-auto px-4 py-4">
           {loading && !artifact && (
             <div className="flex justify-center py-12">
               <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
@@ -299,6 +317,15 @@ export function ArtifactViewer() {
 
           {artifact && (
             <>
+              <p className="mb-3 text-xs text-muted-foreground">
+                {t(kindKey(artifact.kind))}
+                {author ? ` · ${t("by", { name: author.name })}` : ""}
+                {" · "}
+                {t("edited", {
+                  time: formatRelativeShort(artifact.updatedAt || artifact.insertedAt),
+                })}
+              </p>
+
               {viewingOlder && (
                 <div className="mb-3 flex items-center justify-between gap-2 rounded-lg border border-border bg-primary/10 px-3 py-2">
                   <span className="text-xs font-semibold text-foreground">
@@ -466,7 +493,7 @@ export function ArtifactViewer() {
             </div>
           </div>
         )}
-      </div>
-    </div>
+      </aside>
+    </>
   );
 }

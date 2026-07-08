@@ -4,17 +4,22 @@ import { formatRelativeShort } from "../../lib/utils";
 import { useArtifactStore } from "../../stores/artifactStore";
 import type { Artifact, ArtifactKind, ConversationMember } from "../../lib/api";
 
-function KindIcon({ kind }: { kind: ArtifactKind }) {
-  const cls = "h-4 w-4 text-primary";
+export function ArtifactKindIcon({
+  kind,
+  className = "h-4 w-4 text-primary",
+}: {
+  kind: ArtifactKind;
+  className?: string;
+}) {
   switch (kind) {
     case "code":
-      return <Code2 className={cls} />;
+      return <Code2 className={className} />;
     case "html":
-      return <Globe className={cls} />;
+      return <Globe className={className} />;
     case "markdown":
-      return <FileCode2 className={cls} />;
+      return <FileCode2 className={className} />;
     default:
-      return <FileText className={cls} />;
+      return <FileText className={className} />;
   }
 }
 
@@ -48,7 +53,7 @@ export function ArtifactCard({
         className="group flex w-full max-w-2xl items-center gap-2.5 rounded-xl border border-border bg-primary/5 px-3 py-2.5 text-left transition-colors hover:bg-primary/10 sm:w-[82%]"
       >
         <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/15">
-          <KindIcon kind={artifact.kind} />
+          <ArtifactKindIcon kind={artifact.kind} />
         </span>
         <span className="flex min-w-0 flex-1 flex-col">
           <span className="flex items-center gap-1.5">

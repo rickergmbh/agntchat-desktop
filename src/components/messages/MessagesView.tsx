@@ -26,6 +26,7 @@ import { AgentActivityIndicator } from "../AgentActivityIndicator";
 import { ThreadsBar } from "./ThreadsBar";
 import { FilesBar } from "./FilesBar";
 import { ArtifactViewer } from "./ArtifactViewer";
+import { useArtifactStore } from "../../stores/artifactStore";
 
 const DETAILS_KEY = "agentchat:showDetails";
 
@@ -41,9 +42,16 @@ export function MessagesView() {
   const { t } = useTranslation("chat");
   const activeId = useChatStore((s) => s.activeConversationId);
   const activeThreadId = useChatStore((s) => s.activeThreadId);
+  const artifactViewerOpen = useArtifactStore((s) => s.viewer != null);
   const fetchConversations = useChatStore((s) => s.fetchConversations);
   const fetchAgentConversations = useChatStore((s) => s.fetchAgentConversations);
   const fetchUnreadCounts = useChatStore((s) => s.fetchUnreadCounts);
+
+  // The artifact pane belongs to the conversation it was opened from —
+  // switching conversations closes it rather than showing a stale artifact.
+  useEffect(() => {
+    useArtifactStore.getState().closeViewer();
+  }, [activeId]);
 
   const [showDetails, setShowDetails] = useState(readDetailsPref);
   const [showNew, setShowNew] = useState(false);
@@ -171,7 +179,7 @@ export function MessagesView() {
       <section
         className={cn(
           "relative z-10 -ml-2 flex-1 flex flex-col bg-card overflow-hidden surface-panel rounded-l-2xl",
-          activeId && (showDetails || activeThreadId) && "pr-5"
+          activeId && (showDetails || activeThreadId || artifactViewerOpen) && "pr-5"
         )}
       >
         {activeId ? (
@@ -185,9 +193,14 @@ export function MessagesView() {
         )}
       </section>
 
-      {/* Right pane: a thread (Slack-style side pane) takes precedence over the
-          conversation-details pane. Only one is ever shown. */}
-      {activeId && activeThreadId ? (
+      {/* Right pane: the artifact viewer takes precedence over a thread
+          (Slack-style side pane), which takes precedence over the
+          conversation-details pane. Only one is ever shown; closing the
+          viewer restores whichever pane was underneath (their state is
+          untouched). */}
+      {activeId && artifactViewerOpen ? (
+        <ArtifactViewer />
+      ) : activeId && activeThreadId ? (
         <ThreadSidePane threadId={activeThreadId} />
       ) : activeId && showDetails ? (
         <DetailsPanelWrapper
@@ -197,9 +210,6 @@ export function MessagesView() {
       ) : null}
 
       {showNew && <NewConversationDialog onClose={() => setShowNew(false)} />}
-
-      {/* Single store-driven viewer instance — cards in either pane open it. */}
-      <ArtifactViewer />
     </div>
   );
 }
