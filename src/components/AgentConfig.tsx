@@ -85,6 +85,7 @@ import {
   HelpCircle,
   LayoutTemplate,
   Timer,
+  Repeat,
   Trash2,
   AlertTriangle,
   Unlink,
@@ -118,6 +119,7 @@ import { AgentSkills } from "./AgentSkills";
 import { AgentMemory } from "./AgentMemory";
 import { AgentTemplates } from "./AgentTemplates";
 import { AgentRoutines } from "./AgentRoutines";
+import { AgentLoops } from "./AgentLoops";
 import { AvatarCropDialog } from "./AvatarCropDialog";
 
 // Display labels + one-line hints for the CLI connection (auth/runtime)
@@ -370,6 +372,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
         { value: "memory", label: t("memory:title"), icon: Brain },
         { value: "templates", label: t("nav:templates"), icon: LayoutTemplate },
         { value: "routines", label: t("routines.title"), icon: Timer },
+        { value: "loops", label: t("loops.title"), icon: Repeat },
       ],
     },
     // Sharing group gated behind the `agent_sharing` feature flag.
@@ -1313,6 +1316,12 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
         {activeSection === "routines" && (
           <div className="flex-1 overflow-y-auto">
             <AgentRoutines agentId={agent.id} />
+          </div>
+        )}
+
+        {activeSection === "loops" && (
+          <div className="flex-1 overflow-y-auto">
+            <AgentLoops agentId={agent.id} />
           </div>
         )}
 

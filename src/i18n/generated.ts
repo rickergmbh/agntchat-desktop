@@ -857,6 +857,60 @@ export const resources = {
         "updateFailed": "Failed to update location"
       },
       "lookUpAgent": "Look Up Agent",
+      "loops": {
+        "blockedQuestion": "The agent asked",
+        "create": "New loop",
+        "createTitle": "Create loop",
+        "deleteConfirm": "Delete this loop?",
+        "directive": "Instructions (optional)",
+        "directivePlaceholder": "How the agent should work each iteration",
+        "editTitle": "Edit loop",
+        "empty": "No loops yet. Give this agent a goal to work toward.",
+        "errors": {
+          "limitReached": "This agent already has the maximum number of loops",
+          "loadFailed": "Couldn't load loops",
+          "saveFailed": "Couldn't save the loop"
+        },
+        "goal": "Goal",
+        "goalPlaceholder": "What should the agent accomplish? The loop ends when this is met.",
+        "intervalMinutes": "Minutes between iterations",
+        "iterationsCount": "Iteration {{current}} of {{max}}",
+        "lastProgress": "Last progress",
+        "maxIterations": "Max iterations",
+        "mode": {
+          "continuous": "Continuous",
+          "continuousHint": "The next iteration starts as soon as the previous one finishes",
+          "interval": "Interval"
+        },
+        "pause": "Pause",
+        "resume": "Resume",
+        "status": {
+          "active": "Active",
+          "blocked": "Waiting for you",
+          "completed": "Completed",
+          "exhausted": "Budget exhausted",
+          "failed": "Failed",
+          "paused": "Paused",
+          "stopped": "Stopped"
+        },
+        "stop": "Stop",
+        "stopConfirm": "Stop this loop permanently?",
+        "stopReason": {
+          "agent_offline": "Agent offline",
+          "awaiting_owner": "Waiting for your answer",
+          "consecutive_failures": "Paused after repeated failures",
+          "deadline_reached": "Deadline reached",
+          "goal_met": "Goal met",
+          "max_iterations_reached": "Iteration limit reached",
+          "no_progress": "Stopped — no progress",
+          "owner_paused": "Paused by you",
+          "owner_stopped": "Stopped by you",
+          "token_budget_exhausted": "Token budget exhausted"
+        },
+        "subtitle": "Goal-directed work cycles",
+        "title": "Loops",
+        "triggerMode": "Trigger"
+      },
       "memory": {
         "category": {
           "fact": "Fact",
@@ -1249,6 +1303,7 @@ export const resources = {
         "identity": "Identity",
         "locationAccess": "Location Access",
         "locations": "Locations",
+        "loops": "Loops",
         "model": "Model",
         "publish": "Publish",
         "pulse": "Pulse",
@@ -5441,6 +5496,60 @@ export const resources = {
         "updateFailed": "Error al actualizar la ubicación"
       },
       "lookUpAgent": "Buscar agente",
+      "loops": {
+        "blockedQuestion": "El agente preguntó",
+        "create": "Nuevo bucle",
+        "createTitle": "Crear bucle",
+        "deleteConfirm": "¿Eliminar este bucle?",
+        "directive": "Instrucciones (opcional)",
+        "directivePlaceholder": "Cómo debe trabajar el agente en cada iteración",
+        "editTitle": "Editar bucle",
+        "empty": "Aún no hay bucles. Dale a este agente un objetivo en el que trabajar.",
+        "errors": {
+          "limitReached": "Este agente ya tiene el número máximo de bucles",
+          "loadFailed": "No se pudieron cargar los bucles",
+          "saveFailed": "No se pudo guardar el bucle"
+        },
+        "goal": "Objetivo",
+        "goalPlaceholder": "¿Qué debe lograr el agente? El bucle termina cuando se cumple.",
+        "intervalMinutes": "Minutos entre iteraciones",
+        "iterationsCount": "Iteración {{current}} de {{max}}",
+        "lastProgress": "Último progreso",
+        "maxIterations": "Iteraciones máximas",
+        "mode": {
+          "continuous": "Continuo",
+          "continuousHint": "La siguiente iteración comienza en cuanto termina la anterior",
+          "interval": "Intervalo"
+        },
+        "pause": "Pausar",
+        "resume": "Reanudar",
+        "status": {
+          "active": "Activo",
+          "blocked": "Esperándote",
+          "completed": "Completado",
+          "exhausted": "Presupuesto agotado",
+          "failed": "Fallido",
+          "paused": "En pausa",
+          "stopped": "Detenido"
+        },
+        "stop": "Detener",
+        "stopConfirm": "¿Detener este bucle de forma permanente?",
+        "stopReason": {
+          "agent_offline": "Agente sin conexión",
+          "awaiting_owner": "Esperando tu respuesta",
+          "consecutive_failures": "Pausado tras fallos repetidos",
+          "deadline_reached": "Fecha límite alcanzada",
+          "goal_met": "Objetivo cumplido",
+          "max_iterations_reached": "Límite de iteraciones alcanzado",
+          "no_progress": "Detenido: sin progreso",
+          "owner_paused": "Pausado por ti",
+          "owner_stopped": "Detenido por ti",
+          "token_budget_exhausted": "Presupuesto de tokens agotado"
+        },
+        "subtitle": "Ciclos de trabajo orientados a objetivos",
+        "title": "Bucles",
+        "triggerMode": "Disparador"
+      },
       "memory": {
         "category": {
           "fact": "Dato",
@@ -5833,6 +5942,7 @@ export const resources = {
         "identity": "Identidad",
         "locationAccess": "Acceso a la ubicación",
         "locations": "Ubicaciones",
+        "loops": "Bucles",
         "model": "Modelo",
         "publish": "Publicar",
         "pulse": "Pulso",
@@ -10025,6 +10135,60 @@ export const resources = {
         "updateFailed": "Aktualisieren des Standorts fehlgeschlagen"
       },
       "lookUpAgent": "Agent nachschlagen",
+      "loops": {
+        "blockedQuestion": "Der Agent fragt",
+        "create": "Neuer Loop",
+        "createTitle": "Loop erstellen",
+        "deleteConfirm": "Diesen Loop löschen?",
+        "directive": "Anweisungen (optional)",
+        "directivePlaceholder": "Wie der Agent in jeder Iteration arbeiten soll",
+        "editTitle": "Loop bearbeiten",
+        "empty": "Noch keine Loops. Gib diesem Agenten ein Ziel, auf das er hinarbeitet.",
+        "errors": {
+          "limitReached": "Dieser Agent hat bereits die maximale Anzahl an Loops",
+          "loadFailed": "Loops konnten nicht geladen werden",
+          "saveFailed": "Loop konnte nicht gespeichert werden"
+        },
+        "goal": "Ziel",
+        "goalPlaceholder": "Was soll der Agent erreichen? Der Loop endet, wenn das Ziel erreicht ist.",
+        "intervalMinutes": "Minuten zwischen Iterationen",
+        "iterationsCount": "Iteration {{current}} von {{max}}",
+        "lastProgress": "Letzter Fortschritt",
+        "maxIterations": "Max. Iterationen",
+        "mode": {
+          "continuous": "Kontinuierlich",
+          "continuousHint": "Die nächste Iteration startet, sobald die vorherige abgeschlossen ist",
+          "interval": "Intervall"
+        },
+        "pause": "Pausieren",
+        "resume": "Fortsetzen",
+        "status": {
+          "active": "Aktiv",
+          "blocked": "Wartet auf dich",
+          "completed": "Abgeschlossen",
+          "exhausted": "Budget aufgebraucht",
+          "failed": "Fehlgeschlagen",
+          "paused": "Pausiert",
+          "stopped": "Gestoppt"
+        },
+        "stop": "Stoppen",
+        "stopConfirm": "Diesen Loop endgültig stoppen?",
+        "stopReason": {
+          "agent_offline": "Agent offline",
+          "awaiting_owner": "Wartet auf deine Antwort",
+          "consecutive_failures": "Nach wiederholten Fehlern pausiert",
+          "deadline_reached": "Frist erreicht",
+          "goal_met": "Ziel erreicht",
+          "max_iterations_reached": "Iterationslimit erreicht",
+          "no_progress": "Gestoppt — kein Fortschritt",
+          "owner_paused": "Von dir pausiert",
+          "owner_stopped": "Von dir gestoppt",
+          "token_budget_exhausted": "Token-Budget aufgebraucht"
+        },
+        "subtitle": "Zielgerichtete Arbeitszyklen",
+        "title": "Loops",
+        "triggerMode": "Auslöser"
+      },
       "memory": {
         "category": {
           "fact": "Fakt",
@@ -10417,6 +10581,7 @@ export const resources = {
         "identity": "Identität",
         "locationAccess": "Standortzugriff",
         "locations": "Standorte",
+        "loops": "Loops",
         "model": "Modell",
         "publish": "Veröffentlichen",
         "pulse": "Puls",
@@ -14609,6 +14774,60 @@ export const resources = {
         "updateFailed": "Échec de la mise à jour de la localisation"
       },
       "lookUpAgent": "Rechercher un agent",
+      "loops": {
+        "blockedQuestion": "L'agent a demandé",
+        "create": "Nouvelle boucle",
+        "createTitle": "Créer une boucle",
+        "deleteConfirm": "Supprimer cette boucle ?",
+        "directive": "Instructions (facultatif)",
+        "directivePlaceholder": "Comment l'agent doit travailler à chaque itération",
+        "editTitle": "Modifier la boucle",
+        "empty": "Aucune boucle pour l'instant. Donnez à cet agent un objectif à atteindre.",
+        "errors": {
+          "limitReached": "Cet agent a déjà le nombre maximum de boucles",
+          "loadFailed": "Impossible de charger les boucles",
+          "saveFailed": "Impossible d'enregistrer la boucle"
+        },
+        "goal": "Objectif",
+        "goalPlaceholder": "Que doit accomplir l'agent ? La boucle se termine quand c'est atteint.",
+        "intervalMinutes": "Minutes entre les itérations",
+        "iterationsCount": "Itération {{current}} sur {{max}}",
+        "lastProgress": "Dernier progrès",
+        "maxIterations": "Itérations max",
+        "mode": {
+          "continuous": "Continu",
+          "continuousHint": "L'itération suivante démarre dès que la précédente se termine",
+          "interval": "Intervalle"
+        },
+        "pause": "Mettre en pause",
+        "resume": "Reprendre",
+        "status": {
+          "active": "Active",
+          "blocked": "En attente de vous",
+          "completed": "Terminée",
+          "exhausted": "Budget épuisé",
+          "failed": "Échouée",
+          "paused": "En pause",
+          "stopped": "Arrêtée"
+        },
+        "stop": "Arrêter",
+        "stopConfirm": "Arrêter définitivement cette boucle ?",
+        "stopReason": {
+          "agent_offline": "Agent hors ligne",
+          "awaiting_owner": "En attente de votre réponse",
+          "consecutive_failures": "En pause après des échecs répétés",
+          "deadline_reached": "Échéance atteinte",
+          "goal_met": "Objectif atteint",
+          "max_iterations_reached": "Limite d'itérations atteinte",
+          "no_progress": "Arrêtée — aucun progrès",
+          "owner_paused": "Mise en pause par vous",
+          "owner_stopped": "Arrêtée par vous",
+          "token_budget_exhausted": "Budget de jetons épuisé"
+        },
+        "subtitle": "Cycles de travail orientés objectif",
+        "title": "Boucles",
+        "triggerMode": "Déclencheur"
+      },
       "memory": {
         "category": {
           "fact": "Fait",
@@ -15001,6 +15220,7 @@ export const resources = {
         "identity": "Identité",
         "locationAccess": "Accès à la localisation",
         "locations": "Localisations",
+        "loops": "Boucles",
         "model": "Modèle",
         "publish": "Publier",
         "pulse": "Pulsation",
@@ -19193,6 +19413,60 @@ export const resources = {
         "updateFailed": "Falha ao atualizar localização"
       },
       "lookUpAgent": "Consultar Agente",
+      "loops": {
+        "blockedQuestion": "O agente perguntou",
+        "create": "Novo loop",
+        "createTitle": "Criar loop",
+        "deleteConfirm": "Excluir este loop?",
+        "directive": "Instruções (opcional)",
+        "directivePlaceholder": "Como o agente deve trabalhar em cada iteração",
+        "editTitle": "Editar loop",
+        "empty": "Ainda não há loops. Dê a este agente um objetivo para trabalhar.",
+        "errors": {
+          "limitReached": "Este agente já tem o número máximo de loops",
+          "loadFailed": "Não foi possível carregar os loops",
+          "saveFailed": "Não foi possível salvar o loop"
+        },
+        "goal": "Objetivo",
+        "goalPlaceholder": "O que o agente deve alcançar? O loop termina quando isso for cumprido.",
+        "intervalMinutes": "Minutos entre iterações",
+        "iterationsCount": "Iteração {{current}} de {{max}}",
+        "lastProgress": "Último progresso",
+        "maxIterations": "Iterações máximas",
+        "mode": {
+          "continuous": "Contínuo",
+          "continuousHint": "A próxima iteração começa assim que a anterior termina",
+          "interval": "Intervalo"
+        },
+        "pause": "Pausar",
+        "resume": "Retomar",
+        "status": {
+          "active": "Ativo",
+          "blocked": "Aguardando você",
+          "completed": "Concluído",
+          "exhausted": "Orçamento esgotado",
+          "failed": "Falhou",
+          "paused": "Pausado",
+          "stopped": "Parado"
+        },
+        "stop": "Parar",
+        "stopConfirm": "Parar este loop permanentemente?",
+        "stopReason": {
+          "agent_offline": "Agente offline",
+          "awaiting_owner": "Aguardando sua resposta",
+          "consecutive_failures": "Pausado após falhas repetidas",
+          "deadline_reached": "Prazo atingido",
+          "goal_met": "Objetivo alcançado",
+          "max_iterations_reached": "Limite de iterações atingido",
+          "no_progress": "Parado — sem progresso",
+          "owner_paused": "Pausado por você",
+          "owner_stopped": "Parado por você",
+          "token_budget_exhausted": "Orçamento de tokens esgotado"
+        },
+        "subtitle": "Ciclos de trabalho orientados a objetivos",
+        "title": "Loops",
+        "triggerMode": "Gatilho"
+      },
       "memory": {
         "category": {
           "fact": "Fato",
@@ -19585,6 +19859,7 @@ export const resources = {
         "identity": "Identidade",
         "locationAccess": "Acesso à Localização",
         "locations": "Localizações",
+        "loops": "Loops",
         "model": "Modelo",
         "publish": "Publicar",
         "pulse": "Pulso",
@@ -23777,6 +24052,60 @@ export const resources = {
         "updateFailed": "場所の更新に失敗しました"
       },
       "lookUpAgent": "エージェントを検索",
+      "loops": {
+        "blockedQuestion": "エージェントからの質問",
+        "create": "新しいループ",
+        "createTitle": "ループを作成",
+        "deleteConfirm": "このループを削除しますか？",
+        "directive": "指示（任意）",
+        "directivePlaceholder": "各イテレーションでの作業方法",
+        "editTitle": "ループを編集",
+        "empty": "ループはまだありません。このエージェントに取り組む目標を設定しましょう。",
+        "errors": {
+          "limitReached": "このエージェントはすでにループの上限に達しています",
+          "loadFailed": "ループを読み込めませんでした",
+          "saveFailed": "ループを保存できませんでした"
+        },
+        "goal": "目標",
+        "goalPlaceholder": "エージェントに何を達成させますか？達成するとループは終了します。",
+        "intervalMinutes": "イテレーション間隔（分）",
+        "iterationsCount": "イテレーション {{current}} / {{max}}",
+        "lastProgress": "直近の進捗",
+        "maxIterations": "最大イテレーション数",
+        "mode": {
+          "continuous": "連続",
+          "continuousHint": "前のイテレーションが終わり次第、次が開始されます",
+          "interval": "間隔"
+        },
+        "pause": "一時停止",
+        "resume": "再開",
+        "status": {
+          "active": "実行中",
+          "blocked": "あなたの返答待ち",
+          "completed": "完了",
+          "exhausted": "上限に到達",
+          "failed": "失敗",
+          "paused": "一時停止",
+          "stopped": "停止"
+        },
+        "stop": "停止",
+        "stopConfirm": "このループを完全に停止しますか？",
+        "stopReason": {
+          "agent_offline": "エージェントがオフライン",
+          "awaiting_owner": "あなたの回答待ち",
+          "consecutive_failures": "連続失敗のため一時停止",
+          "deadline_reached": "期限に到達",
+          "goal_met": "目標達成",
+          "max_iterations_reached": "イテレーション上限に到達",
+          "no_progress": "停止 — 進捗なし",
+          "owner_paused": "あなたが一時停止しました",
+          "owner_stopped": "あなたが停止しました",
+          "token_budget_exhausted": "トークン上限に到達"
+        },
+        "subtitle": "目標達成に向けた作業サイクル",
+        "title": "ループ",
+        "triggerMode": "トリガー"
+      },
       "memory": {
         "category": {
           "fact": "事実",
@@ -24169,6 +24498,7 @@ export const resources = {
         "identity": "アイデンティティ",
         "locationAccess": "位置情報アクセス",
         "locations": "場所",
+        "loops": "ループ",
         "model": "モデル",
         "publish": "公開",
         "pulse": "パルス",
@@ -28361,6 +28691,60 @@ export const resources = {
         "updateFailed": "更新位置失败"
       },
       "lookUpAgent": "查找智能体",
+      "loops": {
+        "blockedQuestion": "智能体的提问",
+        "create": "新建循环",
+        "createTitle": "创建循环",
+        "deleteConfirm": "删除这个循环？",
+        "directive": "指令（可选）",
+        "directivePlaceholder": "智能体每次迭代的工作方式",
+        "editTitle": "编辑循环",
+        "empty": "还没有循环。给这个智能体设定一个努力实现的目标。",
+        "errors": {
+          "limitReached": "该智能体的循环数量已达上限",
+          "loadFailed": "无法加载循环",
+          "saveFailed": "无法保存循环"
+        },
+        "goal": "目标",
+        "goalPlaceholder": "智能体应该完成什么？达成后循环即结束。",
+        "intervalMinutes": "迭代间隔（分钟）",
+        "iterationsCount": "第 {{current}} 次迭代，共 {{max}} 次",
+        "lastProgress": "最新进展",
+        "maxIterations": "最大迭代次数",
+        "mode": {
+          "continuous": "连续",
+          "continuousHint": "上一次迭代结束后立即开始下一次",
+          "interval": "间隔"
+        },
+        "pause": "暂停",
+        "resume": "继续",
+        "status": {
+          "active": "运行中",
+          "blocked": "等待你回复",
+          "completed": "已完成",
+          "exhausted": "预算已用尽",
+          "failed": "失败",
+          "paused": "已暂停",
+          "stopped": "已停止"
+        },
+        "stop": "停止",
+        "stopConfirm": "永久停止这个循环？",
+        "stopReason": {
+          "agent_offline": "智能体离线",
+          "awaiting_owner": "等待你的回答",
+          "consecutive_failures": "多次失败后已暂停",
+          "deadline_reached": "已到截止时间",
+          "goal_met": "目标达成",
+          "max_iterations_reached": "已达迭代上限",
+          "no_progress": "已停止 — 无进展",
+          "owner_paused": "已被你暂停",
+          "owner_stopped": "已被你停止",
+          "token_budget_exhausted": "令牌预算已用尽"
+        },
+        "subtitle": "以目标为导向的工作循环",
+        "title": "循环",
+        "triggerMode": "触发方式"
+      },
       "memory": {
         "category": {
           "fact": "事实",
@@ -28753,6 +29137,7 @@ export const resources = {
         "identity": "身份",
         "locationAccess": "位置访问权限",
         "locations": "位置",
+        "loops": "循环",
         "model": "模型",
         "publish": "发布",
         "pulse": "脉搏",
@@ -32945,6 +33330,60 @@ export const resources = {
         "updateFailed": "위치 업데이트에 실패했습니다"
       },
       "lookUpAgent": "에이전트 조회",
+      "loops": {
+        "blockedQuestion": "에이전트의 질문",
+        "create": "새 루프",
+        "createTitle": "루프 만들기",
+        "deleteConfirm": "이 루프를 삭제할까요?",
+        "directive": "지침(선택 사항)",
+        "directivePlaceholder": "각 반복에서 에이전트가 작업하는 방식",
+        "editTitle": "루프 편집",
+        "empty": "아직 루프가 없습니다. 이 에이전트에게 달성할 목표를 부여하세요.",
+        "errors": {
+          "limitReached": "이 에이전트는 이미 최대 루프 수에 도달했습니다",
+          "loadFailed": "루프를 불러오지 못했습니다",
+          "saveFailed": "루프를 저장하지 못했습니다"
+        },
+        "goal": "목표",
+        "goalPlaceholder": "에이전트가 무엇을 달성해야 하나요? 달성되면 루프가 종료됩니다.",
+        "intervalMinutes": "반복 간격(분)",
+        "iterationsCount": "반복 {{current}}/{{max}}",
+        "lastProgress": "최근 진행 상황",
+        "maxIterations": "최대 반복 횟수",
+        "mode": {
+          "continuous": "연속",
+          "continuousHint": "이전 반복이 끝나는 즉시 다음 반복이 시작됩니다",
+          "interval": "간격"
+        },
+        "pause": "일시중지",
+        "resume": "재개",
+        "status": {
+          "active": "활성",
+          "blocked": "회신 대기 중",
+          "completed": "완료됨",
+          "exhausted": "예산 소진",
+          "failed": "실패",
+          "paused": "일시중지",
+          "stopped": "중지됨"
+        },
+        "stop": "중지",
+        "stopConfirm": "이 루프를 영구적으로 중지할까요?",
+        "stopReason": {
+          "agent_offline": "에이전트 오프라인",
+          "awaiting_owner": "답변 대기 중",
+          "consecutive_failures": "반복 실패로 일시중지됨",
+          "deadline_reached": "기한 도달",
+          "goal_met": "목표 달성",
+          "max_iterations_reached": "반복 한도 도달",
+          "no_progress": "중지됨 — 진전 없음",
+          "owner_paused": "직접 일시중지함",
+          "owner_stopped": "직접 중지함",
+          "token_budget_exhausted": "토큰 예산 소진"
+        },
+        "subtitle": "목표 지향 작업 사이클",
+        "title": "루프",
+        "triggerMode": "트리거"
+      },
       "memory": {
         "category": {
           "fact": "사실",
@@ -33337,6 +33776,7 @@ export const resources = {
         "identity": "아이덴티티",
         "locationAccess": "위치 접근",
         "locations": "위치",
+        "loops": "루프",
         "model": "모델",
         "publish": "게시",
         "pulse": "펄스",
@@ -37529,6 +37969,60 @@ export const resources = {
         "updateFailed": "Impossibile aggiornare la posizione"
       },
       "lookUpAgent": "Cerca Agente",
+      "loops": {
+        "blockedQuestion": "L'agente ha chiesto",
+        "create": "Nuovo loop",
+        "createTitle": "Crea loop",
+        "deleteConfirm": "Eliminare questo loop?",
+        "directive": "Istruzioni (facoltativo)",
+        "directivePlaceholder": "Come deve lavorare l'agente a ogni iterazione",
+        "editTitle": "Modifica loop",
+        "empty": "Ancora nessun loop. Assegna a questo agente un obiettivo su cui lavorare.",
+        "errors": {
+          "limitReached": "Questo agente ha già il numero massimo di loop",
+          "loadFailed": "Impossibile caricare i loop",
+          "saveFailed": "Impossibile salvare il loop"
+        },
+        "goal": "Obiettivo",
+        "goalPlaceholder": "Cosa deve raggiungere l'agente? Il loop termina quando l'obiettivo è raggiunto.",
+        "intervalMinutes": "Minuti tra le iterazioni",
+        "iterationsCount": "Iterazione {{current}} di {{max}}",
+        "lastProgress": "Ultimo progresso",
+        "maxIterations": "Iterazioni massime",
+        "mode": {
+          "continuous": "Continuo",
+          "continuousHint": "L'iterazione successiva inizia appena termina la precedente",
+          "interval": "Intervallo"
+        },
+        "pause": "Metti in pausa",
+        "resume": "Riprendi",
+        "status": {
+          "active": "Attivo",
+          "blocked": "In attesa di te",
+          "completed": "Completato",
+          "exhausted": "Budget esaurito",
+          "failed": "Non riuscito",
+          "paused": "In pausa",
+          "stopped": "Fermato"
+        },
+        "stop": "Ferma",
+        "stopConfirm": "Fermare definitivamente questo loop?",
+        "stopReason": {
+          "agent_offline": "Agente offline",
+          "awaiting_owner": "In attesa della tua risposta",
+          "consecutive_failures": "In pausa dopo errori ripetuti",
+          "deadline_reached": "Scadenza raggiunta",
+          "goal_met": "Obiettivo raggiunto",
+          "max_iterations_reached": "Limite di iterazioni raggiunto",
+          "no_progress": "Fermato — nessun progresso",
+          "owner_paused": "Messo in pausa da te",
+          "owner_stopped": "Fermato da te",
+          "token_budget_exhausted": "Budget di token esaurito"
+        },
+        "subtitle": "Cicli di lavoro orientati all'obiettivo",
+        "title": "Loop",
+        "triggerMode": "Trigger"
+      },
       "memory": {
         "category": {
           "fact": "Fatto",
@@ -37921,6 +38415,7 @@ export const resources = {
         "identity": "Identità",
         "locationAccess": "Accesso alla Posizione",
         "locations": "Posizioni",
+        "loops": "Loop",
         "model": "Modello",
         "publish": "Pubblica",
         "pulse": "Pulse",
@@ -42113,6 +42608,60 @@ export const resources = {
         "updateFailed": "लोकेशन अपडेट करने में विफल"
       },
       "lookUpAgent": "एजेंट देखें",
+      "loops": {
+        "blockedQuestion": "एजेंट ने पूछा",
+        "create": "नया लूप",
+        "createTitle": "लूप बनाएँ",
+        "deleteConfirm": "इस लूप को हटाएँ?",
+        "directive": "निर्देश (वैकल्पिक)",
+        "directivePlaceholder": "प्रत्येक पुनरावृत्ति में एजेंट को कैसे काम करना चाहिए",
+        "editTitle": "लूप संपादित करें",
+        "empty": "अभी कोई लूप नहीं है। इस एजेंट को काम करने के लिए एक लक्ष्य दें।",
+        "errors": {
+          "limitReached": "इस एजेंट के पास पहले से अधिकतम लूप हैं",
+          "loadFailed": "लूप लोड नहीं हो सके",
+          "saveFailed": "लूप सहेजा नहीं जा सका"
+        },
+        "goal": "लक्ष्य",
+        "goalPlaceholder": "एजेंट को क्या हासिल करना चाहिए? पूरा होने पर लूप समाप्त हो जाता है।",
+        "intervalMinutes": "पुनरावृत्तियों के बीच मिनट",
+        "iterationsCount": "पुनरावृत्ति {{current}} / {{max}}",
+        "lastProgress": "अंतिम प्रगति",
+        "maxIterations": "अधिकतम पुनरावृत्तियाँ",
+        "mode": {
+          "continuous": "निरंतर",
+          "continuousHint": "पिछली पुनरावृत्ति समाप्त होते ही अगली शुरू हो जाती है",
+          "interval": "अंतराल"
+        },
+        "pause": "रोकें",
+        "resume": "फिर से शुरू करें",
+        "status": {
+          "active": "सक्रिय",
+          "blocked": "आपकी प्रतीक्षा में",
+          "completed": "पूर्ण",
+          "exhausted": "बजट समाप्त",
+          "failed": "विफल",
+          "paused": "रोका गया",
+          "stopped": "रोक दिया गया"
+        },
+        "stop": "बंद करें",
+        "stopConfirm": "इस लूप को स्थायी रूप से बंद करें?",
+        "stopReason": {
+          "agent_offline": "एजेंट ऑफ़लाइन",
+          "awaiting_owner": "आपके उत्तर की प्रतीक्षा में",
+          "consecutive_failures": "बार-बार विफलताओं के बाद रोका गया",
+          "deadline_reached": "समय सीमा समाप्त",
+          "goal_met": "लक्ष्य पूरा हुआ",
+          "max_iterations_reached": "पुनरावृत्ति सीमा पूरी हुई",
+          "no_progress": "रोका गया — कोई प्रगति नहीं",
+          "owner_paused": "आपने रोका",
+          "owner_stopped": "आपने बंद किया",
+          "token_budget_exhausted": "टोकन बजट समाप्त"
+        },
+        "subtitle": "लक्ष्य-निर्देशित कार्य चक्र",
+        "title": "लूप",
+        "triggerMode": "ट्रिगर"
+      },
       "memory": {
         "category": {
           "fact": "तथ्य",
@@ -42505,6 +43054,7 @@ export const resources = {
         "identity": "पहचान",
         "locationAccess": "लोकेशन एक्सेस",
         "locations": "लोकेशन",
+        "loops": "लूप",
         "model": "मॉडल",
         "publish": "पब्लिश",
         "pulse": "पल्स",

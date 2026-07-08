@@ -1900,6 +1900,48 @@ export async function resumeRoutine(id: string): Promise<{ routine: Routine }> {
   return request(`/api/routines/${id}/resume`, { method: "POST" });
 }
 
+// Loops
+export async function listLoops(agentId: string): Promise<{ loops: AgentLoop[] }> {
+  return request(`/api/loops?agent_id=${agentId}`);
+}
+
+export async function createLoop(data: {
+  agent_id: string;
+  goal: string;
+  iteration_directive?: string;
+  trigger_mode: "continuous" | "interval";
+  interval_minutes?: number;
+  max_iterations?: number;
+}): Promise<{ loop: AgentLoop }> {
+  return request("/api/loops", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function updateLoop(id: string, data: Record<string, unknown>): Promise<{ loop: AgentLoop }> {
+  return request(`/api/loops/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function deleteLoop(id: string): Promise<void> {
+  await request(`/api/loops/${id}`, { method: "DELETE" });
+}
+
+export async function pauseLoop(id: string): Promise<{ loop: AgentLoop }> {
+  return request(`/api/loops/${id}/pause`, { method: "POST" });
+}
+
+export async function resumeLoop(id: string): Promise<{ loop: AgentLoop }> {
+  return request(`/api/loops/${id}/resume`, { method: "POST" });
+}
+
+export async function stopLoop(id: string): Promise<{ loop: AgentLoop }> {
+  return request(`/api/loops/${id}/stop`, { method: "POST" });
+}
+
 // Connected Accounts / Integrations
 export interface CredentialFieldDef {
   key: string;
@@ -3148,6 +3190,41 @@ export interface Routine {
   expiresAt?: string;
   consecutiveFailures: number;
   responseTemplate?: string;
+  insertedAt: string;
+  updatedAt: string;
+}
+
+export interface AgentLoop {
+  id: string;
+  participantId: string;
+  ownerId: string;
+  conversationId?: string;
+  goal: string;
+  iterationDirective?: string;
+  triggerMode: "continuous" | "interval";
+  intervalMinutes?: number;
+  minDelaySeconds: number;
+  status:
+    | "active"
+    | "paused"
+    | "blocked"
+    | "completed"
+    | "stopped"
+    | "exhausted"
+    | "failed";
+  stopReason?: string;
+  blockedQuestion?: string;
+  state: Record<string, unknown>;
+  progressHistory: Array<{ summary: string; status: string; at: string }>;
+  lastProgressSummary?: string;
+  iterationCount: number;
+  consecutiveFailures: number;
+  maxIterations: number;
+  deadline?: string;
+  tokenBudget?: number;
+  tokensUsed: number;
+  lastIterationAt?: string;
+  nextIterationAt?: string;
   insertedAt: string;
   updatedAt: string;
 }
