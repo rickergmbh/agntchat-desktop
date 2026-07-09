@@ -174,7 +174,7 @@ export function MessagesView() {
 
           When the details pane is open it laps 12px over this panel's right
           edge, so reserve that strip (plus breathing room) with `pr-5` to keep
-          the composer's send button and the Threads / Files chips clear of the
+          the composer's send button and the header controls clear of the
           overlap. */}
       <section
         className={cn(
@@ -405,6 +405,13 @@ function ConversationPane({
           </span>
         </button>
 
+        {/* Shared-content chips — threads + files (artifacts later) live
+            here in the header rather than floating over messages. Each
+            hides itself at count 0 and anchors its dropdown panel just
+            below the header. */}
+        <ThreadsBar conversationId={conversationId} />
+        <FilesBar conversationId={conversationId} />
+
         {wakeableAgentId && (
           <button
             type="button"
@@ -435,12 +442,7 @@ function ConversationPane({
         )}
       </header>
 
-      {/* Relative wrapper lets ThreadsBar float absolutely over the
-          message list without consuming a row. The main pane always shows
-          parent conversations, so the bar is always eligible here. */}
       <div className="relative flex flex-1 min-h-0 flex-col">
-        <ThreadsBar conversationId={conversationId} />
-        <FilesBar conversationId={conversationId} isThread={false} />
         <ChatThread conversationId={conversationId} />
       </div>
       <MessageComposer conversationId={conversationId} />

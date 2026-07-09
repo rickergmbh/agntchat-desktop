@@ -128,7 +128,7 @@ export function ThreadsPanel({ parentConversationId, open, onClose }: Props) {
   return (
     <div
       ref={containerRef}
-      className="absolute top-12 right-3 z-30 w-[360px] max-h-[480px] overflow-hidden rounded-xl border border-border bg-popover text-popover-foreground shadow-lg"
+      className="absolute right-0 top-full z-30 mt-2 w-[360px] max-h-[480px] overflow-hidden rounded-xl border border-border bg-popover text-popover-foreground shadow-lg"
       style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
     >
       <div className="flex items-start justify-between gap-2 px-4 py-3 border-b border-border">

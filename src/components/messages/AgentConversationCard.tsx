@@ -16,7 +16,7 @@ import { useStreamingStore } from "../../stores/streamingStore";
  * Slim inline pill rendered in the parent conversation timeline beneath
  * the spawning message. Mirrors mobile's `InlineThreadPill` layout: a
  * single row with a round icon, two-line text column (title + meta),
- * unread badge, chevron. No feed preview — the floating ThreadsBar +
+ * unread badge, chevron. No feed preview — the header ThreadsBar +
  * the thread itself surface that detail. Resolved threads stay visible
  * but dim down so attention goes to open work.
  */

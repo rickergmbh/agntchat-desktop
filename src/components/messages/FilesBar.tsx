@@ -1,32 +1,25 @@
 import { Paperclip } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { cn } from "../../lib/utils";
 import {
   listConversationFiles,
   type ConversationFile,
 } from "../../lib/api";
 import { useChatStore } from "../../stores/chatStore";
-import { selectChildAgentThreads } from "../../lib/thread-selectors";
 import { isFileMessage } from "./FileMessage";
 import { FilesPanel } from "./FilesPanel";
 
 /**
- * Floating "📎 N files" chip at the top-right of the chat area. Hidden when
- * the conversation has no file attachments. Clicking opens a dropdown panel
- * listing every file with uploader + timestamp + download.
+ * Header chip: paperclip + file count. Lives in the conversation header next
+ * to the threads chip — never floating over message content. Hidden when the
+ * conversation has no file attachments. Clicking opens the dropdown panel
+ * (anchored below the chip) listing every file with uploader + timestamp +
+ * download.
  *
- * Position note: the chip clears the threads chip (`right-[7rem]`) only when
- * that chip is actually present. With no threads chip it sits flush at the
- * right edge (`right-3`) rather than leaving a gap where threads would be.
+ * Mirrors mobile/components/FilesBar.tsx (which renders in the native
+ * header's headerRight).
  */
-export function FilesBar({
-  conversationId,
-  isThread = false,
-}: {
-  conversationId: string;
-  isThread?: boolean;
-}) {
+export function FilesBar({ conversationId }: { conversationId: string }) {
   const { t } = useTranslation("files");
   const [open, setOpen] = useState(false);
   const [files, setFiles] = useState<ConversationFile[]>([]);
@@ -41,14 +34,6 @@ export function FilesBar({
       (n, m) => (isFileMessage(m) ? n + 1 : n),
       0
     )
-  );
-
-  // The threads chip occupies the far right. The files chip only needs to
-  // clear it when it's actually rendered (parent conversation with threads).
-  const threadsBarVisible = useChatStore((s) =>
-    isThread
-      ? false
-      : selectChildAgentThreads(s.agentConversations, conversationId).length > 0
   );
 
   const refresh = async () => {
@@ -75,21 +60,21 @@ export function FilesBar({
   if (loading && files.length === 0) return null;
   if (files.length === 0) return null;
 
+  const chipLabel = t("count", { count: files.length });
+
   return (
-    <>
+    <div className="relative shrink-0">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className={cn(
-          "absolute top-2 z-20 inline-flex items-center gap-1.5 rounded-full border border-border bg-background/90 px-2.5 py-1 text-xs font-semibold text-primary shadow-sm transition-colors backdrop-blur-sm hover:bg-accent",
-          threadsBarVisible ? "right-[7rem]" : "right-3"
-        )}
+        className="flex h-7 items-center gap-1.5 rounded-md border border-border-strong px-2 text-[11px] font-semibold text-primary transition-colors hover:bg-accent"
         style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
         aria-expanded={open}
-        aria-label={t("count", { count: files.length })}
+        aria-label={chipLabel}
+        title={chipLabel}
       >
         <Paperclip className="h-3.5 w-3.5" />
-        <span>{t("count", { count: files.length })}</span>
+        <span>{files.length}</span>
       </button>
 
       <FilesPanel
@@ -98,6 +83,6 @@ export function FilesBar({
         onClose={() => setOpen(false)}
         onRefresh={refresh}
       />
-    </>
+    </div>
   );
 }

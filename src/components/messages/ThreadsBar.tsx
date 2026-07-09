@@ -10,17 +10,20 @@ import { useChatStore } from "../../stores/chatStore";
 import { ThreadsPanel } from "./ThreadsPanel";
 
 /**
- * Floating "💬 N threads" chip rendered absolutely over the top-right of
- * the chat content area. Stays visible whenever the parent has any
+ * Header chip: thread icon + open count (+ unread badge). Lives in the
+ * conversation header next to the files chip and the Info toggle — never
+ * floating over message content. Stays visible whenever the parent has any
  * thread (open OR resolved) so users can drop back into past threads.
- * Click opens a dropdown panel with the full thread list.
+ * Click opens the dropdown panel (anchored below the chip) with the full
+ * thread list.
  *
  * Styling switches based on what's left:
- *   - Open threads exist → primary-tinted chip with open count + unread
- *   - Only resolved threads → muted chip with "N resolved"
+ *   - Open threads exist → primary-tinted count with open count + unread
+ *   - Only resolved threads → muted count
  *   - Nothing at all → hidden
  *
- * Mirrors mobile/components/ThreadsBar.tsx.
+ * Mirrors mobile/components/ThreadsBar.tsx (which renders in the native
+ * header's headerRight).
  */
 export function ThreadsBar({ conversationId }: { conversationId: string }) {
   const { t } = useTranslation("chat");
@@ -50,22 +53,21 @@ export function ThreadsBar({ conversationId }: { conversationId: string }) {
     : t("threads.count", { count: openThreads.length });
 
   return (
-    <>
+    <div className="relative shrink-0">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         className={cn(
-          "absolute top-2 right-3 z-20 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold shadow-sm transition-colors backdrop-blur-sm",
-          allResolved
-            ? "border-border bg-background/90 text-muted-foreground hover:bg-accent"
-            : "border-border bg-background/90 text-primary hover:bg-accent"
+          "flex h-7 items-center gap-1.5 rounded-md border border-border-strong px-2 text-[11px] font-semibold transition-colors hover:bg-accent",
+          allResolved ? "text-muted-foreground" : "text-primary"
         )}
         style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
         aria-expanded={open}
         aria-label={chipLabel}
+        title={chipLabel}
       >
         <MessagesSquare className="h-3.5 w-3.5" />
-        <span>{chipLabel}</span>
+        <span>{allResolved ? resolvedThreads.length : openThreads.length}</span>
         {unreadTotal > 0 ? (
           <span className="ml-0.5 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold leading-none text-primary-foreground">
             {unreadTotal > 99 ? "99+" : unreadTotal}
@@ -78,6 +80,6 @@ export function ThreadsBar({ conversationId }: { conversationId: string }) {
         open={open}
         onClose={() => setOpen(false)}
       />
-    </>
+    </div>
   );
 }
