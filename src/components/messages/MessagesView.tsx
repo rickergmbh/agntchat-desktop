@@ -25,6 +25,7 @@ import { GroupAvatar } from "./GroupAvatar";
 import { AgentActivityIndicator } from "../AgentActivityIndicator";
 import { ThreadsBar } from "./ThreadsBar";
 import { FilesBar } from "./FilesBar";
+import { ArtifactsBar } from "./ArtifactsBar";
 import { ArtifactViewer } from "./ArtifactViewer";
 import { useArtifactStore } from "../../stores/artifactStore";
 
@@ -405,12 +406,13 @@ function ConversationPane({
           </span>
         </button>
 
-        {/* Shared-content chips — threads + files (artifacts later) live
-            here in the header rather than floating over messages. Each
-            hides itself at count 0 and anchors its dropdown panel just
-            below the header. */}
+        {/* Shared-content chips — threads, files, artifacts live here in
+            the header rather than floating over messages. Each hides
+            itself at count 0 and anchors its dropdown panel just below
+            the header. */}
         <ThreadsBar conversationId={conversationId} />
         <FilesBar conversationId={conversationId} />
+        <ArtifactsBar conversationId={conversationId} />
 
         {wakeableAgentId && (
           <button
