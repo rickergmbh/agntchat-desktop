@@ -214,6 +214,22 @@ export async function deleteAccount(): Promise<void> {
   });
 }
 
+/** Start Fresh: wipe every conversation the caller created and every agent
+ *  they own (memories/routines/reminders cascade), then provision a fresh
+ *  onboarding guide + conversation. `displayName` names the new guide —
+ *  mandatory server-side; face and tone are left for the guide to cover
+ *  conversationally. Returns the new onboarding conversation id. */
+export async function replayOnboarding(displayName: string): Promise<string> {
+  const { conversationId } = await request<{ conversationId: string }>(
+    "/api/onboarding/replay",
+    {
+      method: "POST",
+      body: JSON.stringify({ displayName }),
+    }
+  );
+  return conversationId;
+}
+
 /** Request a personal-data export. Returns a signed URL the client opens
  *  so the user can save the file (valid for `expiresIn` seconds).
  *  `incompleteSections` lists any data sections the backend couldn't

@@ -73,6 +73,7 @@ import {
   ChevronRight,
   Languages,
   ShieldCheck,
+  Sparkles,
   Download,
   Bug,
   Send,
@@ -2638,6 +2639,31 @@ function PrivacyDataSection() {
     }
   };
 
+  // ---- Start Fresh (replay onboarding) ----
+  const [freshOpen, setFreshOpen] = useState(false);
+  const [guideName, setGuideName] = useState("");
+  const [freshRunning, setFreshRunning] = useState(false);
+  const [freshError, setFreshError] = useState<string | null>(null);
+  const canStartFresh = guideName.trim().length > 0;
+
+  const handleStartFresh = async () => {
+    if (!canStartFresh || freshRunning) return;
+    setFreshRunning(true);
+    setFreshError(null);
+    try {
+      await api.replayOnboarding(guideName.trim());
+      // The wipe invalidates essentially every client store (conversations,
+      // agents, presence, joined channels). Reload to re-bootstrap from the
+      // fresh backend state; the new onboarding conversation arrives pinned.
+      window.location.reload();
+    } catch (e) {
+      setFreshError(
+        e instanceof Error ? e.message : t("privacy.updateFailed")
+      );
+      setFreshRunning(false);
+    }
+  };
+
   // ---- Account deletion ----
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [confirmText, setConfirmText] = useState("");
@@ -2907,6 +2933,34 @@ function PrivacyDataSection() {
         )}
       </div>
 
+      {/* Start Fresh — same wipe-and-replay as mobile's profile button. The
+          confirm dialog collects the new guide's name (mandatory server-side)
+          in place of mobile's setup wizard; face and tone are covered in the
+          onboarding conversation itself. */}
+      <div className="rounded-xl border border-border bg-card p-4">
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <p className="text-sm font-medium">{t("advanced.startFresh")}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {t("advanced.startFreshDescription")}
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              setGuideName("");
+              setFreshError(null);
+              setFreshOpen(true);
+            }}
+            className="flex-shrink-0"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            {t("advanced.startFreshConfirmCta")}
+          </Button>
+        </div>
+      </div>
+
       {/* Delete account */}
       <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-4">
         <div className="flex items-start justify-between gap-4">
@@ -2933,6 +2987,64 @@ function PrivacyDataSection() {
           </Button>
         </div>
       </div>
+
+      {/* Start Fresh confirmation dialog */}
+      <Dialog
+        open={freshOpen}
+        onOpenChange={(open) => {
+          if (!open && !freshRunning) setFreshOpen(false);
+        }}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t("advanced.startFreshConfirmTitle")}</DialogTitle>
+            <DialogDescription>
+              {t("advanced.startFreshConfirmMessage")}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2 py-2">
+            <Label className="text-xs">{t("onboarding:setup.nameHint")}</Label>
+            <Input
+              value={guideName}
+              onChange={(e) => {
+                setGuideName(e.target.value);
+                setFreshError(null);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && canStartFresh) void handleStartFresh();
+              }}
+              placeholder={t("onboarding:setup.namePlaceholder")}
+              autoFocus
+              autoComplete="off"
+            />
+            {freshError && (
+              <p className="text-xs text-destructive">{freshError}</p>
+            )}
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setFreshOpen(false)}
+              disabled={freshRunning}
+            >
+              {t("privacy.cancel")}
+            </Button>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => void handleStartFresh()}
+              disabled={!canStartFresh || freshRunning}
+            >
+              {freshRunning ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                t("advanced.startFreshConfirmCta")
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Delete confirmation dialog */}
       <Dialog
