@@ -8,6 +8,7 @@ import { useAgentStore } from "../../stores/agentStore";
 // useAgentStore is needed for the "add member" picker which lists this user's
 // own agents.
 import { useMemoryStore } from "../../stores/memoryStore";
+import { useNavStore } from "../../stores/navStore";
 import { useModelCatalog } from "../../stores/modelCatalogStore";
 import { uploadAvatar } from "../../lib/imageProcessor";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -141,6 +142,19 @@ export function ConversationDetailsPanel({
   );
   const presenceFor = (id: string): "online_local" | "offline" =>
     online.has(id) ? "online_local" : "offline";
+
+  // Clicking an agent member jumps to its detail drawer in the Agents view.
+  // Only agents in the user's own managed map are navigable — the drawer
+  // can't show someone else's agent, so those rows stay inert.
+  const setView = useNavStore((s) => s.setView);
+  const selectAgent = useAgentStore((s) => s.selectAgent);
+  const openAgent = useCallback(
+    (id: string) => {
+      void selectAgent(id);
+      setView("agents");
+    },
+    [selectAgent, setView]
+  );
 
   const isAdmin = conversation.createdBy === currentUserId;
   const rawMembers = conversation.members ?? [];
@@ -364,6 +378,11 @@ export function ConversationDetailsPanel({
                 isSelf={m.participantId === currentUserId}
                 isAdmin={isAdmin}
                 isConversationCreator={m.participantId === conversation.createdBy}
+                onOpen={
+                  m.participant?.type === "agent" && agentsMap[m.participantId]
+                    ? () => openAgent(m.participantId)
+                    : undefined
+                }
                 onRemove={() =>
                   handleRemove(
                     m.participantId,
@@ -522,6 +541,7 @@ function MemberRow({
   isSelf,
   isAdmin,
   isConversationCreator,
+  onOpen,
   onRemove,
 }: {
   member: ConversationMember;
@@ -530,6 +550,9 @@ function MemberRow({
   isSelf: boolean;
   isAdmin: boolean;
   isConversationCreator: boolean;
+  /** Set only for the user's own agents — clicking the row opens the
+   *  agent's detail drawer in the Agents view. */
+  onOpen?: () => void;
   onRemove: () => void;
 }) {
   const { t } = useTranslation("chat");
@@ -547,7 +570,26 @@ function MemberRow({
   );
 
   return (
-    <li className="group flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-muted/50">
+    <li
+      onClick={onOpen}
+      onKeyDown={
+        onOpen
+          ? (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onOpen();
+              }
+            }
+          : undefined
+      }
+      role={onOpen ? "button" : undefined}
+      tabIndex={onOpen ? 0 : undefined}
+      title={onOpen ? t("details.openAgent") : undefined}
+      className={cn(
+        "group flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-muted/50",
+        onOpen && "cursor-pointer"
+      )}
+    >
       <div className="relative shrink-0">
         <Avatar className="h-8 w-8">
           {p?.avatarUrl && <AvatarImage src={p.avatarUrl} alt={name} />}
@@ -587,12 +629,19 @@ function MemberRow({
 
       {isAdmin && !isSelf && (
         <button
-          onClick={onRemove}
+          onClick={(e) => {
+            // Row click navigates to the agent — removal must not.
+            e.stopPropagation();
+            onRemove();
+          }}
           className="rounded p-1 text-muted-foreground opacity-0 hover:bg-destructive/10 hover:text-destructive/90 group-hover:opacity-100 transition-opacity"
           title={t("details.removeMember")}
         >
           <UserMinus className="h-3.5 w-3.5" />
         </button>
+      )}
+      {onOpen && (
+        <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
       )}
     </li>
   );

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { MessageSquare, MessageCircle, MessagesSquare, ChevronRight, SquarePen, RefreshCw, Power, Loader2, X, CheckCircle2, Radio } from "lucide-react";
+import { MessageSquare, MessageCircle, MessagesSquare, Info, SquarePen, RefreshCw, Power, Loader2, X, CheckCircle2, Radio } from "lucide-react";
 import { wakeAgent } from "../../lib/api";
 import { useResizableWidth, useRightPaneWidth } from "../../hooks/useResizableWidth";
 import { ResizeHandle } from "../ResizeHandle";
@@ -391,8 +391,8 @@ function ConversationPane({
           </div>
           {/* Details toggle affordance — a bordered pill so it reads as a
               control even at rest (the bare chevron was near-invisible in dark
-              mode). Chevron rotates 180° to point back into the thread when the
-              panel is open. */}
+              mode, and a chevron read as "collapse" rather than "info"). The
+              filled state marks the panel as open. */}
           <span
             className={cn(
               "shrink-0 flex h-7 w-7 items-center justify-center rounded-md border transition-colors",
@@ -401,12 +401,7 @@ function ConversationPane({
                 : "border-border-strong text-foreground group-hover/header:bg-accent"
             )}
           >
-            <ChevronRight
-              className={cn(
-                "h-4 w-4 transition-transform",
-                showDetails && "rotate-180"
-              )}
-            />
+            <Info className="h-4 w-4" />
           </span>
         </button>
 
