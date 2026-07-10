@@ -22,7 +22,7 @@ export const LOCALE_LABELS: Record<SupportedLocale, string> = {
   "hi": "हिन्दी"
 };
 
-export const NAMESPACES = ["agents","artifacts","auth","canvas","chat","common","files","friends","memory","nav","onboarding","platform","settings","tasks","templates"] as const;
+export const NAMESPACES = ["agents","artifacts","auth","canvas","chat","common","files","friends","memory","nav","onboarding","platform","previews","settings","tasks","templates"] as const;
 
 export type Namespace = (typeof NAMESPACES)[number];
 
@@ -3154,6 +3154,7 @@ export const resources = {
       "location": "Location",
       "members": "Members",
       "platform": "Platform",
+      "previews": "Previews",
       "profile": "Profile",
       "settings": "Settings",
       "signOut": "Sign Out",
@@ -3707,6 +3708,14 @@ export const resources = {
         "switchFailed": "Switch failed"
       },
       "workspaceLabel": "Workspace"
+    },
+    "previews": {
+      "empty": "Select a component to preview it",
+      "readOnly": "Read-only · sample data",
+      "searchPlaceholder": "Search components…",
+      "states": "{{count}} states",
+      "subtitle": "See how platform cards render inside a conversation",
+      "title": "Component Previews"
     },
     "settings": {
       "advanced": {
@@ -7798,6 +7807,7 @@ export const resources = {
       "location": "Ubicación",
       "members": "Miembros",
       "platform": "Plataforma",
+      "previews": "Vistas previas",
       "profile": "Perfil",
       "settings": "Ajustes",
       "signOut": "Cerrar sesión",
@@ -8351,6 +8361,14 @@ export const resources = {
         "switchFailed": "No se pudo cambiar"
       },
       "workspaceLabel": "Espacio de trabajo"
+    },
+    "previews": {
+      "empty": "Selecciona un componente para previsualizarlo",
+      "readOnly": "Solo lectura · datos de ejemplo",
+      "searchPlaceholder": "Buscar componentes…",
+      "states": "{{count}} estados",
+      "subtitle": "Mira cómo se renderizan las tarjetas de la plataforma en una conversación",
+      "title": "Vistas previas de componentes"
     },
     "settings": {
       "advanced": {
@@ -12442,6 +12460,7 @@ export const resources = {
       "location": "Standort",
       "members": "Mitglieder",
       "platform": "Plattform",
+      "previews": "Vorschauen",
       "profile": "Profil",
       "settings": "Einstellungen",
       "signOut": "Abmelden",
@@ -12995,6 +13014,14 @@ export const resources = {
         "switchFailed": "Wechsel fehlgeschlagen"
       },
       "workspaceLabel": "Arbeitsbereich"
+    },
+    "previews": {
+      "empty": "Wähle eine Komponente für die Vorschau aus",
+      "readOnly": "Schreibgeschützt · Beispieldaten",
+      "searchPlaceholder": "Komponenten suchen…",
+      "states": "{{count}} Zustände",
+      "subtitle": "So werden Plattform-Karten in einer Unterhaltung dargestellt",
+      "title": "Komponentenvorschau"
     },
     "settings": {
       "advanced": {
@@ -17086,6 +17113,7 @@ export const resources = {
       "location": "Position",
       "members": "Membres",
       "platform": "Plateforme",
+      "previews": "Aperçus",
       "profile": "Profil",
       "settings": "Paramètres",
       "signOut": "Se déconnecter",
@@ -17639,6 +17667,14 @@ export const resources = {
         "switchFailed": "Échec du changement"
       },
       "workspaceLabel": "Espace de travail"
+    },
+    "previews": {
+      "empty": "Sélectionnez un composant pour l'aperçu",
+      "readOnly": "Lecture seule · données d'exemple",
+      "searchPlaceholder": "Rechercher des composants…",
+      "states": "{{count}} états",
+      "subtitle": "Découvrez le rendu des cartes de la plateforme dans une conversation",
+      "title": "Aperçu des composants"
     },
     "settings": {
       "advanced": {
@@ -21730,6 +21766,7 @@ export const resources = {
       "location": "Localização",
       "members": "Membros",
       "platform": "Plataforma",
+      "previews": "Prévias",
       "profile": "Perfil",
       "settings": "Configurações",
       "signOut": "Sair",
@@ -22283,6 +22320,14 @@ export const resources = {
         "switchFailed": "Falha na troca"
       },
       "workspaceLabel": "Espaço de trabalho"
+    },
+    "previews": {
+      "empty": "Selecione um componente para pré-visualizar",
+      "readOnly": "Somente leitura · dados de exemplo",
+      "searchPlaceholder": "Buscar componentes…",
+      "states": "{{count}} estados",
+      "subtitle": "Veja como os cartões da plataforma aparecem em uma conversa",
+      "title": "Prévias de componentes"
     },
     "settings": {
       "advanced": {
@@ -26374,6 +26419,7 @@ export const resources = {
       "location": "位置情報",
       "members": "メンバー",
       "platform": "プラットフォーム",
+      "previews": "プレビュー",
       "profile": "プロフィール",
       "settings": "設定",
       "signOut": "ログアウト",
@@ -26927,6 +26973,14 @@ export const resources = {
         "switchFailed": "切り替えに失敗しました"
       },
       "workspaceLabel": "ワークスペース"
+    },
+    "previews": {
+      "empty": "プレビューするコンポーネントを選択してください",
+      "readOnly": "読み取り専用 · サンプルデータ",
+      "searchPlaceholder": "コンポーネントを検索…",
+      "states": "{{count}} 状態",
+      "subtitle": "会話内でプラットフォームのカードがどのように表示されるかを確認します",
+      "title": "コンポーネントプレビュー"
     },
     "settings": {
       "advanced": {
@@ -31018,6 +31072,7 @@ export const resources = {
       "location": "位置",
       "members": "成员",
       "platform": "平台",
+      "previews": "预览",
       "profile": "个人资料",
       "settings": "设置",
       "signOut": "退出登录",
@@ -31571,6 +31626,14 @@ export const resources = {
         "switchFailed": "切换失败"
       },
       "workspaceLabel": "工作区"
+    },
+    "previews": {
+      "empty": "选择要预览的组件",
+      "readOnly": "只读 · 示例数据",
+      "searchPlaceholder": "搜索组件…",
+      "states": "{{count}} 种状态",
+      "subtitle": "查看平台卡片在对话中的呈现效果",
+      "title": "组件预览"
     },
     "settings": {
       "advanced": {
@@ -35662,6 +35725,7 @@ export const resources = {
       "location": "위치",
       "members": "멤버",
       "platform": "플랫폼",
+      "previews": "미리보기",
       "profile": "프로필",
       "settings": "설정",
       "signOut": "로그아웃",
@@ -36215,6 +36279,14 @@ export const resources = {
         "switchFailed": "전환 실패"
       },
       "workspaceLabel": "워크스페이스"
+    },
+    "previews": {
+      "empty": "미리 볼 컴포넌트를 선택하세요",
+      "readOnly": "읽기 전용 · 샘플 데이터",
+      "searchPlaceholder": "컴포넌트 검색…",
+      "states": "{{count}}개 상태",
+      "subtitle": "플랫폼 카드가 대화에서 어떻게 표시되는지 확인하세요",
+      "title": "컴포넌트 미리보기"
     },
     "settings": {
       "advanced": {
@@ -40306,6 +40378,7 @@ export const resources = {
       "location": "Posizione",
       "members": "Membri",
       "platform": "Piattaforma",
+      "previews": "Anteprime",
       "profile": "Profilo",
       "settings": "Impostazioni",
       "signOut": "Esci",
@@ -40859,6 +40932,14 @@ export const resources = {
         "switchFailed": "Cambio non riuscito"
       },
       "workspaceLabel": "Area di lavoro"
+    },
+    "previews": {
+      "empty": "Seleziona un componente per l'anteprima",
+      "readOnly": "Sola lettura · dati di esempio",
+      "searchPlaceholder": "Cerca componenti…",
+      "states": "{{count}} stati",
+      "subtitle": "Scopri come vengono visualizzate le schede della piattaforma in una conversazione",
+      "title": "Anteprima dei componenti"
     },
     "settings": {
       "advanced": {
@@ -44950,6 +45031,7 @@ export const resources = {
       "location": "स्थान",
       "members": "सदस्य",
       "platform": "प्लेटफ़ॉर्म",
+      "previews": "पूर्वावलोकन",
       "profile": "प्रोफ़ाइल",
       "settings": "सेटिंग्स",
       "signOut": "साइन आउट",
@@ -45503,6 +45585,14 @@ export const resources = {
         "switchFailed": "स्विच विफल"
       },
       "workspaceLabel": "वर्कस्पेस"
+    },
+    "previews": {
+      "empty": "पूर्वावलोकन के लिए एक कंपोनेंट चुनें",
+      "readOnly": "केवल पढ़ने के लिए · नमूना डेटा",
+      "searchPlaceholder": "कंपोनेंट खोजें…",
+      "states": "{{count}} स्थितियाँ",
+      "subtitle": "देखें कि प्लेटफ़ॉर्म कार्ड बातचीत में कैसे दिखते हैं",
+      "title": "कंपोनेंट पूर्वावलोकन"
     },
     "settings": {
       "advanced": {

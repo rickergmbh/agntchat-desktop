@@ -5,6 +5,7 @@ import {
   User,
   Zap,
   LayoutTemplate,
+  Shapes,
   FolderOpen,
   ShieldHalf,
   Users,
@@ -35,6 +36,7 @@ import { Dashboard } from "./Dashboard";
 import { MessagesView } from "./messages/MessagesView";
 import { TasksView } from "./tasks/TasksView";
 import { TemplatesView } from "./templates/TemplatesView";
+import { PreviewsView } from "./previews/PreviewsView";
 import { FilesView } from "./files/FilesView";
 import { CanvasView } from "./canvas/CanvasView";
 import { Profile } from "./Profile";
@@ -49,6 +51,7 @@ type View =
   | "friends"
   | "files"
   | "templates"
+  | "previews"
   | "canvas"
   | "fleet"
   | "platform";
@@ -114,6 +117,10 @@ export function AppShell() {
           // Response templates are an admin-only area now (matches the rail,
           // which hides the button for non-admins).
           participant?.platformAdmin ? <TemplatesView /> : <Dashboard />
+        ) : view === "previews" ? (
+          // Component previews are an admin-only debug gallery (matches the
+          // rail, which hides the button for non-admins).
+          participant?.platformAdmin ? <PreviewsView /> : <Dashboard />
         ) : view === "canvas" ? (
           <CanvasView />
         ) : view === "fleet" || view === "platform" ? (
@@ -316,6 +323,14 @@ function LeftRail({
             label={t("templates")}
             active={view === "templates"}
             onClick={() => onChange("templates")}
+          />
+        )}
+        {participant?.platformAdmin && (
+          <RailButton
+            icon={Shapes}
+            label={t("previews")}
+            active={view === "previews"}
+            onClick={() => onChange("previews")}
           />
         )}
         {participant?.platformAdmin && (

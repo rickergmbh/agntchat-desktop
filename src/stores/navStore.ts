@@ -8,6 +8,7 @@ export type View =
   | "friends"
   | "files"
   | "templates"
+  | "previews"
   | "canvas"
   | "fleet"
   | "platform";
