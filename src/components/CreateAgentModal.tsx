@@ -315,19 +315,32 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   // Once the catalog resolves, default backend/model to the first
   // option if the current backend isn't actually available. Keeps the
   // initial "claude_cli" guess if it IS in the catalog.
+  // Default model for a provider: Opus 4.8 when the catalog has it (the
+  // scratch default), else the catalog's first entry. Presets override this
+  // with their own model in applyPreset.
+  const defaultModelFor = useCallback(
+    (backendId: string) => {
+      const list = catalog.modelsFor(backendId);
+      return (
+        list.find((m) => m.id === "claude-opus-4-8")?.id ?? list[0]?.id ?? ""
+      );
+    },
+    [catalog]
+  );
+
   useEffect(() => {
     if (PROVIDERS.length === 0) return;
     if (PROVIDERS.some((p) => p.id === backend)) {
       if (!model) {
-        setModel(catalog.modelsFor(backend)[0]?.id ?? "");
+        setModel(defaultModelFor(backend));
       }
       return;
     }
     const first = PROVIDERS[0];
     if (!first) return;
     setBackend(first.id);
-    setModel(catalog.modelsFor(first.id)[0]?.id ?? "");
-  }, [PROVIDERS, backend, model, catalog]);
+    setModel(defaultModelFor(first.id));
+  }, [PROVIDERS, backend, model, catalog, defaultModelFor]);
 
   const models = useMemo(
     () => (backend ? catalog.modelsFor(backend) : []),
@@ -356,12 +369,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   const handleBackendChange = (next: string) => {
     if (!next) return;
     setBackend(next);
-    const newModels = catalog.modelsFor(next);
-    if (newModels.length > 0) {
-      setModel(newModels[0]?.id ?? "");
-    } else {
-      setModel("");
-    }
+    setModel(defaultModelFor(next));
     const newModes = catalog.supportedModesFor(next);
     if (!newModes.includes(executionMode)) {
       setExecutionMode(newModes.includes("tool_use") ? "tool_use" : newModes[0] ?? "");
@@ -394,6 +402,9 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
       setDescription(p.description);
       setCustomInstructions(p.instructions);
       setSelectedTools(p.tools ?? []);
+      // Preset default model (only meaningful on the claude_cli backend the
+      // wizard starts on; a later provider switch re-defaults it anyway).
+      if (p.model && backend === "claude_cli") setModel(p.model);
       if (p.requiresGoogle && googleConnectedRef.current === null) {
         void getProviderStatus("google")
           .then((s) => {
@@ -414,6 +425,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
       setDescription("");
       setCustomInstructions("");
       setSelectedTools([]);
+      if (backend === "claude_cli") setModel(defaultModelFor(backend));
     }
     setStepIndex(STEPS.indexOf("name"));
   };
@@ -521,12 +533,14 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
       // pin sensible defaults (claude_cli) and skip per-agent key handling.
       const hosted = hosting === "hosted";
       const effBackend = hosted ? "claude_cli" : backend;
-      // Default hosted agents to Opus 4.8 (not the catalog's first entry,
-      // Fable 5) — fall back to the first available hosted model if Opus 4.8
-      // isn't in the catalog for some reason.
+      // Hosted model: honor the wizard's chosen model (a preset default like
+      // Sonnet 4.6, or whatever the user picked) when it's a valid claude_cli
+      // model; otherwise fall back to Opus 4.8 (the scratch default), then the
+      // catalog's first hosted entry.
       const hostedModels = catalog.modelsFor("claude_cli");
       const effModel = hosted
-        ? hostedModels.find((m) => m.id === "claude-opus-4-8")?.id ??
+        ? hostedModels.find((m) => m.id === model)?.id ??
+          hostedModels.find((m) => m.id === "claude-opus-4-8")?.id ??
           hostedModels[0]?.id ??
           model
         : model;

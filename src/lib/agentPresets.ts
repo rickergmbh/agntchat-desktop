@@ -23,6 +23,9 @@ export interface AgentPreset {
   namePlaceholderKey: string;
   role: AgentType;
   tone: ToneKey;
+  /** Default model (claude_cli catalog id) — applied on preset pick, still
+   *  changeable on the brain step. Absent → the wizard's scratch default. */
+  model?: string;
   /** Mixed list — entries found in SPECIALTIES_BY_ROLE[role].options land in
    *  `specialties`, the rest in `customSpecialties`. */
   specialties: string[];
@@ -45,6 +48,7 @@ export const AGENT_PRESETS: AgentPreset[] = [
     namePlaceholderKey: "create.presets.assistant.namePlaceholder",
     role: "orchestrator",
     tone: "friendly",
+    model: "claude-sonnet-4-6",
     specialties: ["Task Prioritization", "Team Coordination", "Workflow Automation"],
     description: "Personal assistant that keeps the day on track",
     instructions: [
@@ -63,6 +67,7 @@ export const AGENT_PRESETS: AgentPreset[] = [
     namePlaceholderKey: "create.presets.email.namePlaceholder",
     role: "worker",
     tone: "professional",
+    model: "claude-sonnet-4-6",
     specialties: ["Email Triage", "Inbox Management", "Drafting Replies", "Writing"],
     description: "Email agent that triages the inbox and drafts replies",
     requiresGoogle: true,
@@ -82,6 +87,7 @@ export const AGENT_PRESETS: AgentPreset[] = [
     namePlaceholderKey: "create.presets.calendar.namePlaceholder",
     role: "worker",
     tone: "professional",
+    model: "claude-sonnet-4-6",
     specialties: ["Scheduling", "Calendar Management", "Meeting Prep"],
     description: "Calendar agent that manages events and the daily agenda",
     requiresGoogle: true,
@@ -110,6 +116,7 @@ export const AGENT_PRESETS: AgentPreset[] = [
     namePlaceholderKey: "create.presets.research.namePlaceholder",
     role: "worker",
     tone: "technical",
+    model: "claude-sonnet-5",
     specialties: ["Research", "Writing", "Data Analysis"],
     description: "Research agent that turns questions into cited briefs",
     instructions: [
