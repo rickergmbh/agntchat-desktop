@@ -67,6 +67,12 @@ import {
   DialogContent,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { BotMascot } from "./onboarding/BotMascot";
 import { LetterReveal } from "./onboarding/LetterReveal";
@@ -1188,6 +1194,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
               )}
 
               {step === "tools" && (
+                <TooltipProvider delay={300}>
                 <div className="space-y-3">
                   {groupIntegrationTools(toolCatalog).length === 0 ? (
                     <p className="text-sm text-muted-foreground text-center py-6">
@@ -1224,9 +1231,22 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                                     {tool.displayName || tool.name}
                                   </p>
                                   {tool.description && (
-                                    <p className="text-[11px] text-text-muted line-clamp-1">
-                                      {tool.description}
-                                    </p>
+                                    <Tooltip>
+                                      <TooltipTrigger
+                                        render={
+                                          <p className="text-[11px] text-text-muted line-clamp-1 cursor-default text-left">
+                                            {tool.description}
+                                          </p>
+                                        }
+                                      />
+                                      <TooltipContent
+                                        side="bottom"
+                                        align="start"
+                                        className="max-w-sm whitespace-normal text-left leading-snug"
+                                      >
+                                        {tool.description}
+                                      </TooltipContent>
+                                    </Tooltip>
                                   )}
                                 </div>
                                 <Switch
@@ -1247,6 +1267,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                     ))
                   )}
                 </div>
+                </TooltipProvider>
               )}
 
               {step === "brain" && (

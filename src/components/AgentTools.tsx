@@ -15,7 +15,36 @@ import { openExternal } from "../lib/openExternal";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "../lib/utils";
+
+/** One-line clamped description that reveals its full text in a tooltip —
+ *  keeps row heights uniform without hiding detail. */
+function ToolDescription({ text }: { text: string }) {
+  return (
+    <Tooltip>
+      <TooltipTrigger
+        render={
+          <p className="text-xs text-muted-foreground line-clamp-1 cursor-default text-left">
+            {text}
+          </p>
+        }
+      />
+      <TooltipContent
+        side="bottom"
+        align="start"
+        className="max-w-sm whitespace-normal text-left leading-snug"
+      >
+        {text}
+      </TooltipContent>
+    </Tooltip>
+  );
+}
 
 interface AgentToolsProps {
   agentId: string;
@@ -117,6 +146,7 @@ export function AgentTools({ agentId }: AgentToolsProps) {
   }
 
   return (
+    <TooltipProvider delay={300}>
     <div className="p-5 space-y-6">
       <div>
         <h3 className="text-sm font-semibold">{t("toolsTab.integrations")}</h3>
@@ -181,9 +211,7 @@ export function AgentTools({ agentId }: AgentToolsProps) {
                   <div className="min-w-0">
                     <p className="text-sm">{tool.displayName || tool.name}</p>
                     {tool.description && (
-                      <p className="text-xs text-muted-foreground line-clamp-1">
-                        {tool.description}
-                      </p>
+                      <ToolDescription text={tool.description} />
                     )}
                   </div>
                   <Switch
@@ -221,16 +249,13 @@ export function AgentTools({ agentId }: AgentToolsProps) {
             {platformTools.map((tool) => (
               <div key={tool.id} className="px-4 py-2">
                 <p className={cn("text-sm")}>{tool.displayName || tool.name}</p>
-                {tool.description && (
-                  <p className="text-xs text-muted-foreground line-clamp-1">
-                    {tool.description}
-                  </p>
-                )}
+                {tool.description && <ToolDescription text={tool.description} />}
               </div>
             ))}
           </div>
         )}
       </div>
     </div>
+    </TooltipProvider>
   );
 }
