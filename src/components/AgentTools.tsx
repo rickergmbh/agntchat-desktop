@@ -62,8 +62,12 @@ export function AgentTools({ agentId }: AgentToolsProps) {
   const [assignedNames, setAssignedNames] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [busyTool, setBusyTool] = useState<string | null>(null);
+  const [busyGroup, setBusyGroup] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showPlatform, setShowPlatform] = useState(false);
+  // Groups start collapsed — the header row (label + count + group switch)
+  // is the primary control; expanding reveals per-tool switches.
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
   const [connections, setConnections] = useState<Record<string, boolean>>({});
 
   const fetchAll = useCallback(async () => {
@@ -127,6 +131,49 @@ export function AgentTools({ agentId }: AgentToolsProps) {
     }
   };
 
+  // Group switch: on = assign every tool in the group, off = unassign all.
+  // Optimistic across the whole group; any failure refetches truth.
+  const handleToggleGroup = async (group: ToolGroup, next: boolean) => {
+    const affected = group.tools.filter(
+      (tool) => assignedNames.has(tool.name) !== next
+    );
+    if (affected.length === 0) return;
+    setBusyGroup(group.key);
+    setError(null);
+    setAssignedNames((prev) => {
+      const copy = new Set(prev);
+      for (const tool of affected) {
+        if (next) copy.add(tool.name);
+        else copy.delete(tool.name);
+      }
+      return copy;
+    });
+    try {
+      const results = await Promise.allSettled(
+        affected.map((tool) =>
+          next
+            ? assignToolToAgent(tool.id, agentId)
+            : unassignToolFromAgent(tool.id, agentId)
+        )
+      );
+      if (results.some((r) => r.status === "rejected")) {
+        setError(t("toolsTab.errors.toggleFailed"));
+        await fetchAll();
+      }
+    } finally {
+      setBusyGroup(null);
+    }
+  };
+
+  const toggleExpanded = (key: string) => {
+    setExpandedGroups((prev) => {
+      const copy = new Set(prev);
+      if (copy.has(key)) copy.delete(key);
+      else copy.add(key);
+      return copy;
+    });
+  };
+
   const handleConnect = async (provider: string) => {
     setError(null);
     try {
@@ -169,15 +216,42 @@ export function AgentTools({ agentId }: AgentToolsProps) {
         const connected = group.credentialProvider
           ? connections[group.credentialProvider]
           : undefined;
+        const enabledCount = group.tools.filter((tool) =>
+          assignedNames.has(tool.name)
+        ).length;
+        const allEnabled = enabledCount === group.tools.length;
+        const expanded = expandedGroups.has(group.key);
         return (
           <div
             key={group.key}
             className="rounded-xl border border-border bg-card"
           >
-            <div className="flex items-center justify-between gap-2 px-4 py-2.5 border-b border-border">
-              <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                {t(group.labelKey)}
-              </span>
+            {/* Header IS the control: group switch + expand chevron. */}
+            <div className="flex items-center gap-2 px-4 py-2.5">
+              <button
+                type="button"
+                onClick={() => toggleExpanded(group.key)}
+                className="flex min-w-0 flex-1 items-center gap-1.5 text-left"
+              >
+                {expanded ? (
+                  <ChevronDown className="w-3.5 h-3.5 shrink-0 text-muted-foreground" />
+                ) : (
+                  <ChevronRight className="w-3.5 h-3.5 shrink-0 text-muted-foreground" />
+                )}
+                <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  {t(group.labelKey)}
+                </span>
+                <span
+                  className={cn(
+                    "text-[10px] tabular-nums",
+                    enabledCount > 0
+                      ? "text-primary"
+                      : "text-muted-foreground/70"
+                  )}
+                >
+                  {enabledCount}/{group.tools.length}
+                </span>
+              </button>
               {group.credentialProvider &&
                 (connected === true ? (
                   <Badge variant="secondary" className="gap-1 text-[10px]">
@@ -201,27 +275,34 @@ export function AgentTools({ agentId }: AgentToolsProps) {
                     </Button>
                   </div>
                 ) : null)}
+              <Switch
+                checked={allEnabled}
+                disabled={busyGroup === group.key}
+                onCheckedChange={(next) => void handleToggleGroup(group, next)}
+              />
             </div>
-            <div className="divide-y divide-border">
-              {group.tools.map((tool) => (
-                <div
-                  key={tool.id}
-                  className="flex items-center justify-between gap-3 px-4 py-2.5"
-                >
-                  <div className="min-w-0">
-                    <p className="text-sm">{tool.displayName || tool.name}</p>
-                    {tool.description && (
-                      <ToolDescription text={tool.description} />
-                    )}
+            {expanded && (
+              <div className="divide-y divide-border border-t border-border">
+                {group.tools.map((tool) => (
+                  <div
+                    key={tool.id}
+                    className="flex items-center justify-between gap-3 px-4 py-2.5"
+                  >
+                    <div className="min-w-0">
+                      <p className="text-sm">{tool.displayName || tool.name}</p>
+                      {tool.description && (
+                        <ToolDescription text={tool.description} />
+                      )}
+                    </div>
+                    <Switch
+                      checked={assignedNames.has(tool.name)}
+                      disabled={busyTool === tool.id || busyGroup === group.key}
+                      onCheckedChange={(next) => void handleToggle(tool, next)}
+                    />
                   </div>
-                  <Switch
-                    checked={assignedNames.has(tool.name)}
-                    disabled={busyTool === tool.id}
-                    onCheckedChange={(next) => void handleToggle(tool, next)}
-                  />
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         );
       })}

@@ -20,6 +20,8 @@ import {
   Telescope,
   PenLine,
   Check,
+  ChevronDown,
+  ChevronRight,
 } from "lucide-react";
 import { useAgentStore } from "../stores/agentStore";
 import { useAuthStore } from "../stores/authStore";
@@ -195,6 +197,11 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   // Pre-seeded by presets; the picker fetches the catalog on first render.
   const [selectedTools, setSelectedTools] = useState<string[]>([]);
   const [toolCatalog, setToolCatalog] = useState<PlatformToolSummary[]>([]);
+  // Provider groups start collapsed; the header switch toggles the whole
+  // group, the chevron reveals individual tools.
+  const [expandedToolGroups, setExpandedToolGroups] = useState<Set<string>>(
+    new Set()
+  );
   useEffect(() => {
     listToolCatalog()
       .then(setToolCatalog)
@@ -1201,70 +1208,125 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                       {t("toolsTab.empty")}
                     </p>
                   ) : (
-                    groupIntegrationTools(toolCatalog).map((group) => (
-                      <div
-                        key={group.key}
-                        className="rounded-lg border border-border"
-                      >
-                        <div className="flex items-center justify-between gap-2 px-3 py-2 border-b border-border">
-                          <span className="text-[11px] font-medium uppercase tracking-wide text-text-muted">
-                            {t(group.labelKey)}
-                          </span>
-                          {group.credentialProvider && (
-                            <span className="rounded-full bg-muted px-1.5 py-px text-[9px] uppercase tracking-wide text-muted-foreground">
-                              {t("toolsTab.needsProvider", {
-                                provider: group.credentialProvider,
+                    groupIntegrationTools(toolCatalog).map((group) => {
+                      const enabledCount = group.tools.filter((tool) =>
+                        selectedTools.includes(tool.name)
+                      ).length;
+                      const allEnabled = enabledCount === group.tools.length;
+                      const expanded = expandedToolGroups.has(group.key);
+                      const groupNames = group.tools.map((tool) => tool.name);
+                      return (
+                        <div
+                          key={group.key}
+                          className="rounded-lg border border-border"
+                        >
+                          {/* Header is the control: one switch for the whole
+                              group; the chevron expands per-tool switches. */}
+                          <div className="flex items-center gap-2 px-3 py-2">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setExpandedToolGroups((prev) => {
+                                  const copy = new Set(prev);
+                                  if (copy.has(group.key)) copy.delete(group.key);
+                                  else copy.add(group.key);
+                                  return copy;
+                                })
+                              }
+                              className="flex min-w-0 flex-1 items-center gap-1.5 text-left"
+                            >
+                              {expanded ? (
+                                <ChevronDown className="w-3 h-3 shrink-0 text-text-muted" />
+                              ) : (
+                                <ChevronRight className="w-3 h-3 shrink-0 text-text-muted" />
+                              )}
+                              <span className="text-[11px] font-medium uppercase tracking-wide text-text-muted">
+                                {t(group.labelKey)}
+                              </span>
+                              <span
+                                className={cn(
+                                  "text-[10px] tabular-nums",
+                                  enabledCount > 0
+                                    ? "text-primary"
+                                    : "text-text-muted/70"
+                                )}
+                              >
+                                {enabledCount}/{group.tools.length}
+                              </span>
+                            </button>
+                            {group.credentialProvider && (
+                              <span className="rounded-full bg-muted px-1.5 py-px text-[9px] uppercase tracking-wide text-muted-foreground">
+                                {t("toolsTab.needsProvider", {
+                                  provider: group.credentialProvider,
+                                })}
+                              </span>
+                            )}
+                            <Switch
+                              checked={allEnabled}
+                              onCheckedChange={(next) =>
+                                setSelectedTools((prev) =>
+                                  next
+                                    ? [
+                                        ...prev,
+                                        ...groupNames.filter(
+                                          (n) => !prev.includes(n)
+                                        ),
+                                      ]
+                                    : prev.filter((n) => !groupNames.includes(n))
+                                )
+                              }
+                            />
+                          </div>
+                          {expanded && (
+                            <div className="divide-y divide-border border-t border-border">
+                              {group.tools.map((tool) => {
+                                const checked = selectedTools.includes(tool.name);
+                                return (
+                                  <label
+                                    key={tool.id}
+                                    className="flex cursor-pointer items-center justify-between gap-3 px-3 py-2 hover:bg-accent/50 transition-colors"
+                                  >
+                                    <div className="min-w-0">
+                                      <p className="text-xs font-medium">
+                                        {tool.displayName || tool.name}
+                                      </p>
+                                      {tool.description && (
+                                        <Tooltip>
+                                          <TooltipTrigger
+                                            render={
+                                              <p className="text-[11px] text-text-muted line-clamp-1 cursor-default text-left">
+                                                {tool.description}
+                                              </p>
+                                            }
+                                          />
+                                          <TooltipContent
+                                            side="bottom"
+                                            align="start"
+                                            className="max-w-sm whitespace-normal text-left leading-snug"
+                                          >
+                                            {tool.description}
+                                          </TooltipContent>
+                                        </Tooltip>
+                                      )}
+                                    </div>
+                                    <Switch
+                                      checked={checked}
+                                      onCheckedChange={(next) =>
+                                        setSelectedTools((prev) =>
+                                          next
+                                            ? [...prev, tool.name]
+                                            : prev.filter((n) => n !== tool.name)
+                                        )
+                                      }
+                                    />
+                                  </label>
+                                );
                               })}
-                            </span>
+                            </div>
                           )}
                         </div>
-                        <div className="divide-y divide-border">
-                          {group.tools.map((tool) => {
-                            const checked = selectedTools.includes(tool.name);
-                            return (
-                              <label
-                                key={tool.id}
-                                className="flex cursor-pointer items-center justify-between gap-3 px-3 py-2 hover:bg-accent/50 transition-colors"
-                              >
-                                <div className="min-w-0">
-                                  <p className="text-xs font-medium">
-                                    {tool.displayName || tool.name}
-                                  </p>
-                                  {tool.description && (
-                                    <Tooltip>
-                                      <TooltipTrigger
-                                        render={
-                                          <p className="text-[11px] text-text-muted line-clamp-1 cursor-default text-left">
-                                            {tool.description}
-                                          </p>
-                                        }
-                                      />
-                                      <TooltipContent
-                                        side="bottom"
-                                        align="start"
-                                        className="max-w-sm whitespace-normal text-left leading-snug"
-                                      >
-                                        {tool.description}
-                                      </TooltipContent>
-                                    </Tooltip>
-                                  )}
-                                </div>
-                                <Switch
-                                  checked={checked}
-                                  onCheckedChange={(next) =>
-                                    setSelectedTools((prev) =>
-                                      next
-                                        ? [...prev, tool.name]
-                                        : prev.filter((n) => n !== tool.name)
-                                    )
-                                  }
-                                />
-                              </label>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    ))
+                      );
+                    })
                   )}
                 </div>
                 </TooltipProvider>
