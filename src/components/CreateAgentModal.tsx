@@ -104,6 +104,13 @@ const STEPS = [
 ] as const;
 type WizardStep = (typeof STEPS)[number];
 
+// Display names for credentialed providers on the tools step's Connect
+// buttons (provider ids are lowercase machine keys).
+const PROVIDER_LABELS: Record<"google" | "github", string> = {
+  google: "Google",
+  github: "GitHub",
+};
+
 // Icons for the preset picker stay UI-side, like TYPE_ICONS below.
 const PRESET_ICONS: Record<AgentPreset["id"], typeof Bot> = {
   assistant: Sparkles,
@@ -202,6 +209,63 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   const [expandedToolGroups, setExpandedToolGroups] = useState<Set<string>>(
     new Set()
   );
+  // Connection status per credentialed provider, shown on the group headers
+  // so users can connect right here instead of after creation. undefined =
+  // unknown (no badge).
+  const [wizardConnections, setWizardConnections] = useState<
+    Record<string, boolean | undefined>
+  >({});
+  useEffect(() => {
+    for (const provider of ["google", "github"] as const) {
+      getProviderStatus(provider)
+        .then((s) => {
+          setWizardConnections((prev) => ({ ...prev, [provider]: s.connected }));
+          if (provider === "google") googleConnectedRef.current = s.connected;
+        })
+        .catch(() => {
+          // stays unknown
+        });
+    }
+  }, []);
+  const wizardConnPollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  useEffect(
+    () => () => {
+      if (wizardConnPollRef.current) clearInterval(wizardConnPollRef.current);
+    },
+    []
+  );
+
+  // Launch OAuth in the system browser and poll until the credential lands
+  // (same mechanics as the post-create connect pane — there's no in-app
+  // completion event).
+  const handleWizardConnect = async (provider: "google" | "github") => {
+    try {
+      const { authorizeUrl } = await authorizeProvider(provider);
+      openExternal(authorizeUrl);
+      const startedAt = Date.now();
+      if (wizardConnPollRef.current) clearInterval(wizardConnPollRef.current);
+      wizardConnPollRef.current = setInterval(async () => {
+        if (Date.now() - startedAt > 120_000) {
+          if (wizardConnPollRef.current) clearInterval(wizardConnPollRef.current);
+          wizardConnPollRef.current = null;
+          return;
+        }
+        try {
+          const s = await getProviderStatus(provider);
+          if (s.connected) {
+            if (wizardConnPollRef.current) clearInterval(wizardConnPollRef.current);
+            wizardConnPollRef.current = null;
+            setWizardConnections((prev) => ({ ...prev, [provider]: true }));
+            if (provider === "google") googleConnectedRef.current = true;
+          }
+        } catch {
+          // transient — keep polling
+        }
+      }, 3000);
+    } catch {
+      // authorize failed — badge stays; user can retry
+    }
+  };
   useEffect(() => {
     listToolCatalog()
       .then(setToolCatalog)
@@ -1254,13 +1318,33 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                                 {enabledCount}/{group.tools.length}
                               </span>
                             </button>
-                            {group.credentialProvider && (
-                              <span className="rounded-full bg-muted px-1.5 py-px text-[9px] uppercase tracking-wide text-muted-foreground">
-                                {t("toolsTab.needsProvider", {
-                                  provider: group.credentialProvider,
-                                })}
-                              </span>
-                            )}
+                            {group.credentialProvider &&
+                              (wizardConnections[group.credentialProvider] ===
+                              true ? (
+                                <span className="inline-flex items-center gap-1 rounded-full bg-muted px-1.5 py-px text-[9px] uppercase tracking-wide text-muted-foreground">
+                                  <Check className="w-2.5 h-2.5 text-success" />
+                                  {t("toolsTab.connected")}
+                                </span>
+                              ) : wizardConnections[group.credentialProvider] ===
+                                false ? (
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  variant="outline"
+                                  className="h-5 px-2 text-[9px]"
+                                  onClick={() =>
+                                    void handleWizardConnect(
+                                      group.credentialProvider!
+                                    )
+                                  }
+                                >
+                                  {t("settings:connections.connectProvider", {
+                                    provider: PROVIDER_LABELS[
+                                      group.credentialProvider
+                                    ],
+                                  })}
+                                </Button>
+                              ) : null)}
                             <Switch
                               checked={allEnabled}
                               onCheckedChange={(next) =>
