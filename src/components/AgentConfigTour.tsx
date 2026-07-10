@@ -49,6 +49,17 @@ export function AgentConfigTour({
   // right of the spotlighted sidebar group, vertically aligned to its top.
   const PAD = 6;
   const CARD_W = 300;
+  // The outline is drawn `outlineOffset + stroke` (4px) OUTSIDE the box. The
+  // sidebar sits flush against the pane's rounded, overflow-hidden left edge,
+  // so a box at `rect.left - PAD` would push that outline past x=0 and get
+  // clipped. Keep the box (and its outline) inset from the pane edge.
+  const EDGE_INSET = 5;
+
+  // Preserve the group's right edge; only the left is clamped inward, so the
+  // ring still fully encloses the icons without spilling off the pane.
+  const spotlightRight = rect ? rect.left + rect.width + PAD : 0;
+  const spotlightLeft = rect ? Math.max(EDGE_INSET, rect.left - PAD) : 0;
+  const spotlightTop = rect ? Math.max(EDGE_INSET, rect.top - PAD) : 0;
 
   // Anchored steps place the card just right of the spotlighted group, top-
   // aligned. The intro step (no rect) centers via a flex wrapper — a transform
@@ -123,9 +134,9 @@ export function AgentConfigTour({
           onClick={onSkip}
           className="absolute rounded-xl transition-all duration-200"
           style={{
-            top: rect.top - PAD,
-            left: rect.left - PAD,
-            width: rect.width + PAD * 2,
+            top: spotlightTop,
+            left: spotlightLeft,
+            width: spotlightRight - spotlightLeft,
             height: rect.height + PAD * 2,
             boxShadow: "0 0 0 9999px rgba(0,0,0,0.55)",
             outline: "2px solid var(--color-primary, #6366f1)",
