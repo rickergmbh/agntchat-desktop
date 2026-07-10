@@ -145,7 +145,7 @@ const TOUR_STEPS: Array<{
     titleKey: "tour.capabilitiesTitle",
     bodyKey: "tour.capabilitiesBody",
   },
-  { groupKey: "operations", section: "pulse", titleKey: "tour.operationsTitle", bodyKey: "tour.operationsBody" },
+  { groupKey: "operations", section: "logs", titleKey: "tour.operationsTitle", bodyKey: "tour.operationsBody" },
 ];
 
 const TOUR_SEEN_KEY = "agentConfigTourSeen";
@@ -490,6 +490,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
         { value: "templates", label: t("nav:templates"), icon: LayoutTemplate },
         { value: "routines", label: t("routines.title"), icon: Timer },
         { value: "loops", label: t("loops.title"), icon: Repeat },
+        { value: "pulse", label: t("pulse.title"), icon: HeartPulse },
       ],
     },
     // Sharing group gated behind the `agent_sharing` feature flag.
@@ -509,7 +510,6 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
       key: "operations",
       name: t("config.groupOperations"),
       sections: [
-        { value: "pulse", label: t("pulse.title"), icon: HeartPulse },
         { value: "logs", label: t("config.sectionLogs"), icon: ScrollText },
         { value: "health", label: t("config.health.label"), icon: Activity },
       ],
