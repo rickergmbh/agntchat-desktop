@@ -2479,6 +2479,13 @@ export interface FileAttachment {
   downloadUrl?: string;
 }
 
+/** Aggregated emoji reaction on a message — one entry per emoji, in
+ *  first-appearance order (matches the backend's reactions_map shape). */
+export interface MessageReaction {
+  emoji: string;
+  participantIds: string[];
+}
+
 export interface Message {
   id: string;
   conversationId: string;
@@ -2492,6 +2499,7 @@ export interface Message {
   taskSnapshot?: TaskSnapshot;
   parentMessageId?: string;
   fileAttachments?: FileAttachment[];
+  reactions?: MessageReaction[];
   insertedAt: string;
   updatedAt: string;
   pending?: boolean;

@@ -15,6 +15,7 @@ import {
 import { Bot, Reply as ReplyIcon } from "lucide-react";
 import { useModelCatalog } from "../../stores/modelCatalogStore";
 import { MarkdownContent } from "./MarkdownContent";
+import { QuickReactBar, ReactionChips } from "./MessageReactions";
 import { isTaskMessage, TaskMessage } from "./TaskMessages";
 import { isToolMessage, ToolMessage } from "./ToolMessages";
 import { isFileMessage, FileMessage, RideAlongAttachments } from "./FileMessage";
@@ -276,8 +277,10 @@ export const MessageBubble = memo(function MessageBubble({
               </>
             )}
           </BubbleContent>
+          <QuickReactBar message={message} isOwn={isOwn} />
         </Bubble>
 
+        <ReactionChips message={message} isOwn={isOwn} />
         <MessageFooter className="mt-0.5 px-1 text-[10px] font-normal">
           {formatClockTime(message.insertedAt)}
           {message.pending && ` · ${t("sending")}`}

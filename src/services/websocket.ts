@@ -165,6 +165,8 @@ class WebSocketService {
       "conversation_title_changed",
       "conversation_avatar_changed",
       "message_deleted",
+      "reaction_added",
+      "reaction_removed",
       "message_streaming",
       "task_progress",
       "conversation_memory",
@@ -302,6 +304,32 @@ class WebSocketService {
         .receive("ok", () => resolve())
         .receive("error", reject)
         .receive("timeout", () => reject(new Error("Delete message timeout")));
+    });
+  }
+
+  addReaction(conversationId: string, messageId: string, emoji: string): Promise<void> {
+    return this.pushReaction(conversationId, "add_reaction", messageId, emoji);
+  }
+
+  removeReaction(conversationId: string, messageId: string, emoji: string): Promise<void> {
+    return this.pushReaction(conversationId, "remove_reaction", messageId, emoji);
+  }
+
+  private pushReaction(
+    conversationId: string,
+    event: "add_reaction" | "remove_reaction",
+    messageId: string,
+    emoji: string
+  ): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const channel = this.conversationChannels.get(conversationId);
+      if (!channel) return reject(new Error("Not joined to conversation"));
+
+      channel
+        .push(event, { message_id: messageId, emoji })
+        .receive("ok", () => resolve())
+        .receive("error", reject)
+        .receive("timeout", () => reject(new Error("Reaction timeout")));
     });
   }
 

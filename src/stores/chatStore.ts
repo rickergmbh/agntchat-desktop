@@ -218,6 +218,17 @@ interface ChatState {
     options?: { parentMessageId?: string; attachments?: Array<Record<string, unknown>> }
   ) => Promise<void>;
   deleteMessage: (conversationId: string, messageId: string) => void;
+  /** Toggle the caller's reaction: sends add/remove over WS; local state
+   *  updates when the server's reaction_added/reaction_removed echoes back. */
+  toggleReaction: (conversationId: string, messageId: string, emoji: string) => void;
+  /** Apply a reaction_added/reaction_removed WS event to local message state. */
+  applyReactionEvent: (
+    conversationId: string,
+    messageId: string,
+    emoji: string,
+    participantId: string,
+    kind: "added" | "removed"
+  ) => void;
   addMessage: (conversationId: string, message: Message) => void;
   setRecentMessages: (conversationId: string, messages: Message[]) => void;
   setDraft: (conversationId: string, text: string) => void;
@@ -682,6 +693,59 @@ export const useChatStore = create<ChatState>((set, get) => ({
     });
   },
 
+  toggleReaction: (conversationId, messageId, emoji) => {
+    const myId = useAuthStore.getState().participant?.id;
+    if (!myId) return;
+
+    const msg = (get().messages[conversationId] ?? []).find((m) => m.id === messageId);
+    const mine = msg?.reactions
+      ?.find((r) => r.emoji === emoji)
+      ?.participantIds.includes(myId);
+
+    const op = mine
+      ? ws.removeReaction(conversationId, messageId, emoji)
+      : ws.addReaction(conversationId, messageId, emoji);
+    // No optimistic update — the server broadcast echoes back to us and
+    // applyReactionEvent is the single writer, so add/remove can't drift.
+    op.catch((e) => console.warn("[chat] toggleReaction failed", e));
+  },
+
+  applyReactionEvent: (conversationId, messageId, emoji, participantId, kind) => {
+    set((s) => {
+      const current = s.messages[conversationId] ?? [];
+      const idx = current.findIndex((m) => m.id === messageId);
+      if (idx < 0) return s;
+
+      const msg = current[idx]!;
+      const reactions = msg.reactions ?? [];
+      let next: typeof reactions;
+
+      if (kind === "added") {
+        const entry = reactions.find((r) => r.emoji === emoji);
+        if (entry?.participantIds.includes(participantId)) return s;
+        next = entry
+          ? reactions.map((r) =>
+              r.emoji === emoji
+                ? { ...r, participantIds: [...r.participantIds, participantId] }
+                : r
+            )
+          : [...reactions, { emoji, participantIds: [participantId] }];
+      } else {
+        next = reactions
+          .map((r) =>
+            r.emoji === emoji
+              ? { ...r, participantIds: r.participantIds.filter((p) => p !== participantId) }
+              : r
+          )
+          .filter((r) => r.participantIds.length > 0);
+      }
+
+      const updated = [...current];
+      updated[idx] = { ...msg, reactions: next };
+      return { messages: { ...s.messages, [conversationId]: updated } };
+    });
+  },
+
   addMessage: (conversationId, message) => {
     set((s) => {
       const existing = s.messages[conversationId] ?? [];
@@ -982,6 +1046,22 @@ export const useChatStore = create<ChatState>((set, get) => ({
         }));
       })
     );
+
+    for (const [event, kind] of [
+      ["conv:reaction_added", "added"],
+      ["conv:reaction_removed", "removed"],
+    ] as const) {
+      unsubs.push(
+        ws.on(event, (payload) => {
+          const convId = payload._conversationId as string;
+          const messageId = payload.messageId as string;
+          const emoji = payload.emoji as string;
+          const participantId = payload.participantId as string;
+          if (!convId || !messageId || !emoji || !participantId) return;
+          get().applyReactionEvent(convId, messageId, emoji, participantId, kind);
+        })
+      );
+    }
 
     unsubs.push(
       ws.on("conv:conversation_title_changed", (payload) => {
