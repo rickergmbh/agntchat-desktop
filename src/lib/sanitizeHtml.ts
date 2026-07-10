@@ -11,13 +11,17 @@ import DOMPurify from "dompurify";
  * stored XSS. react-markdown handles the normal message path safely; these
  * raw-HTML escape hatches did not, until this helper.
  *
+ * `<style>` is deliberately NOT allowed: an injected `<style>` block is not
+ * scoped to the untrusted subtree, enabling CSS-based data exfiltration
+ * (attribute-selector `background: url(...)`) and full-viewport clickjacking
+ * overlays over the trusted UI. Inline `style` attributes are forbidden too.
+ *
  * Port of web/src/lib/sanitizeHtml.ts — keep the two in sync.
  */
 export function sanitizeHtml(dirty: string): string {
   return DOMPurify.sanitize(dirty, {
     USE_PROFILES: { html: true },
-    ADD_TAGS: ["style"],
-    FORBID_TAGS: ["script", "iframe", "object", "embed", "form"],
+    FORBID_TAGS: ["script", "iframe", "object", "embed", "form", "style"],
     FORBID_ATTR: ["onerror", "onload", "onclick", "style"],
   });
 }
