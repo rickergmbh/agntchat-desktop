@@ -595,6 +595,9 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
       const newId = await createAgent({
         displayName: displayName.trim(),
         agentType: agentRole,
+        // Local choice must be explicit — without it the backend auto-places
+        // every new agent on the owner's org host when one exists.
+        ...(!hosted ? { runtime: "local" as const } : {}),
         ...(description.trim() ? { description: description.trim() } : {}),
         ...(capabilities.length > 0 ? { capabilities } : {}),
         ...(avatarUrl ? { avatarUrl } : {}),

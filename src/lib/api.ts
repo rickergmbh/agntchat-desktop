@@ -408,6 +408,8 @@ export async function createAgent(data: {
   modelConfig?: Record<string, unknown>;
   metadata?: Record<string, unknown>;
   organizationId?: string | null;
+  /** "local" skips the backend's default host auto-placement. */
+  runtime?: "local" | "org_host";
 }): Promise<{ agent: Agent; apiKey: string }> {
   // Backend returns flat: { id, displayName, ..., apiKey }
   const resp = await request<Agent & { apiKey: string }>("/api/agents", {

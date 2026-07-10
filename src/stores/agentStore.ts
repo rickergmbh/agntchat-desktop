@@ -288,6 +288,10 @@ interface AgentState {
      *  default). A UUID pins to that workspace; backend rejects any
      *  value other than the caller's currently-active workspace. */
     organizationId?: string | null;
+    /** Explicit runtime choice. "local" tells the backend to SKIP its
+     *  default host auto-placement (without this, every new agent lands on
+     *  the owner's org host when one exists). Omit for the hosted default. */
+    runtime?: "local" | "org_host";
   }) => Promise<string>;
   regenerateKey: (id: string) => Promise<string>;
   refreshProcessStatuses: () => Promise<boolean>;
