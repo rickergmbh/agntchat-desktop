@@ -14,11 +14,23 @@ import {
   Loader2,
   MapPin,
   ShieldOff,
+  Sparkles,
+  Mail,
+  CalendarDays,
+  Telescope,
+  PenLine,
+  Check,
 } from "lucide-react";
 import { useAgentStore } from "../stores/agentStore";
 import { useAuthStore } from "../stores/authStore";
 import { useActiveWorkspace } from "../stores/workspaceStore";
-import { updateAgentRuntime } from "../lib/api";
+import {
+  updateAgentRuntime,
+  authorizeProvider,
+  getProviderStatus,
+} from "../lib/api";
+import { openExternal } from "../lib/openExternal";
+import { AGENT_PRESETS, type AgentPreset } from "../lib/agentPresets";
 import { useLlmKeyStore } from "../stores/llmKeyStore";
 import { useModelCatalog } from "../stores/modelCatalogStore";
 import { useAgentTypes } from "../lib/agentTypes";
@@ -67,6 +79,7 @@ const TYPE_ICONS: Record<string, typeof Bot> = {
 };
 
 const STEPS = [
+  "preset",
   "name",
   "photo",
   "role",
@@ -78,9 +91,18 @@ const STEPS = [
 ] as const;
 type WizardStep = (typeof STEPS)[number];
 
+// Icons for the preset picker stay UI-side, like TYPE_ICONS below.
+const PRESET_ICONS: Record<AgentPreset["id"], typeof Bot> = {
+  assistant: Sparkles,
+  email: Mail,
+  calendar: CalendarDays,
+  research: Telescope,
+};
+
 // Step subtitles (agents namespace) — resolved with t() at render so
 // language switches take effect live.
 const STEP_SUBTITLE_KEYS: Record<WizardStep, string> = {
+  preset: "create.presetHint",
   name: "create.nameHint",
   photo: "create.photoHint",
   role: "create.roleHint",
@@ -114,6 +136,26 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   // ---- Step state ----
   const [stepIndex, setStepIndex] = useState(0);
   const step: WizardStep = STEPS[stepIndex] ?? "name";
+
+  // preset — a chosen starting point pre-seeds role/tone/specialties/
+  // description/instructions; everything stays editable in later steps.
+  const [preset, setPreset] = useState<AgentPreset | null>(null);
+  // Owner's Google connection, prefetched when a Google-backed preset is
+  // picked so the create path doesn't await it. null = unknown.
+  const googleConnectedRef = useRef<boolean | null>(null);
+  // After creating a Google-backed preset without a connection, the modal
+  // flips to a connect pane instead of closing.
+  const [phase, setPhase] = useState<"wizard" | "connect">("wizard");
+  const [connectStatus, setConnectStatus] = useState<
+    "idle" | "waiting" | "connected"
+  >("idle");
+  const connectPollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  useEffect(
+    () => () => {
+      if (connectPollRef.current) clearInterval(connectPollRef.current);
+    },
+    []
+  );
 
   // name
   const [displayName, setDisplayName] = useState("");
@@ -243,13 +285,52 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     [specialties, customSpecialties]
   );
 
+  // Apply a starting point (or "scratch" = null). Sets role FIRST and then
+  // specialties in the same handler — the role step's own click handler
+  // resets specialties on change, but this path bypasses it deliberately.
+  const applyPreset = (p: AgentPreset | null) => {
+    setPreset(p);
+    if (p) {
+      const options = SPECIALTIES_BY_ROLE[p.role].options;
+      setAgentRole(p.role);
+      setSpecialties(p.specialties.filter((s) => options.includes(s)));
+      setCustomSpecialties(p.specialties.filter((s) => !options.includes(s)));
+      setTone(p.tone);
+      setCustomTone(null);
+      setDescription(p.description);
+      setCustomInstructions(p.instructions);
+      if (p.requiresGoogle && googleConnectedRef.current === null) {
+        void getProviderStatus("google")
+          .then((s) => {
+            googleConnectedRef.current = s.connected;
+          })
+          .catch(() => {
+            // stays null — re-checked at create time
+          });
+      }
+    } else {
+      // Scratch: return the seeded fields to pristine so switching from a
+      // preset back to scratch doesn't silently keep its seed.
+      setAgentRole("worker");
+      setSpecialties([]);
+      setCustomSpecialties([]);
+      setTone(null);
+      setCustomTone(null);
+      setDescription("");
+      setCustomInstructions("");
+    }
+    setStepIndex(STEPS.indexOf("name"));
+  };
+
   const canNext = useMemo(() => {
+    // Preset step advances by picking a card, not the Next button.
+    if (step === "preset") return false;
     if (step === "name") return displayName.trim().length > 0;
     return true;
   }, [step, displayName]);
 
   const isLast = step === "review";
-  const isFirst = step === "name";
+  const isFirst = step === "preset";
 
   const handleBack = () => {
     if (isFirst) {
@@ -444,6 +525,25 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
       }
 
       if (newId) await selectAgent(newId);
+
+      // Google-backed presets: if the owner hasn't connected Google, keep
+      // the modal open on a connect pane instead of closing — the agent
+      // exists either way, but its tools only work once connected.
+      if (newId && preset?.requiresGoogle) {
+        let connected = googleConnectedRef.current;
+        if (connected === null) {
+          try {
+            connected = (await getProviderStatus("google")).connected;
+          } catch {
+            connected = false;
+          }
+        }
+        if (!connected) {
+          setPhase("connect");
+          return;
+        }
+      }
+
       onClose();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("create.errors.createFailed"));
@@ -451,6 +551,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
       setCreating(false);
     }
   }, [
+    preset,
     displayName,
     tone,
     customTone,
@@ -502,6 +603,8 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   const stepTitle = (s: WizardStep): string => {
     const name = displayName.trim();
     switch (s) {
+      case "preset":
+        return t("create.presetTitle");
       case "name":
         return t("create.nameTitle");
       case "photo":
@@ -524,6 +627,101 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
         return t("create.reviewTitle");
     }
   };
+
+  // Launch the Google OAuth in the system browser and poll for the
+  // credential landing (the callback is handled server-side; there's no
+  // in-app completion event).
+  const handleConnectGoogle = async () => {
+    setError(null);
+    try {
+      const { authorizeUrl } = await authorizeProvider("google");
+      openExternal(authorizeUrl);
+      setConnectStatus("waiting");
+      const startedAt = Date.now();
+      if (connectPollRef.current) clearInterval(connectPollRef.current);
+      connectPollRef.current = setInterval(async () => {
+        if (Date.now() - startedAt > 120_000) {
+          if (connectPollRef.current) clearInterval(connectPollRef.current);
+          connectPollRef.current = null;
+          setConnectStatus("idle");
+          return;
+        }
+        try {
+          const s = await getProviderStatus("google");
+          if (s.connected) {
+            if (connectPollRef.current) clearInterval(connectPollRef.current);
+            connectPollRef.current = null;
+            setConnectStatus("connected");
+          }
+        } catch {
+          // transient — keep polling
+        }
+      }, 3000);
+    } catch (e) {
+      setError(
+        e instanceof Error ? e.message : t("create.errors.createFailed")
+      );
+    }
+  };
+
+  if (phase === "connect") {
+    return (
+      <Dialog open onOpenChange={(open) => !open && onClose()}>
+        <DialogContent className="sm:max-w-[480px] p-0 gap-0 overflow-hidden">
+          <div className="relative">
+            <AmbientParticles count={14} />
+            <div className="relative px-6 pt-7 pb-6 flex flex-col items-center text-center gap-3">
+              <BotMascot size={64} />
+              <DialogTitle className="text-lg font-semibold text-foreground">
+                {t("create.connect.title", { name: displayName.trim() })}
+              </DialogTitle>
+              <p className="text-sm text-text-muted max-w-sm">
+                {t("create.connect.body", { name: displayName.trim() })}
+              </p>
+              {error && (
+                <p className="text-xs text-destructive" role="alert">
+                  {error}
+                </p>
+              )}
+              <div className="mt-2 flex flex-col items-center gap-2">
+                {connectStatus === "connected" ? (
+                  <>
+                    <span className="flex items-center gap-1.5 text-sm text-success">
+                      <Check className="h-4 w-4" />
+                      {t("create.connect.connected")}
+                    </span>
+                    <Button type="button" onClick={onClose}>
+                      {t("create.connect.done")}
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      type="button"
+                      onClick={() => void handleConnectGoogle()}
+                      disabled={connectStatus === "waiting"}
+                    >
+                      {connectStatus === "waiting" ? (
+                        <>
+                          <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                          {t("create.connect.waiting")}
+                        </>
+                      ) : (
+                        t("create.connect.cta")
+                      )}
+                    </Button>
+                    <Button type="button" variant="ghost" onClick={onClose}>
+                      {t("create.connect.skip")}
+                    </Button>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
@@ -575,6 +773,59 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
               }}
               className="space-y-4 pt-2 animate-in fade-in-0 slide-in-from-bottom-1 duration-300"
             >
+              {step === "preset" && (
+                <div className="space-y-2">
+                  <div className="grid grid-cols-2 gap-2">
+                    {AGENT_PRESETS.map((p) => {
+                      const Icon = PRESET_ICONS[p.id];
+                      const selected = preset?.id === p.id;
+                      return (
+                        <button
+                          key={p.id}
+                          type="button"
+                          onClick={() => applyPreset(p)}
+                          className={cn(
+                            "relative flex flex-col items-center gap-1.5 rounded-lg border p-3 text-center transition-colors",
+                            selected
+                              ? "border-primary bg-primary/5"
+                              : "border-border hover:bg-accent"
+                          )}
+                        >
+                          <Icon
+                            className={cn(
+                              "h-5 w-5",
+                              selected ? "text-primary" : "text-text-muted"
+                            )}
+                          />
+                          <span className="text-xs font-medium">
+                            {t(p.labelKey)}
+                          </span>
+                          <span className="text-[10px] leading-tight text-text-muted">
+                            {t(p.taglineKey)}
+                          </span>
+                          {p.requiresGoogle && (
+                            <span className="mt-0.5 rounded-full bg-muted px-1.5 py-px text-[9px] uppercase tracking-wide text-muted-foreground">
+                              {t("create.presets.googleBadge")}
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => applyPreset(null)}
+                    className="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-border p-2.5 text-xs text-text-muted transition-colors hover:bg-accent hover:text-foreground"
+                  >
+                    <PenLine className="h-3.5 w-3.5" />
+                    <span className="font-medium">
+                      {t("create.presets.scratchLabel")}
+                    </span>
+                    <span>· {t("create.presets.scratchTagline")}</span>
+                  </button>
+                </div>
+              )}
+
               {step === "name" && (
                 <div className="space-y-1.5">
                   <div className="flex items-baseline justify-between">
@@ -588,7 +839,11 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                     type="text"
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
-                    placeholder={t("create.namePlaceholder")}
+                    placeholder={
+                      preset
+                        ? t(preset.namePlaceholderKey)
+                        : t("create.namePlaceholder")
+                    }
                     autoFocus
                     maxLength={limits.agent.displayName}
                   />
@@ -1345,19 +1600,22 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
               </Button>
             )}
 
-            <Button
-              type="button"
-              onClick={handleNext}
-              disabled={!canNext || creating || (isLast && PROVIDERS.length === 0)}
-            >
-              {creating && <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />}
-              {isLast
-                ? creating
-                  ? t("create.creatingLabel")
-                  : t("create.createAgent")
-                : t("common:next")}
-              {!isLast && !creating && <ArrowRight className="ml-1 h-3 w-3" />}
-            </Button>
+            {/* The preset step advances by picking a card, so no Next. */}
+            {step !== "preset" && (
+              <Button
+                type="button"
+                onClick={handleNext}
+                disabled={!canNext || creating || (isLast && PROVIDERS.length === 0)}
+              >
+                {creating && <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />}
+                {isLast
+                  ? creating
+                    ? t("create.creatingLabel")
+                    : t("create.createAgent")
+                  : t("common:next")}
+                {!isLast && !creating && <ArrowRight className="ml-1 h-3 w-3" />}
+              </Button>
+            )}
           </div>
         </div>
       </DialogContent>

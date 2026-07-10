@@ -83,15 +83,9 @@ import { getInitials } from "../lib/utils";
 import { uploadAvatar } from "../lib/imageProcessor";
 import { FriendsView } from "./FriendsView";
 import { open as tauriOpen } from "@tauri-apps/plugin-shell";
+import { openExternal } from "../lib/openExternal";
 import { PROVIDERS } from "../lib/models";
 import { useLlmKeyStore, type LlmApiKey as LlmApiKeyEntry } from "../stores/llmKeyStore";
-
-/** Open a URL in the system browser — Tauri native with window.open fallback. */
-function openExternal(url: string) {
-  tauriOpen(url).catch(() => {
-    window.open(url, "_blank");
-  });
-}
 
 // ---------------------------------------------------------------------------
 // Types & constants

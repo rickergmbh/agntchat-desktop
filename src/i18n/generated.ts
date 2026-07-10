@@ -371,6 +371,15 @@ export const resources = {
         "clickToChange": "Click to change the photo",
         "clickToChoosePhoto": "Click to choose a photo (optional)",
         "computerUse": "Computer use",
+        "connect": {
+          "body": "Connect Google so {{name}} can work with your email and calendar. You can also do this later in Profile → Connected Accounts.",
+          "connected": "Google connected",
+          "cta": "Connect Google",
+          "done": "Done",
+          "skip": "Skip for now",
+          "title": "{{name}} is ready!",
+          "waiting": "Waiting for Google…"
+        },
         "connectionDetails": "Connection Details",
         "connectionHint": "Use these to connect your agent via the setup guide",
         "copyAll": "Copy all",
@@ -493,6 +502,33 @@ export const resources = {
         "photoHint": "A photo makes your agent easy to recognize at a glance.",
         "photoTitle": "Give your agent a face",
         "photoTitleNamed": "Give {{name}} a face",
+        "presetHint": "Choose a ready-made agent, or build your own from scratch.",
+        "presetTitle": "Pick a starting point",
+        "presets": {
+          "assistant": {
+            "label": "Personal Assistant",
+            "namePlaceholder": "e.g. Aria, Jarvis, Penny…",
+            "tagline": "Keeps your day on track — reminders, routines, coordination"
+          },
+          "calendar": {
+            "label": "Calendar Agent",
+            "namePlaceholder": "e.g. Cal, Momo, Dana…",
+            "tagline": "Manages events and gives you a morning agenda"
+          },
+          "email": {
+            "label": "Email Agent",
+            "namePlaceholder": "e.g. Miles, Ada, Postman…",
+            "tagline": "Triages your inbox and drafts replies for your approval"
+          },
+          "googleBadge": "Uses Google",
+          "research": {
+            "label": "Research Agent",
+            "namePlaceholder": "e.g. Sage, Quill, Darwin…",
+            "tagline": "Turns questions into cited, decision-ready briefs"
+          },
+          "scratchLabel": "Start from scratch",
+          "scratchTagline": "a blank agent, fully your design"
+        },
         "provider": "Provider",
         "providerApiKey": "{{provider}} API Key",
         "providerDefault": "Provider default (Anthropic)",
@@ -5063,6 +5099,15 @@ export const resources = {
         "clickToChange": "Haz clic para cambiar la foto",
         "clickToChoosePhoto": "Haz clic para elegir una foto (opcional)",
         "computerUse": "Uso del ordenador",
+        "connect": {
+          "body": "Conecta Google para que {{name}} pueda trabajar con tu correo y tu calendario. También puedes hacerlo más tarde en Perfil → Cuentas conectadas.",
+          "connected": "Google conectado",
+          "cta": "Conectar Google",
+          "done": "Listo",
+          "skip": "Omitir por ahora",
+          "title": "¡{{name}} está listo!",
+          "waiting": "Esperando a Google…"
+        },
         "connectionDetails": "Datos de conexión",
         "connectionHint": "Úsalos para conectar tu agente mediante la guía de configuración",
         "copyAll": "Copiar todo",
@@ -5185,6 +5230,33 @@ export const resources = {
         "photoHint": "Una foto hace que tu agente sea fácil de reconocer de un vistazo.",
         "photoTitle": "Dale una cara a tu agente",
         "photoTitleNamed": "Dale una cara a {{name}}",
+        "presetHint": "Elige un agente listo para usar o crea el tuyo desde cero.",
+        "presetTitle": "Elige un punto de partida",
+        "presets": {
+          "assistant": {
+            "label": "Asistente personal",
+            "namePlaceholder": "p. ej., Aria, Jarvis, Penny…",
+            "tagline": "Mantiene tu día en orden: recordatorios, rutinas, coordinación"
+          },
+          "calendar": {
+            "label": "Agente de calendario",
+            "namePlaceholder": "p. ej., Cal, Momo, Dana…",
+            "tagline": "Gestiona eventos y te da la agenda de la mañana"
+          },
+          "email": {
+            "label": "Agente de correo",
+            "namePlaceholder": "p. ej., Miles, Ada, Postman…",
+            "tagline": "Clasifica tu bandeja de entrada y redacta respuestas para tu aprobación"
+          },
+          "googleBadge": "Usa Google",
+          "research": {
+            "label": "Agente de investigación",
+            "namePlaceholder": "p. ej., Sage, Quill, Darwin…",
+            "tagline": "Convierte preguntas en informes citados y listos para decidir"
+          },
+          "scratchLabel": "Empezar desde cero",
+          "scratchTagline": "un agente en blanco, totalmente a tu diseño"
+        },
         "provider": "Proveedor",
         "providerApiKey": "Clave API de {{provider}}",
         "providerDefault": "Proveedor predeterminado (Anthropic)",
@@ -9755,6 +9827,15 @@ export const resources = {
         "clickToChange": "Klicken, um das Foto zu ändern",
         "clickToChoosePhoto": "Klicken, um ein Foto auszuwählen (optional)",
         "computerUse": "Computernutzung",
+        "connect": {
+          "body": "Verbinden Sie Google, damit {{name}} mit Ihren E-Mails und Ihrem Kalender arbeiten kann. Sie können das auch später unter Profil → Verbundene Konten erledigen.",
+          "connected": "Google verbunden",
+          "cta": "Google verbinden",
+          "done": "Fertig",
+          "skip": "Vorerst überspringen",
+          "title": "{{name}} ist startklar!",
+          "waiting": "Warte auf Google…"
+        },
         "connectionDetails": "Verbindungsdetails",
         "connectionHint": "Verwenden Sie diese, um Ihren Agenten über die Einrichtungsanleitung zu verbinden",
         "copyAll": "Alles kopieren",
@@ -9877,6 +9958,33 @@ export const resources = {
         "photoHint": "Ein Foto macht Ihren Agenten auf einen Blick leicht erkennbar.",
         "photoTitle": "Geben Sie Ihrem Agenten ein Gesicht",
         "photoTitleNamed": "Geben Sie {{name}} ein Gesicht",
+        "presetHint": "Wählen Sie einen vorgefertigten Agenten oder bauen Sie einen eigenen von Grund auf.",
+        "presetTitle": "Wählen Sie einen Ausgangspunkt",
+        "presets": {
+          "assistant": {
+            "label": "Persönlicher Assistent",
+            "namePlaceholder": "z. B. Aria, Jarvis, Penny…",
+            "tagline": "Hält Ihren Tag auf Kurs — Erinnerungen, Routinen, Koordination"
+          },
+          "calendar": {
+            "label": "Kalender-Agent",
+            "namePlaceholder": "z. B. Cal, Momo, Dana…",
+            "tagline": "Verwaltet Termine und liefert Ihnen die Tagesübersicht am Morgen"
+          },
+          "email": {
+            "label": "E-Mail-Agent",
+            "namePlaceholder": "z. B. Miles, Ada, Postman…",
+            "tagline": "Sortiert Ihren Posteingang und entwirft Antworten zur Freigabe"
+          },
+          "googleBadge": "Nutzt Google",
+          "research": {
+            "label": "Recherche-Agent",
+            "namePlaceholder": "z. B. Sage, Quill, Darwin…",
+            "tagline": "Verwandelt Fragen in belegte, entscheidungsreife Briefings"
+          },
+          "scratchLabel": "Von Grund auf beginnen",
+          "scratchTagline": "ein leerer Agent, ganz nach Ihrem Entwurf"
+        },
         "provider": "Anbieter",
         "providerApiKey": "{{provider}}-API-Schlüssel",
         "providerDefault": "Anbieter-Standard (Anthropic)",
@@ -14447,6 +14555,15 @@ export const resources = {
         "clickToChange": "Cliquez pour changer la photo",
         "clickToChoosePhoto": "Cliquez pour choisir une photo (facultatif)",
         "computerUse": "Utilisation de l'ordinateur",
+        "connect": {
+          "body": "Connectez Google pour que {{name}} puisse travailler avec vos e-mails et votre calendrier. Vous pouvez aussi le faire plus tard dans Profil → Comptes connectés.",
+          "connected": "Google connecté",
+          "cta": "Connecter Google",
+          "done": "Terminé",
+          "skip": "Ignorer pour l'instant",
+          "title": "{{name}} est prêt !",
+          "waiting": "En attente de Google…"
+        },
         "connectionDetails": "Détails de connexion",
         "connectionHint": "Utilisez ces informations pour connecter votre agent via le guide de configuration",
         "copyAll": "Tout copier",
@@ -14569,6 +14686,33 @@ export const resources = {
         "photoHint": "Une photo permet de reconnaître votre agent facilement en un coup d'œil.",
         "photoTitle": "Donnez un visage à votre agent",
         "photoTitleNamed": "Donnez un visage à {{name}}",
+        "presetHint": "Choisissez un agent prêt à l'emploi, ou créez le vôtre de zéro.",
+        "presetTitle": "Choisissez un point de départ",
+        "presets": {
+          "assistant": {
+            "label": "Assistant personnel",
+            "namePlaceholder": "p. ex. Aria, Jarvis, Penny…",
+            "tagline": "Garde votre journée sur les rails — rappels, routines, coordination"
+          },
+          "calendar": {
+            "label": "Agent calendrier",
+            "namePlaceholder": "p. ex. Cal, Momo, Dana…",
+            "tagline": "Gère vos événements et vous donne l'agenda du matin"
+          },
+          "email": {
+            "label": "Agent e-mail",
+            "namePlaceholder": "p. ex. Miles, Ada, Postman…",
+            "tagline": "Trie votre boîte de réception et rédige des réponses à valider"
+          },
+          "googleBadge": "Utilise Google",
+          "research": {
+            "label": "Agent de recherche",
+            "namePlaceholder": "p. ex. Sage, Quill, Darwin…",
+            "tagline": "Transforme vos questions en synthèses sourcées, prêtes à la décision"
+          },
+          "scratchLabel": "Partir de zéro",
+          "scratchTagline": "un agent vierge, entièrement à votre goût"
+        },
         "provider": "Fournisseur",
         "providerApiKey": "Clé API {{provider}}",
         "providerDefault": "Fournisseur par défaut (Anthropic)",
@@ -19139,6 +19283,15 @@ export const resources = {
         "clickToChange": "Clique para trocar a foto",
         "clickToChoosePhoto": "Clique para escolher uma foto (opcional)",
         "computerUse": "Uso do computador",
+        "connect": {
+          "body": "Conecte o Google para que {{name}} possa trabalhar com seu e-mail e sua agenda. Você também pode fazer isso depois em Perfil → Contas conectadas.",
+          "connected": "Google conectado",
+          "cta": "Conectar Google",
+          "done": "Concluído",
+          "skip": "Pular por enquanto",
+          "title": "{{name}} está pronto!",
+          "waiting": "Aguardando o Google…"
+        },
         "connectionDetails": "Detalhes da Conexão",
         "connectionHint": "Use isso para conectar seu agente pelo guia de configuração",
         "copyAll": "Copiar tudo",
@@ -19261,6 +19414,33 @@ export const resources = {
         "photoHint": "Uma foto torna seu agente fácil de reconhecer rapidamente.",
         "photoTitle": "Dê um rosto ao seu agente",
         "photoTitleNamed": "Dê um rosto a {{name}}",
+        "presetHint": "Escolha um agente pronto ou crie o seu do zero.",
+        "presetTitle": "Escolha um ponto de partida",
+        "presets": {
+          "assistant": {
+            "label": "Assistente pessoal",
+            "namePlaceholder": "ex.: Aria, Jarvis, Penny…",
+            "tagline": "Mantém seu dia nos trilhos — lembretes, rotinas, coordenação"
+          },
+          "calendar": {
+            "label": "Agente de agenda",
+            "namePlaceholder": "ex.: Cal, Momo, Dana…",
+            "tagline": "Gerencia eventos e entrega sua agenda matinal"
+          },
+          "email": {
+            "label": "Agente de e-mail",
+            "namePlaceholder": "ex.: Miles, Ada, Postman…",
+            "tagline": "Faz a triagem da sua caixa de entrada e rascunha respostas para sua aprovação"
+          },
+          "googleBadge": "Usa o Google",
+          "research": {
+            "label": "Agente de pesquisa",
+            "namePlaceholder": "ex.: Sage, Quill, Darwin…",
+            "tagline": "Transforma perguntas em resumos citados e prontos para decisão"
+          },
+          "scratchLabel": "Começar do zero",
+          "scratchTagline": "um agente em branco, totalmente do seu jeito"
+        },
         "provider": "Provedor",
         "providerApiKey": "Chave de API da {{provider}}",
         "providerDefault": "Padrão do provedor (Anthropic)",
@@ -23831,6 +24011,15 @@ export const resources = {
         "clickToChange": "クリックして写真を変更",
         "clickToChoosePhoto": "クリックして写真を選択（任意）",
         "computerUse": "コンピュータ操作",
+        "connect": {
+          "body": "Googleを連携すると、{{name}}がメールとカレンダーを扱えるようになります。後からプロフィール → 連携アカウントでも設定できます。",
+          "connected": "Google連携済み",
+          "cta": "Googleを連携",
+          "done": "完了",
+          "skip": "今はスキップ",
+          "title": "{{name}}の準備ができました！",
+          "waiting": "Googleを待っています…"
+        },
         "connectionDetails": "接続の詳細",
         "connectionHint": "セットアップガイドでエージェントを接続する際にこれらを使用します",
         "copyAll": "すべてコピー",
@@ -23953,6 +24142,33 @@ export const resources = {
         "photoHint": "写真があると、エージェントを一目で識別しやすくなります。",
         "photoTitle": "エージェントに顔を与える",
         "photoTitleNamed": "{{name}}に顔を与える",
+        "presetHint": "既成のエージェントを選ぶか、ゼロから自分で作りましょう。",
+        "presetTitle": "出発点を選びましょう",
+        "presets": {
+          "assistant": {
+            "label": "パーソナルアシスタント",
+            "namePlaceholder": "例：アリア、ジャービス、ペニー…",
+            "tagline": "リマインダー・ルーティン・調整で一日を管理"
+          },
+          "calendar": {
+            "label": "カレンダーエージェント",
+            "namePlaceholder": "例：カル、モモ、ダナ…",
+            "tagline": "予定を管理し、朝のアジェンダを提供"
+          },
+          "email": {
+            "label": "メールエージェント",
+            "namePlaceholder": "例：マイルズ、エイダ、ポストマン…",
+            "tagline": "受信トレイを仕分けし、承認用の返信案を作成"
+          },
+          "googleBadge": "Google連携",
+          "research": {
+            "label": "リサーチエージェント",
+            "namePlaceholder": "例：セージ、クィル、ダーウィン…",
+            "tagline": "質問を出典付きの意思決定用ブリーフに"
+          },
+          "scratchLabel": "ゼロから作る",
+          "scratchTagline": "まっさらなエージェントを自由に設計"
+        },
         "provider": "プロバイダー",
         "providerApiKey": "{{provider}} APIキー",
         "providerDefault": "プロバイダーの既定値（Anthropic）",
@@ -28523,6 +28739,15 @@ export const resources = {
         "clickToChange": "点击更换照片",
         "clickToChoosePhoto": "点击选择照片（可选）",
         "computerUse": "计算机使用",
+        "connect": {
+          "body": "连接 Google，让{{name}}可以处理你的邮件和日历。你也可以稍后在个人资料 → 已连接账户中完成。",
+          "connected": "Google 已连接",
+          "cta": "连接 Google",
+          "done": "完成",
+          "skip": "暂时跳过",
+          "title": "{{name}}已就绪！",
+          "waiting": "正在等待 Google…"
+        },
         "connectionDetails": "连接详情",
         "connectionHint": "使用这些信息，按照设置指南连接您的智能体",
         "copyAll": "全部复制",
@@ -28645,6 +28870,33 @@ export const resources = {
         "photoHint": "照片能让您的智能体一眼就能被认出。",
         "photoTitle": "为您的智能体添加头像",
         "photoTitleNamed": "为 {{name}} 添加头像",
+        "presetHint": "选择一个现成的智能体，或从零开始自己打造。",
+        "presetTitle": "选择一个起点",
+        "presets": {
+          "assistant": {
+            "label": "私人助理",
+            "namePlaceholder": "例如：Aria、Jarvis、Penny…",
+            "tagline": "让你的一天井井有条——提醒、例行任务、协调"
+          },
+          "calendar": {
+            "label": "日历智能体",
+            "namePlaceholder": "例如：Cal、Momo、Dana…",
+            "tagline": "管理日程，为你提供每日晨间安排"
+          },
+          "email": {
+            "label": "邮件智能体",
+            "namePlaceholder": "例如：Miles、Ada、Postman…",
+            "tagline": "整理收件箱，起草回复供你确认"
+          },
+          "googleBadge": "使用 Google",
+          "research": {
+            "label": "调研智能体",
+            "namePlaceholder": "例如：Sage、Quill、Darwin…",
+            "tagline": "把问题变成有引用、可决策的简报"
+          },
+          "scratchLabel": "从零开始",
+          "scratchTagline": "一个空白智能体，完全由你设计"
+        },
         "provider": "提供商",
         "providerApiKey": "{{provider}} API 密钥",
         "providerDefault": "提供商默认值（Anthropic）",
@@ -33215,6 +33467,15 @@ export const resources = {
         "clickToChange": "클릭하여 사진 변경",
         "clickToChoosePhoto": "클릭하여 사진 선택(선택 사항)",
         "computerUse": "컴퓨터 사용",
+        "connect": {
+          "body": "Google을 연결하면 {{name}}이(가) 이메일과 캘린더를 다룰 수 있습니다. 나중에 프로필 → 연결된 계정에서도 할 수 있습니다.",
+          "connected": "Google 연결됨",
+          "cta": "Google 연결",
+          "done": "완료",
+          "skip": "지금은 건너뛰기",
+          "title": "{{name}} 준비 완료!",
+          "waiting": "Google 대기 중…"
+        },
         "connectionDetails": "연결 세부정보",
         "connectionHint": "설정 가이드를 통해 에이전트를 연결할 때 이 정보를 사용하세요",
         "copyAll": "모두 복사",
@@ -33337,6 +33598,33 @@ export const resources = {
         "photoHint": "사진이 있으면 에이전트를 한눈에 알아보기 쉽습니다.",
         "photoTitle": "에이전트에게 얼굴을 부여하세요",
         "photoTitleNamed": "{{name}}에게 얼굴을 부여하세요",
+        "presetHint": "미리 만들어진 에이전트를 선택하거나 처음부터 직접 만들어 보세요.",
+        "presetTitle": "시작점을 선택하세요",
+        "presets": {
+          "assistant": {
+            "label": "개인 비서",
+            "namePlaceholder": "예: 아리아, 자비스, 페니…",
+            "tagline": "리마인더, 루틴, 조율로 하루를 관리"
+          },
+          "calendar": {
+            "label": "캘린더 에이전트",
+            "namePlaceholder": "예: 캘, 모모, 다나…",
+            "tagline": "일정을 관리하고 아침 브리핑을 제공"
+          },
+          "email": {
+            "label": "이메일 에이전트",
+            "namePlaceholder": "예: 마일스, 에이다, 포스트맨…",
+            "tagline": "받은편지함을 정리하고 승인용 답장 초안을 작성"
+          },
+          "googleBadge": "Google 사용",
+          "research": {
+            "label": "리서치 에이전트",
+            "namePlaceholder": "예: 세이지, 퀼, 다윈…",
+            "tagline": "질문을 출처가 있는 의사결정용 브리핑으로"
+          },
+          "scratchLabel": "처음부터 만들기",
+          "scratchTagline": "빈 에이전트를 원하는 대로 설계"
+        },
         "provider": "제공업체",
         "providerApiKey": "{{provider}} API 키",
         "providerDefault": "제공업체 기본값(Anthropic)",
@@ -37907,6 +38195,15 @@ export const resources = {
         "clickToChange": "Clicca per cambiare la foto",
         "clickToChoosePhoto": "Clicca per scegliere una foto (opzionale)",
         "computerUse": "Uso del computer",
+        "connect": {
+          "body": "Collega Google così {{name}} potrà lavorare con la tua email e il tuo calendario. Puoi farlo anche più tardi in Profilo → Account collegati.",
+          "connected": "Google collegato",
+          "cta": "Collega Google",
+          "done": "Fatto",
+          "skip": "Salta per ora",
+          "title": "{{name}} è pronto!",
+          "waiting": "In attesa di Google…"
+        },
         "connectionDetails": "Dettagli connessione",
         "connectionHint": "Usali per collegare il tuo agente tramite la guida di configurazione",
         "copyAll": "Copia tutto",
@@ -38029,6 +38326,33 @@ export const resources = {
         "photoHint": "Una foto rende il tuo agente facilmente riconoscibile a colpo d'occhio.",
         "photoTitle": "Dai un volto al tuo agente",
         "photoTitleNamed": "Dai un volto a {{name}}",
+        "presetHint": "Scegli un agente pronto all'uso o creane uno da zero.",
+        "presetTitle": "Scegli un punto di partenza",
+        "presets": {
+          "assistant": {
+            "label": "Assistente personale",
+            "namePlaceholder": "es. Aria, Jarvis, Penny…",
+            "tagline": "Tiene la tua giornata in carreggiata — promemoria, routine, coordinamento"
+          },
+          "calendar": {
+            "label": "Agente calendario",
+            "namePlaceholder": "es. Cal, Momo, Dana…",
+            "tagline": "Gestisce gli eventi e ti dà l'agenda del mattino"
+          },
+          "email": {
+            "label": "Agente e-mail",
+            "namePlaceholder": "es. Miles, Ada, Postman…",
+            "tagline": "Smista la posta in arrivo e prepara bozze di risposta da approvare"
+          },
+          "googleBadge": "Usa Google",
+          "research": {
+            "label": "Agente di ricerca",
+            "namePlaceholder": "es. Sage, Quill, Darwin…",
+            "tagline": "Trasforma le domande in brief citati e pronti per decidere"
+          },
+          "scratchLabel": "Parti da zero",
+          "scratchTagline": "un agente vuoto, interamente a modo tuo"
+        },
         "provider": "Provider",
         "providerApiKey": "Chiave API {{provider}}",
         "providerDefault": "Provider predefinito (Anthropic)",
@@ -42599,6 +42923,15 @@ export const resources = {
         "clickToChange": "फ़ोटो बदलने के लिए क्लिक करें",
         "clickToChoosePhoto": "फ़ोटो चुनने के लिए क्लिक करें (वैकल्पिक)",
         "computerUse": "कंप्यूटर उपयोग",
+        "connect": {
+          "body": "Google कनेक्ट करें ताकि {{name}} आपके ईमेल और कैलेंडर के साथ काम कर सके। आप इसे बाद में प्रोफ़ाइल → कनेक्टेड खाते में भी कर सकते हैं।",
+          "connected": "Google कनेक्ट हो गया",
+          "cta": "Google कनेक्ट करें",
+          "done": "हो गया",
+          "skip": "अभी छोड़ें",
+          "title": "{{name}} तैयार है!",
+          "waiting": "Google की प्रतीक्षा में…"
+        },
         "connectionDetails": "कनेक्शन विवरण",
         "connectionHint": "सेटअप गाइड के माध्यम से अपने एजेंट को कनेक्ट करने के लिए इनका उपयोग करें",
         "copyAll": "सभी कॉपी करें",
@@ -42721,6 +43054,33 @@ export const resources = {
         "photoHint": "एक फ़ोटो आपके एजेंट को एक नज़र में पहचानना आसान बनाता है।",
         "photoTitle": "अपने एजेंट को एक चेहरा दें",
         "photoTitleNamed": "{{name}} को एक चेहरा दें",
+        "presetHint": "तैयार एजेंट चुनें, या शून्य से अपना खुद का बनाएँ।",
+        "presetTitle": "एक शुरुआती बिंदु चुनें",
+        "presets": {
+          "assistant": {
+            "label": "निजी सहायक",
+            "namePlaceholder": "जैसे आरिया, जार्विस, पेनी…",
+            "tagline": "आपका दिन व्यवस्थित रखता है — रिमाइंडर, रूटीन, समन्वय"
+          },
+          "calendar": {
+            "label": "कैलेंडर एजेंट",
+            "namePlaceholder": "जैसे कैल, मोमो, डाना…",
+            "tagline": "इवेंट संभालता है और सुबह का एजेंडा देता है"
+          },
+          "email": {
+            "label": "ईमेल एजेंट",
+            "namePlaceholder": "जैसे माइल्स, एडा, पोस्टमैन…",
+            "tagline": "आपके इनबॉक्स को छाँटता है और स्वीकृति के लिए जवाब का मसौदा बनाता है"
+          },
+          "googleBadge": "Google उपयोग",
+          "research": {
+            "label": "शोध एजेंट",
+            "namePlaceholder": "जैसे सेज, क्विल, डार्विन…",
+            "tagline": "प्रश्नों को उद्धृत, निर्णय-योग्य ब्रीफ़ में बदलता है"
+          },
+          "scratchLabel": "शून्य से शुरू करें",
+          "scratchTagline": "एक खाली एजेंट, पूरी तरह आपके डिज़ाइन का"
+        },
         "provider": "प्रोवाइडर",
         "providerApiKey": "{{provider}} API कुंजी",
         "providerDefault": "प्रोवाइडर डिफ़ॉल्ट (Anthropic)",
