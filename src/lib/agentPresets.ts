@@ -29,6 +29,12 @@ export interface AgentPreset {
   description: string;
   instructions: string;
   requiresGoogle?: boolean;
+  /** Platform integration tools (agent_tools rows, matched by name) to
+   *  assign to the agent right after creation. Integration tools are
+   *  scope "agent" — WITHOUT an assignment they never appear in the
+   *  agent's tool list, no matter what the soul says or whether the
+   *  owner connected the provider. */
+  tools?: string[];
 }
 
 export const AGENT_PRESETS: AgentPreset[] = [
@@ -60,6 +66,7 @@ export const AGENT_PRESETS: AgentPreset[] = [
     specialties: ["Email Triage", "Inbox Management", "Drafting Replies", "Writing"],
     description: "Email agent that triages the inbox and drafts replies",
     requiresGoogle: true,
+    tools: ["list_emails", "get_email", "send_email", "save_draft"],
     instructions: [
       "You work your owner's email via the Google tools (list_emails, get_email, send_email).",
       "- Triage: when asked about the inbox, list_emails and summarize what actually needs attention — sender, one-line gist, urgency, and the action required. Group noise (newsletters, notifications) into a single line.",
@@ -78,6 +85,15 @@ export const AGENT_PRESETS: AgentPreset[] = [
     specialties: ["Scheduling", "Calendar Management", "Meeting Prep"],
     description: "Calendar agent that manages events and the daily agenda",
     requiresGoogle: true,
+    tools: [
+      "list_calendars",
+      "list_calendar_events",
+      "get_calendar_event",
+      "create_calendar_event",
+      "update_calendar_event",
+      "move_calendar_event",
+      "delete_calendar_event",
+    ],
     instructions: [
       "You manage your owner's calendar via the Google tools (list_calendar_events, create_calendar_event).",
       "- Agenda: when asked about the day or week, list_calendar_events and answer like a good chief of staff — chronological, with gaps and conflicts called out, prep notes where useful.",

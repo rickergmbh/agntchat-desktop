@@ -2008,6 +2008,38 @@ export interface ProviderInfo {
   scopes?: string[];
 }
 
+// --- Agent tool catalog (platform integrations are per-agent opt-in) ---
+
+/** Summary row from GET /api/tools — platform integration tools (Google,
+ *  GitHub, …) are scope "agent" with no owner and only reach an agent via
+ *  an explicit assignment. */
+export interface PlatformToolSummary {
+  id: string;
+  name: string;
+  scope: string;
+  category?: string;
+  displayName?: string;
+}
+
+export async function listToolCatalog(): Promise<PlatformToolSummary[]> {
+  const { tools } = await request<{ tools: PlatformToolSummary[] }>(
+    "/api/tools"
+  );
+  return tools;
+}
+
+/** Assign a platform tool to an agent the caller owns. Integration tools
+ *  (scope "agent") don't appear in an agent's tool list until assigned. */
+export async function assignToolToAgent(
+  toolId: string,
+  agentId: string
+): Promise<void> {
+  await request(`/api/tools/${toolId}/assign`, {
+    method: "POST",
+    body: JSON.stringify({ agentId }),
+  });
+}
+
 export async function listCredentials(): Promise<{ credentials: UserCredential[] }> {
   return request("/api/integrations");
 }

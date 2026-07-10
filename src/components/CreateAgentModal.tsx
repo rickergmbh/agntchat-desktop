@@ -28,6 +28,8 @@ import {
   updateAgentRuntime,
   authorizeProvider,
   getProviderStatus,
+  listToolCatalog,
+  assignToolToAgent,
 } from "../lib/api";
 import { openExternal } from "../lib/openExternal";
 import { AGENT_PRESETS, type AgentPreset } from "../lib/agentPresets";
@@ -521,6 +523,28 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
           });
         } catch {
           // leave as local; user can fix in the agent's Runtime settings
+        }
+      }
+
+      // Preset integration tools: platform tools like Gmail/Calendar are
+      // scope "agent" — they never appear in the agent's tool list without
+      // an explicit assignment, regardless of the soul or the owner's
+      // Google connection. Best-effort: a failed assignment shouldn't fail
+      // the create (tools can be assigned later).
+      if (newId && preset?.tools?.length) {
+        try {
+          const catalogTools = await listToolCatalog();
+          const byName = new Map(catalogTools.map((tl) => [tl.name, tl.id]));
+          await Promise.all(
+            preset.tools.map((name) => {
+              const toolId = byName.get(name);
+              return toolId
+                ? assignToolToAgent(toolId, newId).catch(() => undefined)
+                : Promise.resolve(undefined);
+            })
+          );
+        } catch {
+          // catalog fetch failed — non-fatal
         }
       }
 
