@@ -544,7 +544,10 @@ export const resources = {
           "mode": "Mode",
           "pinnedKey": "Pinned key",
           "providerDefaultValue": "{{provider}} default",
-          "safety": "Safety"
+          "safety": "Safety",
+          "toolsCount_one": "{{count}} tool enabled",
+          "toolsCount_other": "{{count}} tools enabled",
+          "toolsLabel": "Integrations"
         },
         "reviewHint": "Here's a summary of your new agent.",
         "reviewTitle": "Looking good!",
@@ -585,6 +588,8 @@ export const resources = {
         "timeoutSeconds": "Timeout (seconds)",
         "toneHint": "Pick a style or add your own.",
         "toneTitle": "How should they talk?",
+        "toolsHint": "Pick the integrations this agent should work with. You can change this anytime in the agent's Tools tab.",
+        "toolsTitle": "Which tools can they use?",
         "typePlaceholder": "Type...",
         "visibility": {
           "label": "Visibility",
@@ -1573,6 +1578,30 @@ export const resources = {
         "witty": "Witty"
       },
       "tools": "Tools",
+      "toolsTab": {
+        "connect": "Connect",
+        "connected": "Connected",
+        "empty": "No integration tools available.",
+        "errors": {
+          "toggleFailed": "Couldn't update the tool. Try again."
+        },
+        "groups": {
+          "calendar": "Google Calendar",
+          "github": "GitHub",
+          "gmail": "Gmail",
+          "jobs": "Job search",
+          "other": "Other",
+          "payments": "Payments & finance"
+        },
+        "integrations": "Integrations",
+        "loading": "Loading tools…",
+        "needsProvider": "Needs {{provider}} connection",
+        "platformHint": "Messaging, tasks, memory, web search and other core tools are available to every agent automatically.",
+        "platform_one": "{{count}} built-in tool (always available)",
+        "platform_other": "{{count}} built-in tools (always available)",
+        "skillsHint": "Integration tools are opt-in per agent. Enabling them also activates matching skills (e.g. the Gmail skill switches on with the email tools).",
+        "title": "Tools"
+      },
       "trustLevel": "trust: {{level}}",
       "type": {
         "observer": "Observer",
@@ -5272,7 +5301,10 @@ export const resources = {
           "mode": "Modo",
           "pinnedKey": "Clave fijada",
           "providerDefaultValue": "Predeterminada de {{provider}}",
-          "safety": "Seguridad"
+          "safety": "Seguridad",
+          "toolsCount_one": "{{count}} herramienta activada",
+          "toolsCount_other": "{{count}} herramientas activadas",
+          "toolsLabel": "Integraciones"
         },
         "reviewHint": "Aquí tienes un resumen de tu nuevo agente.",
         "reviewTitle": "¡Tiene buena pinta!",
@@ -5313,6 +5345,8 @@ export const resources = {
         "timeoutSeconds": "Tiempo de espera (segundos)",
         "toneHint": "Elige un estilo o añade el tuyo.",
         "toneTitle": "¿Cómo debería hablar?",
+        "toolsHint": "Elige las integraciones con las que trabajará este agente. Puedes cambiarlo en cualquier momento en la pestaña Herramientas del agente.",
+        "toolsTitle": "¿Qué herramientas puede usar?",
         "typePlaceholder": "Escribe...",
         "visibility": {
           "label": "Visibilidad",
@@ -6301,6 +6335,30 @@ export const resources = {
         "witty": "Ingenioso"
       },
       "tools": "Herramientas",
+      "toolsTab": {
+        "connect": "Conectar",
+        "connected": "Conectado",
+        "empty": "No hay herramientas de integración disponibles.",
+        "errors": {
+          "toggleFailed": "No se pudo actualizar la herramienta. Inténtalo de nuevo."
+        },
+        "groups": {
+          "calendar": "Google Calendar",
+          "github": "GitHub",
+          "gmail": "Gmail",
+          "jobs": "Búsqueda de empleo",
+          "other": "Otros",
+          "payments": "Pagos y finanzas"
+        },
+        "integrations": "Integraciones",
+        "loading": "Cargando herramientas…",
+        "needsProvider": "Requiere conexión de {{provider}}",
+        "platformHint": "La mensajería, las tareas, la memoria, la búsqueda web y otras herramientas básicas están disponibles automáticamente para todos los agentes.",
+        "platform_one": "{{count}} herramienta integrada (siempre disponible)",
+        "platform_other": "{{count}} herramientas integradas (siempre disponibles)",
+        "skillsHint": "Las herramientas de integración se activan por agente. Habilitarlas también activa las habilidades correspondientes (p. ej., la habilidad de Gmail se enciende con las herramientas de correo).",
+        "title": "Herramientas"
+      },
       "trustLevel": "confianza: {{level}}",
       "type": {
         "observer": "Observador",
@@ -10000,7 +10058,10 @@ export const resources = {
           "mode": "Modus",
           "pinnedKey": "Angepinnter Schlüssel",
           "providerDefaultValue": "{{provider}}-Standard",
-          "safety": "Sicherheit"
+          "safety": "Sicherheit",
+          "toolsCount_one": "{{count}} Werkzeug aktiviert",
+          "toolsCount_other": "{{count}} Werkzeuge aktiviert",
+          "toolsLabel": "Integrationen"
         },
         "reviewHint": "Hier ist eine Zusammenfassung Ihres neuen Agenten.",
         "reviewTitle": "Sieht gut aus!",
@@ -10041,6 +10102,8 @@ export const resources = {
         "timeoutSeconds": "Timeout (Sekunden)",
         "toneHint": "Wählen Sie einen Stil oder fügen Sie einen eigenen hinzu.",
         "toneTitle": "Wie sollen sie sprechen?",
+        "toolsHint": "Wählen Sie die Integrationen, mit denen dieser Agent arbeiten soll. Sie können das jederzeit im Tools-Tab des Agenten ändern.",
+        "toolsTitle": "Welche Werkzeuge dürfen sie nutzen?",
         "typePlaceholder": "Eingeben...",
         "visibility": {
           "label": "Sichtbarkeit",
@@ -11029,6 +11092,30 @@ export const resources = {
         "witty": "Witzig"
       },
       "tools": "Tools",
+      "toolsTab": {
+        "connect": "Verbinden",
+        "connected": "Verbunden",
+        "empty": "Keine Integrations-Werkzeuge verfügbar.",
+        "errors": {
+          "toggleFailed": "Werkzeug konnte nicht aktualisiert werden. Versuchen Sie es erneut."
+        },
+        "groups": {
+          "calendar": "Google Kalender",
+          "github": "GitHub",
+          "gmail": "Gmail",
+          "jobs": "Jobsuche",
+          "other": "Sonstige",
+          "payments": "Zahlungen & Finanzen"
+        },
+        "integrations": "Integrationen",
+        "loading": "Werkzeuge werden geladen…",
+        "needsProvider": "Benötigt {{provider}}-Verbindung",
+        "platformHint": "Messaging, Aufgaben, Gedächtnis, Websuche und andere Kernwerkzeuge stehen jedem Agenten automatisch zur Verfügung.",
+        "platform_one": "{{count}} integriertes Werkzeug (immer verfügbar)",
+        "platform_other": "{{count}} integrierte Werkzeuge (immer verfügbar)",
+        "skillsHint": "Integrations-Werkzeuge sind pro Agent optional. Ihre Aktivierung schaltet auch passende Skills frei (z. B. aktiviert sich der Gmail-Skill mit den E-Mail-Werkzeugen).",
+        "title": "Werkzeuge"
+      },
       "trustLevel": "Vertrauen: {{level}}",
       "type": {
         "observer": "Beobachter",
@@ -14728,7 +14815,10 @@ export const resources = {
           "mode": "Mode",
           "pinnedKey": "Clé épinglée",
           "providerDefaultValue": "Par défaut de {{provider}}",
-          "safety": "Sécurité"
+          "safety": "Sécurité",
+          "toolsCount_one": "{{count}} outil activé",
+          "toolsCount_other": "{{count}} outils activés",
+          "toolsLabel": "Intégrations"
         },
         "reviewHint": "Voici un résumé de votre nouvel agent.",
         "reviewTitle": "Ça a l'air bien !",
@@ -14769,6 +14859,8 @@ export const resources = {
         "timeoutSeconds": "Délai d'expiration (secondes)",
         "toneHint": "Choisissez un style ou ajoutez le vôtre.",
         "toneTitle": "Comment doivent-ils parler ?",
+        "toolsHint": "Choisissez les intégrations avec lesquelles cet agent travaillera. Modifiable à tout moment dans l'onglet Outils de l'agent.",
+        "toolsTitle": "Quels outils peut-il utiliser ?",
         "typePlaceholder": "Tapez...",
         "visibility": {
           "label": "Visibilité",
@@ -15757,6 +15849,30 @@ export const resources = {
         "witty": "Spirituel"
       },
       "tools": "Outils",
+      "toolsTab": {
+        "connect": "Connecter",
+        "connected": "Connecté",
+        "empty": "Aucun outil d'intégration disponible.",
+        "errors": {
+          "toggleFailed": "Impossible de mettre à jour l'outil. Réessayez."
+        },
+        "groups": {
+          "calendar": "Google Agenda",
+          "github": "GitHub",
+          "gmail": "Gmail",
+          "jobs": "Recherche d'emploi",
+          "other": "Autres",
+          "payments": "Paiements et finances"
+        },
+        "integrations": "Intégrations",
+        "loading": "Chargement des outils…",
+        "needsProvider": "Nécessite une connexion {{provider}}",
+        "platformHint": "La messagerie, les tâches, la mémoire, la recherche web et les autres outils de base sont disponibles automatiquement pour chaque agent.",
+        "platform_one": "{{count}} outil intégré (toujours disponible)",
+        "platform_other": "{{count}} outils intégrés (toujours disponibles)",
+        "skillsHint": "Les outils d'intégration s'activent par agent. Les activer déclenche aussi les compétences associées (p. ex. la compétence Gmail s'active avec les outils e-mail).",
+        "title": "Outils"
+      },
       "trustLevel": "confiance : {{level}}",
       "type": {
         "observer": "Observateur",
@@ -19456,7 +19572,10 @@ export const resources = {
           "mode": "Modo",
           "pinnedKey": "Chave fixada",
           "providerDefaultValue": "Padrão de {{provider}}",
-          "safety": "Segurança"
+          "safety": "Segurança",
+          "toolsCount_one": "{{count}} ferramenta ativada",
+          "toolsCount_other": "{{count}} ferramentas ativadas",
+          "toolsLabel": "Integrações"
         },
         "reviewHint": "Aqui está um resumo do seu novo agente.",
         "reviewTitle": "Está ótimo!",
@@ -19497,6 +19616,8 @@ export const resources = {
         "timeoutSeconds": "Tempo Limite (segundos)",
         "toneHint": "Escolha um estilo ou adicione o seu próprio.",
         "toneTitle": "Como eles devem falar?",
+        "toolsHint": "Escolha as integrações com as quais este agente vai trabalhar. Você pode mudar isso a qualquer momento na aba Ferramentas do agente.",
+        "toolsTitle": "Quais ferramentas ele pode usar?",
         "typePlaceholder": "Digite...",
         "visibility": {
           "label": "Visibilidade",
@@ -20485,6 +20606,30 @@ export const resources = {
         "witty": "Espirituoso"
       },
       "tools": "Ferramentas",
+      "toolsTab": {
+        "connect": "Conectar",
+        "connected": "Conectado",
+        "empty": "Nenhuma ferramenta de integração disponível.",
+        "errors": {
+          "toggleFailed": "Não foi possível atualizar a ferramenta. Tente novamente."
+        },
+        "groups": {
+          "calendar": "Google Agenda",
+          "github": "GitHub",
+          "gmail": "Gmail",
+          "jobs": "Busca de vagas",
+          "other": "Outros",
+          "payments": "Pagamentos e finanças"
+        },
+        "integrations": "Integrações",
+        "loading": "Carregando ferramentas…",
+        "needsProvider": "Requer conexão com {{provider}}",
+        "platformHint": "Mensagens, tarefas, memória, busca na web e outras ferramentas básicas estão disponíveis automaticamente para todos os agentes.",
+        "platform_one": "{{count}} ferramenta integrada (sempre disponível)",
+        "platform_other": "{{count}} ferramentas integradas (sempre disponíveis)",
+        "skillsHint": "As ferramentas de integração são opcionais por agente. Ativá-las também ativa as habilidades correspondentes (por exemplo, a habilidade do Gmail liga com as ferramentas de e-mail).",
+        "title": "Ferramentas"
+      },
       "trustLevel": "confiança: {{level}}",
       "type": {
         "observer": "Observador",
@@ -24184,7 +24329,10 @@ export const resources = {
           "mode": "モード",
           "pinnedKey": "固定キー",
           "providerDefaultValue": "{{provider}}の既定値",
-          "safety": "安全性"
+          "safety": "安全性",
+          "toolsCount_one": "{{count}}個のツールを有効化",
+          "toolsCount_other": "{{count}}個のツールを有効化",
+          "toolsLabel": "連携"
         },
         "reviewHint": "新しいエージェントの概要です。",
         "reviewTitle": "いい感じです！",
@@ -24225,6 +24373,8 @@ export const resources = {
         "timeoutSeconds": "タイムアウト（秒）",
         "toneHint": "スタイルを選ぶか、独自のものを追加してください。",
         "toneTitle": "どのように話しますか？",
+        "toolsHint": "このエージェントが使う連携を選んでください。エージェントのツールタブでいつでも変更できます。",
+        "toolsTitle": "使えるツールを選びましょう",
         "typePlaceholder": "入力…",
         "visibility": {
           "label": "公開設定",
@@ -25213,6 +25363,30 @@ export const resources = {
         "witty": "ウィットに富んだ"
       },
       "tools": "ツール",
+      "toolsTab": {
+        "connect": "連携する",
+        "connected": "連携済み",
+        "empty": "利用できる連携ツールがありません。",
+        "errors": {
+          "toggleFailed": "ツールを更新できませんでした。もう一度お試しください。"
+        },
+        "groups": {
+          "calendar": "Googleカレンダー",
+          "github": "GitHub",
+          "gmail": "Gmail",
+          "jobs": "求人検索",
+          "other": "その他",
+          "payments": "決済・金融"
+        },
+        "integrations": "連携",
+        "loading": "ツールを読み込み中…",
+        "needsProvider": "{{provider}}の連携が必要",
+        "platformHint": "メッセージング、タスク、メモリ、ウェブ検索などのコアツールは全エージェントで自動的に利用できます。",
+        "platform_one": "組み込みツール{{count}}個（常時利用可）",
+        "platform_other": "組み込みツール{{count}}個（常時利用可）",
+        "skillsHint": "連携ツールはエージェントごとのオプトインです。有効にすると対応するスキルも起動します（例：メールツールでGmailスキルが有効化）。",
+        "title": "ツール"
+      },
       "trustLevel": "信頼度: {{level}}",
       "type": {
         "observer": "オブザーバー",
@@ -28912,7 +29086,10 @@ export const resources = {
           "mode": "模式",
           "pinnedKey": "已固定密钥",
           "providerDefaultValue": "{{provider}} 默认值",
-          "safety": "安全性"
+          "safety": "安全性",
+          "toolsCount_one": "已启用 {{count}} 个工具",
+          "toolsCount_other": "已启用 {{count}} 个工具",
+          "toolsLabel": "集成"
         },
         "reviewHint": "这是您新智能体的摘要。",
         "reviewTitle": "看起来不错！",
@@ -28953,6 +29130,8 @@ export const resources = {
         "timeoutSeconds": "超时时间（秒）",
         "toneHint": "选择一种风格，或添加您自己的风格。",
         "toneTitle": "他们应该如何说话？",
+        "toolsHint": "选择这个智能体要使用的集成。可随时在智能体的“工具”标签中更改。",
+        "toolsTitle": "它可以使用哪些工具？",
         "typePlaceholder": "输入……",
         "visibility": {
           "label": "可见性",
@@ -29941,6 +30120,30 @@ export const resources = {
         "witty": "诙谐"
       },
       "tools": "工具",
+      "toolsTab": {
+        "connect": "连接",
+        "connected": "已连接",
+        "empty": "没有可用的集成工具。",
+        "errors": {
+          "toggleFailed": "无法更新工具，请重试。"
+        },
+        "groups": {
+          "calendar": "Google 日历",
+          "github": "GitHub",
+          "gmail": "Gmail",
+          "jobs": "职位搜索",
+          "other": "其他",
+          "payments": "支付与金融"
+        },
+        "integrations": "集成",
+        "loading": "正在加载工具…",
+        "needsProvider": "需要连接 {{provider}}",
+        "platformHint": "消息、任务、记忆、网页搜索等核心工具对每个智能体自动可用。",
+        "platform_one": "{{count}} 个内置工具（始终可用）",
+        "platform_other": "{{count}} 个内置工具（始终可用）",
+        "skillsHint": "集成工具需按智能体启用。启用后相应技能也会激活（例如邮件工具会启用 Gmail 技能）。",
+        "title": "工具"
+      },
       "trustLevel": "信任等级：{{level}}",
       "type": {
         "observer": "观察型",
@@ -33640,7 +33843,10 @@ export const resources = {
           "mode": "모드",
           "pinnedKey": "고정된 키",
           "providerDefaultValue": "{{provider}} 기본값",
-          "safety": "안전"
+          "safety": "안전",
+          "toolsCount_one": "도구 {{count}}개 사용",
+          "toolsCount_other": "도구 {{count}}개 사용",
+          "toolsLabel": "통합"
         },
         "reviewHint": "새 에이전트에 대한 요약입니다.",
         "reviewTitle": "좋아 보입니다!",
@@ -33681,6 +33887,8 @@ export const resources = {
         "timeoutSeconds": "타임아웃(초)",
         "toneHint": "스타일을 선택하거나 직접 추가하세요.",
         "toneTitle": "어떻게 말해야 할까요?",
+        "toolsHint": "이 에이전트가 사용할 통합을 선택하세요. 에이전트의 도구 탭에서 언제든지 변경할 수 있습니다.",
+        "toolsTitle": "어떤 도구를 사용할 수 있나요?",
         "typePlaceholder": "입력...",
         "visibility": {
           "label": "공개 범위",
@@ -34669,6 +34877,30 @@ export const resources = {
         "witty": "재치있음"
       },
       "tools": "도구",
+      "toolsTab": {
+        "connect": "연결",
+        "connected": "연결됨",
+        "empty": "사용 가능한 통합 도구가 없습니다.",
+        "errors": {
+          "toggleFailed": "도구를 업데이트하지 못했습니다. 다시 시도하세요."
+        },
+        "groups": {
+          "calendar": "Google 캘린더",
+          "github": "GitHub",
+          "gmail": "Gmail",
+          "jobs": "구직 검색",
+          "other": "기타",
+          "payments": "결제 및 금융"
+        },
+        "integrations": "통합",
+        "loading": "도구 불러오는 중…",
+        "needsProvider": "{{provider}} 연결 필요",
+        "platformHint": "메시징, 작업, 기억, 웹 검색 등 핵심 도구는 모든 에이전트에서 자동으로 사용할 수 있습니다.",
+        "platform_one": "기본 도구 {{count}}개(항상 사용 가능)",
+        "platform_other": "기본 도구 {{count}}개(항상 사용 가능)",
+        "skillsHint": "통합 도구는 에이전트별 옵트인입니다. 활성화하면 해당 스킬도 켜집니다(예: 이메일 도구로 Gmail 스킬 활성화).",
+        "title": "도구"
+      },
       "trustLevel": "신뢰도: {{level}}",
       "type": {
         "observer": "옵저버",
@@ -38368,7 +38600,10 @@ export const resources = {
           "mode": "Modalità",
           "pinnedKey": "Chiave fissata",
           "providerDefaultValue": "Predefinito {{provider}}",
-          "safety": "Sicurezza"
+          "safety": "Sicurezza",
+          "toolsCount_one": "{{count}} strumento attivato",
+          "toolsCount_other": "{{count}} strumenti attivati",
+          "toolsLabel": "Integrazioni"
         },
         "reviewHint": "Ecco un riepilogo del tuo nuovo agente.",
         "reviewTitle": "Ha un bell'aspetto!",
@@ -38409,6 +38644,8 @@ export const resources = {
         "timeoutSeconds": "Timeout (secondi)",
         "toneHint": "Scegli uno stile o aggiungine uno tuo.",
         "toneTitle": "Come dovrebbero parlare?",
+        "toolsHint": "Scegli le integrazioni con cui questo agente lavorerà. Puoi cambiarle in qualsiasi momento nella scheda Strumenti dell'agente.",
+        "toolsTitle": "Quali strumenti può usare?",
         "typePlaceholder": "Digita...",
         "visibility": {
           "label": "Visibilità",
@@ -39397,6 +39634,30 @@ export const resources = {
         "witty": "Spiritoso"
       },
       "tools": "Strumenti",
+      "toolsTab": {
+        "connect": "Collega",
+        "connected": "Collegato",
+        "empty": "Nessuno strumento di integrazione disponibile.",
+        "errors": {
+          "toggleFailed": "Impossibile aggiornare lo strumento. Riprova."
+        },
+        "groups": {
+          "calendar": "Google Calendar",
+          "github": "GitHub",
+          "gmail": "Gmail",
+          "jobs": "Ricerca di lavoro",
+          "other": "Altri",
+          "payments": "Pagamenti e finanza"
+        },
+        "integrations": "Integrazioni",
+        "loading": "Caricamento degli strumenti…",
+        "needsProvider": "Richiede la connessione {{provider}}",
+        "platformHint": "Messaggistica, attività, memoria, ricerca web e altri strumenti di base sono disponibili automaticamente per ogni agente.",
+        "platform_one": "{{count}} strumento integrato (sempre disponibile)",
+        "platform_other": "{{count}} strumenti integrati (sempre disponibili)",
+        "skillsHint": "Gli strumenti di integrazione sono opzionali per agente. Attivarli attiva anche le competenze corrispondenti (ad es. la competenza Gmail si accende con gli strumenti email).",
+        "title": "Strumenti"
+      },
       "trustLevel": "fiducia: {{level}}",
       "type": {
         "observer": "Osservatore",
@@ -43096,7 +43357,10 @@ export const resources = {
           "mode": "मोड",
           "pinnedKey": "पिन की गई कुंजी",
           "providerDefaultValue": "{{provider}} डिफ़ॉल्ट",
-          "safety": "सुरक्षा"
+          "safety": "सुरक्षा",
+          "toolsCount_one": "{{count}} टूल सक्षम",
+          "toolsCount_other": "{{count}} टूल सक्षम",
+          "toolsLabel": "इंटीग्रेशन"
         },
         "reviewHint": "यहाँ आपके नए एजेंट का सारांश है।",
         "reviewTitle": "बहुत बढ़िया लग रहा है!",
@@ -43137,6 +43401,8 @@ export const resources = {
         "timeoutSeconds": "टाइमआउट (सेकंड)",
         "toneHint": "एक शैली चुनें या अपनी खुद जोड़ें।",
         "toneTitle": "उन्हें कैसे बात करनी चाहिए?",
+        "toolsHint": "चुनें कि यह एजेंट किन इंटीग्रेशनों के साथ काम करे। इसे एजेंट के टूल्स टैब में कभी भी बदला जा सकता है।",
+        "toolsTitle": "वे कौन से टूल इस्तेमाल कर सकते हैं?",
         "typePlaceholder": "टाइप करें...",
         "visibility": {
           "label": "दृश्यता",
@@ -44125,6 +44391,30 @@ export const resources = {
         "witty": "विनोदी"
       },
       "tools": "टूल्स",
+      "toolsTab": {
+        "connect": "कनेक्ट करें",
+        "connected": "कनेक्टेड",
+        "empty": "कोई इंटीग्रेशन टूल उपलब्ध नहीं है।",
+        "errors": {
+          "toggleFailed": "टूल अपडेट नहीं हो सका। फिर से प्रयास करें।"
+        },
+        "groups": {
+          "calendar": "Google कैलेंडर",
+          "github": "GitHub",
+          "gmail": "Gmail",
+          "jobs": "नौकरी खोज",
+          "other": "अन्य",
+          "payments": "भुगतान और वित्त"
+        },
+        "integrations": "इंटीग्रेशन",
+        "loading": "टूल लोड हो रहे हैं…",
+        "needsProvider": "{{provider}} कनेक्शन आवश्यक",
+        "platformHint": "संदेश, कार्य, स्मृति, वेब खोज और अन्य मुख्य टूल हर एजेंट के लिए स्वतः उपलब्ध हैं।",
+        "platform_one": "{{count}} अंतर्निहित टूल (हमेशा उपलब्ध)",
+        "platform_other": "{{count}} अंतर्निहित टूल (हमेशा उपलब्ध)",
+        "skillsHint": "इंटीग्रेशन टूल हर एजेंट के लिए वैकल्पिक हैं। इन्हें चालू करने से मेल खाते कौशल भी सक्रिय होते हैं (जैसे ईमेल टूल से Gmail कौशल)।",
+        "title": "टूल्स"
+      },
       "trustLevel": "भरोसा: {{level}}",
       "type": {
         "observer": "पर्यवेक्षक",

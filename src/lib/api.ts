@@ -2019,11 +2019,25 @@ export interface PlatformToolSummary {
   scope: string;
   category?: string;
   displayName?: string;
+  description?: string;
+  /** Provider grouping lives in tags (e.g. ["google","gmail","email"]). */
+  tags?: string[];
 }
 
 export async function listToolCatalog(): Promise<PlatformToolSummary[]> {
   const { tools } = await request<{ tools: PlatformToolSummary[] }>(
     "/api/tools"
+  );
+  return tools;
+}
+
+/** Resolved tools for an agent — globals + explicit assignments. An
+ *  integration tool present here means it's assigned to the agent. */
+export async function getAgentTools(
+  agentId: string
+): Promise<PlatformToolSummary[]> {
+  const { tools } = await request<{ tools: PlatformToolSummary[] }>(
+    `/api/agents/${agentId}/tools`
   );
   return tools;
 }
@@ -2037,6 +2051,16 @@ export async function assignToolToAgent(
   await request(`/api/tools/${toolId}/assign`, {
     method: "POST",
     body: JSON.stringify({ agentId }),
+  });
+}
+
+/** Remove a tool assignment (for global tools this records an opt-out). */
+export async function unassignToolFromAgent(
+  toolId: string,
+  agentId: string
+): Promise<void> {
+  await request(`/api/tools/${toolId}/assign/${agentId}`, {
+    method: "DELETE",
   });
 }
 

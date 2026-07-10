@@ -77,6 +77,7 @@ import {
   ScrollText,
   Activity,
   Sparkles,
+  Wrench,
   FileText,
   Copy,
   Eye,
@@ -116,6 +117,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { AgentSkills } from "./AgentSkills";
+import { AgentTools } from "./AgentTools";
 import { AgentMemory } from "./AgentMemory";
 import { AgentTemplates } from "./AgentTemplates";
 import { AgentRoutines } from "./AgentRoutines";
@@ -373,6 +375,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
       name: t("sections.capabilities"),
       sections: [
         { value: "skills", label: t("skills.title"), icon: Sparkles },
+        { value: "tools", label: t("toolsTab.title"), icon: Wrench },
         { value: "memory", label: t("memory:title"), icon: Brain },
         { value: "templates", label: t("nav:templates"), icon: LayoutTemplate },
         { value: "routines", label: t("routines.title"), icon: Timer },
@@ -1296,6 +1299,12 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
         {activeSection === "skills" && (
           <div className="flex-1 overflow-y-auto">
             <AgentSkills agentId={agent.id} />
+          </div>
+        )}
+
+        {activeSection === "tools" && (
+          <div className="flex-1 overflow-y-auto">
+            <AgentTools agentId={agent.id} />
           </div>
         )}
 

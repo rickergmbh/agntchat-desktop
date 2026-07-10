@@ -30,9 +30,11 @@ import {
   getProviderStatus,
   listToolCatalog,
   assignToolToAgent,
+  type PlatformToolSummary,
 } from "../lib/api";
 import { openExternal } from "../lib/openExternal";
 import { AGENT_PRESETS, type AgentPreset } from "../lib/agentPresets";
+import { groupIntegrationTools, anyGoogleTool } from "../lib/toolGroups";
 import { useLlmKeyStore } from "../stores/llmKeyStore";
 import { useModelCatalog } from "../stores/modelCatalogStore";
 import { useAgentTypes } from "../lib/agentTypes";
@@ -88,6 +90,7 @@ const STEPS = [
   "tone",
   "specialties",
   "details",
+  "tools",
   "brain",
   "review",
 ] as const;
@@ -111,6 +114,7 @@ const STEP_SUBTITLE_KEYS: Record<WizardStep, string> = {
   tone: "create.toneHint",
   specialties: "create.specialtiesHint",
   details: "create.detailsHint",
+  tools: "create.toolsHint",
   brain: "create.brainHint",
   review: "create.reviewHint",
 };
@@ -181,6 +185,17 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   // details
   const [customInstructions, setCustomInstructions] = useState("");
   const [requiresLocation, setRequiresLocation] = useState(false);
+  // tools — integration tools (scope "agent") to assign after creation.
+  // Pre-seeded by presets; the picker fetches the catalog on first render.
+  const [selectedTools, setSelectedTools] = useState<string[]>([]);
+  const [toolCatalog, setToolCatalog] = useState<PlatformToolSummary[]>([]);
+  useEffect(() => {
+    listToolCatalog()
+      .then(setToolCatalog)
+      .catch(() => {
+        // picker shows an empty state; preset assignment still works by name
+      });
+  }, []);
   // visibility — Personal (default) is cross-workspace, Workspace pins
   // to the user's currently-active workspace. Backend rejects pinning
   // anywhere else, so there's no picker.
@@ -301,6 +316,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
       setCustomTone(null);
       setDescription(p.description);
       setCustomInstructions(p.instructions);
+      setSelectedTools(p.tools ?? []);
       if (p.requiresGoogle && googleConnectedRef.current === null) {
         void getProviderStatus("google")
           .then((s) => {
@@ -320,6 +336,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
       setCustomTone(null);
       setDescription("");
       setCustomInstructions("");
+      setSelectedTools([]);
     }
     setStepIndex(STEPS.indexOf("name"));
   };
@@ -526,17 +543,18 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
         }
       }
 
-      // Preset integration tools: platform tools like Gmail/Calendar are
+      // Selected integration tools: platform tools like Gmail/Calendar are
       // scope "agent" — they never appear in the agent's tool list without
       // an explicit assignment, regardless of the soul or the owner's
       // Google connection. Best-effort: a failed assignment shouldn't fail
-      // the create (tools can be assigned later).
-      if (newId && preset?.tools?.length) {
+      // the create (tools can be assigned later in the agent's Tools tab).
+      if (newId && selectedTools.length > 0) {
         try {
-          const catalogTools = await listToolCatalog();
+          const catalogTools =
+            toolCatalog.length > 0 ? toolCatalog : await listToolCatalog();
           const byName = new Map(catalogTools.map((tl) => [tl.name, tl.id]));
           await Promise.all(
-            preset.tools.map((name) => {
+            selectedTools.map((name) => {
               const toolId = byName.get(name);
               return toolId
                 ? assignToolToAgent(toolId, newId).catch(() => undefined)
@@ -550,10 +568,14 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
 
       if (newId) await selectAgent(newId);
 
-      // Google-backed presets: if the owner hasn't connected Google, keep
+      // Google-backed selection: if the owner hasn't connected Google, keep
       // the modal open on a connect pane instead of closing — the agent
-      // exists either way, but its tools only work once connected.
-      if (newId && preset?.requiresGoogle) {
+      // exists either way, but its tools only work once connected. Covers
+      // presets AND scratch agents that picked Google tools.
+      const wantsGoogle =
+        preset?.requiresGoogle || anyGoogleTool(toolCatalog, selectedTools);
+
+      if (newId && wantsGoogle) {
         let connected = googleConnectedRef.current;
         if (connected === null) {
           try {
@@ -576,6 +598,8 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     }
   }, [
     preset,
+    selectedTools,
+    toolCatalog,
     displayName,
     tone,
     customTone,
@@ -645,6 +669,8 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
         return t(`create.specialtiesTitleByRole.${agentRole}`);
       case "details":
         return t("create.detailsTitle");
+      case "tools":
+        return t("create.toolsTitle");
       case "brain":
         return t("create.brainTitle");
       case "review":
@@ -1161,6 +1187,68 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                 </div>
               )}
 
+              {step === "tools" && (
+                <div className="space-y-3">
+                  {groupIntegrationTools(toolCatalog).length === 0 ? (
+                    <p className="text-sm text-muted-foreground text-center py-6">
+                      {t("toolsTab.empty")}
+                    </p>
+                  ) : (
+                    groupIntegrationTools(toolCatalog).map((group) => (
+                      <div
+                        key={group.key}
+                        className="rounded-lg border border-border"
+                      >
+                        <div className="flex items-center justify-between gap-2 px-3 py-2 border-b border-border">
+                          <span className="text-[11px] font-medium uppercase tracking-wide text-text-muted">
+                            {t(group.labelKey)}
+                          </span>
+                          {group.credentialProvider && (
+                            <span className="rounded-full bg-muted px-1.5 py-px text-[9px] uppercase tracking-wide text-muted-foreground">
+                              {t("toolsTab.needsProvider", {
+                                provider: group.credentialProvider,
+                              })}
+                            </span>
+                          )}
+                        </div>
+                        <div className="divide-y divide-border">
+                          {group.tools.map((tool) => {
+                            const checked = selectedTools.includes(tool.name);
+                            return (
+                              <label
+                                key={tool.id}
+                                className="flex cursor-pointer items-center justify-between gap-3 px-3 py-2 hover:bg-accent/50 transition-colors"
+                              >
+                                <div className="min-w-0">
+                                  <p className="text-xs font-medium">
+                                    {tool.displayName || tool.name}
+                                  </p>
+                                  {tool.description && (
+                                    <p className="text-[11px] text-text-muted line-clamp-1">
+                                      {tool.description}
+                                    </p>
+                                  )}
+                                </div>
+                                <Switch
+                                  checked={checked}
+                                  onCheckedChange={(next) =>
+                                    setSelectedTools((prev) =>
+                                      next
+                                        ? [...prev, tool.name]
+                                        : prev.filter((n) => n !== tool.name)
+                                    )
+                                  }
+                                />
+                              </label>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
+
               {step === "brain" && (
                 <div className="space-y-4">
                   {canHost && (
@@ -1534,6 +1622,14 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                         data-testid="review-computer-use"
                         label={t("create.review.computerUse")}
                         value={t("create.review.computerUseAllowed")}
+                      />
+                    )}
+                    {selectedTools.length > 0 && (
+                      <ReviewRow
+                        label={t("create.review.toolsLabel")}
+                        value={t("create.review.toolsCount", {
+                          count: selectedTools.length,
+                        })}
                       />
                     )}
                   </div>
