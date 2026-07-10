@@ -283,7 +283,11 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   const [model, setModel] = useState("");
   const [executionMode, setExecutionMode] = useState("tool_use");
   const [effort, setEffort] = useState<string | null>(null);
-  const [skipPermissions, setSkipPermissions] = useState(false);
+  // Default ON: agents run unattended, and permission prompts stall them
+  // waiting for an operator. Skip-permissions is server-owned and only
+  // applies to the CLI backends (claude_cli/codex_cli); the checkbox is
+  // hidden for API backends, so this default is inert there.
+  const [skipPermissions, setSkipPermissions] = useState(true);
   const [computerUseEnabled, setComputerUseEnabled] = useState(false);
   const [apiKey, setApiKey] = useState("");
   const [showApiKey, setShowApiKey] = useState(false);
