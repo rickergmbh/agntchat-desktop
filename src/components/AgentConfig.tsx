@@ -124,6 +124,7 @@ import { AgentRoutines } from "./AgentRoutines";
 import { AgentLoops } from "./AgentLoops";
 import { AvatarCropDialog } from "./AvatarCropDialog";
 import { AgentConfigTour, type TourRect } from "./AgentConfigTour";
+import { FTUE_KEYS } from "../lib/ftue";
 
 // First-run orientation for the details pane. Each step spotlights one
 // sidebar group (`groupKey`, matched to the `key` on `sectionGroups`) and, for
@@ -148,7 +149,7 @@ const TOUR_STEPS: Array<{
   { groupKey: "operations", section: "logs", titleKey: "tour.operationsTitle", bodyKey: "tour.operationsBody" },
 ];
 
-const TOUR_SEEN_KEY = "agentConfigTourSeen";
+const TOUR_SEEN_KEY = FTUE_KEYS.agentConfigTour;
 
 // Display labels + one-line hints for the CLI connection (auth/runtime)
 // picker. Keys match the catalog's cliConnections values. Kept here (not in
@@ -386,6 +387,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
   const paneRef = useRef<HTMLDivElement | null>(null);
   const [tourStep, setTourStep] = useState<number | null>(null);
   const [tourRect, setTourRect] = useState<TourRect>(null);
+  const [tourPane, setTourPane] = useState({ width: 0, height: 0 });
 
   // Auto-start once, ever, per install — the first time a real agent's pane is
   // opened. Persisted in localStorage so it never nags again; the ? button
@@ -414,6 +416,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
       }
       const g = groupEl.getBoundingClientRect();
       const p = paneEl.getBoundingClientRect();
+      setTourPane({ width: p.width, height: p.height });
       setTourRect({
         top: g.top - p.top,
         left: g.left - p.left,
@@ -605,6 +608,8 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
           steps={TOUR_STEPS}
           index={tourStep}
           rect={tourRect}
+          paneWidth={tourPane.width}
+          paneHeight={tourPane.height}
           onNext={advanceTour}
           onBack={backTour}
           onSkip={endTour}

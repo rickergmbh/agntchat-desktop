@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { MessageSquare, MessageCircle, MessagesSquare, Info, SquarePen, RefreshCw, Power, Loader2, X, CheckCircle2, Radio } from "lucide-react";
 import { wakeAgent } from "../../lib/api";
@@ -30,6 +30,7 @@ import { FilesBar } from "./FilesBar";
 import { ArtifactsBar } from "./ArtifactsBar";
 import { ArtifactViewer } from "./ArtifactViewer";
 import { useArtifactStore } from "../../stores/artifactStore";
+import { ConversationTour } from "./ConversationTour";
 
 const DETAILS_KEY = "agentchat:showDetails";
 
@@ -59,6 +60,10 @@ export function MessagesView() {
   const [showDetails, setShowDetails] = useState(readDetailsPref);
   const [showNew, setShowNew] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+
+  // Positioned container for the conversation view — the first-run conversation
+  // tour measures its anchors and mounts its overlay against this pane.
+  const chatPaneRef = useRef<HTMLElement | null>(null);
 
   // Resizable conversation-list width.
   const {
@@ -180,6 +185,7 @@ export function MessagesView() {
           the composer's send button and the header controls clear of the
           overlap. */}
       <section
+        ref={chatPaneRef}
         className={cn(
           "relative z-10 -ml-2 flex-1 flex flex-col bg-card overflow-hidden surface-panel rounded-l-2xl",
           activeId && (showDetails || activeThreadId || artifactViewerOpen) && "pr-5"
@@ -190,6 +196,7 @@ export function MessagesView() {
             conversationId={activeId}
             showDetails={showDetails}
             onToggleDetails={() => setShowDetails((v) => !v)}
+            paneRef={chatPaneRef}
           />
         ) : (
           <EmptyState />
@@ -221,10 +228,12 @@ function ConversationPane({
   conversationId,
   showDetails,
   onToggleDetails,
+  paneRef,
 }: {
   conversationId: string;
   showDetails: boolean;
   onToggleDetails: () => void;
+  paneRef: React.RefObject<HTMLElement | null>;
 }) {
   const { t } = useTranslation("chat");
   const conversation = useChatStore(
@@ -397,6 +406,7 @@ function ConversationPane({
               mode, and a chevron read as "collapse" rather than "info"). The
               filled state marks the panel as open. */}
           <span
+            data-tour="conv-tour-info"
             className={cn(
               "shrink-0 flex h-7 w-7 items-center justify-center rounded-md border transition-colors",
               showDetails
@@ -450,6 +460,13 @@ function ConversationPane({
         <ChatThread conversationId={conversationId} />
       </div>
       <MessageComposer conversationId={conversationId} />
+
+      {/* First-run orientation: files / details / @-mentions / cross-platform.
+          Anchored to the pane section so its spotlight covers the whole view. */}
+      <ConversationTour
+        paneRef={paneRef}
+        isGroup={conversation?.type === "group" || otherMembers.length >= 2}
+      />
     </>
   );
 }

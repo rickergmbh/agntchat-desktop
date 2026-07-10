@@ -398,6 +398,7 @@ export function MessageComposer({ conversationId }: { conversationId: string }) 
 
   return (
     <div
+      data-tour="conv-tour-composer"
       className="surface-dock relative z-10 bg-card"
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
@@ -475,6 +476,7 @@ export function MessageComposer({ conversationId }: { conversationId: string }) 
             onChange={handleFileSelect}
           />
           <Button
+            data-tour="conv-tour-files"
             size="icon"
             variant="ghost"
             onClick={() => fileInputRef.current?.click()}
