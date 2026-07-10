@@ -512,6 +512,7 @@ export const resources = {
         },
         "reviewHint": "Here's a summary of your new agent.",
         "reviewTitle": "Looking good!",
+        "roleHint": "Pick the role that matches how they'll operate.",
         "roleTitle": "How should they work?",
         "roleTitleNamed": "How should {{name}} work?",
         "setupConnection": "Set up connection",
@@ -1891,6 +1892,7 @@ export const resources = {
       },
       "builtin": "Built-in",
       "builtinCanvases": "Built-in Canvases",
+      "change": "Change Canvas",
       "composer": "Composer",
       "composerHints": {
         "disabled": "Messaging is disabled in this experience.",
@@ -1922,6 +1924,7 @@ export const resources = {
       },
       "emptyHint": "Create one to get started.",
       "emptyLabel": "No canvases yet",
+      "emptyList": "No canvas definitions yet.",
       "errors": {
         "deleteFailed": "Failed to delete canvas",
         "loadFailed": "Failed to load canvases",
@@ -1947,9 +1950,11 @@ export const resources = {
         "widgets": "Widgets",
         "zones": "Zones"
       },
+      "loading": "Loading canvas…",
       "namePlaceholder": "my-canvas",
       "new": "New Canvas",
       "newTitle": "New Canvas",
+      "none": "No canvas assigned",
       "noneDescription": "Assign a canvas to give this agent a custom visual interface.",
       "notFound": "Canvas not found",
       "preview": {
@@ -2029,6 +2034,7 @@ export const resources = {
         "title": "Push to when?",
         "tomorrow": "Tomorrow"
       },
+      "remove": "Remove canvas",
       "reschedule": {
         "multiple": "I want to reschedule these: {{names}}. When would be best?",
         "single": "I want to reschedule \"{{title}}\" (id: {{id}}) — when would be best?"
@@ -3056,9 +3062,11 @@ export const resources = {
       "unfriend": "Unfriend",
       "unfriendConfirm": "Unfriend?",
       "unfriendUser": "Unfriend {{name}}",
+      "verified": "Verified",
       "viewProfileA11y": "View {{name}} profile",
       "visibility": {
-        "friends": "Friends"
+        "friends": "Friends",
+        "public": "Public"
       },
       "youMarker": "(you)"
     },
@@ -3107,6 +3115,7 @@ export const resources = {
         "titleNewFamily": "New Family Memory"
       },
       "keyDecisions": "Key Decisions",
+      "loading": "Loading memories…",
       "messageCount_one": "{{count}} msg",
       "messageCount_other": "{{count}} msgs",
       "noAgentMemories": "No agent memories yet.",
@@ -3125,6 +3134,7 @@ export const resources = {
         "participants": "Participants",
         "summary": "Summary"
       },
+      "sharedBadge": "Shared",
       "snapshot": {
         "title": "Memory Snapshot v{{version}}"
       },
@@ -3805,6 +3815,7 @@ export const resources = {
           "authorizeFailed": "Failed to start authorization",
           "disconnectFailed": "Failed to disconnect",
           "loadFailed": "Failed to load integrations",
+          "saveFailed": "Failed to save",
           "storeTokenFailed": "Failed to store token",
           "tokenFailed": "Failed to store token"
         },
@@ -4526,6 +4537,7 @@ export const resources = {
       "revisionPlaceholder": "What should the agent change or address?",
       "searchActionsPlaceholder": "Search actions…",
       "searchPlaceholder": "Search tasks...",
+      "selectHint": "Pick a task from the list to see its details and progress.",
       "selectTask": "Select a task",
       "selectTaskHint": "Select a task to view details",
       "showingOf": "Showing {{filtered}} of {{total}} actions",
@@ -4569,6 +4581,7 @@ export const resources = {
       "workRoom": "Work room"
     },
     "templates": {
+      "add": "Add Template",
       "addField": "Add Field",
       "addTemplate": "Add Template",
       "addToAgent": "Add to Agent",
@@ -4582,6 +4595,8 @@ export const resources = {
         "yellow": "Yellow"
       },
       "copyId": "Copy template ID",
+      "count_one": "{{count}} template",
+      "count_other": "{{count}} templates",
       "create": "Create Template",
       "createTemplate": "Create Template",
       "createTooltip": "Create template",
@@ -4646,6 +4661,7 @@ export const resources = {
       "gallery": "Template Gallery",
       "hidePreview": "Hide Card Preview",
       "highlightColor": "Highlight Color",
+      "loading": "Loading templates…",
       "name": "Template Name",
       "nameHint": "Use snake_case. This identifies the template in API calls.",
       "new": "New Template",
@@ -5188,6 +5204,7 @@ export const resources = {
         },
         "reviewHint": "Aquí tienes un resumen de tu nuevo agente.",
         "reviewTitle": "¡Tiene buena pinta!",
+        "roleHint": "Elige el rol que encaje con su forma de trabajar.",
         "roleTitle": "¿Cómo debería trabajar?",
         "roleTitleNamed": "¿Cómo debería trabajar {{name}}?",
         "setupConnection": "Configurar conexión",
@@ -6567,6 +6584,7 @@ export const resources = {
       },
       "builtin": "Integrado",
       "builtinCanvases": "Lienzos integrados",
+      "change": "Cambiar lienzo",
       "composer": "Compositor",
       "composerHints": {
         "disabled": "La mensajería está deshabilitada en esta experiencia.",
@@ -6598,6 +6616,7 @@ export const resources = {
       },
       "emptyHint": "Crea uno para empezar.",
       "emptyLabel": "Aún no hay lienzos",
+      "emptyList": "Aún no hay definiciones de lienzo.",
       "errors": {
         "deleteFailed": "No se pudo eliminar el lienzo",
         "loadFailed": "No se pudieron cargar los lienzos",
@@ -6623,9 +6642,11 @@ export const resources = {
         "widgets": "Widgets",
         "zones": "Zonas"
       },
+      "loading": "Cargando el lienzo…",
       "namePlaceholder": "mi-lienzo",
       "new": "Nuevo lienzo",
       "newTitle": "Nuevo lienzo",
+      "none": "Ningún lienzo asignado",
       "noneDescription": "Asigna un lienzo para darle a este agente una interfaz visual personalizada.",
       "notFound": "Lienzo no encontrado",
       "preview": {
@@ -6705,6 +6726,7 @@ export const resources = {
         "title": "¿Aplazar hasta cuándo?",
         "tomorrow": "Mañana"
       },
+      "remove": "Quitar lienzo",
       "reschedule": {
         "multiple": "Quiero reprogramar estos: {{names}}. ¿Cuándo sería mejor?",
         "single": "Quiero reprogramar \"{{title}}\" (id: {{id}}) — ¿cuándo sería mejor?"
@@ -7732,9 +7754,11 @@ export const resources = {
       "unfriend": "Eliminar amigo",
       "unfriendConfirm": "¿Eliminar amigo?",
       "unfriendUser": "Eliminar a {{name}} de tus amigos",
+      "verified": "Verificado",
       "viewProfileA11y": "Ver el perfil de {{name}}",
       "visibility": {
-        "friends": "Amigos"
+        "friends": "Amigos",
+        "public": "Público"
       },
       "youMarker": "(tú)"
     },
@@ -7783,6 +7807,7 @@ export const resources = {
         "titleNewFamily": "Nueva memoria familiar"
       },
       "keyDecisions": "Decisiones clave",
+      "loading": "Cargando memorias…",
       "messageCount_one": "{{count}} msj.",
       "messageCount_other": "{{count}} msjs.",
       "noAgentMemories": "Aún no hay memorias del agente.",
@@ -7801,6 +7826,7 @@ export const resources = {
         "participants": "Participantes",
         "summary": "Resumen"
       },
+      "sharedBadge": "Compartida",
       "snapshot": {
         "title": "Instantánea de memoria v{{version}}"
       },
@@ -8481,6 +8507,7 @@ export const resources = {
           "authorizeFailed": "No se pudo iniciar la autorización",
           "disconnectFailed": "No se pudo desconectar",
           "loadFailed": "No se pudieron cargar las integraciones",
+          "saveFailed": "No se pudo guardar",
           "storeTokenFailed": "No se pudo guardar el token",
           "tokenFailed": "No se pudo guardar el token"
         },
@@ -9202,6 +9229,7 @@ export const resources = {
       "revisionPlaceholder": "¿Qué debería cambiar o abordar el agente?",
       "searchActionsPlaceholder": "Buscar acciones…",
       "searchPlaceholder": "Buscar tareas...",
+      "selectHint": "Elige una tarea de la lista para ver sus detalles y progreso.",
       "selectTask": "Selecciona una tarea",
       "selectTaskHint": "Selecciona una tarea para ver los detalles",
       "showingOf": "Mostrando {{filtered}} de {{total}} acciones",
@@ -9245,6 +9273,7 @@ export const resources = {
       "workRoom": "Sala de trabajo"
     },
     "templates": {
+      "add": "Añadir plantilla",
       "addField": "Añadir campo",
       "addTemplate": "Añadir plantilla",
       "addToAgent": "Añadir al agente",
@@ -9258,6 +9287,8 @@ export const resources = {
         "yellow": "Amarillo"
       },
       "copyId": "Copiar ID de la plantilla",
+      "count_one": "{{count}} plantilla",
+      "count_other": "{{count}} plantillas",
       "create": "Crear plantilla",
       "createTemplate": "Crear plantilla",
       "createTooltip": "Crear plantilla",
@@ -9322,6 +9353,7 @@ export const resources = {
       "gallery": "Galería de plantillas",
       "hidePreview": "Ocultar vista previa de la tarjeta",
       "highlightColor": "Color de resaltado",
+      "loading": "Cargando plantillas…",
       "name": "Nombre de la plantilla",
       "nameHint": "Usa snake_case. Identifica la plantilla en las llamadas a la API.",
       "new": "Nueva plantilla",
@@ -9864,6 +9896,7 @@ export const resources = {
         },
         "reviewHint": "Hier ist eine Zusammenfassung Ihres neuen Agenten.",
         "reviewTitle": "Sieht gut aus!",
+        "roleHint": "Wählen Sie die Rolle, die zur Arbeitsweise passt.",
         "roleTitle": "Wie sollen sie arbeiten?",
         "roleTitleNamed": "Wie soll {{name}} arbeiten?",
         "setupConnection": "Verbindung einrichten",
@@ -11243,6 +11276,7 @@ export const resources = {
       },
       "builtin": "Integriert",
       "builtinCanvases": "Integrierte Canvases",
+      "change": "Canvas ändern",
       "composer": "Composer",
       "composerHints": {
         "disabled": "Nachrichten sind in diesem Bereich deaktiviert.",
@@ -11274,6 +11308,7 @@ export const resources = {
       },
       "emptyHint": "Erstellen Sie eins, um loszulegen.",
       "emptyLabel": "Noch keine Canvases",
+      "emptyList": "Noch keine Canvas-Definitionen.",
       "errors": {
         "deleteFailed": "Canvas konnte nicht gelöscht werden",
         "loadFailed": "Canvases konnten nicht geladen werden",
@@ -11299,9 +11334,11 @@ export const resources = {
         "widgets": "Widgets",
         "zones": "Zonen"
       },
+      "loading": "Canvas wird geladen…",
       "namePlaceholder": "my-canvas",
       "new": "Neues Canvas",
       "newTitle": "Neues Canvas",
+      "none": "Kein Canvas zugewiesen",
       "noneDescription": "Weisen Sie ein Canvas zu, um diesem Agenten eine individuelle visuelle Oberfläche zu geben.",
       "notFound": "Canvas nicht gefunden",
       "preview": {
@@ -11381,6 +11418,7 @@ export const resources = {
         "title": "Auf wann verschieben?",
         "tomorrow": "Morgen"
       },
+      "remove": "Canvas entfernen",
       "reschedule": {
         "multiple": "Ich möchte diese verschieben: {{names}}. Wann würde es am besten passen?",
         "single": "Ich möchte \"{{title}}\" (ID: {{id}}) verschieben — wann würde es am besten passen?"
@@ -12408,9 +12446,11 @@ export const resources = {
       "unfriend": "Freundschaft beenden",
       "unfriendConfirm": "Freundschaft beenden?",
       "unfriendUser": "Freundschaft mit {{name}} beenden",
+      "verified": "Verifiziert",
       "viewProfileA11y": "Profil von {{name}} ansehen",
       "visibility": {
-        "friends": "Freunde"
+        "friends": "Freunde",
+        "public": "Öffentlich"
       },
       "youMarker": "(Sie)"
     },
@@ -12459,6 +12499,7 @@ export const resources = {
         "titleNewFamily": "Neue Familien-Erinnerung"
       },
       "keyDecisions": "Wichtige Entscheidungen",
+      "loading": "Erinnerungen werden geladen…",
       "messageCount_one": "{{count}} Nachricht",
       "messageCount_other": "{{count}} Nachrichten",
       "noAgentMemories": "Noch keine Agenten-Erinnerungen.",
@@ -12477,6 +12518,7 @@ export const resources = {
         "participants": "Teilnehmer",
         "summary": "Zusammenfassung"
       },
+      "sharedBadge": "Geteilt",
       "snapshot": {
         "title": "Erinnerungs-Snapshot v{{version}}"
       },
@@ -13157,6 +13199,7 @@ export const resources = {
           "authorizeFailed": "Autorisierung konnte nicht gestartet werden",
           "disconnectFailed": "Trennen fehlgeschlagen",
           "loadFailed": "Integrationen konnten nicht geladen werden",
+          "saveFailed": "Speichern fehlgeschlagen",
           "storeTokenFailed": "Token konnte nicht gespeichert werden",
           "tokenFailed": "Token konnte nicht gespeichert werden"
         },
@@ -13878,6 +13921,7 @@ export const resources = {
       "revisionPlaceholder": "Was soll der Agent ändern oder ansprechen?",
       "searchActionsPlaceholder": "Aktionen durchsuchen…",
       "searchPlaceholder": "Aufgaben durchsuchen...",
+      "selectHint": "Wählen Sie eine Aufgabe aus der Liste, um Details und Fortschritt zu sehen.",
       "selectTask": "Wählen Sie eine Aufgabe aus",
       "selectTaskHint": "Wählen Sie eine Aufgabe aus, um Details anzuzeigen",
       "showingOf": "{{filtered}} von {{total}} Aktionen werden angezeigt",
@@ -13921,6 +13965,7 @@ export const resources = {
       "workRoom": "Arbeitsraum"
     },
     "templates": {
+      "add": "Vorlage hinzufügen",
       "addField": "Feld hinzufügen",
       "addTemplate": "Vorlage hinzufügen",
       "addToAgent": "Zum Agenten hinzufügen",
@@ -13934,6 +13979,8 @@ export const resources = {
         "yellow": "Gelb"
       },
       "copyId": "Vorlagen-ID kopieren",
+      "count_one": "{{count}} Vorlage",
+      "count_other": "{{count}} Vorlagen",
       "create": "Vorlage erstellen",
       "createTemplate": "Vorlage erstellen",
       "createTooltip": "Vorlage erstellen",
@@ -13998,6 +14045,7 @@ export const resources = {
       "gallery": "Vorlagengalerie",
       "hidePreview": "Kartenvorschau ausblenden",
       "highlightColor": "Hervorhebungsfarbe",
+      "loading": "Vorlagen werden geladen…",
       "name": "Vorlagenname",
       "nameHint": "Verwenden Sie snake_case. Dies identifiziert die Vorlage in API-Aufrufen.",
       "new": "Neue Vorlage",
@@ -14540,6 +14588,7 @@ export const resources = {
         },
         "reviewHint": "Voici un résumé de votre nouvel agent.",
         "reviewTitle": "Ça a l'air bien !",
+        "roleHint": "Choisissez le rôle qui correspond à sa façon de travailler.",
         "roleTitle": "Comment doivent-ils travailler ?",
         "roleTitleNamed": "Comment {{name}} doit-il travailler ?",
         "setupConnection": "Configurer la connexion",
@@ -15919,6 +15968,7 @@ export const resources = {
       },
       "builtin": "Intégré",
       "builtinCanvases": "Canvas intégrés",
+      "change": "Changer de canevas",
       "composer": "Compositeur",
       "composerHints": {
         "disabled": "La messagerie est désactivée dans cette expérience.",
@@ -15950,6 +16000,7 @@ export const resources = {
       },
       "emptyHint": "Créez-en un pour commencer.",
       "emptyLabel": "Aucun canvas pour le moment",
+      "emptyList": "Aucune définition de canevas pour l'instant.",
       "errors": {
         "deleteFailed": "Échec de la suppression du canvas",
         "loadFailed": "Échec du chargement des canvas",
@@ -15975,9 +16026,11 @@ export const resources = {
         "widgets": "Widgets",
         "zones": "Zones"
       },
+      "loading": "Chargement du canevas…",
       "namePlaceholder": "my-canvas",
       "new": "Nouveau canvas",
       "newTitle": "Nouveau canvas",
+      "none": "Aucun canevas attribué",
       "noneDescription": "Assignez un canvas pour donner à cet agent une interface visuelle personnalisée.",
       "notFound": "Canvas introuvable",
       "preview": {
@@ -16057,6 +16110,7 @@ export const resources = {
         "title": "À quand repousser ?",
         "tomorrow": "Demain"
       },
+      "remove": "Retirer le canevas",
       "reschedule": {
         "multiple": "Je veux reprogrammer ceci : {{names}}. Quel serait le meilleur moment ?",
         "single": "Je veux reprogrammer « {{title}} » (id : {{id}}) — quel serait le meilleur moment ?"
@@ -17084,9 +17138,11 @@ export const resources = {
       "unfriend": "Retirer des amis",
       "unfriendConfirm": "Retirer des amis ?",
       "unfriendUser": "Retirer {{name}} de vos amis",
+      "verified": "Vérifié",
       "viewProfileA11y": "Voir le profil de {{name}}",
       "visibility": {
-        "friends": "Amis"
+        "friends": "Amis",
+        "public": "Public"
       },
       "youMarker": "(vous)"
     },
@@ -17135,6 +17191,7 @@ export const resources = {
         "titleNewFamily": "Nouvelle mémoire familiale"
       },
       "keyDecisions": "Décisions clés",
+      "loading": "Chargement des souvenirs…",
       "messageCount_one": "{{count}} msg",
       "messageCount_other": "{{count}} msgs",
       "noAgentMemories": "Aucune mémoire d'agent pour l'instant.",
@@ -17153,6 +17210,7 @@ export const resources = {
         "participants": "Participants",
         "summary": "Résumé"
       },
+      "sharedBadge": "Partagé",
       "snapshot": {
         "title": "Instantané de mémoire v{{version}}"
       },
@@ -17833,6 +17891,7 @@ export const resources = {
           "authorizeFailed": "Échec du démarrage de l'autorisation",
           "disconnectFailed": "Échec de la déconnexion",
           "loadFailed": "Échec du chargement des intégrations",
+          "saveFailed": "Échec de l'enregistrement",
           "storeTokenFailed": "Échec de l'enregistrement du jeton",
           "tokenFailed": "Échec de l'enregistrement du jeton"
         },
@@ -18554,6 +18613,7 @@ export const resources = {
       "revisionPlaceholder": "Que doit changer ou traiter l'agent ?",
       "searchActionsPlaceholder": "Rechercher des actions…",
       "searchPlaceholder": "Rechercher des tâches...",
+      "selectHint": "Choisissez une tâche dans la liste pour voir ses détails et sa progression.",
       "selectTask": "Sélectionner une tâche",
       "selectTaskHint": "Sélectionnez une tâche pour voir les détails",
       "showingOf": "Affichage de {{filtered}} sur {{total}} actions",
@@ -18597,6 +18657,7 @@ export const resources = {
       "workRoom": "Salle de travail"
     },
     "templates": {
+      "add": "Ajouter un modèle",
       "addField": "Ajouter un champ",
       "addTemplate": "Ajouter un modèle",
       "addToAgent": "Ajouter à l'agent",
@@ -18610,6 +18671,8 @@ export const resources = {
         "yellow": "Jaune"
       },
       "copyId": "Copier l'ID du modèle",
+      "count_one": "{{count}} modèle",
+      "count_other": "{{count}} modèles",
       "create": "Créer un modèle",
       "createTemplate": "Créer un modèle",
       "createTooltip": "Créer un modèle",
@@ -18674,6 +18737,7 @@ export const resources = {
       "gallery": "Galerie de modèles",
       "hidePreview": "Masquer l'aperçu de la carte",
       "highlightColor": "Couleur de mise en évidence",
+      "loading": "Chargement des modèles…",
       "name": "Nom du modèle",
       "nameHint": "Utilisez le snake_case. Cela identifie le modèle dans les appels API.",
       "new": "Nouveau modèle",
@@ -19216,6 +19280,7 @@ export const resources = {
         },
         "reviewHint": "Aqui está um resumo do seu novo agente.",
         "reviewTitle": "Está ótimo!",
+        "roleHint": "Escolha o papel que combina com o jeito de trabalhar.",
         "roleTitle": "Como eles devem trabalhar?",
         "roleTitleNamed": "Como {{name}} deve trabalhar?",
         "setupConnection": "Configurar conexão",
@@ -20595,6 +20660,7 @@ export const resources = {
       },
       "builtin": "Integrado",
       "builtinCanvases": "Canvases Integrados",
+      "change": "Trocar canvas",
       "composer": "Compositor",
       "composerHints": {
         "disabled": "As mensagens estão desativadas nesta experiência.",
@@ -20626,6 +20692,7 @@ export const resources = {
       },
       "emptyHint": "Crie um para começar.",
       "emptyLabel": "Ainda não há canvases",
+      "emptyList": "Ainda não há definições de canvas.",
       "errors": {
         "deleteFailed": "Falha ao excluir o canvas",
         "loadFailed": "Falha ao carregar canvases",
@@ -20651,9 +20718,11 @@ export const resources = {
         "widgets": "Widgets",
         "zones": "Zonas"
       },
+      "loading": "Carregando o canvas…",
       "namePlaceholder": "meu-canvas",
       "new": "Novo Canvas",
       "newTitle": "Novo Canvas",
+      "none": "Nenhum canvas atribuído",
       "noneDescription": "Atribua um canvas para dar a este agente uma interface visual personalizada.",
       "notFound": "Canvas não encontrado",
       "preview": {
@@ -20733,6 +20802,7 @@ export const resources = {
         "title": "Empurrar para quando?",
         "tomorrow": "Amanhã"
       },
+      "remove": "Remover canvas",
       "reschedule": {
         "multiple": "Quero reagendar estas: {{names}}. Qual seria o melhor horário?",
         "single": "Quero reagendar \"{{title}}\" (id: {{id}}) — qual seria o melhor horário?"
@@ -21760,9 +21830,11 @@ export const resources = {
       "unfriend": "Desfazer amizade",
       "unfriendConfirm": "Desfazer amizade?",
       "unfriendUser": "Desfazer amizade com {{name}}",
+      "verified": "Verificado",
       "viewProfileA11y": "Ver perfil de {{name}}",
       "visibility": {
-        "friends": "Amigos"
+        "friends": "Amigos",
+        "public": "Público"
       },
       "youMarker": "(você)"
     },
@@ -21811,6 +21883,7 @@ export const resources = {
         "titleNewFamily": "Nova memória da família"
       },
       "keyDecisions": "Decisões-chave",
+      "loading": "Carregando memórias…",
       "messageCount_one": "{{count}} msg",
       "messageCount_other": "{{count}} msgs",
       "noAgentMemories": "Ainda não há memórias do agente.",
@@ -21829,6 +21902,7 @@ export const resources = {
         "participants": "Participantes",
         "summary": "Resumo"
       },
+      "sharedBadge": "Compartilhada",
       "snapshot": {
         "title": "Instantâneo de memória v{{version}}"
       },
@@ -22509,6 +22583,7 @@ export const resources = {
           "authorizeFailed": "Falha ao iniciar a autorização",
           "disconnectFailed": "Falha ao desconectar",
           "loadFailed": "Falha ao carregar integrações",
+          "saveFailed": "Falha ao salvar",
           "storeTokenFailed": "Falha ao armazenar o token",
           "tokenFailed": "Falha ao armazenar o token"
         },
@@ -23230,6 +23305,7 @@ export const resources = {
       "revisionPlaceholder": "O que o agente deve mudar ou tratar?",
       "searchActionsPlaceholder": "Buscar ações…",
       "searchPlaceholder": "Buscar tarefas...",
+      "selectHint": "Escolha uma tarefa na lista para ver os detalhes e o progresso.",
       "selectTask": "Selecione uma tarefa",
       "selectTaskHint": "Selecione uma tarefa para ver os detalhes",
       "showingOf": "Mostrando {{filtered}} de {{total}} ações",
@@ -23273,6 +23349,7 @@ export const resources = {
       "workRoom": "Sala de trabalho"
     },
     "templates": {
+      "add": "Adicionar modelo",
       "addField": "Adicionar campo",
       "addTemplate": "Adicionar modelo",
       "addToAgent": "Adicionar ao agente",
@@ -23286,6 +23363,8 @@ export const resources = {
         "yellow": "Amarelo"
       },
       "copyId": "Copiar ID do modelo",
+      "count_one": "{{count}} modelo",
+      "count_other": "{{count}} modelos",
       "create": "Criar modelo",
       "createTemplate": "Criar modelo",
       "createTooltip": "Criar modelo",
@@ -23350,6 +23429,7 @@ export const resources = {
       "gallery": "Galeria de modelos",
       "hidePreview": "Ocultar prévia do card",
       "highlightColor": "Cor de destaque",
+      "loading": "Carregando modelos…",
       "name": "Nome do modelo",
       "nameHint": "Use snake_case. Isso identifica o modelo nas chamadas de API.",
       "new": "Novo modelo",
@@ -23892,6 +23972,7 @@ export const resources = {
         },
         "reviewHint": "新しいエージェントの概要です。",
         "reviewTitle": "いい感じです！",
+        "roleHint": "働き方に合ったロールを選びましょう。",
         "roleTitle": "どのように働きますか？",
         "roleTitleNamed": "{{name}}はどのように働きますか？",
         "setupConnection": "接続をセットアップ",
@@ -25271,6 +25352,7 @@ export const resources = {
       },
       "builtin": "組み込み",
       "builtinCanvases": "組み込みキャンバス",
+      "change": "キャンバスを変更",
       "composer": "コンポーザー",
       "composerHints": {
         "disabled": "この体験ではメッセージ送信が無効になっています。",
@@ -25302,6 +25384,7 @@ export const resources = {
       },
       "emptyHint": "作成して始めましょう。",
       "emptyLabel": "まだキャンバスがありません",
+      "emptyList": "キャンバス定義はまだありません。",
       "errors": {
         "deleteFailed": "キャンバスを削除できませんでした",
         "loadFailed": "キャンバスの読み込みに失敗しました",
@@ -25327,9 +25410,11 @@ export const resources = {
         "widgets": "ウィジェット",
         "zones": "ゾーン"
       },
+      "loading": "キャンバスを読み込み中…",
       "namePlaceholder": "my-canvas",
       "new": "新規キャンバス",
       "newTitle": "新規キャンバス",
+      "none": "キャンバスが割り当てられていません",
       "noneDescription": "キャンバスを割り当てると、このエージェントに独自のビジュアルインターフェースを付与できます。",
       "notFound": "キャンバスが見つかりません",
       "preview": {
@@ -25409,6 +25494,7 @@ export const resources = {
         "title": "いつに変更しますか?",
         "tomorrow": "明日"
       },
+      "remove": "キャンバスを削除",
       "reschedule": {
         "multiple": "これらの予定を変更したいです: {{names}}。いつが良いですか?",
         "single": "「{{title}}」(id: {{id}}) の予定を変更したいです。いつが良いですか?"
@@ -26436,9 +26522,11 @@ export const resources = {
       "unfriend": "フレンド解除",
       "unfriendConfirm": "フレンドを解除しますか？",
       "unfriendUser": "{{name}}とのフレンドを解除",
+      "verified": "認証済み",
       "viewProfileA11y": "{{name}}のプロフィールを見る",
       "visibility": {
-        "friends": "フレンド"
+        "friends": "フレンド",
+        "public": "公開"
       },
       "youMarker": "（自分）"
     },
@@ -26487,6 +26575,7 @@ export const resources = {
         "titleNewFamily": "新しいファミリーメモリー"
       },
       "keyDecisions": "重要な決定",
+      "loading": "メモリを読み込み中…",
       "messageCount_one": "メッセージ{{count}}件",
       "messageCount_other": "メッセージ{{count}}件",
       "noAgentMemories": "まだエージェントメモリーがありません。",
@@ -26505,6 +26594,7 @@ export const resources = {
         "participants": "参加者",
         "summary": "概要"
       },
+      "sharedBadge": "共有",
       "snapshot": {
         "title": "メモリースナップショット v{{version}}"
       },
@@ -27185,6 +27275,7 @@ export const resources = {
           "authorizeFailed": "認証の開始に失敗しました",
           "disconnectFailed": "接続解除に失敗しました",
           "loadFailed": "連携の読み込みに失敗しました",
+          "saveFailed": "保存に失敗しました",
           "storeTokenFailed": "トークンの保存に失敗しました",
           "tokenFailed": "トークンの保存に失敗しました"
         },
@@ -27906,6 +27997,7 @@ export const resources = {
       "revisionPlaceholder": "エージェントに変更・対応してほしい内容は?",
       "searchActionsPlaceholder": "アクションを検索…",
       "searchPlaceholder": "タスクを検索...",
+      "selectHint": "リストからタスクを選ぶと詳細と進捗が表示されます。",
       "selectTask": "タスクを選択",
       "selectTaskHint": "タスクを選択すると詳細が表示されます",
       "showingOf": "{{total}}件中{{filtered}}件のアクションを表示中",
@@ -27949,6 +28041,7 @@ export const resources = {
       "workRoom": "作業ルーム"
     },
     "templates": {
+      "add": "テンプレートを追加",
       "addField": "フィールドを追加",
       "addTemplate": "テンプレートを追加",
       "addToAgent": "エージェントに追加",
@@ -27962,6 +28055,8 @@ export const resources = {
         "yellow": "黄"
       },
       "copyId": "テンプレートIDをコピー",
+      "count_one": "{{count}}件のテンプレート",
+      "count_other": "{{count}}件のテンプレート",
       "create": "テンプレートを作成",
       "createTemplate": "テンプレートを作成",
       "createTooltip": "テンプレートを作成",
@@ -28026,6 +28121,7 @@ export const resources = {
       "gallery": "テンプレートギャラリー",
       "hidePreview": "カードプレビューを非表示",
       "highlightColor": "ハイライトカラー",
+      "loading": "テンプレートを読み込み中…",
       "name": "テンプレート名",
       "nameHint": "snake_caseを使用してください。API呼び出しでこのテンプレートを識別するために使用されます。",
       "new": "新しいテンプレート",
@@ -28568,6 +28664,7 @@ export const resources = {
         },
         "reviewHint": "这是您新智能体的摘要。",
         "reviewTitle": "看起来不错！",
+        "roleHint": "选择与其工作方式相符的角色。",
         "roleTitle": "他们应该如何工作？",
         "roleTitleNamed": "{{name}} 应该如何工作？",
         "setupConnection": "设置连接",
@@ -29947,6 +30044,7 @@ export const resources = {
       },
       "builtin": "内置",
       "builtinCanvases": "内置画布",
+      "change": "更换画布",
       "composer": "输入区",
       "composerHints": {
         "disabled": "此体验中消息功能已禁用。",
@@ -29978,6 +30076,7 @@ export const resources = {
       },
       "emptyHint": "创建一个以开始使用。",
       "emptyLabel": "暂无画布",
+      "emptyList": "还没有画布定义。",
       "errors": {
         "deleteFailed": "删除画布失败",
         "loadFailed": "加载画布失败",
@@ -30003,9 +30102,11 @@ export const resources = {
         "widgets": "组件",
         "zones": "区域"
       },
+      "loading": "正在加载画布…",
       "namePlaceholder": "my-canvas",
       "new": "新建画布",
       "newTitle": "新建画布",
+      "none": "未分配画布",
       "noneDescription": "为此代理分配一个画布，以提供自定义的可视化界面。",
       "notFound": "未找到画布",
       "preview": {
@@ -30085,6 +30186,7 @@ export const resources = {
         "title": "推迟到何时？",
         "tomorrow": "明天"
       },
+      "remove": "移除画布",
       "reschedule": {
         "multiple": "我想重新安排这些任务：{{names}}。什么时间最合适？",
         "single": "我想重新安排“{{title}}”（id：{{id}}）——什么时间最合适？"
@@ -31112,9 +31214,11 @@ export const resources = {
       "unfriend": "取消好友关系",
       "unfriendConfirm": "取消好友关系？",
       "unfriendUser": "取消与 {{name}} 的好友关系",
+      "verified": "已验证",
       "viewProfileA11y": "查看 {{name}} 的资料",
       "visibility": {
-        "friends": "好友"
+        "friends": "好友",
+        "public": "公开"
       },
       "youMarker": "（你）"
     },
@@ -31163,6 +31267,7 @@ export const resources = {
         "titleNewFamily": "新建家庭记忆"
       },
       "keyDecisions": "关键决策",
+      "loading": "正在加载记忆…",
       "messageCount_one": "{{count}} 条消息",
       "messageCount_other": "{{count}} 条消息",
       "noAgentMemories": "暂无智能体记忆。",
@@ -31181,6 +31286,7 @@ export const resources = {
         "participants": "参与者",
         "summary": "摘要"
       },
+      "sharedBadge": "共享",
       "snapshot": {
         "title": "记忆快照 v{{version}}"
       },
@@ -31861,6 +31967,7 @@ export const resources = {
           "authorizeFailed": "启动授权失败",
           "disconnectFailed": "断开连接失败",
           "loadFailed": "加载集成失败",
+          "saveFailed": "保存失败",
           "storeTokenFailed": "存储令牌失败",
           "tokenFailed": "存储令牌失败"
         },
@@ -32582,6 +32689,7 @@ export const resources = {
       "revisionPlaceholder": "代理应该更改或处理什么？",
       "searchActionsPlaceholder": "搜索操作…",
       "searchPlaceholder": "搜索任务...",
+      "selectHint": "从列表中选择一个任务即可查看详情和进度。",
       "selectTask": "选择一个任务",
       "selectTaskHint": "选择一个任务以查看详情",
       "showingOf": "显示 {{total}} 个操作中的 {{filtered}} 个",
@@ -32625,6 +32733,7 @@ export const resources = {
       "workRoom": "工作间"
     },
     "templates": {
+      "add": "添加模板",
       "addField": "添加字段",
       "addTemplate": "添加模板",
       "addToAgent": "添加到智能体",
@@ -32638,6 +32747,8 @@ export const resources = {
         "yellow": "黄色"
       },
       "copyId": "复制模板 ID",
+      "count_one": "{{count}} 个模板",
+      "count_other": "{{count}} 个模板",
       "create": "创建模板",
       "createTemplate": "创建模板",
       "createTooltip": "创建模板",
@@ -32702,6 +32813,7 @@ export const resources = {
       "gallery": "模板库",
       "hidePreview": "隐藏卡片预览",
       "highlightColor": "高亮颜色",
+      "loading": "正在加载模板…",
       "name": "模板名称",
       "nameHint": "使用 snake_case 格式。此名称用于在 API 调用中标识模板。",
       "new": "新建模板",
@@ -33244,6 +33356,7 @@ export const resources = {
         },
         "reviewHint": "새 에이전트에 대한 요약입니다.",
         "reviewTitle": "좋아 보입니다!",
+        "roleHint": "작업 방식에 맞는 역할을 선택하세요.",
         "roleTitle": "어떻게 일해야 할까요?",
         "roleTitleNamed": "{{name}}은(는) 어떻게 일해야 할까요?",
         "setupConnection": "연결 설정",
@@ -34623,6 +34736,7 @@ export const resources = {
       },
       "builtin": "기본 제공",
       "builtinCanvases": "기본 제공 캔버스",
+      "change": "캔버스 변경",
       "composer": "작성기",
       "composerHints": {
         "disabled": "이 환경에서는 메시지 전송이 비활성화되어 있습니다.",
@@ -34654,6 +34768,7 @@ export const resources = {
       },
       "emptyHint": "시작하려면 하나를 만들어 보세요.",
       "emptyLabel": "아직 캔버스가 없습니다",
+      "emptyList": "아직 캔버스 정의가 없습니다.",
       "errors": {
         "deleteFailed": "캔버스를 삭제하지 못했습니다",
         "loadFailed": "캔버스 로드 실패",
@@ -34679,9 +34794,11 @@ export const resources = {
         "widgets": "위젯",
         "zones": "영역"
       },
+      "loading": "캔버스 불러오는 중…",
       "namePlaceholder": "my-canvas",
       "new": "새 캔버스",
       "newTitle": "새 캔버스",
+      "none": "할당된 캔버스 없음",
       "noneDescription": "이 에이전트에 맞춤 시각 인터페이스를 제공하려면 캔버스를 배정하세요.",
       "notFound": "캔버스를 찾을 수 없습니다",
       "preview": {
@@ -34761,6 +34878,7 @@ export const resources = {
         "title": "언제로 미룰까요?",
         "tomorrow": "내일"
       },
+      "remove": "캔버스 제거",
       "reschedule": {
         "multiple": "다음 작업들의 일정을 변경하고 싶습니다: {{names}}. 언제가 가장 좋을까요?",
         "single": "\"{{title}}\"(id: {{id}})의 일정을 변경하고 싶습니다 — 언제가 가장 좋을까요?"
@@ -35788,9 +35906,11 @@ export const resources = {
       "unfriend": "친구 끊기",
       "unfriendConfirm": "친구를 끊으시겠습니까?",
       "unfriendUser": "{{name}}과(와) 친구 끊기",
+      "verified": "인증됨",
       "viewProfileA11y": "{{name}} 프로필 보기",
       "visibility": {
-        "friends": "친구"
+        "friends": "친구",
+        "public": "공개"
       },
       "youMarker": "(나)"
     },
@@ -35839,6 +35959,7 @@ export const resources = {
         "titleNewFamily": "새 패밀리 메모리"
       },
       "keyDecisions": "주요 결정",
+      "loading": "기억 불러오는 중…",
       "messageCount_one": "메시지 {{count}}개",
       "messageCount_other": "메시지 {{count}}개",
       "noAgentMemories": "아직 에이전트 메모리가 없습니다.",
@@ -35857,6 +35978,7 @@ export const resources = {
         "participants": "참가자",
         "summary": "요약"
       },
+      "sharedBadge": "공유됨",
       "snapshot": {
         "title": "메모리 스냅샷 v{{version}}"
       },
@@ -36537,6 +36659,7 @@ export const resources = {
           "authorizeFailed": "인증 시작 실패",
           "disconnectFailed": "연결 해제 실패",
           "loadFailed": "통합 정보 로드 실패",
+          "saveFailed": "저장하지 못했습니다",
           "storeTokenFailed": "토큰 저장 실패",
           "tokenFailed": "토큰 저장 실패"
         },
@@ -37258,6 +37381,7 @@ export const resources = {
       "revisionPlaceholder": "에이전트가 무엇을 변경하거나 처리해야 하나요?",
       "searchActionsPlaceholder": "작업 검색…",
       "searchPlaceholder": "작업 검색...",
+      "selectHint": "목록에서 작업을 선택하면 세부 정보와 진행 상황을 볼 수 있습니다.",
       "selectTask": "작업 선택",
       "selectTaskHint": "세부정보를 보려면 작업을 선택하세요",
       "showingOf": "{{total}}개 중 {{filtered}}개 작업 표시 중",
@@ -37301,6 +37425,7 @@ export const resources = {
       "workRoom": "작업방"
     },
     "templates": {
+      "add": "템플릿 추가",
       "addField": "필드 추가",
       "addTemplate": "템플릿 추가",
       "addToAgent": "에이전트에 추가",
@@ -37314,6 +37439,8 @@ export const resources = {
         "yellow": "노랑"
       },
       "copyId": "템플릿 ID 복사",
+      "count_one": "템플릿 {{count}}개",
+      "count_other": "템플릿 {{count}}개",
       "create": "템플릿 만들기",
       "createTemplate": "템플릿 만들기",
       "createTooltip": "템플릿 만들기",
@@ -37378,6 +37505,7 @@ export const resources = {
       "gallery": "템플릿 갤러리",
       "hidePreview": "카드 미리보기 숨기기",
       "highlightColor": "강조 색상",
+      "loading": "템플릿 불러오는 중…",
       "name": "템플릿 이름",
       "nameHint": "snake_case를 사용하세요. API 호출에서 템플릿을 식별하는 데 사용됩니다.",
       "new": "새 템플릿",
@@ -37920,6 +38048,7 @@ export const resources = {
         },
         "reviewHint": "Ecco un riepilogo del tuo nuovo agente.",
         "reviewTitle": "Ha un bell'aspetto!",
+        "roleHint": "Scegli il ruolo che corrisponde al suo modo di lavorare.",
         "roleTitle": "Come dovrebbero lavorare?",
         "roleTitleNamed": "Come dovrebbe lavorare {{name}}?",
         "setupConnection": "Configura connessione",
@@ -39299,6 +39428,7 @@ export const resources = {
       },
       "builtin": "Integrato",
       "builtinCanvases": "Canvas integrati",
+      "change": "Cambia canvas",
       "composer": "Composer",
       "composerHints": {
         "disabled": "La messaggistica è disabilitata in questa esperienza.",
@@ -39330,6 +39460,7 @@ export const resources = {
       },
       "emptyHint": "Creane uno per iniziare.",
       "emptyLabel": "Ancora nessun Canvas",
+      "emptyList": "Ancora nessuna definizione di canvas.",
       "errors": {
         "deleteFailed": "Impossibile eliminare il canvas",
         "loadFailed": "Impossibile caricare i Canvas",
@@ -39355,9 +39486,11 @@ export const resources = {
         "widgets": "Widget",
         "zones": "Zone"
       },
+      "loading": "Caricamento del canvas…",
       "namePlaceholder": "my-canvas",
       "new": "Nuovo Canvas",
       "newTitle": "Nuovo Canvas",
+      "none": "Nessun canvas assegnato",
       "noneDescription": "Assegna un Canvas per dare a questo agente un'interfaccia visiva personalizzata.",
       "notFound": "Canvas non trovato",
       "preview": {
@@ -39437,6 +39570,7 @@ export const resources = {
         "title": "Rimandare a quando?",
         "tomorrow": "Domani"
       },
+      "remove": "Rimuovi canvas",
       "reschedule": {
         "multiple": "Vorrei riprogrammare questi: {{names}}. Quando andrebbe meglio?",
         "single": "Vorrei riprogrammare \"{{title}}\" (id: {{id}}) — quando andrebbe meglio?"
@@ -40464,9 +40598,11 @@ export const resources = {
       "unfriend": "Rimuovi amicizia",
       "unfriendConfirm": "Rimuovere l'amicizia?",
       "unfriendUser": "Rimuovi {{name}} dagli amici",
+      "verified": "Verificato",
       "viewProfileA11y": "Visualizza il profilo di {{name}}",
       "visibility": {
-        "friends": "Amici"
+        "friends": "Amici",
+        "public": "Pubblico"
       },
       "youMarker": "(tu)"
     },
@@ -40515,6 +40651,7 @@ export const resources = {
         "titleNewFamily": "Nuova memoria di famiglia"
       },
       "keyDecisions": "Decisioni chiave",
+      "loading": "Caricamento delle memorie…",
       "messageCount_one": "{{count}} msg",
       "messageCount_other": "{{count}} msg",
       "noAgentMemories": "Ancora nessuna memoria dell'agente.",
@@ -40533,6 +40670,7 @@ export const resources = {
         "participants": "Partecipanti",
         "summary": "Riepilogo"
       },
+      "sharedBadge": "Condivisa",
       "snapshot": {
         "title": "Istantanea memoria v{{version}}"
       },
@@ -41213,6 +41351,7 @@ export const resources = {
           "authorizeFailed": "Impossibile avviare l'autorizzazione",
           "disconnectFailed": "Impossibile disconnettere",
           "loadFailed": "Impossibile caricare le integrazioni",
+          "saveFailed": "Salvataggio non riuscito",
           "storeTokenFailed": "Impossibile salvare il token",
           "tokenFailed": "Impossibile salvare il token"
         },
@@ -41934,6 +42073,7 @@ export const resources = {
       "revisionPlaceholder": "Cosa dovrebbe modificare o affrontare l'agente?",
       "searchActionsPlaceholder": "Cerca azioni…",
       "searchPlaceholder": "Cerca attività...",
+      "selectHint": "Scegli un'attività dall'elenco per vederne i dettagli e i progressi.",
       "selectTask": "Seleziona un'attività",
       "selectTaskHint": "Seleziona un'attività per visualizzarne i dettagli",
       "showingOf": "Visualizzazione di {{filtered}} su {{total}} azioni",
@@ -41977,6 +42117,7 @@ export const resources = {
       "workRoom": "Stanza di lavoro"
     },
     "templates": {
+      "add": "Aggiungi modello",
       "addField": "Aggiungi campo",
       "addTemplate": "Aggiungi modello",
       "addToAgent": "Aggiungi all'agente",
@@ -41990,6 +42131,8 @@ export const resources = {
         "yellow": "Giallo"
       },
       "copyId": "Copia ID modello",
+      "count_one": "{{count}} modello",
+      "count_other": "{{count}} modelli",
       "create": "Crea modello",
       "createTemplate": "Crea modello",
       "createTooltip": "Crea modello",
@@ -42054,6 +42197,7 @@ export const resources = {
       "gallery": "Galleria modelli",
       "hidePreview": "Nascondi anteprima scheda",
       "highlightColor": "Colore evidenziazione",
+      "loading": "Caricamento dei modelli…",
       "name": "Nome modello",
       "nameHint": "Usa snake_case. Identifica il modello nelle chiamate API.",
       "new": "Nuovo modello",
@@ -42596,6 +42740,7 @@ export const resources = {
         },
         "reviewHint": "यहाँ आपके नए एजेंट का सारांश है।",
         "reviewTitle": "बहुत बढ़िया लग रहा है!",
+        "roleHint": "उनके काम करने के तरीक़े से मेल खाती भूमिका चुनें।",
         "roleTitle": "उन्हें कैसे काम करना चाहिए?",
         "roleTitleNamed": "{{name}} को कैसे काम करना चाहिए?",
         "setupConnection": "कनेक्शन सेट अप करें",
@@ -43975,6 +44120,7 @@ export const resources = {
       },
       "builtin": "बिल्ट-इन",
       "builtinCanvases": "बिल्ट-इन कैनवास",
+      "change": "कैनवास बदलें",
       "composer": "कंपोज़र",
       "composerHints": {
         "disabled": "इस अनुभव में मैसेजिंग अक्षम है।",
@@ -44006,6 +44152,7 @@ export const resources = {
       },
       "emptyHint": "शुरू करने के लिए एक बनाएँ।",
       "emptyLabel": "अभी तक कोई कैनवास नहीं",
+      "emptyList": "अभी कोई कैनवास परिभाषा नहीं है।",
       "errors": {
         "deleteFailed": "कैनवास हटाने में विफल",
         "loadFailed": "कैनवास लोड करने में विफल",
@@ -44031,9 +44178,11 @@ export const resources = {
         "widgets": "विजेट्स",
         "zones": "ज़ोन"
       },
+      "loading": "कैनवास लोड हो रहा है…",
       "namePlaceholder": "my-canvas",
       "new": "नया कैनवास",
       "newTitle": "नया कैनवास",
+      "none": "कोई कैनवास असाइन नहीं है",
       "noneDescription": "इस एजेंट को कस्टम विज़ुअल इंटरफ़ेस देने के लिए एक कैनवास सौंपें।",
       "notFound": "कैनवास नहीं मिला",
       "preview": {
@@ -44113,6 +44262,7 @@ export const resources = {
         "title": "कब तक पुश करें?",
         "tomorrow": "कल"
       },
+      "remove": "कैनवास हटाएँ",
       "reschedule": {
         "multiple": "मैं इन्हें दोबारा शेड्यूल करना चाहता/चाहती हूँ: {{names}}। कौन सा समय सबसे अच्छा रहेगा?",
         "single": "मैं \"{{title}}\" (id: {{id}}) को दोबारा शेड्यूल करना चाहता/चाहती हूँ — कौन सा समय सबसे अच्छा रहेगा?"
@@ -45140,9 +45290,11 @@ export const resources = {
       "unfriend": "अनफ्रेंड करें",
       "unfriendConfirm": "अनफ्रेंड करें?",
       "unfriendUser": "{{name}} को अनफ्रेंड करें",
+      "verified": "सत्यापित",
       "viewProfileA11y": "{{name}} की प्रोफ़ाइल देखें",
       "visibility": {
-        "friends": "मित्र"
+        "friends": "मित्र",
+        "public": "सार्वजनिक"
       },
       "youMarker": "(आप)"
     },
@@ -45191,6 +45343,7 @@ export const resources = {
         "titleNewFamily": "नई परिवार मेमोरी"
       },
       "keyDecisions": "मुख्य निर्णय",
+      "loading": "यादें लोड हो रही हैं…",
       "messageCount_one": "{{count}} संदेश",
       "messageCount_other": "{{count}} संदेश",
       "noAgentMemories": "अभी तक कोई एजेंट मेमोरी नहीं।",
@@ -45209,6 +45362,7 @@ export const resources = {
         "participants": "प्रतिभागी",
         "summary": "सारांश"
       },
+      "sharedBadge": "साझा",
       "snapshot": {
         "title": "मेमोरी स्नैपशॉट v{{version}}"
       },
@@ -45889,6 +46043,7 @@ export const resources = {
           "authorizeFailed": "प्राधिकरण शुरू करना विफल",
           "disconnectFailed": "डिस्कनेक्ट करना विफल",
           "loadFailed": "इंटीग्रेशन लोड करना विफल",
+          "saveFailed": "सहेजने में विफल",
           "storeTokenFailed": "टोकन सहेजना विफल",
           "tokenFailed": "टोकन सहेजना विफल"
         },
@@ -46610,6 +46765,7 @@ export const resources = {
       "revisionPlaceholder": "एजेंट को क्या बदलना या संबोधित करना चाहिए?",
       "searchActionsPlaceholder": "कार्रवाइयाँ खोजें…",
       "searchPlaceholder": "कार्य खोजें...",
+      "selectHint": "विवरण और प्रगति देखने के लिए सूची से कोई कार्य चुनें।",
       "selectTask": "एक कार्य चुनें",
       "selectTaskHint": "विवरण देखने के लिए एक कार्य चुनें",
       "showingOf": "{{total}} में से {{filtered}} कार्रवाइयाँ दिखाई जा रही हैं",
@@ -46653,6 +46809,7 @@ export const resources = {
       "workRoom": "वर्क रूम"
     },
     "templates": {
+      "add": "टेम्पलेट जोड़ें",
       "addField": "फ़ील्ड जोड़ें",
       "addTemplate": "टेम्पलेट जोड़ें",
       "addToAgent": "एजेंट में जोड़ें",
@@ -46666,6 +46823,8 @@ export const resources = {
         "yellow": "पीला"
       },
       "copyId": "टेम्पलेट ID कॉपी करें",
+      "count_one": "{{count}} टेम्पलेट",
+      "count_other": "{{count}} टेम्पलेट",
       "create": "टेम्पलेट बनाएँ",
       "createTemplate": "टेम्पलेट बनाएँ",
       "createTooltip": "टेम्पलेट बनाएँ",
@@ -46730,6 +46889,7 @@ export const resources = {
       "gallery": "टेम्पलेट गैलरी",
       "hidePreview": "कार्ड पूर्वावलोकन छिपाएँ",
       "highlightColor": "हाइलाइट रंग",
+      "loading": "टेम्पलेट लोड हो रहे हैं…",
       "name": "टेम्पलेट नाम",
       "nameHint": "snake_case उपयोग करें। यह API कॉल में टेम्पलेट की पहचान करता है।",
       "new": "नया टेम्पलेट",

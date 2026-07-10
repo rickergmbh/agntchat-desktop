@@ -78,28 +78,17 @@ const STEPS = [
 ] as const;
 type WizardStep = (typeof STEPS)[number];
 
-// i18n keys (agents namespace) — resolved with t() at render so language
-// switches take effect live.
-const STEP_TITLE_KEYS: Record<WizardStep, string> = {
-  name: "create.steps.name.title",
-  photo: "create.steps.photo.title",
-  role: "create.steps.role.title",
-  tone: "create.steps.tone.title",
-  specialties: "create.steps.specialties.title",
-  details: "create.steps.details.title",
-  brain: "create.steps.brain.title",
-  review: "create.steps.review.title",
-};
-
+// Step subtitles (agents namespace) — resolved with t() at render so
+// language switches take effect live.
 const STEP_SUBTITLE_KEYS: Record<WizardStep, string> = {
-  name: "create.steps.name.subtitle",
-  photo: "create.steps.photo.subtitle",
-  role: "create.steps.role.subtitle",
-  tone: "create.steps.tone.subtitle",
-  specialties: "create.steps.specialties.subtitle",
-  details: "create.steps.details.subtitle",
-  brain: "create.steps.brain.subtitle",
-  review: "create.steps.review.subtitle",
+  name: "create.nameHint",
+  photo: "create.photoHint",
+  role: "create.roleHint",
+  tone: "create.toneHint",
+  specialties: "create.specialtiesHint",
+  details: "create.detailsHint",
+  brain: "create.brainHint",
+  review: "create.reviewHint",
 };
 
 export function CreateAgentModal({ onClose }: { onClose: () => void }) {
@@ -507,6 +496,35 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
 
   const providerLabel = PROVIDERS.find((p) => p.id === backend)?.label;
 
+  // Step titles personalize once a name exists, and the specialties title
+  // varies by the chosen role — so titles resolve here rather than via a
+  // static key map.
+  const stepTitle = (s: WizardStep): string => {
+    const name = displayName.trim();
+    switch (s) {
+      case "name":
+        return t("create.nameTitle");
+      case "photo":
+        return name
+          ? t("create.photoTitleNamed", { name })
+          : t("create.photoTitle");
+      case "role":
+        return name
+          ? t("create.roleTitleNamed", { name })
+          : t("create.roleTitle");
+      case "tone":
+        return t("create.toneTitle");
+      case "specialties":
+        return t(`create.specialtiesTitleByRole.${agentRole}`);
+      case "details":
+        return t("create.detailsTitle");
+      case "brain":
+        return t("create.brainTitle");
+      case "review":
+        return t("create.reviewTitle");
+    }
+  };
+
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[480px] p-0 gap-0 overflow-hidden">
@@ -520,7 +538,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
               <DialogTitle className="text-lg font-semibold text-foreground">
                 <LetterReveal
                   key={step}
-                  text={t(STEP_TITLE_KEYS[step])}
+                  text={stepTitle(step)}
                   delayPerChar={28}
                 />
               </DialogTitle>
