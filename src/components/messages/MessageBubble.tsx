@@ -15,7 +15,7 @@ import {
 import { Bot, Reply as ReplyIcon } from "lucide-react";
 import { useModelCatalog } from "../../stores/modelCatalogStore";
 import { MarkdownContent } from "./MarkdownContent";
-import { QuickReactBar, ReactionChips } from "./MessageReactions";
+import { AddReactionButton, ReactionChips } from "./MessageReactions";
 import { isTaskMessage, TaskMessage } from "./TaskMessages";
 import { isToolMessage, ToolMessage } from "./ToolMessages";
 import { isFileMessage, FileMessage, RideAlongAttachments } from "./FileMessage";
@@ -277,7 +277,7 @@ export const MessageBubble = memo(function MessageBubble({
               </>
             )}
           </BubbleContent>
-          <QuickReactBar message={message} isOwn={isOwn} />
+          <AddReactionButton message={message} isOwn={isOwn} />
         </Bubble>
 
         <ReactionChips message={message} isOwn={isOwn} />
