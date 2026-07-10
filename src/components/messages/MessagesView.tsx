@@ -601,8 +601,9 @@ function EmptyState() {
   const onboarding = useOnboardingState();
 
   // First-run: guide the user to their first agent instead of telling them
-  // to select a conversation they don't have yet.
-  if (onboarding.active) {
+  // to select a conversation they don't have yet. (`visible` also covers the
+  // just-completed moment so the "sent you a message" card can show.)
+  if (onboarding.visible) {
     return <OnboardingCards />;
   }
 

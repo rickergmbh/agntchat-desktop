@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Bot,
@@ -53,7 +53,8 @@ export function OnboardingCards({
   onOpenConversation?: (conversationId: string) => void;
 }) {
   const { t } = useTranslation("onboarding");
-  const { active, step, variant, firstAgent, agentDmId } = useOnboardingState();
+  const { active, arrived, step, variant, firstAgent, agentDmId } =
+    useOnboardingState();
 
   const startAgent = useAgentStore((s) => s.startAgent);
   const selectAgent = useAgentStore((s) => s.selectAgent);
@@ -67,26 +68,15 @@ export function OnboardingCards({
   const [actionError, setActionError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
-  // When the greeting DM lands while the user is looking at these cards,
-  // show a one-shot "it arrived" card instead of vanishing abruptly. Only
-  // within a session that had the cards up — on a later boot the flow is
-  // simply inactive and nothing renders.
-  const wasActiveRef = useRef(false);
-  const [arrived, setArrived] = useState(false);
-  useEffect(() => {
-    if (active) {
-      wasActiveRef.current = true;
-    } else if (wasActiveRef.current && agentDmId) {
-      setArrived(true);
-    }
-  }, [active, agentDmId]);
-
   const openConversation = (conversationId: string) => {
     if (onOpenConversation) onOpenConversation(conversationId);
     else setActiveConversation(conversationId);
   };
 
   if (!active) {
+    // The flow just completed in this session: show the one-shot "it
+    // arrived" card instead of vanishing abruptly (`arrived` comes from the
+    // hook; opening the conversation unmounts the empty-state host).
     if (!arrived || !agentDmId) return null;
     const name = firstAgent?.agent.displayName ?? "";
     return (
@@ -101,13 +91,7 @@ export function OnboardingCards({
             </CardTitle>
           </CardHeader>
           <CardFooter>
-            <Button
-              size="sm"
-              onClick={() => {
-                setArrived(false);
-                openConversation(agentDmId);
-              }}
-            >
+            <Button size="sm" onClick={() => openConversation(agentDmId)}>
               <MessageCircle className="w-3.5 h-3.5" />
               {t("cards.arrivedCta")}
             </Button>

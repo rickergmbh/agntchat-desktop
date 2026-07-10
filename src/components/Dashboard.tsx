@@ -931,7 +931,7 @@ export function Dashboard() {
                 {t("common:loading")}
               </div>
             ) : totalCount === 0 && !error ? (
-              onboarding.active ? (
+              onboarding.visible ? (
                 <OnboardingCards
                   onCreateAgent={() => setShowCreate(true)}
                   onOpenConversation={(id) => {

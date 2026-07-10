@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useAgentStore, type ManagedAgent } from "../stores/agentStore";
 import { useChatStore } from "../stores/chatStore";
 import { usePresenceStore } from "../stores/presenceStore";
@@ -10,6 +10,12 @@ export interface OnboardingState {
   /** True while the user still has setup left before their first working
    *  agent conversation. False for established users and until stores load. */
   active: boolean;
+  /** True when the flow just completed within this session (the greeting DM
+   *  arrived while the cards were up) — hosts keep rendering the cards so the
+   *  one-shot "sent you a message" card can show. Never true on a later boot. */
+  arrived: boolean;
+  /** Hosts render the cards while this is true (active or arrived). */
+  visible: boolean;
   /** The step the user is on, or null when inactive / not yet loaded. */
   step: OnboardingStep | null;
   /** How the "get it online" step should read: a local agent is started from
@@ -45,8 +51,8 @@ export function useOnboardingState(): OnboardingState {
   const conversationsLoaded = useChatStore((s) => s.conversationsLoaded);
   const online = usePresenceStore((s) => s.online);
 
-  return useMemo(() => {
-    const inactive: OnboardingState = {
+  const derived = useMemo<Omit<OnboardingState, "arrived" | "visible">>(() => {
+    const inactive: Omit<OnboardingState, "arrived" | "visible"> = {
       active: false,
       step: null,
       variant: null,
@@ -96,4 +102,25 @@ export function useOnboardingState(): OnboardingState {
 
     return { ...inactive, active: true, step: "greeting", variant, firstAgent };
   }, [agents, agentsLoaded, conversations, conversationsLoaded, online]);
+
+  // "Arrived": the flow completed within this session — the greeting DM
+  // landed while the cards were up. Hosts keep the cards mounted (`visible`)
+  // so the one-shot "sent you a message" card can show; on any later boot
+  // the flow is simply inactive from the first fetch and nothing renders.
+  const wasActiveRef = useRef(false);
+  const [arrived, setArrived] = useState(false);
+  useEffect(() => {
+    if (derived.active) {
+      wasActiveRef.current = true;
+      if (arrived) setArrived(false);
+    } else if (wasActiveRef.current && derived.agentDmId && !arrived) {
+      setArrived(true);
+    }
+  }, [derived.active, derived.agentDmId, arrived]);
+
+  return {
+    ...derived,
+    arrived,
+    visible: derived.active || arrived,
+  };
 }
