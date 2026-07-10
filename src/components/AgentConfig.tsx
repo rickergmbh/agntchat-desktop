@@ -586,7 +586,11 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                     <SelectTrigger className="w-full">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    {/* Anchor below the trigger (standard dropdown) instead of
+                        aligning the selected item over it — otherwise picking a
+                        provider low in the list (e.g. claude_cli) shifts the
+                        whole popup upward and clips the providers above it. */}
+                    <SelectContent alignItemWithTrigger={false}>
                       {!providerExists && backend && (
                         <SelectItem value={backend}>
                           {t("config.customOption", { value: backend })}
@@ -700,7 +704,11 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                         }}
                       </SelectValue>
                     </SelectTrigger>
-                    <SelectContent>
+                    {/* Open below the trigger, not item-aligned — the model
+                        list is long, so aligning the selected model over the
+                        trigger would push the popup up and hide the models
+                        above the current one (same fix as the provider list). */}
+                    <SelectContent alignItemWithTrigger={false}>
                       {!currentModelInList && config.model && (
                         <SelectItem value={config.model}>
                           {t("config.customOption", {
