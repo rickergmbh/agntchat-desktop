@@ -80,46 +80,76 @@ export function ReminderToast() {
 
   return (
     <div className="pointer-events-none fixed bottom-6 right-6 z-50 max-w-sm">
-      <div className="pointer-events-auto rounded-lg border border-border bg-card p-4 shadow-lg">
-        <div className="flex items-start gap-3">
-          {reminder.agentAvatarUrl ? (
-            <img
-              src={reminder.agentAvatarUrl}
-              alt=""
-              className="h-9 w-9 shrink-0 rounded-full object-cover"
-            />
-          ) : (
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
-              <Bell size={16} />
-            </div>
-          )}
-          <div className="min-w-0">
-            <p className="text-sm font-medium">{reminder.agentName ?? "Reminder"}</p>
-            <p className="mt-1 text-xs text-muted-foreground">{reminder.summary}</p>
+      <ReminderToastCard
+        title={reminder.agentName ?? "Reminder"}
+        summary={reminder.summary}
+        avatarUrl={reminder.agentAvatarUrl}
+        onSnooze={snooze}
+        onOpen={reminder.dmConversationId ? open : undefined}
+        onDismiss={() => setReminder(null)}
+      />
+    </div>
+  );
+}
+
+/** Presentational card for {@link ReminderToast} — split out so the component
+ *  preview gallery can render it with sample data. `onOpen` omitted → no Open
+ *  button (a reminder with no DM conversation to jump to). */
+export function ReminderToastCard({
+  title,
+  summary,
+  avatarUrl,
+  onSnooze,
+  onOpen,
+  onDismiss,
+}: {
+  title: string;
+  summary: string;
+  avatarUrl?: string | null;
+  onSnooze: () => void;
+  onOpen?: () => void;
+  onDismiss: () => void;
+}) {
+  return (
+    <div className="pointer-events-auto rounded-lg border border-border bg-card p-4 shadow-lg">
+      <div className="flex items-start gap-3">
+        {avatarUrl ? (
+          <img
+            src={avatarUrl}
+            alt=""
+            className="h-9 w-9 shrink-0 rounded-full object-cover"
+          />
+        ) : (
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
+            <Bell size={16} />
           </div>
+        )}
+        <div className="min-w-0">
+          <p className="text-sm font-medium">{title}</p>
+          <p className="mt-1 text-xs text-muted-foreground">{summary}</p>
         </div>
-        <div className="mt-3 flex justify-end gap-2">
+      </div>
+      <div className="mt-3 flex justify-end gap-2">
+        <button
+          onClick={onSnooze}
+          className="rounded-md px-3 py-1 text-xs font-medium text-muted-foreground hover:bg-accent"
+        >
+          Snooze 1h
+        </button>
+        {onOpen ? (
           <button
-            onClick={snooze}
-            className="rounded-md px-3 py-1 text-xs font-medium text-muted-foreground hover:bg-accent"
+            onClick={onOpen}
+            className="rounded-md bg-primary px-3 py-1 text-xs font-medium text-primary-foreground hover:bg-primary/90"
           >
-            Snooze 1h
+            Open
           </button>
-          {reminder.dmConversationId ? (
-            <button
-              onClick={open}
-              className="rounded-md bg-primary px-3 py-1 text-xs font-medium text-primary-foreground hover:bg-primary/90"
-            >
-              Open
-            </button>
-          ) : null}
-          <button
-            onClick={() => setReminder(null)}
-            className="rounded-md px-3 py-1 text-xs font-medium text-muted-foreground hover:bg-accent"
-          >
-            Dismiss
-          </button>
-        </div>
+        ) : null}
+        <button
+          onClick={onDismiss}
+          className="rounded-md px-3 py-1 text-xs font-medium text-muted-foreground hover:bg-accent"
+        >
+          Dismiss
+        </button>
       </div>
     </div>
   );

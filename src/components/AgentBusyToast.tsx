@@ -46,25 +46,48 @@ export function AgentBusyToast() {
 
   return (
     <div className="pointer-events-none fixed bottom-6 right-6 z-50 max-w-sm">
-      <div className="pointer-events-auto rounded-lg border border-border bg-card p-4 shadow-lg">
-        <p className="text-sm font-medium">{name} is busy</p>
-        <p className="mt-1 text-xs text-muted-foreground">
-          They&apos;re working on {taskLabel}. Your message went to the work room — open it to continue the thread.
-        </p>
-        <div className="mt-3 flex gap-2">
-          <button
-            onClick={open}
-            className="rounded-md bg-primary px-3 py-1 text-xs font-medium text-primary-foreground hover:bg-primary/90"
-          >
-            Open work room
-          </button>
-          <button
-            onClick={() => setNotice(null)}
-            className="rounded-md px-3 py-1 text-xs font-medium text-muted-foreground hover:bg-accent"
-          >
-            Dismiss
-          </button>
-        </div>
+      <AgentBusyToastCard
+        name={name}
+        taskLabel={taskLabel}
+        onOpen={open}
+        onDismiss={() => setNotice(null)}
+      />
+    </div>
+  );
+}
+
+/** Presentational card for {@link AgentBusyToast} — split out so the component
+ *  preview gallery can render it with sample data. */
+export function AgentBusyToastCard({
+  name,
+  taskLabel,
+  onOpen,
+  onDismiss,
+}: {
+  name: string;
+  taskLabel: string;
+  onOpen: () => void;
+  onDismiss: () => void;
+}) {
+  return (
+    <div className="pointer-events-auto rounded-lg border border-border bg-card p-4 shadow-lg">
+      <p className="text-sm font-medium">{name} is busy</p>
+      <p className="mt-1 text-xs text-muted-foreground">
+        They&apos;re working on {taskLabel}. Your message went to the work room — open it to continue the thread.
+      </p>
+      <div className="mt-3 flex gap-2">
+        <button
+          onClick={onOpen}
+          className="rounded-md bg-primary px-3 py-1 text-xs font-medium text-primary-foreground hover:bg-primary/90"
+        >
+          Open work room
+        </button>
+        <button
+          onClick={onDismiss}
+          className="rounded-md px-3 py-1 text-xs font-medium text-muted-foreground hover:bg-accent"
+        >
+          Dismiss
+        </button>
       </div>
     </div>
   );

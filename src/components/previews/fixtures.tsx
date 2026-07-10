@@ -2,6 +2,7 @@ import type { LucideIcon } from "lucide-react";
 import {
   Activity,
   Archive,
+  Bell,
   FileCode2,
   GitBranch,
   LayoutGrid,
@@ -15,6 +16,10 @@ import { MessageBubble } from "../messages/MessageBubble";
 import { ArtifactCard } from "../messages/ArtifactCard";
 import { AgentConversationCard } from "../messages/AgentConversationCard";
 import { StreamingBubble } from "../messages/StreamingBubble";
+import { AgentBusyToastCard } from "../AgentBusyToast";
+import { ReminderToastCard } from "../ReminderToast";
+import { PermissionToastCard } from "../PermissionToast";
+import { cn } from "../../lib/utils";
 import type {
   ActiveStream,
   Artifact,
@@ -108,6 +113,38 @@ function mkMsg(over: Partial<Message>): Message {
 /** Render a message through the real bubble dispatcher, first-in-run styling. */
 function Bubble({ message }: { message: Message }) {
   return <MessageBubble message={message} showAvatar showSenderName />;
+}
+
+// Toast buttons wire to real callbacks in the app; in the gallery they're inert.
+const noop = () => {};
+
+/** Chrome for a toast preview — floats a card at toast width, matching the
+ *  `fixed bottom-6 right-6 max-w-sm` overlay the real toasts render into. */
+function ToastFrame({ children }: { children: React.ReactNode }) {
+  return <div className="max-w-sm px-4">{children}</div>;
+}
+
+/** The lightweight success/error flash toast (FilesView `flash()`); it isn't an
+ *  exported component, so the trivial markup is mirrored here. */
+function FlashToast({
+  kind,
+  message,
+}: {
+  kind: "success" | "error";
+  message: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "pointer-events-auto inline-block rounded-lg border px-4 py-2.5 text-sm shadow-lg",
+        kind === "error"
+          ? "border-destructive/30 bg-destructive/10 text-destructive"
+          : "border-border bg-card text-foreground"
+      )}
+    >
+      {message}
+    </div>
+  );
 }
 
 function member(
@@ -1266,6 +1303,107 @@ export function buildPreviewCategories(
                 },
               })}
             />
+          ),
+        },
+      ],
+    },
+
+    // --------------------------------------------------------------- toasts
+    {
+      id: "toasts",
+      name: "Toasts",
+      description: "Corner notification toasts (rendered inline here)",
+      icon: Bell,
+      items: [
+        {
+          label: "Agent busy redirect",
+          interactive: true,
+          node: (
+            <ToastFrame>
+              <AgentBusyToastCard
+                name="Atlas"
+                taskLabel={"“Book travel for the Berlin trip”"}
+                onOpen={noop}
+                onDismiss={noop}
+              />
+            </ToastFrame>
+          ),
+        },
+        {
+          label: "Reminder — with open",
+          interactive: true,
+          node: (
+            <ToastFrame>
+              <ReminderToastCard
+                title="Atlas"
+                summary="Standup starts in 10 minutes."
+                onSnooze={noop}
+                onOpen={noop}
+                onDismiss={noop}
+              />
+            </ToastFrame>
+          ),
+        },
+        {
+          label: "Reminder — no DM to open",
+          interactive: true,
+          node: (
+            <ToastFrame>
+              <ReminderToastCard
+                title="Reminder"
+                summary="Renew the domain before it expires on Friday."
+                onSnooze={noop}
+                onDismiss={noop}
+              />
+            </ToastFrame>
+          ),
+        },
+        {
+          label: "Permission — with description",
+          interactive: true,
+          node: (
+            <ToastFrame>
+              <PermissionToastCard
+                description="Atlas wants to send an email to team@acme.com."
+                toolName="send_email"
+                onDeny={noop}
+                onAlways={noop}
+                onApprove={noop}
+              />
+            </ToastFrame>
+          ),
+        },
+        {
+          label: "Permission — tool fallback",
+          caption: "no description → tool name subtitle",
+          interactive: true,
+          node: (
+            <ToastFrame>
+              <PermissionToastCard
+                toolName="run_shell_command"
+                onDeny={noop}
+                onAlways={noop}
+                onApprove={noop}
+              />
+            </ToastFrame>
+          ),
+        },
+        {
+          label: "Flash — success",
+          interactive: true,
+          node: (
+            <ToastFrame>
+              <FlashToast kind="success" message="Link copied to clipboard" />
+            </ToastFrame>
+          ),
+        },
+        {
+          label: "Flash — error",
+          interactive: true,
+          node: (
+            <ToastFrame>
+              <FlashToast kind="error" message="Couldn't upload file" />
+            </ToastFrame>
           ),
         },
       ],
