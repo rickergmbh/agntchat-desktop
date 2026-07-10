@@ -1603,6 +1603,24 @@ export const resources = {
         "skillsHint": "Integration tools are opt-in per agent. Enabling them also activates matching skills (e.g. the Gmail skill switches on with the email tools).",
         "title": "Tools"
       },
+      "tour": {
+        "back": "Back",
+        "capabilitiesBody": "This is where you unlock an agent's full potential: give it tools and skills, lasting memory, and routines or loops that let it work on its own.",
+        "capabilitiesTitle": "Capabilities — where the power is",
+        "done": "Done",
+        "modelBody": "Choose which AI model powers your agent and how hard it thinks. This is its raw horsepower.",
+        "modelTitle": "Model — the brain",
+        "next": "Next",
+        "operationsBody": "Watch your agent's pulse, read its logs, and check its health whenever you need to see what it's doing.",
+        "operationsTitle": "Operations — keep it healthy",
+        "profileBody": "Set your agent's name, face, and Soul — the personality and instructions that define its voice.",
+        "profileTitle": "Profile — who they are",
+        "replay": "Replay tour",
+        "skip": "Skip",
+        "step": "Step {{current}} of {{total}}",
+        "welcomeBody": "Everything that shapes what your agent can do lives in this rail. Here's a quick tour.",
+        "welcomeTitle": "This is your agent's control panel"
+      },
       "trustLevel": "trust: {{level}}",
       "type": {
         "observer": "Observer",
@@ -6360,6 +6378,24 @@ export const resources = {
         "platform_other": "{{count}} herramientas integradas (siempre disponibles)",
         "skillsHint": "Las herramientas de integración se activan por agente. Habilitarlas también activa las habilidades correspondientes (p. ej., la habilidad de Gmail se enciende con las herramientas de correo).",
         "title": "Herramientas"
+      },
+      "tour": {
+        "back": "Atrás",
+        "capabilitiesBody": "Aquí es donde desbloqueas todo el potencial de un agente: dale herramientas y habilidades, memoria duradera, y rutinas o bucles para que trabaje por su cuenta.",
+        "capabilitiesTitle": "Capacidades: donde está el poder",
+        "done": "Listo",
+        "modelBody": "Elige qué modelo de IA impulsa a tu agente y cuánto razona. Es su potencia bruta.",
+        "modelTitle": "Modelo: el cerebro",
+        "next": "Siguiente",
+        "operationsBody": "Observa el pulso de tu agente, lee sus registros y comprueba su estado cuando quieras ver qué está haciendo.",
+        "operationsTitle": "Operaciones: mantenlo en forma",
+        "profileBody": "Configura el nombre, la cara y el Alma de tu agente: la personalidad y las instrucciones que definen su voz.",
+        "profileTitle": "Perfil: quién es",
+        "replay": "Repetir el recorrido",
+        "skip": "Omitir",
+        "step": "Paso {{current}} de {{total}}",
+        "welcomeBody": "Todo lo que define lo que tu agente puede hacer está en esta barra. Aquí tienes un recorrido rápido.",
+        "welcomeTitle": "Este es el panel de control de tu agente"
       },
       "trustLevel": "confianza: {{level}}",
       "type": {
@@ -11119,6 +11155,24 @@ export const resources = {
         "skillsHint": "Integrations-Werkzeuge sind pro Agent optional. Ihre Aktivierung schaltet auch passende Skills frei (z. B. aktiviert sich der Gmail-Skill mit den E-Mail-Werkzeugen).",
         "title": "Werkzeuge"
       },
+      "tour": {
+        "back": "Zurück",
+        "capabilitiesBody": "Hier schöpfst du das volle Potenzial eines Agenten aus: Gib ihm Werkzeuge und Skills, dauerhaftes Gedächtnis sowie Routinen oder Loops, mit denen er eigenständig arbeitet.",
+        "capabilitiesTitle": "Fähigkeiten – hier liegt die Kraft",
+        "done": "Fertig",
+        "modelBody": "Wähle, welches KI-Modell deinen Agenten antreibt und wie intensiv es denkt. Das ist seine reine Leistung.",
+        "modelTitle": "Modell – das Gehirn",
+        "next": "Weiter",
+        "operationsBody": "Beobachte den Puls deines Agenten, lies seine Protokolle und prüfe seinen Zustand, wann immer du sehen willst, was er tut.",
+        "operationsTitle": "Betrieb – halte ihn gesund",
+        "profileBody": "Lege Name, Gesicht und Soul deines Agenten fest – die Persönlichkeit und Anweisungen, die seine Stimme prägen.",
+        "profileTitle": "Profil – wer er ist",
+        "replay": "Tour wiederholen",
+        "skip": "Überspringen",
+        "step": "Schritt {{current}} von {{total}}",
+        "welcomeBody": "Alles, was bestimmt, was dein Agent kann, findest du in dieser Leiste. Hier ist eine kurze Tour.",
+        "welcomeTitle": "Das ist die Steuerzentrale deines Agenten"
+      },
       "trustLevel": "Vertrauen: {{level}}",
       "type": {
         "observer": "Beobachter",
@@ -15876,6 +15930,24 @@ export const resources = {
         "platform_other": "{{count}} outils intégrés (toujours disponibles)",
         "skillsHint": "Les outils d'intégration s'activent par agent. Les activer déclenche aussi les compétences associées (p. ex. la compétence Gmail s'active avec les outils e-mail).",
         "title": "Outils"
+      },
+      "tour": {
+        "back": "Retour",
+        "capabilitiesBody": "C'est ici que vous libérez tout le potentiel d'un agent : donnez-lui des outils et des compétences, une mémoire durable, et des routines ou des boucles pour qu'il travaille de lui-même.",
+        "capabilitiesTitle": "Capacités — là où réside la puissance",
+        "done": "Terminé",
+        "modelBody": "Choisissez le modèle d'IA qui alimente votre agent et son niveau de réflexion. C'est sa puissance brute.",
+        "modelTitle": "Modèle — le cerveau",
+        "next": "Suivant",
+        "operationsBody": "Surveillez le pouls de votre agent, consultez ses journaux et vérifiez son état dès que vous voulez voir ce qu'il fait.",
+        "operationsTitle": "Opérations — gardez-le en forme",
+        "profileBody": "Définissez le nom, le visage et l'Âme de votre agent — la personnalité et les instructions qui façonnent sa voix.",
+        "profileTitle": "Profil — qui il est",
+        "replay": "Revoir la visite",
+        "skip": "Passer",
+        "step": "Étape {{current}} sur {{total}}",
+        "welcomeBody": "Tout ce qui définit ce que votre agent peut faire se trouve dans cette barre. Voici une visite rapide.",
+        "welcomeTitle": "Voici le panneau de contrôle de votre agent"
       },
       "trustLevel": "confiance : {{level}}",
       "type": {
@@ -20635,6 +20707,24 @@ export const resources = {
         "skillsHint": "As ferramentas de integração são opcionais por agente. Ativá-las também ativa as habilidades correspondentes (por exemplo, a habilidade do Gmail liga com as ferramentas de e-mail).",
         "title": "Ferramentas"
       },
+      "tour": {
+        "back": "Voltar",
+        "capabilitiesBody": "É aqui que você libera todo o potencial de um agente: dê a ele ferramentas e habilidades, memória duradoura e rotinas ou loops para que ele trabalhe sozinho.",
+        "capabilitiesTitle": "Capacidades — onde está o poder",
+        "done": "Concluir",
+        "modelBody": "Escolha qual modelo de IA impulsiona seu agente e o quanto ele raciocina. É a sua potência bruta.",
+        "modelTitle": "Modelo — o cérebro",
+        "next": "Avançar",
+        "operationsBody": "Acompanhe o pulso do seu agente, leia os registros e verifique a saúde dele sempre que quiser ver o que está fazendo.",
+        "operationsTitle": "Operações — mantenha-o saudável",
+        "profileBody": "Defina o nome, o rosto e a Alma do seu agente — a personalidade e as instruções que moldam sua voz.",
+        "profileTitle": "Perfil — quem ele é",
+        "replay": "Repetir o tour",
+        "skip": "Pular",
+        "step": "Etapa {{current}} de {{total}}",
+        "welcomeBody": "Tudo o que define o que seu agente pode fazer está nesta barra. Aqui está um tour rápido.",
+        "welcomeTitle": "Este é o painel de controle do seu agente"
+      },
       "trustLevel": "confiança: {{level}}",
       "type": {
         "observer": "Observador",
@@ -25392,6 +25482,24 @@ export const resources = {
         "platform_other": "組み込みツール{{count}}個（常時利用可）",
         "skillsHint": "連携ツールはエージェントごとのオプトインです。有効にすると対応するスキルも起動します（例：メールツールでGmailスキルが有効化）。",
         "title": "ツール"
+      },
+      "tour": {
+        "back": "戻る",
+        "capabilitiesBody": "ここでエージェントの本領を引き出します。ツールやスキル、持続する記憶、そして自律的に動くためのルーティンやループを与えましょう。",
+        "capabilitiesTitle": "能力 — 力の源",
+        "done": "完了",
+        "modelBody": "エージェントを動かすAIモデルと、その思考の深さを選びます。これが素の実力です。",
+        "modelTitle": "モデル — 頭脳",
+        "next": "次へ",
+        "operationsBody": "エージェントの動きを確認したいときは、パルスを見て、ログを読み、ヘルスをチェックしましょう。",
+        "operationsTitle": "運用 — 健全に保つ",
+        "profileBody": "エージェントの名前、顔、そしてソウル（その声を形づくる性格と指示）を設定します。",
+        "profileTitle": "プロフィール — 誰であるか",
+        "replay": "ツアーをもう一度見る",
+        "skip": "スキップ",
+        "step": "ステップ {{current}} / {{total}}",
+        "welcomeBody": "エージェントにできることを決めるすべてが、このバーにあります。簡単なツアーを始めましょう。",
+        "welcomeTitle": "これはエージェントのコントロールパネルです"
       },
       "trustLevel": "信頼度: {{level}}",
       "type": {
@@ -30151,6 +30259,24 @@ export const resources = {
         "skillsHint": "集成工具需按智能体启用。启用后相应技能也会激活（例如邮件工具会启用 Gmail 技能）。",
         "title": "工具"
       },
+      "tour": {
+        "back": "上一步",
+        "capabilitiesBody": "在这里释放智能体的全部潜力：为它配备工具和技能、持久的记忆，以及让它自主工作的例程或循环。",
+        "capabilitiesTitle": "能力 — 力量所在",
+        "done": "完成",
+        "modelBody": "选择驱动智能体的 AI 模型以及它思考的深度。这是它的原始算力。",
+        "modelTitle": "模型 — 大脑",
+        "next": "下一步",
+        "operationsBody": "随时查看智能体的脉搏、阅读日志并检查健康状况，了解它正在做什么。",
+        "operationsTitle": "运维 — 保持健康",
+        "profileBody": "设置智能体的名称、头像和灵魂——塑造其语气的个性与指令。",
+        "profileTitle": "资料 — 它是谁",
+        "replay": "重新查看导览",
+        "skip": "跳过",
+        "step": "第 {{current}} 步，共 {{total}} 步",
+        "welcomeBody": "决定智能体能做什么的一切都在这条栏里。这里是一个快速导览。",
+        "welcomeTitle": "这是你的智能体控制面板"
+      },
       "trustLevel": "信任等级：{{level}}",
       "type": {
         "observer": "观察型",
@@ -34908,6 +35034,24 @@ export const resources = {
         "platform_other": "기본 도구 {{count}}개(항상 사용 가능)",
         "skillsHint": "통합 도구는 에이전트별 옵트인입니다. 활성화하면 해당 스킬도 켜집니다(예: 이메일 도구로 Gmail 스킬 활성화).",
         "title": "도구"
+      },
+      "tour": {
+        "back": "이전",
+        "capabilitiesBody": "여기서 에이전트의 잠재력을 최대한 끌어냅니다. 도구와 스킬, 지속되는 기억, 그리고 스스로 일하게 해 주는 루틴이나 루프를 부여하세요.",
+        "capabilitiesTitle": "역량 — 힘이 있는 곳",
+        "done": "완료",
+        "modelBody": "에이전트를 구동하는 AI 모델과 사고의 깊이를 선택하세요. 에이전트의 기본 성능입니다.",
+        "modelTitle": "모델 — 두뇌",
+        "next": "다음",
+        "operationsBody": "에이전트가 무엇을 하는지 확인하려면 언제든 펄스를 보고, 로그를 읽고, 상태를 점검하세요.",
+        "operationsTitle": "운영 — 건강하게 유지",
+        "profileBody": "에이전트의 이름, 얼굴, 그리고 소울(목소리를 결정하는 성격과 지침)을 설정하세요.",
+        "profileTitle": "프로필 — 누구인지",
+        "replay": "둘러보기 다시 보기",
+        "skip": "건너뛰기",
+        "step": "{{total}}단계 중 {{current}}단계",
+        "welcomeBody": "에이전트가 할 수 있는 일을 결정하는 모든 것이 이 막대에 있습니다. 간단히 둘러보겠습니다.",
+        "welcomeTitle": "여기는 에이전트 제어판입니다"
       },
       "trustLevel": "신뢰도: {{level}}",
       "type": {
@@ -39667,6 +39811,24 @@ export const resources = {
         "skillsHint": "Gli strumenti di integrazione sono opzionali per agente. Attivarli attiva anche le competenze corrispondenti (ad es. la competenza Gmail si accende con gli strumenti email).",
         "title": "Strumenti"
       },
+      "tour": {
+        "back": "Indietro",
+        "capabilitiesBody": "Qui liberi tutto il potenziale di un agente: dagli strumenti e competenze, una memoria duratura e routine o loop che gli permettono di lavorare da solo.",
+        "capabilitiesTitle": "Capacità — dove risiede la potenza",
+        "done": "Fine",
+        "modelBody": "Scegli quale modello di IA alimenta il tuo agente e quanto a fondo ragiona. È la sua potenza pura.",
+        "modelTitle": "Modello — il cervello",
+        "next": "Avanti",
+        "operationsBody": "Controlla il battito del tuo agente, leggi i suoi log e verifica il suo stato ogni volta che vuoi vedere cosa sta facendo.",
+        "operationsTitle": "Operazioni — mantienilo in salute",
+        "profileBody": "Imposta il nome, il volto e il Soul del tuo agente: la personalità e le istruzioni che ne definiscono la voce.",
+        "profileTitle": "Profilo — chi è",
+        "replay": "Rivedi il tour",
+        "skip": "Salta",
+        "step": "Passo {{current}} di {{total}}",
+        "welcomeBody": "Tutto ciò che definisce cosa può fare il tuo agente si trova in questa barra. Ecco un rapido tour.",
+        "welcomeTitle": "Questo è il pannello di controllo del tuo agente"
+      },
       "trustLevel": "fiducia: {{level}}",
       "type": {
         "observer": "Osservatore",
@@ -44424,6 +44586,24 @@ export const resources = {
         "platform_other": "{{count}} अंतर्निहित टूल (हमेशा उपलब्ध)",
         "skillsHint": "इंटीग्रेशन टूल हर एजेंट के लिए वैकल्पिक हैं। इन्हें चालू करने से मेल खाते कौशल भी सक्रिय होते हैं (जैसे ईमेल टूल से Gmail कौशल)।",
         "title": "टूल्स"
+      },
+      "tour": {
+        "back": "पीछे",
+        "capabilitiesBody": "यहीं आप एजेंट की पूरी क्षमता खोलते हैं: इसे टूल और स्किल, टिकाऊ मेमोरी, और रूटीन या लूप दें ताकि यह खुद काम कर सके।",
+        "capabilitiesTitle": "क्षमताएँ — जहाँ असली ताकत है",
+        "done": "पूर्ण",
+        "modelBody": "चुनें कि कौन-सा AI मॉडल आपके एजेंट को चलाता है और यह कितना गहराई से सोचता है। यही इसकी असली ताकत है।",
+        "modelTitle": "मॉडल — दिमाग",
+        "next": "आगे",
+        "operationsBody": "जब भी देखना हो कि आपका एजेंट क्या कर रहा है, इसकी पल्स देखें, लॉग पढ़ें और हेल्थ जाँचें।",
+        "operationsTitle": "संचालन — इसे स्वस्थ रखें",
+        "profileBody": "अपने एजेंट का नाम, चेहरा और सोल सेट करें — वह व्यक्तित्व और निर्देश जो इसकी आवाज़ को आकार देते हैं।",
+        "profileTitle": "प्रोफ़ाइल — यह कौन है",
+        "replay": "टूर फिर से देखें",
+        "skip": "छोड़ें",
+        "step": "चरण {{current}} / {{total}}",
+        "welcomeBody": "आपका एजेंट क्या कर सकता है, यह तय करने वाली हर चीज़ इसी बार में है। यहाँ एक झटपट टूर है।",
+        "welcomeTitle": "यह आपके एजेंट का कंट्रोल पैनल है"
       },
       "trustLevel": "भरोसा: {{level}}",
       "type": {

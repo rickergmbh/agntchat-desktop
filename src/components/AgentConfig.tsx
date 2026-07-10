@@ -123,6 +123,32 @@ import { AgentTemplates } from "./AgentTemplates";
 import { AgentRoutines } from "./AgentRoutines";
 import { AgentLoops } from "./AgentLoops";
 import { AvatarCropDialog } from "./AvatarCropDialog";
+import { AgentConfigTour, type TourRect } from "./AgentConfigTour";
+
+// First-run orientation for the details pane. Each step spotlights one
+// sidebar group (`groupKey`, matched to the `key` on `sectionGroups`) and, for
+// the anchored steps, switches the pane to a representative section so the
+// user sees real content behind the coach card. The intro step has no anchor.
+// Copy is resolved from the `agents:tour.*` catalog inside AgentConfigTour.
+const TOUR_STEPS: Array<{
+  groupKey: string | null;
+  section: string | null;
+  titleKey: string;
+  bodyKey: string;
+}> = [
+  { groupKey: null, section: null, titleKey: "tour.welcomeTitle", bodyKey: "tour.welcomeBody" },
+  { groupKey: "profile", section: "profile", titleKey: "tour.profileTitle", bodyKey: "tour.profileBody" },
+  { groupKey: "model", section: "config", titleKey: "tour.modelTitle", bodyKey: "tour.modelBody" },
+  {
+    groupKey: "capabilities",
+    section: "skills",
+    titleKey: "tour.capabilitiesTitle",
+    bodyKey: "tour.capabilitiesBody",
+  },
+  { groupKey: "operations", section: "pulse", titleKey: "tour.operationsTitle", bodyKey: "tour.operationsBody" },
+];
+
+const TOUR_SEEN_KEY = "agentConfigTourSeen";
 
 // Display labels + one-line hints for the CLI connection (auth/runtime)
 // picker. Keys match the catalog's cliConnections values. Kept here (not in
@@ -352,15 +378,97 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
   const [activeSection, setActiveSection] = useState("config");
   const [showGallery, setShowGallery] = useState(false);
 
+  // ---- First-run orientation tour ----
+  // Refs to each sidebar group wrapper, keyed by `group.key`, so a tour step
+  // can measure the group it spotlights. The outer pane is the positioning
+  // context for the overlay.
+  const groupRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const paneRef = useRef<HTMLDivElement | null>(null);
+  const [tourStep, setTourStep] = useState<number | null>(null);
+  const [tourRect, setTourRect] = useState<TourRect>(null);
+
+  // Auto-start once, ever, per install — the first time a real agent's pane is
+  // opened. Persisted in localStorage so it never nags again; the ? button
+  // replays it on demand.
+  useEffect(() => {
+    if (localStorage.getItem(TOUR_SEEN_KEY)) return;
+    localStorage.setItem(TOUR_SEEN_KEY, "1");
+    setActiveSection("profile");
+    setTourStep(0);
+    // Only fire for a normally-viewed agent, not e.g. a bare shell.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Measure the spotlight rect for the current step, relative to the pane.
+  // Re-measured on step change and on resize; the intro step (groupKey null)
+  // clears the rect so the card centers.
+  useEffect(() => {
+    if (tourStep === null) return;
+    const measure = () => {
+      const step = TOUR_STEPS[tourStep];
+      const groupEl = step.groupKey ? groupRefs.current[step.groupKey] : null;
+      const paneEl = paneRef.current;
+      if (!groupEl || !paneEl) {
+        setTourRect(null);
+        return;
+      }
+      const g = groupEl.getBoundingClientRect();
+      const p = paneEl.getBoundingClientRect();
+      setTourRect({
+        top: g.top - p.top,
+        left: g.left - p.left,
+        width: g.width,
+        height: g.height,
+      });
+    };
+    // Defer one frame so the section switch has laid out before measuring.
+    const raf = requestAnimationFrame(measure);
+    window.addEventListener("resize", measure);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", measure);
+    };
+  }, [tourStep]);
+
+  const startTour = useCallback(() => {
+    setActiveSection("profile");
+    setTourStep(0);
+  }, []);
+
+  const advanceTour = useCallback(() => {
+    setTourStep((s) => {
+      if (s === null) return null;
+      const next = s + 1;
+      if (next >= TOUR_STEPS.length) return null;
+      const section = TOUR_STEPS[next].section;
+      if (section) setActiveSection(section);
+      return next;
+    });
+  }, []);
+
+  const backTour = useCallback(() => {
+    setTourStep((s) => {
+      if (s === null || s === 0) return s;
+      const prev = s - 1;
+      const section = TOUR_STEPS[prev].section;
+      if (section) setActiveSection(section);
+      return prev;
+    });
+  }, []);
+
+  const endTour = useCallback(() => setTourStep(null), []);
+
   // Sidebar tabs grouped to mirror the mobile agent-detail screen's
   // section vocabulary (Profile / Model / Capabilities / Operations).
   // Each group renders as an icon cluster separated from the next by
   // a hairline divider — tooltips on each icon carry the full label.
   const sectionGroups: Array<{
+    key: string;
     name: string;
     sections: Array<{ value: string; label: string; icon: typeof Settings2 }>;
   }> = [
     {
+      key: "profile",
       name: t("nav:profile"),
       sections: [
         { value: "profile", label: t("nav:profile"), icon: User },
@@ -368,10 +476,12 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
       ],
     },
     {
+      key: "model",
       name: t("common:model"),
       sections: [{ value: "config", label: t("common:model"), icon: Settings2 }],
     },
     {
+      key: "capabilities",
       name: t("sections.capabilities"),
       sections: [
         { value: "skills", label: t("skills.title"), icon: Sparkles },
@@ -386,6 +496,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
     ...(sharingEnabled
       ? [
           {
+            key: "sharing",
             name: t("sections.sharing"),
             sections: [
               { value: "share", label: t("config.share.title"), icon: Share2 },
@@ -395,6 +506,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
         ]
       : []),
     {
+      key: "operations",
       name: t("config.groupOperations"),
       sections: [
         { value: "pulse", label: t("pulse.title"), icon: HeartPulse },
@@ -405,7 +517,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
   ];
 
   return (
-    <div className="flex h-full">
+    <div ref={paneRef} className="relative flex h-full">
       {/* Vertical icon sidebar */}
       <TooltipProvider delay={300}>
         <div className="w-12 border-r border-border bg-muted/30 flex flex-col items-center flex-shrink-0">
@@ -421,9 +533,15 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
             </Avatar>
           </div>
 
-          <div className="flex flex-col items-center gap-1 py-3">
+          <div className="flex flex-1 flex-col items-center gap-1 py-3">
           {sectionGroups.map((group, groupIdx) => (
-            <div key={group.name} className="flex flex-col items-center gap-1">
+            <div
+              key={group.key}
+              ref={(el) => {
+                groupRefs.current[group.key] = el;
+              }}
+              className="flex flex-col items-center gap-1"
+            >
               {group.sections.map((section) => (
                 <Tooltip key={section.value}>
                   <TooltipTrigger
@@ -456,9 +574,42 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
               )}
             </div>
           ))}
+
+          {/* Replay the first-run orientation tour on demand. Pinned to the
+              bottom of the rail so it never crowds the section icons. */}
+          <div className="mt-auto">
+            <Separator className="w-6 my-1" />
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <button
+                    onClick={startTour}
+                    className="w-8 h-8 rounded-md flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                  >
+                    <HelpCircle className="w-4 h-4" />
+                  </button>
+                }
+              />
+              <TooltipContent side="right" className="text-xs">
+                <div className="font-semibold">{t("tour.replay")}</div>
+              </TooltipContent>
+            </Tooltip>
+          </div>
           </div>
         </div>
       </TooltipProvider>
+
+      {/* First-run orientation overlay — spotlights each sidebar group. */}
+      {tourStep !== null && (
+        <AgentConfigTour
+          steps={TOUR_STEPS}
+          index={tourStep}
+          rect={tourRect}
+          onNext={advanceTour}
+          onBack={backTour}
+          onSkip={endTour}
+        />
+      )}
 
       {/* Content panel */}
       <div className="flex-1 flex flex-col min-h-0 min-w-0 overflow-hidden">
