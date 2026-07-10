@@ -617,7 +617,11 @@ function CreateSkillDialog({
             <div className="space-y-1.5">
               <Label className="text-xs">{t("skills.fields.category")}</Label>
               <Select value={category} onValueChange={(v) => setCategory(v ?? "integration")}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue>
+                    {(val: unknown) => t(`skills.category.${String(val)}`)}
+                  </SelectValue>
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="integration">{t("skills.category.integration")}</SelectItem>
                   <SelectItem value="formatting">{t("skills.category.formatting")}</SelectItem>
@@ -629,7 +633,11 @@ function CreateSkillDialog({
             <div className="space-y-1.5">
               <Label className="text-xs">{t("skills.fields.scope")}</Label>
               <Select value={scope} onValueChange={(v) => setScope(v ?? "owner")}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue>
+                    {(val: unknown) => t(`skills.scopeOption.${String(val)}`)}
+                  </SelectValue>
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="owner">{t("skills.scopeOption.owner")}</SelectItem>
                   <SelectItem value="agent">{t("skills.scopeOption.agent")}</SelectItem>
@@ -647,7 +655,15 @@ function CreateSkillDialog({
             <div className="space-y-1.5">
               <Label className="text-xs">{t("skills.fields.visibility")}</Label>
               <Select value={visibility} onValueChange={(v) => setVisibility(v ?? "private")}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue>
+                    {(val: unknown) =>
+                      String(val) === "public"
+                        ? t("skills.visibilityOption.publicMarketplace")
+                        : t(`skills.visibilityOption.${String(val)}`)
+                    }
+                  </SelectValue>
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="private">{t("skills.visibilityOption.private")}</SelectItem>
                   <SelectItem value="public">{t("skills.visibilityOption.publicMarketplace")}</SelectItem>
@@ -835,7 +851,11 @@ function EditSkillForm({
         <div className="space-y-1.5">
           <Label className="text-xs">{t("skills.fields.category")}</Label>
           <Select value={category} onValueChange={(v) => setCategory(v ?? "integration")}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectTrigger>
+              <SelectValue>
+                {(val: unknown) => t(`skills.category.${String(val)}`)}
+              </SelectValue>
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value="integration">{t("skills.category.integration")}</SelectItem>
               <SelectItem value="formatting">{t("skills.category.formatting")}</SelectItem>
@@ -849,7 +869,15 @@ function EditSkillForm({
         <div className="space-y-1.5">
           <Label className="text-xs">{t("skills.fields.visibility")}</Label>
           <Select value={visibility} onValueChange={(v) => setVisibility(v ?? "private")}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectTrigger>
+              <SelectValue>
+                {(val: unknown) =>
+                  String(val) === "public"
+                    ? t("skills.visibilityOption.publicMarketplace")
+                    : t(`skills.visibilityOption.${String(val)}`)
+                }
+              </SelectValue>
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value="private">{t("skills.visibilityOption.private")}</SelectItem>
               <SelectItem value="public">{t("skills.visibilityOption.publicMarketplace")}</SelectItem>

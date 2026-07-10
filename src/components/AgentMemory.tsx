@@ -567,7 +567,11 @@ function MemoryFormDialog({
                 disabled={isEdit}
               >
                 <SelectTrigger>
-                  <SelectValue />
+                  <SelectValue>
+                    {(val: unknown) =>
+                      t(CATEGORY_LABEL_KEYS[val as MemoryCategory] ?? String(val))
+                    }
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {CATEGORIES.map((c) => (

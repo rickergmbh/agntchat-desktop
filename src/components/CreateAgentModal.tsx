@@ -1474,7 +1474,14 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                         onValueChange={(v) => handleBackendChange(v ?? "")}
                       >
                         <SelectTrigger className="w-full">
-                          <SelectValue />
+                          {/* Base UI renders the raw value unless given a
+                              render fn — map back to the display label. */}
+                          <SelectValue>
+                            {(val: unknown) =>
+                              PROVIDERS.find((p) => p.id === String(val))
+                                ?.label ?? String(val ?? "")
+                            }
+                          </SelectValue>
                         </SelectTrigger>
                         <SelectContent>
                           {PROVIDERS.map((p) => (
@@ -1492,7 +1499,12 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                         onValueChange={(v) => v && setModel(v)}
                       >
                         <SelectTrigger className="w-full">
-                          <SelectValue />
+                          <SelectValue>
+                            {(val: unknown) =>
+                              models.find((m) => m.id === String(val))?.label ??
+                              String(val ?? "")
+                            }
+                          </SelectValue>
                         </SelectTrigger>
                         <SelectContent>
                           {models.map((m) => (
@@ -1518,7 +1530,14 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                         onValueChange={(v) => v && setExecutionMode(v)}
                       >
                         <SelectTrigger className="w-full">
-                          <SelectValue />
+                          <SelectValue>
+                            {(val: unknown) => {
+                              const mode = EXECUTION_MODES.find(
+                                (m) => m.id === String(val)
+                              );
+                              return mode ? t(mode.labelKey) : String(val ?? "");
+                            }}
+                          </SelectValue>
                         </SelectTrigger>
                         <SelectContent>
                           {EXECUTION_MODES.filter((m) =>
@@ -1539,7 +1558,16 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                           onValueChange={(v) => v && setEffort(v)}
                         >
                           <SelectTrigger className="w-full">
-                            <SelectValue />
+                            <SelectValue>
+                              {(val: unknown) => {
+                                const level = EFFORT_LEVELS.find(
+                                  (e) => e.id === String(val)
+                                );
+                                return level
+                                  ? t(level.labelKey)
+                                  : String(val ?? "");
+                              }}
+                            </SelectValue>
                           </SelectTrigger>
                           <SelectContent>
                             {EFFORT_LEVELS.map((e) => (

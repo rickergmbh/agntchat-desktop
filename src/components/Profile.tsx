@@ -1383,7 +1383,14 @@ export function Profile({ onClose }: { onClose: () => void }) {
                 }}
               >
                 <SelectTrigger className="w-full">
-                  <SelectValue />
+                  <SelectValue>
+                    {(val: unknown) => {
+                      const v = String(val);
+                      if (v === "bearer") return t("customApis.authBearer");
+                      if (v === "header") return t("customApis.authHeader");
+                      return t("customApis.authNone");
+                    }}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="bearer">

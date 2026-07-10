@@ -419,7 +419,9 @@ function ScheduleFields({
                 onValueChange={(v) => setState({ ...state, cronHour: v ?? "9" })}
               >
                 <SelectTrigger className="w-32">
-                  <SelectValue />
+                  <SelectValue>
+                    {(val: unknown) => hourLabel(parseInt(String(val), 10))}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {HOURS.map((h) => (

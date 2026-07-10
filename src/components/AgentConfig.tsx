@@ -587,7 +587,14 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                     }}
                   >
                     <SelectTrigger className="w-full">
-                      <SelectValue />
+                      {/* Base UI renders the raw value ("claude_cli") unless
+                          given a render fn — map back to the display label. */}
+                      <SelectValue>
+                        {(val: unknown) =>
+                          PROVIDERS.find((p) => p.id === String(val))?.label ??
+                          String(val ?? "")
+                        }
+                      </SelectValue>
                     </SelectTrigger>
                     {/* Anchor below the trigger (standard dropdown) instead of
                         aligning the selected item over it — otherwise picking a
@@ -853,7 +860,14 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                   }
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue />
+                    <SelectValue>
+                      {(val: unknown) => {
+                        const mode = EXECUTION_MODES.find(
+                          (m) => m.id === String(val)
+                        );
+                        return mode ? t(mode.labelKey) : String(val ?? "");
+                      }}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {EXECUTION_MODES.map((m) => {
@@ -919,7 +933,14 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                     }}
                   >
                     <SelectTrigger className="w-full">
-                      <SelectValue />
+                      <SelectValue>
+                        {(val: unknown) => {
+                          const v = String(val);
+                          if (v === "default") return t("config.effort.defaultOption");
+                          const level = EFFORT_LEVELS.find((l) => l.id === v);
+                          return level ? t(level.labelKey) : v;
+                        }}
+                      </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="default">{t("config.effort.defaultOption")}</SelectItem>
@@ -2249,7 +2270,11 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
                 value={String(activeStart)}
                 onValueChange={(v) => { setActiveStart(Number(v)); setDirty(true); }}
               >
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue>
+                    {(val: unknown) => `${String(val ?? "0").padStart(2, "0")}:00`}
+                  </SelectValue>
+                </SelectTrigger>
                 <SelectContent>
                   {Array.from({ length: 24 }, (_, i) => (
                     <SelectItem key={i} value={String(i)}>
@@ -2265,7 +2290,11 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
                 value={String(activeEnd)}
                 onValueChange={(v) => { setActiveEnd(Number(v)); setDirty(true); }}
               >
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue>
+                    {(val: unknown) => `${String(val ?? "0").padStart(2, "0")}:00`}
+                  </SelectValue>
+                </SelectTrigger>
                 <SelectContent>
                   {Array.from({ length: 24 }, (_, i) => (
                     <SelectItem key={i} value={String(i)}>
@@ -2307,7 +2336,16 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
                   setDirty(true);
                 }}
               >
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue>
+                    {(val: unknown) =>
+                      String(val) === "__personal__"
+                        ? t("pulse.defaultWorkspace")
+                        : workspaces.find((w) => w.id === String(val))?.name ??
+                          String(val ?? "")
+                    }
+                  </SelectValue>
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="__personal__">{t("pulse.defaultWorkspace")}</SelectItem>
                   {workspaces.map((w) => (
@@ -2977,7 +3015,9 @@ function ProfileSection({
             }}
           >
             <SelectTrigger className="w-full">
-              <SelectValue />
+              <SelectValue>
+                {(val: unknown) => t(`types.${String(val)}.label`)}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {AGENT_TYPES.map((type) => (
@@ -3748,7 +3788,14 @@ function RuntimePanel({ agent }: { agent: Agent }) {
               <Label className="text-xs">{t("runtime.host")}</Label>
               <Select value={pendingHostId ?? undefined} onValueChange={(v) => setPendingHostId(v)}>
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder={t("config.runtime.pickHostPlaceholder")} />
+                  <SelectValue placeholder={t("config.runtime.pickHostPlaceholder")}>
+                    {(val: unknown) =>
+                      val
+                        ? hosts.find((h) => h.id === String(val))?.name ??
+                          String(val)
+                        : null
+                    }
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {hosts.map((h) => (

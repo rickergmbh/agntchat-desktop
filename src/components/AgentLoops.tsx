@@ -149,7 +149,9 @@ function LoopFormFields({
             }
           >
             <SelectTrigger>
-              <SelectValue />
+              <SelectValue>
+                {(val: unknown) => t(`loops.mode.${String(val)}`)}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="continuous">{t("loops.mode.continuous")}</SelectItem>
