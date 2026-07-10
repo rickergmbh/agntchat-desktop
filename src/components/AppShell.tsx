@@ -235,10 +235,6 @@ function LeftRail({
     else setPreference("system");
   };
 
-  const handleLogout = () => {
-    if (confirm(t("settings:signOutConfirm"))) logout();
-  };
-
   return (
     <nav
       className="flex flex-col w-14 shrink-0 rounded-xl bg-rail shadow-md py-3 items-center justify-between"
@@ -388,7 +384,7 @@ function LeftRail({
         {/* Logout */}
         <button
           type="button"
-          onClick={handleLogout}
+          onClick={logout}
           title={t("signOut")}
           aria-label={t("signOut")}
           className="flex items-center justify-center w-10 h-10 rounded-lg text-rail-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
