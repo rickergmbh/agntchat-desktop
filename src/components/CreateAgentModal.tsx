@@ -531,7 +531,9 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     try {
       // Hosted agents run on the org host with its shared Claude seat, so we
       // pin sensible defaults (claude_cli) and skip per-agent key handling.
-      const hosted = hosting === "hosted";
+      // canHost guard: users without the hosted runtime can never create
+      // hosted (the picker disables it, this backstops it).
+      const hosted = hosting === "hosted" && canHost;
       const effBackend = hosted ? "claude_cli" : backend;
       // Hosted model: honor the wizard's chosen model (a preset default like
       // Sonnet 4.6, or whatever the user picked) when it's a valid claude_cli
@@ -1432,20 +1434,32 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
 
               {step === "brain" && (
                 <div className="space-y-4">
-                  {canHost && (
-                    <div className="space-y-2">
+                  {/* Hosted/local picker is visible to everyone; without the
+                      hosted runtime unlocked the hosted card is disabled with
+                      a "coming soon" note and the agent runs locally. */}
+                  <div className="space-y-2">
                       <div className="grid grid-cols-2 gap-2">
                         <button
                           type="button"
+                          disabled={!canHost}
                           onClick={() => setHosting("hosted")}
                           className={cn(
                             "rounded-lg border p-3 text-left transition-colors",
-                            hosting === "hosted"
-                              ? "border-primary ring-1 ring-primary"
-                              : "border-border hover:border-foreground/30"
+                            !canHost
+                              ? "cursor-not-allowed border-border opacity-60"
+                              : hosting === "hosted"
+                                ? "border-primary ring-1 ring-primary"
+                                : "border-border hover:border-foreground/30"
                           )}
                         >
-                          <div className="text-sm font-medium">☁️ {t("hosting.hosted")}</div>
+                          <div className="flex items-center gap-1.5 text-sm font-medium">
+                            ☁️ {t("hosting.hosted")}
+                            {!canHost && (
+                              <span className="rounded-full bg-muted px-1.5 py-px text-[9px] uppercase tracking-wide text-muted-foreground">
+                                {t("create.hostedComingSoon")}
+                              </span>
+                            )}
+                          </div>
                           <div className="mt-0.5 text-xs text-text-muted">
                             {t("create.hostedDescription")}
                           </div>
@@ -1469,8 +1483,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                           </div>
                         </button>
                       </div>
-                    </div>
-                  )}
+                  </div>
 
                   {hosting === "hosted" && (
                     <div className="rounded-lg border border-border bg-muted/40 p-3 text-sm text-text-muted">
