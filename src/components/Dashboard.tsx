@@ -26,6 +26,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { usePresenceStore } from "../stores/presenceStore";
+import { useAuthStore } from "../stores/authStore";
 import { isAgentOnline } from "../lib/agentOnline";
 import { useModelCatalog } from "../stores/modelCatalogStore";
 import { restartHostedAgents } from "../lib/api";
@@ -718,9 +719,14 @@ export function Dashboard() {
   // these run on a remote VM and can't be "started" locally — they're brought
   // back via the server, which restarts each bridge on its host. Common after a
   // host restart leaves a whole fleet offline.
-  const offlineHosted = Object.values(agents).filter(
-    (m) => m.agent.runtime === "org_host" && !isAgentOnline(m, presenceOnline)
-  );
+  // Hosted runtime is behind the `org_hosts` flag; when off there's no hosted
+  // fleet to bring online, so suppress the bulk action entirely.
+  const orgHostsEnabled = useAuthStore((s) => s.participant?.features?.org_hosts === true);
+  const offlineHosted = orgHostsEnabled
+    ? Object.values(agents).filter(
+        (m) => m.agent.runtime === "org_host" && !isAgentOnline(m, presenceOnline)
+      )
+    : [];
 
   const handleBringHostedOnline = async () => {
     const ids = offlineHosted.map((m) => m.agent.id);

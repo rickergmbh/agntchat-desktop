@@ -62,6 +62,10 @@ import {
 export function PlatformView() {
   const { t } = useTranslation("platform");
   const [tab, setTab] = useState("overview");
+  // Host management is behind the `org_hosts` flag. When off the Hosts tab is
+  // hidden (its host routes 404 server-side anyway); the Features tab stays
+  // visible so an operator can grant themselves the flag to light it up.
+  const orgHostsEnabled = useAuthStore((s) => s.participant?.features?.org_hosts === true);
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
@@ -76,7 +80,7 @@ export function PlatformView() {
       <Tabs value={tab} onValueChange={setTab} className="flex flex-1 flex-col overflow-hidden">
         <TabsList className="mx-6 mt-3 w-fit">
           <TabsTrigger value="overview">{t("tabs.overview")}</TabsTrigger>
-          <TabsTrigger value="hosts">{t("tabs.hosts")}</TabsTrigger>
+          {orgHostsEnabled && <TabsTrigger value="hosts">{t("tabs.hosts")}</TabsTrigger>}
           <TabsTrigger value="users">{t("tabs.users")}</TabsTrigger>
           <TabsTrigger value="features">{t("tabs.features")}</TabsTrigger>
         </TabsList>
@@ -85,14 +89,16 @@ export function PlatformView() {
           <TabsContent value="overview">
             <OverviewTab />
           </TabsContent>
-          <TabsContent value="hosts">
-            {/* Hosts + provisioning live together: your managed hosts up top,
-                then the full Hostinger VM inventory and the "provision a new
-                host" form below. */}
-            <HostsTab />
-            <div className="my-6 border-t border-border" />
-            <ProvisioningTab />
-          </TabsContent>
+          {orgHostsEnabled && (
+            <TabsContent value="hosts">
+              {/* Hosts + provisioning live together: your managed hosts up top,
+                  then the full Hostinger VM inventory and the "provision a new
+                  host" form below. */}
+              <HostsTab />
+              <div className="my-6 border-t border-border" />
+              <ProvisioningTab />
+            </TabsContent>
+          )}
           <TabsContent value="users">
             <UsersTab />
           </TabsContent>

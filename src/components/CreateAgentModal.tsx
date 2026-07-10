@@ -176,7 +176,10 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   const subStatus = participant?.subscription?.status;
   const isPlan = subStatus === "active" || subStatus === "trialing";
   const hostedHostId = participant?.hostedHostId ?? null;
-  const canHost = isPlan && !!hostedHostId;
+  // Hosted runtime is behind the `org_hosts` flag. When off, no hosted option
+  // is offered at creation and new agents run locally.
+  const orgHostsEnabled = participant?.features?.org_hosts === true;
+  const canHost = orgHostsEnabled && isPlan && !!hostedHostId;
   const [hosting, setHosting] = useState<"hosted" | "local">(
     canHost ? "hosted" : "local"
   );

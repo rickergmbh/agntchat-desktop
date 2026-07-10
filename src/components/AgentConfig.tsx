@@ -152,6 +152,10 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
   // Share Agent + Publish to Directory are behind the `agent_sharing` runtime
   // flag (resolved per-user on /me). Hide the whole Sharing group when off.
   const sharingEnabled = useAuthStore((s) => s.participant?.features?.agent_sharing === true);
+  // Hosted runtime (running the agent on an org host) is behind the `org_hosts`
+  // flag. When off, the Runtime panel is hidden entirely — hosting doesn't exist
+  // for this user and agents run locally only.
+  const orgHostsEnabled = useAuthStore((s) => s.participant?.features?.org_hosts === true);
   // Last backend-sync failure for this agent. The connection/model is only
   // honored at spawn time if it persisted server-side, so a failed sync is a
   // silent footgun (the original Bedrock bug) — show it inline.
@@ -497,8 +501,9 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
           <div className="flex-1 overflow-y-auto p-5 space-y-6">
             {/* Runtime — where this agent runs (Local vs Hosted). Shown first
                 because it gates the rest: hosted agents inherit the host's
-                provider/connection, so the LLM Provider section below adapts. */}
-            <RuntimePanel agent={agent} />
+                provider/connection, so the LLM Provider section below adapts.
+                Hidden entirely when the `org_hosts` feature is off. */}
+            {orgHostsEnabled && <RuntimePanel agent={agent} />}
 
             {/* Model group — provider, mode, and effort are one decision
                 ("how does this agent think?"), so they're clustered tightly
