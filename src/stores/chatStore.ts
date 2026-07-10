@@ -137,6 +137,9 @@ interface ChatState {
   // Conversations
   conversations: Conversation[];
   conversationsLoading: boolean;
+  /** True after `fetchConversations` has resolved at least once. Lets the
+   *  onboarding cards distinguish "no conversations" from "not loaded yet". */
+  conversationsLoaded: boolean;
   /** Agent threads — fetched with `?scope=agents` and rendered inline inside
    *  their parent conversations. Kept separate so unread badges and sorting do
    *  not intermix with personal conversations. */
@@ -262,6 +265,7 @@ interface ChatState {
 export const useChatStore = create<ChatState>((set, get) => ({
   conversations: [],
   conversationsLoading: false,
+  conversationsLoaded: false,
   agentConversations: [],
   agentConversationsLoading: false,
   agentConversationsLoaded: false,
@@ -282,7 +286,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
     set({ conversationsLoading: true });
     try {
       const convos = await api.listConversations("personal");
-      set({ conversations: sortConversations(convos) });
+      set({ conversations: sortConversations(convos), conversationsLoaded: true });
       seedOnlineFromConversations(convos);
     } finally {
       set({ conversationsLoading: false });

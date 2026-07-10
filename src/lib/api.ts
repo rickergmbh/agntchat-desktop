@@ -215,19 +215,11 @@ export async function deleteAccount(): Promise<void> {
 }
 
 /** Start Fresh: wipe every conversation the caller created and every agent
- *  they own (memories/routines/reminders cascade), then provision a fresh
- *  onboarding guide + conversation. `displayName` names the new guide —
- *  mandatory server-side; face and tone are left for the guide to cover
- *  conversationally. Returns the new onboarding conversation id. */
-export async function replayOnboarding(displayName: string): Promise<string> {
-  const { conversationId } = await request<{ conversationId: string }>(
-    "/api/onboarding/replay",
-    {
-      method: "POST",
-      body: JSON.stringify({ displayName }),
-    }
-  );
-  return conversationId;
+ *  they own (memories/routines/reminders cascade) and reset notification /
+ *  location settings. Nothing is re-provisioned — after reload the first-run
+ *  onboarding cards reappear because the account has no agents. */
+export async function startFresh(): Promise<void> {
+  await request("/api/account/reset", { method: "POST" });
 }
 
 /** Request a personal-data export. Returns a signed URL the client opens

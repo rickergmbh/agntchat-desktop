@@ -2639,22 +2639,21 @@ function PrivacyDataSection() {
     }
   };
 
-  // ---- Start Fresh (replay onboarding) ----
+  // ---- Start Fresh (account reset) ----
   const [freshOpen, setFreshOpen] = useState(false);
-  const [guideName, setGuideName] = useState("");
   const [freshRunning, setFreshRunning] = useState(false);
   const [freshError, setFreshError] = useState<string | null>(null);
-  const canStartFresh = guideName.trim().length > 0;
 
   const handleStartFresh = async () => {
-    if (!canStartFresh || freshRunning) return;
+    if (freshRunning) return;
     setFreshRunning(true);
     setFreshError(null);
     try {
-      await api.replayOnboarding(guideName.trim());
+      await api.startFresh();
       // The wipe invalidates essentially every client store (conversations,
       // agents, presence, joined channels). Reload to re-bootstrap from the
-      // fresh backend state; the new onboarding conversation arrives pinned.
+      // fresh backend state; the onboarding cards reappear because the
+      // account has no agents.
       window.location.reload();
     } catch (e) {
       setFreshError(
@@ -2933,10 +2932,9 @@ function PrivacyDataSection() {
         )}
       </div>
 
-      {/* Start Fresh — same wipe-and-replay as mobile's profile button. The
-          confirm dialog collects the new guide's name (mandatory server-side)
-          in place of mobile's setup wizard; face and tone are covered in the
-          onboarding conversation itself. */}
+      {/* Start Fresh — wipes agents/conversations/settings via
+          /api/account/reset; nothing is re-provisioned, the first-run setup
+          cards reappear after the reload. */}
       <div className="rounded-xl border border-border bg-card p-4">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
@@ -2949,7 +2947,6 @@ function PrivacyDataSection() {
             variant="outline"
             size="sm"
             onClick={() => {
-              setGuideName("");
               setFreshError(null);
               setFreshOpen(true);
             }}
@@ -3002,25 +2999,9 @@ function PrivacyDataSection() {
               {t("advanced.startFreshConfirmMessage")}
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-2 py-2">
-            <Label className="text-xs">{t("onboarding:setup.nameHint")}</Label>
-            <Input
-              value={guideName}
-              onChange={(e) => {
-                setGuideName(e.target.value);
-                setFreshError(null);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && canStartFresh) void handleStartFresh();
-              }}
-              placeholder={t("onboarding:setup.namePlaceholder")}
-              autoFocus
-              autoComplete="off"
-            />
-            {freshError && (
-              <p className="text-xs text-destructive">{freshError}</p>
-            )}
-          </div>
+          {freshError && (
+            <p className="text-xs text-destructive">{freshError}</p>
+          )}
           <DialogFooter>
             <Button
               variant="outline"
@@ -3034,7 +3015,7 @@ function PrivacyDataSection() {
               variant="destructive"
               size="sm"
               onClick={() => void handleStartFresh()}
-              disabled={!canStartFresh || freshRunning}
+              disabled={freshRunning}
             >
               {freshRunning ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />

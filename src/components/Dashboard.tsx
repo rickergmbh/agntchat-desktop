@@ -31,6 +31,10 @@ import { isAgentOnline } from "../lib/agentOnline";
 import { useModelCatalog } from "../stores/modelCatalogStore";
 import { restartHostedAgents } from "../lib/api";
 import { runningElsewhereOn, useLocalDeviceName } from "../hooks/useRunningElsewhere";
+import { OnboardingCards } from "./OnboardingCards";
+import { useOnboardingState } from "../hooks/useOnboardingState";
+import { useChatStore } from "../stores/chatStore";
+import { useNavStore } from "../stores/navStore";
 import type {
   AgentConnection,
   ConnectionMode,
@@ -387,6 +391,10 @@ export function Dashboard() {
   const [showCreate, setShowCreate] = useState(false);
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState<Tab>("agents");
+  // First-run setup cards replace the zero-agents empty state.
+  const onboarding = useOnboardingState();
+  const setActiveConversation = useChatStore((s) => s.setActiveConversation);
+  const setView = useNavStore((s) => s.setView);
   // Which agents have their sub-agent subtree expanded. Empty = all
   // collapsed, so sub-agents are hidden until a parent is opened.
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
@@ -923,19 +931,29 @@ export function Dashboard() {
                 {t("common:loading")}
               </div>
             ) : totalCount === 0 && !error ? (
-              <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
-                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-3">
-                  <Bot className="w-7 h-7 text-primary" />
+              onboarding.active ? (
+                <OnboardingCards
+                  onCreateAgent={() => setShowCreate(true)}
+                  onOpenConversation={(id) => {
+                    setActiveConversation(id);
+                    setView("chat");
+                  }}
+                />
+              ) : (
+                <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
+                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-3">
+                    <Bot className="w-7 h-7 text-primary" />
+                  </div>
+                  <p className="text-sm font-medium text-foreground">{t("empty.title")}</p>
+                  <p className="text-xs text-muted-foreground mt-1 mb-4 max-w-xs">
+                    {t("empty.createFirstHint")}
+                  </p>
+                  <Button size="sm" onClick={() => setShowCreate(true)}>
+                    <Plus className="w-3.5 h-3.5" />
+                    {t("createAgent")}
+                  </Button>
                 </div>
-                <p className="text-sm font-medium text-foreground">{t("empty.title")}</p>
-                <p className="text-xs text-muted-foreground mt-1 mb-4 max-w-xs">
-                  {t("empty.createFirstHint")}
-                </p>
-                <Button size="sm" onClick={() => setShowCreate(true)}>
-                  <Plus className="w-3.5 h-3.5" />
-                  {t("createAgent")}
-                </Button>
-              </div>
+              )
             ) : (
               <div className="@container flex-1 overflow-y-auto">
                 <div

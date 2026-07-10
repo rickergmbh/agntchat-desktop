@@ -23,6 +23,8 @@ import { NewConversationDialog } from "./NewConversationDialog";
 import { ChatHeaderMenu } from "./ChatHeaderMenu";
 import { GroupAvatar } from "./GroupAvatar";
 import { AgentActivityIndicator } from "../AgentActivityIndicator";
+import { OnboardingCards } from "../OnboardingCards";
+import { useOnboardingState } from "../../hooks/useOnboardingState";
 import { ThreadsBar } from "./ThreadsBar";
 import { FilesBar } from "./FilesBar";
 import { ArtifactsBar } from "./ArtifactsBar";
@@ -596,6 +598,14 @@ function DetailsPanelWrapper({
 
 function EmptyState() {
   const { t } = useTranslation("chat");
+  const onboarding = useOnboardingState();
+
+  // First-run: guide the user to their first agent instead of telling them
+  // to select a conversation they don't have yet.
+  if (onboarding.active) {
+    return <OnboardingCards />;
+  }
+
   return (
     <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
       <MessageSquare className="w-12 h-12 text-muted-foreground/40 mb-3" />

@@ -2382,6 +2382,10 @@ export const resources = {
         "defaultAction": "Default: {{action}}",
         "expiresIn": "Expires in {{time}}"
       },
+      "reactions": {
+        "add": "Add reaction",
+        "reactWith": "React with {{emoji}}"
+      },
       "refreshConversations": "Refresh conversations",
       "reminderToast": {
         "snooze": "Snooze 1h",
@@ -3162,6 +3166,25 @@ export const resources = {
       "templates": "Templates"
     },
     "onboarding": {
+      "cards": {
+        "arrivedCta": "Open the message",
+        "arrivedTitle": "{{name}} sent you a message",
+        "createBody": "Agents are AI teammates that live here. Give one a name, a personality, and a brain — it takes about a minute.",
+        "createCta": "Create agent",
+        "createTitle": "Create your first agent",
+        "greetingBody": "Your agent is composing a first message. It will appear in your chats in a moment.",
+        "greetingFallbackCta": "Say hello instead",
+        "greetingTitle": "{{name}} is writing to you",
+        "onlineHostedBody": "{{name}} is starting up on your hosted runtime — this usually takes under a minute.",
+        "onlineHostedCta": "Bring online",
+        "onlineHostedWaking": "Bringing online…",
+        "onlineLocalBody": "{{name}} runs on this computer. Start it to bring it online.",
+        "onlineLocalCta": "Start agent",
+        "onlineLocalStarting": "Starting…",
+        "onlineOpenSettings": "Open agent settings",
+        "onlineTitle": "Get {{name}} online",
+        "stepDone": "Done"
+      },
       "errors": {
         "startFailed": "Could not start. Try again."
       },
@@ -3724,11 +3747,11 @@ export const resources = {
         "reminderSetFailed": "Couldn't set test reminder",
         "reminderSetMessage": "It should pop in ~5 seconds.",
         "reminderSetTitle": "Reminder set",
-        "startFresh": "Start Fresh / Replay Onboarding",
+        "startFresh": "Start Fresh",
         "startFreshConfirmCta": "Start Fresh",
-        "startFreshConfirmMessage": "This wipes ALL your agents and their memories, your routines, reminders, location sharing, and notification settings, then starts onboarding over from scratch. Your name and connected accounts (e.g. Google) are kept. This can't be undone. Continue?",
+        "startFreshConfirmMessage": "This wipes ALL your agents and their memories, your routines, reminders, location sharing, and notification settings. Your name and connected accounts (e.g. Google) are kept. This can't be undone. Continue?",
         "startFreshConfirmTitle": "Start Fresh",
-        "startFreshDescription": "Wipe all agents, memories, routines & settings, then start onboarding over",
+        "startFreshDescription": "Wipe all agents, memories, routines & settings, and start over",
         "testReminder": "Test Reminder",
         "testReminderDescription": "Fire a sample reminder in ~5 seconds to check the toast + push"
       },
@@ -7035,6 +7058,10 @@ export const resources = {
         "defaultAction": "Por defecto: {{action}}",
         "expiresIn": "Caduca en {{time}}"
       },
+      "reactions": {
+        "add": "Añadir reacción",
+        "reactWith": "Reaccionar con {{emoji}}"
+      },
       "refreshConversations": "Actualizar conversaciones",
       "reminderToast": {
         "snooze": "Posponer 1 h",
@@ -7815,6 +7842,25 @@ export const resources = {
       "templates": "Plantillas"
     },
     "onboarding": {
+      "cards": {
+        "arrivedCta": "Abrir el mensaje",
+        "arrivedTitle": "{{name}} te ha enviado un mensaje",
+        "createBody": "Los agentes son compañeros de equipo de IA que viven aquí. Dale a uno un nombre, una personalidad y un cerebro: toma alrededor de un minuto.",
+        "createCta": "Crear agente",
+        "createTitle": "Crea tu primer agente",
+        "greetingBody": "Tu agente está redactando un primer mensaje. Aparecerá en tus chats en un momento.",
+        "greetingFallbackCta": "Saludar tú primero",
+        "greetingTitle": "{{name}} te está escribiendo",
+        "onlineHostedBody": "{{name}} se está iniciando en tu entorno alojado; esto suele tardar menos de un minuto.",
+        "onlineHostedCta": "Poner en línea",
+        "onlineHostedWaking": "Poniendo en línea…",
+        "onlineLocalBody": "{{name}} se ejecuta en este equipo. Inícialo para ponerlo en línea.",
+        "onlineLocalCta": "Iniciar agente",
+        "onlineLocalStarting": "Iniciando…",
+        "onlineOpenSettings": "Abrir ajustes del agente",
+        "onlineTitle": "Pon a {{name}} en línea",
+        "stepDone": "Hecho"
+      },
       "errors": {
         "startFailed": "No se pudo empezar. Inténtalo de nuevo."
       },
@@ -8377,11 +8423,11 @@ export const resources = {
         "reminderSetFailed": "No se pudo crear el recordatorio de prueba",
         "reminderSetMessage": "Debería aparecer en unos 5 segundos.",
         "reminderSetTitle": "Recordatorio creado",
-        "startFresh": "Empezar de cero / Repetir la configuración inicial",
+        "startFresh": "Empezar de cero",
         "startFreshConfirmCta": "Empezar de cero",
-        "startFreshConfirmMessage": "Esto borra TODOS tus agentes y sus memorias, tus rutinas, recordatorios, el uso compartido de ubicación y los ajustes de notificaciones, y vuelve a empezar la configuración inicial desde cero. Tu nombre y las cuentas conectadas (p. ej., Google) se conservan. Esto no se puede deshacer. ¿Continuar?",
+        "startFreshConfirmMessage": "Esto borra TODOS tus agentes y sus memorias, tus rutinas, recordatorios, el uso compartido de ubicación y los ajustes de notificaciones. Tu nombre y las cuentas conectadas (p. ej., Google) se conservan. Esto no se puede deshacer. ¿Continuar?",
         "startFreshConfirmTitle": "Empezar de cero",
-        "startFreshDescription": "Borra todos los agentes, memorias, rutinas y ajustes, y vuelve a empezar la configuración inicial",
+        "startFreshDescription": "Borra todos los agentes, memorias, rutinas y ajustes para empezar de nuevo",
         "testReminder": "Probar recordatorio",
         "testReminderDescription": "Lanza un recordatorio de prueba en ~5 segundos para comprobar el aviso y la notificación push"
       },
@@ -11688,6 +11734,10 @@ export const resources = {
         "defaultAction": "Standard: {{action}}",
         "expiresIn": "Läuft ab in {{time}}"
       },
+      "reactions": {
+        "add": "Reaktion hinzufügen",
+        "reactWith": "Mit {{emoji}} reagieren"
+      },
       "refreshConversations": "Unterhaltungen aktualisieren",
       "reminderToast": {
         "snooze": "1 Std. schlummern",
@@ -12468,6 +12518,25 @@ export const resources = {
       "templates": "Vorlagen"
     },
     "onboarding": {
+      "cards": {
+        "arrivedCta": "Nachricht öffnen",
+        "arrivedTitle": "{{name}} hat Ihnen eine Nachricht geschickt",
+        "createBody": "Agenten sind KI-Teamkollegen, die hier leben. Geben Sie einem einen Namen, eine Persönlichkeit und ein Gehirn — das dauert etwa eine Minute.",
+        "createCta": "Agent erstellen",
+        "createTitle": "Erstellen Sie Ihren ersten Agenten",
+        "greetingBody": "Ihr Agent verfasst gerade eine erste Nachricht. Sie erscheint gleich in Ihren Chats.",
+        "greetingFallbackCta": "Stattdessen Hallo sagen",
+        "greetingTitle": "{{name}} schreibt Ihnen",
+        "onlineHostedBody": "{{name}} startet gerade auf Ihrer gehosteten Umgebung — das dauert meist unter einer Minute.",
+        "onlineHostedCta": "Online bringen",
+        "onlineHostedWaking": "Wird online gebracht…",
+        "onlineLocalBody": "{{name}} läuft auf diesem Computer. Starten Sie den Agenten, um ihn online zu bringen.",
+        "onlineLocalCta": "Agent starten",
+        "onlineLocalStarting": "Wird gestartet…",
+        "onlineOpenSettings": "Agent-Einstellungen öffnen",
+        "onlineTitle": "{{name}} online bringen",
+        "stepDone": "Erledigt"
+      },
       "errors": {
         "startFailed": "Konnte nicht gestartet werden. Bitte versuchen Sie es erneut."
       },
@@ -13030,11 +13099,11 @@ export const resources = {
         "reminderSetFailed": "Test-Erinnerung konnte nicht gesetzt werden",
         "reminderSetMessage": "Sie sollte in ca. 5 Sekunden erscheinen.",
         "reminderSetTitle": "Erinnerung gesetzt",
-        "startFresh": "Neu starten / Onboarding wiederholen",
+        "startFresh": "Neu starten",
         "startFreshConfirmCta": "Neu starten",
-        "startFreshConfirmMessage": "Dadurch werden ALLE Ihre Agenten und ihr Gedächtnis, Ihre Routinen, Erinnerungen, die Standortfreigabe und die Benachrichtigungseinstellungen gelöscht, und das Onboarding beginnt von vorn. Ihr Name und verbundene Konten (z. B. Google) bleiben erhalten. Dies kann nicht rückgängig gemacht werden. Fortfahren?",
+        "startFreshConfirmMessage": "Dadurch werden ALLE Ihre Agenten und ihr Gedächtnis, Ihre Routinen, Erinnerungen, die Standortfreigabe und die Benachrichtigungseinstellungen gelöscht. Ihr Name und verbundene Konten (z. B. Google) bleiben erhalten. Dies kann nicht rückgängig gemacht werden. Fortfahren?",
         "startFreshConfirmTitle": "Neu starten",
-        "startFreshDescription": "Löscht alle Agenten, Erinnerungen, Routinen und Einstellungen und startet das Onboarding neu",
+        "startFreshDescription": "Löscht alle Agenten, Erinnerungen, Routinen und Einstellungen für einen Neuanfang",
         "testReminder": "Test-Erinnerung",
         "testReminderDescription": "Löst in ca. 5 Sekunden eine Beispiel-Erinnerung aus, um Toast und Push-Benachrichtigung zu testen"
       },
@@ -16341,6 +16410,10 @@ export const resources = {
         "defaultAction": "Par défaut : {{action}}",
         "expiresIn": "Expire dans {{time}}"
       },
+      "reactions": {
+        "add": "Ajouter une réaction",
+        "reactWith": "Réagir avec {{emoji}}"
+      },
       "refreshConversations": "Actualiser les conversations",
       "reminderToast": {
         "snooze": "Reporter 1 h",
@@ -17121,6 +17194,25 @@ export const resources = {
       "templates": "Modèles"
     },
     "onboarding": {
+      "cards": {
+        "arrivedCta": "Ouvrir le message",
+        "arrivedTitle": "{{name}} vous a envoyé un message",
+        "createBody": "Les agents sont des coéquipiers IA qui vivent ici. Donnez-en un nom, une personnalité et un cerveau — cela prend environ une minute.",
+        "createCta": "Créer un agent",
+        "createTitle": "Créez votre premier agent",
+        "greetingBody": "Votre agent rédige un premier message. Il apparaîtra dans vos discussions dans un instant.",
+        "greetingFallbackCta": "Dire bonjour vous-même",
+        "greetingTitle": "{{name}} vous écrit",
+        "onlineHostedBody": "{{name}} démarre sur votre environnement hébergé — cela prend généralement moins d'une minute.",
+        "onlineHostedCta": "Mettre en ligne",
+        "onlineHostedWaking": "Mise en ligne…",
+        "onlineLocalBody": "{{name}} s'exécute sur cet ordinateur. Démarrez-le pour le mettre en ligne.",
+        "onlineLocalCta": "Démarrer l'agent",
+        "onlineLocalStarting": "Démarrage…",
+        "onlineOpenSettings": "Ouvrir les paramètres de l'agent",
+        "onlineTitle": "Mettre {{name}} en ligne",
+        "stepDone": "Terminé"
+      },
       "errors": {
         "startFailed": "Impossible de démarrer. Réessayez."
       },
@@ -17683,11 +17775,11 @@ export const resources = {
         "reminderSetFailed": "Impossible de programmer le rappel de test",
         "reminderSetMessage": "Il devrait apparaître dans environ 5 secondes.",
         "reminderSetTitle": "Rappel programmé",
-        "startFresh": "Repartir à zéro / Rejouer l'intégration",
+        "startFresh": "Repartir à zéro",
         "startFreshConfirmCta": "Repartir à zéro",
-        "startFreshConfirmMessage": "Cela efface TOUS vos agents et leurs souvenirs, vos routines, rappels, le partage de position et les paramètres de notification, puis recommence l'intégration depuis le début. Votre nom et vos comptes connectés (p. ex. Google) sont conservés. Cette action est irréversible. Continuer ?",
+        "startFreshConfirmMessage": "Cela efface TOUS vos agents et leurs souvenirs, vos routines, rappels, le partage de position et les paramètres de notification. Votre nom et vos comptes connectés (p. ex. Google) sont conservés. Cette action est irréversible. Continuer ?",
         "startFreshConfirmTitle": "Repartir à zéro",
-        "startFreshDescription": "Effacer tous les agents, souvenirs, routines et paramètres, puis recommencer l'intégration",
+        "startFreshDescription": "Effacer tous les agents, souvenirs, routines et paramètres pour repartir à zéro",
         "testReminder": "Tester un rappel",
         "testReminderDescription": "Déclenche un rappel d'exemple dans ~5 secondes pour vérifier la notification toast et push"
       },
@@ -20994,6 +21086,10 @@ export const resources = {
         "defaultAction": "Padrão: {{action}}",
         "expiresIn": "Expira em {{time}}"
       },
+      "reactions": {
+        "add": "Adicionar reação",
+        "reactWith": "Reagir com {{emoji}}"
+      },
       "refreshConversations": "Atualizar conversas",
       "reminderToast": {
         "snooze": "Adiar 1h",
@@ -21774,6 +21870,25 @@ export const resources = {
       "templates": "Modelos"
     },
     "onboarding": {
+      "cards": {
+        "arrivedCta": "Abrir a mensagem",
+        "arrivedTitle": "{{name}} enviou uma mensagem para você",
+        "createBody": "Agentes são colegas de equipe de IA que vivem aqui. Dê a um deles um nome, uma personalidade e um cérebro — leva cerca de um minuto.",
+        "createCta": "Criar agente",
+        "createTitle": "Crie seu primeiro agente",
+        "greetingBody": "Seu agente está escrevendo uma primeira mensagem. Ela aparecerá nas suas conversas em instantes.",
+        "greetingFallbackCta": "Dizer olá primeiro",
+        "greetingTitle": "{{name}} está escrevendo para você",
+        "onlineHostedBody": "{{name}} está iniciando no seu ambiente hospedado — isso costuma levar menos de um minuto.",
+        "onlineHostedCta": "Colocar online",
+        "onlineHostedWaking": "Colocando online…",
+        "onlineLocalBody": "{{name}} roda neste computador. Inicie-o para colocá-lo online.",
+        "onlineLocalCta": "Iniciar agente",
+        "onlineLocalStarting": "Iniciando…",
+        "onlineOpenSettings": "Abrir configurações do agente",
+        "onlineTitle": "Coloque {{name}} online",
+        "stepDone": "Concluído"
+      },
       "errors": {
         "startFailed": "Não foi possível iniciar. Tente novamente."
       },
@@ -22336,11 +22451,11 @@ export const resources = {
         "reminderSetFailed": "Não foi possível definir o lembrete de teste",
         "reminderSetMessage": "Deve aparecer em cerca de 5 segundos.",
         "reminderSetTitle": "Lembrete definido",
-        "startFresh": "Começar do zero / Repetir integração",
+        "startFresh": "Começar do zero",
         "startFreshConfirmCta": "Começar do zero",
-        "startFreshConfirmMessage": "Isso apaga TODOS os seus agentes e suas memórias, suas rotinas, lembretes, compartilhamento de localização e configurações de notificação, e reinicia a integração do zero. Seu nome e as contas conectadas (por exemplo, Google) são mantidos. Isso não pode ser desfeito. Continuar?",
+        "startFreshConfirmMessage": "Isso apaga TODOS os seus agentes e suas memórias, suas rotinas, lembretes, compartilhamento de localização e configurações de notificação. Seu nome e as contas conectadas (por exemplo, Google) são mantidos. Isso não pode ser desfeito. Continuar?",
         "startFreshConfirmTitle": "Começar do zero",
-        "startFreshDescription": "Apaga todos os agentes, memórias, rotinas e configurações, e reinicia a integração",
+        "startFreshDescription": "Apaga todos os agentes, memórias, rotinas e configurações para recomeçar",
         "testReminder": "Testar lembrete",
         "testReminderDescription": "Dispara um lembrete de exemplo em ~5 segundos para verificar o toast + notificação push"
       },
@@ -25647,6 +25762,10 @@ export const resources = {
         "defaultAction": "デフォルト: {{action}}",
         "expiresIn": "{{time}}後に期限切れ"
       },
+      "reactions": {
+        "add": "リアクションを追加",
+        "reactWith": "{{emoji}}でリアクション"
+      },
       "refreshConversations": "会話を更新",
       "reminderToast": {
         "snooze": "1時間スヌーズ",
@@ -26427,6 +26546,25 @@ export const resources = {
       "templates": "テンプレート"
     },
     "onboarding": {
+      "cards": {
+        "arrivedCta": "メッセージを開く",
+        "arrivedTitle": "{{name}}からメッセージが届きました",
+        "createBody": "エージェントはここに住むAIのチームメイトです。名前・性格・頭脳を与えましょう — 約1分で完了します。",
+        "createCta": "エージェントを作成",
+        "createTitle": "最初のエージェントを作成しましょう",
+        "greetingBody": "エージェントが最初のメッセージを作成しています。まもなくチャットに表示されます。",
+        "greetingFallbackCta": "こちらから挨拶する",
+        "greetingTitle": "{{name}}がメッセージを書いています",
+        "onlineHostedBody": "{{name}}はホスト環境で起動中です — 通常1分以内に完了します。",
+        "onlineHostedCta": "オンラインにする",
+        "onlineHostedWaking": "オンラインにしています…",
+        "onlineLocalBody": "{{name}}はこのコンピューターで動作します。起動してオンラインにしましょう。",
+        "onlineLocalCta": "エージェントを起動",
+        "onlineLocalStarting": "起動中…",
+        "onlineOpenSettings": "エージェント設定を開く",
+        "onlineTitle": "{{name}}をオンラインにする",
+        "stepDone": "完了"
+      },
       "errors": {
         "startFailed": "開始できませんでした。もう一度お試しください。"
       },
@@ -26989,11 +27127,11 @@ export const resources = {
         "reminderSetFailed": "テストリマインダーを設定できませんでした",
         "reminderSetMessage": "約5秒後に表示されます。",
         "reminderSetTitle": "リマインダーを設定しました",
-        "startFresh": "初期状態に戻す／オンボーディングをやり直す",
+        "startFresh": "最初からやり直す",
         "startFreshConfirmCta": "初期状態に戻す",
-        "startFreshConfirmMessage": "すべてのエージェントとそのメモリ、ルーティン、リマインダー、位置情報の共有、通知設定が消去され、オンボーディングを最初からやり直します。名前と連携済みアカウント（Google など）は保持されます。この操作は取り消せません。続行しますか？",
+        "startFreshConfirmMessage": "これにより、すべてのエージェントとその記憶、ルーティン、リマインダー、位置情報の共有、通知設定が削除されます。お名前と連携済みアカウント（Google など）は保持されます。この操作は元に戻せません。続行しますか？",
         "startFreshConfirmTitle": "初期状態に戻す",
-        "startFreshDescription": "すべてのエージェント、メモリ、ルーティン、設定を消去し、オンボーディングを最初からやり直します",
+        "startFreshDescription": "すべてのエージェント、記憶、ルーティン、設定を削除してやり直します",
         "testReminder": "テストリマインダー",
         "testReminderDescription": "約5秒後にサンプルのリマインダーを送信し、トースト通知とプッシュ通知を確認します"
       },
@@ -30300,6 +30438,10 @@ export const resources = {
         "defaultAction": "默认：{{action}}",
         "expiresIn": "将在 {{time}} 后过期"
       },
+      "reactions": {
+        "add": "添加回应",
+        "reactWith": "用 {{emoji}} 回应"
+      },
       "refreshConversations": "刷新对话",
       "reminderToast": {
         "snooze": "延后 1 小时",
@@ -31080,6 +31222,25 @@ export const resources = {
       "templates": "模板"
     },
     "onboarding": {
+      "cards": {
+        "arrivedCta": "打开消息",
+        "arrivedTitle": "{{name}}给你发来了一条消息",
+        "createBody": "智能体是住在这里的 AI 队友。给它起个名字、赋予个性和大脑——大约只需一分钟。",
+        "createCta": "创建智能体",
+        "createTitle": "创建你的第一个智能体",
+        "greetingBody": "你的智能体正在撰写第一条消息，稍后会出现在你的聊天中。",
+        "greetingFallbackCta": "主动打个招呼",
+        "greetingTitle": "{{name}}正在给你写消息",
+        "onlineHostedBody": "{{name}}正在你的托管环境中启动——通常不到一分钟。",
+        "onlineHostedCta": "上线",
+        "onlineHostedWaking": "正在上线…",
+        "onlineLocalBody": "{{name}}在这台电脑上运行。启动它即可上线。",
+        "onlineLocalCta": "启动智能体",
+        "onlineLocalStarting": "启动中…",
+        "onlineOpenSettings": "打开智能体设置",
+        "onlineTitle": "让{{name}}上线",
+        "stepDone": "已完成"
+      },
       "errors": {
         "startFailed": "无法启动，请重试。"
       },
@@ -31642,11 +31803,11 @@ export const resources = {
         "reminderSetFailed": "无法设置测试提醒",
         "reminderSetMessage": "大约 5 秒后会弹出。",
         "reminderSetTitle": "提醒已设置",
-        "startFresh": "重新开始 / 重播引导流程",
+        "startFresh": "重新开始",
         "startFreshConfirmCta": "重新开始",
-        "startFreshConfirmMessage": "这将清除你的所有智能体及其记忆、例程、提醒、位置共享和通知设置，然后从头重新开始引导流程。你的姓名和已连接的账户（如 Google）将保留。此操作无法撤销。是否继续？",
+        "startFreshConfirmMessage": "这将删除你的所有智能体及其记忆、你的例行任务、提醒、位置共享和通知设置。你的名字和已连接的账户（如 Google）将被保留。此操作无法撤销。是否继续？",
         "startFreshConfirmTitle": "重新开始",
-        "startFreshDescription": "清除所有智能体、记忆、例程和设置，然后重新开始引导流程",
+        "startFreshDescription": "清除所有智能体、记忆、例行任务和设置，重新开始",
         "testReminder": "测试提醒",
         "testReminderDescription": "约 5 秒后触发一条示例提醒，用于检查提示消息和推送通知"
       },
@@ -34953,6 +35114,10 @@ export const resources = {
         "defaultAction": "기본값: {{action}}",
         "expiresIn": "{{time}} 후 만료"
       },
+      "reactions": {
+        "add": "반응 추가",
+        "reactWith": "{{emoji}}(으)로 반응하기"
+      },
       "refreshConversations": "대화 새로고침",
       "reminderToast": {
         "snooze": "1시간 미루기",
@@ -35733,6 +35898,25 @@ export const resources = {
       "templates": "템플릿"
     },
     "onboarding": {
+      "cards": {
+        "arrivedCta": "메시지 열기",
+        "arrivedTitle": "{{name}}이(가) 메시지를 보냈습니다",
+        "createBody": "에이전트는 여기에 사는 AI 팀원입니다. 이름, 성격, 두뇌를 부여해 보세요 — 약 1분이면 됩니다.",
+        "createCta": "에이전트 만들기",
+        "createTitle": "첫 에이전트를 만들어 보세요",
+        "greetingBody": "에이전트가 첫 메시지를 작성하고 있습니다. 곧 채팅에 표시됩니다.",
+        "greetingFallbackCta": "먼저 인사하기",
+        "greetingTitle": "{{name}}이(가) 메시지를 쓰고 있습니다",
+        "onlineHostedBody": "{{name}}이(가) 호스팅 환경에서 시작되는 중입니다 — 보통 1분 이내에 완료됩니다.",
+        "onlineHostedCta": "온라인으로 전환",
+        "onlineHostedWaking": "온라인으로 전환 중…",
+        "onlineLocalBody": "{{name}}은(는) 이 컴퓨터에서 실행됩니다. 시작하여 온라인 상태로 만드세요.",
+        "onlineLocalCta": "에이전트 시작",
+        "onlineLocalStarting": "시작 중…",
+        "onlineOpenSettings": "에이전트 설정 열기",
+        "onlineTitle": "{{name}}을(를) 온라인으로 만들기",
+        "stepDone": "완료"
+      },
       "errors": {
         "startFailed": "시작할 수 없습니다. 다시 시도하세요."
       },
@@ -36295,11 +36479,11 @@ export const resources = {
         "reminderSetFailed": "테스트 리마인더를 설정할 수 없습니다",
         "reminderSetMessage": "약 5초 후에 표시됩니다.",
         "reminderSetTitle": "리마인더 설정됨",
-        "startFresh": "초기화 / 온보딩 다시 보기",
+        "startFresh": "처음부터 다시 시작",
         "startFreshConfirmCta": "초기화",
-        "startFreshConfirmMessage": "모든 에이전트와 그 메모리, 루틴, 리마인더, 위치 공유 및 알림 설정이 삭제되고 온보딩을 처음부터 다시 시작합니다. 이름과 연결된 계정(예: Google)은 유지됩니다. 이 작업은 되돌릴 수 없습니다. 계속하시겠습니까?",
+        "startFreshConfirmMessage": "이 작업은 모든 에이전트와 그 기억, 루틴, 리마인더, 위치 공유 및 알림 설정을 삭제합니다. 이름과 연결된 계정(예: Google)은 유지됩니다. 이 작업은 되돌릴 수 없습니다. 계속하시겠습니까?",
         "startFreshConfirmTitle": "초기화",
-        "startFreshDescription": "모든 에이전트, 메모리, 루틴 및 설정을 삭제한 뒤 온보딩을 다시 시작합니다",
+        "startFreshDescription": "모든 에이전트, 기억, 루틴 및 설정을 지우고 다시 시작합니다",
         "testReminder": "테스트 알림",
         "testReminderDescription": "약 5초 후 샘플 알림을 실행하여 토스트와 푸시 알림을 확인합니다"
       },
@@ -39606,6 +39790,10 @@ export const resources = {
         "defaultAction": "Predefinita: {{action}}",
         "expiresIn": "Scade tra {{time}}"
       },
+      "reactions": {
+        "add": "Aggiungi reazione",
+        "reactWith": "Reagisci con {{emoji}}"
+      },
       "refreshConversations": "Aggiorna conversazioni",
       "reminderToast": {
         "snooze": "Rimanda di 1h",
@@ -40386,6 +40574,25 @@ export const resources = {
       "templates": "Modelli"
     },
     "onboarding": {
+      "cards": {
+        "arrivedCta": "Apri il messaggio",
+        "arrivedTitle": "{{name}} ti ha inviato un messaggio",
+        "createBody": "Gli agenti sono compagni di squadra IA che vivono qui. Dai a uno un nome, una personalità e un cervello: ci vuole circa un minuto.",
+        "createCta": "Crea agente",
+        "createTitle": "Crea il tuo primo agente",
+        "greetingBody": "Il tuo agente sta scrivendo un primo messaggio. Apparirà nelle tue chat tra un momento.",
+        "greetingFallbackCta": "Saluta tu per primo",
+        "greetingTitle": "{{name}} ti sta scrivendo",
+        "onlineHostedBody": "{{name}} si sta avviando sul tuo ambiente ospitato: di solito ci vuole meno di un minuto.",
+        "onlineHostedCta": "Porta online",
+        "onlineHostedWaking": "Portando online…",
+        "onlineLocalBody": "{{name}} viene eseguito su questo computer. Avvialo per portarlo online.",
+        "onlineLocalCta": "Avvia agente",
+        "onlineLocalStarting": "Avvio…",
+        "onlineOpenSettings": "Apri impostazioni agente",
+        "onlineTitle": "Porta {{name}} online",
+        "stepDone": "Fatto"
+      },
       "errors": {
         "startFailed": "Impossibile avviare. Riprova."
       },
@@ -40948,11 +41155,11 @@ export const resources = {
         "reminderSetFailed": "Impossibile impostare il promemoria di prova",
         "reminderSetMessage": "Dovrebbe comparire tra circa 5 secondi.",
         "reminderSetTitle": "Promemoria impostato",
-        "startFresh": "Ricomincia da zero / Rivedi onboarding",
+        "startFresh": "Ricomincia da zero",
         "startFreshConfirmCta": "Ricomincia da zero",
-        "startFreshConfirmMessage": "Questa operazione cancella TUTTI i tuoi agenti e le loro memorie, le tue routine, i promemoria, la condivisione della posizione e le impostazioni di notifica, poi riavvia l'onboarding da zero. Il tuo nome e gli account collegati (ad es. Google) vengono mantenuti. L'operazione non può essere annullata. Continuare?",
+        "startFreshConfirmMessage": "Questa operazione cancella TUTTI i tuoi agenti e le loro memorie, le tue routine, i promemoria, la condivisione della posizione e le impostazioni di notifica. Il tuo nome e gli account collegati (ad es. Google) vengono mantenuti. L'operazione non può essere annullata. Continuare?",
         "startFreshConfirmTitle": "Ricomincia da zero",
-        "startFreshDescription": "Cancella tutti gli agenti, le memorie, le routine e le impostazioni, poi rifai l'onboarding",
+        "startFreshDescription": "Cancella tutti gli agenti, le memorie, le routine e le impostazioni per ricominciare",
         "testReminder": "Test promemoria",
         "testReminderDescription": "Genera un promemoria di prova tra ~5 secondi per verificare il toast e la push"
       },
@@ -44259,6 +44466,10 @@ export const resources = {
         "defaultAction": "डिफ़ॉल्ट: {{action}}",
         "expiresIn": "{{time}} में समाप्त होगा"
       },
+      "reactions": {
+        "add": "प्रतिक्रिया जोड़ें",
+        "reactWith": "{{emoji}} के साथ प्रतिक्रिया दें"
+      },
       "refreshConversations": "बातचीतें रिफ़्रेश करें",
       "reminderToast": {
         "snooze": "1 घंटे के लिए स्नूज़ करें",
@@ -45039,6 +45250,25 @@ export const resources = {
       "templates": "टेम्पलेट"
     },
     "onboarding": {
+      "cards": {
+        "arrivedCta": "संदेश खोलें",
+        "arrivedTitle": "{{name}} ने आपको एक संदेश भेजा है",
+        "createBody": "एजेंट यहाँ रहने वाले AI साथी हैं। किसी एक को नाम, व्यक्तित्व और दिमाग़ दें — इसमें लगभग एक मिनट लगता है।",
+        "createCta": "एजेंट बनाएँ",
+        "createTitle": "अपना पहला एजेंट बनाएँ",
+        "greetingBody": "आपका एजेंट पहला संदेश लिख रहा है। यह कुछ ही पलों में आपकी चैट में दिखाई देगा।",
+        "greetingFallbackCta": "पहले खुद नमस्ते कहें",
+        "greetingTitle": "{{name}} आपको लिख रहा है",
+        "onlineHostedBody": "{{name}} आपके होस्टेड वातावरण में शुरू हो रहा है — आमतौर पर इसमें एक मिनट से कम लगता है।",
+        "onlineHostedCta": "ऑनलाइन लाएँ",
+        "onlineHostedWaking": "ऑनलाइन लाया जा रहा है…",
+        "onlineLocalBody": "{{name}} इस कंप्यूटर पर चलता है। इसे ऑनलाइन लाने के लिए शुरू करें।",
+        "onlineLocalCta": "एजेंट शुरू करें",
+        "onlineLocalStarting": "शुरू हो रहा है…",
+        "onlineOpenSettings": "एजेंट सेटिंग्स खोलें",
+        "onlineTitle": "{{name}} को ऑनलाइन लाएँ",
+        "stepDone": "पूर्ण"
+      },
       "errors": {
         "startFailed": "शुरू नहीं कर सके। पुनः प्रयास करें।"
       },
@@ -45601,11 +45831,11 @@ export const resources = {
         "reminderSetFailed": "टेस्ट रिमाइंडर सेट नहीं किया जा सका",
         "reminderSetMessage": "यह लगभग 5 सेकंड में दिखना चाहिए।",
         "reminderSetTitle": "रिमाइंडर सेट किया गया",
-        "startFresh": "नए सिरे से शुरू करें / ऑनबोर्डिंग फिर से चलाएँ",
+        "startFresh": "नए सिरे से शुरू करें",
         "startFreshConfirmCta": "नए सिरे से शुरू करें",
-        "startFreshConfirmMessage": "इससे आपके सभी एजेंट और उनकी मेमोरी, आपके रूटीन, रिमाइंडर, लोकेशन साझाकरण और सूचना सेटिंग्स मिट जाएँगी, और ऑनबोर्डिंग नए सिरे से शुरू होगी। आपका नाम और कनेक्टेड खाते (जैसे Google) बने रहेंगे। इसे पूर्ववत नहीं किया जा सकता। जारी रखें?",
+        "startFreshConfirmMessage": "इससे आपके सभी एजेंट और उनकी यादें, आपकी रूटीन, रिमाइंडर, स्थान साझाकरण और सूचना सेटिंग्स हट जाएँगी। आपका नाम और जुड़े हुए खाते (जैसे Google) बने रहेंगे। इसे पूर्ववत नहीं किया जा सकता। जारी रखें?",
         "startFreshConfirmTitle": "नए सिरे से शुरू करें",
-        "startFreshDescription": "सभी एजेंट, मेमोरी, रूटीन और सेटिंग्स मिटाएँ, फिर ऑनबोर्डिंग फिर से शुरू करें",
+        "startFreshDescription": "नई शुरुआत के लिए सभी एजेंट, यादें, रूटीन और सेटिंग्स मिटाएँ",
         "testReminder": "टेस्ट रिमाइंडर",
         "testReminderDescription": "टोस्ट + पुश जाँचने के लिए ~5 सेकंड में एक सैंपल रिमाइंडर भेजें"
       },

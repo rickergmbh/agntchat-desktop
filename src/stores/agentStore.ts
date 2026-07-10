@@ -233,6 +233,10 @@ interface AgentState {
   activities: Record<string, AgentActivity | null>;
   selectedAgentId: string | null;
   loading: boolean;
+  /** True once the first fetchAgents round-trip has succeeded. Distinguishes
+   *  "user has no agents" from "agents not loaded yet" (onboarding cards must
+   *  not flash at established users during boot). */
+  loaded: boolean;
   error: string | null;
   /** Per-agent error from the last model_config sync to the backend, keyed by
    *  agentId. The connection/model lives in two places that must agree — the
@@ -411,6 +415,7 @@ export const useAgentStore = create<AgentState>((set, get) => ({
   activities: {},
   selectedAgentId: null,
   loading: false,
+  loaded: false,
   error: null,
   configSyncError: {},
   computerUseDeps: { state: "unknown" },
@@ -492,7 +497,7 @@ export const useAgentStore = create<AgentState>((set, get) => ({
         };
       }
 
-      set({ agents: updated, loading: false });
+      set({ agents: updated, loading: false, loaded: true });
 
       // Don't seed presenceStore from `agent.online` here — that flag comes
       // from the backend's ExecutorRegistry, which can carry stale state
