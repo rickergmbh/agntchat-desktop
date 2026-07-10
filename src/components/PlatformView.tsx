@@ -1763,7 +1763,10 @@ function FeatureFlagCard({
   return (
     <div
       className={cn(
-        "flex flex-col overflow-hidden rounded-xl border bg-card shadow-sm transition-colors",
+        // NOTE: no `overflow-hidden` here — the user-search dropdown in the
+        // allowlist section is absolutely positioned and would be clipped by
+        // the card. The header rounds its own top corners instead.
+        "flex flex-col rounded-xl border bg-card shadow-sm transition-colors",
         flag.enabled ? "border-primary/40" : "border-border"
       )}
     >
@@ -1771,7 +1774,7 @@ function FeatureFlagCard({
           with the on/off state mirrored in both the strip and the badge. */}
       <div
         className={cn(
-          "flex items-start justify-between gap-4 border-b p-4",
+          "flex items-start justify-between gap-4 rounded-t-xl border-b p-4",
           flag.enabled ? "border-primary/30 bg-primary/5" : "border-border bg-muted/30"
         )}
       >
@@ -1792,8 +1795,14 @@ function FeatureFlagCard({
               onCheckedChange={(v) => void run(() => api.setFeatureFlagEnabled(flag.key, v))}
             />
           </div>
-          <Badge variant={flag.enabled ? "default" : "secondary"}>
-            {flag.enabled ? "On for everyone" : "Off"}
+          <Badge
+            variant={flag.enabled ? "default" : flag.allowed.length > 0 ? "outline" : "secondary"}
+          >
+            {flag.enabled
+              ? "On for everyone"
+              : flag.allowed.length > 0
+                ? `On for ${flag.allowed.length} ${flag.allowed.length === 1 ? "person" : "people"}`
+                : "Off"}
           </Badge>
         </div>
       </div>
@@ -1842,10 +1851,13 @@ function FeatureFlagCard({
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Add a user by name or email…"
+            disabled={flag.enabled}
+            placeholder={
+              flag.enabled ? "Turn off to scope to specific users…" : "Add a user by name or email…"
+            }
             className="pl-8"
           />
-          {(searching || results.length > 0) && search.trim().length >= 2 && (
+          {!flag.enabled && (searching || results.length > 0) && search.trim().length >= 2 && (
             <div className="absolute z-10 mt-1 w-full overflow-hidden rounded-md border border-border bg-popover shadow-md">
               {searching ? (
                 <div className="px-3 py-2 text-xs text-muted-foreground">Searching…</div>
