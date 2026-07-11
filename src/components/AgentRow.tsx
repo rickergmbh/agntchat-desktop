@@ -655,6 +655,7 @@ export function AgentRow({
                 state="bring-online"
                 label={t("row.bringingOnline")}
                 busy
+                outlined
               />
             ) : remoteOnline ? (
               <TooltipProvider delay={150}>
@@ -679,6 +680,7 @@ export function AgentRow({
                 state="bring-online"
                 label={t("row.bringOnline")}
                 onClick={handleBringOnline}
+                outlined
               />
             )
           ) : managed.processStatus === "crashed" &&
@@ -690,6 +692,7 @@ export function AgentRow({
               state="warning"
               label={t("row.fixIssue")}
               tooltip={t("row.crashKeyHint")}
+              outlined
               onClick={(e) => {
                 e.stopPropagation();
                 onSelect();
@@ -700,18 +703,21 @@ export function AgentRow({
               state="warning"
               label={t("row.restart")}
               onClick={handleToggle}
+              outlined
             />
           ) : isRunning ? (
             <AgentPowerButton
               state="take-offline"
               label={t("row.takeOffline")}
               onClick={handleToggle}
+              outlined
             />
           ) : startBlockedReason ? (
             <AgentPowerButton
               state="warning"
               label={t("row.fixIssue")}
               tooltip={startBlockedReason}
+              outlined
               onClick={(e) => {
                 e.stopPropagation();
                 onSelect();
@@ -723,6 +729,7 @@ export function AgentRow({
               label={t("row.bringOnline")}
               onClick={handleToggle}
               disabled={!canStart}
+              outlined
             />
           )}
         </div>
