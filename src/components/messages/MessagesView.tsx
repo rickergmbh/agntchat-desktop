@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { MessageSquare, MessageCircle, MessagesSquare, Info, SquarePen, RefreshCw, Power, Loader2, X, CheckCircle2, Radio } from "lucide-react";
+import { MessageSquare, MessageCircle, MessagesSquare, Info, SquarePen, RefreshCw, X, CheckCircle2, Radio } from "lucide-react";
 import { wakeAgent } from "../../lib/api";
 import { useResizableWidth, useRightPaneWidth } from "../../hooks/useResizableWidth";
 import { ResizeHandle } from "../ResizeHandle";
@@ -31,6 +31,7 @@ import { ArtifactsBar } from "./ArtifactsBar";
 import { ArtifactViewer } from "./ArtifactViewer";
 import { useArtifactStore } from "../../stores/artifactStore";
 import { ConversationTour } from "./ConversationTour";
+import { AgentPowerButton } from "../ui/agent-power-button";
 
 const DETAILS_KEY = "agentchat:showDetails";
 
@@ -427,22 +428,18 @@ function ConversationPane({
         <ArtifactsBar conversationId={conversationId} />
 
         {wakeableAgentId && (
-          <button
-            type="button"
-            onClick={handleWake}
-            disabled={waking}
-            title={t("bringAgentOnline")}
-            aria-label={t("bringAgentOnline")}
-            className="shrink-0 flex h-7 items-center gap-1.5 rounded-md border border-border-strong px-2 text-[11px] font-medium text-foreground hover:bg-accent transition-colors disabled:opacity-60"
+          <div
+            className="shrink-0"
             style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
           >
-            {waking ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            ) : (
-              <Power className="h-3.5 w-3.5" />
-            )}
-            {waking ? t("waking") : t("bringOnline")}
-          </button>
+            <AgentPowerButton
+              state="bring-online"
+              label={waking ? t("waking") : t("bringOnline")}
+              busy={waking}
+              outlined
+              onClick={handleWake}
+            />
+          </div>
         )}
 
         {conversation && (

@@ -61,6 +61,10 @@ export interface AgentPowerButtonProps
   /** Render icon-only (label as aria-label + tooltip fallback) for very tight
    *  spaces. Defaults to a labeled button. */
   iconOnly?: boolean;
+  /** Give the control a visible border/fill so it reads as a button rather
+   *  than inline text. Use where it stands alone (e.g. a conversation header)
+   *  rather than in a dense list of ghost row actions. */
+  outlined?: boolean;
   className?: string;
 }
 
@@ -78,12 +82,13 @@ export function AgentPowerButton({
   busy,
   tooltip,
   iconOnly,
+  outlined,
   className,
 }: AgentPowerButtonProps) {
   const Icon = STATE_ICON[state];
   const button = (
     <Button
-      variant="ghost"
+      variant={outlined ? "outline" : "ghost"}
       size={iconOnly ? "icon-sm" : "sm"}
       className={cn(
         !iconOnly && "h-7 gap-1.5 px-2",
