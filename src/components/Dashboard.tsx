@@ -966,7 +966,7 @@ export function Dashboard() {
                   <span className={AGENT_CELL_ENGINE}>{t("table.engine")}</span>
                   <span className={AGENT_CELL_MODE}>{t("table.mode")}</span>
                   <span className={AGENT_CELL_STATUS}>{t("common:status")}</span>
-                  <span className="text-right">{t("table.actions")}</span>
+                  <span>{t("table.actions")}</span>
                 </div>
                 {agentList.map((row) => (
                   <AgentRow

@@ -364,7 +364,7 @@ function ConversationPane({
           onClick={onToggleDetails}
           aria-pressed={showDetails}
           title={showDetails ? t("hideDetails") : t("showDetails")}
-          className="group/header flex items-center gap-3 min-w-0 flex-1 rounded-md px-1 py-1 -ml-1 hover:bg-accent/50 text-left transition-colors"
+          className="group/header flex items-center gap-3 min-w-0 rounded-md px-1 py-1 -ml-1 hover:bg-accent/50 text-left transition-colors"
           style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
         >
           {conversation?.avatarUrl ? (
@@ -419,14 +419,9 @@ function ConversationPane({
           </span>
         </button>
 
-        {/* Shared-content chips — threads, files, artifacts live here in
-            the header rather than floating over messages. Each hides
-            itself at count 0 and anchors its dropdown panel just below
-            the header. */}
-        <ThreadsBar conversationId={conversationId} />
-        <FilesBar conversationId={conversationId} />
-        <ArtifactsBar conversationId={conversationId} />
-
+        {/* Bring online sits right beside the agent's name/details so the
+            action reads as attached to this agent, not floating at the far
+            edge of the header. */}
         {wakeableAgentId && (
           <div
             className="shrink-0"
@@ -441,6 +436,18 @@ function ConversationPane({
             />
           </div>
         )}
+
+        {/* Spacer — pushes the shared-content chips + overflow menu to the
+            right edge, leaving the title + bring-online grouped at the left. */}
+        <div className="flex-1" />
+
+        {/* Shared-content chips — threads, files, artifacts live here in
+            the header rather than floating over messages. Each hides
+            itself at count 0 and anchors its dropdown panel just below
+            the header. */}
+        <ThreadsBar conversationId={conversationId} />
+        <FilesBar conversationId={conversationId} />
+        <ArtifactsBar conversationId={conversationId} />
 
         {conversation && (
           <ChatHeaderMenu

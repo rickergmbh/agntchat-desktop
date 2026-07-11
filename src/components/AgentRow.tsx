@@ -633,7 +633,7 @@ export function AgentRow({
         </div>
 
         {/* Actions */}
-        <div className="flex justify-end" onClick={(e) => e.stopPropagation()}>
+        <div className="flex justify-start" onClick={(e) => e.stopPropagation()}>
           {isSpawned ? (
             <TooltipProvider delay={150}>
               <Tooltip>
