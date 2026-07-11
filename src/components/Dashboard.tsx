@@ -772,8 +772,11 @@ export function Dashboard() {
     <div className="flex-1 flex h-full overflow-hidden bg-canvas">
       {/* Main content — the agent grid / directory. Reflows (shrinks) when a
           detail panel opens beside it, rather than being occluded by an
-          overlay drawer. */}
-      <main className="relative z-0 flex-1 flex flex-col overflow-hidden min-w-0 bg-background">
+          overlay drawer. Floored at a min width so a wide detail pane on a
+          small window can't crush the list below what its columns need — past
+          that floor the pane shrinks (and clips its own right edge) instead of
+          the row cells colliding over one another. */}
+      <main className="relative z-0 flex-1 flex flex-col overflow-hidden min-w-[360px] bg-background">
         {/* Header — pill toggle (Agents | Directory) matches the web app
             so users see the same surface in both clients. Bulk-action +
             search controls only show in the Agents tab. */}
@@ -1043,7 +1046,7 @@ export function Dashboard() {
       <aside
         aria-hidden={!drawerOpen}
         className={cn(
-          "surface-panel-strong relative z-20 -ml-3 h-full shrink-0 overflow-hidden rounded-l-lg bg-card",
+          "surface-panel-strong relative z-20 -ml-3 h-full min-w-0 shrink overflow-hidden rounded-l-lg bg-card",
           "transition-[width] duration-300 ease-out",
           drawerOpen ? "w-[760px] max-w-[70vw]" : "w-0"
         )}
@@ -1057,7 +1060,7 @@ export function Dashboard() {
       <aside
         aria-hidden={!dirDrawerOpen}
         className={cn(
-          "surface-panel-strong relative z-20 -ml-3 h-full shrink-0 overflow-hidden rounded-l-lg bg-card",
+          "surface-panel-strong relative z-20 -ml-3 h-full min-w-0 shrink overflow-hidden rounded-l-lg bg-card",
           "transition-[width] duration-300 ease-out",
           dirDrawerOpen ? "w-[600px] max-w-[60vw]" : "w-0"
         )}
