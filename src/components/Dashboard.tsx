@@ -958,7 +958,7 @@ export function Dashboard() {
               <div className="@container flex-1 overflow-y-auto">
                 <div
                   className={cn(
-                    "sticky top-0 z-10 gap-3 pl-4 pr-8 py-2 border-b border-border bg-card/95 backdrop-blur text-[10px] font-medium text-muted-foreground uppercase tracking-wider",
+                    "sticky top-0 z-10 gap-3 pl-4 pr-12 py-2 border-b border-border bg-card/95 backdrop-blur text-[10px] font-medium text-muted-foreground uppercase tracking-wider",
                     AGENT_GRID_COLS
                   )}
                 >

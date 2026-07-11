@@ -458,7 +458,7 @@ export function AgentRow({
         drawStem={hasChildren && expanded}
       />
       {/* Main row */}
-      <div className={cn(AGENT_GRID_COLS, "gap-3 pl-4 pr-8 py-2.5 items-center")}>
+      <div className={cn(AGENT_GRID_COLS, "gap-3 pl-4 pr-12 py-2.5 items-center")}>
         {/* Agent */}
         <div
           className="flex items-center gap-2.5 min-w-0"
