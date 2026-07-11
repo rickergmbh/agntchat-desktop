@@ -7,11 +7,12 @@ import { formatBackendLabel } from "../lib/models";
 import { useModelCatalog } from "../stores/modelCatalogStore";
 import { AGENT_GRID_COLS, AGENT_CELL_ENGINE, AGENT_CELL_MODE, AGENT_CELL_STATUS, AGENT_CELL_NAME } from "./agentTableLayout";
 import { formatUptime, cn } from "../lib/utils";
-import { Power, Square, RotateCcw, Crown, Cloud, AlertTriangle, KeyRound, Laptop, Link2, ChevronRight, ChevronDown, Loader2 } from "lucide-react";
+import { Crown, Cloud, Laptop, Link2, ChevronRight, ChevronDown, Loader2 } from "lucide-react";
 import { restartHostedAgents, forceResetAgent } from "../lib/api";
 import { runningElsewhereOn, useLocalDeviceName } from "../hooks/useRunningElsewhere";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { AgentPowerButton } from "@/components/ui/agent-power-button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Dialog,
@@ -305,6 +306,7 @@ export function AgentRow({
   childCount?: number;
   onToggleExpand?: () => void;
 }) {
+  const { t } = useTranslation("agents");
   const { startAgent, stopAgent } = useAgentStore();
   const activity = useAgentStore(
     (s) => s.activities[managed.agent.id] ?? null
@@ -649,7 +651,11 @@ export function AgentRow({
             </TooltipProvider>
           ) : isOrgHost ? (
             waking ? (
-              <BringOnlineButton waking />
+              <AgentPowerButton
+                state="bring-online"
+                label={t("row.bringingOnline")}
+                busy
+              />
             ) : remoteOnline ? (
               <TooltipProvider delay={150}>
                 <Tooltip>
@@ -667,70 +673,57 @@ export function AgentRow({
               </TooltipProvider>
             ) : (
               // Offline hosted agent — restart its bridge on the host. Same
-              // "Bring online" button as a local agent so the action reads
+              // "Bring online" control as a local agent so the action reads
               // identically regardless of where the agent runs.
-              <BringOnlineButton onClick={handleBringOnline} />
+              <AgentPowerButton
+                state="bring-online"
+                label={t("row.bringOnline")}
+                onClick={handleBringOnline}
+              />
             )
           ) : managed.processStatus === "crashed" &&
             (managed.crashKind === "auth" || managed.crashKind === "no_key") ? (
-            // Restarting would just crash again on the same bad key — send
-            // the user to the fix (the key panel in the agent's settings).
-            <TooltipProvider delay={150}>
-              <Tooltip>
-                <TooltipTrigger
-                  render={
-                    <Button
-                      variant="ghost"
-                      size="icon-sm"
-                      className="text-warning hover:text-warning/90"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onSelect();
-                      }}
-                    >
-                      <KeyRound className="w-4 h-4" />
-                    </Button>
-                  }
-                />
-                <TooltipContent side="left" className="text-xs">
-                  API key problem — open the agent to generate a new key for
-                  this computer
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            // Restarting would just crash again on the same bad key — the
+            // warning state routes to the fix (the key panel in the agent's
+            // settings) rather than retrying.
+            <AgentPowerButton
+              state="warning"
+              label={t("row.fixIssue")}
+              tooltip={t("row.crashKeyHint")}
+              onClick={(e) => {
+                e.stopPropagation();
+                onSelect();
+              }}
+            />
           ) : managed.processStatus === "crashed" ? (
-            <Button variant="ghost" size="icon-sm" className="text-warning hover:text-warning/90" onClick={handleToggle} title="Restart">
-              <RotateCcw className="w-4 h-4" />
-            </Button>
+            <AgentPowerButton
+              state="warning"
+              label={t("row.restart")}
+              onClick={handleToggle}
+            />
           ) : isRunning ? (
-            <Button variant="ghost" size="icon-sm" className="text-destructive hover:text-destructive/90" onClick={handleToggle} title="Stop">
-              <Square className="w-3.5 h-3.5" />
-            </Button>
+            <AgentPowerButton
+              state="take-offline"
+              label={t("row.takeOffline")}
+              onClick={handleToggle}
+            />
           ) : startBlockedReason ? (
-            <TooltipProvider delay={150}>
-              <Tooltip>
-                <TooltipTrigger
-                  render={
-                    <Button
-                      variant="ghost"
-                      size="icon-sm"
-                      className="text-warning hover:text-warning/90"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onSelect();
-                      }}
-                    >
-                      <AlertTriangle className="w-4 h-4" />
-                    </Button>
-                  }
-                />
-                <TooltipContent side="left" className="text-xs">
-                  {startBlockedReason}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <AgentPowerButton
+              state="warning"
+              label={t("row.fixIssue")}
+              tooltip={startBlockedReason}
+              onClick={(e) => {
+                e.stopPropagation();
+                onSelect();
+              }}
+            />
           ) : (
-            <BringOnlineButton onClick={handleToggle} disabled={!canStart} />
+            <AgentPowerButton
+              state="bring-online"
+              label={t("row.bringOnline")}
+              onClick={handleToggle}
+              disabled={!canStart}
+            />
           )}
         </div>
       </div>
@@ -797,42 +790,5 @@ export function AgentRow({
         </DialogContent>
       </Dialog>
     </div>
-  );
-}
-
-/**
- * The row's "bring online" action. One button for both local and hosted
- * offline agents so the action reads identically regardless of where the agent
- * runs — starting a local subprocess and restarting a bridge on the org host
- * both mean "get this agent online". Shows a spinner + "Bringing online…"
- * while a hosted wake is in flight.
- */
-function BringOnlineButton({
-  onClick,
-  disabled,
-  waking,
-}: {
-  onClick?: (e: React.MouseEvent) => void;
-  disabled?: boolean;
-  waking?: boolean;
-}) {
-  const { t } = useTranslation("agents");
-  return (
-    <Button
-      variant="ghost"
-      size="sm"
-      className="h-7 gap-1.5 px-2 text-success hover:text-success/90"
-      onClick={onClick}
-      disabled={disabled || waking}
-    >
-      {waking ? (
-        <Loader2 className="w-3.5 h-3.5 animate-spin" />
-      ) : (
-        <Power className="w-3.5 h-3.5" />
-      )}
-      <span className="truncate">
-        {waking ? t("row.bringingOnline") : t("row.bringOnline")}
-      </span>
-    </Button>
   );
 }
