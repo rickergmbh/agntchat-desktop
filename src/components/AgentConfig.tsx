@@ -661,8 +661,10 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
             {/* Runtime — where this agent runs (Local vs Hosted). Shown first
                 because it gates the rest: hosted agents inherit the host's
                 provider/connection, so the LLM Provider section below adapts.
-                Hidden entirely when the `org_hosts` feature is off. */}
-            {orgHostsEnabled && <RuntimePanel agent={agent} />}
+                Always shown: when the `org_hosts` feature is off the Hosted
+                card renders disabled with a "coming soon" tag (mirroring the
+                creation flow), so users learn hosting exists. */}
+            <RuntimePanel agent={agent} orgHostsEnabled={orgHostsEnabled} />
 
             {/* Model group — provider, mode, and effort are one decision
                 ("how does this agent think?"), so they're clustered tightly
@@ -3734,7 +3736,15 @@ function ComputerUseDepsRow() {
 // subprocess spawn for these agents (see start_agent's runtime branch).
 // ---------------------------------------------------------------------------
 
-function RuntimePanel({ agent }: { agent: Agent }) {
+function RuntimePanel({
+  agent,
+  orgHostsEnabled,
+}: {
+  agent: Agent;
+  /** When false, hosting isn't unlocked for this user yet — the Hosted card
+   *  renders disabled with a "coming soon" tag instead of being switchable. */
+  orgHostsEnabled: boolean;
+}) {
   const { t } = useTranslation("agents");
   // Active workspace replaces the old single-org store. Personal
   // workspaces aren't valid *workspace-host* targets (the multi-host
@@ -3906,11 +3916,12 @@ function RuntimePanel({ agent }: { agent: Agent }) {
           <RuntimeRadio
             label={t("runtime.hosted")}
             icon={Cloud}
-            tag={t("config.runtime.recommendedTag")}
+            tag={orgHostsEnabled ? t("config.runtime.recommendedTag") : undefined}
+            comingSoon={!orgHostsEnabled}
             description={t("config.runtime.hostedDescription")}
             selected={pendingRuntime === "org_host"}
             onClick={() => canSwitchToOrgHost && setPendingRuntime("org_host")}
-            disabled={!canSwitchToOrgHost}
+            disabled={!orgHostsEnabled || !canSwitchToOrgHost}
           />
           <RuntimeRadio
             label={t("runtime.local")}
@@ -3925,14 +3936,17 @@ function RuntimePanel({ agent }: { agent: Agent }) {
         {hostsLoading && !hostsLoaded && (
           <p className="text-xs text-muted-foreground">{t("config.runtime.loadingHosts")}</p>
         )}
-        {/* Explain why Hosted is unavailable. Only relevant when neither
-            path is open — subscribers always have the subscription path. */}
-        {!canSwitchToOrgHost && !isPlan && (
+        {/* Explain why Hosted is unavailable. Only relevant when hosting is
+            unlocked (org_hosts on) but neither path is open — subscribers
+            always have the subscription path. When org_hosts is off the
+            Hosted card's own "coming soon" tag carries the message, so these
+            upgrade/setup hints are suppressed. */}
+        {orgHostsEnabled && !canSwitchToOrgHost && !isPlan && (
           <p className="text-xs text-muted-foreground">
             {t("runtime.subscribeHint")}
           </p>
         )}
-        {!canSwitchToOrgHost && isPlan && !subscriptionHostId && (
+        {orgHostsEnabled && !canSwitchToOrgHost && isPlan && !subscriptionHostId && (
           <p className="text-xs text-muted-foreground">
             {t("config.runtime.settingUp")}
           </p>
@@ -4045,6 +4059,7 @@ function RuntimeRadio({
   description,
   icon: Icon,
   tag,
+  comingSoon,
   selected,
   onClick,
   disabled,
@@ -4054,10 +4069,14 @@ function RuntimeRadio({
   icon: React.ComponentType<{ className?: string }>;
   /** Small qualifier shown next to the label, e.g. "Recommended" / "Advanced". */
   tag?: string;
+  /** Renders a "coming soon" pill by the label — for a card that's shown to
+   *  advertise a capability the user can't select yet. */
+  comingSoon?: boolean;
   selected: boolean;
   onClick: () => void;
   disabled?: boolean;
 }) {
+  const { t } = useTranslation("agents");
   return (
     <button
       type="button"
@@ -4090,7 +4109,14 @@ function RuntimeRadio({
           <Icon className="h-4 w-4" />
         </span>
         <div className="flex flex-col">
-          <span className="text-sm font-semibold leading-tight">{label}</span>
+          <span className="flex items-center gap-1.5 text-sm font-semibold leading-tight">
+            {label}
+            {comingSoon && (
+              <span className="rounded-full bg-muted px-1.5 py-px text-[9px] font-medium uppercase tracking-wide text-muted-foreground">
+                {t("create.hostedComingSoon")}
+              </span>
+            )}
+          </span>
           {tag && (
             <span
               className={cn(
