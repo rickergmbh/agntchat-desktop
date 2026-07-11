@@ -20,6 +20,8 @@ import {
   Link as LinkIcon,
   Unlink,
   Loader2,
+  Users,
+  Compass,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -788,11 +790,16 @@ export function Dashboard() {
             <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center flex-shrink-0">
               <Bot className="w-3.5 h-3.5 text-primary-foreground" />
             </div>
+            {/* Tabs collapse to icon-only below 460px (matching the search
+                cutoff) so the two labels can't collide when the header is very
+                tight; the `title` carries the name and the count badge stays. */}
             <button
               onClick={() => {
                 setActiveTab("agents");
                 setSelectedListingId(null);
               }}
+              title={t("nav:agents")}
+              aria-label={t("nav:agents")}
               className={cn(
                 "flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm font-medium transition-colors",
                 activeTab === "agents"
@@ -800,7 +807,8 @@ export function Dashboard() {
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              {t("nav:agents")}
+              <Users className="w-4 h-4 shrink-0 @min-[460px]:hidden" />
+              <span className="hidden @min-[460px]:inline">{t("nav:agents")}</span>
               <span className="rounded-full bg-muted px-1.5 py-0.5 text-[9px] text-muted-foreground">
                 {activeCount}
               </span>
@@ -810,6 +818,8 @@ export function Dashboard() {
                 setActiveTab("directory");
                 selectAgent(null);
               }}
+              title={t("directory")}
+              aria-label={t("directory")}
               className={cn(
                 "flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm font-medium transition-colors",
                 activeTab === "directory"
@@ -817,7 +827,8 @@ export function Dashboard() {
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              {t("directory")}
+              <Compass className="w-4 h-4 shrink-0 @min-[460px]:hidden" />
+              <span className="hidden @min-[460px]:inline">{t("directory")}</span>
             </button>
             {activeTab === "agents" && onlineCount > 0 && (
               <span className="ml-2 hidden @min-[560px]:inline text-[11px] text-success whitespace-nowrap">
