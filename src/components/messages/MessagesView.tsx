@@ -355,18 +355,18 @@ function ConversationPane({
 
   return (
     <>
+      {/* The whole header is the details toggle — clicking anywhere that
+          isn't an interactive control (bring-online, info, menu, chips) opens
+          the details pane. `no-drag` so the click registers instead of moving
+          the window; the actionable controls re-assert their own handling via
+          stopPropagation. */}
       <header
-        className="relative h-14 shrink-0 px-4 bg-card flex items-center gap-3 after:absolute after:bottom-0 after:left-4 after:right-4 after:h-px after:bg-border"
-        style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
+        onClick={onToggleDetails}
+        aria-label={showDetails ? t("hideDetails") : t("showDetails")}
+        className="group/header relative h-14 shrink-0 px-4 bg-card flex items-center gap-3 cursor-pointer hover:bg-accent/30 transition-colors after:absolute after:bottom-0 after:left-4 after:right-4 after:h-px after:bg-border"
+        style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
       >
-        <button
-          type="button"
-          onClick={onToggleDetails}
-          aria-pressed={showDetails}
-          title={showDetails ? t("hideDetails") : t("showDetails")}
-          className="group/header flex items-center gap-3 min-w-0 rounded-md px-1 py-1 -ml-1 hover:bg-accent/50 text-left transition-colors"
-          style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
-        >
+        <div className="flex items-center gap-3 min-w-0">
           {conversation?.avatarUrl ? (
             <Avatar className="h-9 w-9 shrink-0">
               <AvatarImage src={conversation.avatarUrl} alt={headerTitle} displaySize={36} />
@@ -402,29 +402,16 @@ function ConversationPane({
               </p>
             ) : null}
           </div>
-          {/* Details toggle affordance — a bordered pill so it reads as a
-              control even at rest (the bare chevron was near-invisible in dark
-              mode, and a chevron read as "collapse" rather than "info"). The
-              filled state marks the panel as open. */}
-          <span
-            data-tour="conv-tour-info"
-            className={cn(
-              "shrink-0 flex h-7 w-7 items-center justify-center rounded-md border transition-colors",
-              showDetails
-                ? "border-transparent bg-accent text-foreground"
-                : "border-border-strong text-foreground group-hover/header:bg-accent"
-            )}
-          >
-            <Info className="h-4 w-4" />
-          </span>
-        </button>
+        </div>
 
         {/* Bring online sits right beside the agent's name/details so the
             action reads as attached to this agent, not floating at the far
-            edge of the header. */}
+            edge of the header. Stop propagation so it doesn't also toggle the
+            details pane. */}
         {wakeableAgentId && (
           <div
             className="shrink-0"
+            onClick={(e) => e.stopPropagation()}
             style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
           >
             <AgentPowerButton
@@ -437,26 +424,51 @@ function ConversationPane({
           </div>
         )}
 
-        {/* Spacer — pushes the shared-content chips + overflow menu to the
-            right edge, leaving the title + bring-online grouped at the left. */}
+        {/* Spacer — pushes the info + shared-content chips + overflow menu to
+            the right edge, leaving the title + bring-online at the left. */}
         <div className="flex-1" />
 
         {/* Shared-content chips — threads, files, artifacts live here in
             the header rather than floating over messages. Each hides
             itself at count 0 and anchors its dropdown panel just below
-            the header. */}
-        <ThreadsBar conversationId={conversationId} />
-        <FilesBar conversationId={conversationId} />
-        <ArtifactsBar conversationId={conversationId} />
+            the header. Stop propagation so opening a chip's dropdown doesn't
+            also toggle the details pane. */}
+        <div
+          className="flex items-center gap-3 shrink-0"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <ThreadsBar conversationId={conversationId} />
+          <FilesBar conversationId={conversationId} />
+          <ArtifactsBar conversationId={conversationId} />
+        </div>
+
+        {/* Details (info) affordance — a standalone control at the right edge,
+            beside the overflow menu. It doesn't need its own handler: a click
+            bubbles to the header's toggle. The filled state marks the panel as
+            open. */}
+        <span
+          data-tour="conv-tour-info"
+          aria-hidden
+          className={cn(
+            "shrink-0 flex h-7 w-7 items-center justify-center rounded-md border transition-colors",
+            showDetails
+              ? "border-transparent bg-accent text-foreground"
+              : "border-border-strong text-foreground group-hover/header:bg-accent"
+          )}
+        >
+          <Info className="h-4 w-4" />
+        </span>
 
         {conversation && (
-          <ChatHeaderMenu
-            conversation={conversation}
-            onAfterDangerAction={() => {
-              // Details panel clings to the deleted conversation id —
-              // close it so the thread column shows the EmptyState.
-            }}
-          />
+          <div onClick={(e) => e.stopPropagation()} className="shrink-0">
+            <ChatHeaderMenu
+              conversation={conversation}
+              onAfterDangerAction={() => {
+                // Details panel clings to the deleted conversation id —
+                // close it so the thread column shows the EmptyState.
+              }}
+            />
+          </div>
         )}
       </header>
 
