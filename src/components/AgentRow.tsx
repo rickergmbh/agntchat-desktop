@@ -1,12 +1,10 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAgentStore, type ManagedAgent } from "../stores/agentStore";
 import { usePresenceStore } from "../stores/presenceStore";
 import { AgentActivityIndicator } from "./AgentActivityIndicator";
-import { formatBackendLabel } from "../lib/models";
 import { useModelCatalog } from "../stores/modelCatalogStore";
-import { AGENT_GRID_COLS, AGENT_CELL_ENGINE, AGENT_CELL_MODE, AGENT_CELL_STATUS, AGENT_CELL_NAME } from "./agentTableLayout";
-import { formatUptime, cn } from "../lib/utils";
+import { cn } from "../lib/utils";
 import { Crown, Cloud, Laptop, Link2, ChevronRight, ChevronDown, Loader2 } from "lucide-react";
 import { restartHostedAgents, forceResetAgent } from "../lib/api";
 import { runningElsewhereOn, useLocalDeviceName } from "../hooks/useRunningElsewhere";
@@ -75,157 +73,6 @@ function PresenceDot({
   );
 }
 
-function StatusBadge({
-  status,
-  uptimeSecs,
-  presence,
-  runtime,
-  waking,
-  deviceName,
-}: {
-  status: string;
-  uptimeSecs: number | null;
-  presence?: "online_local" | "offline";
-  runtime?: "local" | "org_host";
-  waking?: boolean;
-  /** Machine the agent's bridge reported it is running on (when online). */
-  deviceName?: string | null;
-}) {
-  const { t } = useTranslation("agents");
-  // Org-host runtime: the bridge runs on a remote VM, so processStatus
-  // is always "stopped" on this device. The agent's real online state
-  // comes from the backend's WS presence (presence !== "offline"
-  // means a bridge is connected somewhere). Render an honest "Remote"
-  // badge — "Stopped" would lie about the actual lifecycle.
-  if (runtime === "org_host" && status === "stopped") {
-    const remoteOnline = presence && presence !== "offline";
-    // A restart we asked for is in flight — show progress so the action
-    // doesn't look like it did nothing while the bridge respawns.
-    if (waking && !remoteOnline) {
-      return (
-        <Badge variant="outline" className="border-warning/30 text-warning bg-warning/10 gap-1.5">
-          <Loader2 className="w-3 h-3 animate-spin" />
-          {t("row.bringingOnline")}
-        </Badge>
-      );
-    }
-    return (
-      <Badge
-        variant="outline"
-        className={cn(
-          "gap-1.5",
-          remoteOnline
-            ? "border-info/30 text-info bg-info/10"
-            : "border-muted text-muted-foreground bg-muted/30"
-        )}
-      >
-        <Cloud className="w-3 h-3" />
-        {remoteOnline ? t("row.remoteOnline") : t("row.remoteOffline")}
-      </Badge>
-    );
-  }
-
-  // Local-runtime agent with no process on THIS machine but a live bridge
-  // somewhere — it's running on another of the user's devices. Say where,
-  // instead of showing "Stopped" next to a green presence dot (which read
-  // as "running locally *here*" and confused everyone).
-  if (runtime !== "org_host" && status === "stopped" && presence === "online_local") {
-    return (
-      <Badge
-        variant="outline"
-        className="border-info/30 text-info bg-info/10 gap-1.5"
-        title={
-          deviceName
-            ? t("row.runningOnDeviceHint", { device: deviceName })
-            : t("row.runningOnOtherDevice")
-        }
-      >
-        <Laptop className="w-3 h-3" />
-        {deviceName ? t("row.onDevice", { device: deviceName }) : t("row.onAnotherDevice")}
-      </Badge>
-    );
-  }
-
-  if (status === "running") {
-    return (
-      <Badge variant="outline" className="border-success/30 text-success bg-success/10 gap-1.5">
-        <span className="w-1.5 h-1.5 rounded-full bg-success" />
-        {uptimeSecs != null ? formatUptime(uptimeSecs) : t("status.running")}
-      </Badge>
-    );
-  }
-  if (status === "starting") {
-    return (
-      <Badge variant="outline" className="border-warning/30 text-warning bg-warning/10 gap-1.5">
-        <span className="w-1.5 h-1.5 rounded-full bg-warning animate-pulse" />
-        {t("row.starting")}
-      </Badge>
-    );
-  }
-  if (status === "stalled") {
-    return (
-      <Badge variant="outline" className="border-warning/30 text-warning bg-warning/10 gap-1.5">
-        <span className="w-1.5 h-1.5 rounded-full bg-warning animate-pulse" />
-        {t("row.stalled")}
-      </Badge>
-    );
-  }
-  if (status === "crashed") {
-    return (
-      <Badge variant="outline" className="border-destructive/30 text-destructive bg-destructive/10 gap-1.5">
-        <span className="w-1.5 h-1.5 rounded-full bg-destructive" />
-        {t("row.crashed")}
-      </Badge>
-    );
-  }
-  return (
-    <Badge variant="outline" className="gap-1.5">
-      <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40" />
-      {t("row.stopped")}
-    </Badge>
-  );
-}
-
-// Surfaces non-healthy states inline beneath the status badge. "Healthy"
-// is the expected state for a running agent and adds noise when shown.
-// "Offline" is suppressed whenever we KNOW the agent is up — local process
-// running, or live WS presence says online (e.g. running on another
-// machine). The health snapshot refreshes on a slow poll, so after a
-// presence flip it can lag and would otherwise sit contradicting the
-// "Running 3s" / "On Jamess-MacBook" badge right above it.
-function HealthHint({
-  health,
-  processStatus,
-  online,
-}: {
-  health: ManagedAgent["health"];
-  processStatus: ManagedAgent["processStatus"];
-  /** Live WS presence — fresher than the polled health snapshot. */
-  online: boolean;
-}) {
-  if (!health || health.healthStatus === "healthy") return null;
-  if (
-    health.healthStatus === "offline" &&
-    (processStatus === "running" || online)
-  ) {
-    return null;
-  }
-  const colors: Record<string, string> = {
-    degraded: "text-warning",
-    stuck: "text-warning",
-    offline: "text-muted-foreground",
-  };
-  return (
-    <span
-      className={cn(
-        "text-[10px] capitalize leading-tight",
-        colors[health.healthStatus] || "text-muted-foreground"
-      )}
-    >
-      {health.healthStatus}
-    </span>
-  );
-}
 
 /** Indent width per ownership-tree level, in px. */
 const TREE_INDENT = 22;
@@ -331,10 +178,8 @@ export function AgentRow({
   const presenceDevice = usePresenceStore(
     (s) => s.agentDevices[managed.agent.id]
   );
-  const deviceName = presenceDevice ?? null;
   const myDevice = useLocalDeviceName();
   const markWaking = usePresenceStore((s) => s.markWaking);
-  const [error, setError] = useState<string | null>(null);
   // Take-over confirmation: the agent's bridge is alive on ANOTHER of the
   // user's machines, so starting here stops it there. null = no dialog;
   // "" = running elsewhere but the device name is unknown.
@@ -343,25 +188,8 @@ export function AgentRow({
 
   const isRunning = managed.processStatus === "running";
 
-  // Live-tick uptime locally instead of waiting for the 60s
-  // refreshProcessStatuses poll, so the status badge actually advances
-  // from "0s" the moment the agent starts. `startedAt` is set by the
-  // store when the desktop kicks off the agent; for agents started on
-  // another device we fall back to the server-reported `uptimeSecs`.
-  const [now, setNow] = useState<number>(() => Date.now());
-  useEffect(() => {
-    if (!isRunning || managed.startedAt == null) return;
-    const id = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(id);
-  }, [isRunning, managed.startedAt]);
-  const liveUptimeSecs =
-    isRunning && managed.startedAt != null
-      ? Math.max(0, Math.floor((now - managed.startedAt) / 1000))
-      : managed.uptimeSecs;
-
   const handleToggle = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    setError(null);
     try {
       if (isRunning) {
         await stopAgent(managed.agent.id);
@@ -375,9 +203,9 @@ export function AgentRow({
         }
         await startAgent(managed.agent.id);
       }
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      setError(msg);
+    } catch {
+      // Start/stop failures surface in the detail pane (crash reason / status);
+      // the compact list row stays quiet.
     }
   };
 
@@ -387,14 +215,12 @@ export function AgentRow({
   // computers at once.
   const handleConfirmMove = async () => {
     setMoving(true);
-    setError(null);
     try {
       await forceResetAgent(managed.agent.id);
       await startAgent(managed.agent.id);
       setConfirmMoveFrom(null);
-    } catch (err) {
+    } catch {
       setConfirmMoveFrom(null);
-      setError(err instanceof Error ? err.message : String(err));
     } finally {
       setMoving(false);
     }
@@ -407,12 +233,11 @@ export function AgentRow({
   const remoteOnline = liveOnline;
   const handleBringOnline = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    setError(null);
     markWaking([managed.agent.id]);
     try {
       await restartHostedAgents([managed.agent.id]);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : String(err));
+    } catch {
+      // Surfaced in the detail pane; the list row stays quiet.
     }
   };
 
@@ -441,7 +266,6 @@ export function AgentRow({
   const modelLabel =
     catalogModelLabel(managed.config.model, managed.config.backend) ||
     managed.config.model;
-  const backendLabel = formatBackendLabel(managed.config.backend);
 
   return (
     <div
@@ -457,189 +281,134 @@ export function AgentRow({
         parentLines={parentLines}
         drawStem={hasChildren && expanded}
       />
-      {/* Main row */}
-      <div className={cn(AGENT_GRID_COLS, "gap-3 pl-4 pr-20 py-2.5 items-center")}>
-        {/* Agent */}
-        <div
-          className="flex items-center gap-2.5 min-w-0"
-          style={{ paddingLeft: depth * TREE_INDENT }}
-        >
-          {hasChildren ? (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onToggleExpand?.();
-              }}
-              className="flex h-5 w-5 shrink-0 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground"
-              title={
-                expanded
-                  ? "Collapse sub-agents"
-                  : `Expand ${childCount} sub-agent${childCount === 1 ? "" : "s"}`
-              }
-            >
-              {expanded ? (
-                <ChevronDown className="h-3.5 w-3.5" />
-              ) : (
-                <ChevronRight className="h-3.5 w-3.5" />
-              )}
-            </button>
-          ) : (
-            <span className="h-5 w-5 shrink-0" />
-          )}
-          <div className="relative shrink-0">
-            <Avatar className="h-8 w-8 rounded-lg">
-              {managed.agent.avatarUrl && <AvatarImage src={managed.agent.avatarUrl} className="rounded-lg" displaySize={32} />}
-              <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-xs font-semibold">
-                {managed.agent.displayName.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <PresenceDot
-              processStatus={managed.processStatus}
-              presence={livePresence}
-            />
+      {/* Compact list card: avatar + presence, name/badges/activity,
+          description, and a runtime + model meta line — with the power action
+          as a trailing icon button. Full status/health lives in the detail
+          pane; the list stays scannable. */}
+      <div
+        className="flex items-center gap-2.5 py-2.5 pr-3"
+        style={{ paddingLeft: 12 + depth * TREE_INDENT }}
+      >
+        {hasChildren ? (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleExpand?.();
+            }}
+            className="flex h-5 w-5 shrink-0 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground"
+            title={
+              expanded
+                ? "Collapse sub-agents"
+                : `Expand ${childCount} sub-agent${childCount === 1 ? "" : "s"}`
+            }
+          >
+            {expanded ? (
+              <ChevronDown className="h-3.5 w-3.5" />
+            ) : (
+              <ChevronRight className="h-3.5 w-3.5" />
+            )}
+          </button>
+        ) : (
+          <span className="h-5 w-5 shrink-0" />
+        )}
+
+        <div className="relative shrink-0">
+          <Avatar className="h-9 w-9 rounded-lg">
+            {managed.agent.avatarUrl && <AvatarImage src={managed.agent.avatarUrl} className="rounded-lg" displaySize={36} />}
+            <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-xs font-semibold">
+              {managed.agent.displayName.charAt(0).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          <PresenceDot
+            processStatus={managed.processStatus}
+            presence={livePresence}
+          />
+        </div>
+
+        <div className="min-w-0 flex-1">
+          {/* Name + badges */}
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span className="text-sm font-medium truncate">
+              {managed.agent.displayName}
+            </span>
+            {managed.agent.agentType === "orchestrator" && (
+              <Crown className="h-3 w-3 text-primary flex-shrink-0" />
+            )}
+            {managed.agent.agentType && !["worker", "orchestrator"].includes(managed.agent.agentType) && (
+              <Badge
+                variant="secondary"
+                className={cn(
+                  "text-[10px] px-1.5 py-0 flex-shrink-0",
+                  managed.agent.agentType === "reviewer" && "bg-warning/10 text-warning border-warning/20",
+                  managed.agent.agentType === "observer" && "bg-cyan-500/10 text-cyan-500 border-cyan-500/20"
+                )}
+              >
+                {managed.agent.agentType}
+              </Badge>
+            )}
+            {isSpawned && (
+              <Badge
+                variant="secondary"
+                className="text-[10px] px-1.5 py-0 flex-shrink-0 bg-primary/10 text-primary border-primary/20"
+                title={managed.agent.spawn?.purpose || "Spawned sub-agent"}
+              >
+                Sub-agent
+              </Badge>
+            )}
+            {hasChildren && !expanded && (
+              <Badge
+                variant="secondary"
+                className="text-[10px] px-1.5 py-0 flex-shrink-0 bg-muted text-muted-foreground border-transparent"
+                title={`${childCount} sub-agent${childCount === 1 ? "" : "s"} — expand to view`}
+              >
+                {childCount}
+              </Badge>
+            )}
           </div>
-          <div className={cn(AGENT_CELL_NAME, "min-w-0")}>
-            <div className="flex items-center gap-1.5 min-w-0">
-              <p className="text-sm font-medium truncate flex-shrink-0">
-                {managed.agent.displayName}
-              </p>
-              {managed.agent.agentType === "orchestrator" && (
-                <Crown className="h-3 w-3 text-primary flex-shrink-0" />
-              )}
-              {managed.agent.agentType && !["worker", "orchestrator"].includes(managed.agent.agentType) && (
-                <Badge
-                  variant="secondary"
-                  className={cn(
-                    "text-[10px] px-1.5 py-0 flex-shrink-0",
-                    managed.agent.agentType === "reviewer" && "bg-warning/10 text-warning border-warning/20",
-                    managed.agent.agentType === "observer" && "bg-cyan-500/10 text-cyan-500 border-cyan-500/20"
-                  )}
-                >
-                  {managed.agent.agentType}
-                </Badge>
-              )}
-              {isSpawned && (
-                <Badge
-                  variant="secondary"
-                  className="text-[10px] px-1.5 py-0 flex-shrink-0 bg-primary/10 text-primary border-primary/20"
-                  title={managed.agent.spawn?.purpose || "Spawned sub-agent"}
-                >
-                  Sub-agent
-                </Badge>
-              )}
-              {hasChildren && !expanded && (
-                <Badge
-                  variant="secondary"
-                  className="text-[10px] px-1.5 py-0 flex-shrink-0 bg-muted text-muted-foreground border-transparent"
-                  title={`${childCount} sub-agent${childCount === 1 ? "" : "s"} — expand to view`}
-                >
-                  {childCount} sub-agent{childCount === 1 ? "" : "s"}
-                </Badge>
-              )}
-              {isRunning && activity ? (
-                <span className={cn(
-                  "flex items-center gap-1.5 text-[11px] font-medium truncate",
-                  ACTIVITY_COLORS[activity.type]
-                )}>
-                  <span className={cn(
-                    "w-1.5 h-1.5 rounded-full shrink-0",
-                    activity.type !== "idle" && "animate-pulse",
-                    ACTIVITY_DOT_COLORS[activity.type]
-                  )} />
-                  <span className="truncate">{activity.label}</span>
-                </span>
-              ) : globalActivity ? (
-                // Fallback to the server's global activity when there's no
-                // richer local bridge-log activity (remote/org-host agents).
-                <AgentActivityIndicator activity={globalActivity} />
-              ) : null}
+
+          {/* Second line: live activity, else the agent's description. */}
+          {isRunning && activity ? (
+            <div className={cn("mt-0.5 flex items-center gap-1.5 text-[11px] font-medium min-w-0", ACTIVITY_COLORS[activity.type])}>
+              <span className={cn(
+                "w-1.5 h-1.5 rounded-full shrink-0",
+                activity.type !== "idle" && "animate-pulse",
+                ACTIVITY_DOT_COLORS[activity.type]
+              )} />
+              <span className="truncate">{activity.label}</span>
             </div>
-            {managed.agent.description && (
-              <p className="text-xs text-muted-foreground truncate">
-                {managed.agent.description}
-              </p>
+          ) : globalActivity ? (
+            <div className="mt-0.5"><AgentActivityIndicator activity={globalActivity} /></div>
+          ) : managed.agent.description ? (
+            <p className="mt-0.5 text-[11px] text-muted-foreground truncate">
+              {managed.agent.description}
+            </p>
+          ) : null}
+
+          {/* Meta line: runtime chip + model. */}
+          <div className="mt-0.5 flex items-center gap-2 text-[10px] text-muted-foreground min-w-0">
+            <span className="inline-flex shrink-0 items-center gap-1">
+              {managed.agent.runtime === "org_host" ? (
+                <>
+                  <Cloud className="h-3 w-3 text-info" />
+                  Hosted
+                </>
+              ) : (
+                <>
+                  <Laptop className="h-3 w-3 text-success" />
+                  Local
+                </>
+              )}
+            </span>
+            {modelLabel && (
+              <span className="truncate font-mono text-[9px]">{modelLabel}</span>
             )}
           </div>
         </div>
 
-        {/* Slack spacer — the 1fr track that caps the Agent column at ~3/4 of
-            the free width (see AGENT_GRID_COLS). */}
-        <div aria-hidden />
-
-        {/* Engine — backend + model on two lines so the row stays compact.
-            Hidden when the list is narrow (e.g. detail pane open); the engine
-            is still shown inside the detail pane. */}
-        <div className={cn(AGENT_CELL_ENGINE, "min-w-0 leading-tight")}>
-          <div className="text-xs text-foreground/90 truncate">{modelLabel || "—"}</div>
-          {backendLabel && (
-            <div className="text-[10px] text-muted-foreground truncate">{backendLabel}</div>
-          )}
-        </div>
-
-        {/* Runtime — Local subprocess vs. org-host VM. Lets the user
-            see at a glance whether the agent runs on this device or on
-            a shared org host (set in AgentConfig → Runtime). Drops out
-            first when the list narrows. */}
-        <div className={cn(AGENT_CELL_MODE, "min-w-0 overflow-hidden")}>
-          {managed.agent.runtime === "org_host" ? (
-            <Badge
-              variant="outline"
-              className="border-info/30 text-info bg-info/10 gap-1.5"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-info" />
-              Hosted
-            </Badge>
-          ) : (
-            <Badge
-              variant="outline"
-              className="border-success/30 text-success bg-success/10 gap-1.5"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-success" />
-              Local
-            </Badge>
-          )}
-        </div>
-
-        {/* Status (+ health hint when non-healthy). min-w-0 + overflow-hidden
-            so a wide badge (device name / uptime) clips to its track instead
-            of overflowing into the Actions column. */}
-        <div className={cn(AGENT_CELL_STATUS, "min-w-0 overflow-hidden")}>
-          {error ? (
-            <span className="text-xs text-destructive truncate block" title={error}>
-              {error.slice(0, 25)}...
-            </span>
-          ) : (
-            <div className="flex flex-col gap-0.5">
-              <StatusBadge
-                status={managed.processStatus}
-                uptimeSecs={liveUptimeSecs}
-                presence={livePresence}
-                runtime={managed.agent.runtime}
-                waking={waking}
-                deviceName={deviceName}
-              />
-              <HealthHint
-                health={managed.health}
-                processStatus={managed.processStatus}
-                online={remoteOnline}
-              />
-              {managed.processStatus === "crashed" && managed.crashReason && (
-                <span
-                  className="text-[10px] text-destructive/80 line-clamp-2 block leading-tight"
-                  title={managed.crashReason}
-                >
-                  {managed.crashReason.length > 80
-                    ? managed.crashReason.slice(0, 80) + "…"
-                    : managed.crashReason}
-                </span>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Actions */}
-        <div className="flex justify-start" onClick={(e) => e.stopPropagation()}>
+        {/* Power action — icon-only in the compact list; full detail lives in
+            the pane. Clicks don't bubble to row selection. */}
+        <div className="shrink-0" onClick={(e) => e.stopPropagation()}>
           {isSpawned ? (
             <TooltipProvider delay={150}>
               <Tooltip>
@@ -661,8 +430,7 @@ export function AgentRow({
                 state="bring-online"
                 label={t("row.bringingOnline")}
                 busy
-                outlined
-                labelClassName="hidden @min-[360px]:inline"
+              iconOnly
               />
             ) : remoteOnline ? (
               <TooltipProvider delay={150}>
@@ -687,8 +455,7 @@ export function AgentRow({
                 state="bring-online"
                 label={t("row.bringOnline")}
                 onClick={handleBringOnline}
-                outlined
-                labelClassName="hidden @min-[360px]:inline"
+              iconOnly
               />
             )
           ) : managed.processStatus === "crashed" &&
@@ -700,8 +467,7 @@ export function AgentRow({
               state="warning"
               label={t("row.fixIssue")}
               tooltip={t("row.crashKeyHint")}
-              outlined
-              labelClassName="hidden @min-[360px]:inline"
+              iconOnly
               onClick={(e) => {
                 e.stopPropagation();
                 onSelect();
@@ -712,24 +478,21 @@ export function AgentRow({
               state="warning"
               label={t("row.restart")}
               onClick={handleToggle}
-              outlined
-              labelClassName="hidden @min-[360px]:inline"
+              iconOnly
             />
           ) : isRunning ? (
             <AgentPowerButton
               state="take-offline"
               label={t("row.takeOffline")}
               onClick={handleToggle}
-              outlined
-              labelClassName="hidden @min-[360px]:inline"
+              iconOnly
             />
           ) : startBlockedReason ? (
             <AgentPowerButton
               state="warning"
               label={t("row.fixIssue")}
               tooltip={startBlockedReason}
-              outlined
-              labelClassName="hidden @min-[360px]:inline"
+              iconOnly
               onClick={(e) => {
                 e.stopPropagation();
                 onSelect();
@@ -741,8 +504,7 @@ export function AgentRow({
               label={t("row.bringOnline")}
               onClick={handleToggle}
               disabled={!canStart}
-              outlined
-              labelClassName="hidden @min-[360px]:inline"
+              iconOnly
             />
           )}
         </div>

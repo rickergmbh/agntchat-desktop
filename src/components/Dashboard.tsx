@@ -3,9 +3,10 @@ import { useTranslation } from "react-i18next";
 import { useAgentStore, type ManagedAgent } from "../stores/agentStore";
 import { useDirectoryStore } from "../stores/directoryStore";
 import { AgentRow } from "./AgentRow";
-import { AGENT_GRID_COLS, AGENT_CELL_ENGINE, AGENT_CELL_MODE, AGENT_CELL_STATUS, AGENT_HEADER_INDENT } from "./agentTableLayout";
 import { AgentConfig } from "./AgentConfig";
 import { CreateAgentModal } from "./CreateAgentModal";
+import { ResizeHandle } from "./ResizeHandle";
+import { useResizableWidth } from "../hooks/useResizableWidth";
 import { cn } from "../lib/utils";
 import {
   Bot,
@@ -20,7 +21,6 @@ import {
   Link as LinkIcon,
   Unlink,
   Loader2,
-  Users,
   Compass,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -641,23 +641,46 @@ export function Dashboard() {
 
   const selectedAgent = selectedAgentId ? agents[selectedAgentId] : null;
 
-  // Keep last selected agent in ref so content stays visible during close animation
-  const lastAgentRef = useRef<ManagedAgent | null>(null);
-  if (selectedAgent) lastAgentRef.current = selectedAgent;
-  const displayAgent = selectedAgent || lastAgentRef.current;
-  const drawerOpen = !!selectedAgent;
+  // Two-pane layout (mirrors the web app + the chat view): a resizable list
+  // pane on the left, always-mounted detail pane filling the rest.
+  const {
+    width: listWidth,
+    ref: listRef,
+    resizing,
+    onResizeStart,
+    onResizeReset,
+  } = useResizableWidth({
+    storageKey: "agentchat:agentListWidth",
+    defaultWidth: 560,
+    min: 300,
+    max: 820,
+  });
 
-  // Close whichever detail panel is open on Escape. (The panels no longer have
-  // a click-scrim, so Escape is the keyboard exit alongside their close button.)
+  // Auto-select the first agent so the always-open detail pane is never empty
+  // on load (the web app leaves it empty; we do better). Only when nothing is
+  // selected and the user owns at least one agent — never fights a manual
+  // selection or a deliberate clear.
+  useEffect(() => {
+    if (activeTab !== "agents") return;
+    if (selectedAgentId) return;
+    if (agentList.length === 0) return;
+    void selectAgent(agentList[0].managed.agent.id);
+    // agentList is derived each render; keying on its first id + selection is
+    // enough to fire once agents load without re-selecting on every change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab, selectedAgentId, agentList[0]?.managed.agent.id]);
+
+  // The agent detail pane is always open in the two-pane layout, so Escape
+  // only backs out of a directory-listing selection (returning that pane to
+  // its empty state); the agent pane has no "closed" state to return to.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
-      if (drawerOpen) selectAgent(null);
-      else if (selectedListingId) setSelectedListingId(null);
+      if (selectedListingId) setSelectedListingId(null);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [drawerOpen, selectAgent, selectedListingId]);
+  }, [selectedListingId]);
 
   // Online count via the canonical `isAgentOnline` helper — the SAME rule the
   // rail counter and per-row dots use, so the header count can't drift from
@@ -759,10 +782,9 @@ export function Dashboard() {
   // Directory drawer mirrors the agent drawer pattern — keeps the
   // selected listing visible during the slide-out animation so the
   // panel doesn't go blank when the user clicks "Close".
-  const lastListingRef = useRef<DirectoryListing | null>(null);
-  if (selectedListing) lastListingRef.current = selectedListing;
-  const displayListing = selectedListing || lastListingRef.current;
-  const dirDrawerOpen = !!selectedListing;
+  // Detail pane is always mounted (no slide-out), so the live selection drives
+  // it directly — no need to retain the last listing through a close animation.
+  const displayListing = selectedListing;
 
   // Activate-count for the Agents pill — excludes deactivated agents.
   const activeCount = useMemo(
@@ -771,44 +793,39 @@ export function Dashboard() {
   );
 
   return (
-    <div className="flex-1 flex h-full overflow-hidden bg-canvas">
-      {/* Main content — the agent grid / directory. Reflows (shrinks) when a
-          detail panel opens beside it, rather than being occluded by an
-          overlay drawer. */}
-      <main className="relative z-0 flex-1 flex flex-col overflow-hidden min-w-0 bg-background">
-        {/* Header — pill toggle (Agents | Directory) matches the web app
-            so users see the same surface in both clients. Bulk-action +
-            search controls only show in the Agents tab. */}
+    <div className="relative flex-1 flex h-full overflow-hidden bg-canvas">
+      {/* List pane — resizable, mirrors the chat view + web app. Header with
+          the Agents/Directory tabs + create, a search row, then the scrolling
+          list. */}
+      <aside
+        ref={listRef as React.RefObject<HTMLElement>}
+        className="relative z-0 shrink-0 flex flex-col bg-canvas"
+        style={{ width: listWidth }}
+      >
         <header
-          className="@container h-14 shrink-0 pl-4 pr-8 flex items-center justify-between border-b border-border bg-card"
+          className="@container h-14 shrink-0 pl-4 pr-2 flex items-center justify-between gap-2 border-b border-border bg-card"
           style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
         >
           <div
-            className="flex items-center gap-2 min-w-0"
+            className="flex items-center gap-1.5 min-w-0"
             style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
           >
             <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center flex-shrink-0">
               <Bot className="w-3.5 h-3.5 text-primary-foreground" />
             </div>
-            {/* Tabs collapse to icon-only below 460px (matching the search
-                cutoff) so the two labels can't collide when the header is very
-                tight; the `title` carries the name and the count badge stays. */}
             <button
               onClick={() => {
                 setActiveTab("agents");
                 setSelectedListingId(null);
               }}
-              title={t("nav:agents")}
-              aria-label={t("nav:agents")}
               className={cn(
-                "flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm font-medium transition-colors",
+                "flex items-center gap-1.5 rounded-md px-2 py-1.5 text-sm font-medium transition-colors",
                 activeTab === "agents"
                   ? "bg-accent text-accent-foreground"
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              <Users className="w-4 h-4 shrink-0 @min-[460px]:hidden" />
-              <span className="hidden @min-[460px]:inline">{t("nav:agents")}</span>
+              {t("nav:agents")}
               <span className="rounded-full bg-muted px-1.5 py-0.5 text-[9px] text-muted-foreground">
                 {activeCount}
               </span>
@@ -818,283 +835,239 @@ export function Dashboard() {
                 setActiveTab("directory");
                 selectAgent(null);
               }}
-              title={t("directory")}
-              aria-label={t("directory")}
               className={cn(
-                "flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm font-medium transition-colors",
+                "rounded-md px-2 py-1.5 text-sm font-medium transition-colors",
                 activeTab === "directory"
                   ? "bg-accent text-accent-foreground"
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              <Compass className="w-4 h-4 shrink-0 @min-[460px]:hidden" />
-              <span className="hidden @min-[460px]:inline">{t("directory")}</span>
+              {t("directory")}
             </button>
-            {activeTab === "agents" && onlineCount > 0 && (
-              <span className="ml-2 hidden @min-[560px]:inline text-[11px] text-success whitespace-nowrap">
-                {t("runningCount", { count: onlineCount })}
-              </span>
-            )}
           </div>
 
-          <div
-            className="flex items-center gap-2 shrink-0"
-            style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
-          >
-            {activeTab === "agents" ? (
-              <>
-                {/* Responsive collapse as the header tightens (detail pane open,
-                    small window) so nothing overlaps the tabs on the left:
-                      ≥820px  action labels shown
-                      ≥600px  bulk actions (start/bring/stop all) shown, else hidden
-                      ≥460px  search shown (icon-only until 680px), else hidden
-                    Tabs + Create agent always stay — Create is the primary
-                    action, and per-row controls cover what the bulk buttons do. */}
-                <div className="relative hidden @min-[460px]:block">
-                  <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                  <Input
-                    type="text"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    placeholder={t("searchPlaceholder")}
-                    aria-label={t("searchPlaceholder")}
-                    className="h-8 pl-8 text-xs w-9 @min-[680px]:w-[120px] @min-[920px]:w-[180px] placeholder:opacity-0 @min-[680px]:placeholder:opacity-100"
-                  />
-                </div>
-                {onlineCount < totalCount && stoppedWithKeys.length > 0 && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={handleStartAll}
-                    disabled={startingAll}
-                    title={t("bulk.startStoppedTitle", { count: stoppedWithKeys.length })}
-                    className="hidden @min-[600px]:inline-flex"
-                  >
-                    <Play className="w-3.5 h-3.5" />
-                    <span className="hidden @min-[820px]:inline">
-                      {startingAll ? t("bulk.starting") : t("bulk.startAll")}
-                    </span>
-                  </Button>
-                )}
-                {offlineHosted.length > 0 && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={handleBringHostedOnline}
-                    disabled={wakingHosted}
-                    title={t("bulk.bringOnlineTitle", { count: offlineHosted.length })}
-                    className="hidden @min-[600px]:inline-flex"
-                  >
-                    {wakingHosted ? (
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    ) : (
-                      <Power className="w-3.5 h-3.5" />
-                    )}
-                    <span className="hidden @min-[820px]:inline">
-                      {wakingHosted
-                        ? t("bulk.bringingOnline")
-                        : t("bulk.bringOnlineCount", { count: offlineHosted.length })}
-                    </span>
-                  </Button>
-                )}
-                {runningAgents.length > 0 && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={handleStopAll}
-                    disabled={stoppingAll}
-                    title={t("bulk.stopRunningTitle", { count: runningAgents.length })}
-                    className="hidden @min-[600px]:inline-flex"
-                  >
-                    <Square className="w-3.5 h-3.5" />
-                    <span className="hidden @min-[820px]:inline">
-                      {stoppingAll ? t("bulk.stopping") : t("bulk.stopAll")}
-                    </span>
-                  </Button>
-                )}
-                <Button size="sm" onClick={() => setShowCreate(true)} title={t("createAgent")}>
-                  <Plus className="w-3.5 h-3.5" />
-                  <span className="hidden @min-[820px]:inline">{t("createAgent")}</span>
-                </Button>
-              </>
-            ) : (
-              <div className="relative hidden @min-[460px]:block">
-                <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                <Input
-                  type="text"
-                  value={dirSearch}
-                  onChange={(e) => handleDirSearch(e.target.value)}
-                  placeholder={t("directorySearchPlaceholder")}
-                  aria-label={t("directorySearchPlaceholder")}
-                  className="h-8 pl-8 text-xs w-9 @min-[560px]:w-[160px] @min-[820px]:w-[220px] placeholder:opacity-0 @min-[560px]:placeholder:opacity-100"
-                />
-              </div>
-            )}
-          </div>
+          {activeTab === "agents" && (
+            <button
+              type="button"
+              onClick={() => setShowCreate(true)}
+              title={t("createAgent")}
+              aria-label={t("createAgent")}
+              className="shrink-0 flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+              style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
+            >
+              <Plus className="w-4 h-4" />
+            </button>
+          )}
         </header>
 
-        {/* Content area */}
-        <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Search row (+ bulk-action icons on the agents tab). */}
+        <div className="shrink-0 flex items-center gap-1.5 border-b border-border px-3 py-2">
+          <div className="relative flex-1 min-w-0">
+            <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            {activeTab === "agents" ? (
+              <Input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder={t("searchPlaceholder")}
+                aria-label={t("searchPlaceholder")}
+                className="h-8 pl-8 text-xs"
+              />
+            ) : (
+              <Input
+                type="text"
+                value={dirSearch}
+                onChange={(e) => handleDirSearch(e.target.value)}
+                placeholder={t("directorySearchPlaceholder")}
+                aria-label={t("directorySearchPlaceholder")}
+                className="h-8 pl-8 text-xs"
+              />
+            )}
+          </div>
+          {activeTab === "agents" && (
+            <>
+              {onlineCount < totalCount && stoppedWithKeys.length > 0 && (
+                <Button
+                  size="icon-sm"
+                  variant="outline"
+                  onClick={handleStartAll}
+                  disabled={startingAll}
+                  title={t("bulk.startStoppedTitle", { count: stoppedWithKeys.length })}
+                >
+                  <Play className="w-3.5 h-3.5" />
+                </Button>
+              )}
+              {offlineHosted.length > 0 && (
+                <Button
+                  size="icon-sm"
+                  variant="outline"
+                  onClick={handleBringHostedOnline}
+                  disabled={wakingHosted}
+                  title={t("bulk.bringOnlineTitle", { count: offlineHosted.length })}
+                >
+                  {wakingHosted ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <Power className="w-3.5 h-3.5" />
+                  )}
+                </Button>
+              )}
+              {runningAgents.length > 0 && (
+                <Button
+                  size="icon-sm"
+                  variant="outline"
+                  onClick={handleStopAll}
+                  disabled={stoppingAll}
+                  title={t("bulk.stopRunningTitle", { count: runningAgents.length })}
+                >
+                  <Square className="w-3.5 h-3.5" />
+                </Button>
+              )}
+            </>
+          )}
+        </div>
+
+        {/* List body */}
+        <div className="flex-1 overflow-y-auto">
           {error && (
-            <div className="mx-4 mt-3 text-sm text-destructive bg-destructive/10 border border-destructive/20 px-4 py-3 rounded-md">
+            <div className="mx-3 mt-3 text-xs text-destructive bg-destructive/10 border border-destructive/20 px-3 py-2 rounded-md">
               {error}
             </div>
           )}
-
           {activeTab === "agents" ? (
             loading && totalCount === 0 ? (
-              <div className="text-center text-muted-foreground py-20">
+              <div className="text-center text-xs text-muted-foreground py-20">
                 {t("common:loading")}
               </div>
-            ) : totalCount === 0 && !error ? (
-              onboarding.visible ? (
-                <OnboardingCards
-                  onCreateAgent={() => setShowCreate(true)}
-                  onOpenConversation={(id) => {
-                    setActiveConversation(id);
-                    setView("chat");
-                  }}
+            ) : totalCount === 0 ? (
+              <div className="flex flex-col items-center justify-center text-center px-6 py-16">
+                <p className="text-sm font-medium text-foreground">{t("empty.title")}</p>
+                <p className="text-xs text-muted-foreground mt-1 mb-4">
+                  {t("empty.createFirstHint")}
+                </p>
+                <Button size="sm" onClick={() => setShowCreate(true)}>
+                  <Plus className="w-3.5 h-3.5" />
+                  {t("createAgent")}
+                </Button>
+              </div>
+            ) : (
+              agentList.map((row) => (
+                <AgentRow
+                  key={row.managed.agent.id}
+                  managed={row.managed}
+                  depth={row.depth}
+                  isLast={row.isLast}
+                  parentLines={row.parentLines}
+                  hasChildren={row.hasChildren}
+                  childCount={row.childCount}
+                  expanded={row.expanded}
+                  onToggleExpand={() => toggleExpand(row.managed.agent.id)}
+                  selected={row.managed.agent.id === selectedAgentId}
+                  onSelect={() => selectAgent(row.managed.agent.id)}
                 />
-              ) : (
-                <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
-                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-3">
-                    <Bot className="w-7 h-7 text-primary" />
-                  </div>
-                  <p className="text-sm font-medium text-foreground">{t("empty.title")}</p>
-                  <p className="text-xs text-muted-foreground mt-1 mb-4 max-w-xs">
-                    {t("empty.createFirstHint")}
-                  </p>
-                  <Button size="sm" onClick={() => setShowCreate(true)}>
-                    <Plus className="w-3.5 h-3.5" />
-                    {t("createAgent")}
+              ))
+            )
+          ) : dirLoading && dirListings.length === 0 ? (
+            <div className="flex justify-center py-12">
+              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+            </div>
+          ) : dirListings.length === 0 ? (
+            <div className="p-8 text-center text-xs text-muted-foreground">
+              {dirSearch ? t("noAgentsFound") : t("emptyDirectory")}
+            </div>
+          ) : (
+            <>
+              {dirListings.map((listing) => (
+                <DirectoryItem
+                  key={listing.id}
+                  listing={listing}
+                  connectionStatus={dirConnectionStatusMap.get(listing.agentId)}
+                  isActive={listing.id === selectedListingId}
+                  onClick={() => setSelectedListingId(listing.id)}
+                />
+              ))}
+              {dirHasMore && dirListings.length > 0 && (
+                <div className="flex justify-center py-3">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => fetchDirMore()}
+                    disabled={dirLoadingMore}
+                    className="text-xs"
+                  >
+                    {dirLoadingMore ? (
+                      <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                    ) : null}
+                    {t("common:loadMore")}
                   </Button>
                 </div>
-              )
-            ) : (
-              <div className="@container flex-1 overflow-y-auto">
-                <div
-                  className={cn(
-                    "sticky top-0 z-10 gap-3 pl-4 pr-20 py-2 border-b border-border bg-card/95 backdrop-blur text-[10px] font-medium text-muted-foreground uppercase tracking-wider",
-                    AGENT_GRID_COLS
-                  )}
-                >
-                  <span className={AGENT_HEADER_INDENT}>{t("common:agent")}</span>
-                  <span />
-                  <span className={AGENT_CELL_ENGINE}>{t("table.engine")}</span>
-                  <span className={AGENT_CELL_MODE}>{t("table.mode")}</span>
-                  <span className={AGENT_CELL_STATUS}>{t("common:status")}</span>
-                  <span>{t("table.actions")}</span>
-                </div>
-                {agentList.map((row) => (
-                  <AgentRow
-                    key={row.managed.agent.id}
-                    managed={row.managed}
-                    depth={row.depth}
-                    isLast={row.isLast}
-                    parentLines={row.parentLines}
-                    hasChildren={row.hasChildren}
-                    childCount={row.childCount}
-                    expanded={row.expanded}
-                    onToggleExpand={() => toggleExpand(row.managed.agent.id)}
-                    selected={row.managed.agent.id === selectedAgentId}
-                    onSelect={() =>
-                      selectAgent(
-                        row.managed.agent.id === selectedAgentId
-                          ? null
-                          : row.managed.agent.id
-                      )
-                    }
-                  />
-                ))}
-              </div>
-            )
-          ) : (
-            <div className="flex-1 overflow-y-auto">
-              {dirLoading && dirListings.length === 0 ? (
-                <div className="flex justify-center py-12">
-                  <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-                </div>
-              ) : dirListings.length === 0 ? (
-                <div className="p-8 text-center text-xs text-muted-foreground">
-                  {dirSearch ? t("noAgentsFound") : t("emptyDirectory")}
-                </div>
-              ) : (
-                <>
-                  {dirListings.map((listing) => (
-                    <DirectoryItem
-                      key={listing.id}
-                      listing={listing}
-                      connectionStatus={dirConnectionStatusMap.get(listing.agentId)}
-                      isActive={listing.id === selectedListingId}
-                      onClick={() => setSelectedListingId(listing.id)}
-                    />
-                  ))}
-                  {dirHasMore && dirListings.length > 0 && (
-                    <div className="flex justify-center py-3">
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => fetchDirMore()}
-                        disabled={dirLoadingMore}
-                        className="text-xs"
-                      >
-                        {dirLoadingMore ? (
-                          <Loader2 className="mr-1 h-3 w-3 animate-spin" />
-                        ) : null}
-                        {t("common:loadMore")}
-                      </Button>
-                    </div>
-                  )}
-                </>
               )}
-            </div>
+            </>
           )}
-        </div>
-      </main>
-
-      {/* Agent detail panel — laps over the agent area as a rounded panel
-          (like the conversation details pane), animating its width so the grid
-          reflows beside it instead of being occluded by an overlay. Stays
-          mounted (width 0 when closed) so it animates both ways; `displayAgent`
-          keeps content visible through the close transition. */}
-      <aside
-        aria-hidden={!drawerOpen}
-        className={cn(
-          "surface-panel-strong relative z-20 -ml-3 h-full shrink-0 overflow-hidden rounded-l-lg bg-card",
-          "transition-[width] duration-300 ease-out",
-          drawerOpen ? "w-[760px] max-w-[70vw]" : "w-0"
-        )}
-      >
-        <div className="h-full w-[760px] max-w-[70vw]">
-          {displayAgent && <AgentConfig managed={displayAgent} />}
         </div>
       </aside>
 
-      {/* Directory listing detail panel — same lapping treatment. */}
-      <aside
-        aria-hidden={!dirDrawerOpen}
-        className={cn(
-          "surface-panel-strong relative z-20 -ml-3 h-full shrink-0 overflow-hidden rounded-l-lg bg-card",
-          "transition-[width] duration-300 ease-out",
-          dirDrawerOpen ? "w-[600px] max-w-[60vw]" : "w-0"
-        )}
-      >
-        <div className="h-full w-[600px] max-w-[60vw]">
-          {displayListing && (
-            <DirectoryAgentDetail
-              key={displayListing.id}
-              listing={displayListing}
-              connection={selectedListingConnection}
-              onConnect={(mode) => handleConnect(displayListing, mode)}
-              onDisconnect={() =>
-                selectedListingConnection &&
-                handleDisconnect(selectedListingConnection.id)
-              }
-              onClose={() => setSelectedListingId(null)}
+      <ResizeHandle
+        left={listWidth}
+        resizing={resizing}
+        onResizeStart={onResizeStart}
+        onResizeReset={onResizeReset}
+        label={t("resizeList")}
+      />
+
+      {/* Detail pane — always mounted; laps over the list seam (-ml-2) as an
+          elevated rounded card, like the chat view + web app. */}
+      <section className="surface-panel relative z-10 -ml-2 flex-1 flex flex-col min-w-0 overflow-hidden rounded-l-2xl bg-card">
+        {activeTab === "agents" ? (
+          selectedAgent ? (
+            <AgentConfig managed={selectedAgent} />
+          ) : onboarding.visible ? (
+            <OnboardingCards
+              onCreateAgent={() => setShowCreate(true)}
+              onOpenConversation={(id) => {
+                setActiveConversation(id);
+                setView("chat");
+              }}
             />
-          )}
-        </div>
-      </aside>
+          ) : (
+            <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
+              <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-3">
+                <Bot className="w-7 h-7 text-primary" />
+              </div>
+              <p className="text-sm font-medium text-foreground">{t("empty.title")}</p>
+              <p className="text-xs text-muted-foreground mt-1 mb-4 max-w-xs">
+                {t("empty.createFirstHint")}
+              </p>
+              <Button size="sm" onClick={() => setShowCreate(true)}>
+                <Plus className="w-3.5 h-3.5" />
+                {t("createAgent")}
+              </Button>
+            </div>
+          )
+        ) : displayListing ? (
+          <DirectoryAgentDetail
+            key={displayListing.id}
+            listing={displayListing}
+            connection={selectedListingConnection}
+            onConnect={(mode) => handleConnect(displayListing, mode)}
+            onDisconnect={() =>
+              selectedListingConnection &&
+              handleDisconnect(selectedListingConnection.id)
+            }
+            onClose={() => setSelectedListingId(null)}
+          />
+        ) : (
+          <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
+            <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-3">
+              <Compass className="w-7 h-7 text-primary" />
+            </div>
+            <p className="text-sm font-medium text-foreground">{t("directoryTitle")}</p>
+            <p className="text-xs text-muted-foreground mt-1 max-w-xs">
+              {t("selectAgentHint")}
+            </p>
+          </div>
+        )}
+      </section>
 
       {showCreate && (
         <CreateAgentModal onClose={() => setShowCreate(false)} />
@@ -1102,3 +1075,4 @@ export function Dashboard() {
     </div>
   );
 }
+

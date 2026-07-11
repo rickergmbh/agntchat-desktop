@@ -3358,12 +3358,11 @@ function AgentHeader({
 }: {
   agent: { id: string; displayName: string; avatarUrl?: string; description?: string; agentType?: string };
 }) {
-  const { t } = useTranslation("agents");
-  const selectAgent = useAgentStore((s) => s.selectAgent);
   return (
     // Fixed h-14 (matches every other column header in the app) so the bottom
     // divider sits at a constant height — with or without a description — and
-    // lines up across the icon sidebar / content panel without an offset.
+    // lines up across the icon sidebar / content panel without an offset. No
+    // close button: the detail pane is always open in the two-pane agent page.
     <div className="h-14 shrink-0 px-4 border-b border-border flex items-center gap-3">
       <Avatar className="h-9 w-9 rounded-lg flex-shrink-0">
         {agent.avatarUrl && <AvatarImage src={agent.avatarUrl} className="rounded-lg" />}
@@ -3379,14 +3378,6 @@ function AgentHeader({
           </p>
         )}
       </div>
-      <button
-        onClick={() => selectAgent(null)}
-        title={t("common:close")}
-        aria-label={t("config.header.closeAriaLabel")}
-        className="shrink-0 flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-      >
-        <X className="h-4 w-4" />
-      </button>
     </div>
   );
 }
