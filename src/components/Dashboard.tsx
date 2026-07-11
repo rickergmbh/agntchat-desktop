@@ -832,10 +832,14 @@ export function Dashboard() {
           >
             {activeTab === "agents" ? (
               <>
-                {/* Search narrows, then collapses to an icon-only trigger as the
-                    header tightens (e.g. detail pane open on a laptop) so it
-                    never crowds the action buttons. */}
-                <div className="relative">
+                {/* Responsive collapse as the header tightens (detail pane open,
+                    small window) so nothing overlaps the tabs on the left:
+                      ≥820px  action labels shown
+                      ≥600px  bulk actions (start/bring/stop all) shown, else hidden
+                      ≥460px  search shown (icon-only until 680px), else hidden
+                    Tabs + Create agent always stay — Create is the primary
+                    action, and per-row controls cover what the bulk buttons do. */}
+                <div className="relative hidden @min-[460px]:block">
                   <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                   <Input
                     type="text"
@@ -846,8 +850,6 @@ export function Dashboard() {
                     className="h-8 pl-8 text-xs w-9 @min-[680px]:w-[120px] @min-[920px]:w-[180px] placeholder:opacity-0 @min-[680px]:placeholder:opacity-100"
                   />
                 </div>
-                {/* Action labels collapse to icon-only when the header is tight;
-                    the `title` tooltips carry the meaning. */}
                 {onlineCount < totalCount && stoppedWithKeys.length > 0 && (
                   <Button
                     size="sm"
@@ -855,6 +857,7 @@ export function Dashboard() {
                     onClick={handleStartAll}
                     disabled={startingAll}
                     title={t("bulk.startStoppedTitle", { count: stoppedWithKeys.length })}
+                    className="hidden @min-[600px]:inline-flex"
                   >
                     <Play className="w-3.5 h-3.5" />
                     <span className="hidden @min-[820px]:inline">
@@ -869,6 +872,7 @@ export function Dashboard() {
                     onClick={handleBringHostedOnline}
                     disabled={wakingHosted}
                     title={t("bulk.bringOnlineTitle", { count: offlineHosted.length })}
+                    className="hidden @min-[600px]:inline-flex"
                   >
                     {wakingHosted ? (
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -889,6 +893,7 @@ export function Dashboard() {
                     onClick={handleStopAll}
                     disabled={stoppingAll}
                     title={t("bulk.stopRunningTitle", { count: runningAgents.length })}
+                    className="hidden @min-[600px]:inline-flex"
                   >
                     <Square className="w-3.5 h-3.5" />
                     <span className="hidden @min-[820px]:inline">
@@ -902,7 +907,7 @@ export function Dashboard() {
                 </Button>
               </>
             ) : (
-              <div className="relative">
+              <div className="relative hidden @min-[460px]:block">
                 <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <Input
                   type="text"
