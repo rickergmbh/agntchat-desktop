@@ -4,6 +4,7 @@ import { useAgentStore, type ManagedAgent } from "../stores/agentStore";
 import { usePresenceStore } from "../stores/presenceStore";
 import { AgentActivityIndicator } from "./AgentActivityIndicator";
 import { useModelCatalog } from "../stores/modelCatalogStore";
+import { formatBackendLabel } from "../lib/models";
 import { cn } from "../lib/utils";
 import { Crown, Cloud, Laptop, Link2, ChevronRight, ChevronDown, Loader2 } from "lucide-react";
 import { restartHostedAgents, forceResetAgent } from "../lib/api";
@@ -266,6 +267,9 @@ export function AgentRow({
   const modelLabel =
     catalogModelLabel(managed.config.model, managed.config.backend) ||
     managed.config.model;
+  // Provider/engine label (Claude Code, Anthropic API, OpenAI Codex, …) shown
+  // in the row meta line beside the runtime + model.
+  const backendLabel = formatBackendLabel(managed.config.backend);
 
   return (
     <div
@@ -286,9 +290,12 @@ export function AgentRow({
           as a trailing icon button. Full status/health lives in the detail
           pane; the list stays scannable. */}
       <div
-        className="flex items-center gap-2.5 py-2.5 pr-3"
-        style={{ paddingLeft: 12 + depth * TREE_INDENT }}
+        className="flex items-center gap-2.5 py-2.5 pl-3 pr-3"
+        style={depth > 0 ? { paddingLeft: 12 + depth * TREE_INDENT } : undefined}
       >
+        {/* Chevron column — only reserved for rows that can expand or are
+            nested (sub-agents need it for tree alignment). A flat list of
+            top-level agents skips it so the avatar isn't pushed right. */}
         {hasChildren ? (
           <button
             type="button"
@@ -309,9 +316,9 @@ export function AgentRow({
               <ChevronRight className="h-3.5 w-3.5" />
             )}
           </button>
-        ) : (
+        ) : depth > 0 ? (
           <span className="h-5 w-5 shrink-0" />
-        )}
+        ) : null}
 
         <div className="relative shrink-0">
           <Avatar className="h-9 w-9 rounded-lg">
@@ -385,8 +392,8 @@ export function AgentRow({
             </p>
           ) : null}
 
-          {/* Meta line: runtime chip + model. */}
-          <div className="mt-0.5 flex items-center gap-2 text-[10px] text-muted-foreground min-w-0">
+          {/* Meta line: runtime chip · provider · model. */}
+          <div className="mt-0.5 flex items-center gap-1.5 text-[10px] text-muted-foreground min-w-0">
             <span className="inline-flex shrink-0 items-center gap-1">
               {managed.agent.runtime === "org_host" ? (
                 <>
@@ -400,8 +407,17 @@ export function AgentRow({
                 </>
               )}
             </span>
+            {backendLabel && (
+              <>
+                <span className="text-muted-foreground/40">·</span>
+                <span className="shrink-0">{backendLabel}</span>
+              </>
+            )}
             {modelLabel && (
-              <span className="truncate font-mono text-[9px]">{modelLabel}</span>
+              <>
+                <span className="text-muted-foreground/40">·</span>
+                <span className="truncate font-mono text-[9px]">{modelLabel}</span>
+              </>
             )}
           </div>
         </div>

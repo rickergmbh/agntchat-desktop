@@ -3410,7 +3410,7 @@ function AgentHeader({
     // divider sits at a constant height — with or without a description — and
     // lines up across the icon sidebar / content panel without an offset. No
     // close button: the detail pane is always open in the two-pane agent page.
-    <div className="h-14 shrink-0 px-4 border-b border-border flex items-center gap-3">
+    <div className="h-14 shrink-0 pl-4 pr-5 border-b border-border flex items-center gap-3">
       <Avatar className="h-9 w-9 rounded-lg flex-shrink-0">
         {agent.avatarUrl && <AvatarImage src={agent.avatarUrl} className="rounded-lg" />}
         <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-xs font-semibold">

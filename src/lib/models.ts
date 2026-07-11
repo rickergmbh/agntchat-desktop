@@ -162,6 +162,9 @@ const BACKEND_DISPLAY_NAMES: Record<string, string> = {
   claude_cli: "Claude Code",
   codex_cli: "OpenAI Codex",
   openclaw: "OpenClaw",
+  anthropic: "Anthropic API",
+  openai: "OpenAI API",
+  google: "Google AI",
 };
 
 export function normalizeModelName(raw: string): string | null {

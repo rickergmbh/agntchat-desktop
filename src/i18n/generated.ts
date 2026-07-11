@@ -52,7 +52,7 @@ export const resources = {
         "thinking": "Thinking...",
         "tool": "Tool: {{name}}"
       },
-      "addAgents": "Add agents",
+      "addAgent": "Add agent",
       "agentDetails": "Agent Details",
       "agentId": "Agent ID",
       "apiKeyReveal": {
@@ -4851,7 +4851,7 @@ export const resources = {
         "thinking": "Pensando...",
         "tool": "Herramienta: {{name}}"
       },
-      "addAgents": "Añadir agentes",
+      "addAgent": "Añadir agente",
       "agentDetails": "Detalles del agente",
       "agentId": "ID del agente",
       "apiKeyReveal": {
@@ -9650,7 +9650,7 @@ export const resources = {
         "thinking": "Denkt nach …",
         "tool": "Tool: {{name}}"
       },
-      "addAgents": "Agenten hinzufügen",
+      "addAgent": "Agent hinzufügen",
       "agentDetails": "Agent-Details",
       "agentId": "Agent-ID",
       "apiKeyReveal": {
@@ -14449,7 +14449,7 @@ export const resources = {
         "thinking": "Réflexion en cours...",
         "tool": "Outil : {{name}}"
       },
-      "addAgents": "Ajouter des agents",
+      "addAgent": "Ajouter un agent",
       "agentDetails": "Détails de l'agent",
       "agentId": "ID de l'agent",
       "apiKeyReveal": {
@@ -19248,7 +19248,7 @@ export const resources = {
         "thinking": "Pensando...",
         "tool": "Ferramenta: {{name}}"
       },
-      "addAgents": "Adicionar agentes",
+      "addAgent": "Adicionar agente",
       "agentDetails": "Detalhes do Agente",
       "agentId": "ID do Agente",
       "apiKeyReveal": {
@@ -24047,7 +24047,7 @@ export const resources = {
         "thinking": "考え中...",
         "tool": "ツール: {{name}}"
       },
-      "addAgents": "エージェントを追加",
+      "addAgent": "エージェントを追加",
       "agentDetails": "エージェントの詳細",
       "agentId": "エージェントID",
       "apiKeyReveal": {
@@ -28846,7 +28846,7 @@ export const resources = {
         "thinking": "思考中…",
         "tool": "工具：{{name}}"
       },
-      "addAgents": "添加智能体",
+      "addAgent": "添加智能体",
       "agentDetails": "智能体详情",
       "agentId": "智能体 ID",
       "apiKeyReveal": {
@@ -33645,7 +33645,7 @@ export const resources = {
         "thinking": "생각 중...",
         "tool": "도구: {{name}}"
       },
-      "addAgents": "에이전트 추가",
+      "addAgent": "에이전트 추가",
       "agentDetails": "에이전트 세부정보",
       "agentId": "에이전트 ID",
       "apiKeyReveal": {
@@ -38444,7 +38444,7 @@ export const resources = {
         "thinking": "Sta pensando...",
         "tool": "Strumento: {{name}}"
       },
-      "addAgents": "Aggiungi agenti",
+      "addAgent": "Aggiungi agente",
       "agentDetails": "Dettagli Agente",
       "agentId": "ID Agente",
       "apiKeyReveal": {
@@ -43243,7 +43243,7 @@ export const resources = {
         "thinking": "सोच रहे हैं...",
         "tool": "टूल: {{name}}"
       },
-      "addAgents": "एजेंट जोड़ें",
+      "addAgent": "एजेंट जोड़ें",
       "agentDetails": "एजेंट विवरण",
       "agentId": "एजेंट आईडी",
       "apiKeyReveal": {
