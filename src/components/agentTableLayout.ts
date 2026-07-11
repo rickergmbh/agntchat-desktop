@@ -34,3 +34,8 @@ export const AGENT_CELL_MODE = "hidden @min-[600px]:block";
 // Status cell — dropped only at the very narrowest tier, where keeping it
 // would collide with the Agent column.
 export const AGENT_CELL_STATUS = "hidden @min-[420px]:block";
+
+// Agent name/description block (beside the avatar). At the very narrowest
+// widths even the truncated name crowds the avatar against the Actions
+// column, so the label drops and only the profile photo remains.
+export const AGENT_CELL_NAME = "hidden @min-[300px]:block";

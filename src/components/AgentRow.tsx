@@ -5,7 +5,7 @@ import { usePresenceStore } from "../stores/presenceStore";
 import { AgentActivityIndicator } from "./AgentActivityIndicator";
 import { formatBackendLabel } from "../lib/models";
 import { useModelCatalog } from "../stores/modelCatalogStore";
-import { AGENT_GRID_COLS, AGENT_CELL_ENGINE, AGENT_CELL_MODE, AGENT_CELL_STATUS } from "./agentTableLayout";
+import { AGENT_GRID_COLS, AGENT_CELL_ENGINE, AGENT_CELL_MODE, AGENT_CELL_STATUS, AGENT_CELL_NAME } from "./agentTableLayout";
 import { formatUptime, cn } from "../lib/utils";
 import { Play, Power, Square, RotateCcw, Crown, Cloud, AlertTriangle, KeyRound, Laptop, Link2, ChevronRight, ChevronDown, Loader2 } from "lucide-react";
 import { restartHostedAgents, forceResetAgent } from "../lib/api";
@@ -497,7 +497,7 @@ export function AgentRow({
               presence={livePresence}
             />
           </div>
-          <div className="min-w-0">
+          <div className={cn(AGENT_CELL_NAME, "min-w-0")}>
             <div className="flex items-center gap-1.5 min-w-0">
               <p className="text-sm font-medium truncate flex-shrink-0">
                 {managed.agent.displayName}
