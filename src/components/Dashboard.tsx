@@ -5,8 +5,6 @@ import { useDirectoryStore } from "../stores/directoryStore";
 import { AgentRow } from "./AgentRow";
 import { AgentConfig } from "./AgentConfig";
 import { CreateAgentModal } from "./CreateAgentModal";
-import { ResizeHandle } from "./ResizeHandle";
-import { useResizableWidth } from "../hooks/useResizableWidth";
 import { cn } from "../lib/utils";
 import {
   Bot,
@@ -641,21 +639,6 @@ export function Dashboard() {
 
   const selectedAgent = selectedAgentId ? agents[selectedAgentId] : null;
 
-  // Two-pane layout (mirrors the web app + the chat view): a resizable list
-  // pane on the left, always-mounted detail pane filling the rest.
-  const {
-    width: listWidth,
-    ref: listRef,
-    resizing,
-    onResizeStart,
-    onResizeReset,
-  } = useResizableWidth({
-    storageKey: "agentchat:agentListWidth",
-    defaultWidth: 560,
-    min: 300,
-    max: 820,
-  });
-
   // Auto-select the first agent so the always-open detail pane is never empty
   // on load (the web app leaves it empty; we do better). Only when nothing is
   // selected and the user owns at least one agent — never fights a manual
@@ -794,13 +777,13 @@ export function Dashboard() {
 
   return (
     <div className="relative flex-1 flex h-full overflow-hidden bg-canvas">
-      {/* List pane — resizable, mirrors the chat view + web app. Header with
-          the Agents/Directory tabs + create, a search row, then the scrolling
-          list. */}
+      {/* List pane — proportional (basis-2/5, capped at 560px on wide screens),
+          mirrors the chat view + web app. Both panes flex with the window so
+          shrinking it narrows the list instead of crushing the detail pane.
+          Header with the Agents/Directory tabs + create, a search row, then
+          the scrolling list. */}
       <aside
-        ref={listRef as React.RefObject<HTMLElement>}
-        className="relative z-0 shrink-0 flex flex-col bg-canvas"
-        style={{ width: listWidth }}
+        className="relative z-0 flex flex-col bg-canvas basis-2/5 min-w-0 max-w-[560px]"
       >
         <header
           className="@container h-14 shrink-0 pl-4 pr-2 flex items-center justify-between gap-2 border-b border-border bg-card"
@@ -1007,17 +990,12 @@ export function Dashboard() {
         </div>
       </aside>
 
-      <ResizeHandle
-        left={listWidth}
-        resizing={resizing}
-        onResizeStart={onResizeStart}
-        onResizeReset={onResizeReset}
-        label={t("resizeList")}
-      />
-
       {/* Detail pane — always mounted; laps over the list seam (-ml-2) as an
-          elevated rounded card, like the chat view + web app. */}
-      <section className="surface-panel relative z-10 -ml-2 flex-1 flex flex-col min-w-0 overflow-hidden rounded-l-2xl bg-card">
+          elevated rounded card, like the chat view + web app. Proportional
+          (basis-3/5) so both panes scale with the window: shrinking the window
+          shrinks the list too, instead of the fixed-width list squeezing this
+          pane to nothing. */}
+      <section className="surface-panel relative z-10 -ml-2 basis-3/5 flex-1 flex flex-col min-w-0 overflow-hidden rounded-l-2xl bg-card">
         {activeTab === "agents" ? (
           selectedAgent ? (
             <AgentConfig managed={selectedAgent} />
