@@ -92,6 +92,10 @@ export function AgentPowerButton({
       size={iconOnly ? "icon-sm" : "sm"}
       className={cn(
         !iconOnly && "h-7 gap-1.5 px-2",
+        // The base `outline` variant's border-border is faint; use the
+        // stronger token (matching the header's info pill) so an outlined
+        // power button clearly reads as a button, not inline text.
+        outlined && "border-border-strong dark:border-border-strong",
         agentPowerButtonVariants({ state }),
         className
       )}
