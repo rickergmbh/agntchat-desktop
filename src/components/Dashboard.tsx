@@ -830,20 +830,23 @@ export function Dashboard() {
           </div>
 
           {activeTab === "agents" && (
-            <button
-              type="button"
+            <Button
+              size="sm"
               onClick={() => setShowCreate(true)}
-              title={t("createAgent")}
-              aria-label={t("createAgent")}
-              className="shrink-0 flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+              title={t("addAgents")}
+              aria-label={t("addAgents")}
+              className="shrink-0"
               style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
             >
-              <Plus className="w-4 h-4" />
-            </button>
+              <Plus className="w-3.5 h-3.5" />
+              {/* Label collapses to icon-only when the (narrow) list header
+                  runs out of room. */}
+              <span className="hidden @min-[300px]:inline">{t("addAgents")}</span>
+            </Button>
           )}
         </header>
 
-        {/* Search row (+ bulk-action icons on the agents tab). */}
+        {/* Search row. */}
         <div className="shrink-0 flex items-center gap-1.5 border-b border-border px-3 py-2">
           <div className="relative flex-1 min-w-0">
             <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -867,48 +870,67 @@ export function Dashboard() {
               />
             )}
           </div>
-          {activeTab === "agents" && (
-            <>
+        </div>
+
+        {/* Bulk actions — labeled, collapsing to icon-only when the list pane
+            is narrow. A dedicated @container row so the labels track the list
+            width, not the whole window. */}
+        {activeTab === "agents" &&
+          (stoppedWithKeys.length > 0 || offlineHosted.length > 0 || runningAgents.length > 0) && (
+            <div className="@container shrink-0 flex items-center gap-1.5 border-b border-border px-3 py-2">
               {onlineCount < totalCount && stoppedWithKeys.length > 0 && (
                 <Button
-                  size="icon-sm"
+                  size="sm"
                   variant="outline"
                   onClick={handleStartAll}
                   disabled={startingAll}
-                  title={t("bulk.startStoppedTitle", { count: stoppedWithKeys.length })}
+                  title={t("bulk.bringAllOnline")}
+                  className="min-w-0"
                 >
                   <Play className="w-3.5 h-3.5" />
+                  <span className="hidden @min-[280px]:inline truncate">
+                    {startingAll ? t("bulk.starting") : t("bulk.bringAllOnline")}
+                  </span>
                 </Button>
               )}
               {offlineHosted.length > 0 && (
                 <Button
-                  size="icon-sm"
+                  size="sm"
                   variant="outline"
                   onClick={handleBringHostedOnline}
                   disabled={wakingHosted}
                   title={t("bulk.bringOnlineTitle", { count: offlineHosted.length })}
+                  className="min-w-0"
                 >
                   {wakingHosted ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
                   ) : (
                     <Power className="w-3.5 h-3.5" />
                   )}
+                  <span className="hidden @min-[280px]:inline truncate">
+                    {wakingHosted
+                      ? t("bulk.bringingOnline")
+                      : t("bulk.bringOnlineCount", { count: offlineHosted.length })}
+                  </span>
                 </Button>
               )}
               {runningAgents.length > 0 && (
                 <Button
-                  size="icon-sm"
+                  size="sm"
                   variant="outline"
                   onClick={handleStopAll}
                   disabled={stoppingAll}
                   title={t("bulk.stopRunningTitle", { count: runningAgents.length })}
+                  className="min-w-0"
                 >
                   <Square className="w-3.5 h-3.5" />
+                  <span className="hidden @min-[280px]:inline truncate">
+                    {stoppingAll ? t("bulk.stopping") : t("bulk.stopAll")}
+                  </span>
                 </Button>
               )}
-            </>
+            </div>
           )}
-        </div>
 
         {/* List body */}
         <div className="flex-1 overflow-y-auto">

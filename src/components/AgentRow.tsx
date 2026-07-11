@@ -270,7 +270,7 @@ export function AgentRow({
   return (
     <div
       className={cn(
-        "relative cursor-pointer border-b border-border last:border-b-0 transition-colors",
+        "@container relative cursor-pointer border-b border-border last:border-b-0 transition-colors",
         selected ? "bg-surface-active" : "hover:bg-surface-hover"
       )}
       onClick={onSelect}
@@ -430,7 +430,8 @@ export function AgentRow({
                 state="bring-online"
                 label={t("row.bringingOnline")}
                 busy
-              iconOnly
+              outlined
+              labelClassName="hidden @min-[340px]:inline"
               />
             ) : remoteOnline ? (
               <TooltipProvider delay={150}>
@@ -455,7 +456,8 @@ export function AgentRow({
                 state="bring-online"
                 label={t("row.bringOnline")}
                 onClick={handleBringOnline}
-              iconOnly
+              outlined
+              labelClassName="hidden @min-[340px]:inline"
               />
             )
           ) : managed.processStatus === "crashed" &&
@@ -467,7 +469,8 @@ export function AgentRow({
               state="warning"
               label={t("row.fixIssue")}
               tooltip={t("row.crashKeyHint")}
-              iconOnly
+              outlined
+              labelClassName="hidden @min-[340px]:inline"
               onClick={(e) => {
                 e.stopPropagation();
                 onSelect();
@@ -478,21 +481,24 @@ export function AgentRow({
               state="warning"
               label={t("row.restart")}
               onClick={handleToggle}
-              iconOnly
+              outlined
+              labelClassName="hidden @min-[340px]:inline"
             />
           ) : isRunning ? (
             <AgentPowerButton
               state="take-offline"
               label={t("row.takeOffline")}
               onClick={handleToggle}
-              iconOnly
+              outlined
+              labelClassName="hidden @min-[340px]:inline"
             />
           ) : startBlockedReason ? (
             <AgentPowerButton
               state="warning"
               label={t("row.fixIssue")}
               tooltip={startBlockedReason}
-              iconOnly
+              outlined
+              labelClassName="hidden @min-[340px]:inline"
               onClick={(e) => {
                 e.stopPropagation();
                 onSelect();
@@ -504,7 +510,8 @@ export function AgentRow({
               label={t("row.bringOnline")}
               onClick={handleToggle}
               disabled={!canStart}
-              iconOnly
+              outlined
+              labelClassName="hidden @min-[340px]:inline"
             />
           )}
         </div>

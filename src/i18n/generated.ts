@@ -52,6 +52,7 @@ export const resources = {
         "thinking": "Thinking...",
         "tool": "Tool: {{name}}"
       },
+      "addAgents": "Add agents",
       "agentDetails": "Agent Details",
       "agentId": "Agent ID",
       "apiKeyReveal": {
@@ -68,6 +69,7 @@ export const resources = {
         "title": "Profile Picture"
       },
       "bulk": {
+        "bringAllOnline": "Bring all online",
         "bringOnlineCount": "Bring online ({{count}})",
         "bringOnlineTitle_one": "Bring {{count}} offline hosted agent back online",
         "bringOnlineTitle_other": "Bring {{count}} offline hosted agents back online",
@@ -4849,6 +4851,7 @@ export const resources = {
         "thinking": "Pensando...",
         "tool": "Herramienta: {{name}}"
       },
+      "addAgents": "Añadir agentes",
       "agentDetails": "Detalles del agente",
       "agentId": "ID del agente",
       "apiKeyReveal": {
@@ -4865,6 +4868,7 @@ export const resources = {
         "title": "Foto de perfil"
       },
       "bulk": {
+        "bringAllOnline": "Conectar todos",
         "bringOnlineCount": "Conectar ({{count}})",
         "bringOnlineTitle_one": "Volver a conectar {{count}} agente alojado desconectado",
         "bringOnlineTitle_other": "Volver a conectar {{count}} agentes alojados desconectados",
@@ -9646,6 +9650,7 @@ export const resources = {
         "thinking": "Denkt nach …",
         "tool": "Tool: {{name}}"
       },
+      "addAgents": "Agenten hinzufügen",
       "agentDetails": "Agent-Details",
       "agentId": "Agent-ID",
       "apiKeyReveal": {
@@ -9662,6 +9667,7 @@ export const resources = {
         "title": "Profilbild"
       },
       "bulk": {
+        "bringAllOnline": "Alle online bringen",
         "bringOnlineCount": "Online bringen ({{count}})",
         "bringOnlineTitle_one": "{{count}} offline gehosteten Agenten wieder online bringen",
         "bringOnlineTitle_other": "{{count}} offline gehostete Agenten wieder online bringen",
@@ -14443,6 +14449,7 @@ export const resources = {
         "thinking": "Réflexion en cours...",
         "tool": "Outil : {{name}}"
       },
+      "addAgents": "Ajouter des agents",
       "agentDetails": "Détails de l'agent",
       "agentId": "ID de l'agent",
       "apiKeyReveal": {
@@ -14459,6 +14466,7 @@ export const resources = {
         "title": "Photo de profil"
       },
       "bulk": {
+        "bringAllOnline": "Tout mettre en ligne",
         "bringOnlineCount": "Mettre en ligne ({{count}})",
         "bringOnlineTitle_one": "Remettre {{count}} agent hébergé hors ligne en ligne",
         "bringOnlineTitle_other": "Remettre {{count}} agents hébergés hors ligne en ligne",
@@ -19240,6 +19248,7 @@ export const resources = {
         "thinking": "Pensando...",
         "tool": "Ferramenta: {{name}}"
       },
+      "addAgents": "Adicionar agentes",
       "agentDetails": "Detalhes do Agente",
       "agentId": "ID do Agente",
       "apiKeyReveal": {
@@ -19256,6 +19265,7 @@ export const resources = {
         "title": "Foto de Perfil"
       },
       "bulk": {
+        "bringAllOnline": "Colocar todos online",
         "bringOnlineCount": "Colocar online ({{count}})",
         "bringOnlineTitle_one": "Colocar {{count}} agente hospedado offline de volta online",
         "bringOnlineTitle_other": "Colocar {{count}} agentes hospedados offline de volta online",
@@ -24037,6 +24047,7 @@ export const resources = {
         "thinking": "考え中...",
         "tool": "ツール: {{name}}"
       },
+      "addAgents": "エージェントを追加",
       "agentDetails": "エージェントの詳細",
       "agentId": "エージェントID",
       "apiKeyReveal": {
@@ -24053,6 +24064,7 @@ export const resources = {
         "title": "プロフィール画像"
       },
       "bulk": {
+        "bringAllOnline": "すべてオンラインにする",
         "bringOnlineCount": "オンラインにする ({{count}})",
         "bringOnlineTitle_one": "オフラインのホスト型エージェント{{count}}件をオンラインに戻す",
         "bringOnlineTitle_other": "オフラインのホスト型エージェント{{count}}件をオンラインに戻す",
@@ -28834,6 +28846,7 @@ export const resources = {
         "thinking": "思考中…",
         "tool": "工具：{{name}}"
       },
+      "addAgents": "添加智能体",
       "agentDetails": "智能体详情",
       "agentId": "智能体 ID",
       "apiKeyReveal": {
@@ -28850,6 +28863,7 @@ export const resources = {
         "title": "个人资料图片"
       },
       "bulk": {
+        "bringAllOnline": "全部上线",
         "bringOnlineCount": "使其上线（{{count}}）",
         "bringOnlineTitle_one": "让 {{count}} 个离线的托管智能体重新上线",
         "bringOnlineTitle_other": "让 {{count}} 个离线的托管智能体重新上线",
@@ -33631,6 +33645,7 @@ export const resources = {
         "thinking": "생각 중...",
         "tool": "도구: {{name}}"
       },
+      "addAgents": "에이전트 추가",
       "agentDetails": "에이전트 세부정보",
       "agentId": "에이전트 ID",
       "apiKeyReveal": {
@@ -33647,6 +33662,7 @@ export const resources = {
         "title": "프로필 사진"
       },
       "bulk": {
+        "bringAllOnline": "모두 온라인으로",
         "bringOnlineCount": "온라인으로 전환 ({{count}})",
         "bringOnlineTitle_one": "오프라인 호스팅 에이전트 {{count}}개를 다시 온라인으로 전환",
         "bringOnlineTitle_other": "오프라인 호스팅 에이전트 {{count}}개를 다시 온라인으로 전환",
@@ -38428,6 +38444,7 @@ export const resources = {
         "thinking": "Sta pensando...",
         "tool": "Strumento: {{name}}"
       },
+      "addAgents": "Aggiungi agenti",
       "agentDetails": "Dettagli Agente",
       "agentId": "ID Agente",
       "apiKeyReveal": {
@@ -38444,6 +38461,7 @@ export const resources = {
         "title": "Immagine del Profilo"
       },
       "bulk": {
+        "bringAllOnline": "Porta tutti online",
         "bringOnlineCount": "Metti online ({{count}})",
         "bringOnlineTitle_one": "Riporta online {{count}} agente ospitato offline",
         "bringOnlineTitle_other": "Riporta online {{count}} agenti ospitati offline",
@@ -43225,6 +43243,7 @@ export const resources = {
         "thinking": "सोच रहे हैं...",
         "tool": "टूल: {{name}}"
       },
+      "addAgents": "एजेंट जोड़ें",
       "agentDetails": "एजेंट विवरण",
       "agentId": "एजेंट आईडी",
       "apiKeyReveal": {
@@ -43241,6 +43260,7 @@ export const resources = {
         "title": "प्रोफ़ाइल फ़ोटो"
       },
       "bulk": {
+        "bringAllOnline": "सभी ऑनलाइन लाएँ",
         "bringOnlineCount": "ऑनलाइन लाएँ ({{count}})",
         "bringOnlineTitle_one": "{{count}} ऑफ़लाइन होस्टेड एजेंट को वापस ऑनलाइन लाएँ",
         "bringOnlineTitle_other": "{{count}} ऑफ़लाइन होस्टेड एजेंट्स को वापस ऑनलाइन लाएँ",

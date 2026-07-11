@@ -50,6 +50,8 @@ import {
 } from "../lib/models";
 import { useModelCatalog } from "../stores/modelCatalogStore";
 import { useLlmKeyStore } from "../stores/llmKeyStore";
+import { useChatStore } from "../stores/chatStore";
+import { useNavStore } from "../stores/navStore";
 import { cn } from "../lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -109,6 +111,7 @@ import {
   Cloud,
   Laptop,
   Brain,
+  MessageCircle,
 } from "lucide-react";
 import {
   Dialog,
@@ -3358,6 +3361,50 @@ function AgentHeader({
 }: {
   agent: { id: string; displayName: string; avatarUrl?: string; description?: string; agentType?: string };
 }) {
+  const { t } = useTranslation("agents");
+  const conversations = useChatStore((s) => s.conversations);
+  const fetchConversations = useChatStore((s) => s.fetchConversations);
+  const createConversation = useChatStore((s) => s.createConversation);
+  const setActiveConversation = useChatStore((s) => s.setActiveConversation);
+  const setView = useNavStore((s) => s.setView);
+  const [startingChat, setStartingChat] = useState(false);
+
+  // Open (or create) the owner<->agent DM and jump to the chat view — mirrors
+  // the mobile agent-detail "Chat" button. Reuses the existing direct
+  // conversation if one already exists, else creates it.
+  const handleChat = async () => {
+    if (startingChat) return;
+    setStartingChat(true);
+    try {
+      const existing = conversations.find(
+        (c) =>
+          c.type === "direct" &&
+          (c.members ?? []).some((m) => m.participantId === agent.id)
+      );
+      let convId = existing?.id;
+      if (!convId) {
+        // Make sure the list is fresh before creating a duplicate.
+        await fetchConversations();
+        const fresh = useChatStore.getState().conversations.find(
+          (c) =>
+            c.type === "direct" &&
+            (c.members ?? []).some((m) => m.participantId === agent.id)
+        );
+        convId = fresh?.id;
+      }
+      if (!convId) {
+        const conv = await createConversation({ type: "direct", memberIds: [agent.id] });
+        convId = conv.id;
+      }
+      setActiveConversation(convId);
+      setView("chat");
+    } catch {
+      // Non-fatal — the user stays on the detail pane.
+    } finally {
+      setStartingChat(false);
+    }
+  };
+
   return (
     // Fixed h-14 (matches every other column header in the app) so the bottom
     // divider sits at a constant height — with or without a description — and
@@ -3378,6 +3425,21 @@ function AgentHeader({
           </p>
         )}
       </div>
+      {/* Chat — opens the DM with this agent (mirrors mobile agent detail). */}
+      <Button
+        size="sm"
+        onClick={handleChat}
+        disabled={startingChat}
+        title={t("common:chat")}
+        className="shrink-0"
+      >
+        {startingChat ? (
+          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+        ) : (
+          <MessageCircle className="h-3.5 w-3.5" />
+        )}
+        {t("common:chat")}
+      </Button>
     </div>
   );
 }
