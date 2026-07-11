@@ -5,7 +5,7 @@ import { usePresenceStore } from "../stores/presenceStore";
 import { AgentActivityIndicator } from "./AgentActivityIndicator";
 import { formatBackendLabel } from "../lib/models";
 import { useModelCatalog } from "../stores/modelCatalogStore";
-import { AGENT_GRID_COLS, AGENT_CELL_ENGINE, AGENT_CELL_MODE } from "./agentTableLayout";
+import { AGENT_GRID_COLS, AGENT_CELL_ENGINE, AGENT_CELL_MODE, AGENT_CELL_STATUS } from "./agentTableLayout";
 import { formatUptime, cn } from "../lib/utils";
 import { Play, Power, Square, RotateCcw, Crown, Cloud, AlertTriangle, KeyRound, Laptop, Link2, ChevronRight, ChevronDown, Loader2 } from "lucide-react";
 import { restartHostedAgents, forceResetAgent } from "../lib/api";
@@ -596,7 +596,7 @@ export function AgentRow({
         </div>
 
         {/* Status (+ health hint when non-healthy) */}
-        <div>
+        <div className={AGENT_CELL_STATUS}>
           {error ? (
             <span className="text-xs text-destructive truncate block" title={error}>
               {error.slice(0, 25)}...

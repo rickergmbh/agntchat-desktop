@@ -6,15 +6,22 @@
 // detail pane laps over it on a laptop — columns drop progressively instead of
 // overflowing and colliding under the pane:
 //
-//   narrow            Agent | Status | Actions
+//   narrow            Agent | Actions
+//   ≥ 420px  (+Status)Agent | Status | Actions
 //   ≥ 600px  (+Mode)  Agent | Mode | Status | Actions
 //   ≥ 840px  (+Engine)Agent | Engine | Mode | Status | Actions
+//
+// The narrowest tier keeps only Agent + Actions: the fixed Status/Mode/Engine
+// tracks are what collide with the (shrinking) Agent column when the pane
+// squeezes the list, so each drops out before it can overlap rather than the
+// grid overflowing. Actions (56px) always stays — it's the row's controls.
 //
 // The header (Dashboard) and every row (AgentRow) MUST use these same strings
 // so the column tracks and the cells that fill them stay in lockstep — the
 // grid template and the cell visibility toggles share the same breakpoints.
 export const AGENT_GRID_COLS =
-  "grid grid-cols-[1fr_140px_56px] " +
+  "grid grid-cols-[1fr_56px] " +
+  "@min-[420px]:grid-cols-[1fr_140px_56px] " +
   "@min-[600px]:grid-cols-[1fr_140px_140px_56px] " +
   "@min-[840px]:grid-cols-[1fr_180px_140px_140px_56px]";
 
@@ -23,3 +30,7 @@ export const AGENT_CELL_ENGINE = "hidden @min-[840px]:block";
 
 // Mode cell — shown from the medium tier up.
 export const AGENT_CELL_MODE = "hidden @min-[600px]:block";
+
+// Status cell — dropped only at the very narrowest tier, where keeping it
+// would collide with the Agent column.
+export const AGENT_CELL_STATUS = "hidden @min-[420px]:block";
