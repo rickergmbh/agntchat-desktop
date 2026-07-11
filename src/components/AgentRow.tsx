@@ -271,6 +271,25 @@ export function AgentRow({
   // in the row meta line beside the runtime + model.
   const backendLabel = formatBackendLabel(managed.config.backend);
 
+  // Explicit status beyond the avatar dot — a labeled pill by the name.
+  // Locally-running is known instantly; otherwise WS presence is the truth
+  // (covers org-host + agents running on another device).
+  const isOnline = isRunning || liveOnline;
+  const status: "crashed" | "starting" | "online" | "offline" =
+    managed.processStatus === "crashed"
+      ? "crashed"
+      : managed.processStatus === "starting" || waking
+        ? "starting"
+        : isOnline
+          ? "online"
+          : "offline";
+  const STATUS_META = {
+    online: { label: t("common:online"), cls: "border-success/30 bg-success/10 text-success" },
+    offline: { label: t("common:offline"), cls: "border-border bg-muted/40 text-muted-foreground" },
+    starting: { label: t("row.starting"), cls: "border-warning/30 bg-warning/10 text-warning" },
+    crashed: { label: t("row.crashed"), cls: "border-destructive/30 bg-destructive/10 text-destructive" },
+  }[status];
+
   return (
     <div
       className={cn(
@@ -334,10 +353,27 @@ export function AgentRow({
         </div>
 
         <div className="min-w-0 flex-1">
-          {/* Name + badges */}
+          {/* Name + status + badges */}
           <div className="flex items-center gap-1.5 min-w-0">
             <span className="text-sm font-medium truncate">
               {managed.agent.displayName}
+            </span>
+            <span
+              className={cn(
+                "shrink-0 inline-flex items-center gap-1 rounded-full border px-1.5 py-0 text-[9px] font-medium uppercase tracking-wide",
+                STATUS_META.cls
+              )}
+            >
+              <span
+                className={cn(
+                  "h-1.5 w-1.5 rounded-full",
+                  status === "online" && "bg-success",
+                  status === "offline" && "bg-muted-foreground/50",
+                  status === "starting" && "bg-warning animate-pulse",
+                  status === "crashed" && "bg-destructive"
+                )}
+              />
+              {STATUS_META.label}
             </span>
             {managed.agent.agentType === "orchestrator" && (
               <Crown className="h-3 w-3 text-primary flex-shrink-0" />
