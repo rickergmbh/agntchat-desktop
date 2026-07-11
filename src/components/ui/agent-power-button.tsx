@@ -61,6 +61,10 @@ export interface AgentPowerButtonProps
   /** Render icon-only (label as aria-label + tooltip fallback) for very tight
    *  spaces. Defaults to a labeled button. */
   iconOnly?: boolean;
+  /** Classes applied to the label span — e.g. a container-query
+   *  `"hidden @min-[360px]:inline"` to collapse to icon-only when the column
+   *  gets tight (the icon stays; `title`/`aria-label` carry the name). */
+  labelClassName?: string;
   /** Give the control a visible border/fill so it reads as a button rather
    *  than inline text. Use where it stands alone (e.g. a conversation header)
    *  rather than in a dense list of ghost row actions. */
@@ -82,6 +86,7 @@ export function AgentPowerButton({
   busy,
   tooltip,
   iconOnly,
+  labelClassName,
   outlined,
   className,
 }: AgentPowerButtonProps) {
@@ -101,15 +106,17 @@ export function AgentPowerButton({
       )}
       onClick={onClick}
       disabled={disabled || busy}
-      aria-label={iconOnly ? label : undefined}
-      title={iconOnly && !tooltip ? label : undefined}
+      // Icon-only (statically or via labelClassName's container query): the
+      // name must still be reachable, so always expose it as aria-label/title.
+      aria-label={label}
+      title={!tooltip ? label : undefined}
     >
       {busy ? (
         <Loader2 className="w-3.5 h-3.5 animate-spin" />
       ) : (
         <Icon className="w-3.5 h-3.5" />
       )}
-      {!iconOnly && <span className="truncate">{label}</span>}
+      {!iconOnly && <span className={cn("truncate", labelClassName)}>{label}</span>}
     </Button>
   );
 

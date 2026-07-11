@@ -662,6 +662,7 @@ export function AgentRow({
                 label={t("row.bringingOnline")}
                 busy
                 outlined
+                labelClassName="hidden @min-[360px]:inline"
               />
             ) : remoteOnline ? (
               <TooltipProvider delay={150}>
@@ -687,6 +688,7 @@ export function AgentRow({
                 label={t("row.bringOnline")}
                 onClick={handleBringOnline}
                 outlined
+                labelClassName="hidden @min-[360px]:inline"
               />
             )
           ) : managed.processStatus === "crashed" &&
@@ -699,6 +701,7 @@ export function AgentRow({
               label={t("row.fixIssue")}
               tooltip={t("row.crashKeyHint")}
               outlined
+              labelClassName="hidden @min-[360px]:inline"
               onClick={(e) => {
                 e.stopPropagation();
                 onSelect();
@@ -710,6 +713,7 @@ export function AgentRow({
               label={t("row.restart")}
               onClick={handleToggle}
               outlined
+              labelClassName="hidden @min-[360px]:inline"
             />
           ) : isRunning ? (
             <AgentPowerButton
@@ -717,6 +721,7 @@ export function AgentRow({
               label={t("row.takeOffline")}
               onClick={handleToggle}
               outlined
+              labelClassName="hidden @min-[360px]:inline"
             />
           ) : startBlockedReason ? (
             <AgentPowerButton
@@ -724,6 +729,7 @@ export function AgentRow({
               label={t("row.fixIssue")}
               tooltip={startBlockedReason}
               outlined
+              labelClassName="hidden @min-[360px]:inline"
               onClick={(e) => {
                 e.stopPropagation();
                 onSelect();
@@ -736,6 +742,7 @@ export function AgentRow({
               onClick={handleToggle}
               disabled={!canStart}
               outlined
+              labelClassName="hidden @min-[360px]:inline"
             />
           )}
         </div>
