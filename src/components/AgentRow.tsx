@@ -563,6 +563,10 @@ export function AgentRow({
           </div>
         </div>
 
+        {/* Slack spacer — the 1fr track that caps the Agent column at ~3/4 of
+            the free width (see AGENT_GRID_COLS). */}
+        <div aria-hidden />
+
         {/* Engine — backend + model on two lines so the row stays compact.
             Hidden when the list is narrow (e.g. detail pane open); the engine
             is still shown inside the detail pane. */}

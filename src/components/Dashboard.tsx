@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useAgentStore, type ManagedAgent } from "../stores/agentStore";
 import { useDirectoryStore } from "../stores/directoryStore";
 import { AgentRow } from "./AgentRow";
-import { AGENT_GRID_COLS, AGENT_CELL_ENGINE, AGENT_CELL_MODE, AGENT_CELL_STATUS } from "./agentTableLayout";
+import { AGENT_GRID_COLS, AGENT_CELL_ENGINE, AGENT_CELL_MODE, AGENT_CELL_STATUS, AGENT_HEADER_INDENT } from "./agentTableLayout";
 import { AgentConfig } from "./AgentConfig";
 import { CreateAgentModal } from "./CreateAgentModal";
 import { cn } from "../lib/utils";
@@ -962,7 +962,8 @@ export function Dashboard() {
                     AGENT_GRID_COLS
                   )}
                 >
-                  <span>{t("common:agent")}</span>
+                  <span className={AGENT_HEADER_INDENT}>{t("common:agent")}</span>
+                  <span />
                   <span className={AGENT_CELL_ENGINE}>{t("table.engine")}</span>
                   <span className={AGENT_CELL_MODE}>{t("table.mode")}</span>
                   <span className={AGENT_CELL_STATUS}>{t("common:status")}</span>
