@@ -581,7 +581,7 @@ export function AgentRow({
             see at a glance whether the agent runs on this device or on
             a shared org host (set in AgentConfig → Runtime). Drops out
             first when the list narrows. */}
-        <div className={cn(AGENT_CELL_MODE, "truncate")}>
+        <div className={cn(AGENT_CELL_MODE, "min-w-0 overflow-hidden")}>
           {managed.agent.runtime === "org_host" ? (
             <Badge
               variant="outline"
@@ -601,8 +601,10 @@ export function AgentRow({
           )}
         </div>
 
-        {/* Status (+ health hint when non-healthy) */}
-        <div className={AGENT_CELL_STATUS}>
+        {/* Status (+ health hint when non-healthy). min-w-0 + overflow-hidden
+            so a wide badge (device name / uptime) clips to its track instead
+            of overflowing into the Actions column. */}
+        <div className={cn(AGENT_CELL_STATUS, "min-w-0 overflow-hidden")}>
           {error ? (
             <span className="text-xs text-destructive truncate block" title={error}>
               {error.slice(0, 25)}...
