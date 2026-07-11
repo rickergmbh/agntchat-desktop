@@ -1278,6 +1278,7 @@ export const resources = {
         "yourDmWith": "Your DM with {{agentName}}"
       },
       "row": {
+        "bringOnline": "Bring online",
         "bringingOnline": "Bringing online…",
         "crashed": "Crashed",
         "onAnotherDevice": "On another device",
@@ -6070,6 +6071,7 @@ export const resources = {
         "yourDmWith": "Tu chat directo con {{agentName}}"
       },
       "row": {
+        "bringOnline": "Poner en línea",
         "bringingOnline": "Conectando…",
         "crashed": "Falló",
         "onAnotherDevice": "En otro dispositivo",
@@ -10862,6 +10864,7 @@ export const resources = {
         "yourDmWith": "Ihre Direktnachricht mit {{agentName}}"
       },
       "row": {
+        "bringOnline": "Online bringen",
         "bringingOnline": "Wird online gebracht …",
         "crashed": "Abgestürzt",
         "onAnotherDevice": "Auf einem anderen Gerät",
@@ -15654,6 +15657,7 @@ export const resources = {
         "yourDmWith": "Votre message privé avec {{agentName}}"
       },
       "row": {
+        "bringOnline": "Mettre en ligne",
         "bringingOnline": "Mise en ligne…",
         "crashed": "Planté",
         "onAnotherDevice": "Sur un autre appareil",
@@ -20446,6 +20450,7 @@ export const resources = {
         "yourDmWith": "Sua DM com {{agentName}}"
       },
       "row": {
+        "bringOnline": "Colocar online",
         "bringingOnline": "Colocando online…",
         "crashed": "Falhou",
         "onAnotherDevice": "Em outro dispositivo",
@@ -25238,6 +25243,7 @@ export const resources = {
         "yourDmWith": "{{agentName}}とのDM"
       },
       "row": {
+        "bringOnline": "オンラインにする",
         "bringingOnline": "オンラインにしています…",
         "crashed": "クラッシュ",
         "onAnotherDevice": "他のデバイスで実行中",
@@ -30030,6 +30036,7 @@ export const resources = {
         "yourDmWith": "您与 {{agentName}} 的私信"
       },
       "row": {
+        "bringOnline": "上线",
         "bringingOnline": "正在上线…",
         "crashed": "已崩溃",
         "onAnotherDevice": "在另一台设备上",
@@ -34822,6 +34829,7 @@ export const resources = {
         "yourDmWith": "{{agentName}}와(과)의 DM"
       },
       "row": {
+        "bringOnline": "온라인으로 전환",
         "bringingOnline": "온라인으로 전환 중…",
         "crashed": "충돌함",
         "onAnotherDevice": "다른 기기에서",
@@ -39614,6 +39622,7 @@ export const resources = {
         "yourDmWith": "Il tuo DM con {{agentName}}"
       },
       "row": {
+        "bringOnline": "Porta online",
         "bringingOnline": "Messa online in corso…",
         "crashed": "Interrotto",
         "onAnotherDevice": "Su un altro dispositivo",
@@ -44406,6 +44415,7 @@ export const resources = {
         "yourDmWith": "{{agentName}} के साथ आपका DM"
       },
       "row": {
+        "bringOnline": "ऑनलाइन लाएँ",
         "bringingOnline": "ऑनलाइन लाया जा रहा है…",
         "crashed": "क्रैश हो गया",
         "onAnotherDevice": "किसी अन्य डिवाइस पर",

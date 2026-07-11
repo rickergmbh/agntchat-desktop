@@ -14,16 +14,17 @@
 // The narrowest tier keeps only Agent + Actions: the fixed Status/Mode/Engine
 // tracks are what collide with the (shrinking) Agent column when the pane
 // squeezes the list, so each drops out before it can overlap rather than the
-// grid overflowing. Actions (56px) always stays — it's the row's controls.
+// grid overflowing. Actions (112px) always stays — it's the row's controls,
+// wide enough for the labeled "Bring online" button.
 //
 // The header (Dashboard) and every row (AgentRow) MUST use these same strings
 // so the column tracks and the cells that fill them stay in lockstep — the
 // grid template and the cell visibility toggles share the same breakpoints.
 export const AGENT_GRID_COLS =
-  "grid grid-cols-[1fr_56px] " +
-  "@min-[420px]:grid-cols-[1fr_140px_56px] " +
-  "@min-[600px]:grid-cols-[1fr_140px_140px_56px] " +
-  "@min-[840px]:grid-cols-[1fr_180px_140px_140px_56px]";
+  "grid grid-cols-[1fr_112px] " +
+  "@min-[420px]:grid-cols-[1fr_140px_112px] " +
+  "@min-[600px]:grid-cols-[1fr_140px_140px_112px] " +
+  "@min-[840px]:grid-cols-[1fr_180px_140px_140px_112px]";
 
 // Engine cell — only shown at the widest tier.
 export const AGENT_CELL_ENGINE = "hidden @min-[840px]:block";

@@ -7,7 +7,7 @@ import { formatBackendLabel } from "../lib/models";
 import { useModelCatalog } from "../stores/modelCatalogStore";
 import { AGENT_GRID_COLS, AGENT_CELL_ENGINE, AGENT_CELL_MODE, AGENT_CELL_STATUS, AGENT_CELL_NAME } from "./agentTableLayout";
 import { formatUptime, cn } from "../lib/utils";
-import { Play, Power, Square, RotateCcw, Crown, Cloud, AlertTriangle, KeyRound, Laptop, Link2, ChevronRight, ChevronDown, Loader2 } from "lucide-react";
+import { Power, Square, RotateCcw, Crown, Cloud, AlertTriangle, KeyRound, Laptop, Link2, ChevronRight, ChevronDown, Loader2 } from "lucide-react";
 import { restartHostedAgents, forceResetAgent } from "../lib/api";
 import { runningElsewhereOn, useLocalDeviceName } from "../hooks/useRunningElsewhere";
 import { Badge } from "@/components/ui/badge";
@@ -649,12 +649,7 @@ export function AgentRow({
             </TooltipProvider>
           ) : isOrgHost ? (
             waking ? (
-              <span
-                className="flex h-7 w-7 items-center justify-center text-warning"
-                title="Bringing online…"
-              >
-                <Loader2 className="w-4 h-4 animate-spin" />
-              </span>
+              <BringOnlineButton waking />
             ) : remoteOnline ? (
               <TooltipProvider delay={150}>
                 <Tooltip>
@@ -671,17 +666,10 @@ export function AgentRow({
                 </Tooltip>
               </TooltipProvider>
             ) : (
-              // Offline hosted agent — let the owner restart its bridge on the
-              // host (the hosted equivalent of the local Play button).
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                className="text-info hover:text-info/90"
-                onClick={handleBringOnline}
-                title="Bring online (restart bridge on its host)"
-              >
-                <Power className="w-4 h-4" />
-              </Button>
+              // Offline hosted agent — restart its bridge on the host. Same
+              // "Bring online" button as a local agent so the action reads
+              // identically regardless of where the agent runs.
+              <BringOnlineButton onClick={handleBringOnline} />
             )
           ) : managed.processStatus === "crashed" &&
             (managed.crashKind === "auth" || managed.crashKind === "no_key") ? (
@@ -742,9 +730,7 @@ export function AgentRow({
               </Tooltip>
             </TooltipProvider>
           ) : (
-            <Button variant="ghost" size="icon-sm" className="text-success hover:text-success/90" onClick={handleToggle} disabled={!canStart} title="Start">
-              <Play className="w-4 h-4" />
-            </Button>
+            <BringOnlineButton onClick={handleToggle} disabled={!canStart} />
           )}
         </div>
       </div>
@@ -811,5 +797,42 @@ export function AgentRow({
         </DialogContent>
       </Dialog>
     </div>
+  );
+}
+
+/**
+ * The row's "bring online" action. One button for both local and hosted
+ * offline agents so the action reads identically regardless of where the agent
+ * runs — starting a local subprocess and restarting a bridge on the org host
+ * both mean "get this agent online". Shows a spinner + "Bringing online…"
+ * while a hosted wake is in flight.
+ */
+function BringOnlineButton({
+  onClick,
+  disabled,
+  waking,
+}: {
+  onClick?: (e: React.MouseEvent) => void;
+  disabled?: boolean;
+  waking?: boolean;
+}) {
+  const { t } = useTranslation("agents");
+  return (
+    <Button
+      variant="ghost"
+      size="sm"
+      className="h-7 gap-1.5 px-2 text-success hover:text-success/90"
+      onClick={onClick}
+      disabled={disabled || waking}
+    >
+      {waking ? (
+        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+      ) : (
+        <Power className="w-3.5 h-3.5" />
+      )}
+      <span className="truncate">
+        {waking ? t("row.bringingOnline") : t("row.bringOnline")}
+      </span>
+    </Button>
   );
 }
