@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import { request } from "./api";
 import type { AgentType, ToneKey } from "./buildSoulMd";
 
 /**
@@ -6,6 +8,11 @@ import type { AgentType, ToneKey } from "./buildSoulMd";
  * one pre-seeds role/tone/specialties/description/instructions, and every
  * later step stays fully editable. `instructions` flows into the soul via
  * buildSoulMd's "Additional Instructions" block.
+ *
+ * The catalog is served by the backend (`GET /api/agents/presets`,
+ * `Agentchat.AgentPresets`) — the single source of truth shared by web,
+ * desktop, and mobile. Nothing here is hardcoded; we only fetch, cache, and
+ * derive the i18n key names from each preset's `id`.
  *
  * UI copy (label/tagline/name placeholder) lives in the `agents` i18n
  * namespace under `create.presets.<id>.*`. The instruction/description
@@ -40,92 +47,79 @@ export interface AgentPreset {
   tools?: string[];
 }
 
-export const AGENT_PRESETS: AgentPreset[] = [
-  {
-    id: "assistant",
-    labelKey: "create.presets.assistant.label",
-    taglineKey: "create.presets.assistant.tagline",
-    namePlaceholderKey: "create.presets.assistant.namePlaceholder",
-    role: "orchestrator",
-    tone: "friendly",
-    model: "claude-sonnet-4-6",
-    specialties: ["Task Prioritization", "Team Coordination", "Workflow Automation"],
-    description: "Personal assistant that keeps the day on track",
-    instructions: [
-      "You are your owner's day-to-day right hand.",
-      "- Keep track of what matters to them: open threads, commitments, upcoming deadlines. Save durable facts to memory so you never ask twice.",
-      "- Set reminders and routines when asked — and when you notice the same request repeating, offer to turn it into a routine (offer once, don't nag).",
-      "- When the owner has specialist agents, delegate work to them and synthesize the results instead of doing everything yourself.",
-      "- Answer 'what's on today?' style questions with a tight, scannable rundown — a few lines, most important first, no walls of text.",
-      "- Be proactive but quiet: one useful nudge beats three notifications. If nothing needs attention, say nothing.",
-    ].join("\n"),
-  },
-  {
-    id: "email",
-    labelKey: "create.presets.email.label",
-    taglineKey: "create.presets.email.tagline",
-    namePlaceholderKey: "create.presets.email.namePlaceholder",
-    role: "worker",
-    tone: "professional",
-    model: "claude-sonnet-4-6",
-    specialties: ["Email Triage", "Inbox Management", "Drafting Replies", "Writing"],
-    description: "Email agent that triages the inbox and drafts replies",
-    requiresGoogle: true,
-    tools: ["list_emails", "get_email", "send_email", "save_draft"],
-    instructions: [
-      "You work your owner's email via the Google tools (list_emails, get_email, send_email).",
-      "- Triage: when asked about the inbox, list_emails and summarize what actually needs attention — sender, one-line gist, urgency, and the action required. Group noise (newsletters, notifications) into a single line.",
-      "- DRAFT-FIRST, ALWAYS: compose the full reply text and show it to your owner for an explicit OK before calling send_email. Never send anything they haven't seen. Editing a draft twice is normal; sending unseen mail is never OK.",
-      "- Match the register of the thread you're replying to; keep replies shorter than the mail they answer.",
-      "- If Google isn't connected yet, tell your owner once — connecting happens in Profile → Connected Accounts — and stop; don't retry the tools until they say it's done.",
-    ].join("\n"),
-  },
-  {
-    id: "calendar",
-    labelKey: "create.presets.calendar.label",
-    taglineKey: "create.presets.calendar.tagline",
-    namePlaceholderKey: "create.presets.calendar.namePlaceholder",
-    role: "worker",
-    tone: "professional",
-    model: "claude-sonnet-4-6",
-    specialties: ["Scheduling", "Calendar Management", "Meeting Prep"],
-    description: "Calendar agent that manages events and the daily agenda",
-    requiresGoogle: true,
-    tools: [
-      "list_calendars",
-      "list_calendar_events",
-      "get_calendar_event",
-      "create_calendar_event",
-      "update_calendar_event",
-      "move_calendar_event",
-      "delete_calendar_event",
-    ],
-    instructions: [
-      "You manage your owner's calendar via the Google tools (list_calendar_events, create_calendar_event).",
-      "- Agenda: when asked about the day or week, list_calendar_events and answer like a good chief of staff — chronological, with gaps and conflicts called out, prep notes where useful.",
-      "- Creating events: confirm title, date, start/end time, and timezone before creating. After creating, fetch the event back by id and confirm it landed correctly.",
-      "- Never delete or move an event without an explicit confirmation for that specific event.",
-      "- Watch for conflicts: if a requested slot collides with an existing event, say so and propose alternatives instead of double-booking.",
-      "- If Google isn't connected yet, tell your owner once — connecting happens in Profile → Connected Accounts — and stop; don't retry the tools until they say it's done.",
-    ].join("\n"),
-  },
-  {
-    id: "research",
-    labelKey: "create.presets.research.label",
-    taglineKey: "create.presets.research.tagline",
-    namePlaceholderKey: "create.presets.research.namePlaceholder",
-    role: "worker",
-    tone: "technical",
-    model: "claude-sonnet-5",
-    specialties: ["Research", "Writing", "Data Analysis"],
-    description: "Research agent that turns questions into cited briefs",
-    instructions: [
-      "You turn questions into researched, decision-ready briefs using web_search and web_fetch.",
-      "- Structure every brief the same way: key findings first (3-5 bullets), then the supporting evidence, then open questions.",
-      "- Cite sources inline with URLs. Prefer primary sources; note when you had to rely on secondary ones.",
-      "- Separate fact from inference explicitly — 'the filing says X' vs 'this suggests Y'.",
-      "- State your confidence and what would change your conclusion. A short honest brief beats a long padded one.",
-      "- When the question is ambiguous, make the most reasonable reading, state it in one line, and answer — don't bounce it back.",
-    ].join("\n"),
-  },
-];
+/** Raw wire shape from `GET /api/agents/presets` — camelCase, config only.
+ *  UI key names are derived client-side from `id`. */
+interface PresetWire {
+  id: AgentPreset["id"];
+  role: AgentType;
+  tone: ToneKey;
+  model?: string | null;
+  specialties: string[];
+  description: string;
+  instructions: string;
+  requiresGoogle: boolean;
+  tools: string[];
+}
+
+function fromWire(p: PresetWire): AgentPreset {
+  return {
+    id: p.id,
+    labelKey: `create.presets.${p.id}.label`,
+    taglineKey: `create.presets.${p.id}.tagline`,
+    namePlaceholderKey: `create.presets.${p.id}.namePlaceholder`,
+    role: p.role,
+    tone: p.tone,
+    model: p.model ?? undefined,
+    specialties: p.specialties,
+    description: p.description,
+    instructions: p.instructions,
+    requiresGoogle: p.requiresGoogle,
+    tools: p.tools,
+  };
+}
+
+let cache: AgentPreset[] | null = null;
+let pending: Promise<AgentPreset[]> | null = null;
+
+export async function getAgentPresets(): Promise<AgentPreset[]> {
+  if (cache) return cache;
+  if (pending) return pending;
+
+  pending = request<{ presets: PresetWire[] }>("/api/agents/presets")
+    .then((res) => {
+      cache = res.presets.map(fromWire);
+      return cache;
+    })
+    .catch(() => {
+      // No offline fallback: the presets are optional scaffolding for the
+      // wizard, and the "Start from scratch" path always works. An empty
+      // catalog simply hides the preset cards.
+      cache = [];
+      return cache;
+    })
+    .finally(() => {
+      pending = null;
+    });
+
+  return pending;
+}
+
+export function resetAgentPresetsCache(): void {
+  cache = null;
+  pending = null;
+}
+
+export function useAgentPresets(): AgentPreset[] {
+  const [presets, setPresets] = useState<AgentPreset[]>(cache ?? []);
+
+  useEffect(() => {
+    if (cache) {
+      if (cache !== presets) setPresets(cache);
+      return;
+    }
+    getAgentPresets().then(setPresets);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return presets;
+}

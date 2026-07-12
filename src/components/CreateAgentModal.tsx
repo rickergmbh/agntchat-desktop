@@ -35,7 +35,7 @@ import {
   type PlatformToolSummary,
 } from "../lib/api";
 import { openExternal } from "../lib/openExternal";
-import { AGENT_PRESETS, type AgentPreset } from "../lib/agentPresets";
+import { useAgentPresets, type AgentPreset } from "../lib/agentPresets";
 import { groupIntegrationTools, anyGoogleTool } from "../lib/toolGroups";
 import { useLlmKeyStore } from "../stores/llmKeyStore";
 import { useModelCatalog } from "../stores/modelCatalogStore";
@@ -153,6 +153,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   const PROVIDERS = catalog.providers;
 
   const agentTypes = useAgentTypes();
+  const agentPresets = useAgentPresets();
 
   // ---- Step state ----
   const [stepIndex, setStepIndex] = useState(0);
@@ -926,7 +927,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
               {step === "preset" && (
                 <div className="space-y-2">
                   <div className="grid grid-cols-2 gap-2">
-                    {AGENT_PRESETS.map((p) => {
+                    {agentPresets.map((p) => {
                       const Icon = PRESET_ICONS[p.id];
                       const selected = preset?.id === p.id;
                       return (
