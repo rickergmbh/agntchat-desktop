@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { SpotlightTour, type TourRect, type TourStep } from "../SpotlightTour";
-import { FTUE_KEYS } from "../../lib/ftue";
+import { FTUE_KEYS, hasSeenTour, markTourSeen } from "../../lib/ftue";
 
 // data-tour anchor names. The anchored elements live in sibling components
 // (MessageComposer's paperclip + textarea, the ConversationPane header's info
@@ -70,10 +70,11 @@ export function ConversationTour({
   const [rect, setRect] = useState<TourRect>(null);
   const [pane, setPane] = useState({ width: 0, height: 0 });
 
-  // Auto-start once ever, the first time a conversation is opened.
+  // Auto-start once ever (across all devices), the first time a conversation
+  // is opened. The seen-flag roams via participant metadata.
   useEffect(() => {
-    if (localStorage.getItem(TOUR_SEEN_KEY)) return;
-    localStorage.setItem(TOUR_SEEN_KEY, "1");
+    if (hasSeenTour(TOUR_SEEN_KEY)) return;
+    void markTourSeen(TOUR_SEEN_KEY);
     setStep(0);
   }, []);
 

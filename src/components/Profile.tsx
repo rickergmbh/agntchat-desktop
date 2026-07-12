@@ -9,7 +9,6 @@ import { isDesignSystemDebugOn, setDesignSystemDebug } from "../lib/designSystem
 import * as api from "../lib/api";
 import { identifyAnalytics, track, ANALYTICS_EVENTS } from "../lib/analytics";
 import { cn } from "../lib/utils";
-import { resetFtue } from "../lib/ftue";
 import { PaymentWalletRow } from "./PaymentWalletRow";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -2652,10 +2651,9 @@ function PrivacyDataSection() {
     setFreshError(null);
     try {
       await api.startFresh();
-      // Reset the client-side FTUE too, so a genuinely fresh start replays the
-      // first-run tours (agent-pane + conversation) rather than treating this
-      // returning user as already-oriented.
-      resetFtue();
+      // The account reset clears metadata.tours_seen server-side, so the
+      // first-run tours (agent-pane + conversation) replay after the reload —
+      // no client-side FTUE bookkeeping needed (the flags roam via /me now).
       // The wipe invalidates essentially every client store (conversations,
       // agents, presence, joined channels). Reload to re-bootstrap from the
       // fresh backend state; the onboarding cards reappear because the

@@ -127,7 +127,7 @@ import { AgentRoutines } from "./AgentRoutines";
 import { AgentLoops } from "./AgentLoops";
 import { AvatarCropDialog } from "./AvatarCropDialog";
 import { AgentConfigTour, type TourRect } from "./AgentConfigTour";
-import { FTUE_KEYS } from "../lib/ftue";
+import { FTUE_KEYS, hasSeenTour, markTourSeen } from "../lib/ftue";
 
 // First-run orientation for the details pane. Each step spotlights one
 // sidebar group (`groupKey`, matched to the `key` on `sectionGroups`) and, for
@@ -396,8 +396,8 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
   // opened. Persisted in localStorage so it never nags again; the ? button
   // replays it on demand.
   useEffect(() => {
-    if (localStorage.getItem(TOUR_SEEN_KEY)) return;
-    localStorage.setItem(TOUR_SEEN_KEY, "1");
+    if (hasSeenTour(TOUR_SEEN_KEY)) return;
+    void markTourSeen(TOUR_SEEN_KEY);
     setActiveSection("profile");
     setTourStep(0);
     // Only fire for a normally-viewed agent, not e.g. a bare shell.
