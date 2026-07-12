@@ -3979,7 +3979,6 @@ function RuntimePanel({
           <RuntimeRadio
             label={t("runtime.local")}
             icon={Laptop}
-            tag={t("config.runtime.advancedTag")}
             description={t("config.runtime.localDescription")}
             selected={pendingRuntime === "local"}
             onClick={() => setPendingRuntime("local")}
