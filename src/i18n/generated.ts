@@ -1637,6 +1637,7 @@ export const resources = {
         "observer": "Observer",
         "orchestrator": "Orchestrator",
         "reviewer": "Reviewer",
+        "subAgent": "Sub-agent",
         "worker": "Worker"
       },
       "types": {
@@ -6451,6 +6452,7 @@ export const resources = {
         "observer": "Observador",
         "orchestrator": "Orquestador",
         "reviewer": "Revisor",
+        "subAgent": "Subagente",
         "worker": "Trabajador"
       },
       "types": {
@@ -11265,6 +11267,7 @@ export const resources = {
         "observer": "Beobachter",
         "orchestrator": "Orchestrator",
         "reviewer": "Prüfer",
+        "subAgent": "Sub-Agent",
         "worker": "Arbeiter"
       },
       "types": {
@@ -16079,6 +16082,7 @@ export const resources = {
         "observer": "Observateur",
         "orchestrator": "Orchestrateur",
         "reviewer": "Réviseur",
+        "subAgent": "Sous-agent",
         "worker": "Travailleur"
       },
       "types": {
@@ -20893,6 +20897,7 @@ export const resources = {
         "observer": "Observador",
         "orchestrator": "Orquestrador",
         "reviewer": "Revisor",
+        "subAgent": "Subagente",
         "worker": "Trabalhador"
       },
       "types": {
@@ -25707,6 +25712,7 @@ export const resources = {
         "observer": "オブザーバー",
         "orchestrator": "オーケストレーター",
         "reviewer": "レビュアー",
+        "subAgent": "サブエージェント",
         "worker": "ワーカー"
       },
       "types": {
@@ -30521,6 +30527,7 @@ export const resources = {
         "observer": "观察型",
         "orchestrator": "编排型",
         "reviewer": "审阅型",
+        "subAgent": "子智能体",
         "worker": "工作型"
       },
       "types": {
@@ -35335,6 +35342,7 @@ export const resources = {
         "observer": "옵저버",
         "orchestrator": "오케스트레이터",
         "reviewer": "리뷰어",
+        "subAgent": "하위 에이전트",
         "worker": "워커"
       },
       "types": {
@@ -40149,6 +40157,7 @@ export const resources = {
         "observer": "Osservatore",
         "orchestrator": "Orchestratore",
         "reviewer": "Revisore",
+        "subAgent": "Sub-agente",
         "worker": "Lavoratore"
       },
       "types": {
@@ -44963,6 +44972,7 @@ export const resources = {
         "observer": "पर्यवेक्षक",
         "orchestrator": "ऑर्केस्ट्रेटर",
         "reviewer": "समीक्षक",
+        "subAgent": "उप-एजेंट",
         "worker": "वर्कर"
       },
       "types": {
