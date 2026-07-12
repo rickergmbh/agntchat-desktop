@@ -1285,6 +1285,7 @@ export const resources = {
         "crashKeyHint": "API key problem — open the agent to generate a new key for this computer",
         "crashed": "Crashed",
         "fixIssue": "Needs attention",
+        "hostedRunningHint": "Runs on the org host — started and stopped there, not from this device",
         "onAnotherDevice": "On another device",
         "onDevice": "On {{device}}",
         "remoteOffline": "Remote · offline",
@@ -1295,6 +1296,7 @@ export const resources = {
         "stalled": "Stalled",
         "starting": "Starting",
         "stopped": "Stopped",
+        "subAgentHint": "Sub-agent — started and retired by its parent agent",
         "takeOffline": "Take offline"
       },
       "runningCount_one": "{{count}} running",
@@ -1306,6 +1308,7 @@ export const resources = {
         "hostOption": "{{name}} ({{status}})",
         "hosted": "Hosted",
         "hostedActiveDescription": "Runs always-on in the cloud using your plan's shared brain — nothing else to set up. Switch back to Local anytime to use your own model on this machine.",
+        "hostedComingSoonHint": "Hosted agents run always-on in the cloud. It's coming soon — for now, agents run locally.",
         "hostedHint": "Runs always-on in the cloud using your plan's shared brain — nothing else to set up.",
         "hostedRadioDescription": "Always-on in the cloud, included with your subscription. Stays connected and working even when your computer is closed.",
         "idleTimeout": "Idle timeout (seconds)",
@@ -1363,7 +1366,8 @@ export const resources = {
         "share": "Share",
         "sharing": "Sharing",
         "skills": "Skills",
-        "soul": "Soul"
+        "soul": "Soul",
+        "tools": "Tools"
       },
       "selectAgentHint": "Select an agent to view details",
       "share": {
@@ -1728,6 +1732,17 @@ export const resources = {
         "skipPermissions": "Skip permission prompts",
         "skipPermissionsHint": "Faster but less safe — agents won't ask before running tools.",
         "stepOf": "Step {{current}} of {{total}}",
+        "steps": {
+          "brain": "Choose their brain",
+          "details": "Any extra guidance?",
+          "name": "What's their name?",
+          "photo": "Give them a face",
+          "preset": "Pick a starting point",
+          "review": "Ready to meet them?",
+          "role": "What do they do?",
+          "specialties": "What are they good at?",
+          "tone": "How should they sound?"
+        },
         "tapToChange": "Tap to change",
         "tapToChoosePhoto": "Tap to choose a photo (optional)",
         "untitled": "Untitled",
@@ -6084,6 +6099,7 @@ export const resources = {
         "crashKeyHint": "Problema con la clave de API: abre el agente para generar una nueva clave para este ordenador",
         "crashed": "Falló",
         "fixIssue": "Requiere atención",
+        "hostedRunningHint": "Se ejecuta en el host de la organización: se inicia y se detiene allí, no desde este dispositivo",
         "onAnotherDevice": "En otro dispositivo",
         "onDevice": "En {{device}}",
         "remoteOffline": "Remoto · desconectado",
@@ -6094,6 +6110,7 @@ export const resources = {
         "stalled": "Estancado",
         "starting": "Iniciando",
         "stopped": "Detenido",
+        "subAgentHint": "Subagente: lo inicia y lo detiene su agente principal",
         "takeOffline": "Desconectar"
       },
       "runningCount_one": "{{count}} en ejecución",
@@ -6105,6 +6122,7 @@ export const resources = {
         "hostOption": "{{name}} ({{status}})",
         "hosted": "Alojado",
         "hostedActiveDescription": "Se ejecuta siempre activo en la nube usando el cerebro compartido de tu plan; no hay nada más que configurar. Cambia a Local en cualquier momento para usar tu propio modelo en esta máquina.",
+        "hostedComingSoonHint": "Los agentes alojados se ejecutan siempre activos en la nube. Estará disponible pronto; por ahora, los agentes se ejecutan localmente.",
         "hostedHint": "Se ejecuta siempre activo en la nube usando el cerebro compartido de tu plan; no hay nada más que configurar.",
         "hostedRadioDescription": "Siempre activo en la nube, incluido con tu suscripción. Permanece conectado y trabajando aunque cierres tu computadora.",
         "idleTimeout": "Tiempo de inactividad (segundos)",
@@ -6162,7 +6180,8 @@ export const resources = {
         "share": "Compartir",
         "sharing": "Compartir",
         "skills": "Habilidades",
-        "soul": "Alma"
+        "soul": "Alma",
+        "tools": "Herramientas"
       },
       "selectAgentHint": "Selecciona un agente para ver los detalles",
       "share": {
@@ -6527,6 +6546,17 @@ export const resources = {
         "skipPermissions": "Omitir solicitudes de permiso",
         "skipPermissionsHint": "Más rápido pero menos seguro — los agentes no preguntarán antes de ejecutar herramientas.",
         "stepOf": "Paso {{current}} de {{total}}",
+        "steps": {
+          "brain": "Elige su cerebro",
+          "details": "¿Alguna indicación adicional?",
+          "name": "¿Cómo se llama?",
+          "photo": "Dale una cara",
+          "preset": "Elige un punto de partida",
+          "review": "¿Listo para conocerlo?",
+          "role": "¿Qué hace?",
+          "specialties": "¿En qué se destaca?",
+          "tone": "¿Cómo debe sonar?"
+        },
         "tapToChange": "Toca para cambiar",
         "tapToChoosePhoto": "Toca para elegir una foto (opcional)",
         "untitled": "Sin título",
@@ -10883,6 +10913,7 @@ export const resources = {
         "crashKeyHint": "API-Schlüsselproblem – öffne den Agenten, um einen neuen Schlüssel für diesen Computer zu erzeugen",
         "crashed": "Abgestürzt",
         "fixIssue": "Aktion erforderlich",
+        "hostedRunningHint": "Läuft auf dem Organisations-Host – wird dort gestartet und gestoppt, nicht von diesem Gerät",
         "onAnotherDevice": "Auf einem anderen Gerät",
         "onDevice": "Auf {{device}}",
         "remoteOffline": "Remote · offline",
@@ -10893,6 +10924,7 @@ export const resources = {
         "stalled": "Blockiert",
         "starting": "Wird gestartet",
         "stopped": "Gestoppt",
+        "subAgentHint": "Sub-Agent – wird von seinem übergeordneten Agenten gestartet und beendet",
         "takeOffline": "Offline nehmen"
       },
       "runningCount_one": "{{count}} läuft",
@@ -10904,6 +10936,7 @@ export const resources = {
         "hostOption": "{{name}} ({{status}})",
         "hosted": "Gehostet",
         "hostedActiveDescription": "Läuft immer aktiv in der Cloud mit dem gemeinsamen Gehirn Ihres Plans — nichts weiter einzurichten. Wechseln Sie jederzeit zurück zu Lokal, um Ihr eigenes Modell auf diesem Rechner zu verwenden.",
+        "hostedComingSoonHint": "Gehostete Agenten laufen dauerhaft in der Cloud. Bald verfügbar – vorerst laufen Agenten lokal.",
         "hostedHint": "Läuft immer aktiv in der Cloud mit dem gemeinsamen Gehirn Ihres Plans — nichts weiter einzurichten.",
         "hostedRadioDescription": "Immer aktiv in der Cloud, im Abonnement enthalten. Bleibt verbunden und aktiv, auch wenn Ihr Computer ausgeschaltet ist.",
         "idleTimeout": "Leerlauf-Timeout (Sekunden)",
@@ -10961,7 +10994,8 @@ export const resources = {
         "share": "Teilen",
         "sharing": "Freigabe",
         "skills": "Skills",
-        "soul": "Soul"
+        "soul": "Soul",
+        "tools": "Werkzeuge"
       },
       "selectAgentHint": "Wählen Sie einen Agenten aus, um Details anzuzeigen",
       "share": {
@@ -11326,6 +11360,17 @@ export const resources = {
         "skipPermissions": "Berechtigungsabfragen überspringen",
         "skipPermissionsHint": "Schneller, aber weniger sicher — Agenten fragen vor der Ausführung von Tools nicht nach.",
         "stepOf": "Schritt {{current}} von {{total}}",
+        "steps": {
+          "brain": "Wähle sein Gehirn",
+          "details": "Weitere Hinweise?",
+          "name": "Wie heißt er?",
+          "photo": "Gib ihm ein Gesicht",
+          "preset": "Wähle einen Ausgangspunkt",
+          "review": "Bereit, ihn kennenzulernen?",
+          "role": "Was macht er?",
+          "specialties": "Worin ist er gut?",
+          "tone": "Wie soll er klingen?"
+        },
         "tapToChange": "Zum Ändern tippen",
         "tapToChoosePhoto": "Zum Auswählen eines Fotos tippen (optional)",
         "untitled": "Unbenannt",
@@ -15682,6 +15727,7 @@ export const resources = {
         "crashKeyHint": "Problème de clé API — ouvrez l'agent pour générer une nouvelle clé pour cet ordinateur",
         "crashed": "Planté",
         "fixIssue": "Attention requise",
+        "hostedRunningHint": "S'exécute sur l'hôte de l'organisation — démarré et arrêté là-bas, pas depuis cet appareil",
         "onAnotherDevice": "Sur un autre appareil",
         "onDevice": "Sur {{device}}",
         "remoteOffline": "Distant · hors ligne",
@@ -15692,6 +15738,7 @@ export const resources = {
         "stalled": "Bloqué",
         "starting": "Démarrage",
         "stopped": "Arrêté",
+        "subAgentHint": "Sous-agent — démarré et arrêté par son agent parent",
         "takeOffline": "Mettre hors ligne"
       },
       "runningCount_one": "{{count}} en cours d'exécution",
@@ -15703,6 +15750,7 @@ export const resources = {
         "hostOption": "{{name}} ({{status}})",
         "hosted": "Hébergé",
         "hostedActiveDescription": "S'exécute en permanence dans le cloud en utilisant le cerveau partagé de votre forfait — rien d'autre à configurer. Repassez à Local à tout moment pour utiliser votre propre modèle sur cette machine.",
+        "hostedComingSoonHint": "Les agents hébergés fonctionnent en continu dans le cloud. Bientôt disponible — pour l'instant, les agents s'exécutent localement.",
         "hostedHint": "S'exécute en permanence dans le cloud en utilisant le cerveau partagé de votre forfait — rien d'autre à configurer.",
         "hostedRadioDescription": "Toujours actif dans le cloud, inclus avec votre abonnement. Reste connecté et opérationnel même lorsque votre ordinateur est fermé.",
         "idleTimeout": "Délai d'inactivité (secondes)",
@@ -15760,7 +15808,8 @@ export const resources = {
         "share": "Partager",
         "sharing": "Partage",
         "skills": "Compétences",
-        "soul": "Âme"
+        "soul": "Âme",
+        "tools": "Outils"
       },
       "selectAgentHint": "Sélectionnez un agent pour voir les détails",
       "share": {
@@ -16125,6 +16174,17 @@ export const resources = {
         "skipPermissions": "Ignorer les demandes de permission",
         "skipPermissionsHint": "Plus rapide mais moins sûr — les agents ne demanderont pas avant d'exécuter des outils.",
         "stepOf": "Étape {{current}} sur {{total}}",
+        "steps": {
+          "brain": "Choisissez son cerveau",
+          "details": "Des consignes supplémentaires ?",
+          "name": "Quel est son nom ?",
+          "photo": "Donnez-lui un visage",
+          "preset": "Choisissez un point de départ",
+          "review": "Prêt à le rencontrer ?",
+          "role": "Que fait-il ?",
+          "specialties": "Dans quoi excelle-t-il ?",
+          "tone": "Quel doit être son ton ?"
+        },
         "tapToChange": "Touchez pour changer",
         "tapToChoosePhoto": "Touchez pour choisir une photo (facultatif)",
         "untitled": "Sans titre",
@@ -20481,6 +20541,7 @@ export const resources = {
         "crashKeyHint": "Problema com a chave de API — abra o agente para gerar uma nova chave para este computador",
         "crashed": "Falhou",
         "fixIssue": "Requer atenção",
+        "hostedRunningHint": "Executado no host da organização — iniciado e parado lá, não neste dispositivo",
         "onAnotherDevice": "Em outro dispositivo",
         "onDevice": "Em {{device}}",
         "remoteOffline": "Remoto · offline",
@@ -20491,6 +20552,7 @@ export const resources = {
         "stalled": "Travado",
         "starting": "Iniciando",
         "stopped": "Parado",
+        "subAgentHint": "Subagente — iniciado e encerrado pelo agente principal",
         "takeOffline": "Colocar offline"
       },
       "runningCount_one": "{{count}} em execução",
@@ -20502,6 +20564,7 @@ export const resources = {
         "hostOption": "{{name}} ({{status}})",
         "hosted": "Hospedado",
         "hostedActiveDescription": "Executa sempre ativo na nuvem usando o cérebro compartilhado do seu plano — não há mais nada para configurar. Volte para Local a qualquer momento para usar seu próprio modelo nesta máquina.",
+        "hostedComingSoonHint": "Agentes hospedados funcionam sempre ativos na nuvem. Em breve — por enquanto, os agentes são executados localmente.",
         "hostedHint": "Executa sempre ativo na nuvem usando o cérebro compartilhado do seu plano — não há mais nada para configurar.",
         "hostedRadioDescription": "Sempre ativo na nuvem, incluído na sua assinatura. Permanece conectado e funcionando mesmo quando seu computador está fechado.",
         "idleTimeout": "Tempo limite de inatividade (segundos)",
@@ -20559,7 +20622,8 @@ export const resources = {
         "share": "Compartilhar",
         "sharing": "Compartilhamento",
         "skills": "Habilidades",
-        "soul": "Alma"
+        "soul": "Alma",
+        "tools": "Ferramentas"
       },
       "selectAgentHint": "Selecione um agente para ver os detalhes",
       "share": {
@@ -20924,6 +20988,17 @@ export const resources = {
         "skipPermissions": "Pular avisos de permissão",
         "skipPermissionsHint": "Mais rápido, porém menos seguro — os agentes não perguntarão antes de executar ferramentas.",
         "stepOf": "Etapa {{current}} de {{total}}",
+        "steps": {
+          "brain": "Escolha o cérebro dele",
+          "details": "Alguma orientação adicional?",
+          "name": "Qual é o nome dele?",
+          "photo": "Dê um rosto a ele",
+          "preset": "Escolha um ponto de partida",
+          "review": "Pronto para conhecê-lo?",
+          "role": "O que ele faz?",
+          "specialties": "No que ele é bom?",
+          "tone": "Como ele deve soar?"
+        },
         "tapToChange": "Toque para trocar",
         "tapToChoosePhoto": "Toque para escolher uma foto (opcional)",
         "untitled": "Sem título",
@@ -25280,6 +25355,7 @@ export const resources = {
         "crashKeyHint": "APIキーの問題 — エージェントを開いて、このパソコン用の新しいキーを生成してください",
         "crashed": "クラッシュ",
         "fixIssue": "対応が必要",
+        "hostedRunningHint": "組織ホスト上で動作します — この端末ではなく、そちらで起動・停止します",
         "onAnotherDevice": "他のデバイスで実行中",
         "onDevice": "{{device}}で実行中",
         "remoteOffline": "リモート・オフライン",
@@ -25290,6 +25366,7 @@ export const resources = {
         "stalled": "停滞",
         "starting": "開始中",
         "stopped": "停止済み",
+        "subAgentHint": "サブエージェント — 親エージェントが起動・停止します",
         "takeOffline": "オフラインにする"
       },
       "runningCount_one": "{{count}}件実行中",
@@ -25301,6 +25378,7 @@ export const resources = {
         "hostOption": "{{name}}（{{status}}）",
         "hosted": "ホスト型",
         "hostedActiveDescription": "あなたのプランの共有ブレインを使ってクラウドで常時稼働します — 他に設定は不要です。このマシンで自分のモデルを使いたい場合は、いつでもローカルに切り替えられます。",
+        "hostedComingSoonHint": "ホスト型エージェントはクラウドで常時稼働します。近日公開予定です。当面はエージェントはローカルで動作します。",
         "hostedHint": "あなたのプランの共有ブレインを使ってクラウドで常時稼働します — 他に設定は不要です。",
         "hostedRadioDescription": "サブスクリプションに含まれる、クラウドでの常時稼働です。コンピューターを閉じても接続と動作を維持します。",
         "idleTimeout": "アイドルタイムアウト（秒）",
@@ -25358,7 +25436,8 @@ export const resources = {
         "share": "共有",
         "sharing": "共有",
         "skills": "スキル",
-        "soul": "ソウル"
+        "soul": "ソウル",
+        "tools": "ツール"
       },
       "selectAgentHint": "詳細を表示するエージェントを選択してください",
       "share": {
@@ -25723,6 +25802,17 @@ export const resources = {
         "skipPermissions": "許可プロンプトをスキップ",
         "skipPermissionsHint": "速いですが安全性は下がります — エージェントはツールを実行する前に確認しません。",
         "stepOf": "ステップ {{current}} / {{total}}",
+        "steps": {
+          "brain": "頭脳を選ぶ",
+          "details": "追加の指示はありますか？",
+          "name": "名前は？",
+          "photo": "顔を与えましょう",
+          "preset": "出発点を選ぶ",
+          "review": "会う準備はできましたか？",
+          "role": "何をしますか？",
+          "specialties": "何が得意ですか？",
+          "tone": "どんな話し方にしますか？"
+        },
         "tapToChange": "タップして変更",
         "tapToChoosePhoto": "タップして写真を選択（任意）",
         "untitled": "無題",
@@ -30079,6 +30169,7 @@ export const resources = {
         "crashKeyHint": "API 密钥有问题 — 打开该智能体，为这台电脑生成新的密钥",
         "crashed": "已崩溃",
         "fixIssue": "需要处理",
+        "hostedRunningHint": "在组织主机上运行 — 在那里启动和停止，而非此设备",
         "onAnotherDevice": "在另一台设备上",
         "onDevice": "在 {{device}} 上",
         "remoteOffline": "远程 · 离线",
@@ -30089,6 +30180,7 @@ export const resources = {
         "stalled": "已停滞",
         "starting": "正在启动",
         "stopped": "已停止",
+        "subAgentHint": "子智能体 — 由其父智能体启动和停止",
         "takeOffline": "下线"
       },
       "runningCount_one": "{{count}} 个正在运行",
@@ -30100,6 +30192,7 @@ export const resources = {
         "hostOption": "{{name}}（{{status}}）",
         "hosted": "托管",
         "hostedActiveDescription": "始终在云端运行，使用你套餐的共享大脑——无需其他设置。随时可切换回本地，在本机上使用你自己的模型。",
+        "hostedComingSoonHint": "托管智能体在云端始终在线运行。即将推出 — 目前智能体在本地运行。",
         "hostedHint": "始终在云端运行，使用你套餐的共享大脑——无需其他设置。",
         "hostedRadioDescription": "始终在云端运行，包含在你的订阅中。即使你的电脑关闭，也能保持连接并持续工作。",
         "idleTimeout": "空闲超时（秒）",
@@ -30157,7 +30250,8 @@ export const resources = {
         "share": "分享",
         "sharing": "共享",
         "skills": "技能",
-        "soul": "灵魂"
+        "soul": "灵魂",
+        "tools": "工具"
       },
       "selectAgentHint": "选择一个智能体以查看详情",
       "share": {
@@ -30522,6 +30616,17 @@ export const resources = {
         "skipPermissions": "跳过权限提示",
         "skipPermissionsHint": "速度更快但安全性较低 — 智能体在运行工具前不会请求确认。",
         "stepOf": "第 {{current}} 步，共 {{total}} 步",
+        "steps": {
+          "brain": "选择它的大脑",
+          "details": "还有额外的指导吗？",
+          "name": "给它起个名字？",
+          "photo": "给它一张脸",
+          "preset": "选择一个起点",
+          "review": "准备好见它了吗？",
+          "role": "它做什么？",
+          "specialties": "它擅长什么？",
+          "tone": "它该是什么语气？"
+        },
         "tapToChange": "点击更改",
         "tapToChoosePhoto": "点击选择照片（可选）",
         "untitled": "未命名",
@@ -34878,6 +34983,7 @@ export const resources = {
         "crashKeyHint": "API 키 문제 — 에이전트를 열어 이 컴퓨터용 새 키를 생성하세요",
         "crashed": "충돌함",
         "fixIssue": "조치 필요",
+        "hostedRunningHint": "조직 호스트에서 실행됩니다 — 이 기기가 아니라 거기서 시작하고 중지합니다",
         "onAnotherDevice": "다른 기기에서",
         "onDevice": "{{device}}에서",
         "remoteOffline": "원격 · 오프라인",
@@ -34888,6 +34994,7 @@ export const resources = {
         "stalled": "정체됨",
         "starting": "시작 중",
         "stopped": "중지됨",
+        "subAgentHint": "하위 에이전트 — 상위 에이전트가 시작하고 종료합니다",
         "takeOffline": "오프라인으로 전환"
       },
       "runningCount_one": "{{count}}개 실행 중",
@@ -34899,6 +35006,7 @@ export const resources = {
         "hostOption": "{{name}} ({{status}})",
         "hosted": "호스팅됨",
         "hostedActiveDescription": "회원님 플랜의 공유 브레인을 사용해 클라우드에서 항상 실행됩니다 — 다른 설정은 필요 없습니다. 언제든 로컬로 전환하여 이 기기에서 자신의 모델을 사용할 수 있습니다.",
+        "hostedComingSoonHint": "호스팅 에이전트는 클라우드에서 항상 실행됩니다. 곧 제공될 예정이며, 현재는 에이전트가 로컬에서 실행됩니다.",
         "hostedHint": "회원님 플랜의 공유 브레인을 사용해 클라우드에서 항상 실행됩니다 — 다른 설정은 필요 없습니다.",
         "hostedRadioDescription": "클라우드에서 항상 켜져 있으며 구독에 포함됩니다. 컴퓨터를 닫아도 계속 연결되어 작동합니다.",
         "idleTimeout": "유휴 타임아웃(초)",
@@ -34956,7 +35064,8 @@ export const resources = {
         "share": "공유",
         "sharing": "공유",
         "skills": "스킬",
-        "soul": "소울"
+        "soul": "소울",
+        "tools": "도구"
       },
       "selectAgentHint": "세부정보를 보려면 에이전트를 선택하세요",
       "share": {
@@ -35321,6 +35430,17 @@ export const resources = {
         "skipPermissions": "권한 확인 건너뛰기",
         "skipPermissionsHint": "더 빠르지만 덜 안전합니다 — 에이전트가 도구 실행 전에 묻지 않습니다.",
         "stepOf": "{{total}} 중 {{current}}단계",
+        "steps": {
+          "brain": "두뇌를 선택하세요",
+          "details": "추가 지침이 있나요?",
+          "name": "이름은 무엇인가요?",
+          "photo": "얼굴을 만들어 주세요",
+          "preset": "시작점 선택",
+          "review": "만날 준비가 되셨나요?",
+          "role": "무슨 일을 하나요?",
+          "specialties": "무엇을 잘하나요?",
+          "tone": "어떤 말투가 좋을까요?"
+        },
         "tapToChange": "탭하여 변경",
         "tapToChoosePhoto": "탭하여 사진 선택(선택 사항)",
         "untitled": "제목 없음",
@@ -39677,6 +39797,7 @@ export const resources = {
         "crashKeyHint": "Problema con la chiave API — apri l'agente per generare una nuova chiave per questo computer",
         "crashed": "Interrotto",
         "fixIssue": "Richiede attenzione",
+        "hostedRunningHint": "Viene eseguito sull'host dell'organizzazione — avviato e arrestato lì, non da questo dispositivo",
         "onAnotherDevice": "Su un altro dispositivo",
         "onDevice": "Su {{device}}",
         "remoteOffline": "Remoto · offline",
@@ -39687,6 +39808,7 @@ export const resources = {
         "stalled": "Bloccato",
         "starting": "Avvio in corso",
         "stopped": "Fermato",
+        "subAgentHint": "Sub-agente — avviato e arrestato dal suo agente principale",
         "takeOffline": "Porta offline"
       },
       "runningCount_one": "{{count}} in esecuzione",
@@ -39698,6 +39820,7 @@ export const resources = {
         "hostOption": "{{name}} ({{status}})",
         "hosted": "Ospitato",
         "hostedActiveDescription": "Viene eseguito sempre attivo nel cloud usando il modello condiviso del tuo piano — nient'altro da configurare. Torna a Locale in qualsiasi momento per usare il tuo modello su questa macchina.",
+        "hostedComingSoonHint": "Gli agenti ospitati funzionano sempre attivi nel cloud. In arrivo presto — per ora gli agenti vengono eseguiti localmente.",
         "hostedHint": "Viene eseguito sempre attivo nel cloud usando il modello condiviso del tuo piano — nient'altro da configurare.",
         "hostedRadioDescription": "Sempre attivo nel cloud, incluso nel tuo abbonamento. Rimane connesso e operativo anche quando il tuo computer è spento.",
         "idleTimeout": "Timeout di inattività (secondi)",
@@ -39755,7 +39878,8 @@ export const resources = {
         "share": "Condividi",
         "sharing": "Condivisione",
         "skills": "Competenze",
-        "soul": "Soul"
+        "soul": "Soul",
+        "tools": "Strumenti"
       },
       "selectAgentHint": "Seleziona un agente per visualizzarne i dettagli",
       "share": {
@@ -40120,6 +40244,17 @@ export const resources = {
         "skipPermissions": "Salta le richieste di permesso",
         "skipPermissionsHint": "Più veloce ma meno sicuro — gli agenti non chiederanno conferma prima di eseguire strumenti.",
         "stepOf": "Passo {{current}} di {{total}}",
+        "steps": {
+          "brain": "Scegli il suo cervello",
+          "details": "Altre indicazioni?",
+          "name": "Come si chiama?",
+          "photo": "Dagli un volto",
+          "preset": "Scegli un punto di partenza",
+          "review": "Pronto a conoscerlo?",
+          "role": "Cosa fa?",
+          "specialties": "In cosa è bravo?",
+          "tone": "Che tono deve avere?"
+        },
         "tapToChange": "Tocca per cambiare",
         "tapToChoosePhoto": "Tocca per scegliere una foto (opzionale)",
         "untitled": "Senza titolo",
@@ -44476,6 +44611,7 @@ export const resources = {
         "crashKeyHint": "API कुंजी समस्या — इस कंप्यूटर के लिए नई कुंजी बनाने हेतु एजेंट खोलें",
         "crashed": "क्रैश हो गया",
         "fixIssue": "ध्यान देना आवश्यक",
+        "hostedRunningHint": "संगठन होस्ट पर चलता है — वहीं से शुरू और बंद होता है, इस डिवाइस से नहीं",
         "onAnotherDevice": "किसी अन्य डिवाइस पर",
         "onDevice": "{{device}} पर",
         "remoteOffline": "रिमोट · ऑफ़लाइन",
@@ -44486,6 +44622,7 @@ export const resources = {
         "stalled": "अटक गया",
         "starting": "शुरू हो रहा है",
         "stopped": "रुका हुआ",
+        "subAgentHint": "उप-एजेंट — इसका मूल एजेंट इसे शुरू और बंद करता है",
         "takeOffline": "ऑफ़लाइन करें"
       },
       "runningCount_one": "{{count}} चल रहा है",
@@ -44497,6 +44634,7 @@ export const resources = {
         "hostOption": "{{name}} ({{status}})",
         "hosted": "होस्टेड",
         "hostedActiveDescription": "आपके प्लान के शेयर्ड ब्रेन का उपयोग करते हुए क्लाउड में हमेशा-चालू चलता है — कुछ और सेट करने की ज़रूरत नहीं। इस मशीन पर अपने खुद के मॉडल का उपयोग करने के लिए कभी भी लोकल पर वापस स्विच करें।",
+        "hostedComingSoonHint": "होस्टेड एजेंट क्लाउड में हमेशा चालू रहते हैं। जल्द आ रहा है — फ़िलहाल, एजेंट स्थानीय रूप से चलते हैं।",
         "hostedHint": "आपके प्लान के शेयर्ड ब्रेन का उपयोग करते हुए क्लाउड में हमेशा-चालू चलता है — कुछ और सेट करने की ज़रूरत नहीं।",
         "hostedRadioDescription": "क्लाउड में हमेशा-चालू, आपकी सब्सक्रिप्शन में शामिल। आपका कंप्यूटर बंद होने पर भी कनेक्टेड और काम करता रहता है।",
         "idleTimeout": "आइडल टाइमआउट (सेकंड)",
@@ -44554,7 +44692,8 @@ export const resources = {
         "share": "शेयर",
         "sharing": "शेयरिंग",
         "skills": "स्किल्स",
-        "soul": "सोल"
+        "soul": "सोल",
+        "tools": "उपकरण"
       },
       "selectAgentHint": "विवरण देखने के लिए एक एजेंट चुनें",
       "share": {
@@ -44919,6 +45058,17 @@ export const resources = {
         "skipPermissions": "अनुमति संकेत छोड़ें",
         "skipPermissionsHint": "तेज़ लेकिन कम सुरक्षित — एजेंट टूल चलाने से पहले नहीं पूछेंगे।",
         "stepOf": "चरण {{current}} / {{total}}",
+        "steps": {
+          "brain": "इसका मस्तिष्क चुनें",
+          "details": "कोई अतिरिक्त मार्गदर्शन?",
+          "name": "इसका नाम क्या है?",
+          "photo": "इसे एक चेहरा दें",
+          "preset": "एक प्रारंभिक बिंदु चुनें",
+          "review": "इससे मिलने के लिए तैयार हैं?",
+          "role": "यह क्या करता है?",
+          "specialties": "यह किसमें अच्छा है?",
+          "tone": "इसकी शैली कैसी हो?"
+        },
         "tapToChange": "बदलने के लिए टैप करें",
         "tapToChoosePhoto": "फ़ोटो चुनने के लिए टैप करें (वैकल्पिक)",
         "untitled": "शीर्षकहीन",
