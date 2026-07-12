@@ -255,12 +255,13 @@ export function AgentRow({
   // generate. The Actions cell shows a passive "managed on org host" hint
   // instead of a play button or the (always-missing) API-key warning.
   const isOrgHost = managed.agent.runtime === "org_host";
-  const startBlockedReason: string | null =
-    isOrgHost || managed.apiKey
-      ? null
-      : "No API key on this computer — the agent was set up on another device. Open it to generate a new key.";
-  const canStart =
-    startBlockedReason === null && managed.processStatus !== "starting";
+  // A missing local `ak_` key is NOT a start blocker: startAgent mints an
+  // owner delegation token for agents created elsewhere (phone/web/another
+  // desktop), so an owned local agent runs fine here without a "generate a
+  // key" detour. We therefore let "Bring online" attempt the start; a genuine
+  // auth failure lands in the actionable `no_key` crashed state below. The
+  // only pre-start gate left is the transient "starting" status.
+  const canStart = managed.processStatus !== "starting";
   // Model label comes from the backend catalog (single source of truth) so it
   // never drifts from what the model dropdown offers; fall back to the raw id.
   const catalogModelLabel = useModelCatalog((s) => s.modelLabel);
@@ -543,18 +544,6 @@ export function AgentRow({
               onClick={handleToggle}
               outlined
               labelClassName="hidden @min-[340px]:inline"
-            />
-          ) : startBlockedReason ? (
-            <AgentPowerButton
-              state="warning"
-              label={t("row.fixIssue")}
-              tooltip={startBlockedReason}
-              outlined
-              labelClassName="hidden @min-[340px]:inline"
-              onClick={(e) => {
-                e.stopPropagation();
-                onSelect();
-              }}
             />
           ) : (
             <AgentPowerButton
