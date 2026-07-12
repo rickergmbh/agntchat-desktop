@@ -5,6 +5,7 @@ import { wakeAgent } from "../../lib/api";
 import { useResizableWidth, useRightPaneWidth } from "../../hooks/useResizableWidth";
 import { ResizeHandle } from "../ResizeHandle";
 import { useChatStore } from "../../stores/chatStore";
+import { useAgentStore } from "../../stores/agentStore";
 import { useAuthStore } from "../../stores/authStore";
 import { usePresenceStore } from "../../stores/presenceStore";
 import { useStreamingStore } from "../../stores/streamingStore";
@@ -51,6 +52,12 @@ export function MessagesView() {
   const fetchConversations = useChatStore((s) => s.fetchConversations);
   const fetchAgentConversations = useChatStore((s) => s.fetchAgentConversations);
   const fetchUnreadCounts = useChatStore((s) => s.fetchUnreadCounts);
+  // No agents → no one to start a conversation with, so hide the compose
+  // affordance until the user has created their first agent (the onboarding
+  // cards guide them there). Reappears the moment an active agent exists.
+  const hasAgents = useAgentStore((s) =>
+    Object.values(s.agents).some((m) => m.agent.status !== "deactivated")
+  );
 
   // The artifact pane belongs to the conversation it was opened from —
   // switching conversations closes it rather than showing a stale artifact.
@@ -147,15 +154,17 @@ export function MessagesView() {
             >
               <RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
             </button>
-            <button
-              type="button"
-              onClick={() => setShowNew(true)}
-              title={t("newConversation")}
-              aria-label={t("newConversation")}
-              className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-            >
-              <SquarePen className="h-4 w-4" />
-            </button>
+            {hasAgents && (
+              <button
+                type="button"
+                onClick={() => setShowNew(true)}
+                title={t("newConversation")}
+                aria-label={t("newConversation")}
+                className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+              >
+                <SquarePen className="h-4 w-4" />
+              </button>
+            )}
           </div>
         </div>
 
