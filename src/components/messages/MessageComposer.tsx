@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { Paperclip, Send, X, Image as ImageIcon, FileIcon, Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useChatStore } from "../../stores/chatStore";
@@ -49,7 +49,17 @@ interface PastedText {
 // `useSyncExternalStore` snapshot equality check and loops React forever.
 const EMPTY_MEMBERS: ConversationMember[] = [];
 
-export function MessageComposer({ conversationId }: { conversationId: string }) {
+/** Imperative handle so the surrounding pane can hand off a dropped file to
+ *  the composer (which owns the attachment state) — lets the whole
+ *  conversation area be a drop zone, not just the composer dock. */
+export interface MessageComposerHandle {
+  attachFile: (file: File | null | undefined) => void;
+}
+
+export const MessageComposer = forwardRef<
+  MessageComposerHandle,
+  { conversationId: string }
+>(function MessageComposer({ conversationId }, ref) {
   const { t } = useTranslation("chat");
   const draft = useChatStore((s) => s.drafts[conversationId] ?? "");
   const setDraft = useChatStore((s) => s.setDraft);
@@ -120,6 +130,8 @@ export function MessageComposer({ conversationId }: { conversationId: string }) 
     setError(null);
   };
 
+  useImperativeHandle(ref, () => ({ attachFile }), []);
+
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     attachFile(e.target.files?.[0]);
     // Reset so selecting the same file again re-triggers onChange
@@ -131,25 +143,9 @@ export function MessageComposer({ conversationId }: { conversationId: string }) 
     setAttachment(null);
   };
 
-  // Drag-and-drop: accept a single file drop anywhere on the composer.
-  const [isDragOver, setIsDragOver] = useState(false);
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    if (!e.dataTransfer?.types?.includes("Files")) return;
-    e.preventDefault();
-    setIsDragOver(true);
-  };
-  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
-    // `dragleave` fires when moving between child elements; compare the
-    // target against the container to avoid flicker.
-    if (e.currentTarget.contains(e.relatedTarget as Node)) return;
-    setIsDragOver(false);
-  };
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setIsDragOver(false);
-    const file = e.dataTransfer?.files?.[0];
-    if (file) attachFile(file);
-  };
+  // Drag-and-drop lives on the whole conversation area (ConversationPane),
+  // not just this dock — see MessagesView. The composer only exposes
+  // `attachFile` (via the imperative handle) for the pane to call on drop.
 
   // Paste-to-attach: if the clipboard contains an image (or any file),
   // intercept and attach it instead of letting the textarea paste junk.
@@ -400,17 +396,7 @@ export function MessageComposer({ conversationId }: { conversationId: string }) 
     <div
       data-tour="conv-tour-composer"
       className="surface-dock relative z-10 bg-card"
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      onDrop={handleDrop}
     >
-      {isDragOver && (
-        <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center rounded-t-md border-2 border-dashed border-primary/60 bg-primary/5">
-          <p className="text-sm font-medium text-primary">
-            Drop to attach
-          </p>
-        </div>
-      )}
       {replyingTo && (
         <ReplyBanner conversationId={conversationId} message={replyingTo} />
       )}
@@ -523,7 +509,7 @@ export function MessageComposer({ conversationId }: { conversationId: string }) 
       </div>
     </div>
   );
-}
+});
 
 function AttachmentPreview({
   attachment,

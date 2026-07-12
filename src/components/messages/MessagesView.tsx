@@ -17,7 +17,7 @@ import {
 } from "../../lib/thread-selectors";
 import { ConversationList } from "./ConversationList";
 import { ChatThread } from "./ChatThread";
-import { MessageComposer } from "./MessageComposer";
+import { MessageComposer, type MessageComposerHandle } from "./MessageComposer";
 import { ConversationDetailsPanel } from "./ConversationDetailsPanel";
 import { NewConversationDialog } from "./NewConversationDialog";
 import { ChatHeaderMenu } from "./ChatHeaderMenu";
@@ -339,6 +339,28 @@ function ConversationPane({
 
   const [waking, setWaking] = useState(false);
 
+  // Drag-and-drop file attach over the WHOLE conversation area (thread +
+  // composer), not just the composer dock. The composer owns the attachment
+  // state; we hand it the dropped file via its imperative handle.
+  const composerRef = useRef<MessageComposerHandle>(null);
+  const [isDragOver, setIsDragOver] = useState(false);
+  const handleDragOver = (e: React.DragEvent) => {
+    if (!e.dataTransfer?.types?.includes("Files")) return;
+    e.preventDefault();
+    setIsDragOver(true);
+  };
+  const handleDragLeave = (e: React.DragEvent) => {
+    // dragleave fires moving between children; ignore unless truly leaving.
+    if (e.currentTarget.contains(e.relatedTarget as Node)) return;
+    setIsDragOver(false);
+  };
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    const file = e.dataTransfer?.files?.[0];
+    if (file) composerRef.current?.attachFile(file);
+  };
+
   const handleWake = async () => {
     if (!wakeableAgentId || waking) return;
     setWaking(true);
@@ -472,10 +494,24 @@ function ConversationPane({
         )}
       </header>
 
-      <div className="relative flex flex-1 min-h-0 flex-col">
-        <ChatThread conversationId={conversationId} />
+      {/* Thread + composer are one drop zone — drop a file anywhere over the
+          conversation, not just the composer dock. */}
+      <div
+        className="relative flex flex-1 min-h-0 flex-col"
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      >
+        <div className="relative flex flex-1 min-h-0 flex-col">
+          <ChatThread conversationId={conversationId} />
+        </div>
+        <MessageComposer ref={composerRef} conversationId={conversationId} />
+        {isDragOver && (
+          <div className="pointer-events-none absolute inset-2 z-30 flex items-center justify-center rounded-xl border-2 border-dashed border-primary/60 bg-primary/5">
+            <p className="text-sm font-medium text-primary">{t("dropToAttach")}</p>
+          </div>
+        )}
       </div>
-      <MessageComposer conversationId={conversationId} />
 
       {/* First-run orientation: files / details / @-mentions / cross-platform.
           Anchored to the pane section so its spotlight covers the whole view. */}
