@@ -10,6 +10,7 @@ import * as api from "../lib/api";
 import { identifyAnalytics, track, ANALYTICS_EVENTS } from "../lib/analytics";
 import { cn } from "../lib/utils";
 import { PaymentWalletRow } from "./PaymentWalletRow";
+import { ProfileTour } from "./ProfileTour";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -172,6 +173,8 @@ export function Profile({ onClose }: { onClose: () => void }) {
   const { t } = useTranslation("settings");
   const { participant, logout } = useAuthStore();
   const [activeSection, setActiveSection] = useState<SectionValue>("profile");
+  // Bumped to replay the first-run profile tour (bypasses the seen-flag).
+  const [profileTourReplay, setProfileTourReplay] = useState(0);
   // Friends is behind a per-user runtime flag (resolved on /me) — hide its
   // sidebar section + content when off for this user.
   const friendsEnabled = participant?.features?.friends === true;
@@ -1067,6 +1070,13 @@ export function Profile({ onClose }: { onClose: () => void }) {
         {activeSection === "help" && (
           <div className="flex-1 overflow-y-auto p-5 space-y-6">
             <BugReportSection />
+            <Separator />
+            <button
+              onClick={() => setProfileTourReplay((n) => n + 1)}
+              className="text-sm text-primary hover:underline"
+            >
+              {t("profileTour.replay")}
+            </button>
           </div>
         )}
       </div>
@@ -1562,6 +1572,8 @@ export function Profile({ onClose }: { onClose: () => void }) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <ProfileTour replay={profileTourReplay} />
     </div>
   );
 }

@@ -16,6 +16,8 @@ export const FTUE_KEYS = {
   agentConfigTour: "agentConfigTour",
   /** In-conversation orientation tour (ConversationTour). */
   conversationTour: "conversationTour",
+  /** Profile / settings orientation tour (ProfileTour). */
+  profileTour: "profileTour",
 } as const;
 
 export type TourKey = (typeof FTUE_KEYS)[keyof typeof FTUE_KEYS];
