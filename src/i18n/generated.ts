@@ -68,6 +68,10 @@ export const resources = {
         "resetToOriginal": "Reset to Original",
         "title": "Profile Picture"
       },
+      "bringOnline": {
+        "noDesktopBody": "This agent runs on your computer. Open the desktop app on a computer where you're signed in, then try again.",
+        "noDesktopTitle": "No desktop available"
+      },
       "bulk": {
         "bringAllOnline": "Bring all online",
         "bringOnlineCount": "Bring online ({{count}})",
@@ -4886,6 +4890,10 @@ export const resources = {
         "resetFailed": "No se pudo restablecer el avatar.",
         "resetToOriginal": "Restablecer al original",
         "title": "Foto de perfil"
+      },
+      "bringOnline": {
+        "noDesktopBody": "Este agente se ejecuta en tu ordenador. Abre la app de escritorio en un ordenador donde hayas iniciado sesión e inténtalo de nuevo.",
+        "noDesktopTitle": "No hay escritorio disponible"
       },
       "bulk": {
         "bringAllOnline": "Conectar todos",
@@ -9706,6 +9714,10 @@ export const resources = {
         "resetToOriginal": "Auf Original zurücksetzen",
         "title": "Profilbild"
       },
+      "bringOnline": {
+        "noDesktopBody": "Dieser Agent läuft auf deinem Computer. Öffne die Desktop-App auf einem Computer, auf dem du angemeldet bist, und versuche es erneut.",
+        "noDesktopTitle": "Kein Desktop verfügbar"
+      },
       "bulk": {
         "bringAllOnline": "Alle online bringen",
         "bringOnlineCount": "Online bringen ({{count}})",
@@ -14524,6 +14536,10 @@ export const resources = {
         "resetFailed": "Échec de la réinitialisation de l'avatar.",
         "resetToOriginal": "Réinitialiser à l'original",
         "title": "Photo de profil"
+      },
+      "bringOnline": {
+        "noDesktopBody": "Cet agent s'exécute sur votre ordinateur. Ouvrez l'application de bureau sur un ordinateur où vous êtes connecté, puis réessayez.",
+        "noDesktopTitle": "Aucun ordinateur disponible"
       },
       "bulk": {
         "bringAllOnline": "Tout mettre en ligne",
@@ -19344,6 +19360,10 @@ export const resources = {
         "resetToOriginal": "Redefinir para o Original",
         "title": "Foto de Perfil"
       },
+      "bringOnline": {
+        "noDesktopBody": "Este agente roda no seu computador. Abra o app de desktop em um computador onde você está conectado e tente novamente.",
+        "noDesktopTitle": "Nenhum desktop disponível"
+      },
       "bulk": {
         "bringAllOnline": "Colocar todos online",
         "bringOnlineCount": "Colocar online ({{count}})",
@@ -24162,6 +24182,10 @@ export const resources = {
         "resetFailed": "アバターのリセットに失敗しました。",
         "resetToOriginal": "元に戻す",
         "title": "プロフィール画像"
+      },
+      "bringOnline": {
+        "noDesktopBody": "このエージェントはあなたのパソコンで動きます。サインイン済みのパソコンでデスクトップアプリを開いてから、もう一度お試しください。",
+        "noDesktopTitle": "利用できるデスクトップがありません"
       },
       "bulk": {
         "bringAllOnline": "すべてオンラインにする",
@@ -28982,6 +29006,10 @@ export const resources = {
         "resetToOriginal": "重置为原始头像",
         "title": "个人资料图片"
       },
+      "bringOnline": {
+        "noDesktopBody": "该智能体在你的电脑上运行。请在已登录的电脑上打开桌面应用，然后重试。",
+        "noDesktopTitle": "没有可用的桌面端"
+      },
       "bulk": {
         "bringAllOnline": "全部上线",
         "bringOnlineCount": "使其上线（{{count}}）",
@@ -33800,6 +33828,10 @@ export const resources = {
         "resetFailed": "아바타 재설정에 실패했습니다.",
         "resetToOriginal": "원본으로 재설정",
         "title": "프로필 사진"
+      },
+      "bringOnline": {
+        "noDesktopBody": "이 에이전트는 사용자의 컴퓨터에서 실행됩니다. 로그인되어 있는 컴퓨터에서 데스크톱 앱을 연 다음 다시 시도하세요.",
+        "noDesktopTitle": "사용 가능한 데스크톱 없음"
       },
       "bulk": {
         "bringAllOnline": "모두 온라인으로",
@@ -38620,6 +38652,10 @@ export const resources = {
         "resetToOriginal": "Ripristina Originale",
         "title": "Immagine del Profilo"
       },
+      "bringOnline": {
+        "noDesktopBody": "Questo agente gira sul tuo computer. Apri l'app desktop su un computer in cui hai effettuato l'accesso e riprova.",
+        "noDesktopTitle": "Nessun desktop disponibile"
+      },
       "bulk": {
         "bringAllOnline": "Porta tutti online",
         "bringOnlineCount": "Metti online ({{count}})",
@@ -43438,6 +43474,10 @@ export const resources = {
         "resetFailed": "अवतार रीसेट करने में विफल।",
         "resetToOriginal": "मूल पर रीसेट करें",
         "title": "प्रोफ़ाइल फ़ोटो"
+      },
+      "bringOnline": {
+        "noDesktopBody": "यह एजेंट आपके कंप्यूटर पर चलता है। जिस कंप्यूटर पर आप साइन इन हैं वहाँ डेस्कटॉप ऐप खोलें और फिर से प्रयास करें।",
+        "noDesktopTitle": "कोई डेस्कटॉप उपलब्ध नहीं"
       },
       "bulk": {
         "bringAllOnline": "सभी ऑनलाइन लाएँ",

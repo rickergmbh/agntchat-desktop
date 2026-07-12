@@ -765,7 +765,24 @@ export const useAgentStore = create<AgentState>((set, get) => ({
     if (!managed) {
       throw new Error("Agent not found");
     }
-    if (!managed.apiKey) {
+    // Credential the bridge boots with. Normally the locally-stored plaintext
+    // `ak_` key. If it isn't on this machine (agent created on the phone/web or
+    // another device), fall back to minting an owner delegation token — the
+    // bridge auto-routes a JWT-shaped credential through the delegation
+    // exchange, so this Just Works. This is what makes remote-start (and
+    // starting a here-unknown agent) possible without a "generate a key here"
+    // detour. See docs/reference/remote-start-local-agents.md.
+    let credential = managed.apiKey;
+    if (!credential) {
+      try {
+        const { delegationToken } = await api.fetchAgentDelegationToken(id);
+        credential = delegationToken;
+      } catch {
+        // Delegation mint failed (not owner / not local / offline). Fall
+        // through to the actionable "no key here" crash state below.
+      }
+    }
+    if (!credential) {
       // The plaintext key is only ever handed out on the machine that
       // created (or last regenerated) it — an agent set up elsewhere has
       // nothing stored here. Surface that as an actionable "auth" state so
@@ -835,7 +852,7 @@ export const useAgentStore = create<AgentState>((set, get) => ({
         args: {
           agentId: id,
           agentName: managed.agent.displayName,
-          apiKey: managed.apiKey,
+          apiKey: credential,
           backend: managed.config.backend,
           model: managed.config.model,
           llmApiKey: llmApiKey,
@@ -1100,6 +1117,25 @@ export const useAgentStore = create<AgentState>((set, get) => ({
       ws.on("agent_status_changed", (payload) => {
         if (!payload.agentId) return;
         scheduleHealthRefresh();
+      })
+    );
+
+    // Remote-start: a phone/web "bring online" was routed to this desktop.
+    // Start the agent locally (startAgent mints an owner delegation if the
+    // agent's key isn't on this machine). Ignore if it's already running here.
+    unsubs.push(
+      ws.on("start_agent_request", (payload) => {
+        const agentId = (payload as { agentId?: string })?.agentId;
+        if (!agentId) return;
+        const current = get().agents[agentId];
+        if (current?.processStatus === "running" || current?.processStatus === "starting") {
+          return;
+        }
+        void get()
+          .startAgent(agentId)
+          .catch((err) =>
+            console.warn("[agentStore] remote start_agent_request failed", agentId, err)
+          );
       })
     );
 

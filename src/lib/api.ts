@@ -146,6 +146,18 @@ export async function wakeAgent(
 }
 
 /**
+ * Mint an owner delegation token to remote-start a local agent whose API key
+ * isn't on this machine (it was created on the phone/web or another device).
+ * The bridge exchanges this JWT for a normal agent token exactly like a
+ * host-issued delegation. Owner-only, local-runtime-only (server-enforced).
+ */
+export async function fetchAgentDelegationToken(
+  agentId: string
+): Promise<{ delegationToken: string; expiresIn: number }> {
+  return request(`/api/agents/${agentId}/delegation`, { method: "POST" });
+}
+
+/**
  * Bulk "bring my hosted agents online" — owner-scoped restart of the caller's
  * own org-host agents (e.g. after a host restart left a fleet offline). Pass the
  * ids the UI shows as offline; the server re-checks ownership/runtime.
