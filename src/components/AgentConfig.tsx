@@ -541,38 +541,42 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
 
           <div className="flex flex-1 flex-col items-center gap-1 py-3">
           {sectionGroups.map((group, groupIdx) => (
-            <div
-              key={group.key}
-              ref={(el) => {
-                groupRefs.current[group.key] = el;
-              }}
-              className="flex flex-col items-center gap-1"
-            >
-              {group.sections.map((section) => (
-                <Tooltip key={section.value}>
-                  <TooltipTrigger
-                    render={
-                      <button
-                        onClick={() => setActiveSection(section.value)}
-                        className={cn(
-                          "w-8 h-8 rounded-md flex items-center justify-center transition-colors",
-                          activeSection === section.value
-                            ? "bg-primary/10 text-primary"
-                            : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                        )}
-                      >
-                        <section.icon className="w-4 h-4" />
-                      </button>
-                    }
-                  />
-                  <TooltipContent side="right" className="text-xs">
-                    <div className="font-semibold">{section.label}</div>
-                    <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-0.5">
-                      {group.name}
-                    </div>
-                  </TooltipContent>
-                </Tooltip>
-              ))}
+            <div key={group.key} className="flex flex-col items-center gap-1">
+              {/* The tour measures THIS inner wrapper — just the icon buttons —
+                  so the spotlight hugs them and doesn't extend down over the
+                  group separator's margin below. */}
+              <div
+                ref={(el) => {
+                  groupRefs.current[group.key] = el;
+                }}
+                className="flex flex-col items-center gap-1"
+              >
+                {group.sections.map((section) => (
+                  <Tooltip key={section.value}>
+                    <TooltipTrigger
+                      render={
+                        <button
+                          onClick={() => setActiveSection(section.value)}
+                          className={cn(
+                            "w-8 h-8 rounded-md flex items-center justify-center transition-colors",
+                            activeSection === section.value
+                              ? "bg-primary/10 text-primary"
+                              : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                          )}
+                        >
+                          <section.icon className="w-4 h-4" />
+                        </button>
+                      }
+                    />
+                    <TooltipContent side="right" className="text-xs">
+                      <div className="font-semibold">{section.label}</div>
+                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-0.5">
+                        {group.name}
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
+                ))}
+              </div>
               {/* Hairline between groups so the categorization is
                   visible without widening the sidebar. */}
               {groupIdx < sectionGroups.length - 1 && (

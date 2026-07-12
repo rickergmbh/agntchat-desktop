@@ -192,7 +192,11 @@ export function SpotlightTour({
       {spot ? (
         <div
           onClick={onSkip}
-          className="absolute rounded-xl transition-all duration-200"
+          // No position/size transition: steps can anchor far-apart elements
+          // (e.g. the conversation composer vs. the header), and animating the
+          // box sliding across the pane between them reads as jittery. Each
+          // step's spotlight simply appears in place.
+          className="absolute rounded-xl"
           style={{
             top: spot.top,
             left: spot.left,
