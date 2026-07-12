@@ -829,7 +829,10 @@ export function Dashboard() {
             </button>
           </div>
 
-          {activeTab === "agents" && (
+          {/* Hide the header add button until the user has their first agent —
+              the zero-agents empty state (onboarding cards) owns "create your
+              first agent", so a second button here is redundant. */}
+          {activeTab === "agents" && totalCount > 0 && (
             <Button
               size="sm"
               onClick={() => setShowCreate(true)}
