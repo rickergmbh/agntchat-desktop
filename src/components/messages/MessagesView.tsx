@@ -355,6 +355,9 @@ function ConversationPane({
   // Drag-and-drop file attach over the WHOLE conversation area (thread +
   // composer), not just the composer dock. The composer owns the attachment
   // state; we hand it the dropped file via its imperative handle.
+  // These HTML5 drop events only fire because the Tauri window sets
+  // dragDropEnabled: false (tauri.conf.json) — with Tauri's native drag-drop
+  // enabled, the webview never sees dataTransfer.files.
   const composerRef = useRef<MessageComposerHandle>(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const handleDragOver = (e: React.DragEvent) => {
