@@ -2503,6 +2503,31 @@ export async function openBillingPortal(): Promise<string> {
   return res.url;
 }
 
+export interface DeviceNicknameEntry {
+  /** Raw OS machine name the bridge reports (e.g. "DE-34002938"). */
+  deviceName: string;
+  nickname: string;
+}
+
+/** The caller's saved device nicknames — friendly labels for the machines
+ *  their agents run on. */
+export async function listDeviceNicknames(): Promise<DeviceNicknameEntry[]> {
+  const res = await request<{ devices: DeviceNicknameEntry[] }>("/api/me/devices");
+  return res.devices;
+}
+
+/** Set the friendly label for a raw machine name; empty/null clears it.
+ *  Presence strings on every client pick the nickname up live. */
+export async function setDeviceNickname(
+  deviceName: string,
+  nickname: string | null
+): Promise<{ deviceName: string; nickname: string | null }> {
+  return request("/api/me/devices/nickname", {
+    method: "PUT",
+    body: JSON.stringify({ deviceName, nickname }),
+  });
+}
+
 export interface WorkspaceMembership {
   id: string;
   name: string;
@@ -3113,8 +3138,12 @@ export interface Agent {
   presence?: AgentPresence;
   /** Machine name the agent's bridge reported (local-runtime agents only,
    *  present while online). Lets the UI say "running on Jamess-MacBook"
-   *  instead of an ambiguous "local". */
+   *  instead of an ambiguous "local". Always the RAW machine name —
+   *  reconcileStaleExecutors compares it against this device's own. */
   deviceName?: string | null;
+  /** The owner's friendly label for that machine, when set — display this
+   *  over deviceName. */
+  deviceNickname?: string | null;
   /** Org-host runtime routing. `"local"` (default) → desktop spawns
    *  agent_bridge.py as a subprocess. `"org_host"` → a registered Linux
    *  host VM runs the bridge; process_manager skips local spawn and

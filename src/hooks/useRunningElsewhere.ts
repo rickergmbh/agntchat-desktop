@@ -20,19 +20,24 @@ export function useLocalDeviceName(): string | null {
 /**
  * The machine a local-runtime agent's bridge is currently running on, when
  * that machine is NOT this one — i.e. starting the agent here would take it
- * over and stop it there. Returns the device name (`""` when the bridge
- * predates device reporting), or `null` when there is nothing to take over:
- * agent offline, hosted, already running here, or the online executor is
- * this device's own (a stale row from a previous session here).
+ * over and stop it there. Returns the device label to show the user (`""`
+ * when the bridge predates device reporting), or `null` when there is
+ * nothing to take over: agent offline, hosted, already running here, or the
+ * online executor is this device's own (a stale row from a previous session
+ * here).
  *
- * `liveOnline` / `presenceDevice` come from presenceStore — the single
- * runtime presence truth (never REST `agent.online`, which can be stale).
+ * `liveOnline` / `presenceHostname` / `presenceLabel` come from
+ * presenceStore — the single runtime presence truth (never REST
+ * `agent.online`, which can be stale). The elsewhere-check compares the RAW
+ * hostname against this machine's; `presenceLabel` (the owner's nickname
+ * when set) is only what gets returned for display.
  */
 export function runningElsewhereOn(
   managed: ManagedAgent,
   liveOnline: boolean,
-  presenceDevice: string | undefined,
-  myDevice: string | null
+  presenceHostname: string | undefined,
+  myDevice: string | null,
+  presenceLabel?: string
 ): string | null {
   if (managed.agent.runtime === "org_host") return null;
   if (
@@ -42,7 +47,7 @@ export function runningElsewhereOn(
     return null;
   }
   if (!liveOnline) return null;
-  const device = presenceDevice ?? null;
-  if (device && myDevice && device === myDevice) return null;
-  return device ?? "";
+  const hostname = presenceHostname ?? null;
+  if (hostname && myDevice && hostname === myDevice) return null;
+  return hostname ? (presenceLabel ?? hostname) : "";
 }

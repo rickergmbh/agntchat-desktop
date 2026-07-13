@@ -110,9 +110,6 @@ export const resources = {
         "apiKeyGenerateHint": "Generate a new key to run this agent from here. This will invalidate any existing key.",
         "apiKeyNoneStored": "No key stored on this machine",
         "apiKeySectionTitle": "Agent API Key",
-        "autoDocDescription": "Attach relevant API references to every task this agent receives.",
-        "autoDocLabel": "Auto-inject API documentation",
-        "autoDocTooltip": "When on, every task this agent receives gets relevant API doc snippets attached automatically — based on its capabilities and the task content. Useful when the agent calls external APIs (Stripe, Slack, etc.). Off by default.",
         "awsRegionPlaceholder": "AWS region (e.g. us-east-1)",
         "behavior": {
           "autoRestart": "Auto-restart on crash or stall",
@@ -4022,6 +4019,15 @@ export const resources = {
         "hint": "Also toggles with ⌘⇧D",
         "label": "Design-system debug"
       },
+      "device": {
+        "detail": "Give this computer a friendly name. Wherever your agents show as running on this machine, everyone sees the nickname instead of the raw computer name.",
+        "nameLabel": "Computer name",
+        "nicknameLabel": "Nickname",
+        "nicknamePlaceholder": "e.g. Work laptop",
+        "save": "Save",
+        "saveFailed": "Failed to save nickname",
+        "title": "This computer"
+      },
       "integrations": {
         "access": {
           "allAgents": "All agents",
@@ -4971,9 +4977,6 @@ export const resources = {
         "apiKeyGenerateHint": "Genera una nueva clave para ejecutar este agente desde aquí. Esto invalidará cualquier clave existente.",
         "apiKeyNoneStored": "No hay ninguna clave almacenada en esta máquina",
         "apiKeySectionTitle": "Clave de API del agente",
-        "autoDocDescription": "Adjunta referencias de API relevantes a cada tarea que reciba este agente.",
-        "autoDocLabel": "Inyectar documentación de API automáticamente",
-        "autoDocTooltip": "Si está activado, cada tarea que reciba este agente incluirá automáticamente fragmentos de documentación de API relevantes, según sus capacidades y el contenido de la tarea. Útil cuando el agente llama a APIs externas (Stripe, Slack, etc.). Desactivado por defecto.",
         "awsRegionPlaceholder": "Región de AWS (p. ej. us-east-1)",
         "behavior": {
           "autoRestart": "Reinicio automático ante fallos o bloqueos",
@@ -8883,6 +8886,15 @@ export const resources = {
         "hint": "También se alterna con ⌘⇧D",
         "label": "Depuración del sistema de diseño"
       },
+      "device": {
+        "detail": "Dale a este equipo un nombre fácil de reconocer. Donde tus agentes aparezcan ejecutándose en esta máquina, todos verán el apodo en lugar del nombre técnico del equipo.",
+        "nameLabel": "Nombre del equipo",
+        "nicknameLabel": "Apodo",
+        "nicknamePlaceholder": "p. ej., Portátil del trabajo",
+        "save": "Guardar",
+        "saveFailed": "No se pudo guardar el apodo",
+        "title": "Este equipo"
+      },
       "integrations": {
         "access": {
           "allAgents": "Todos los agentes",
@@ -9832,9 +9844,6 @@ export const resources = {
         "apiKeyGenerateHint": "Generieren Sie einen neuen Schlüssel, um diesen Agenten von hier aus auszuführen. Dadurch wird jeder vorhandene Schlüssel ungültig.",
         "apiKeyNoneStored": "Kein Schlüssel auf diesem Computer gespeichert",
         "apiKeySectionTitle": "Agent-API-Schlüssel",
-        "autoDocDescription": "Relevante API-Referenzen an jede Aufgabe anhängen, die dieser Agent erhält.",
-        "autoDocLabel": "API-Dokumentation automatisch einfügen",
-        "autoDocTooltip": "Wenn aktiviert, erhält jede Aufgabe, die dieser Agent bekommt, automatisch relevante API-Dokumentationsausschnitte — basierend auf seinen Fähigkeiten und dem Aufgabeninhalt. Nützlich, wenn der Agent externe APIs aufruft (Stripe, Slack usw.). Standardmäßig deaktiviert.",
         "awsRegionPlaceholder": "AWS-Region (z. B. us-east-1)",
         "behavior": {
           "autoRestart": "Automatischer Neustart bei Absturz oder Blockade",
@@ -13744,6 +13753,15 @@ export const resources = {
         "hint": "Kann auch mit ⌘⇧D umgeschaltet werden",
         "label": "Design-System-Debug"
       },
+      "device": {
+        "detail": "Gib diesem Computer einen verständlichen Namen. Überall, wo deine Agenten als auf dieser Maschine laufend angezeigt werden, sehen alle den Spitznamen statt des technischen Computernamens.",
+        "nameLabel": "Computername",
+        "nicknameLabel": "Spitzname",
+        "nicknamePlaceholder": "z. B. Arbeitslaptop",
+        "save": "Speichern",
+        "saveFailed": "Spitzname konnte nicht gespeichert werden",
+        "title": "Dieser Computer"
+      },
       "integrations": {
         "access": {
           "allAgents": "Alle Agenten",
@@ -14693,9 +14711,6 @@ export const resources = {
         "apiKeyGenerateHint": "Générez une nouvelle clé pour exécuter cet agent depuis ici. Cela invalidera toute clé existante.",
         "apiKeyNoneStored": "Aucune clé stockée sur cette machine",
         "apiKeySectionTitle": "Clé API de l'agent",
-        "autoDocDescription": "Joindre les références API pertinentes à chaque tâche que cet agent reçoit.",
-        "autoDocLabel": "Injecter automatiquement la documentation API",
-        "autoDocTooltip": "Lorsque cette option est activée, chaque tâche reçue par cet agent obtient automatiquement des extraits de documentation API pertinents — en fonction de ses capacités et du contenu de la tâche. Utile lorsque l'agent appelle des API externes (Stripe, Slack, etc.). Désactivé par défaut.",
         "awsRegionPlaceholder": "Région AWS (ex. us-east-1)",
         "behavior": {
           "autoRestart": "Redémarrage automatique en cas de plantage ou de blocage",
@@ -18605,6 +18620,15 @@ export const resources = {
         "hint": "Peut aussi être activé avec ⌘⇧D",
         "label": "Débogage du système de design"
       },
+      "device": {
+        "detail": "Donnez à cet ordinateur un nom facile à reconnaître. Partout où vos agents apparaissent comme s'exécutant sur cette machine, tout le monde verra le surnom au lieu du nom technique de l'ordinateur.",
+        "nameLabel": "Nom de l'ordinateur",
+        "nicknameLabel": "Surnom",
+        "nicknamePlaceholder": "p. ex. Portable du travail",
+        "save": "Enregistrer",
+        "saveFailed": "Échec de l'enregistrement du surnom",
+        "title": "Cet ordinateur"
+      },
       "integrations": {
         "access": {
           "allAgents": "Tous les agents",
@@ -19554,9 +19578,6 @@ export const resources = {
         "apiKeyGenerateHint": "Gere uma nova chave para executar este agente a partir daqui. Isso invalidará qualquer chave existente.",
         "apiKeyNoneStored": "Nenhuma chave armazenada nesta máquina",
         "apiKeySectionTitle": "Chave de API do Agente",
-        "autoDocDescription": "Anexa referências de API relevantes a cada tarefa recebida por este agente.",
-        "autoDocLabel": "Injetar documentação de API automaticamente",
-        "autoDocTooltip": "Quando ativado, cada tarefa recebida por este agente ganha automaticamente trechos relevantes de documentação de API — com base em suas capacidades e no conteúdo da tarefa. Útil quando o agente chama APIs externas (Stripe, Slack, etc.). Desativado por padrão.",
         "awsRegionPlaceholder": "Região da AWS (ex.: us-east-1)",
         "behavior": {
           "autoRestart": "Reiniciar automaticamente após falha ou travamento",
@@ -23466,6 +23487,15 @@ export const resources = {
         "hint": "Também alterna com ⌘⇧D",
         "label": "Depuração do design system"
       },
+      "device": {
+        "detail": "Dê a este computador um nome fácil de reconhecer. Onde os seus agentes aparecerem em execução nesta máquina, todos verão o apelido em vez do nome técnico do computador.",
+        "nameLabel": "Nome do computador",
+        "nicknameLabel": "Apelido",
+        "nicknamePlaceholder": "ex.: Notebook do trabalho",
+        "save": "Salvar",
+        "saveFailed": "Não foi possível salvar o apelido",
+        "title": "Este computador"
+      },
       "integrations": {
         "access": {
           "allAgents": "Todos os agentes",
@@ -24415,9 +24445,6 @@ export const resources = {
         "apiKeyGenerateHint": "ここからこのエージェントを実行するには新しいキーを生成してください。既存のキーは無効になります。",
         "apiKeyNoneStored": "このマシンにキーが保存されていません",
         "apiKeySectionTitle": "エージェントAPIキー",
-        "autoDocDescription": "このエージェントが受け取るすべてのタスクに、関連するAPIリファレンスを添付します。",
-        "autoDocLabel": "APIドキュメントを自動挿入",
-        "autoDocTooltip": "オンにすると、このエージェントが受け取るすべてのタスクに、関連するAPIドキュメントの抜粋が自動的に添付されます — エージェントの能力とタスク内容に基づきます。エージェントが外部API（Stripe、Slackなど）を呼び出す場合に便利です。既定ではオフです。",
         "awsRegionPlaceholder": "AWSリージョン（例：us-east-1）",
         "behavior": {
           "autoRestart": "クラッシュまたは停止時に自動再起動",
@@ -28327,6 +28354,15 @@ export const resources = {
         "hint": "⌘⇧D でも切り替えられます",
         "label": "デザインシステムデバッグ"
       },
+      "device": {
+        "detail": "このコンピューターにわかりやすい名前を付けましょう。エージェントがこのマシンで実行中と表示される場所では、技術的なコンピューター名の代わりにニックネームが表示されます。",
+        "nameLabel": "コンピューター名",
+        "nicknameLabel": "ニックネーム",
+        "nicknamePlaceholder": "例: 仕事用ノートPC",
+        "save": "保存",
+        "saveFailed": "ニックネームを保存できませんでした",
+        "title": "このコンピューター"
+      },
       "integrations": {
         "access": {
           "allAgents": "すべてのエージェント",
@@ -29276,9 +29312,6 @@ export const resources = {
         "apiKeyGenerateHint": "生成新密钥即可从此处运行此智能体。这将使任何现有密钥失效。",
         "apiKeyNoneStored": "此计算机上未存储密钥",
         "apiKeySectionTitle": "智能体 API 密钥",
-        "autoDocDescription": "为此智能体收到的每个任务附加相关的 API 参考资料。",
-        "autoDocLabel": "自动注入 API 文档",
-        "autoDocTooltip": "开启后，此智能体收到的每个任务都会根据其能力和任务内容自动附加相关的 API 文档片段。适用于智能体调用外部 API（如 Stripe、Slack 等）的情况。默认关闭。",
         "awsRegionPlaceholder": "AWS 区域（例如 us-east-1）",
         "behavior": {
           "autoRestart": "崩溃或卡住时自动重启",
@@ -33188,6 +33221,15 @@ export const resources = {
         "hint": "也可通过 ⌘⇧D 切换",
         "label": "设计系统调试"
       },
+      "device": {
+        "detail": "给这台电脑起一个易于辨认的名字。凡是显示您的智能体在这台机器上运行的地方，大家都会看到昵称，而不是技术性的电脑名称。",
+        "nameLabel": "电脑名称",
+        "nicknameLabel": "昵称",
+        "nicknamePlaceholder": "例如：工作笔记本",
+        "save": "保存",
+        "saveFailed": "昵称保存失败",
+        "title": "这台电脑"
+      },
       "integrations": {
         "access": {
           "allAgents": "所有代理",
@@ -34137,9 +34179,6 @@ export const resources = {
         "apiKeyGenerateHint": "여기서 이 에이전트를 실행하려면 새 키를 생성하세요. 기존 키는 모두 무효화됩니다.",
         "apiKeyNoneStored": "이 기기에 저장된 키가 없습니다",
         "apiKeySectionTitle": "에이전트 API 키",
-        "autoDocDescription": "이 에이전트가 받는 모든 작업에 관련 API 참조를 첨부합니다.",
-        "autoDocLabel": "API 문서 자동 삽입",
-        "autoDocTooltip": "켜면 이 에이전트가 받는 모든 작업에 관련 API 문서 스니펫이 자동으로 첨부됩니다 — 에이전트의 역량과 작업 내용을 기반으로 합니다. 에이전트가 외부 API(Stripe, Slack 등)를 호출할 때 유용합니다. 기본값은 꺼짐입니다.",
         "awsRegionPlaceholder": "AWS 리전(예: us-east-1)",
         "behavior": {
           "autoRestart": "충돌 또는 정지 시 자동 재시작",
@@ -38049,6 +38088,15 @@ export const resources = {
         "hint": "⌘⇧D로도 전환할 수 있습니다",
         "label": "디자인 시스템 디버그"
       },
+      "device": {
+        "detail": "이 컴퓨터에 알아보기 쉬운 이름을 지어 주세요. 에이전트가 이 기기에서 실행 중으로 표시되는 모든 곳에서 기술적인 컴퓨터 이름 대신 별명이 표시됩니다.",
+        "nameLabel": "컴퓨터 이름",
+        "nicknameLabel": "별명",
+        "nicknamePlaceholder": "예: 업무용 노트북",
+        "save": "저장",
+        "saveFailed": "별명을 저장하지 못했습니다",
+        "title": "이 컴퓨터"
+      },
       "integrations": {
         "access": {
           "allAgents": "모든 에이전트",
@@ -38998,9 +39046,6 @@ export const resources = {
         "apiKeyGenerateHint": "Genera una nuova chiave per eseguire questo agente da qui. Questo invaliderà qualsiasi chiave esistente.",
         "apiKeyNoneStored": "Nessuna chiave salvata su questa macchina",
         "apiKeySectionTitle": "Chiave API dell'agente",
-        "autoDocDescription": "Allega i riferimenti API pertinenti a ogni attività ricevuta da questo agente.",
-        "autoDocLabel": "Inserisci automaticamente la documentazione API",
-        "autoDocTooltip": "Quando attivo, ogni attività ricevuta da questo agente ottiene automaticamente frammenti pertinenti della documentazione API allegati — in base alle sue capacità e al contenuto dell'attività. Utile quando l'agente chiama API esterne (Stripe, Slack, ecc.). Disattivato per impostazione predefinita.",
         "awsRegionPlaceholder": "Regione AWS (es. us-east-1)",
         "behavior": {
           "autoRestart": "Riavvio automatico in caso di crash o blocco",
@@ -42910,6 +42955,15 @@ export const resources = {
         "hint": "Si attiva anche con ⌘⇧D",
         "label": "Debug design system"
       },
+      "device": {
+        "detail": "Dai a questo computer un nome facile da riconoscere. Ovunque i tuoi agent risultino in esecuzione su questa macchina, tutti vedranno il soprannome invece del nome tecnico del computer.",
+        "nameLabel": "Nome del computer",
+        "nicknameLabel": "Soprannome",
+        "nicknamePlaceholder": "es. Laptop di lavoro",
+        "save": "Salva",
+        "saveFailed": "Impossibile salvare il soprannome",
+        "title": "Questo computer"
+      },
       "integrations": {
         "access": {
           "allAgents": "Tutti gli agenti",
@@ -43859,9 +43913,6 @@ export const resources = {
         "apiKeyGenerateHint": "इस एजेंट को यहाँ से चलाने के लिए एक नई कुंजी जनरेट करें। इससे मौजूदा कुंजी अमान्य हो जाएगी।",
         "apiKeyNoneStored": "इस मशीन पर कोई कुंजी संग्रहीत नहीं है",
         "apiKeySectionTitle": "एजेंट API कुंजी",
-        "autoDocDescription": "इस एजेंट को प्राप्त होने वाले हर कार्य के साथ प्रासंगिक API संदर्भ संलग्न करें।",
-        "autoDocLabel": "API दस्तावेज़ स्वतः जोड़ें",
-        "autoDocTooltip": "चालू होने पर, इस एजेंट को प्राप्त होने वाले हर कार्य के साथ प्रासंगिक API दस्तावेज़ स्निपेट स्वतः संलग्न हो जाते हैं — इसकी क्षमताओं और कार्य की सामग्री के आधार पर। यह तब उपयोगी है जब एजेंट बाहरी API (Stripe, Slack, आदि) को कॉल करता है। डिफ़ॉल्ट रूप से बंद।",
         "awsRegionPlaceholder": "AWS क्षेत्र (जैसे, us-east-1)",
         "behavior": {
           "autoRestart": "क्रैश या रुकने पर स्वतः पुनः आरंभ",
@@ -47770,6 +47821,15 @@ export const resources = {
       "designDebug": {
         "hint": "⌘⇧D से भी टॉगल होता है",
         "label": "डिज़ाइन-सिस्टम डीबग"
+      },
+      "device": {
+        "detail": "इस कंप्यूटर को एक आसान नाम दें। जहाँ भी आपके एजेंट इस मशीन पर चलते दिखते हैं, वहाँ सभी को तकनीकी कंप्यूटर नाम की जगह उपनाम दिखेगा।",
+        "nameLabel": "कंप्यूटर का नाम",
+        "nicknameLabel": "उपनाम",
+        "nicknamePlaceholder": "जैसे ऑफ़िस लैपटॉप",
+        "save": "सहेजें",
+        "saveFailed": "उपनाम सहेजा नहीं जा सका",
+        "title": "यह कंप्यूटर"
       },
       "integrations": {
         "access": {

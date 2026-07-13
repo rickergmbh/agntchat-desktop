@@ -680,7 +680,9 @@ export function Dashboard() {
     isAgentOnline(m, presenceOnline)
   ).length;
   const totalCount = Object.keys(agents).length;
-  const agentDevices = usePresenceStore((s) => s.agentDevices);
+  // Raw hostnames, not display labels — the elsewhere-check compares
+  // against this machine's own name.
+  const agentDeviceHostnames = usePresenceStore((s) => s.agentDeviceHostnames);
   const myDevice = useLocalDeviceName();
   // "Start All" only targets locally-runnable agents — flipping an
   // org-host agent into "starting" here would do nothing useful since
@@ -693,7 +695,7 @@ export function Dashboard() {
       m.processStatus === "stopped" &&
       m.apiKey &&
       m.agent.runtime !== "org_host" &&
-      runningElsewhereOn(m, presenceOnline.has(m.agent.id), agentDevices[m.agent.id], myDevice) === null
+      runningElsewhereOn(m, presenceOnline.has(m.agent.id), agentDeviceHostnames[m.agent.id], myDevice) === null
   );
   // "Stop All" mirrors Start All — only acts on LOCAL subprocesses this
   // desktop can actually stop. This is deliberately NOT `isAgentOnline`: an

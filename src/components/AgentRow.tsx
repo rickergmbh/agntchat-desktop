@@ -179,6 +179,11 @@ export function AgentRow({
   const presenceDevice = usePresenceStore(
     (s) => s.agentDevices[managed.agent.id]
   );
+  // Raw hostname — what runningElsewhereOn compares against THIS machine's
+  // name. presenceDevice above is the display label (nickname when set).
+  const presenceHostname = usePresenceStore(
+    (s) => s.agentDeviceHostnames[managed.agent.id]
+  );
   const myDevice = useLocalDeviceName();
   const markWaking = usePresenceStore((s) => s.markWaking);
   // Take-over confirmation: the agent's bridge is alive on ANOTHER of the
@@ -197,7 +202,7 @@ export function AgentRow({
       } else {
         // The bridge is alive on another of the user's machines — starting
         // here takes the agent over and stops it there. Confirm first.
-        const elsewhere = runningElsewhereOn(managed, liveOnline, presenceDevice, myDevice);
+        const elsewhere = runningElsewhereOn(managed, liveOnline, presenceHostname, myDevice, presenceDevice);
         if (elsewhere !== null) {
           setConfirmMoveFrom(elsewhere);
           return;

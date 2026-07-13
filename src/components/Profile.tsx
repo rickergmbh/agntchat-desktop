@@ -6,6 +6,7 @@ import { useLocaleStore } from "../stores/localeStore";
 import type { LocalePreference } from "../i18n";
 import { LOCALE_LABELS, SUPPORTED_LOCALES } from "../i18n/generated";
 import { isDesignSystemDebugOn, setDesignSystemDebug } from "../lib/designSystemDebug";
+import { useLocalDeviceName } from "../hooks/useRunningElsewhere";
 import * as api from "../lib/api";
 import { identifyAnalytics, track, ANALYTICS_EVENTS } from "../lib/analytics";
 import { cn } from "../lib/utils";
@@ -902,6 +903,8 @@ export function Profile({ onClose }: { onClose: () => void }) {
             <LanguageSection />
             <Separator />
             <TimezoneSection />
+            <Separator />
+            <DeviceSection />
           </div>
         )}
 
@@ -1736,6 +1739,116 @@ function TimezoneSection() {
         </div>
       </div>
       )}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// This computer — a friendly nickname for the machine the desktop app runs
+// on. The raw OS name (e.g. "DE-34002938") stays the identity everywhere;
+// the nickname is what presence strings show on every client. Hidden when
+// Tauri can't report the device name (e.g. plain-browser dev).
+// ---------------------------------------------------------------------------
+
+function DeviceSection() {
+  const { t } = useTranslation("settings");
+  const myDevice = useLocalDeviceName();
+  const [nickname, setNickname] = useState("");
+  const [savedNickname, setSavedNickname] = useState("");
+  const [loaded, setLoaded] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [justSaved, setJustSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!myDevice) return;
+    let mounted = true;
+    api
+      .listDeviceNicknames()
+      .then((devices) => {
+        if (!mounted) return;
+        const mine = devices.find((d) => d.deviceName === myDevice);
+        setNickname(mine?.nickname ?? "");
+        setSavedNickname(mine?.nickname ?? "");
+        setLoaded(true);
+      })
+      .catch(() => {
+        if (mounted) setLoaded(true);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, [myDevice]);
+
+  if (!myDevice) return null;
+
+  const dirty = nickname.trim() !== savedNickname;
+
+  const save = async () => {
+    setSaving(true);
+    setError(null);
+    try {
+      const res = await api.setDeviceNickname(myDevice, nickname.trim() || null);
+      setSavedNickname(res.nickname ?? "");
+      setNickname(res.nickname ?? "");
+      setJustSaved(true);
+      setTimeout(() => setJustSaved(false), 2000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t("device.saveFailed"));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <Label className="text-xs">{t("device.title")}</Label>
+        <p className="mt-1 flex items-center gap-2 text-sm font-medium">
+          <Monitor className="h-4 w-4 text-muted-foreground" />
+          {savedNickname || myDevice}
+        </p>
+        {savedNickname && (
+          <p className="text-[11px] text-muted-foreground">{myDevice}</p>
+        )}
+        <p className="mt-2 text-[11px] text-muted-foreground">
+          {t("device.detail")}
+        </p>
+      </div>
+
+      <div className="space-y-1.5">
+        <Label className="text-xs" htmlFor="device-nickname">
+          {t("device.nicknameLabel")}
+        </Label>
+        <div className="flex items-center gap-2">
+          <Input
+            id="device-nickname"
+            value={nickname}
+            disabled={!loaded || saving}
+            maxLength={100}
+            placeholder={t("device.nicknamePlaceholder")}
+            onChange={(e) => setNickname(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && dirty && !saving) void save();
+            }}
+            className="max-w-xs"
+          />
+          <Button
+            size="sm"
+            onClick={() => void save()}
+            disabled={!loaded || saving || !dirty}
+          >
+            {saving ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : justSaved ? (
+              <Check className="h-3.5 w-3.5" />
+            ) : (
+              t("device.save")
+            )}
+          </Button>
+        </div>
+        {error && <p className="text-[11px] text-destructive">{error}</p>}
+      </div>
     </div>
   );
 }
