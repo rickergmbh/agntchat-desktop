@@ -2995,6 +2995,8 @@ export const resources = {
       "deleted": "File deleted.",
       "empty": {
         "hint": "Files you or your agents add to any chat or action will appear here",
+        "noArtifacts": "No artifacts yet",
+        "noArtifactsHint": "Documents your agents create in any chat will collect here.",
         "noFiles": "No files yet",
         "noFilesHint": "Files you or your agents add to any chat or task will collect here.",
         "noMatches": "No matching files",
@@ -3028,6 +3030,7 @@ export const resources = {
       "fileFallback": "File",
       "filters": {
         "all": "All",
+        "artifacts": "Artifacts",
         "documents": "Documents",
         "images": "Images",
         "media": "Media"
@@ -3054,6 +3057,7 @@ export const resources = {
       "location": "Location",
       "noChatsFound": "No chats found.",
       "open": "Open {{name}}",
+      "openArtifact": "Open artifact",
       "openChatTitle": "Open chat: {{name}}",
       "openFile": "Open file",
       "openSourceChat": "Open chat: {{title}}",
@@ -7852,6 +7856,8 @@ export const resources = {
       "deleted": "Archivo eliminado.",
       "empty": {
         "hint": "Los archivos que tú o tus agentes añadan a cualquier chat o acción aparecerán aquí",
+        "noArtifacts": "Aún no hay artefactos",
+        "noArtifactsHint": "Los documentos que tus agentes creen en cualquier chat se reunirán aquí.",
         "noFiles": "Aún no hay archivos",
         "noFilesHint": "Los archivos que tú o tus agentes añadan a cualquier chat o tarea se reunirán aquí.",
         "noMatches": "No hay archivos que coincidan",
@@ -7885,6 +7891,7 @@ export const resources = {
       "fileFallback": "Archivo",
       "filters": {
         "all": "Todos",
+        "artifacts": "Artefactos",
         "documents": "Documentos",
         "images": "Imágenes",
         "media": "Multimedia"
@@ -7911,6 +7918,7 @@ export const resources = {
       "location": "Ubicación",
       "noChatsFound": "No se encontraron chats.",
       "open": "Abrir {{name}}",
+      "openArtifact": "Abrir artefacto",
       "openChatTitle": "Abrir chat: {{name}}",
       "openFile": "Abrir archivo",
       "openSourceChat": "Abrir chat: {{title}}",
@@ -12709,6 +12717,8 @@ export const resources = {
       "deleted": "Datei gelöscht.",
       "empty": {
         "hint": "Dateien, die Sie oder Ihre Agenten einem Chat oder einer Aktion hinzufügen, werden hier angezeigt",
+        "noArtifacts": "Noch keine Artefakte",
+        "noArtifactsHint": "Dokumente, die deine Agenten in einem Chat erstellen, sammeln sich hier.",
         "noFiles": "Noch keine Dateien",
         "noFilesHint": "Dateien, die Sie oder Ihre Agenten einem Chat oder einer Aufgabe hinzufügen, sammeln sich hier.",
         "noMatches": "Keine passenden Dateien",
@@ -12742,6 +12752,7 @@ export const resources = {
       "fileFallback": "Datei",
       "filters": {
         "all": "Alle",
+        "artifacts": "Artefakte",
         "documents": "Dokumente",
         "images": "Bilder",
         "media": "Medien"
@@ -12768,6 +12779,7 @@ export const resources = {
       "location": "Ort",
       "noChatsFound": "Keine Chats gefunden.",
       "open": "{{name}} öffnen",
+      "openArtifact": "Artefakt öffnen",
       "openChatTitle": "Chat öffnen: {{name}}",
       "openFile": "Datei öffnen",
       "openSourceChat": "Chat öffnen: {{title}}",
@@ -17566,6 +17578,8 @@ export const resources = {
       "deleted": "Fichier supprimé.",
       "empty": {
         "hint": "Les fichiers que vous ou vos agents ajoutez à une conversation ou une action apparaîtront ici",
+        "noArtifacts": "Aucun artefact pour l’instant",
+        "noArtifactsHint": "Les documents que vos agents créent dans une conversation apparaîtront ici.",
         "noFiles": "Aucun fichier pour l'instant",
         "noFilesHint": "Les fichiers que vous ou vos agents ajoutez à une conversation ou une tâche se rassembleront ici.",
         "noMatches": "Aucun fichier correspondant",
@@ -17599,6 +17613,7 @@ export const resources = {
       "fileFallback": "Fichier",
       "filters": {
         "all": "Tous",
+        "artifacts": "Artefacts",
         "documents": "Documents",
         "images": "Images",
         "media": "Médias"
@@ -17625,6 +17640,7 @@ export const resources = {
       "location": "Emplacement",
       "noChatsFound": "Aucune conversation trouvée.",
       "open": "Ouvrir {{name}}",
+      "openArtifact": "Ouvrir l’artefact",
       "openChatTitle": "Ouvrir la conversation : {{name}}",
       "openFile": "Ouvrir le fichier",
       "openSourceChat": "Ouvrir la conversation : {{title}}",
@@ -22423,6 +22439,8 @@ export const resources = {
       "deleted": "Arquivo excluído.",
       "empty": {
         "hint": "Arquivos que você ou seus agentes adicionarem a qualquer conversa ou ação aparecerão aqui",
+        "noArtifacts": "Ainda sem artefatos",
+        "noArtifactsHint": "Os documentos que seus agentes criam em qualquer conversa serão reunidos aqui.",
         "noFiles": "Ainda não há arquivos",
         "noFilesHint": "Arquivos que você ou seus agentes adicionarem a qualquer conversa ou tarefa serão reunidos aqui.",
         "noMatches": "Nenhum arquivo correspondente",
@@ -22456,6 +22474,7 @@ export const resources = {
       "fileFallback": "Arquivo",
       "filters": {
         "all": "Todos",
+        "artifacts": "Artefatos",
         "documents": "Documentos",
         "images": "Imagens",
         "media": "Mídia"
@@ -22482,6 +22501,7 @@ export const resources = {
       "location": "Local",
       "noChatsFound": "Nenhuma conversa encontrada.",
       "open": "Abrir {{name}}",
+      "openArtifact": "Abrir artefato",
       "openChatTitle": "Abrir conversa: {{name}}",
       "openFile": "Abrir arquivo",
       "openSourceChat": "Abrir conversa: {{title}}",
@@ -27280,6 +27300,8 @@ export const resources = {
       "deleted": "ファイルを削除しました。",
       "empty": {
         "hint": "あなたやエージェントがチャットやアクションに追加したファイルがここに表示されます",
+        "noArtifacts": "アーティファクトはまだありません",
+        "noArtifactsHint": "エージェントがチャットで作成したドキュメントがここに集まります。",
         "noFiles": "まだファイルがありません",
         "noFilesHint": "あなたやエージェントがチャットやタスクに追加したファイルがここに集まります。",
         "noMatches": "一致するファイルがありません",
@@ -27313,6 +27335,7 @@ export const resources = {
       "fileFallback": "ファイル",
       "filters": {
         "all": "すべて",
+        "artifacts": "アーティファクト",
         "documents": "書類",
         "images": "画像",
         "media": "メディア"
@@ -27339,6 +27362,7 @@ export const resources = {
       "location": "場所",
       "noChatsFound": "チャットが見つかりません。",
       "open": "{{name}}を開く",
+      "openArtifact": "アーティファクトを開く",
       "openChatTitle": "チャットを開く: {{name}}",
       "openFile": "ファイルを開く",
       "openSourceChat": "チャットを開く: {{title}}",
@@ -32137,6 +32161,8 @@ export const resources = {
       "deleted": "文件已删除。",
       "empty": {
         "hint": "你或你的智能体在任何聊天或操作中添加的文件都会显示在这里",
+        "noArtifacts": "暂无制品",
+        "noArtifactsHint": "你的智能体在任意聊天中创建的文档将汇集在这里。",
         "noFiles": "暂无文件",
         "noFilesHint": "你或你的智能体在任何聊天或任务中添加的文件都会汇集在这里。",
         "noMatches": "没有匹配的文件",
@@ -32170,6 +32196,7 @@ export const resources = {
       "fileFallback": "文件",
       "filters": {
         "all": "全部",
+        "artifacts": "制品",
         "documents": "文档",
         "images": "图片",
         "media": "媒体"
@@ -32196,6 +32223,7 @@ export const resources = {
       "location": "位置",
       "noChatsFound": "未找到聊天。",
       "open": "打开 {{name}}",
+      "openArtifact": "打开制品",
       "openChatTitle": "打开聊天：{{name}}",
       "openFile": "打开文件",
       "openSourceChat": "打开聊天：{{title}}",
@@ -36994,6 +37022,8 @@ export const resources = {
       "deleted": "파일이 삭제되었습니다.",
       "empty": {
         "hint": "사용자나 에이전트가 채팅이나 작업에 추가한 파일이 여기에 표시됩니다",
+        "noArtifacts": "아직 아티팩트가 없습니다",
+        "noArtifactsHint": "에이전트가 채팅에서 만든 문서가 여기에 모입니다.",
         "noFiles": "아직 파일이 없습니다",
         "noFilesHint": "사용자나 에이전트가 채팅이나 작업에 추가한 파일이 여기에 모입니다.",
         "noMatches": "일치하는 파일이 없습니다",
@@ -37027,6 +37057,7 @@ export const resources = {
       "fileFallback": "파일",
       "filters": {
         "all": "전체",
+        "artifacts": "아티팩트",
         "documents": "문서",
         "images": "이미지",
         "media": "미디어"
@@ -37053,6 +37084,7 @@ export const resources = {
       "location": "위치",
       "noChatsFound": "채팅을 찾을 수 없습니다.",
       "open": "{{name}} 열기",
+      "openArtifact": "아티팩트 열기",
       "openChatTitle": "채팅 열기: {{name}}",
       "openFile": "파일 열기",
       "openSourceChat": "채팅 열기: {{title}}",
@@ -41851,6 +41883,8 @@ export const resources = {
       "deleted": "File eliminato.",
       "empty": {
         "hint": "I file che tu o i tuoi agenti aggiungete a qualsiasi chat o azione appariranno qui",
+        "noArtifacts": "Ancora nessun artefatto",
+        "noArtifactsHint": "I documenti che i tuoi agenti creano in qualsiasi chat verranno raccolti qui.",
         "noFiles": "Ancora nessun file",
         "noFilesHint": "I file che tu o i tuoi agenti aggiungete a qualsiasi chat o attività si raccoglieranno qui.",
         "noMatches": "Nessun file corrispondente",
@@ -41884,6 +41918,7 @@ export const resources = {
       "fileFallback": "File",
       "filters": {
         "all": "Tutti",
+        "artifacts": "Artefatti",
         "documents": "Documenti",
         "images": "Immagini",
         "media": "Media"
@@ -41910,6 +41945,7 @@ export const resources = {
       "location": "Posizione",
       "noChatsFound": "Nessuna chat trovata.",
       "open": "Apri {{name}}",
+      "openArtifact": "Apri artefatto",
       "openChatTitle": "Apri chat: {{name}}",
       "openFile": "Apri file",
       "openSourceChat": "Apri chat: {{title}}",
@@ -46708,6 +46744,8 @@ export const resources = {
       "deleted": "फ़ाइल हटाई गई।",
       "empty": {
         "hint": "आपके या आपके एजेंटों द्वारा किसी भी चैट या कार्रवाई में जोड़ी गई फ़ाइलें यहाँ दिखाई देंगी",
+        "noArtifacts": "अभी तक कोई आर्टिफ़ैक्ट नहीं",
+        "noArtifactsHint": "आपके एजेंट किसी भी चैट में जो दस्तावेज़ बनाते हैं वे यहाँ एकत्र होंगे।",
         "noFiles": "अभी तक कोई फ़ाइल नहीं",
         "noFilesHint": "आपके या आपके एजेंटों द्वारा किसी भी चैट या कार्य में जोड़ी गई फ़ाइलें यहाँ एकत्र होंगी।",
         "noMatches": "कोई मिलती-जुलती फ़ाइल नहीं",
@@ -46741,6 +46779,7 @@ export const resources = {
       "fileFallback": "फ़ाइल",
       "filters": {
         "all": "सभी",
+        "artifacts": "आर्टिफ़ैक्ट",
         "documents": "दस्तावेज़",
         "images": "छवियाँ",
         "media": "मीडिया"
@@ -46767,6 +46806,7 @@ export const resources = {
       "location": "स्थान",
       "noChatsFound": "कोई चैट नहीं मिली।",
       "open": "{{name}} खोलें",
+      "openArtifact": "आर्टिफ़ैक्ट खोलें",
       "openChatTitle": "चैट खोलें: {{name}}",
       "openFile": "फ़ाइल खोलें",
       "openSourceChat": "चैट खोलें: {{title}}",

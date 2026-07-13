@@ -22,26 +22,40 @@ import {
   deleteOwnerFile,
   forwardFile,
   getFileDownloadUrl,
+  listOwnerArtifacts,
   listOwnerFiles,
   type Conversation,
+  type OwnerArtifact,
   type OwnerFile,
 } from "../../lib/api";
-import { cn, formatExactDateTime, getConversationTitle } from "../../lib/utils";
+import { cn, formatExactDateTime, formatRelativeShort, getConversationTitle } from "../../lib/utils";
 import { formatFileSize } from "../../services/fileUpload";
 import { useChatStore } from "../../stores/chatStore";
 import { useAuthStore } from "../../stores/authStore";
+import { useArtifactStore } from "../../stores/artifactStore";
+import { useNavStore } from "../../stores/navStore";
+import { ArtifactKindIcon } from "../messages/ArtifactCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const PAGE_SIZE = 100;
 
-type Category = "all" | "documents" | "images" | "media";
+type Category = "all" | "documents" | "images" | "media" | "artifacts";
 
 const FILTERS: { key: Category; labelKey: string }[] = [
   { key: "all", labelKey: "filters.all" },
   { key: "documents", labelKey: "filters.documents" },
   { key: "images", labelKey: "filters.images" },
   { key: "media", labelKey: "filters.media" },
+  { key: "artifacts", labelKey: "filters.artifacts" },
 ];
+
+const ARTIFACT_KIND_LABEL_KEY: Record<string, string> = {
+  document: "artifacts:kindDocument",
+  markdown: "artifacts:kindMarkdown",
+  code: "artifacts:kindCode",
+  html: "artifacts:kindHtml",
+  text: "artifacts:kindText",
+};
 
 /** Coarse bucket used by both the type-filter pills and the row icon. */
 function categoryOf(contentType: string): Exclude<Category, "all"> {
@@ -90,6 +104,16 @@ export function FilesView({ onOpenConversation }: Props) {
   const [forwardFor, setForwardFor] = useState<OwnerFile | null>(null);
   const [toast, setToast] = useState<Toast | null>(null);
 
+  // Artifacts (#59) are a separate primitive from files — their own owner feed,
+  // loaded lazily the first time the "Artifacts" filter is opened.
+  const [artifacts, setArtifacts] = useState<OwnerArtifact[]>([]);
+  const [artifactsLoaded, setArtifactsLoaded] = useState(false);
+  const [artifactsLoading, setArtifactsLoading] = useState(false);
+  const [artifactsError, setArtifactsError] = useState<string | null>(null);
+
+  const setActiveConversation = useChatStore((s) => s.setActiveConversation);
+  const setView = useNavStore((s) => s.setView);
+
   const flash = useCallback((t: Toast) => {
     setToast(t);
     window.setTimeout(() => setToast(null), 2600);
@@ -113,6 +137,40 @@ export function FilesView({ onOpenConversation }: Props) {
     load();
   }, [load]);
 
+  const loadArtifacts = useCallback(async () => {
+    setArtifactsLoading(true);
+    setArtifactsError(null);
+    try {
+      const page = await listOwnerArtifacts({ limit: PAGE_SIZE });
+      setArtifacts(page);
+      setArtifactsLoaded(true);
+    } catch {
+      setArtifactsError(t("errors.loadFailed"));
+    } finally {
+      setArtifactsLoading(false);
+    }
+  }, [t]);
+
+  // Lazy-load artifacts the first time the Artifacts filter is selected.
+  useEffect(() => {
+    if (category === "artifacts" && !artifactsLoaded && !artifactsLoading) {
+      loadArtifacts();
+    }
+  }, [category, artifactsLoaded, artifactsLoading, loadArtifacts]);
+
+  // Open an artifact by navigating to its conversation and popping the viewer
+  // (the viewer docks inside the conversation and resolves author names from
+  // its member list). Mirrors a file's "open source" deep-link.
+  const openArtifact = useCallback(
+    (artifact: OwnerArtifact) => {
+      if (!artifact.conversation) return;
+      setActiveConversation(artifact.conversation.id);
+      useArtifactStore.getState().openViewer(artifact.id, artifact.conversation.id);
+      setView("chat");
+    },
+    [setActiveConversation, setView]
+  );
+
   const loadMore = useCallback(async () => {
     const last = files[files.length - 1];
     if (!last || loadingMore) return;
@@ -135,12 +193,15 @@ export function FilesView({ onOpenConversation }: Props) {
   }, [files, loadingMore, flash, t]);
 
   const counts = useMemo(() => {
-    const c = { all: files.length, documents: 0, images: 0, media: 0 };
+    const c = { all: files.length, documents: 0, images: 0, media: 0, artifacts: 0 };
     for (const f of files) c[categoryOf(f.contentType)] += 1;
+    // Artifacts are a separate feed; show a count once loaded, else blank.
+    c.artifacts = artifactsLoaded ? artifacts.length : 0;
     return c;
-  }, [files]);
+  }, [files, artifacts, artifactsLoaded]);
 
   const visible = useMemo(() => {
+    if (category === "artifacts") return [];
     const q = query.trim().toLowerCase();
     return files.filter((f) => {
       if (category !== "all" && categoryOf(f.contentType) !== category)
@@ -149,6 +210,15 @@ export function FilesView({ onOpenConversation }: Props) {
       return true;
     });
   }, [files, query, category]);
+
+  const visibleArtifacts = useMemo(() => {
+    if (category !== "artifacts") return [];
+    const q = query.trim().toLowerCase();
+    return artifacts.filter((a) => {
+      if (q && !(a.title ?? "").toLowerCase().includes(q)) return false;
+      return true;
+    });
+  }, [artifacts, query, category]);
 
   const openFile = useCallback(
     async (file: OwnerFile) => {
@@ -255,8 +325,8 @@ export function FilesView({ onOpenConversation }: Props) {
         </div>
       </div>
 
-      {/* Column header */}
-      {!loading && !error && files.length > 0 && (
+      {/* Column header (files only — artifacts have their own row layout) */}
+      {category !== "artifacts" && !loading && !error && files.length > 0 && (
         <div className="flex shrink-0 items-center gap-3 border-b border-border px-6 py-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
           <span className="min-w-0 flex-1">{t("columns.name")}</span>
           <span className="hidden w-56 shrink-0 md:block">{t("columns.location")}</span>
@@ -268,7 +338,44 @@ export function FilesView({ onOpenConversation }: Props) {
 
       {/* Body */}
       <div className="flex-1 overflow-y-auto">
-        {loading ? (
+        {category === "artifacts" ? (
+          artifactsLoading && !artifactsLoaded ? (
+            <div className="flex h-full items-center justify-center">
+              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+            </div>
+          ) : artifactsError ? (
+            <div className="flex h-full flex-col items-center justify-center gap-3 px-6 text-center">
+              <p className="text-sm text-muted-foreground">{artifactsError}</p>
+              <button
+                type="button"
+                onClick={loadArtifacts}
+                className="rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:opacity-90"
+              >
+                {t("common:retry")}
+              </button>
+            </div>
+          ) : artifacts.length === 0 ? (
+            <EmptyState
+              title={t("empty.noArtifacts")}
+              subtitle={t("empty.noArtifactsHint")}
+            />
+          ) : visibleArtifacts.length === 0 ? (
+            <EmptyState
+              title={t("empty.noMatches")}
+              subtitle={t("empty.noMatchesHint")}
+            />
+          ) : (
+            <div className="px-3 py-1.5">
+              {visibleArtifacts.map((artifact) => (
+                <ArtifactRow
+                  key={artifact.id}
+                  artifact={artifact}
+                  onOpen={() => openArtifact(artifact)}
+                />
+              ))}
+            </div>
+          )
+        ) : loading ? (
           <div className="flex h-full items-center justify-center">
             <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
           </div>
@@ -468,6 +575,99 @@ function FileRow({
         onForward={onForward}
         onDelete={onDelete}
       />
+    </div>
+  );
+}
+
+/** A single created-artifact row in the "Artifacts" filter. Artifacts have no
+ *  MIME/size/forward/download — they're versioned documents — so the row shows
+ *  kind + version + conversation + author, and opening it deep-links into the
+ *  conversation's artifact viewer. */
+function ArtifactRow({
+  artifact,
+  onOpen,
+}: {
+  artifact: OwnerArtifact;
+  onOpen: () => void;
+}) {
+  const { t } = useTranslation("files");
+  const kindLabel = t(ARTIFACT_KIND_LABEL_KEY[artifact.kind] ?? "artifacts:kindText");
+  const convLabel = artifact.conversation?.title || t("untitledChat");
+
+  return (
+    <div className="group flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-accent">
+      <button
+        type="button"
+        onClick={onOpen}
+        title={t("openArtifact")}
+        className="flex min-w-0 flex-1 items-center gap-3 text-left"
+      >
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-primary/15 text-primary">
+          <ArtifactKindIcon kind={artifact.kind} />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block truncate text-sm font-medium text-foreground">
+            {artifact.title?.trim() || t("artifacts:untitled")}
+          </span>
+          <span className="block truncate text-xs text-muted-foreground">
+            {kindLabel} · {t("artifacts:versionShort", { version: artifact.currentVersion })}
+          </span>
+        </span>
+      </button>
+
+      {/* Location (conversation) */}
+      <div className="hidden w-56 shrink-0 md:block">
+        {artifact.conversation ? (
+          <button
+            type="button"
+            onClick={onOpen}
+            title={t("openSourceChat", { title: convLabel })}
+            className="flex max-w-full items-center gap-1.5 rounded-md px-2 py-1 text-xs text-muted-foreground hover:bg-background hover:text-foreground"
+          >
+            <MessageSquare className="h-3.5 w-3.5 shrink-0" />
+            <span className="truncate">{convLabel}</span>
+          </button>
+        ) : (
+          <span className="px-2 text-xs text-muted-foreground/60">—</span>
+        )}
+      </div>
+
+      {/* Author */}
+      <div className="hidden w-40 shrink-0 items-center gap-2 lg:flex">
+        <Avatar className="h-5 w-5">
+          {artifact.author?.avatarUrl ? (
+            <AvatarImage
+              src={artifact.author.avatarUrl}
+              alt={artifact.author.displayName}
+              displaySize={20}
+            />
+          ) : null}
+          <AvatarFallback className="text-[9px]">
+            {(artifact.author?.displayName ?? "?").charAt(0).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+        <span className="truncate text-xs text-muted-foreground">
+          {artifact.author?.displayName ?? t("common:unknown")}
+        </span>
+      </div>
+
+      {/* Edited */}
+      <div
+        className="hidden w-44 shrink-0 truncate text-xs text-muted-foreground sm:block"
+        title={new Date(artifact.updatedAt || artifact.insertedAt).toLocaleString()}
+      >
+        {formatRelativeShort(artifact.updatedAt || artifact.insertedAt)}
+      </div>
+
+      {/* Open affordance (keeps the row aligned with file rows' action column) */}
+      <button
+        type="button"
+        onClick={onOpen}
+        title={t("openArtifact")}
+        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-muted-foreground opacity-0 transition-colors hover:bg-background hover:text-foreground group-hover:opacity-100"
+      >
+        <SquareArrowOutUpRight className="h-4 w-4" />
+      </button>
     </div>
   );
 }

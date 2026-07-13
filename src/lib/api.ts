@@ -3449,6 +3449,30 @@ export interface ArtifactComment {
   updatedAt: string;
 }
 
+/** An artifact shaped for the global "Files → Artifacts" view: base artifact
+ *  metadata plus the conversation it lives in and its author, so a row can be
+ *  labeled and deep-linked. The current version's heavy `content` is omitted —
+ *  the viewer fetches it by id. */
+export interface OwnerArtifact extends Artifact {
+  conversation: { id: string; title: string | null; type: string } | null;
+  author: { id: string; displayName: string; type: string; avatarUrl?: string } | null;
+}
+
+/** Every artifact the caller's account (and its agents) authored, across all
+ *  conversations. Backs the "Artifacts" category in the global Files view. */
+export async function listOwnerArtifacts(
+  opts: { limit?: number; before?: string } = {}
+): Promise<OwnerArtifact[]> {
+  const params = new URLSearchParams();
+  if (typeof opts.limit === "number") params.set("limit", String(opts.limit));
+  if (opts.before) params.set("before", opts.before);
+  const qs = params.toString();
+  const { artifacts } = await request<{ artifacts: OwnerArtifact[] }>(
+    `/api/artifacts/owned${qs ? `?${qs}` : ""}`
+  );
+  return artifacts ?? [];
+}
+
 /** List artifacts in a conversation, newest first. */
 export async function listArtifacts(
   conversationId: string,
