@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Bot,
@@ -6,10 +6,12 @@ import {
   Cloud,
   Loader2,
   MessageCircle,
+  Monitor,
   Plus,
   Power,
 } from "lucide-react";
 import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 import {
   Card,
   CardDescription,
@@ -22,6 +24,7 @@ import {
   useOnboardingState,
   type OnboardingStep,
 } from "../hooks/useOnboardingState";
+import { useLocalDeviceName } from "../hooks/useRunningElsewhere";
 import { useAgentStore } from "../stores/agentStore";
 import { useChatStore } from "../stores/chatStore";
 import { useNavStore } from "../stores/navStore";
@@ -30,6 +33,113 @@ import * as api from "../lib/api";
 import { cn } from "../lib/utils";
 
 const STEP_ORDER: OnboardingStep[] = ["create", "online", "greeting"];
+
+// Session-wide "skip" for the machine-nickname card below. Module scope on
+// purpose: the card renders in more than one host (chat empty state,
+// Dashboard) and a per-mount useState would resurrect it on every host
+// switch. No persistence — the card only exists during first-run, and a
+// user who skipped can still name the machine later in Settings.
+let deviceCardSkippedThisSession = false;
+
+/**
+ * Companion card to the setup ladder: prompt the brand-new user to give
+ * this machine a friendly name (device nickname) right away — raw names
+ * like "DE-34002938" are what presence strings show otherwise, and the
+ * Settings editor is hard to discover. Optional and skippable; renders
+ * only while the machine has no nickname yet (server truth via
+ * GET /api/me/devices) and never for established users, because the
+ * onboarding host itself stops rendering once an own-agent DM exists.
+ */
+function DeviceNicknameCard() {
+  const { t } = useTranslation("onboarding");
+  const myDevice = useLocalDeviceName();
+  const [skipped, setSkipped] = useState(deviceCardSkippedThisSession);
+  const [nickname, setNickname] = useState("");
+  /** null = still loading the server answer. */
+  const [hasNickname, setHasNickname] = useState<boolean | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!myDevice) return;
+    let mounted = true;
+    api
+      .listDeviceNicknames()
+      .then((devices) => {
+        if (mounted)
+          setHasNickname(devices.some((d) => d.deviceName === myDevice));
+      })
+      // Fail quiet (pretend named): this card must never block or clutter
+      // onboarding over a lookup hiccup — Settings remains the fallback.
+      .catch(() => {
+        if (mounted) setHasNickname(true);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, [myDevice]);
+
+  if (!myDevice || skipped || hasNickname !== false) return null;
+
+  const skip = () => {
+    deviceCardSkippedThisSession = true;
+    setSkipped(true);
+  };
+
+  const save = async () => {
+    const trimmed = nickname.trim();
+    if (!trimmed) return;
+    setSaving(true);
+    setError(null);
+    try {
+      await api.setDeviceNickname(myDevice, trimmed);
+      setHasNickname(true);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <Card size="sm" className="w-full mt-4">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <span className="flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
+            <Monitor className="w-3.5 h-3.5" />
+          </span>
+          {t("device.title")}
+        </CardTitle>
+        <CardDescription>
+          {t("device.body", { device: myDevice })}
+        </CardDescription>
+        {error && <p className="text-xs text-destructive">{error}</p>}
+      </CardHeader>
+      <CardFooter className="gap-2">
+        <Input
+          value={nickname}
+          maxLength={100}
+          placeholder={t("device.placeholder")}
+          onChange={(e) => setNickname(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && nickname.trim() && !saving) void save();
+          }}
+          className="h-8 flex-1"
+        />
+        <Button size="sm" onClick={() => void save()} disabled={saving || !nickname.trim()}>
+          {saving ? (
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+          ) : (
+            t("device.save")
+          )}
+        </Button>
+        <Button size="sm" variant="ghost" onClick={skip}>
+          {t("device.skip")}
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+}
 
 /**
  * First-run setup guidance: ambient cards that reflect what the user should
@@ -302,6 +412,8 @@ export function OnboardingCards({
             </Card>
           );
         })}
+
+        <DeviceNicknameCard />
       </div>
 
       {showCreate && <CreateAgentModal onClose={() => setShowCreate(false)} />}

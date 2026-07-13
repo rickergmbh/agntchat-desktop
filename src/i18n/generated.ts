@@ -3333,6 +3333,13 @@ export const resources = {
         "onlineTitle": "Get {{name}} online",
         "stepDone": "Done"
       },
+      "device": {
+        "body": "Agents that run here will show up as \"{{device}}\". Give this computer a friendly name so you always know where things are running.",
+        "placeholder": "e.g. Work laptop",
+        "save": "Save",
+        "skip": "Skip",
+        "title": "Name this computer"
+      },
       "errors": {
         "startFailed": "Could not start. Try again."
       },
@@ -8199,6 +8206,13 @@ export const resources = {
         "onlineOpenSettings": "Abrir ajustes del agente",
         "onlineTitle": "Pon a {{name}} en línea",
         "stepDone": "Hecho"
+      },
+      "device": {
+        "body": "Los agentes que se ejecuten aquí aparecerán como \"{{device}}\". Dale a este equipo un nombre fácil de reconocer para saber siempre dónde se ejecuta cada cosa.",
+        "placeholder": "p. ej., Portátil del trabajo",
+        "save": "Guardar",
+        "skip": "Omitir",
+        "title": "Ponle nombre a este equipo"
       },
       "errors": {
         "startFailed": "No se pudo empezar. Inténtalo de nuevo."
@@ -13067,6 +13081,13 @@ export const resources = {
         "onlineTitle": "{{name}} online bringen",
         "stepDone": "Erledigt"
       },
+      "device": {
+        "body": "Agenten, die hier laufen, erscheinen als „{{device}}“. Gib diesem Computer einen verständlichen Namen, damit du immer weißt, wo etwas läuft.",
+        "placeholder": "z. B. Arbeitslaptop",
+        "save": "Speichern",
+        "skip": "Überspringen",
+        "title": "Diesen Computer benennen"
+      },
       "errors": {
         "startFailed": "Konnte nicht gestartet werden. Bitte versuchen Sie es erneut."
       },
@@ -17933,6 +17954,13 @@ export const resources = {
         "onlineOpenSettings": "Ouvrir les paramètres de l'agent",
         "onlineTitle": "Mettre {{name}} en ligne",
         "stepDone": "Terminé"
+      },
+      "device": {
+        "body": "Les agents qui s'exécutent ici apparaîtront comme « {{device}} ». Donnez à cet ordinateur un nom facile à reconnaître pour toujours savoir où les choses tournent.",
+        "placeholder": "p. ex. Portable du travail",
+        "save": "Enregistrer",
+        "skip": "Passer",
+        "title": "Nommez cet ordinateur"
       },
       "errors": {
         "startFailed": "Impossible de démarrer. Réessayez."
@@ -22801,6 +22829,13 @@ export const resources = {
         "onlineTitle": "Coloque {{name}} online",
         "stepDone": "Concluído"
       },
+      "device": {
+        "body": "Os agentes executados aqui aparecerão como \"{{device}}\". Dê a este computador um nome fácil de reconhecer para saber sempre onde as coisas estão rodando.",
+        "placeholder": "ex.: Notebook do trabalho",
+        "save": "Salvar",
+        "skip": "Pular",
+        "title": "Dê um nome a este computador"
+      },
       "errors": {
         "startFailed": "Não foi possível iniciar. Tente novamente."
       },
@@ -27667,6 +27702,13 @@ export const resources = {
         "onlineOpenSettings": "エージェント設定を開く",
         "onlineTitle": "{{name}}をオンラインにする",
         "stepDone": "完了"
+      },
+      "device": {
+        "body": "ここで実行されるエージェントは「{{device}}」として表示されます。どこで動いているかすぐわかるよう、このコンピューターにわかりやすい名前を付けましょう。",
+        "placeholder": "例: 仕事用ノートPC",
+        "save": "保存",
+        "skip": "スキップ",
+        "title": "このコンピューターに名前を付ける"
       },
       "errors": {
         "startFailed": "開始できませんでした。もう一度お試しください。"
@@ -32535,6 +32577,13 @@ export const resources = {
         "onlineTitle": "让{{name}}上线",
         "stepDone": "已完成"
       },
+      "device": {
+        "body": "在这里运行的智能体会显示为“{{device}}”。给这台电脑起一个易于辨认的名字，让您随时知道任务在哪台机器上运行。",
+        "placeholder": "例如：工作笔记本",
+        "save": "保存",
+        "skip": "跳过",
+        "title": "给这台电脑起个名字"
+      },
       "errors": {
         "startFailed": "无法启动，请重试。"
       },
@@ -37401,6 +37450,13 @@ export const resources = {
         "onlineOpenSettings": "에이전트 설정 열기",
         "onlineTitle": "{{name}}을(를) 온라인으로 만들기",
         "stepDone": "완료"
+      },
+      "device": {
+        "body": "여기에서 실행되는 에이전트는 \"{{device}}\"(으)로 표시됩니다. 어디에서 실행 중인지 바로 알 수 있도록 이 컴퓨터에 알아보기 쉬운 이름을 지어 주세요.",
+        "placeholder": "예: 업무용 노트북",
+        "save": "저장",
+        "skip": "건너뛰기",
+        "title": "이 컴퓨터에 이름 지정"
       },
       "errors": {
         "startFailed": "시작할 수 없습니다. 다시 시도하세요."
@@ -42269,6 +42325,13 @@ export const resources = {
         "onlineTitle": "Porta {{name}} online",
         "stepDone": "Fatto"
       },
+      "device": {
+        "body": "Gli agent in esecuzione qui appariranno come \"{{device}}\". Dai a questo computer un nome facile da riconoscere per sapere sempre dove girano le cose.",
+        "placeholder": "es. Laptop di lavoro",
+        "save": "Salva",
+        "skip": "Salta",
+        "title": "Dai un nome a questo computer"
+      },
       "errors": {
         "startFailed": "Impossibile avviare. Riprova."
       },
@@ -47135,6 +47198,13 @@ export const resources = {
         "onlineOpenSettings": "एजेंट सेटिंग्स खोलें",
         "onlineTitle": "{{name}} को ऑनलाइन लाएँ",
         "stepDone": "पूर्ण"
+      },
+      "device": {
+        "body": "यहाँ चलने वाले एजेंट \"{{device}}\" के रूप में दिखेंगे। इस कंप्यूटर को एक आसान नाम दें ताकि आप हमेशा जान सकें कि चीज़ें कहाँ चल रही हैं।",
+        "placeholder": "जैसे ऑफ़िस लैपटॉप",
+        "save": "सहेजें",
+        "skip": "छोड़ें",
+        "title": "इस कंप्यूटर को नाम दें"
       },
       "errors": {
         "startFailed": "शुरू नहीं कर सके। पुनः प्रयास करें।"
