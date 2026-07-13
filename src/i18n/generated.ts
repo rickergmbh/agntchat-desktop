@@ -31,7 +31,8 @@ export const resources = {
     "agents": {
       "a11y": {
         "bringOnline": "Bring agent online",
-        "share": "Share agent"
+        "share": "Share agent",
+        "takeOffline": "Take agent offline"
       },
       "about": "About",
       "activity": {
@@ -705,6 +706,7 @@ export const resources = {
         "noLlmKey": "No LLM API key configured for {{provider}}. Set one in Profile → LLM API Keys.",
         "notFound": "Agent not found",
         "positiveWholeNumber": "{{field}} must be a positive whole number.",
+        "takeOfflineFailed": "Failed to take agent offline.",
         "updateBackendFailed": "Couldn't update backend",
         "updateFailed": "Failed to update agent.",
         "updateModelFailed": "Couldn't update model"
@@ -1299,7 +1301,8 @@ export const resources = {
         "starting": "Starting",
         "stopped": "Stopped",
         "subAgentHint": "Sub-agent — started and retired by its parent agent",
-        "takeOffline": "Take offline"
+        "takeOffline": "Take offline",
+        "takingOffline": "Taking offline…"
       },
       "runningCount_one": "{{count}} running",
       "runningCount_other": "{{count}} running",
@@ -1544,12 +1547,14 @@ export const resources = {
         "idle": "Idle",
         "onlineHosted": "Online — hosted",
         "onlineOnDevice": "Online — running on {{device}}",
+        "onlineTapToStop": "{{status}} — tap to take offline",
         "onlineViaBridge": "Online via desktop bridge",
         "paused": "Paused",
         "pending": "Pending",
         "pendingApproval": "Pending Approval",
         "running": "Running",
         "sleepingTapToWake": "sleeping · tap to wake",
+        "takingOffline": "Taking offline…",
         "thinking": "Thinking",
         "tool_call": "Using tools",
         "waiting": "Waiting",
@@ -1575,6 +1580,12 @@ export const resources = {
       },
       "tag": "agent",
       "tags": "Tags",
+      "takeOffline": {
+        "confirmBody": "Stop “{{name}}”? Anything it is working on right now will be interrupted.",
+        "confirmTitle": "Take agent offline",
+        "noDesktopBody": "This agent runs on one of your computers, and no signed-in desktop can reach it right now. Stop it from that computer instead.",
+        "noDesktopTitle": "No desktop available"
+      },
       "tasksPerMonth_one": "{{count}} task/mo",
       "tasksPerMonth_other": "{{count}} tasks/mo",
       "templates": {
@@ -4900,7 +4911,8 @@ export const resources = {
     "agents": {
       "a11y": {
         "bringOnline": "Poner el agente en línea",
-        "share": "Compartir agente"
+        "share": "Compartir agente",
+        "takeOffline": "Poner agente fuera de línea"
       },
       "about": "Acerca de",
       "activity": {
@@ -5574,6 +5586,7 @@ export const resources = {
         "noLlmKey": "No hay ninguna clave API de LLM configurada para {{provider}}. Añade una en Perfil → Claves LLM.",
         "notFound": "Agente no encontrado",
         "positiveWholeNumber": "{{field}} debe ser un número entero positivo.",
+        "takeOfflineFailed": "No se pudo poner el agente fuera de línea.",
         "updateBackendFailed": "No se pudo actualizar el backend",
         "updateFailed": "No se pudo actualizar el agente.",
         "updateModelFailed": "No se pudo actualizar el modelo"
@@ -6168,7 +6181,8 @@ export const resources = {
         "starting": "Iniciando",
         "stopped": "Detenido",
         "subAgentHint": "Subagente: lo inicia y lo detiene su agente principal",
-        "takeOffline": "Desconectar"
+        "takeOffline": "Desconectar",
+        "takingOffline": "Poniendo fuera de línea…"
       },
       "runningCount_one": "{{count}} en ejecución",
       "runningCount_other": "{{count}} en ejecución",
@@ -6413,12 +6427,14 @@ export const resources = {
         "idle": "Inactivo",
         "onlineHosted": "En línea — alojado",
         "onlineOnDevice": "En línea — ejecutándose en {{device}}",
+        "onlineTapToStop": "{{status}} — toca para ponerlo fuera de línea",
         "onlineViaBridge": "En línea a través del puente de escritorio",
         "paused": "En pausa",
         "pending": "Pendiente",
         "pendingApproval": "Pendiente de aprobación",
         "running": "En ejecución",
         "sleepingTapToWake": "dormido · toca para despertar",
+        "takingOffline": "Poniendo fuera de línea…",
         "thinking": "Pensando",
         "tool_call": "Usando herramientas",
         "waiting": "Esperando",
@@ -6444,6 +6460,12 @@ export const resources = {
       },
       "tag": "agente",
       "tags": "Etiquetas",
+      "takeOffline": {
+        "confirmBody": "¿Detener a “{{name}}”? Todo lo que esté haciendo ahora mismo se interrumpirá.",
+        "confirmTitle": "Poner agente fuera de línea",
+        "noDesktopBody": "Este agente se ejecuta en uno de tus ordenadores y ningún escritorio con sesión iniciada puede alcanzarlo ahora. Deténlo desde ese ordenador.",
+        "noDesktopTitle": "No hay escritorio disponible"
+      },
       "tasksPerMonth_one": "{{count}} tarea/mes",
       "tasksPerMonth_other": "{{count}} tareas/mes",
       "templates": {
@@ -9769,7 +9791,8 @@ export const resources = {
     "agents": {
       "a11y": {
         "bringOnline": "Agent online bringen",
-        "share": "Agent teilen"
+        "share": "Agent teilen",
+        "takeOffline": "Agent offline nehmen"
       },
       "about": "Über",
       "activity": {
@@ -10443,6 +10466,7 @@ export const resources = {
         "noLlmKey": "Kein LLM-API-Schlüssel für {{provider}} konfiguriert. Legen Sie einen unter Profil → LLM-API-Schlüssel fest.",
         "notFound": "Agent nicht gefunden",
         "positiveWholeNumber": "{{field}} muss eine positive ganze Zahl sein.",
+        "takeOfflineFailed": "Agent konnte nicht offline genommen werden.",
         "updateBackendFailed": "Backend konnte nicht aktualisiert werden",
         "updateFailed": "Aktualisieren des Agenten fehlgeschlagen.",
         "updateModelFailed": "Modell konnte nicht aktualisiert werden"
@@ -11037,7 +11061,8 @@ export const resources = {
         "starting": "Wird gestartet",
         "stopped": "Gestoppt",
         "subAgentHint": "Sub-Agent – wird von seinem übergeordneten Agenten gestartet und beendet",
-        "takeOffline": "Offline nehmen"
+        "takeOffline": "Offline nehmen",
+        "takingOffline": "Wird offline genommen…"
       },
       "runningCount_one": "{{count}} läuft",
       "runningCount_other": "{{count}} laufen",
@@ -11282,12 +11307,14 @@ export const resources = {
         "idle": "Inaktiv",
         "onlineHosted": "Online — gehostet",
         "onlineOnDevice": "Online — läuft auf {{device}}",
+        "onlineTapToStop": "{{status}} — tippen, um offline zu nehmen",
         "onlineViaBridge": "Online über Desktop-Bridge",
         "paused": "Pausiert",
         "pending": "Ausstehend",
         "pendingApproval": "Genehmigung ausstehend",
         "running": "Läuft",
         "sleepingTapToWake": "schläft · zum Aufwecken tippen",
+        "takingOffline": "Wird offline genommen…",
         "thinking": "Denkt nach",
         "tool_call": "Verwendet Tools",
         "waiting": "Wartet",
@@ -11313,6 +11340,12 @@ export const resources = {
       },
       "tag": "Agent",
       "tags": "Tags",
+      "takeOffline": {
+        "confirmBody": "„{{name}}“ stoppen? Alles, woran der Agent gerade arbeitet, wird unterbrochen.",
+        "confirmTitle": "Agent offline nehmen",
+        "noDesktopBody": "Dieser Agent läuft auf einem Ihrer Computer, und kein angemeldeter Desktop kann ihn gerade erreichen. Stoppen Sie ihn direkt auf diesem Computer.",
+        "noDesktopTitle": "Kein Desktop verfügbar"
+      },
       "tasksPerMonth_one": "{{count}} Aufgabe/Monat",
       "tasksPerMonth_other": "{{count}} Aufgaben/Monat",
       "templates": {
@@ -14638,7 +14671,8 @@ export const resources = {
     "agents": {
       "a11y": {
         "bringOnline": "Mettre l'agent en ligne",
-        "share": "Partager l'agent"
+        "share": "Partager l'agent",
+        "takeOffline": "Mettre l'agent hors ligne"
       },
       "about": "À propos",
       "activity": {
@@ -15312,6 +15346,7 @@ export const resources = {
         "noLlmKey": "Aucune clé API LLM configurée pour {{provider}}. Configurez-en une dans Profil → Clés API LLM.",
         "notFound": "Agent introuvable",
         "positiveWholeNumber": "{{field}} doit être un nombre entier positif.",
+        "takeOfflineFailed": "Impossible de mettre l'agent hors ligne.",
         "updateBackendFailed": "Impossible de mettre à jour le backend",
         "updateFailed": "Échec de la mise à jour de l'agent.",
         "updateModelFailed": "Impossible de mettre à jour le modèle"
@@ -15906,7 +15941,8 @@ export const resources = {
         "starting": "Démarrage",
         "stopped": "Arrêté",
         "subAgentHint": "Sous-agent — démarré et arrêté par son agent parent",
-        "takeOffline": "Mettre hors ligne"
+        "takeOffline": "Mettre hors ligne",
+        "takingOffline": "Mise hors ligne…"
       },
       "runningCount_one": "{{count}} en cours d'exécution",
       "runningCount_other": "{{count}} en cours d'exécution",
@@ -16151,12 +16187,14 @@ export const resources = {
         "idle": "Inactif",
         "onlineHosted": "En ligne — hébergé",
         "onlineOnDevice": "En ligne — s'exécute sur {{device}}",
+        "onlineTapToStop": "{{status}} — touchez pour mettre hors ligne",
         "onlineViaBridge": "En ligne via le pont de bureau",
         "paused": "En pause",
         "pending": "En attente",
         "pendingApproval": "Approbation en attente",
         "running": "En cours d'exécution",
         "sleepingTapToWake": "en veille · appuyez pour réveiller",
+        "takingOffline": "Mise hors ligne…",
         "thinking": "Réflexion en cours",
         "tool_call": "Utilisation d'outils",
         "waiting": "En attente",
@@ -16182,6 +16220,12 @@ export const resources = {
       },
       "tag": "agent",
       "tags": "Étiquettes",
+      "takeOffline": {
+        "confirmBody": "Arrêter « {{name}} » ? Tout ce qu'il est en train de faire sera interrompu.",
+        "confirmTitle": "Mettre l'agent hors ligne",
+        "noDesktopBody": "Cet agent s'exécute sur l'un de vos ordinateurs et aucun bureau connecté ne peut l'atteindre pour le moment. Arrêtez-le depuis cet ordinateur.",
+        "noDesktopTitle": "Aucun bureau disponible"
+      },
       "tasksPerMonth_one": "{{count}} tâche/mois",
       "tasksPerMonth_other": "{{count}} tâches/mois",
       "templates": {
@@ -19507,7 +19551,8 @@ export const resources = {
     "agents": {
       "a11y": {
         "bringOnline": "Colocar agente online",
-        "share": "Compartilhar agente"
+        "share": "Compartilhar agente",
+        "takeOffline": "Colocar agente offline"
       },
       "about": "Sobre",
       "activity": {
@@ -20181,6 +20226,7 @@ export const resources = {
         "noLlmKey": "Nenhuma chave de API de LLM configurada para {{provider}}. Configure uma em Perfil → Chaves de API de LLM.",
         "notFound": "Agente não encontrado",
         "positiveWholeNumber": "{{field}} deve ser um número inteiro positivo.",
+        "takeOfflineFailed": "Falha ao colocar o agente offline.",
         "updateBackendFailed": "Não foi possível atualizar o backend",
         "updateFailed": "Falha ao atualizar o agente.",
         "updateModelFailed": "Não foi possível atualizar o modelo"
@@ -20775,7 +20821,8 @@ export const resources = {
         "starting": "Iniciando",
         "stopped": "Parado",
         "subAgentHint": "Subagente — iniciado e encerrado pelo agente principal",
-        "takeOffline": "Colocar offline"
+        "takeOffline": "Colocar offline",
+        "takingOffline": "Colocando offline…"
       },
       "runningCount_one": "{{count}} em execução",
       "runningCount_other": "{{count}} em execução",
@@ -21020,12 +21067,14 @@ export const resources = {
         "idle": "Ocioso",
         "onlineHosted": "Online — hospedado",
         "onlineOnDevice": "Online — em execução em {{device}}",
+        "onlineTapToStop": "{{status}} — toque para colocar offline",
         "onlineViaBridge": "Online via bridge do desktop",
         "paused": "Pausado",
         "pending": "Pendente",
         "pendingApproval": "Aprovação Pendente",
         "running": "Em execução",
         "sleepingTapToWake": "dormindo · toque para ativar",
+        "takingOffline": "Colocando offline…",
         "thinking": "Pensando",
         "tool_call": "Usando ferramentas",
         "waiting": "Aguardando",
@@ -21051,6 +21100,12 @@ export const resources = {
       },
       "tag": "agente",
       "tags": "Tags",
+      "takeOffline": {
+        "confirmBody": "Parar “{{name}}”? Tudo o que ele estiver fazendo agora será interrompido.",
+        "confirmTitle": "Colocar agente offline",
+        "noDesktopBody": "Este agente é executado em um dos seus computadores e nenhum desktop conectado consegue alcançá-lo agora. Pare-o diretamente nesse computador.",
+        "noDesktopTitle": "Nenhum desktop disponível"
+      },
       "tasksPerMonth_one": "{{count}} tarefa/mês",
       "tasksPerMonth_other": "{{count}} tarefas/mês",
       "templates": {
@@ -24376,7 +24431,8 @@ export const resources = {
     "agents": {
       "a11y": {
         "bringOnline": "エージェントをオンラインにする",
-        "share": "エージェントを共有"
+        "share": "エージェントを共有",
+        "takeOffline": "エージェントをオフラインにする"
       },
       "about": "概要",
       "activity": {
@@ -25050,6 +25106,7 @@ export const resources = {
         "noLlmKey": "{{provider}}用のLLM APIキーが設定されていません。プロフィール → LLM APIキーで設定してください。",
         "notFound": "エージェントが見つかりません",
         "positiveWholeNumber": "{{field}}は正の整数である必要があります。",
+        "takeOfflineFailed": "エージェントをオフラインにできませんでした。",
         "updateBackendFailed": "バックエンドを更新できませんでした",
         "updateFailed": "エージェントの更新に失敗しました。",
         "updateModelFailed": "モデルを更新できませんでした"
@@ -25644,7 +25701,8 @@ export const resources = {
         "starting": "開始中",
         "stopped": "停止済み",
         "subAgentHint": "サブエージェント — 親エージェントが起動・停止します",
-        "takeOffline": "オフラインにする"
+        "takeOffline": "オフラインにする",
+        "takingOffline": "オフラインにしています…"
       },
       "runningCount_one": "{{count}}件実行中",
       "runningCount_other": "{{count}}件実行中",
@@ -25889,12 +25947,14 @@ export const resources = {
         "idle": "アイドル",
         "onlineHosted": "オンライン — ホスト型",
         "onlineOnDevice": "オンライン — {{device}}で実行中",
+        "onlineTapToStop": "{{status}} — タップでオフラインにする",
         "onlineViaBridge": "デスクトップブリッジ経由でオンライン",
         "paused": "一時停止中",
         "pending": "保留中",
         "pendingApproval": "承認待ち",
         "running": "実行中",
         "sleepingTapToWake": "スリープ中 ・ タップして起動",
+        "takingOffline": "オフラインにしています…",
         "thinking": "考え中",
         "tool_call": "ツールを使用中",
         "waiting": "待機中",
@@ -25920,6 +25980,12 @@ export const resources = {
       },
       "tag": "エージェント",
       "tags": "タグ",
+      "takeOffline": {
+        "confirmBody": "「{{name}}」を停止しますか？現在作業中の内容は中断されます。",
+        "confirmTitle": "エージェントをオフラインにする",
+        "noDesktopBody": "このエージェントはお使いのコンピューターのいずれかで動作しており、現在サインイン中のデスクトップから到達できません。そのコンピューターから停止してください。",
+        "noDesktopTitle": "利用可能なデスクトップがありません"
+      },
       "tasksPerMonth_one": "{{count}}件/月",
       "tasksPerMonth_other": "{{count}}件/月",
       "templates": {
@@ -29245,7 +29311,8 @@ export const resources = {
     "agents": {
       "a11y": {
         "bringOnline": "让智能体上线",
-        "share": "分享智能体"
+        "share": "分享智能体",
+        "takeOffline": "让智能体下线"
       },
       "about": "关于",
       "activity": {
@@ -29919,6 +29986,7 @@ export const resources = {
         "noLlmKey": "未为 {{provider}} 配置 LLM API 密钥。请在“个人资料 → LLM API 密钥”中设置。",
         "notFound": "未找到智能体",
         "positiveWholeNumber": "{{field}} 必须是正整数。",
+        "takeOfflineFailed": "无法让智能体下线。",
         "updateBackendFailed": "无法更新后端",
         "updateFailed": "更新智能体失败。",
         "updateModelFailed": "无法更新模型"
@@ -30513,7 +30581,8 @@ export const resources = {
         "starting": "正在启动",
         "stopped": "已停止",
         "subAgentHint": "子智能体 — 由其父智能体启动和停止",
-        "takeOffline": "下线"
+        "takeOffline": "下线",
+        "takingOffline": "正在下线…"
       },
       "runningCount_one": "{{count}} 个正在运行",
       "runningCount_other": "{{count}} 个正在运行",
@@ -30758,12 +30827,14 @@ export const resources = {
         "idle": "空闲",
         "onlineHosted": "在线 — 已托管",
         "onlineOnDevice": "在线 — 运行于 {{device}}",
+        "onlineTapToStop": "{{status}} — 点按以下线",
         "onlineViaBridge": "通过桌面桥接程序在线",
         "paused": "已暂停",
         "pending": "待处理",
         "pendingApproval": "待批准",
         "running": "运行中",
         "sleepingTapToWake": "休眠中 · 点击唤醒",
+        "takingOffline": "正在下线…",
         "thinking": "思考中",
         "tool_call": "使用工具中",
         "waiting": "等待中",
@@ -30789,6 +30860,12 @@ export const resources = {
       },
       "tag": "智能体",
       "tags": "标签",
+      "takeOffline": {
+        "confirmBody": "要停止“{{name}}”吗？它当前正在进行的工作将被中断。",
+        "confirmTitle": "让智能体下线",
+        "noDesktopBody": "此智能体运行在你的某台计算机上，目前没有已登录的桌面端可以联系到它。请在那台计算机上停止它。",
+        "noDesktopTitle": "没有可用的桌面端"
+      },
       "tasksPerMonth_one": "{{count}} 个任务/月",
       "tasksPerMonth_other": "{{count}} 个任务/月",
       "templates": {
@@ -34114,7 +34191,8 @@ export const resources = {
     "agents": {
       "a11y": {
         "bringOnline": "에이전트 온라인으로 전환",
-        "share": "에이전트 공유"
+        "share": "에이전트 공유",
+        "takeOffline": "에이전트 오프라인 전환"
       },
       "about": "정보",
       "activity": {
@@ -34788,6 +34866,7 @@ export const resources = {
         "noLlmKey": "{{provider}}에 대해 설정된 LLM API 키가 없습니다. 프로필 → LLM API 키에서 설정하세요.",
         "notFound": "에이전트를 찾을 수 없습니다",
         "positiveWholeNumber": "{{field}}은(는) 양의 정수여야 합니다.",
+        "takeOfflineFailed": "에이전트를 오프라인으로 전환하지 못했습니다.",
         "updateBackendFailed": "백엔드를 업데이트하지 못했습니다",
         "updateFailed": "에이전트 업데이트에 실패했습니다.",
         "updateModelFailed": "모델을 업데이트하지 못했습니다"
@@ -35382,7 +35461,8 @@ export const resources = {
         "starting": "시작 중",
         "stopped": "중지됨",
         "subAgentHint": "하위 에이전트 — 상위 에이전트가 시작하고 종료합니다",
-        "takeOffline": "오프라인으로 전환"
+        "takeOffline": "오프라인으로 전환",
+        "takingOffline": "오프라인으로 전환 중…"
       },
       "runningCount_one": "{{count}}개 실행 중",
       "runningCount_other": "{{count}}개 실행 중",
@@ -35627,12 +35707,14 @@ export const resources = {
         "idle": "유휴",
         "onlineHosted": "온라인 — 호스팅됨",
         "onlineOnDevice": "온라인 — {{device}}에서 실행 중",
+        "onlineTapToStop": "{{status}} — 탭하여 오프라인으로 전환",
         "onlineViaBridge": "데스크톱 브리지를 통해 온라인",
         "paused": "일시중지됨",
         "pending": "대기 중",
         "pendingApproval": "승인 대기 중",
         "running": "실행 중",
         "sleepingTapToWake": "휴면 중 · 탭하여 깨우기",
+        "takingOffline": "오프라인으로 전환 중…",
         "thinking": "생각 중",
         "tool_call": "도구 사용 중",
         "waiting": "대기 중",
@@ -35658,6 +35740,12 @@ export const resources = {
       },
       "tag": "에이전트",
       "tags": "태그",
+      "takeOffline": {
+        "confirmBody": "“{{name}}”을(를) 중지할까요? 현재 진행 중인 작업이 중단됩니다.",
+        "confirmTitle": "에이전트 오프라인 전환",
+        "noDesktopBody": "이 에이전트는 사용자의 컴퓨터 중 하나에서 실행 중이며, 현재 로그인된 데스크톱에서 접근할 수 없습니다. 해당 컴퓨터에서 직접 중지하세요.",
+        "noDesktopTitle": "사용 가능한 데스크톱 없음"
+      },
       "tasksPerMonth_one": "월 {{count}}건",
       "tasksPerMonth_other": "월 {{count}}건",
       "templates": {
@@ -38983,7 +39071,8 @@ export const resources = {
     "agents": {
       "a11y": {
         "bringOnline": "Metti l'agente online",
-        "share": "Condividi agente"
+        "share": "Condividi agente",
+        "takeOffline": "Metti l'agente offline"
       },
       "about": "Informazioni",
       "activity": {
@@ -39657,6 +39746,7 @@ export const resources = {
         "noLlmKey": "Nessuna chiave API LLM configurata per {{provider}}. Impostane una in Profilo → Chiavi API LLM.",
         "notFound": "Agente non trovato",
         "positiveWholeNumber": "{{field}} deve essere un numero intero positivo.",
+        "takeOfflineFailed": "Impossibile mettere l'agente offline.",
         "updateBackendFailed": "Impossibile aggiornare il backend",
         "updateFailed": "Impossibile aggiornare l'agente.",
         "updateModelFailed": "Impossibile aggiornare il modello"
@@ -40251,7 +40341,8 @@ export const resources = {
         "starting": "Avvio in corso",
         "stopped": "Fermato",
         "subAgentHint": "Sub-agente — avviato e arrestato dal suo agente principale",
-        "takeOffline": "Porta offline"
+        "takeOffline": "Porta offline",
+        "takingOffline": "Disconnessione in corso…"
       },
       "runningCount_one": "{{count}} in esecuzione",
       "runningCount_other": "{{count}} in esecuzione",
@@ -40496,12 +40587,14 @@ export const resources = {
         "idle": "Inattivo",
         "onlineHosted": "Online — ospitato",
         "onlineOnDevice": "Online — in esecuzione su {{device}}",
+        "onlineTapToStop": "{{status}} — tocca per metterlo offline",
         "onlineViaBridge": "Online tramite bridge desktop",
         "paused": "In pausa",
         "pending": "In sospeso",
         "pendingApproval": "In Attesa di Approvazione",
         "running": "In esecuzione",
         "sleepingTapToWake": "in stand-by · tocca per svegliare",
+        "takingOffline": "Disconnessione in corso…",
         "thinking": "Sta pensando",
         "tool_call": "Uso di strumenti",
         "waiting": "In attesa",
@@ -40527,6 +40620,12 @@ export const resources = {
       },
       "tag": "agente",
       "tags": "Tag",
+      "takeOffline": {
+        "confirmBody": "Fermare “{{name}}”? Tutto ciò su cui sta lavorando adesso verrà interrotto.",
+        "confirmTitle": "Metti l'agente offline",
+        "noDesktopBody": "Questo agente è in esecuzione su uno dei tuoi computer e al momento nessun desktop connesso può raggiungerlo. Fermalo direttamente da quel computer.",
+        "noDesktopTitle": "Nessun desktop disponibile"
+      },
       "tasksPerMonth_one": "{{count}} attività/mese",
       "tasksPerMonth_other": "{{count}} attività/mese",
       "templates": {
@@ -43852,7 +43951,8 @@ export const resources = {
     "agents": {
       "a11y": {
         "bringOnline": "एजेंट को ऑनलाइन लाएँ",
-        "share": "एजेंट शेयर करें"
+        "share": "एजेंट शेयर करें",
+        "takeOffline": "एजेंट को ऑफ़लाइन करें"
       },
       "about": "परिचय",
       "activity": {
@@ -44526,6 +44626,7 @@ export const resources = {
         "noLlmKey": "{{provider}} के लिए कोई LLM API की कॉन्फ़िगर नहीं है। इसे प्रोफ़ाइल → LLM API Keys में सेट करें।",
         "notFound": "एजेंट नहीं मिला",
         "positiveWholeNumber": "{{field}} एक धनात्मक पूर्ण संख्या होनी चाहिए।",
+        "takeOfflineFailed": "एजेंट को ऑफ़लाइन करने में विफल।",
         "updateBackendFailed": "बैकएंड अपडेट नहीं हो सका",
         "updateFailed": "एजेंट अपडेट करने में विफल।",
         "updateModelFailed": "मॉडल अपडेट नहीं हो सका"
@@ -45120,7 +45221,8 @@ export const resources = {
         "starting": "शुरू हो रहा है",
         "stopped": "रुका हुआ",
         "subAgentHint": "उप-एजेंट — इसका मूल एजेंट इसे शुरू और बंद करता है",
-        "takeOffline": "ऑफ़लाइन करें"
+        "takeOffline": "ऑफ़लाइन करें",
+        "takingOffline": "ऑफ़लाइन किया जा रहा है…"
       },
       "runningCount_one": "{{count}} चल रहा है",
       "runningCount_other": "{{count}} चल रहे हैं",
@@ -45365,12 +45467,14 @@ export const resources = {
         "idle": "आइडल",
         "onlineHosted": "ऑनलाइन — होस्टेड",
         "onlineOnDevice": "ऑनलाइन — {{device}} पर चल रहा है",
+        "onlineTapToStop": "{{status}} — ऑफ़लाइन करने के लिए टैप करें",
         "onlineViaBridge": "डेस्कटॉप ब्रिज के ज़रिए ऑनलाइन",
         "paused": "रोका गया",
         "pending": "लंबित",
         "pendingApproval": "अनुमोदन लंबित",
         "running": "चल रहा है",
         "sleepingTapToWake": "सो रहा है · जगाने के लिए टैप करें",
+        "takingOffline": "ऑफ़लाइन किया जा रहा है…",
         "thinking": "सोच रहे हैं",
         "tool_call": "टूल्स का उपयोग कर रहे हैं",
         "waiting": "प्रतीक्षा कर रहे हैं",
@@ -45396,6 +45500,12 @@ export const resources = {
       },
       "tag": "agent",
       "tags": "टैग्स",
+      "takeOffline": {
+        "confirmBody": "“{{name}}” को रोकें? यह अभी जिस पर काम कर रहा है वह बाधित हो जाएगा।",
+        "confirmTitle": "एजेंट को ऑफ़लाइन करें",
+        "noDesktopBody": "यह एजेंट आपके किसी कंप्यूटर पर चल रहा है और अभी कोई साइन-इन डेस्कटॉप उस तक नहीं पहुँच सकता। उसे उसी कंप्यूटर से रोकें।",
+        "noDesktopTitle": "कोई डेस्कटॉप उपलब्ध नहीं"
+      },
       "tasksPerMonth_one": "{{count}} कार्य/माह",
       "tasksPerMonth_other": "{{count}} कार्य/माह",
       "templates": {

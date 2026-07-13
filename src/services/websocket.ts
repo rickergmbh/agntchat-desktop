@@ -122,9 +122,11 @@ class WebSocketService {
       // Org-host fleet: a bridge changed state on a VM (running/stopped/
       // crashed/idled). FleetView listens to live-update agent counts.
       "host_agent_status",
-      // Remote-start: phone/web asked to bring a local agent online and the
-      // backend routed it here (a signed-in desktop). agentStore handles it.
+      // Remote-start/-stop: phone/web asked to bring a local agent online
+      // (or take it offline) and the backend routed it here (a signed-in
+      // desktop). agentStore handles both.
       "start_agent_request",
+      "stop_agent_request",
     ];
 
     for (const event of userEvents) {

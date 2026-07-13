@@ -1139,6 +1139,25 @@ export const useAgentStore = create<AgentState>((set, get) => ({
       })
     );
 
+    // Remote-stop: a phone/web "take offline" was routed to this desktop.
+    // Every signed-in desktop of the owner receives the broadcast; only the
+    // one actually running the bridge acts on it.
+    unsubs.push(
+      ws.on("stop_agent_request", (payload) => {
+        const agentId = (payload as { agentId?: string })?.agentId;
+        if (!agentId) return;
+        const current = get().agents[agentId];
+        if (current?.processStatus !== "running" && current?.processStatus !== "starting") {
+          return;
+        }
+        void get()
+          .stopAgent(agentId)
+          .catch((err) =>
+            console.warn("[agentStore] remote stop_agent_request failed", agentId, err)
+          );
+      })
+    );
+
     // Cross-device sync — backend pushes the fresh agent payload here
     // whenever an agent is updated on any of the owner's clients.
     // Without this, a setting toggled in the web app stays invisible
