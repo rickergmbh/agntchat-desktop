@@ -22,6 +22,7 @@ import { useAuthStore } from "../stores/authStore";
 import { useAgentStore } from "../stores/agentStore";
 import { useTaskStore, countActiveTasks } from "../stores/taskStore";
 import { useNavStore } from "../stores/navStore";
+import { trackScreen } from "../lib/analytics";
 import { usePresenceStore } from "../stores/presenceStore";
 import { isAgentOnline } from "../lib/agentOnline";
 import { useThemeStore } from "../stores/themeStore";
@@ -64,6 +65,13 @@ export function AppShell() {
 
   // Connect socket + wire store listeners once we have auth
   useWebSocket();
+
+  // The default view is never set via setView, so emit its $screen here —
+  // otherwise a session spent entirely in the initial view has no screen
+  // event. Queued by the analytics module until a consented identify.
+  useEffect(() => {
+    trackScreen(useNavStore.getState().view);
+  }, []);
 
   // Esc closes the Profile drawer
   useEffect(() => {

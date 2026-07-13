@@ -26,11 +26,28 @@ const appVersion: Promise<string> = getVersion().catch(() => "unknown");
 
 const PLATFORM = "desktop";
 
-// Events captured between consent being confirmed and posthog-js finishing
-// its dynamic import are queued and flushed after identify, so e.g.
-// signup_completed (fired right after the first identify call) isn't lost.
+// Events captured before posthog-js is initialized (app just opened, consent
+// not yet confirmed, or the dynamic import still in flight) are queued and
+// flushed after a consented identify — so the launch $screen and
+// signup_completed aren't lost to the init race. Nothing leaves the device
+// unless consent is confirmed; a non-consented identify clears the queue.
 const MAX_QUEUE = 50;
 const preInitQueue: Array<{ event: string; props?: Record<string, unknown> }> = [];
+
+// app_opened is the canonical activity event (DAU/retention). Fired on every
+// consented identify and on window-visible transitions, deduped per local
+// calendar day so an always-running desktop app still registers daily
+// activity without spam.
+let identifiedConsented = false;
+let lastAppOpenedDay: string | null = null;
+
+function maybeTrackAppOpened(): void {
+  if (!identifiedConsented) return;
+  const day = new Date().toDateString();
+  if (day === lastAppOpenedDay) return;
+  lastAppOpenedDay = day;
+  track(ANALYTICS_EVENTS.APP_OPENED);
+}
 
 function consented(p: Participant | null): p is Participant {
   return !!p && p.type === "human" && p.analyticsOptIn === true;
@@ -57,6 +74,11 @@ function load(): Promise<PostHog | null> {
           persistence: "localStorage+cookie",
         });
         posthog = ph;
+        // Long-running app: refocusing the window counts as activity even
+        // without a view change.
+        document.addEventListener("visibilitychange", () => {
+          if (document.visibilityState === "visible") maybeTrackAppOpened();
+        });
         return ph;
       })
       .catch((err) => {
@@ -77,6 +99,8 @@ export async function identifyAnalytics(p: Participant | null): Promise<void> {
   if (!KEY) return;
 
   if (!consented(p)) {
+    identifiedConsented = false;
+    lastAppOpenedDay = null;
     preInitQueue.length = 0;
     if (posthog) {
       posthog.opt_out_capturing();
@@ -106,9 +130,13 @@ export async function identifyAnalytics(p: Participant | null): Promise<void> {
     ...featureProps(p.features),
   });
 
+  identifiedConsented = true;
+
   for (const q of preInitQueue.splice(0)) {
     ph.capture(q.event, q.props);
   }
+
+  maybeTrackAppOpened();
 }
 
 function featureProps(features?: Record<string, boolean>) {
@@ -129,14 +157,14 @@ export function track(event: string, props?: Record<string, unknown>): void {
     posthog.capture(event, props);
     return;
   }
-  if (loadPromise && preInitQueue.length < MAX_QUEUE) {
+  if (KEY && preInitQueue.length < MAX_QUEUE) {
     preInitQueue.push({ event, props });
   }
 }
 
 /** View change in the sidebar-nav shell — the desktop analog of a pageview. */
 export function trackScreen(view: string): void {
-  posthog?.capture("$screen", { $screen_name: view });
+  track("$screen", { $screen_name: view });
 }
 
 /**
@@ -144,6 +172,7 @@ export function trackScreen(view: string): void {
  * sync with the web and mobile copies of this module.
  */
 export const ANALYTICS_EVENTS = {
+  APP_OPENED: "app_opened",
   SIGNUP_COMPLETED: "signup_completed",
   LOGIN_COMPLETED: "login_completed",
   LOGOUT: "logout",
