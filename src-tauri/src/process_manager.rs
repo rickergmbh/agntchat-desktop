@@ -460,8 +460,12 @@ pub fn start_agent(
     }
     if args.computer_use_enabled.unwrap_or(false) {
         // The bridge's claude_cli backend reads this env var at construction
-        // time. Setting `local` makes _build_mcp_config add the
-        // computer_use stdio MCP server to Claude CLI's --mcp-config.
+        // time to set the BOOT value. Setting `local` makes _build_mcp_config
+        // add the computer_use stdio MCP server to Claude CLI's --mcp-config.
+        // After boot the bridge resolves computer-use live from each turn's
+        // behavioralConfig.computerUse directive (backend = single source of
+        // truth), so toggling the setting on a running agent takes effect on
+        // its next turn without a restart — this env var is just the seed.
         cmd.env("AGENTGRAM_COMPUTER_USE", "local");
         if let Some(ref apps) = args.computer_use_allowed_apps {
             let cleaned: Vec<&String> = apps.iter().filter(|s| !s.trim().is_empty()).collect();

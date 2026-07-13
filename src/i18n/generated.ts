@@ -198,8 +198,8 @@ export const resources = {
           "computerUse": {
             "description": "Lets this agent control the computer — screenshots, clicks, typing (Claude Code & Codex).",
             "label": "Allow computer use",
+            "liveHint": "Takes effect on the agent's next turn — no restart needed.",
             "macPermissions": "Needs Screen Recording & Accessibility permissions.",
-            "restartHint": "Restart the agent after changing.",
             "windowsInput": "Uses native Windows input.",
             "windowsSafetyBuiltIn": "Safety features built in on Windows (focused-app gate, terminal-window redaction, audit log) — nothing to install."
           },
@@ -5078,8 +5078,8 @@ export const resources = {
           "computerUse": {
             "description": "Permite que este agente controle el equipo: capturas de pantalla, clics, escritura (Claude Code y Codex).",
             "label": "Permitir el uso del equipo",
+            "liveHint": "Se aplica en el próximo turno del agente, sin reiniciar.",
             "macPermissions": "Requiere permisos de Grabación de pantalla y Accesibilidad.",
-            "restartHint": "Reinicia el agente después de cambiarlo.",
             "windowsInput": "Usa la entrada nativa de Windows.",
             "windowsSafetyBuiltIn": "Las funciones de seguridad ya están integradas en Windows (bloqueo por app enfocada, redacción de ventanas de terminal, registro de auditoría) — no hay nada que instalar."
           },
@@ -9958,8 +9958,8 @@ export const resources = {
           "computerUse": {
             "description": "Erlaubt diesem Agenten, den Computer zu steuern — Screenshots, Klicks, Tippen (Claude Code & Codex).",
             "label": "Computernutzung erlauben",
+            "liveHint": "Wird ab dem nächsten Zug wirksam – kein Neustart nötig.",
             "macPermissions": "Erfordert Berechtigungen für Bildschirmaufnahme & Bedienungshilfen.",
-            "restartHint": "Agent nach der Änderung neu starten.",
             "windowsInput": "Verwendet native Windows-Eingabe.",
             "windowsSafetyBuiltIn": "Sicherheitsfunktionen unter Windows integriert (Sperre für fokussierte App, Schwärzung von Terminalfenstern, Audit-Log) — nichts zu installieren."
           },
@@ -14838,8 +14838,8 @@ export const resources = {
           "computerUse": {
             "description": "Permet à cet agent de contrôler l'ordinateur — captures d'écran, clics, saisie (Claude Code et Codex).",
             "label": "Autoriser l'utilisation de l'ordinateur",
+            "liveHint": "Prend effet au prochain tour de l'agent, sans redémarrage.",
             "macPermissions": "Nécessite les permissions d'enregistrement d'écran et d'accessibilité.",
-            "restartHint": "Redémarrez l'agent après modification.",
             "windowsInput": "Utilise la saisie native de Windows.",
             "windowsSafetyBuiltIn": "Fonctionnalités de sécurité intégrées sous Windows (verrou d'application au premier plan, masquage des fenêtres de terminal, journal d'audit) — rien à installer."
           },
@@ -19718,8 +19718,8 @@ export const resources = {
           "computerUse": {
             "description": "Permite que este agente controle o computador — capturas de tela, cliques, digitação (Claude Code e Codex).",
             "label": "Permitir uso do computador",
+            "liveHint": "Aplica-se no próximo turno do agente, sem reiniciar.",
             "macPermissions": "Requer permissões de Gravação de Tela e Acessibilidade.",
-            "restartHint": "Reinicie o agente após a alteração.",
             "windowsInput": "Usa entrada nativa do Windows.",
             "windowsSafetyBuiltIn": "Recursos de segurança integrados no Windows (bloqueio por app em foco, redação de janela de terminal, log de auditoria) — nada para instalar."
           },
@@ -24598,8 +24598,8 @@ export const resources = {
           "computerUse": {
             "description": "このエージェントにコンピュータの操作を許可します — スクリーンショット、クリック、タイピング（Claude CodeとCodex）。",
             "label": "コンピュータ操作を許可",
+            "liveHint": "エージェントの次のターンで有効になります。再起動は不要です。",
             "macPermissions": "画面収録とアクセシビリティの権限が必要です。",
-            "restartHint": "変更後はエージェントを再起動してください。",
             "windowsInput": "ネイティブのWindows入力を使用します。",
             "windowsSafetyBuiltIn": "Windowsでは安全機能が組み込まれています（フォーカスアプリのゲート、ターミナルウィンドウの秘匿化、監査ログ） — インストール不要です。"
           },
@@ -29478,8 +29478,8 @@ export const resources = {
           "computerUse": {
             "description": "允许此智能体控制计算机 — 截图、点击、输入（Claude Code 和 Codex）。",
             "label": "允许使用计算机",
+            "liveHint": "在智能体的下一轮生效，无需重启。",
             "macPermissions": "需要屏幕录制和辅助功能权限。",
-            "restartHint": "更改后请重启智能体。",
             "windowsInput": "使用原生 Windows 输入。",
             "windowsSafetyBuiltIn": "Windows 上已内置安全功能（焦点应用限制、终端窗口信息脱敏、审计日志）— 无需安装。"
           },
@@ -34358,8 +34358,8 @@ export const resources = {
           "computerUse": {
             "description": "이 에이전트가 컴퓨터를 제어하도록 허용합니다 — 스크린샷, 클릭, 입력(Claude Code 및 Codex).",
             "label": "컴퓨터 사용 허용",
+            "liveHint": "다음 턴부터 적용됩니다. 재시작이 필요 없습니다.",
             "macPermissions": "화면 기록 및 손쉬운 사용 권한이 필요합니다.",
-            "restartHint": "변경 후 에이전트를 재시작하세요.",
             "windowsInput": "네이티브 Windows 입력을 사용합니다.",
             "windowsSafetyBuiltIn": "Windows에는 안전 기능이 내장되어 있습니다(포커스 앱 게이트, 터미널 창 마스킹, 감사 로그) — 설치할 필요가 없습니다."
           },
@@ -39238,8 +39238,8 @@ export const resources = {
           "computerUse": {
             "description": "Consente a questo agente di controllare il computer — screenshot, clic, digitazione (Claude Code e Codex).",
             "label": "Consenti uso del computer",
+            "liveHint": "Ha effetto al prossimo turno dell'agente, senza riavvio.",
             "macPermissions": "Richiede i permessi di Registrazione Schermo e Accessibilità.",
-            "restartHint": "Riavvia l'agente dopo la modifica.",
             "windowsInput": "Usa l'input nativo di Windows.",
             "windowsSafetyBuiltIn": "Funzionalità di sicurezza integrate su Windows (blocco app in primo piano, redazione finestra terminale, log di audit) — niente da installare."
           },
@@ -44118,8 +44118,8 @@ export const resources = {
           "computerUse": {
             "description": "इस एजेंट को कंप्यूटर नियंत्रित करने देता है — स्क्रीनशॉट, क्लिक, टाइपिंग (Claude Code और Codex)।",
             "label": "कंप्यूटर उपयोग की अनुमति दें",
+            "liveHint": "एजेंट के अगले टर्न पर लागू होता है — पुनः आरंभ की ज़रूरत नहीं।",
             "macPermissions": "Screen Recording और Accessibility अनुमतियाँ आवश्यक हैं।",
-            "restartHint": "बदलाव के बाद एजेंट को पुनः आरंभ करें।",
             "windowsInput": "नेटिव Windows इनपुट का उपयोग करता है।",
             "windowsSafetyBuiltIn": "Windows पर सुरक्षा सुविधाएँ पहले से मौजूद हैं (फ़ोकस्ड-ऐप गेट, टर्मिनल-विंडो रिडैक्शन, ऑडिट लॉग) — कुछ भी इंस्टॉल करने की आवश्यकता नहीं।"
           },

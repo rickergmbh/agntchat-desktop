@@ -1198,7 +1198,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                         {IS_MACOS
                           ? ` ${t("config.localRuntime.computerUse.macPermissions")}`
                           : ` ${t("config.localRuntime.computerUse.windowsInput")}`}{" "}
-                        {t("config.localRuntime.computerUse.restartHint")}
+                        {t("config.localRuntime.computerUse.liveHint")}
                       </p>
                       {agent.metadata?.computer_use_enabled === true &&
                         (IS_MACOS ? (
