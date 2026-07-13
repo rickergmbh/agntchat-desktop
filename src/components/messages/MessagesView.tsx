@@ -144,16 +144,20 @@ export function MessagesView() {
             <h2 className="text-sm font-semibold text-foreground">{t("nav:chats")}</h2>
           </div>
           <div className="flex items-center gap-1">
-            <button
-              type="button"
-              onClick={handleRefresh}
-              disabled={refreshing}
-              title={t("refreshConversations")}
-              aria-label={t("refreshConversations")}
-              className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors disabled:opacity-50"
-            >
-              <RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
-            </button>
+            {/* Refresh + new-conversation only make sense once the user has an
+                agent to talk to — hide both in the zero-agent onboarding state. */}
+            {hasAgents && (
+              <button
+                type="button"
+                onClick={handleRefresh}
+                disabled={refreshing}
+                title={t("refreshConversations")}
+                aria-label={t("refreshConversations")}
+                className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors disabled:opacity-50"
+              >
+                <RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
+              </button>
+            )}
             {hasAgents && (
               <button
                 type="button"
