@@ -1,6 +1,7 @@
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import { useChatStore } from "../../stores/chatStore";
+import { useAgentStore } from "../../stores/agentStore";
 import { useAuthStore } from "../../stores/authStore";
 import { usePresenceStore } from "../../stores/presenceStore";
 import {
@@ -33,6 +34,12 @@ export function ConversationList() {
   const agentActivity = usePresenceStore((s) => s.agentActivity);
   const agentActivityConvs = usePresenceStore((s) => s.agentActivityConvs);
   const currentUserId = useAuthStore((s) => s.participant?.id);
+  // The "start one" hint points at the pencil (new-conversation) button, which
+  // is hidden until the user has an agent. Without an agent, guide them to
+  // create one instead of pointing at a button that isn't there.
+  const hasAgents = useAgentStore((s) =>
+    Object.values(s.agents).some((m) => m.agent.status !== "deactivated")
+  );
 
   if (loading && conversations.length === 0) {
     return (
@@ -50,7 +57,7 @@ export function ConversationList() {
           {t("noConversations")}
         </p>
         <p className="text-xs text-muted-foreground mt-1">
-          {t("startOneHint")}
+          {hasAgents ? t("startOneHint") : t("welcomeBody")}
         </p>
       </div>
     );
