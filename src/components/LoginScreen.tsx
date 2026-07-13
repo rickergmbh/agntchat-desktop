@@ -71,8 +71,8 @@ export function LoginScreen() {
     <div className="flex items-center justify-center h-screen w-screen bg-bg">
       <Card className="w-[400px] p-10">
         <div className="flex items-center gap-3 mb-1">
-          <div className="w-9 h-9 rounded-lg bg-accent flex items-center justify-center">
-            <Bot className="w-5 h-5 text-white" />
+          <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
+            <Bot className="w-5 h-5 text-primary-foreground" />
           </div>
           <h1 className="text-xl font-semibold text-text">Simplifi</h1>
         </div>
@@ -228,7 +228,7 @@ export function LoginScreen() {
 
         <Button
           variant="ghost"
-          className="w-full mt-4 text-accent hover:text-accent-hover"
+          className="w-full mt-4 text-primary hover:text-primary/80"
           onClick={() => {
             setIsSignup(!isSignup);
             setConsentError(false);
