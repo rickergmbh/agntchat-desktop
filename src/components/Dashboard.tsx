@@ -35,6 +35,8 @@ import { OnboardingCards } from "./OnboardingCards";
 import { useOnboardingState } from "../hooks/useOnboardingState";
 import { useChatStore } from "../stores/chatStore";
 import { useNavStore } from "../stores/navStore";
+import { useResizableWidth } from "../hooks/useResizableWidth";
+import { ResizeHandle } from "./ResizeHandle";
 import type {
   AgentConnection,
   ConnectionMode,
@@ -779,15 +781,32 @@ export function Dashboard() {
     [agents]
   );
 
+  // Drag-to-resize seam between the list and detail panes — same primitive,
+  // storage key, and bounds as the web Agents page and the desktop chat list,
+  // so the split is consistent across views + apps.
+  const {
+    width: listWidth,
+    ref: listRef,
+    resizing,
+    onResizeStart,
+    onResizeReset,
+  } = useResizableWidth({
+    storageKey: "agentchat:agentListWidth",
+    defaultWidth: 320,
+    min: 240,
+    max: 480,
+  });
+
   return (
     <div className="relative flex-1 flex h-full overflow-hidden bg-canvas">
-      {/* List pane — proportional (basis-2/5, capped at 560px on wide screens),
-          mirrors the chat view + web app. Both panes flex with the window so
-          shrinking it narrows the list instead of crushing the detail pane.
-          Header with the Agents/Directory tabs + create, a search row, then
-          the scrolling list. */}
+      {/* List pane — drag-resizable pixel width (useResizableWidth), mirrors the
+          chat view + web app. `shrink-0` so flex never compresses it; the detail
+          pane (flex-1) absorbs the rest. Header with the Agents/Directory tabs +
+          create, a search row, then the scrolling list. */}
       <aside
-        className="relative z-0 flex flex-col bg-canvas basis-2/5 min-w-0 max-w-[560px]"
+        ref={listRef}
+        className="relative z-0 flex flex-col bg-canvas shrink-0 min-w-0"
+        style={{ width: listWidth } as React.CSSProperties}
       >
         <header
           className="@container h-14 shrink-0 pl-4 pr-4 flex items-center justify-between gap-2 border-b border-border bg-card"
@@ -1029,12 +1048,19 @@ export function Dashboard() {
         </div>
       </aside>
 
+      <ResizeHandle
+        left={listWidth}
+        resizing={resizing}
+        onResizeStart={onResizeStart}
+        onResizeReset={onResizeReset}
+        label={t("resizeList")}
+      />
+
       {/* Detail pane — always mounted; laps over the list seam (-ml-2) as an
-          elevated rounded card, like the chat view + web app. Proportional
-          (basis-3/5) so both panes scale with the window: shrinking the window
-          shrinks the list too, instead of the fixed-width list squeezing this
-          pane to nothing. */}
-      <section className="surface-panel relative z-10 -ml-2 basis-3/5 flex-1 flex flex-col min-w-0 overflow-hidden rounded-l-2xl bg-card">
+          elevated rounded card, like the chat view + web app. `flex-1` absorbs
+          whatever the drag-resizable list leaves, so the seam is user-set while
+          the detail pane still flexes with the window. */}
+      <section className="surface-panel relative z-10 -ml-2 flex-1 flex flex-col min-w-0 overflow-hidden rounded-l-2xl bg-card">
         {activeTab === "agents" ? (
           selectedAgent ? (
             <AgentConfig managed={selectedAgent} />
