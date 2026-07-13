@@ -945,15 +945,13 @@ export function Dashboard() {
                 {t("common:loading")}
               </div>
             ) : totalCount === 0 ? (
+              // Title + hint only — the header's "Add agent" button is the
+              // create affordance, so no duplicate button here.
               <div className="flex flex-col items-center justify-center text-center px-6 py-16">
                 <p className="text-sm font-medium text-foreground">{t("empty.title")}</p>
-                <p className="text-xs text-muted-foreground mt-1 mb-4">
+                <p className="text-xs text-muted-foreground mt-1">
                   {t("empty.createFirstHint")}
                 </p>
-                <Button size="sm" onClick={() => setShowCreate(true)}>
-                  <Plus className="w-3.5 h-3.5" />
-                  {t("createAgent")}
-                </Button>
               </div>
             ) : (
               agentList.map((row) => (
