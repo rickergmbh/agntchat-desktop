@@ -2375,6 +2375,7 @@ function MemorySection({
   credentials: api.UserCredential[];
   onRefreshCredentials: () => Promise<void>;
 }) {
+  const { t } = useTranslation("settings");
   const openaiCred = credentials.find((c) => c.provider === "openai");
   const isConnected = openaiCred?.status === "active";
   const isRevoked = openaiCred?.status === "revoked";
@@ -2400,7 +2401,7 @@ function MemorySection({
       setTimeout(() => setSaved(false), 2000);
       await onRefreshCredentials();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to save API key");
+      setError(e instanceof Error ? e.message : t("memory.saveError"));
     } finally {
       setSaving(false);
     }
@@ -2413,7 +2414,7 @@ function MemorySection({
       setConfirmDisconnect(false);
       await onRefreshCredentials();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to disconnect");
+      setError(e instanceof Error ? e.message : t("memory.disconnectError"));
     } finally {
       setDisconnecting(false);
     }
@@ -2423,8 +2424,8 @@ function MemorySection({
     <>
       <section>
         <SectionHeader
-          title="Semantic Memory"
-          subtitle="Agents store memories as they learn about you — preferences, facts, decisions. An embedding provider lets them recall by meaning, so asking about scheduling meetings can surface a note like prefers mornings before 10am."
+          title={t("memory.title")}
+          subtitle={t("memory.subtitle")}
         />
 
         <div className="rounded-xl border border-border bg-card divide-y divide-border overflow-hidden">
@@ -2444,14 +2445,16 @@ function MemorySection({
               </div>
 
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">OpenAI API Key</p>
+                <p className="text-sm font-medium truncate">{t("memory.openaiKey")}</p>
                 {isConnected ? (
                   <p className="flex items-center gap-1.5 text-xs text-muted-foreground truncate mt-0.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-success flex-shrink-0" />
                     <span className="truncate">
-                      Active — agents recall memories by meaning
+                      {t("memory.activeStatus")}
                       {openaiCred?.lastUsedAt &&
-                        ` · Last used ${new Date(openaiCred.lastUsedAt).toLocaleDateString()}`}
+                        ` · ${t("memory.lastUsed", {
+                          date: new Date(openaiCred.lastUsedAt).toLocaleDateString(),
+                        })}`}
                     </span>
                   </p>
                 ) : hasIssue ? (
@@ -2459,13 +2462,13 @@ function MemorySection({
                     <span className="w-1.5 h-1.5 rounded-full bg-destructive flex-shrink-0" />
                     <span className="truncate">
                       {isRevoked
-                        ? "Key revoked — it may be invalid or out of funds. Enter a new one below."
-                        : "Key failed — check your account balance or enter a new one below."}
+                        ? t("memory.revokedStatus")
+                        : t("memory.failedStatus")}
                     </span>
                   </p>
                 ) : (
                   <p className="text-xs text-muted-foreground truncate mt-0.5">
-                    Not configured — agents fall back to keyword-only recall
+                    {t("memory.notConfigured")}
                   </p>
                 )}
               </div>
@@ -2477,7 +2480,7 @@ function MemorySection({
                   className="flex-shrink-0 text-muted-foreground hover:text-destructive"
                   onClick={() => setConfirmDisconnect(true)}
                 >
-                  Remove
+                  {t("memory.remove")}
                 </Button>
               )}
             </div>
@@ -2503,7 +2506,7 @@ function MemorySection({
                     <button
                       type="button"
                       onClick={() => setShowKey(!showKey)}
-                      aria-label={showKey ? "Hide API key" : "Show API key"}
+                      aria-label={showKey ? t("memory.hideKey") : t("memory.showKey")}
                       className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                     >
                       {showKey ? (
@@ -2523,14 +2526,12 @@ function MemorySection({
                     ) : saved ? (
                       <Check className="w-3.5 h-3.5" />
                     ) : (
-                      "Save"
+                      t("common:save")
                     )}
                   </Button>
                 </div>
                 <p className="text-[11px] text-muted-foreground">
-                  Uses <code className="bg-muted px-1 rounded">text-embedding-3-small</code> —
-                  about $0.02 per million tokens. Encrypted at rest, never shared.
-                  Get your key at{" "}
+                  {t("memory.keyHelp")} {t("memory.getKeyPrefix")}{" "}
                   <button
                     onClick={() =>
                       openExternal("https://platform.openai.com/api-keys")
@@ -2552,7 +2553,7 @@ function MemorySection({
             {saved && !isConnected && (
               <p className="ml-11 mt-1 flex items-center gap-1 text-[11px] text-success">
                 <Check className="w-3 h-3" />
-                API key saved — semantic memory is now active.
+                {t("memory.savedConfirm")}
               </p>
             )}
           </div>
@@ -2564,14 +2565,14 @@ function MemorySection({
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium truncate">
-                Local Embedding Model
+                {t("memory.localModel")}
               </p>
               <p className="text-xs text-muted-foreground truncate mt-0.5">
-                Runs entirely on your machine — no API key, no data leaving your device
+                {t("memory.localModelDesc")}
               </p>
             </div>
             <Badge variant="secondary" className="text-[10px] py-0 flex-shrink-0">
-              Coming soon
+              {t("memory.comingSoon")}
             </Badge>
           </div>
         </div>
@@ -2586,10 +2587,9 @@ function MemorySection({
       >
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
-            <DialogTitle>Remove OpenAI Key</DialogTitle>
+            <DialogTitle>{t("memory.removeTitle")}</DialogTitle>
             <DialogDescription>
-              Semantic memory will stop working. Your agents will fall back to
-              keyword-only search until you add a new key.
+              {t("memory.removeBody")}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -2598,7 +2598,7 @@ function MemorySection({
               size="sm"
               onClick={() => setConfirmDisconnect(false)}
             >
-              Cancel
+              {t("common:cancel")}
             </Button>
             <Button
               variant="destructive"
@@ -2609,7 +2609,7 @@ function MemorySection({
               {disconnecting ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
               ) : (
-                "Remove"
+                t("memory.remove")
               )}
             </Button>
           </DialogFooter>
