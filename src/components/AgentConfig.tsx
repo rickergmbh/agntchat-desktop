@@ -1176,105 +1176,6 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
             <SubAgentsSection agent={agent} />
 
 
-            {/* Agent API Key — only needed to run the agent from this machine
-                (local runtime). Hosted agents authenticate to the backend via
-                a host-minted delegation token, so the key is irrelevant. */}
-            {!isHosted && (
-            <Section title={t("config.agentApiKey.title")}>
-              {apiKey ? (
-                <>
-                  <div className="flex gap-2">
-                    <Input
-                      type={showApiKey ? "text" : "password"}
-                      value={apiKey}
-                      readOnly
-                      className="flex-1 font-mono text-xs"
-                    />
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="shrink-0"
-                      onClick={() => setShowApiKey(!showApiKey)}
-                    >
-                      {showApiKey ? (
-                        <EyeOff className="w-4 h-4" />
-                      ) : (
-                        <Eye className="w-4 h-4" />
-                      )}
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="shrink-0"
-                      onClick={() => navigator.clipboard.writeText(apiKey)}
-                    >
-                      <Copy className="w-4 h-4" />
-                    </Button>
-                  </div>
-                  {confirmingRegen ? (
-                    <div className="mt-2 flex items-center gap-2">
-                      <p className="text-xs text-destructive">{t("regenerateKey.message")}</p>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={handleRegenerate}
-                        disabled={regenerating}
-                      >
-                        {regenerating ? t("config.agentApiKey.regenerating") : t("common:confirm")}
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setConfirmingRegen(false)}
-                      >
-                        {t("common:cancel")}
-                      </Button>
-                    </div>
-                  ) : (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="mt-2 text-warning border-warning/30 hover:bg-warning/10 hover:text-warning/90"
-                      onClick={handleRegenerate}
-                      disabled={regenerating}
-                    >
-                      <RefreshCw className="w-3 h-3 mr-1.5" />
-                      {t("regenerateKey.action")}
-                    </Button>
-                  )}
-                  {keyError && (
-                    <p className="text-xs text-destructive mt-1">{keyError}</p>
-                  )}
-                </>
-              ) : (
-                <div className="rounded-md border border-dashed border-border p-3 text-center">
-                  <p className="text-sm text-muted-foreground mb-2">
-                    {t("config.agentApiKey.noKeyTitle")}
-                  </p>
-                  <p className="text-xs text-muted-foreground mb-3">
-                    {t("config.agentApiKey.noKeyExplain")}
-                  </p>
-                  {keyError && (
-                    <p className="text-xs text-destructive mb-2">{keyError}</p>
-                  )}
-                  <Button
-                    size="sm"
-                    onClick={handleRegenerate}
-                    disabled={regenerating}
-                  >
-                    <RefreshCw
-                      className={cn(
-                        "w-3 h-3 mr-1.5",
-                        regenerating && "animate-spin"
-                      )}
-                    />
-                    {regenerating ? t("config.agentApiKey.generating") : t("config.agentApiKey.generateAction")}
-                  </Button>
-                </div>
-              )}
-            </Section>
-            )}
-
 
             {/* Local runtime settings — only meaningful when the agent runs on
                 this machine. Hosted agents run on the org host, which has no
@@ -1457,6 +1358,105 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                   )}
                 </div>
               </Section>
+            )}
+
+            {/* Agent API Key — only needed to run the agent from this machine
+                (local runtime). Hosted agents authenticate to the backend via
+                a host-minted delegation token, so the key is irrelevant. */}
+            {!isHosted && (
+            <Section title={t("config.agentApiKey.title")}>
+              {apiKey ? (
+                <>
+                  <div className="flex gap-2">
+                    <Input
+                      type={showApiKey ? "text" : "password"}
+                      value={apiKey}
+                      readOnly
+                      className="flex-1 font-mono text-xs"
+                    />
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="shrink-0"
+                      onClick={() => setShowApiKey(!showApiKey)}
+                    >
+                      {showApiKey ? (
+                        <EyeOff className="w-4 h-4" />
+                      ) : (
+                        <Eye className="w-4 h-4" />
+                      )}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="shrink-0"
+                      onClick={() => navigator.clipboard.writeText(apiKey)}
+                    >
+                      <Copy className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  {confirmingRegen ? (
+                    <div className="mt-2 flex items-center gap-2">
+                      <p className="text-xs text-destructive">{t("regenerateKey.message")}</p>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={handleRegenerate}
+                        disabled={regenerating}
+                      >
+                        {regenerating ? t("config.agentApiKey.regenerating") : t("common:confirm")}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setConfirmingRegen(false)}
+                      >
+                        {t("common:cancel")}
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="mt-2 text-warning border-warning/30 hover:bg-warning/10 hover:text-warning/90"
+                      onClick={handleRegenerate}
+                      disabled={regenerating}
+                    >
+                      <RefreshCw className="w-3 h-3 mr-1.5" />
+                      {t("regenerateKey.action")}
+                    </Button>
+                  )}
+                  {keyError && (
+                    <p className="text-xs text-destructive mt-1">{keyError}</p>
+                  )}
+                </>
+              ) : (
+                <div className="rounded-md border border-dashed border-border p-3 text-center">
+                  <p className="text-sm text-muted-foreground mb-2">
+                    {t("config.agentApiKey.noKeyTitle")}
+                  </p>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    {t("config.agentApiKey.noKeyExplain")}
+                  </p>
+                  {keyError && (
+                    <p className="text-xs text-destructive mb-2">{keyError}</p>
+                  )}
+                  <Button
+                    size="sm"
+                    onClick={handleRegenerate}
+                    disabled={regenerating}
+                  >
+                    <RefreshCw
+                      className={cn(
+                        "w-3 h-3 mr-1.5",
+                        regenerating && "animate-spin"
+                      )}
+                    />
+                    {regenerating ? t("config.agentApiKey.generating") : t("config.agentApiKey.generateAction")}
+                  </Button>
+                </div>
+              )}
+            </Section>
             )}
 
             {/* Danger Zone */}

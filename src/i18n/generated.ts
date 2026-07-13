@@ -107,9 +107,6 @@ export const resources = {
           "placeholder": "sk-...",
           "providerDefault": "Provider Default"
         },
-        "apiKeyGenerateHint": "Generate a new key to run this agent from here. This will invalidate any existing key.",
-        "apiKeyNoneStored": "No key stored on this machine",
-        "apiKeySectionTitle": "Agent API Key",
         "awsRegionPlaceholder": "AWS region (e.g. us-east-1)",
         "behavior": {
           "autoRestart": "Auto-restart on crash or stall",
@@ -153,7 +150,6 @@ export const resources = {
         "effortDefaultOption": "Default (high)",
         "effortTooltipBody": "Controls how much thinking the model does. Lower effort = faster responses, higher effort = more thorough.",
         "effortTooltipTitle": "Reasoning depth",
-        "generateApiKeyButton": "Generate API Key",
         "groupOperations": "Operations",
         "header": {
           "closeAriaLabel": "Close agent details"
@@ -191,7 +187,6 @@ export const resources = {
         },
         "hostManagedConnection": "Connection is managed by the host. Pick any supported model below.",
         "hostedSetByPlan": "Hosted · set by your plan",
-        "keyRegeneratingLabel": "Regenerating...",
         "localRuntime": {
           "allowedApps": {
             "addButton": "Add allowed app",
@@ -4981,9 +4976,6 @@ export const resources = {
           "placeholder": "sk-...",
           "providerDefault": "Proveedor predeterminado"
         },
-        "apiKeyGenerateHint": "Genera una nueva clave para ejecutar este agente desde aquí. Esto invalidará cualquier clave existente.",
-        "apiKeyNoneStored": "No hay ninguna clave almacenada en esta máquina",
-        "apiKeySectionTitle": "Clave de API del agente",
         "awsRegionPlaceholder": "Región de AWS (p. ej. us-east-1)",
         "behavior": {
           "autoRestart": "Reinicio automático ante fallos o bloqueos",
@@ -5027,7 +5019,6 @@ export const resources = {
         "effortDefaultOption": "Predeterminado (alto)",
         "effortTooltipBody": "Controla cuánto razona el modelo. Menor esfuerzo = respuestas más rápidas, mayor esfuerzo = más exhaustivo.",
         "effortTooltipTitle": "Profundidad de razonamiento",
-        "generateApiKeyButton": "Generar clave de API",
         "groupOperations": "Operaciones",
         "header": {
           "closeAriaLabel": "Cerrar detalles del agente"
@@ -5065,7 +5056,6 @@ export const resources = {
         },
         "hostManagedConnection": "La conexión la gestiona el host. Elige cualquier modelo compatible más abajo.",
         "hostedSetByPlan": "Alojado · según tu plan",
-        "keyRegeneratingLabel": "Regenerando...",
         "localRuntime": {
           "allowedApps": {
             "addButton": "Añadir app permitida",
@@ -9855,9 +9845,6 @@ export const resources = {
           "placeholder": "sk-...",
           "providerDefault": "Anbieter-Standard"
         },
-        "apiKeyGenerateHint": "Generieren Sie einen neuen Schlüssel, um diesen Agenten von hier aus auszuführen. Dadurch wird jeder vorhandene Schlüssel ungültig.",
-        "apiKeyNoneStored": "Kein Schlüssel auf diesem Computer gespeichert",
-        "apiKeySectionTitle": "Agent-API-Schlüssel",
         "awsRegionPlaceholder": "AWS-Region (z. B. us-east-1)",
         "behavior": {
           "autoRestart": "Automatischer Neustart bei Absturz oder Blockade",
@@ -9901,7 +9888,6 @@ export const resources = {
         "effortDefaultOption": "Standard (hoch)",
         "effortTooltipBody": "Steuert, wie viel das Modell nachdenkt. Geringerer Aufwand = schnellere Antworten, höherer Aufwand = gründlicher.",
         "effortTooltipTitle": "Denktiefe",
-        "generateApiKeyButton": "API-Schlüssel generieren",
         "groupOperations": "Vorgänge",
         "header": {
           "closeAriaLabel": "Agentendetails schließen"
@@ -9939,7 +9925,6 @@ export const resources = {
         },
         "hostManagedConnection": "Die Verbindung wird vom Host verwaltet. Wählen Sie unten ein beliebiges unterstütztes Modell.",
         "hostedSetByPlan": "Gehostet · durch Ihren Plan festgelegt",
-        "keyRegeneratingLabel": "Wird neu generiert...",
         "localRuntime": {
           "allowedApps": {
             "addButton": "Erlaubte App hinzufügen",
@@ -14729,9 +14714,6 @@ export const resources = {
           "placeholder": "sk-...",
           "providerDefault": "Fournisseur par défaut"
         },
-        "apiKeyGenerateHint": "Générez une nouvelle clé pour exécuter cet agent depuis ici. Cela invalidera toute clé existante.",
-        "apiKeyNoneStored": "Aucune clé stockée sur cette machine",
-        "apiKeySectionTitle": "Clé API de l'agent",
         "awsRegionPlaceholder": "Région AWS (ex. us-east-1)",
         "behavior": {
           "autoRestart": "Redémarrage automatique en cas de plantage ou de blocage",
@@ -14775,7 +14757,6 @@ export const resources = {
         "effortDefaultOption": "Par défaut (élevé)",
         "effortTooltipBody": "Contrôle l'intensité de réflexion du modèle. Un effort plus faible = réponses plus rapides, un effort plus élevé = plus approfondi.",
         "effortTooltipTitle": "Profondeur de raisonnement",
-        "generateApiKeyButton": "Générer une clé API",
         "groupOperations": "Opérations",
         "header": {
           "closeAriaLabel": "Fermer les détails de l'agent"
@@ -14813,7 +14794,6 @@ export const resources = {
         },
         "hostManagedConnection": "La connexion est gérée par l'hôte. Choisissez n'importe quel modèle pris en charge ci-dessous.",
         "hostedSetByPlan": "Hébergé · défini par votre forfait",
-        "keyRegeneratingLabel": "Régénération en cours...",
         "localRuntime": {
           "allowedApps": {
             "addButton": "Ajouter une application autorisée",
@@ -19603,9 +19583,6 @@ export const resources = {
           "placeholder": "sk-...",
           "providerDefault": "Padrão do Provedor"
         },
-        "apiKeyGenerateHint": "Gere uma nova chave para executar este agente a partir daqui. Isso invalidará qualquer chave existente.",
-        "apiKeyNoneStored": "Nenhuma chave armazenada nesta máquina",
-        "apiKeySectionTitle": "Chave de API do Agente",
         "awsRegionPlaceholder": "Região da AWS (ex.: us-east-1)",
         "behavior": {
           "autoRestart": "Reiniciar automaticamente após falha ou travamento",
@@ -19649,7 +19626,6 @@ export const resources = {
         "effortDefaultOption": "Padrão (alto)",
         "effortTooltipBody": "Controla o quanto o modelo pensa. Esforço mais baixo = respostas mais rápidas, esforço mais alto = mais completo.",
         "effortTooltipTitle": "Profundidade de raciocínio",
-        "generateApiKeyButton": "Gerar Chave de API",
         "groupOperations": "Operações",
         "header": {
           "closeAriaLabel": "Fechar detalhes do agente"
@@ -19687,7 +19663,6 @@ export const resources = {
         },
         "hostManagedConnection": "A conexão é gerenciada pelo host. Escolha qualquer modelo compatível abaixo.",
         "hostedSetByPlan": "Hospedado · definido pelo seu plano",
-        "keyRegeneratingLabel": "Regenerando...",
         "localRuntime": {
           "allowedApps": {
             "addButton": "Adicionar app permitido",
@@ -24477,9 +24452,6 @@ export const resources = {
           "placeholder": "sk-…",
           "providerDefault": "プロバイダーの既定値"
         },
-        "apiKeyGenerateHint": "ここからこのエージェントを実行するには新しいキーを生成してください。既存のキーは無効になります。",
-        "apiKeyNoneStored": "このマシンにキーが保存されていません",
-        "apiKeySectionTitle": "エージェントAPIキー",
         "awsRegionPlaceholder": "AWSリージョン（例：us-east-1）",
         "behavior": {
           "autoRestart": "クラッシュまたは停止時に自動再起動",
@@ -24523,7 +24495,6 @@ export const resources = {
         "effortDefaultOption": "既定（高）",
         "effortTooltipBody": "モデルがどれだけ考えるかを制御します。処理量を下げると応答が速くなり、上げるとより徹底的になります。",
         "effortTooltipTitle": "推論の深さ",
-        "generateApiKeyButton": "APIキーを生成",
         "groupOperations": "操作",
         "header": {
           "closeAriaLabel": "エージェント詳細を閉じる"
@@ -24561,7 +24532,6 @@ export const resources = {
         },
         "hostManagedConnection": "接続はホストによって管理されています。以下からサポートされているモデルを選んでください。",
         "hostedSetByPlan": "ホスト型・プランによって設定",
-        "keyRegeneratingLabel": "再生成しています…",
         "localRuntime": {
           "allowedApps": {
             "addButton": "許可アプリを追加",
@@ -29351,9 +29321,6 @@ export const resources = {
           "placeholder": "sk-...",
           "providerDefault": "提供商默认值"
         },
-        "apiKeyGenerateHint": "生成新密钥即可从此处运行此智能体。这将使任何现有密钥失效。",
-        "apiKeyNoneStored": "此计算机上未存储密钥",
-        "apiKeySectionTitle": "智能体 API 密钥",
         "awsRegionPlaceholder": "AWS 区域（例如 us-east-1）",
         "behavior": {
           "autoRestart": "崩溃或卡住时自动重启",
@@ -29397,7 +29364,6 @@ export const resources = {
         "effortDefaultOption": "默认（高）",
         "effortTooltipBody": "控制模型的思考程度。处理强度越低响应越快，处理强度越高结果越全面。",
         "effortTooltipTitle": "推理深度",
-        "generateApiKeyButton": "生成 API 密钥",
         "groupOperations": "操作",
         "header": {
           "closeAriaLabel": "关闭智能体详情"
@@ -29435,7 +29401,6 @@ export const resources = {
         },
         "hostManagedConnection": "连接由主机管理。请在下方选择任意受支持的模型。",
         "hostedSetByPlan": "托管 · 由您的套餐设定",
-        "keyRegeneratingLabel": "正在重新生成……",
         "localRuntime": {
           "allowedApps": {
             "addButton": "添加允许的应用",
@@ -34225,9 +34190,6 @@ export const resources = {
           "placeholder": "sk-...",
           "providerDefault": "제공업체 기본값"
         },
-        "apiKeyGenerateHint": "여기서 이 에이전트를 실행하려면 새 키를 생성하세요. 기존 키는 모두 무효화됩니다.",
-        "apiKeyNoneStored": "이 기기에 저장된 키가 없습니다",
-        "apiKeySectionTitle": "에이전트 API 키",
         "awsRegionPlaceholder": "AWS 리전(예: us-east-1)",
         "behavior": {
           "autoRestart": "충돌 또는 정지 시 자동 재시작",
@@ -34271,7 +34233,6 @@ export const resources = {
         "effortDefaultOption": "기본값(높음)",
         "effortTooltipBody": "모델이 얼마나 많이 사고하는지를 제어합니다. 처리 강도가 낮을수록 응답이 빠르고, 높을수록 더 철저합니다.",
         "effortTooltipTitle": "추론 깊이",
-        "generateApiKeyButton": "API 키 생성",
         "groupOperations": "작업",
         "header": {
           "closeAriaLabel": "에이전트 세부정보 닫기"
@@ -34309,7 +34270,6 @@ export const resources = {
         },
         "hostManagedConnection": "연결은 호스트가 관리합니다. 아래에서 지원되는 모델을 선택하세요.",
         "hostedSetByPlan": "호스팅 · 요금제에 의해 설정됨",
-        "keyRegeneratingLabel": "재발급 중...",
         "localRuntime": {
           "allowedApps": {
             "addButton": "허용 앱 추가",
@@ -39099,9 +39059,6 @@ export const resources = {
           "placeholder": "sk-...",
           "providerDefault": "Predefinito del provider"
         },
-        "apiKeyGenerateHint": "Genera una nuova chiave per eseguire questo agente da qui. Questo invaliderà qualsiasi chiave esistente.",
-        "apiKeyNoneStored": "Nessuna chiave salvata su questa macchina",
-        "apiKeySectionTitle": "Chiave API dell'agente",
         "awsRegionPlaceholder": "Regione AWS (es. us-east-1)",
         "behavior": {
           "autoRestart": "Riavvio automatico in caso di crash o blocco",
@@ -39145,7 +39102,6 @@ export const resources = {
         "effortDefaultOption": "Predefinito (alto)",
         "effortTooltipBody": "Controlla quanto ragionamento fa il modello. Sforzo minore = risposte più veloci, sforzo maggiore = più accurato.",
         "effortTooltipTitle": "Profondità di ragionamento",
-        "generateApiKeyButton": "Genera chiave API",
         "groupOperations": "Operazioni",
         "header": {
           "closeAriaLabel": "Chiudi dettagli agente"
@@ -39183,7 +39139,6 @@ export const resources = {
         },
         "hostManagedConnection": "La connessione è gestita dall'host. Scegli uno qualsiasi dei modelli supportati qui sotto.",
         "hostedSetByPlan": "Hosted · impostato dal tuo piano",
-        "keyRegeneratingLabel": "Rigenerazione in corso...",
         "localRuntime": {
           "allowedApps": {
             "addButton": "Aggiungi app consentita",
@@ -43973,9 +43928,6 @@ export const resources = {
           "placeholder": "sk-...",
           "providerDefault": "प्रोवाइडर डिफ़ॉल्ट"
         },
-        "apiKeyGenerateHint": "इस एजेंट को यहाँ से चलाने के लिए एक नई कुंजी जनरेट करें। इससे मौजूदा कुंजी अमान्य हो जाएगी।",
-        "apiKeyNoneStored": "इस मशीन पर कोई कुंजी संग्रहीत नहीं है",
-        "apiKeySectionTitle": "एजेंट API कुंजी",
         "awsRegionPlaceholder": "AWS क्षेत्र (जैसे, us-east-1)",
         "behavior": {
           "autoRestart": "क्रैश या रुकने पर स्वतः पुनः आरंभ",
@@ -44019,7 +43971,6 @@ export const resources = {
         "effortDefaultOption": "डिफ़ॉल्ट (उच्च)",
         "effortTooltipBody": "मॉडल कितना सोचता है यह नियंत्रित करता है। कम प्रयास = तेज़ प्रतिक्रियाएँ, अधिक प्रयास = अधिक विस्तृत।",
         "effortTooltipTitle": "रीज़निंग गहराई",
-        "generateApiKeyButton": "API कुंजी जनरेट करें",
         "groupOperations": "ऑपरेशन",
         "header": {
           "closeAriaLabel": "एजेंट विवरण बंद करें"
@@ -44057,7 +44008,6 @@ export const resources = {
         },
         "hostManagedConnection": "कनेक्शन होस्ट द्वारा प्रबंधित है। नीचे कोई भी समर्थित मॉडल चुनें।",
         "hostedSetByPlan": "होस्टेड · आपकी योजना द्वारा निर्धारित",
-        "keyRegeneratingLabel": "फिर से जनरेट किया जा रहा है...",
         "localRuntime": {
           "allowedApps": {
             "addButton": "अनुमत ऐप जोड़ें",
