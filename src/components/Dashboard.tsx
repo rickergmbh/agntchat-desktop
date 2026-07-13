@@ -468,12 +468,16 @@ export function Dashboard() {
     };
   }, [fetchAgents, fetchHealth, fetchActivities, refreshProcessStatuses, fetchConnections, ensureCatalog]);
 
+  // The agent directory is behind the `directory` feature flag. When off, the
+  // tab still shows (with a "Soon" badge) but its body is a coming-soon notice.
+  const directoryEnabled = useAuthStore((s) => s.participant?.features?.directory === true);
+
   // Lazy-load directory listings on first switch into the directory tab.
   useEffect(() => {
-    if (activeTab === "directory" && dirListings.length === 0) {
+    if (directoryEnabled && activeTab === "directory" && dirListings.length === 0) {
       fetchDirectory();
     }
-  }, [activeTab, dirListings.length, fetchDirectory]);
+  }, [directoryEnabled, activeTab, dirListings.length, fetchDirectory]);
 
   const handleDirSearch = useCallback(
     (text: string) => {
@@ -819,13 +823,18 @@ export function Dashboard() {
                 selectAgent(null);
               }}
               className={cn(
-                "rounded-md px-2 py-1.5 text-sm font-medium transition-colors",
+                "flex items-center gap-1.5 rounded-md px-2 py-1.5 text-sm font-medium transition-colors",
                 activeTab === "directory"
                   ? "bg-accent text-accent-foreground"
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
               {t("directory")}
+              {!directoryEnabled && (
+                <span className="rounded-full bg-muted px-1.5 py-0.5 text-[9px] uppercase tracking-wide text-muted-foreground">
+                  {t("directorySoonBadge")}
+                </span>
+              )}
             </button>
           </div>
 
@@ -872,6 +881,7 @@ export function Dashboard() {
                 placeholder={t("directorySearchPlaceholder")}
                 aria-label={t("directorySearchPlaceholder")}
                 className="h-8 pl-8 text-xs"
+                disabled={!directoryEnabled}
               />
             )}
           </div>
@@ -970,6 +980,15 @@ export function Dashboard() {
                 />
               ))
             )
+          ) : !directoryEnabled ? (
+            <div className="flex flex-col items-center justify-center text-center px-6 py-16">
+              <p className="text-sm font-medium text-foreground">
+                {t("directoryComingSoonTitle")}
+              </p>
+              <p className="text-xs text-muted-foreground mt-1 max-w-xs">
+                {t("directoryComingSoonHint")}
+              </p>
+            </div>
           ) : dirLoading && dirListings.length === 0 ? (
             <div className="flex justify-center py-12">
               <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
@@ -1042,6 +1061,16 @@ export function Dashboard() {
               </Button>
             </div>
           )
+        ) : !directoryEnabled ? (
+          <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
+            <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-3">
+              <Compass className="w-7 h-7 text-primary" />
+            </div>
+            <p className="text-sm font-medium text-foreground">{t("directoryComingSoonTitle")}</p>
+            <p className="text-xs text-muted-foreground mt-1 max-w-xs">
+              {t("directoryComingSoonHint")}
+            </p>
+          </div>
         ) : displayListing ? (
           <DirectoryAgentDetail
             key={displayListing.id}
