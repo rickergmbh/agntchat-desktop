@@ -72,12 +72,17 @@ import {
   Monitor,
   Palette,
   ChevronRight,
-  Languages,
   ShieldCheck,
   Sparkles,
   Download,
   Bug,
   Send,
+  Bell,
+  ListTodo,
+  CheckCircle,
+  Clock,
+  AtSign,
+  Bot,
 } from "lucide-react";
 import { deviceTimezone, filterTimezones, formatTimezoneLabel } from "../lib/timezones";
 import { getInitials } from "../lib/utils";
@@ -146,6 +151,7 @@ const SECTIONS = [
   { value: "friends", labelKey: "sections.friends", icon: Users },
   { value: "appearance", labelKey: "sections.appearance", icon: Palette },
   { value: "region", labelKey: "sections.region", icon: Globe },
+  { value: "notifications", labelKey: "sections.notifications", icon: Bell },
   { value: "memory", labelKey: "sections.memory", icon: Brain },
   { value: "llm-keys", labelKey: "sections.llmKeys", icon: Key },
   { value: "connections", labelKey: "sections.connections", icon: Link2 },
@@ -899,6 +905,12 @@ export function Profile({ onClose }: { onClose: () => void }) {
           </div>
         )}
 
+        {activeSection === "notifications" && (
+          <div className="flex-1 overflow-y-auto p-5">
+            <NotificationsSection />
+          </div>
+        )}
+
         {activeSection === "memory" && (
           <div className="flex-1 overflow-y-auto p-5 space-y-6">
             {loadingIntegrations ? (
@@ -1054,9 +1066,20 @@ export function Profile({ onClose }: { onClose: () => void }) {
                       />
                     );
                   })}
-                  <PaymentWalletRow />
                 </div>
               )}
+            </section>
+
+            {/* Payment — its own category (matches web), not just another row
+                in the Connected Accounts list. */}
+            <section>
+              <SectionHeader
+                title={t("wallet.title")}
+                subtitle={t("wallet.description")}
+              />
+              <div className="rounded-xl border border-border bg-card divide-y divide-border overflow-hidden">
+                <PaymentWalletRow />
+              </div>
             </section>
           </div>
         )}
@@ -1598,6 +1621,10 @@ function TimezoneSection() {
   const participant = useAuthStore((s) => s.participant);
   const current = participant?.timezone || "Etc/UTC";
   const browserTz = deviceTimezone();
+  // Collapsed by default (matches web): the summary shows the current zone;
+  // the search + long list only appear once the user chooses to change it, so
+  // the section doesn't take a screenful of timezones at rest.
+  const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [saving, setSaving] = useState<string | null>(null);
 
@@ -1616,6 +1643,7 @@ function TimezoneSection() {
         localStorage.setItem("participant", JSON.stringify(next));
         useAuthStore.setState({ participant: next });
       }
+      setOpen(false);
       setQuery("");
     } catch (err) {
       console.warn("[Tz] update failed:", err);
@@ -1625,20 +1653,31 @@ function TimezoneSection() {
   }, []);
 
   return (
-    <div className="space-y-4">
-      <div>
-        <Label className="text-xs">{t("timezone.current")}</Label>
-        <p className="mt-1 text-sm font-medium">{formatTimezoneLabel(current)}</p>
-        <p className="text-[11px] text-muted-foreground">{current}</p>
-        <p className="mt-2 text-[11px] text-muted-foreground">
-          {t("timezone.detail")}
-        </p>
-      </div>
+    <div className="space-y-2">
+      <Label className="text-xs">{t("timezone.label")}</Label>
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="flex w-full items-center justify-between rounded-lg border border-border px-3 py-2.5 text-left transition-colors hover:bg-accent"
+      >
+        <div className="flex min-w-0 items-center gap-3">
+          <Globe className="h-4 w-4 shrink-0 text-muted-foreground" />
+          <div className="min-w-0">
+            <p className="text-sm font-medium">{formatTimezoneLabel(current)}</p>
+            <p className="truncate text-[11px] text-muted-foreground">{current}</p>
+          </div>
+        </div>
+        <span className="text-xs text-muted-foreground">
+          {open ? t("common:close") : t("common:change")}
+        </span>
+      </button>
 
+      {open && (
       <div className="rounded-lg border border-border bg-card">
         <div className="flex items-center gap-2 border-b border-border px-3 py-2">
           <Search className="h-3.5 w-3.5 text-muted-foreground" />
           <input
+            autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t("timezone.searchPlaceholder")}
@@ -1696,6 +1735,7 @@ function TimezoneSection() {
           )}
         </div>
       </div>
+      )}
     </div>
   );
 }
@@ -1710,16 +1750,14 @@ function LanguageSection() {
   const preference = useLocaleStore((s) => s.preference);
   const setPreference = useLocaleStore((s) => s.setPreference);
 
-  const options: {
-    value: LocalePreference;
-    label: string;
-    icon: React.ElementType;
-  }[] = [
-    { value: "system", label: t("language.system"), icon: Monitor },
+  // Endonyms (LOCALE_LABELS) are never translated. Text-only cards (no
+  // per-language icon) — matches the web app and keeps the grid compact
+  // vertically.
+  const options: { value: LocalePreference; label: string }[] = [
+    { value: "system", label: t("language.system") },
     ...SUPPORTED_LOCALES.map((locale) => ({
       value: locale as LocalePreference,
       label: LOCALE_LABELS[locale],
-      icon: Languages as React.ElementType,
     })),
   ];
 
@@ -1734,7 +1772,6 @@ function LanguageSection() {
 
       <div className="grid grid-cols-3 gap-2">
         {options.map((opt) => {
-          const Icon = opt.icon;
           const selected = preference === opt.value;
           return (
             <button
@@ -1742,16 +1779,14 @@ function LanguageSection() {
               type="button"
               onClick={() => setPreference(opt.value)}
               className={cn(
-                "flex flex-col items-center gap-1.5 rounded-lg border px-3 py-3 text-xs transition-colors",
-                "hover:bg-muted/50",
+                "flex items-center justify-center rounded-lg border px-3 py-2 text-center text-xs font-medium transition-colors",
                 selected
-                  ? "border-primary bg-primary/10 text-foreground"
-                  : "border-border text-muted-foreground"
+                  ? "border-primary bg-primary/5 text-primary"
+                  : "border-border text-muted-foreground hover:bg-accent"
               )}
               aria-pressed={selected}
             >
-              <Icon className="h-4 w-4" />
-              <span className="font-medium text-foreground">{opt.label}</span>
+              {opt.label}
             </button>
           );
         })}
@@ -2231,6 +2266,105 @@ function LlmApiKeysSection() {
 
 
 // ---------------------------------------------------------------------------
+// Notifications Section — per-type push toggles (mirrors the web app).
+// ---------------------------------------------------------------------------
+
+interface NotificationPrefs {
+  messages: boolean;
+  task_assigned: boolean;
+  task_completed: boolean;
+  task_reminders: boolean;
+  agent_activity: boolean;
+  mentions: boolean;
+  invites: boolean;
+}
+
+const DEFAULT_NOTIFICATION_PREFS: NotificationPrefs = {
+  messages: true,
+  task_assigned: true,
+  task_completed: true,
+  task_reminders: true,
+  agent_activity: true,
+  mentions: true,
+  invites: true,
+};
+
+// `i18nKey` resolves under settings:notificationPrefs.* (label) and
+// settings:notificationPrefs.descriptions.* (description).
+const NOTIFICATION_ITEMS: {
+  key: keyof NotificationPrefs;
+  icon: React.ElementType;
+  i18nKey: string;
+}[] = [
+  { key: "messages", icon: Bell, i18nKey: "messages" },
+  { key: "task_assigned", icon: ListTodo, i18nKey: "taskAssigned" },
+  { key: "task_completed", icon: CheckCircle, i18nKey: "taskCompleted" },
+  { key: "task_reminders", icon: Clock, i18nKey: "taskReminders" },
+  { key: "agent_activity", icon: Bot, i18nKey: "agentActivity" },
+  { key: "mentions", icon: AtSign, i18nKey: "mentions" },
+  { key: "invites", icon: Mail, i18nKey: "invites" },
+];
+
+function NotificationsSection() {
+  const { t } = useTranslation("settings");
+  const [prefs, setPrefs] = useState<NotificationPrefs>(DEFAULT_NOTIFICATION_PREFS);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    api
+      .request<{ notificationPreferences: NotificationPrefs }>(
+        "/api/me/notification-preferences"
+      )
+      .then((data) =>
+        setPrefs({ ...DEFAULT_NOTIFICATION_PREFS, ...data.notificationPreferences })
+      )
+      .catch(() => {})
+      .finally(() => setLoaded(true));
+  }, []);
+
+  const handleToggle = useCallback(async (key: keyof NotificationPrefs) => {
+    let newValue = false;
+    setPrefs((p) => {
+      newValue = !p[key];
+      return { ...p, [key]: newValue };
+    });
+    try {
+      await api.request("/api/me/notification-preferences", {
+        method: "PATCH",
+        body: JSON.stringify({ [key]: newValue }),
+      });
+    } catch {
+      setPrefs((p) => ({ ...p, [key]: !newValue }));
+    }
+  }, []);
+
+  if (!loaded) {
+    return (
+      <div className="flex justify-center py-4">
+        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-1">
+      {NOTIFICATION_ITEMS.map(({ key, icon: Icon, i18nKey }) => (
+        <div key={key} className="flex items-center gap-3 rounded-lg px-2 py-2.5">
+          <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-medium">{t(`notificationPrefs.${i18nKey}`)}</p>
+            <p className="text-[11px] text-muted-foreground">
+              {t(`notificationPrefs.descriptions.${i18nKey}`)}
+            </p>
+          </div>
+          <Switch checked={prefs[key]} onCheckedChange={() => handleToggle(key)} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Memory Section
 // ---------------------------------------------------------------------------
 
@@ -2703,7 +2837,7 @@ function PrivacyDataSection() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Re-consent prompt — only when the current policy version is newer
           than what the user last accepted. */}
       {participant?.policyReacceptRequired && (
