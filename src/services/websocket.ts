@@ -64,7 +64,7 @@ class WebSocketService {
 
   // --- User channel ---
 
-  joinUserChannel(participantId: string) {
+  joinUserChannel(participantId: string, deviceName?: string | null) {
     if (!this.socket) {
       log("joinUserChannel skipped — no socket");
       return;
@@ -77,7 +77,14 @@ class WebSocketService {
 
     // Tag this connection as a desktop so the backend can target it for
     // remote-start (start_agent_request) — phones/web never receive those.
-    const channel = this.socket.channel(`user:${participantId}`, { client: "desktop" });
+    // device_name (this machine's raw hostname, same value the bridge
+    // reports) lets the backend take THIS device's local agents offline
+    // the moment the app disconnects instead of waiting for the executor
+    // sweep to age them out.
+    const channel = this.socket.channel(`user:${participantId}`, {
+      client: "desktop",
+      ...(deviceName ? { device_name: deviceName } : {}),
+    });
     this.userChannel = channel;
 
     const userEvents = [

@@ -4,7 +4,7 @@ import { useChatStore } from "../stores/chatStore";
 import { usePresenceStore } from "../stores/presenceStore";
 import { useStreamingStore } from "../stores/streamingStore";
 import { useTaskStore } from "../stores/taskStore";
-import { useAgentStore } from "../stores/agentStore";
+import { useAgentStore, getLocalDeviceName } from "../stores/agentStore";
 import { useMemoryStore } from "../stores/memoryStore";
 import { useFriendStore } from "../stores/friendStore";
 import { useWorkspaceStore } from "../stores/workspaceStore";
@@ -108,7 +108,13 @@ export function useWebSocket() {
     });
 
     ws.connect(token);
-    ws.joinUserChannel(participantId);
+    // Resolve this machine's name (one cached Tauri invoke) before joining
+    // the user channel — the join carries it so the backend can instantly
+    // offline this device's local agents when the socket drops. Join is
+    // guarded against double-calls, so nothing else races it.
+    getLocalDeviceName().then((deviceName) => {
+      ws.joinUserChannel(participantId, deviceName);
+    });
     joinActiveIfAny();
 
     // Fire initial loads — UI renders loading states from the store.
