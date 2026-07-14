@@ -310,10 +310,10 @@ export function AgentRow({
         parentLines={parentLines}
         drawStem={hasChildren && expanded}
       />
-      {/* Compact list card: avatar + presence, name/badges/activity,
-          description, and a runtime + model meta line — with the power action
-          as a trailing icon button. Full status/health lives in the detail
-          pane; the list stays scannable. */}
+      {/* Compact list card: avatar + presence, name/badges/activity, and a
+          runtime + model meta line — with the power action as a trailing
+          icon button. Full status/health lives in the detail pane; the list
+          stays scannable. */}
       <div
         className="flex items-center gap-2.5 py-2.5 pl-3 pr-3"
         style={depth > 0 ? { paddingLeft: 12 + depth * TREE_INDENT } : undefined}
@@ -416,7 +416,7 @@ export function AgentRow({
             )}
           </div>
 
-          {/* Second line: live activity, else the agent's description. */}
+          {/* Second line: live activity (local bridge first, else global). */}
           {isRunning && activity ? (
             <div className={cn("mt-0.5 flex items-center gap-1.5 text-[11px] font-medium min-w-0", ACTIVITY_COLORS[activity.type])}>
               <span className={cn(
@@ -428,10 +428,6 @@ export function AgentRow({
             </div>
           ) : globalActivity ? (
             <div className="mt-0.5"><AgentActivityIndicator activity={globalActivity} /></div>
-          ) : managed.agent.description ? (
-            <p className="mt-0.5 text-[11px] text-muted-foreground truncate">
-              {managed.agent.description}
-            </p>
           ) : null}
 
           {/* Meta line: runtime chip · provider · model. */}
