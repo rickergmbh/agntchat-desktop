@@ -2538,6 +2538,7 @@ export const resources = {
       "replyingTo": "Replying to",
       "resizeList": "Resize conversation list",
       "results": {
+        "actionFailed": "Action failed",
         "cannotSaveDraftEmpty": "Cannot save draft — no email body.",
         "cannotSendMissing": "Cannot send — missing recipient or body.",
         "count_one": "{{count}} result",
@@ -7398,6 +7399,7 @@ export const resources = {
       "replyingTo": "Respondiendo a",
       "resizeList": "Redimensionar la lista de conversaciones",
       "results": {
+        "actionFailed": "La acción falló",
         "cannotSaveDraftEmpty": "No se puede guardar el borrador — el correo no tiene cuerpo.",
         "cannotSendMissing": "No se puede enviar — falta el destinatario o el cuerpo.",
         "count_one": "{{count}} resultado",
@@ -12258,6 +12260,7 @@ export const resources = {
       "replyingTo": "Antwort an",
       "resizeList": "Größe der Unterhaltungsliste ändern",
       "results": {
+        "actionFailed": "Aktion fehlgeschlagen",
         "cannotSaveDraftEmpty": "Entwurf kann nicht gespeichert werden — keine E-Mail-Nachricht.",
         "cannotSendMissing": "Senden nicht möglich — Empfänger oder Nachrichtentext fehlt.",
         "count_one": "{{count}} Ergebnis",
@@ -17118,6 +17121,7 @@ export const resources = {
       "replyingTo": "Réponse à",
       "resizeList": "Redimensionner la liste des conversations",
       "results": {
+        "actionFailed": "Échec de l'action",
         "cannotSaveDraftEmpty": "Impossible d'enregistrer le brouillon — aucun contenu d'e-mail.",
         "cannotSendMissing": "Impossible d'envoyer — destinataire ou contenu manquant.",
         "count_one": "{{count}} résultat",
@@ -21978,6 +21982,7 @@ export const resources = {
       "replyingTo": "Respondendo a",
       "resizeList": "Redimensionar lista de conversas",
       "results": {
+        "actionFailed": "Falha na ação",
         "cannotSaveDraftEmpty": "Não é possível salvar o rascunho — sem corpo de e-mail.",
         "cannotSendMissing": "Não é possível enviar — destinatário ou corpo ausente.",
         "count_one": "{{count}} resultado",
@@ -26838,6 +26843,7 @@ export const resources = {
       "replyingTo": "返信先",
       "resizeList": "会話リストのサイズを変更",
       "results": {
+        "actionFailed": "操作に失敗しました",
         "cannotSaveDraftEmpty": "下書きを保存できません — メールの本文がありません。",
         "cannotSendMissing": "送信できません — 宛先または本文がありません。",
         "count_one": "{{count}}件の結果",
@@ -31698,6 +31704,7 @@ export const resources = {
       "replyingTo": "正在回复",
       "resizeList": "调整对话列表大小",
       "results": {
+        "actionFailed": "操作失败",
         "cannotSaveDraftEmpty": "无法保存草稿——邮件正文为空。",
         "cannotSendMissing": "无法发送——缺少收件人或正文。",
         "count_one": "{{count}} 个结果",
@@ -36558,6 +36565,7 @@ export const resources = {
       "replyingTo": "답장 대상",
       "resizeList": "대화 목록 크기 조정",
       "results": {
+        "actionFailed": "작업 실패",
         "cannotSaveDraftEmpty": "임시 저장 불가 — 이메일 본문이 없습니다.",
         "cannotSendMissing": "전송 불가 — 받는 사람 또는 본문이 없습니다.",
         "count_one": "결과 {{count}}개",
@@ -41418,6 +41426,7 @@ export const resources = {
       "replyingTo": "In risposta a",
       "resizeList": "Ridimensiona elenco conversazioni",
       "results": {
+        "actionFailed": "Azione non riuscita",
         "cannotSaveDraftEmpty": "Impossibile salvare la bozza — nessun corpo email.",
         "cannotSendMissing": "Impossibile inviare — destinatario o corpo mancante.",
         "count_one": "{{count}} risultato",
@@ -46278,6 +46287,7 @@ export const resources = {
       "replyingTo": "जवाब दे रहे हैं",
       "resizeList": "बातचीत सूची का आकार बदलें",
       "results": {
+        "actionFailed": "कार्रवाई विफल",
         "cannotSaveDraftEmpty": "ड्राफ़्ट सहेजा नहीं जा सकता — ईमेल में कोई बॉडी नहीं है।",
         "cannotSendMissing": "भेजा नहीं जा सकता — प्राप्तकर्ता या बॉडी गायब है।",
         "count_one": "{{count}} परिणाम",

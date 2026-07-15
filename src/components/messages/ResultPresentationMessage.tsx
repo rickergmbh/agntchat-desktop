@@ -1,4 +1,6 @@
 import { useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import type { Message } from "../../lib/api";
 import { cn } from "../../lib/utils";
 import { sanitizeHtml } from "../../lib/sanitizeHtml";
@@ -217,6 +219,7 @@ function currencySymbol(code?: string): string {
 function formatValue(
   field: DetailFieldDescriptor,
   details: Record<string, unknown>,
+  t: TFunction<"chat">,
 ): string {
   const raw = details[field.key];
   if (raw == null) return "";
@@ -228,8 +231,8 @@ function formatValue(
 
   if (field.format === "stops") {
     const n = Number(raw);
-    if (n === 0) return "Nonstop";
-    return `${n} stop${n > 1 ? "s" : ""}`;
+    if (n === 0) return t("results.nonstop");
+    return t("results.stops", { count: n });
   }
 
   return String(raw);
@@ -352,6 +355,7 @@ function PriceBadge({ price }: { price: ResultPrice }) {
 // ---------------------------------------------------------------------------
 
 function AmenityChips({ amenities }: { amenities: string[] }) {
+  const { t } = useTranslation("chat");
   const MAX_VISIBLE = 6;
   const visible = amenities.slice(0, MAX_VISIBLE);
   const overflow = amenities.length - MAX_VISIBLE;
@@ -368,7 +372,7 @@ function AmenityChips({ amenities }: { amenities: string[] }) {
       ))}
       {overflow > 0 && (
         <span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
-          +{overflow} more
+          {t("results.more", { count: overflow })}
         </span>
       )}
     </div>
@@ -452,6 +456,7 @@ function CollapsibleBody({
   disableCollapse?: boolean;
   screenplay?: boolean;
 }) {
+  const { t } = useTranslation("common");
   const [expanded, setExpanded] = useState(false);
   const isLong = !disableCollapse && content.length > 200;
 
@@ -485,11 +490,11 @@ function CollapsibleBody({
         >
           {expanded ? (
             <>
-              <ChevronDown className="h-3 w-3" /> Show less
+              <ChevronDown className="h-3 w-3" /> {t("showLess")}
             </>
           ) : (
             <>
-              <ChevronRight className="h-3 w-3" /> Show more
+              <ChevronRight className="h-3 w-3" /> {t("showMore")}
             </>
           )}
         </button>
@@ -513,6 +518,7 @@ function DetailSection({
   disableBodyCollapse?: boolean;
   screenplay?: boolean;
 }) {
+  const { t } = useTranslation("chat");
   // Group consecutive chip fields together
   const elements: React.ReactNode[] = [];
   let chipBuffer: DetailFieldDescriptor[] = [];
@@ -569,7 +575,7 @@ function DetailSection({
     if (field.display === "row") {
       const IconComp = resolveIcon(field.icon);
       const url = resolveFieldLink(field, val);
-      const valueText = formatValue(field, details);
+      const valueText = formatValue(field, details, t);
       elements.push(
         <div
           key={field.key}
@@ -693,7 +699,8 @@ function DetailSection({
 async function executeCTAAction(
   action: string,
   itemTitle: string | undefined,
-  itemDetails: Record<string, unknown>
+  itemDetails: Record<string, unknown>,
+  t: TFunction<"chat">
 ): Promise<string | null> {
   if (action === "send_email" || action === "save_draft") {
     const { request } = await import("../../lib/api");
@@ -702,10 +709,10 @@ async function executeCTAAction(
     const body = String(itemDetails.body ?? "");
 
     if (action === "send_email" && (!to || !body)) {
-      return "Cannot send — missing recipient or body.";
+      return t("results.cannotSendMissing");
     }
     if (action === "save_draft" && !body) {
-      return "Cannot save draft — no email body.";
+      return t("results.cannotSaveDraftEmpty");
     }
 
     const contentType = /<[a-z][\s\S]*>/i.test(body) ? "text/html" : "text/plain";
@@ -723,13 +730,13 @@ async function executeCTAAction(
         method: "POST",
         body: JSON.stringify(payload),
       });
-      return `Email sent to ${result?.sent_to || to}`;
+      return t("results.emailSentTo", { to: result?.sent_to || to });
     }
     await request("/api/google/gmail/drafts", {
       method: "POST",
       body: JSON.stringify(payload),
     });
-    return `Draft saved to Gmail: "${subject}"`;
+    return t("results.draftSaved", { subject });
   }
 
   return null; // unknown action — caller falls through to the WS relay
@@ -748,6 +755,7 @@ function CTAButton({
   itemDetails: Record<string, unknown>;
   conversationId?: string;
 }) {
+  const { t } = useTranslation("chat");
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState<string | null>(null);
 
@@ -774,7 +782,7 @@ function CTAButton({
     if (busy || done) return;
     setBusy(true);
     try {
-      const result = await executeCTAAction(cta.action!, itemTitle, itemDetails);
+      const result = await executeCTAAction(cta.action!, itemTitle, itemDetails, t);
       if (result != null) {
         setDone(result);
         return;
@@ -790,7 +798,7 @@ function CTAButton({
       }
     } catch (e) {
       console.error("CTA action failed:", e);
-      setDone("Action failed");
+      setDone(t("results.actionFailed"));
     } finally {
       setBusy(false);
     }
@@ -860,10 +868,12 @@ function Citations({
     confidence?: number;
   }>;
 }) {
+  const { t } = useTranslation("chat");
+  const { t: tCommon } = useTranslation("common");
   if (citations.length === 0) return null;
   return (
     <div className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
-      <span>Sources:</span>
+      <span>{t("results.sources")}</span>
       {citations.map((c, i) => (
         <span key={i}>
           {c.url ? (
@@ -876,7 +886,7 @@ function Citations({
               {c.source_name ?? c.url}
             </a>
           ) : (
-            c.source_name ?? "Unknown"
+            c.source_name ?? tCommon("unknown")
           )}
           {i < citations.length - 1 && ","}
         </span>
@@ -898,6 +908,7 @@ function ResultCard({
   resultType?: string;
   conversationId?: string;
 }) {
+  const { t } = useTranslation("chat");
   const TypeIcon = resultTypeIcon(item.type ?? resultType);
   const details = (item.details ?? {}) as Record<string, unknown>;
   const schema = item.detail_schema;
@@ -920,7 +931,7 @@ function ResultCard({
       {item.image_url && (
         <img
           src={item.image_url}
-          alt={item.title ?? "Result image"}
+          alt={item.title ?? t("results.imageAlt")}
           className="w-full h-[200px] object-cover"
         />
       )}
@@ -994,7 +1005,7 @@ function ResultCard({
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:text-primary/80"
           >
-            View details <ExternalLink className="h-3 w-3" />
+            {t("results.viewDetails")} <ExternalLink className="h-3 w-3" />
           </a>
         )}
       </div>
@@ -1011,6 +1022,7 @@ export function ResultPresentationMessage({
 }: {
   message: Message;
 }) {
+  const { t } = useTranslation("chat");
   const data = (message.contentStructured?.data ?? {}) as RPData;
   const items = data.items ?? [];
 
@@ -1028,7 +1040,7 @@ export function ResultPresentationMessage({
           <h3 className="text-sm font-semibold">{data.title}</h3>
           {!singleItem && (
             <span className="text-xs text-muted-foreground">
-              {items.length} results
+              {t("results.count", { count: items.length })}
             </span>
           )}
         </div>
@@ -1072,6 +1084,7 @@ function Carousel({
   resultType?: string;
   conversationId?: string;
 }) {
+  const { t } = useTranslation("common");
   const [activeIndex, setActiveIndex] = useState(0);
 
   const prev = useCallback(() => setActiveIndex((i) => Math.max(0, i - 1)), []);
@@ -1095,7 +1108,7 @@ function Carousel({
           disabled={activeIndex === 0}
           className="flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 disabled:invisible"
         >
-          <ChevronLeft className="h-3.5 w-3.5" /> Prev
+          <ChevronLeft className="h-3.5 w-3.5" /> {t("prev")}
         </button>
 
         <span className="text-xs text-muted-foreground">
@@ -1107,7 +1120,7 @@ function Carousel({
           disabled={activeIndex === items.length - 1}
           className="flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 disabled:invisible"
         >
-          Next <ChevronRight className="h-3.5 w-3.5" />
+          {t("next")} <ChevronRight className="h-3.5 w-3.5" />
         </button>
       </div>
     </div>

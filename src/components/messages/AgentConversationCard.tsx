@@ -4,6 +4,7 @@ import {
   MessageSquare,
   Radio,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { Conversation } from "../../lib/api";
 import { cn, formatConversationTime } from "../../lib/utils";
 import { isResolvedThread, threadStatus, threadTopic } from "../../lib/thread-selectors";
@@ -25,6 +26,7 @@ export function AgentConversationCard({
 }: {
   conversation: Conversation;
 }) {
+  const { t } = useTranslation("chat");
   const myId = useAuthStore((s) => s.participant?.id);
   const openThread = useChatStore((s) => s.openThread);
   const setView = useNavStore((s) => s.setView);
@@ -42,7 +44,7 @@ export function AgentConversationCard({
     .filter((m) => m.participantId !== myId)
     .map((m) => m.participant?.displayName)
     .filter(Boolean) as string[];
-  const peerLine = others.length > 0 ? others.join(" ↔ ") : "Agent thread";
+  const peerLine = others.length > 0 ? others.join(" ↔ ") : t("thread.agentThread");
   const title = topic || conversation.title || peerLine;
   const subtitle = topic ? peerLine : null;
 
@@ -54,17 +56,17 @@ export function AgentConversationCard({
   const hasMessages = loadedMessageCount > 0 || Boolean(conversation.lastMessage?.id);
   const messageCountLabel =
     loadedMessageCount > 0
-      ? `${loadedMessageCount} msg${loadedMessageCount === 1 ? "" : "s"}`
+      ? t("thread.messages", { count: loadedMessageCount })
       : hasMessages
-      ? "Open to view"
-      : "No messages yet";
+      ? t("thread.openToView")
+      : t("thread.noMessages");
 
   // The pill is the only resolution signal in the timeline (there is no
   // separate "Thread resolved" card), so spell the terminal state out.
   const statusLabel = resolved
     ? threadStatus(conversation) === "abandoned"
-      ? "Abandoned"
-      : "Resolved"
+      ? t("thread.status.abandoned")
+      : t("thread.status.resolved")
     : null;
 
   const open = () => {
