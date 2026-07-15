@@ -1,16 +1,14 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Ban,
-  CheckCircle,
-  XCircle,
-  Clock,
-  ListChecks,
+  Check,
   ChevronDown,
   ChevronRight,
+  CircleDashed,
   FileText,
-  Check,
-  X,
   Loader2,
+  X,
 } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { getMessagePayload } from "../../lib/api";
@@ -20,9 +18,22 @@ import { useTaskStore } from "../../stores/taskStore";
 import { StopTaskButton } from "./StopTaskButton";
 
 /**
- * Task message renderers ported from web/src/components/messages/TaskMessages.tsx.
+ * Task message renderers.
  *
- * Pulls live task state from `useTaskStore`:
+ * Design language ("quiet card") — the reference for all conversation cards:
+ *  1. One neutral surface: every lifecycle state shares `border-border
+ *     bg-card`; status never tints the card background or border.
+ *  2. Color is a signal, not a theme: status color appears in exactly one
+ *     place — the small glyph in the status line. Text stays
+ *     foreground/muted-foreground.
+ *  3. Fixed anatomy: status line (glyph · label · agent · right-aligned
+ *     meta), then title, then detail under a hairline. Elements keep their
+ *     position across states so the card reads as one object advancing
+ *     through a lifecycle.
+ *  4. Sentence case, 12px minimum, tabular-nums for durations.
+ *  5. One motion source: the running spinner is the only animation.
+ *
+ * Live task state comes from `useTaskStore`:
  *  - `taskLifecycleMeta[id].effectiveStatus` overrides the static
  *    `taskSnapshot.status` so a running TaskRequest card flips to
  *    complete/failed without a fresh message arriving.
@@ -46,55 +57,102 @@ function firstLine(text: string): string {
   return line.length > 80 ? line.slice(0, 77) + "..." : line;
 }
 
-function LiveSteps({ taskId }: { taskId: string }) {
-  const progress = useTaskStore((s) => s.taskProgress[taskId]);
-  if (!progress || progress.recentSteps.length === 0) return null;
+/** Visual tone of a task state; drives only the status glyph (rule 2). */
+type TaskTone = "pending" | "working" | "success" | "failure" | "neutral";
 
-  const pastSteps = progress.recentSteps.slice(0, -1).slice(-3);
-  const currentStep = progress.recentSteps[progress.recentSteps.length - 1];
+function StatusGlyph({ tone }: { tone: TaskTone }) {
+  switch (tone) {
+    case "working":
+      return (
+        <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin text-primary" />
+      );
+    case "success":
+      return (
+        <Check className="h-3.5 w-3.5 shrink-0 text-success" strokeWidth={2.5} />
+      );
+    case "failure":
+      return (
+        <X
+          className="h-3.5 w-3.5 shrink-0 text-destructive"
+          strokeWidth={2.5}
+        />
+      );
+    case "neutral":
+      return <Ban className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />;
+    case "pending":
+      return (
+        <CircleDashed className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+      );
+  }
+}
 
+/** Shared first row of every task surface: glyph · label · context · meta. */
+function StatusLine({
+  tone,
+  label,
+  context,
+  end,
+}: {
+  tone: TaskTone;
+  label: string;
+  context?: string;
+  end?: React.ReactNode;
+}) {
   return (
-    <div className="mt-2 space-y-1 border-t border-border pt-2">
-      {pastSteps.map((step, i) => (
+    <div className="flex items-center gap-2">
+      <StatusGlyph tone={tone} />
+      <span className="shrink-0 text-xs font-medium text-foreground">
+        {label}
+      </span>
+      {context && (
+        <span className="min-w-0 truncate text-xs text-muted-foreground">
+          {context}
+        </span>
+      )}
+      {end && (
+        <span className="ml-auto flex shrink-0 items-center gap-2">{end}</span>
+      )}
+    </div>
+  );
+}
+
+/** Pure step ticker: dim past steps, bright current one (exported for previews). */
+export function TaskSteps({
+  past,
+  current,
+}: {
+  past: string[];
+  current: string;
+}) {
+  return (
+    <div className="space-y-1 border-t border-border px-3 py-2">
+      {past.map((step, i) => (
         <div key={i} className="flex items-center gap-2">
-          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-muted-foreground/30" />
-          <span className="text-[11px] text-muted-foreground/60">{step}</span>
+          <span className="h-1 w-1 shrink-0 rounded-full bg-border-strong" />
+          <span className="min-w-0 truncate text-xs text-muted-foreground">
+            {step}
+          </span>
         </div>
       ))}
       <div className="flex items-center gap-2">
-        <span className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-primary" />
-        <span className="text-[11px] font-medium">{currentStep}</span>
+        <span className="h-1 w-1 shrink-0 rounded-full bg-primary" />
+        <span className="min-w-0 truncate text-xs font-medium text-foreground">
+          {current}
+        </span>
       </div>
     </div>
   );
 }
 
-function AgentAvatar({
-  name,
-  avatarUrl,
-}: {
-  name: string;
-  avatarUrl?: string;
-}) {
-  if (avatarUrl) {
-    return (
-      <img
-        src={avatarUrl}
-        alt={name}
-        className="h-9 w-9 rounded-full object-cover"
-      />
-    );
-  }
-  const initials = name
-    .split(/\s+/)
-    .map((w) => w[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
+function LiveSteps({ taskId }: { taskId: string }) {
+  const progress = useTaskStore((s) => s.taskProgress[taskId]);
+  if (!progress || progress.recentSteps.length === 0) return null;
+
   return (
-    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/20 text-[10px] font-semibold text-primary">
-      {initials}
-    </div>
+    <TaskSteps
+      past={progress.recentSteps.slice(0, -1).slice(-3)}
+      current={progress.recentSteps[progress.recentSteps.length - 1]}
+    />
   );
 }
 
@@ -105,6 +163,87 @@ interface TaskRequestPayload {
   spec?: { description?: string; acceptance_criteria?: string[] };
   priority?: string;
   timeout_seconds?: number;
+}
+
+/** Map a task status onto the card's tone + `tasks:status.*` label key. */
+function requestState(status: string): { tone: TaskTone; labelKey: string } {
+  switch (status) {
+    case "pending":
+      return { tone: "pending", labelKey: "status.pending" };
+    case "accepted":
+    case "in_progress":
+      return { tone: "working", labelKey: "status.in_progress" };
+    case "complete":
+      return { tone: "success", labelKey: "status.complete" };
+    case "failed":
+      return { tone: "failure", labelKey: "status.failed" };
+    case "rejected":
+      return { tone: "failure", labelKey: "status.rejected" };
+    case "declined":
+      return { tone: "failure", labelKey: "status.declined" };
+    case "cancelled":
+      return { tone: "neutral", labelKey: "status.cancelled" };
+    case "exhausted":
+      return { tone: "neutral", labelKey: "status.exhausted" };
+    default:
+      return { tone: "pending", labelKey: "task" };
+  }
+}
+
+/**
+ * Presentational task card (exported for previews). Live cards go through
+ * `TaskRequestMessage`, which resolves the payload + live status and omits
+ * `steps` so the ticker reads `taskProgress` from the store.
+ */
+export function TaskRequestCard({
+  status,
+  title,
+  agentName,
+  taskId,
+  steps,
+}: {
+  status: string;
+  title: string;
+  agentName: string;
+  taskId?: string;
+  /** Preview-only step override; omit to read live progress from the store. */
+  steps?: { past: string[]; current: string };
+}) {
+  const { t } = useTranslation("tasks");
+  const { tone, labelKey } = requestState(status);
+  const active =
+    status === "pending" || status === "accepted" || status === "in_progress";
+
+  return (
+    <div className="overflow-hidden rounded-lg border border-border bg-card">
+      <div className="px-3 py-2.5">
+        <StatusLine
+          tone={tone}
+          label={t(labelKey)}
+          context={agentName}
+          end={
+            active && taskId ? (
+              <StopTaskButton taskId={taskId} title={title} className="h-6 w-6" />
+            ) : undefined
+          }
+        />
+        <p
+          className={cn(
+            "mt-1.5 text-sm font-medium leading-snug text-foreground",
+            !active && "truncate"
+          )}
+        >
+          {title}
+        </p>
+      </div>
+      {active &&
+        (steps ? (
+          <TaskSteps past={steps.past} current={steps.current} />
+        ) : (
+          taskId && <LiveSteps taskId={taskId} />
+        ))}
+    </div>
+  );
 }
 
 export function TaskRequestMessage({ message }: { message: Message }) {
@@ -124,104 +263,14 @@ export function TaskRequestMessage({ message }: { message: Message }) {
   );
   const status = liveStatus ?? message.taskSnapshot?.status ?? "pending";
   const agentName = message.sender?.displayName ?? "Agent";
-  const avatarUrl = message.sender?.avatarUrl;
-  const isWorking =
-    status === "in_progress" || status === "accepted" || status === "pending";
-  const isComplete = status === "complete";
-  const isFailed =
-    status === "failed" || status === "declined" || status === "rejected";
-  const isCancelled = status === "cancelled" || status === "exhausted";
-
-  if (isWorking) {
-    return (
-      <div className="overflow-hidden rounded-xl border border-border bg-card">
-        <div className="p-3">
-          <div className="flex items-center gap-2.5">
-            <div className="relative">
-              <AgentAvatar name={agentName} avatarUrl={avatarUrl} />
-              {status !== "pending" && (
-                <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 animate-pulse rounded-full border-2 border-card bg-primary" />
-              )}
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold">{agentName}</p>
-              <p className="text-xs text-muted-foreground">
-                {status === "pending"
-                  ? "assigned to this"
-                  : "is working on this"}
-              </p>
-            </div>
-            {status !== "pending" && (
-              <Loader2 className="h-4 w-4 animate-spin text-primary" />
-            )}
-            {taskId && <StopTaskButton taskId={taskId} title={title} />}
-          </div>
-          <p className="mt-2 text-sm font-semibold leading-snug">{title}</p>
-
-          {taskId && <LiveSteps taskId={taskId} />}
-        </div>
-      </div>
-    );
-  }
-
-  if (isCancelled) {
-    return (
-      <div className="overflow-hidden rounded-xl border border-border bg-muted/30">
-        <div className="flex items-center gap-2.5 p-3">
-          <AgentAvatar name={agentName} avatarUrl={avatarUrl} />
-          <div className="min-w-0 flex-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-              {status === "exhausted" ? "Task Exhausted" : "Task Stopped"}
-            </span>
-            <p className="mt-0.5 truncate text-sm font-semibold">{title}</p>
-          </div>
-          <Ban className="h-5 w-5 shrink-0 text-muted-foreground" />
-        </div>
-      </div>
-    );
-  }
-
-  if (isComplete) {
-    return (
-      <div className="overflow-hidden rounded-xl border border-border bg-success/5">
-        <div className="flex items-center gap-2.5 p-3">
-          <AgentAvatar name={agentName} avatarUrl={avatarUrl} />
-          <div className="min-w-0 flex-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-success dark:text-success">
-              Task Complete
-            </span>
-            <p className="mt-0.5 truncate text-sm font-semibold">{title}</p>
-          </div>
-          <CheckCircle className="h-5 w-5 shrink-0 text-success" />
-        </div>
-      </div>
-    );
-  }
-
-  if (isFailed) {
-    return (
-      <div className="overflow-hidden rounded-xl border border-border bg-destructive/5">
-        <div className="flex items-center gap-2.5 p-3">
-          <AgentAvatar name={agentName} avatarUrl={avatarUrl} />
-          <div className="min-w-0 flex-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-destructive dark:text-destructive">
-              {status === "declined" ? "Task Declined" : "Task Failed"}
-            </span>
-            <p className="mt-0.5 truncate text-sm font-semibold">{title}</p>
-          </div>
-          <XCircle className="h-5 w-5 shrink-0 text-destructive" />
-        </div>
-      </div>
-    );
-  }
 
   return (
-    <div className="rounded-lg border border-border p-3">
-      <div className="flex items-center gap-2">
-        <ListChecks className="h-4 w-4 text-primary shrink-0" />
-        <span className="text-sm font-semibold flex-1 min-w-0">{title}</span>
-      </div>
-    </div>
+    <TaskRequestCard
+      status={status}
+      title={title}
+      agentName={agentName}
+      taskId={taskId}
+    />
   );
 }
 
@@ -235,32 +284,35 @@ interface TaskDecisionPayload {
 }
 
 export function TaskDecisionMessage({ message }: { message: Message }) {
+  const { t } = useTranslation("tasks");
   const p = getMessagePayload<TaskDecisionPayload>(message);
   const type = message.messageType || message.contentType;
   const isAccept = type === "TaskAccept";
 
   return (
     <div className="flex items-start gap-2">
-      {isAccept ? (
-        <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-success" />
-      ) : (
-        <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
-      )}
-      <div className="text-sm">
-        <span className="font-medium">{isAccept ? "Accepted" : "Declined"}</span>
+      <span className="mt-[3px]">
+        <StatusGlyph tone={isAccept ? "success" : "failure"} />
+      </span>
+      <div className="min-w-0">
+        <div className="flex items-baseline gap-2">
+          <span className="text-sm font-medium text-foreground">
+            {isAccept ? t("accepted") : t("declined")}
+          </span>
+          {p.estimated_seconds != null && (
+            <span className="text-xs tabular-nums text-muted-foreground">
+              {t("estMinutes", { count: Math.ceil(p.estimated_seconds / 60) })}
+            </span>
+          )}
+        </div>
         {(p.message || p.reason) && (
           <p className="mt-0.5 text-xs text-muted-foreground">
             {p.message ?? p.reason}
           </p>
         )}
         {p.suggestion && (
-          <p className="mt-0.5 text-xs italic text-muted-foreground">
-            Suggestion: {p.suggestion}
-          </p>
-        )}
-        {p.estimated_seconds != null && (
-          <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
-            <Clock className="h-3 w-3" />~{Math.ceil(p.estimated_seconds / 60)}min
+          <p className="mt-0.5 text-xs text-muted-foreground">
+            {t("suggestion", { text: p.suggestion })}
           </p>
         )}
       </div>
@@ -285,6 +337,7 @@ interface TaskProgressPayload {
 }
 
 export function TaskProgressMessage({ message }: { message: Message }) {
+  const { t } = useTranslation("tasks");
   const p = getMessagePayload<TaskProgressPayload>(message);
   const stepText = p.current_step || p.progress || null;
   const percent =
@@ -295,11 +348,13 @@ export function TaskProgressMessage({ message }: { message: Message }) {
     typeof p.elapsed_ms === "number" ? p.elapsed_ms / 1000 : null;
 
   return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between text-xs">
-        <span className="font-medium">{p.status ?? "In progress"}</span>
+    <div className="space-y-1.5">
+      <div className="flex items-baseline justify-between gap-3">
+        <span className="min-w-0 truncate text-xs font-medium text-foreground">
+          {p.status ?? t("status.in_progress")}
+        </span>
         {elapsedSeconds != null && (
-          <span className="text-muted-foreground tabular-nums">
+          <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
             {formatDuration(elapsedSeconds)}
           </span>
         )}
@@ -313,9 +368,11 @@ export function TaskProgressMessage({ message }: { message: Message }) {
         </div>
       )}
       {stepText && (
-        <div className="flex items-start gap-2.5">
-          <span className="mt-[5px] h-2 w-2 shrink-0 rounded-full bg-primary animate-pulse" />
-          <span className="text-xs font-medium">{stepText}</span>
+        <div className="flex items-center gap-2">
+          <span className="h-1 w-1 shrink-0 rounded-full bg-primary" />
+          <span className="min-w-0 truncate text-xs text-foreground">
+            {stepText}
+          </span>
         </div>
       )}
     </div>
@@ -365,6 +422,60 @@ export function TaskResultMessage({ message }: { message: Message }) {
   );
 }
 
+/** Collapsed header row shared by the complete/fail result cards. */
+function ResultHeader({
+  tone,
+  label,
+  preview,
+  durationSeconds,
+  hasDetails,
+  expanded,
+  onToggle,
+}: {
+  tone: TaskTone;
+  label: string;
+  preview: string;
+  durationSeconds?: number | null;
+  hasDetails: boolean;
+  expanded: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      className={cn(
+        "flex w-full items-center gap-2 px-3 py-2 text-left",
+        hasDetails && "cursor-pointer transition-colors hover:bg-surface-hover"
+      )}
+      onClick={() => hasDetails && onToggle()}
+    >
+      <StatusGlyph tone={tone} />
+      <span className="shrink-0 text-xs font-medium text-foreground">
+        {label}
+      </span>
+      <span className="min-w-0 flex-1 truncate text-xs text-muted-foreground">
+        {preview}
+      </span>
+      {durationSeconds != null && (
+        <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
+          {formatDuration(durationSeconds)}
+        </span>
+      )}
+      {hasDetails &&
+        (expanded ? (
+          <ChevronDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+        ) : (
+          <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+        ))}
+    </button>
+  );
+}
+
+/** Muted sentence-case heading for a section inside an expanded result. */
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return <p className="text-xs font-medium text-muted-foreground">{children}</p>;
+}
+
 function TaskCompleteCard({
   message,
   expanded,
@@ -374,65 +485,40 @@ function TaskCompleteCard({
   expanded: boolean;
   setExpanded: (v: boolean) => void;
 }) {
+  const { t } = useTranslation("tasks");
   const p = getMessagePayload<TaskCompletePayload>(message);
-  const summary = p.result?.summary || message.content || "Task completed";
+  const summary =
+    p.result?.summary || message.content || t("result.completedFallback");
   const artifacts = p.result?.artifacts;
   const criteriaMet = p.result?.criteria_met;
   const hasDetails =
     (summary && summary.includes("\n")) ||
     (artifacts && artifacts.length > 0) ||
-    Boolean(criteriaMet && Object.keys(criteriaMet).length > 0) ||
-    p.duration_seconds != null;
+    Boolean(criteriaMet && Object.keys(criteriaMet).length > 0);
 
   return (
-    <div className="w-full rounded-lg border border-success/20 overflow-hidden">
-      <button
-        type="button"
-        className={cn(
-          "flex w-full items-center gap-2 px-3 py-2 text-left transition-colors",
-          hasDetails && "cursor-pointer hover:bg-muted/40"
-        )}
-        onClick={() => hasDetails && setExpanded(!expanded)}
-      >
-        <CheckCircle className="h-4 w-4 shrink-0 text-success" />
-        <span className="text-sm font-medium text-success dark:text-success">
-          Completed
-        </span>
-        <span className="flex-1 truncate text-xs text-muted-foreground">
-          {firstLine(summary)}
-        </span>
-        {hasDetails &&
-          (expanded ? (
-            <ChevronDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-          ) : (
-            <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-          ))}
-      </button>
+    <div className="w-full overflow-hidden rounded-lg border border-border bg-card">
+      <ResultHeader
+        tone="success"
+        label={t("completed")}
+        preview={firstLine(summary)}
+        durationSeconds={p.duration_seconds}
+        hasDetails={Boolean(hasDetails)}
+        expanded={expanded}
+        onToggle={() => setExpanded(!expanded)}
+      />
 
       {expanded && (
-        <div className="border-t border-success/10 px-3 py-2.5 space-y-3">
+        <div className="space-y-3 border-t border-border px-3 py-2.5">
           <MarkdownContent content={summary} />
-
-          {p.duration_seconds != null && (
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Clock className="h-3 w-3" />
-              <span>Duration: {formatDuration(p.duration_seconds)}</span>
-            </div>
-          )}
 
           {criteriaMet && Object.keys(criteriaMet).length > 0 && (
             <div className="space-y-1">
-              <span className="text-[10px] font-semibold uppercase text-muted-foreground tracking-wide">
-                Criteria
-              </span>
+              <SectionLabel>{t("criteria")}</SectionLabel>
               {Object.entries(criteriaMet).map(([key, met]) => (
                 <div key={key} className="flex items-center gap-2 text-xs">
-                  {met ? (
-                    <Check className="h-3.5 w-3.5 text-success" />
-                  ) : (
-                    <X className="h-3.5 w-3.5 text-destructive" />
-                  )}
-                  <span className="text-muted-foreground">{key}</span>
+                  <StatusGlyph tone={met ? "success" : "failure"} />
+                  <span className="text-foreground">{key}</span>
                 </div>
               ))}
             </div>
@@ -440,16 +526,14 @@ function TaskCompleteCard({
 
           {artifacts && artifacts.length > 0 && (
             <div className="space-y-1">
-              <span className="text-[10px] font-semibold uppercase text-muted-foreground tracking-wide">
-                Artifacts
-              </span>
+              <SectionLabel>{t("artifacts")}</SectionLabel>
               {artifacts.map((a, i) => (
                 <div
                   key={i}
                   className="flex items-center gap-2 text-xs text-muted-foreground"
                 >
-                  <FileText className="h-3 w-3 shrink-0" />
-                  <span className="font-mono text-[11px]">
+                  <FileText className="h-3.5 w-3.5 shrink-0" />
+                  <span className="min-w-0 truncate font-mono text-xs">
                     {a.type}
                     {a.path ? `: ${a.path}` : ""}
                     {a.message ? ` -- ${a.message}` : ""}
@@ -473,56 +557,37 @@ function TaskFailCard({
   expanded: boolean;
   setExpanded: (v: boolean) => void;
 }) {
+  const { t } = useTranslation("tasks");
   const p = getMessagePayload<TaskFailPayload>(message);
-  const errorMessage = p.error?.message || message.content || "Task failed";
+  const errorMessage =
+    p.error?.message || message.content || t("result.failedFallback");
   const partial = p.partial_result?.summary;
-  const hasDetails = Boolean(partial) || p.duration_seconds != null || Boolean(p.error?.code);
+  const hasDetails = Boolean(partial) || Boolean(p.error?.code);
 
   return (
-    <div className="w-full rounded-lg border border-destructive/20 overflow-hidden">
-      <button
-        type="button"
-        className={cn(
-          "flex w-full items-center gap-2 px-3 py-2 text-left transition-colors",
-          hasDetails && "cursor-pointer hover:bg-muted/40"
-        )}
-        onClick={() => hasDetails && setExpanded(!expanded)}
-      >
-        <XCircle className="h-4 w-4 shrink-0 text-destructive" />
-        <span className="text-sm font-medium text-destructive dark:text-destructive">
-          Failed
-        </span>
-        <span className="flex-1 truncate text-xs text-muted-foreground">
-          {firstLine(errorMessage)}
-        </span>
-        {hasDetails &&
-          (expanded ? (
-            <ChevronDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-          ) : (
-            <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-          ))}
-      </button>
+    <div className="w-full overflow-hidden rounded-lg border border-border bg-card">
+      <ResultHeader
+        tone="failure"
+        label={t("failed")}
+        preview={firstLine(errorMessage)}
+        durationSeconds={p.duration_seconds}
+        hasDetails={hasDetails}
+        expanded={expanded}
+        onToggle={() => setExpanded(!expanded)}
+      />
 
       {expanded && (
-        <div className="border-t border-destructive/10 px-3 py-2.5 space-y-2">
+        <div className="space-y-3 border-t border-border px-3 py-2.5">
           {p.error?.code && (
-            <p className="text-[11px] font-mono text-muted-foreground">
+            <p className="font-mono text-xs text-muted-foreground">
               {p.error.code}
             </p>
           )}
           <MarkdownContent content={errorMessage} />
           {partial && (
-            <div className="rounded border border-border/60 bg-muted/30 p-2">
-              <span className="text-[10px] font-semibold uppercase text-muted-foreground tracking-wide">
-                Partial Result
-              </span>
+            <div className="space-y-1">
+              <SectionLabel>{t("result.partialResult")}</SectionLabel>
               <MarkdownContent content={partial} />
-            </div>
-          )}
-          {p.duration_seconds != null && (
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Clock className="h-3 w-3" />
-              <span>Duration: {formatDuration(p.duration_seconds)}</span>
             </div>
           )}
         </div>

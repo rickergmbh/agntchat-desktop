@@ -13,6 +13,7 @@ import {
   Wrench,
 } from "lucide-react";
 import { MessageBubble } from "../messages/MessageBubble";
+import { TaskRequestCard } from "../messages/TaskMessages";
 import { ArtifactCard } from "../messages/ArtifactCard";
 import { AgentConversationCard } from "../messages/AgentConversationCard";
 import { StreamingBubble } from "../messages/StreamingBubble";
@@ -293,6 +294,28 @@ export function buildPreviewCategories(
                 },
               })}
             />
+          ),
+        },
+        {
+          label: "Working (with live steps)",
+          caption: "step ticker fed by taskProgress in the live app",
+          interactive: false,
+          node: (
+            <div className="max-w-md px-4">
+              <TaskRequestCard
+                status="in_progress"
+                title="Book travel for the Berlin trip"
+                agentName="Atlas"
+                taskId={T(8)}
+                steps={{
+                  past: [
+                    "Compared flight options for Tuesday",
+                    "Checked hotel availability near the venue",
+                  ],
+                  current: "Booking the 09:40 BER flight",
+                }}
+              />
+            </div>
           ),
         },
         {
