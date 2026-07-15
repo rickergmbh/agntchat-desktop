@@ -415,19 +415,6 @@ export function AgentRow({
 
           {/* Meta line: runtime chip · provider · model. */}
           <div className="mt-0.5 flex items-center gap-1.5 text-[10px] text-muted-foreground min-w-0">
-            <span className="inline-flex shrink-0 items-center gap-1">
-              {managed.agent.runtime === "org_host" ? (
-                <>
-                  <Cloud className="h-3 w-3 text-info" />
-                  Hosted
-                </>
-              ) : (
-                <>
-                  <Laptop className="h-3 w-3 text-success" />
-                  Local
-                </>
-              )}
-            </span>
             <span
               className={cn(
                 "shrink-0 inline-flex items-center gap-1 rounded-full border px-1.5 py-0 text-[9px] font-medium uppercase tracking-wide",
@@ -444,6 +431,19 @@ export function AgentRow({
                 )}
               />
               {STATUS_META.label}
+            </span>
+            <span className="inline-flex shrink-0 items-center gap-1">
+              {managed.agent.runtime === "org_host" ? (
+                <>
+                  <Cloud className="h-3 w-3 text-info" />
+                  Hosted
+                </>
+              ) : (
+                <>
+                  <Laptop className="h-3 w-3 text-success" />
+                  Local
+                </>
+              )}
             </span>
             {backendLabel && (
               <>
