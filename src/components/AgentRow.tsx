@@ -12,6 +12,7 @@ import { runningElsewhereOn, useLocalDeviceName } from "../hooks/useRunningElsew
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AgentPowerButton } from "@/components/ui/agent-power-button";
+import { AgentPowerSwitch } from "@/components/ui/agent-power-switch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Dialog,
@@ -480,38 +481,25 @@ export function AgentRow({
             </TooltipProvider>
           ) : isOrgHost ? (
             waking ? (
-              <AgentPowerButton
-                state="bring-online"
-                label={t("row.bringingOnline")}
-                busy
-              outlined
-              labelClassName="hidden @min-[340px]:inline"
-              />
+              <AgentPowerSwitch checked busy label={t("row.bringingOnline")} />
             ) : remoteOnline ? (
-              <TooltipProvider delay={150}>
-                <Tooltip>
-                  <TooltipTrigger
-                    render={
-                      <span className="flex h-7 w-7 items-center justify-center text-muted-foreground/50">
-                        <Cloud className="w-4 h-4" />
-                      </span>
-                    }
-                  />
-                  <TooltipContent side="left" className="text-xs">
-                    Runs on the org host — started and stopped there, not from this device
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              // Live on the org host — the switch reads green (online) but is
+              // disabled here: a hosted agent is started/stopped on the host,
+              // not from this device.
+              <AgentPowerSwitch
+                checked
+                disabled
+                label={t("common:online")}
+                tooltip="Runs on the org host — started and stopped there, not from this device"
+              />
             ) : (
-              // Offline hosted agent — restart its bridge on the host. Same
-              // "Bring online" control as a local agent so the action reads
+              // Offline hosted agent — flipping the switch restarts its bridge
+              // on the host. Same control as a local agent so it reads
               // identically regardless of where the agent runs.
-              <AgentPowerButton
-                state="bring-online"
+              <AgentPowerSwitch
+                checked={false}
+                onToggle={(_next, e) => handleBringOnline(e)}
                 label={t("row.bringOnline")}
-                onClick={handleBringOnline}
-              outlined
-              labelClassName="hidden @min-[340px]:inline"
               />
             )
           ) : managed.processStatus === "crashed" &&
@@ -539,21 +527,17 @@ export function AgentRow({
               labelClassName="hidden @min-[340px]:inline"
             />
           ) : isRunning ? (
-            <AgentPowerButton
-              state="take-offline"
+            <AgentPowerSwitch
+              checked
+              onToggle={(_next, e) => handleToggle(e)}
               label={t("row.takeOffline")}
-              onClick={handleToggle}
-              outlined
-              labelClassName="hidden @min-[340px]:inline"
             />
           ) : (
-            <AgentPowerButton
-              state="bring-online"
-              label={t("row.bringOnline")}
-              onClick={handleToggle}
+            <AgentPowerSwitch
+              checked={false}
+              onToggle={(_next, e) => handleToggle(e)}
               disabled={!canStart}
-              outlined
-              labelClassName="hidden @min-[340px]:inline"
+              label={t("row.bringOnline")}
             />
           )}
         </div>
