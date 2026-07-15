@@ -2,6 +2,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useAgentStore, type ManagedAgent } from "../stores/agentStore";
 import { useChatStore } from "../stores/chatStore";
 import { usePresenceStore } from "../stores/presenceStore";
+import {
+  useActiveWorkspace,
+  useWorkspacesEnabled,
+} from "../stores/workspaceStore";
 import { isAgentOnline } from "../lib/agentOnline";
 
 export type OnboardingStep = "create" | "online" | "greeting";
@@ -51,6 +55,17 @@ export function useOnboardingState(): OnboardingState {
   const conversationsLoaded = useChatStore((s) => s.conversationsLoaded);
   const online = usePresenceStore((s) => s.online);
 
+  // First-run setup is an account-level flow that lives in the Personal
+  // workspace. Conversations are workspace-scoped, so inside a freshly
+  // created shared workspace the "DM with an own agent exists" terminal
+  // predicate goes false and the ladder would re-render for an established
+  // user — stuck on "greeting", since FirstAgentGreetingWorker only ever
+  // fires once per account.
+  const workspacesEnabled = useWorkspacesEnabled();
+  const activeWorkspace = useActiveWorkspace();
+  const inSharedWorkspace =
+    workspacesEnabled && activeWorkspace !== null && !activeWorkspace.isPersonal;
+
   const derived = useMemo<Omit<OnboardingState, "arrived" | "visible">>(() => {
     const inactive: Omit<OnboardingState, "arrived" | "visible"> = {
       active: false,
@@ -60,7 +75,9 @@ export function useOnboardingState(): OnboardingState {
       agentDmId: null,
     };
 
-    if (!agentsLoaded || !conversationsLoaded) return inactive;
+    if (!agentsLoaded || !conversationsLoaded || inSharedWorkspace) {
+      return inactive;
+    }
 
     // Root agents the user owns — sub-agents (owned by another agent in the
     // list) and ephemeral spawns don't count toward "has an agent".
@@ -101,7 +118,7 @@ export function useOnboardingState(): OnboardingState {
     }
 
     return { ...inactive, active: true, step: "greeting", variant, firstAgent };
-  }, [agents, agentsLoaded, conversations, conversationsLoaded, online]);
+  }, [agents, agentsLoaded, conversations, conversationsLoaded, online, inSharedWorkspace]);
 
   // "Arrived": the flow completed within this session — the greeting DM
   // landed while the cards were up. Hosts keep the cards mounted (`visible`)
