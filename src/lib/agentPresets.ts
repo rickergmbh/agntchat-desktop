@@ -15,9 +15,11 @@ import type { AgentType, ToneKey } from "./buildSoulMd";
  * derive the i18n key names from each preset's `id`.
  *
  * UI copy (label/tagline/name placeholder) lives in the `agents` i18n
- * namespace under `create.presets.<id>.*`. The instruction/description
- * seeds are English on purpose: they're LLM prompt material (like every
- * soul in the system), not user-facing chrome.
+ * namespace under `create.presets.<id>.*`, as do localized
+ * description/instructions seeds — the wizard prefills the editable
+ * fields from those keys with the server's canonical English as the
+ * `defaultValue` fallback (see docs/reference/localization.md,
+ * "Canonical value vs. display").
  *
  * Google-backed presets don't need anything special ON the agent — the
  * Google tools resolve the OWNER's credential at call time — so
