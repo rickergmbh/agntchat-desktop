@@ -27,7 +27,7 @@ import { usePresenceStore } from "../stores/presenceStore";
 import { isAgentOnline } from "../lib/agentOnline";
 import { useThemeStore } from "../stores/themeStore";
 import { useFriendStore } from "../stores/friendStore";
-import { useActiveWorkspace } from "../stores/workspaceStore";
+import { useActiveWorkspace, useWorkspacesEnabled } from "../stores/workspaceStore";
 import { AgentBusyToast } from "./AgentBusyToast";
 import { ReminderToast } from "./ReminderToast";
 import { PermissionToast } from "./PermissionToast";
@@ -201,10 +201,9 @@ function LeftRail({
   // a shared workspace. The friend-request badge is hidden in
   // workspace mode since friend connections are personal-graph only.
   const activeWorkspace = useActiveWorkspace();
-  // Workspaces are behind a per-user runtime flag (resolved on /me). With the
-  // flag off every user is in their Personal workspace, so this stays false and
-  // the Friends rail slot never flips to "Members".
-  const workspacesEnabled = participant?.features?.workspaces === true;
+  // With the workspaces flag off every user is in their Personal workspace,
+  // so this stays false and the Friends rail slot never flips to "Members".
+  const workspacesEnabled = useWorkspacesEnabled();
   const isWorkspaceMode =
     workspacesEnabled && activeWorkspace !== null && !activeWorkspace.isPersonal;
   // Friends is behind a per-user runtime flag (resolved on /me). The rail slot

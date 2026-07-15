@@ -2763,6 +2763,8 @@ export interface Conversation {
   members?: ConversationMember[];
   pinned?: boolean;
   parentConversationId?: string;
+  /** Workspace pin. Omit/`null` means personal (cross-workspace). */
+  organizationId?: string | null;
 }
 
 export async function listConversations(

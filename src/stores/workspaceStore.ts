@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import * as api from "../lib/api";
+import { track, ANALYTICS_EVENTS } from "../lib/analytics";
 import { ws } from "../services/websocket";
 import { useAuthStore } from "./authStore";
 import { useChatStore } from "./chatStore";
@@ -105,12 +106,21 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   },
 
   initWsListeners: () => {
-    return ws.on("active_organization_changed", (payload) => {
-      const orgId = (payload as { organizationId?: string })?.organizationId;
-      if (typeof orgId === "string") {
-        void get().applyRemoteSwitch(orgId);
-      }
-    });
+    const unsubs = [
+      ws.on("active_organization_changed", (payload) => {
+        const orgId = (payload as { organizationId?: string })?.organizationId;
+        if (typeof orgId === "string") {
+          void get().applyRemoteSwitch(orgId);
+        }
+      }),
+      // Workspace list changed (created/renamed/deleted/membership) without
+      // the active workspace moving — refetch /api/me so the switcher stays
+      // current. No re-key/wipe: org-scoped stores are unaffected.
+      ws.on("workspaces_updated", () => {
+        void get().refresh();
+      }),
+    ];
+    return () => unsubs.forEach((u) => u());
   },
 
   // --- Workspace management ----------------------------------------
@@ -161,6 +171,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
 
   sendInvite: async (orgId, email, role = "member") => {
     const invite = await api.createOrganizationInvite(orgId, email, role);
+    track(ANALYTICS_EVENTS.MEMBER_INVITED, { role });
     await get().refresh();
     return invite;
   },
@@ -244,6 +255,7 @@ async function refetchOrgScoped() {
       .getState()
       .fetchAgentConversations()
       .catch(() => {}),
+    useChatStore.getState().fetchUnreadCounts().catch(() => {}),
     useAgentStore.getState().fetchAgents().catch(() => {}),
   ]);
 }
@@ -257,6 +269,14 @@ const EMPTY_WORKSPACES: WorkspaceMembership[] = [];
 
 export function useWorkspaces(): WorkspaceMembership[] {
   return useAuthStore((s) => s.participant?.organizations ?? EMPTY_WORKSPACES);
+}
+
+/**
+ * Workspaces are behind a per-user runtime flag (resolved on /me). With
+ * the flag off every user is in their Personal workspace.
+ */
+export function useWorkspacesEnabled(): boolean {
+  return useAuthStore((s) => s.participant?.features?.workspaces === true);
 }
 
 export function useActiveWorkspace(): WorkspaceMembership | null {

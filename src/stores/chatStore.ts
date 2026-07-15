@@ -1182,7 +1182,15 @@ export const useChatStore = create<ChatState>((set, get) => ({
     unsubs.push(
       ws.on("new_conversation", (payload) => {
         const conv = payload.conversation as Conversation;
-        if (conv) get().addConversation(conv);
+        if (!conv) return;
+        // Slack-style: drop conversations pinned to a workspace the
+        // user isn't currently active in.
+        const activeOrg =
+          useAuthStore.getState().participant?.activeOrganizationId;
+        if (conv.organizationId && activeOrg && conv.organizationId !== activeOrg) {
+          return;
+        }
+        get().addConversation(conv);
       })
     );
 

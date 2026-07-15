@@ -4,7 +4,7 @@ import i18n from "../i18n";
 import { useAgentStore, type ManagedAgent } from "../stores/agentStore";
 import { usePresenceStore } from "../stores/presenceStore";
 import { useAuthStore } from "../stores/authStore";
-import { useActiveWorkspace, useWorkspaces } from "../stores/workspaceStore";
+import { useActiveWorkspace, useWorkspaces, useWorkspacesEnabled } from "../stores/workspaceStore";
 import { listOrganizationHosts, type OrganizationHost } from "../lib/api";
 import {
   deleteAgent,
@@ -2081,9 +2081,7 @@ function PublishSection({ agent }: { agent: Agent }) {
 
 function PulsePanel({ managed }: { managed: ManagedAgent }) {
   const { t } = useTranslation("agents");
-  // Workspaces are behind the `workspaces` runtime flag (resolved per-user on
-  // /me). When off, every user is in their Personal workspace.
-  const workspacesEnabled = useAuthStore((s) => s.participant?.features?.workspaces === true);
+  const workspacesEnabled = useWorkspacesEnabled();
   const [data, setData] = useState<PulseData | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -2967,9 +2965,7 @@ function ProfileSection({
   const { fetchAgents } = useAgentStore();
   const limits = useFieldLimits();
   const activeWorkspace = useActiveWorkspace();
-  // Workspaces are behind the `workspaces` runtime flag (resolved per-user on
-  // /me). When off, every user is in their Personal workspace.
-  const workspacesEnabled = useAuthStore((s) => s.participant?.features?.workspaces === true);
+  const workspacesEnabled = useWorkspacesEnabled();
   const [name, setName] = useState(agent.displayName);
   const [desc, setDesc] = useState(agent.description ?? "");
   const [agentType, setAgentType] = useState(agent.agentType || "worker");

@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 import { useAgentStore } from "../stores/agentStore";
 import { useAuthStore } from "../stores/authStore";
-import { useActiveWorkspace } from "../stores/workspaceStore";
+import { useActiveWorkspace, useWorkspacesEnabled } from "../stores/workspaceStore";
 import {
   updateAgentRuntime,
   authorizeProvider,
@@ -302,7 +302,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   // runs on their host using the plan's shared brain) so they can create and
   // start talking with zero setup. Advanced users switch to "local".
   const participant = useAuthStore((s) => s.participant);
-  const workspacesEnabled = participant?.features?.workspaces === true;
+  const workspacesEnabled = useWorkspacesEnabled();
   const subStatus = participant?.subscription?.status;
   const isPlan = subStatus === "active" || subStatus === "trialing";
   const hostedHostId = participant?.hostedHostId ?? null;
