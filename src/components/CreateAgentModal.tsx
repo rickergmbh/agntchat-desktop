@@ -1483,8 +1483,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                           )}
                         >
                           <div className="text-sm font-medium">
-                            {t("hosting.local")}{" "}
-                            <span className="text-text-muted">{t("create.localAdvancedTag")}</span>
+                            {t("hosting.local")}
                           </div>
                           <div className="mt-0.5 text-xs text-text-muted">
                             {t("create.localDescription")}
