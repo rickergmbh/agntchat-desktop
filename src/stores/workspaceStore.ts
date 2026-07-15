@@ -214,7 +214,22 @@ function deriveSlug(name: string): string {
     .slice(0, 24) || `ws-${Math.random().toString(36).slice(2, 8)}`;
 }
 
+// Raises `switching` for the wipe+refetch window when no switch flow
+// already owns it (the delete/leave defensive wipes call this
+// directly). Consumers deriving from the wiped stores — the
+// onboarding cards especially — read `switching` to avoid flashing
+// "brand-new account" between the wipe and the refetch resolving.
 async function refetchOrgScoped() {
+  const ownsFlag = !useWorkspaceStore.getState().switching;
+  if (ownsFlag) useWorkspaceStore.setState({ switching: true });
+  try {
+    await doRefetchOrgScoped();
+  } finally {
+    if (ownsFlag) useWorkspaceStore.setState({ switching: false });
+  }
+}
+
+async function doRefetchOrgScoped() {
   // 1. Stop receiving events for the previous workspace's conv channels.
   ws.leaveAllConversations();
 

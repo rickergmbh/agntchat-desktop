@@ -5,6 +5,7 @@ import { usePresenceStore } from "../stores/presenceStore";
 import {
   useActiveWorkspace,
   useWorkspacesEnabled,
+  useWorkspaceStore,
 } from "../stores/workspaceStore";
 import { isAgentOnline } from "../lib/agentOnline";
 
@@ -66,6 +67,12 @@ export function useOnboardingState(): OnboardingState {
   const inSharedWorkspace =
     workspacesEnabled && activeWorkspace !== null && !activeWorkspace.isPersonal;
 
+  // A workspace switch wipes the agent/conversation stores synchronously
+  // and refetches async, so for a few frames the stores read as
+  // empty-but-loaded — indistinguishable from a brand-new account. Hold
+  // the cards back until the switch's refetch resolves.
+  const switching = useWorkspaceStore((s) => s.switching);
+
   const derived = useMemo<Omit<OnboardingState, "arrived" | "visible">>(() => {
     const inactive: Omit<OnboardingState, "arrived" | "visible"> = {
       active: false,
@@ -75,7 +82,7 @@ export function useOnboardingState(): OnboardingState {
       agentDmId: null,
     };
 
-    if (!agentsLoaded || !conversationsLoaded || inSharedWorkspace) {
+    if (!agentsLoaded || !conversationsLoaded || switching || inSharedWorkspace) {
       return inactive;
     }
 
@@ -118,7 +125,15 @@ export function useOnboardingState(): OnboardingState {
     }
 
     return { ...inactive, active: true, step: "greeting", variant, firstAgent };
-  }, [agents, agentsLoaded, conversations, conversationsLoaded, online, inSharedWorkspace]);
+  }, [
+    agents,
+    agentsLoaded,
+    conversations,
+    conversationsLoaded,
+    online,
+    switching,
+    inSharedWorkspace,
+  ]);
 
   // "Arrived": the flow completed within this session — the greeting DM
   // landed while the cards were up. Hosts keep the cards mounted (`visible`)
