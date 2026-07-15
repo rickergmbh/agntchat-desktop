@@ -3701,7 +3701,11 @@ function ProviderRow({
             </p>
           ) : (
             <p className="text-xs text-muted-foreground truncate mt-0.5">
-              {provider.description || t("integrations.notConnected")}
+              {provider.description
+                ? t(`integrations.providers.${provider.name}`, {
+                    defaultValue: provider.description,
+                  })
+                : t("integrations.notConnected")}
             </p>
           )}
         </div>
