@@ -13,8 +13,6 @@ export function AgentConfigTour({
   steps,
   index,
   rect,
-  paneWidth,
-  paneHeight,
   onNext,
   onBack,
   onSkip,
@@ -22,8 +20,6 @@ export function AgentConfigTour({
   steps: TourStep[];
   index: number;
   rect: TourRect;
-  paneWidth: number;
-  paneHeight: number;
   onNext: () => void;
   onBack: () => void;
   onSkip: () => void;
@@ -34,8 +30,6 @@ export function AgentConfigTour({
       steps={steps}
       index={index}
       rect={rect}
-      paneWidth={paneWidth}
-      paneHeight={paneHeight}
       onNext={onNext}
       onBack={onBack}
       onSkip={onSkip}

@@ -1,12 +1,13 @@
 import { useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft, ArrowRight, Check, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "../lib/utils";
 
-/** A measured rect (in the host pane's coordinate space) for the element a
- *  step points at. `null` for an intro/outro step, which has no anchor and
- *  centers its card. */
+/** A measured rect (in VIEWPORT coordinates — a raw getBoundingClientRect) for
+ *  the element a step points at. `null` for a step whose anchor is missing,
+ *  which falls back to a centered card. */
 export type TourRect = { top: number; left: number; width: number; height: number } | null;
 
 /** Which side of the anchor the coach card sits on. Ignored for anchorless
@@ -22,26 +23,30 @@ export interface TourStep {
 const PAD = 6; // breathing room between the spotlight box and the anchor
 const GAP = 14; // distance from the spotlight to the coach card
 const CARD_W = 300;
-const EDGE = 8; // keep the card this far inside the pane edges
+const EDGE = 8; // keep the card this far inside the viewport edges
 // The spotlight outline is drawn `outlineOffset + stroke` (4px) OUTSIDE the
-// box; keep the box inset from the pane edges so the ring isn't clipped by a
-// rounded/overflow-hidden pane.
+// box; keep the box inset from the viewport edges so the ring stays visible
+// for anchors flush against a window edge.
 const EDGE_INSET = 5;
 
 /**
  * Reusable guided coach-mark tour. Purely presentational: the host owns the
- * step index, measures the anchor rect (relative to a `relative` pane) and the
- * pane size, and drives any UI changes behind each step. This paints a dim
- * scrim with a cut-out spotlight over `rect` and a coach card beside it.
+ * step index, measures the anchor rect (viewport coordinates), and drives any
+ * UI changes behind each step. This paints a dim scrim with a cut-out
+ * spotlight over `rect` and a coach card beside it.
+ *
+ * Rendered in a portal to `document.body` as a `fixed inset-0` layer, so the
+ * scrim dims the ENTIRE app window — never just the host pane (a pane-scoped
+ * overlay reads as broken, like a rendering glitch over one panel).
  *
  * The scrim is a huge spread box-shadow on the highlight box (not an SVG mask):
- * it dims the whole pane while leaving the anchored element crisp. Clicking the
- * scrim advances via `onSkip` (click-away = dismiss); the card stops
- * propagation so its own buttons work.
+ * it dims everything while leaving the anchored element crisp. Clicking the
+ * scrim dismisses via `onSkip`; the card stops propagation so its own buttons
+ * work.
  *
  * Card placement is per-step (`placement`, default "right") and always clamped
- * inside the pane, so anchors near any edge stay fully visible. Anchorless
- * steps (rect null) center the card.
+ * inside the viewport, so anchors near any edge stay fully visible. Steps with
+ * no measurable anchor (rect null) center the card.
  */
 export function SpotlightTour({
   namespace,
@@ -49,8 +54,6 @@ export function SpotlightTour({
   steps,
   index,
   rect,
-  paneWidth,
-  paneHeight,
   onNext,
   onBack,
   onSkip,
@@ -61,8 +64,6 @@ export function SpotlightTour({
   steps: TourStep[];
   index: number;
   rect: TourRect;
-  paneWidth: number;
-  paneHeight: number;
   onNext: () => void;
   onBack: () => void;
   onSkip: () => void;
@@ -87,17 +88,22 @@ export function SpotlightTour({
   const isFirst = index === 0;
   const isLast = index === steps.length - 1;
 
-  // Spotlight box (clamped so its outline isn't clipped at any pane edge).
+  // Viewport size, re-read every render (hosts re-measure `rect` on resize,
+  // which re-renders us with fresh dimensions).
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+
+  // Spotlight box (clamped so its outline stays inside the viewport).
   const spot = rect
     ? {
         left: Math.max(EDGE_INSET, rect.left - PAD),
         top: Math.max(EDGE_INSET, rect.top - PAD),
-        right: Math.min(paneWidth - EDGE_INSET, rect.left + rect.width + PAD),
-        bottom: Math.min(paneHeight - EDGE_INSET, rect.top + rect.height + PAD),
+        right: Math.min(vw - EDGE_INSET, rect.left + rect.width + PAD),
+        bottom: Math.min(vh - EDGE_INSET, rect.top + rect.height + PAD),
       }
     : null;
 
-  // Coach-card position: per-step side, then clamp inside the pane.
+  // Coach-card position: per-step side, then clamp inside the viewport.
   let cardStyle: React.CSSProperties | undefined;
   if (rect && cardSize) {
     const placement = step.placement ?? "right";
@@ -118,8 +124,8 @@ export function SpotlightTour({
       left = rect.left + rect.width + GAP;
       top = rect.top;
     }
-    left = Math.min(Math.max(EDGE, left), Math.max(EDGE, paneWidth - cw - EDGE));
-    top = Math.min(Math.max(EDGE, top), Math.max(EDGE, paneHeight - ch - EDGE));
+    left = Math.min(Math.max(EDGE, left), Math.max(EDGE, vw - cw - EDGE));
+    top = Math.min(Math.max(EDGE, top), Math.max(EDGE, vh - ch - EDGE));
     cardStyle = { top, left, width: CARD_W };
   } else if (rect) {
     // First render before measurement: position off-anchor but hidden.
@@ -185,10 +191,10 @@ export function SpotlightTour({
     </div>
   );
 
-  return (
-    <div className="absolute inset-0 z-50">
-      {/* Scrim + spotlight. When there's no rect (intro/outro), a plain dim
-          layer. */}
+  return createPortal(
+    <div className="fixed inset-0 z-50">
+      {/* Scrim + spotlight. When there's no rect (missing anchor), a plain
+          dim layer. */}
       {spot ? (
         <div
           onClick={onSkip}
@@ -212,7 +218,7 @@ export function SpotlightTour({
       )}
 
       {/* Anchored steps position the card absolutely; anchorless steps center
-          it in a flex wrapper that can't overflow the pane edges. */}
+          it in a flex wrapper that can't overflow the viewport edges. */}
       {rect ? (
         card
       ) : (
@@ -223,6 +229,7 @@ export function SpotlightTour({
           {card}
         </div>
       )}
-    </div>
+    </div>,
+    document.body
   );
 }

@@ -130,17 +130,18 @@ import { AgentConfigTour, type TourRect } from "./AgentConfigTour";
 import { FTUE_KEYS, hasSeenTour, markTourSeen } from "../lib/ftue";
 
 // First-run orientation for the details pane. Each step spotlights one
-// sidebar group (`groupKey`, matched to the `key` on `sectionGroups`) and, for
-// the anchored steps, switches the pane to a representative section so the
-// user sees real content behind the coach card. The intro step has no anchor.
-// Copy is resolved from the `agents:tour.*` catalog inside AgentConfigTour.
+// sidebar group (`groupKey`, matched to the `key` on `sectionGroups`) and
+// switches the pane to a representative section so the user sees real content
+// behind the coach card. Deliberately short — three steps, only the groups
+// worth orienting on (the first step's copy carries the welcome; Operations
+// is discoverable on its own). Copy is resolved from the `agents:tour.*`
+// catalog inside AgentConfigTour.
 const TOUR_STEPS: Array<{
-  groupKey: string | null;
-  section: string | null;
+  groupKey: string;
+  section: string;
   titleKey: string;
   bodyKey: string;
 }> = [
-  { groupKey: null, section: null, titleKey: "tour.welcomeTitle", bodyKey: "tour.welcomeBody" },
   { groupKey: "profile", section: "profile", titleKey: "tour.profileTitle", bodyKey: "tour.profileBody" },
   { groupKey: "model", section: "config", titleKey: "tour.modelTitle", bodyKey: "tour.modelBody" },
   {
@@ -149,7 +150,6 @@ const TOUR_STEPS: Array<{
     titleKey: "tour.capabilitiesTitle",
     bodyKey: "tour.capabilitiesBody",
   },
-  { groupKey: "operations", section: "logs", titleKey: "tour.operationsTitle", bodyKey: "tour.operationsBody" },
 ];
 
 const TOUR_SEEN_KEY = FTUE_KEYS.agentConfigTour;
@@ -384,17 +384,13 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
 
   // ---- First-run orientation tour ----
   // Refs to each sidebar group wrapper, keyed by `group.key`, so a tour step
-  // can measure the group it spotlights. The outer pane is the positioning
-  // context for the overlay.
+  // can measure the group it spotlights; the overlay itself portals to body.
   const groupRefs = useRef<Record<string, HTMLDivElement | null>>({});
-  const paneRef = useRef<HTMLDivElement | null>(null);
   const [tourStep, setTourStep] = useState<number | null>(null);
   const [tourRect, setTourRect] = useState<TourRect>(null);
-  const [tourPane, setTourPane] = useState({ width: 0, height: 0 });
 
-  // Auto-start once, ever, per install — the first time a real agent's pane is
-  // opened. Persisted in localStorage so it never nags again; the ? button
-  // replays it on demand.
+  // Auto-start once, ever, ACROSS ALL DEVICES — the seen-flag roams via
+  // participant metadata; the ? button replays it on demand.
   useEffect(() => {
     if (hasSeenTour(TOUR_SEEN_KEY)) return;
     void markTourSeen(TOUR_SEEN_KEY);
@@ -404,28 +400,20 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Measure the spotlight rect for the current step, relative to the pane.
-  // Re-measured on step change and on resize; the intro step (groupKey null)
-  // clears the rect so the card centers.
+  // Measure the spotlight rect for the current step (viewport coordinates —
+  // the overlay is a fixed, body-portaled layer). Re-measured on step change
+  // and on resize; a missing group ref clears the rect so the card centers.
   useEffect(() => {
     if (tourStep === null) return;
     const measure = () => {
       const step = TOUR_STEPS[tourStep];
-      const groupEl = step.groupKey ? groupRefs.current[step.groupKey] : null;
-      const paneEl = paneRef.current;
-      if (!groupEl || !paneEl) {
+      const groupEl = step ? groupRefs.current[step.groupKey] : null;
+      if (!groupEl) {
         setTourRect(null);
         return;
       }
       const g = groupEl.getBoundingClientRect();
-      const p = paneEl.getBoundingClientRect();
-      setTourPane({ width: p.width, height: p.height });
-      setTourRect({
-        top: g.top - p.top,
-        left: g.left - p.left,
-        width: g.width,
-        height: g.height,
-      });
+      setTourRect({ top: g.top, left: g.left, width: g.width, height: g.height });
     };
     // Defer one frame so the section switch has laid out before measuring.
     const raf = requestAnimationFrame(measure);
@@ -523,7 +511,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
   ];
 
   return (
-    <div ref={paneRef} className="relative flex h-full">
+    <div className="relative flex h-full">
       {/* Vertical icon sidebar */}
       <TooltipProvider delay={300}>
         <div className="w-12 border-r border-border bg-muted/30 flex flex-col items-center flex-shrink-0">
@@ -615,8 +603,6 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
           steps={TOUR_STEPS}
           index={tourStep}
           rect={tourRect}
-          paneWidth={tourPane.width}
-          paneHeight={tourPane.height}
           onNext={advanceTour}
           onBack={backTour}
           onSkip={endTour}

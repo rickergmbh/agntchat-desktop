@@ -462,7 +462,6 @@ export const MessageComposer = forwardRef<
             onChange={handleFileSelect}
           />
           <Button
-            data-tour="conv-tour-files"
             size="icon"
             variant="ghost"
             onClick={() => fileInputRef.current?.click()}

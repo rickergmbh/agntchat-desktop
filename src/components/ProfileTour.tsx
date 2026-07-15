@@ -13,10 +13,11 @@ import { FTUE_KEYS, hasSeenTour, markTourSeen } from "../lib/ftue";
  *
  * The profile is a long scrolling settings page, so this is a *centered modal
  * coach card* over a dim scrim — not an anchored spotlight (there's no single
- * element to point at, and the sections live behind a section switcher). It
- * walks through: welcome → analytics (an ACTIONABLE step: a toggle defaulted
- * ON that applies its choice when the user proceeds) → LLM keys → connected
- * accounts → memory.
+ * element to point at, and the sections live behind a section switcher).
+ * Deliberately tiny — two steps: a welcome that names what lives here
+ * (accounts, AI keys, memory) and the analytics consent step, which is
+ * ACTIONABLE (a toggle defaulted ON that applies its choice when the user
+ * proceeds). Purely informational steps don't earn a card.
  *
  * Auto-starts once ever, gated on the roamed `profileTour` seen-flag (server
  * source of truth via `lib/ftue`). Bumping the `replay` prop re-opens it at
@@ -37,12 +38,6 @@ const STEPS: ProfileTourStep[] = [
     bodyKey: "profileTour.analyticsBody",
     analytics: true,
   },
-  { titleKey: "profileTour.llmKeysTitle", bodyKey: "profileTour.llmKeysBody" },
-  {
-    titleKey: "profileTour.connectedAccountsTitle",
-    bodyKey: "profileTour.connectedAccountsBody",
-  },
-  { titleKey: "profileTour.memoryTitle", bodyKey: "profileTour.memoryBody" },
 ];
 
 export function ProfileTour({ replay = 0 }: { replay?: number }) {
