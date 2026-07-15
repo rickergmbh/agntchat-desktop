@@ -364,23 +364,6 @@ export function AgentRow({
             <span className="text-sm font-medium truncate">
               {managed.agent.displayName}
             </span>
-            <span
-              className={cn(
-                "shrink-0 inline-flex items-center gap-1 rounded-full border px-1.5 py-0 text-[9px] font-medium uppercase tracking-wide",
-                STATUS_META.cls
-              )}
-            >
-              <span
-                className={cn(
-                  "h-1.5 w-1.5 rounded-full",
-                  status === "online" && "bg-success",
-                  status === "offline" && "bg-muted-foreground/50",
-                  status === "starting" && "bg-warning animate-pulse",
-                  status === "crashed" && "bg-destructive"
-                )}
-              />
-              {STATUS_META.label}
-            </span>
             {managed.agent.agentType === "orchestrator" && (
               <Crown className="h-3 w-3 text-primary flex-shrink-0" />
             )}
@@ -444,6 +427,23 @@ export function AgentRow({
                   Local
                 </>
               )}
+            </span>
+            <span
+              className={cn(
+                "shrink-0 inline-flex items-center gap-1 rounded-full border px-1.5 py-0 text-[9px] font-medium uppercase tracking-wide",
+                STATUS_META.cls
+              )}
+            >
+              <span
+                className={cn(
+                  "h-1.5 w-1.5 rounded-full",
+                  status === "online" && "bg-success",
+                  status === "offline" && "bg-muted-foreground/50",
+                  status === "starting" && "bg-warning animate-pulse",
+                  status === "crashed" && "bg-destructive"
+                )}
+              />
+              {STATUS_META.label}
             </span>
             {backendLabel && (
               <>
