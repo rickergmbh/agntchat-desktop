@@ -31,7 +31,7 @@ export function ToolCallMessage({ message }: { message: Message }) {
         <span>{name}</span>
       </div>
       {args && Object.keys(args).length > 0 && (
-        <pre className="overflow-x-auto rounded bg-muted/50 p-2 text-[11px] leading-tight text-muted-foreground">
+        <pre className="overflow-x-auto rounded-md bg-muted/50 p-2 text-xs leading-snug text-muted-foreground">
           {JSON.stringify(args, null, 2)}
         </pre>
       )}
@@ -50,7 +50,7 @@ export function ToolResultMessage({ message }: { message: Message }) {
       </div>
       <pre
         className={cn(
-          "overflow-x-auto rounded bg-muted/50 p-2 text-[11px] leading-tight text-muted-foreground",
+          "overflow-x-auto rounded-md bg-muted/50 p-2 text-xs leading-snug text-muted-foreground",
           isLong && "max-h-40"
         )}
       >

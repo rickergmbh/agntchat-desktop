@@ -82,32 +82,23 @@ export function AgentConversationCard({
         type="button"
         onClick={open}
         className={cn(
-          "group inline-flex w-full max-w-2xl items-center gap-2.5 rounded-full border px-3 py-1.5 text-left transition-colors sm:w-[82%]",
-          resolved
-            ? "border-border bg-muted/30 opacity-65 hover:bg-muted/50"
-            : isLive
-            ? "border-primary/40 bg-primary/10 hover:bg-primary/15"
-            : "border-border bg-primary/5 hover:bg-primary/10"
+          "group inline-flex w-full max-w-2xl items-center gap-2.5 rounded-full border border-border bg-card px-3 py-1.5 text-left transition-colors hover:bg-surface-hover sm:w-[82%]",
+          resolved && "opacity-65"
         )}
       >
-        <span
-          className={cn(
-            "flex h-6 w-6 shrink-0 items-center justify-center rounded-full",
-            resolved ? "bg-muted-foreground/15" : "bg-primary/15"
-          )}
-        >
+        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted">
           {resolved ? (
             <CheckCircle2 className="h-3.5 w-3.5 text-muted-foreground" />
           ) : isLive ? (
             <Radio className="h-3.5 w-3.5 text-primary" />
           ) : (
-            <MessageSquare className="h-3.5 w-3.5 text-primary" />
+            <MessageSquare className="h-3.5 w-3.5 text-muted-foreground" />
           )}
         </span>
 
         <span className="flex min-w-0 flex-1 flex-col">
           <span className="flex min-w-0 items-center gap-1.5">
-            <span className="min-w-0 truncate text-sm font-semibold text-foreground">
+            <span className="min-w-0 truncate text-sm font-medium text-foreground">
               {title}
             </span>
             {unread > 0 ? (
@@ -116,7 +107,7 @@ export function AgentConversationCard({
               </span>
             ) : null}
           </span>
-          <span className="truncate text-[11px] text-muted-foreground">
+          <span className="truncate text-xs text-muted-foreground">
             {statusLabel ? `${statusLabel} · ` : ""}
             {subtitle ? `${subtitle} · ` : ""}
             {messageCountLabel}

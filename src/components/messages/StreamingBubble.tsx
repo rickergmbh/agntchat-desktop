@@ -38,14 +38,14 @@ export function StreamingBubble({
     <MessageRow className="mt-2 px-4">
       {/* self-start: the streaming bubble grows downward, so the avatar
           anchors to the top where the stream began. */}
-      <MessageAvatar className="h-8 w-8 self-start bg-primary/10">
-        <Bot className="h-4 w-4 text-primary" />
+      <MessageAvatar className="h-8 w-8 self-start bg-muted">
+        <Bot className="h-4 w-4 text-muted-foreground" />
       </MessageAvatar>
 
       <MessageContent className="w-fit max-w-[72%] gap-0">
         <MessageHeader className="mb-0.5 gap-1.5 px-0 text-[11px] font-normal">
           <span className="font-medium text-foreground">{stream.senderName}</span>
-          <span className="px-1.5 py-[1px] rounded bg-bubble-agent-accent/10 text-bubble-agent-accent text-[9px] font-semibold uppercase tracking-wide">
+          <span className="inline-flex items-center rounded-sm border border-border px-1 py-px text-[11px] font-medium text-muted-foreground">
             {t("common:agent")}
           </span>
         </MessageHeader>

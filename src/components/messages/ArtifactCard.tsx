@@ -50,24 +50,25 @@ export function ArtifactCard({
       <button
         type="button"
         onClick={() => openViewer(artifact.id, artifact.conversationId)}
-        className="group flex w-full max-w-2xl items-center gap-2.5 rounded-xl border border-border bg-primary/5 px-3 py-2.5 text-left transition-colors hover:bg-primary/10 sm:w-[82%]"
+        className="group flex w-full max-w-2xl items-center gap-2.5 rounded-lg border border-border bg-card px-3 py-2.5 text-left transition-colors hover:bg-surface-hover sm:w-[82%]"
       >
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/15">
-          <ArtifactKindIcon kind={artifact.kind} />
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-muted">
+          <ArtifactKindIcon
+            kind={artifact.kind}
+            className="h-4 w-4 text-muted-foreground"
+          />
         </span>
         <span className="flex min-w-0 flex-1 flex-col">
-          <span className="flex items-center gap-1.5">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-primary">
-              {t("badge")}
-            </span>
-            <span className="text-[10px] font-semibold text-muted-foreground">
+          <span className="flex items-center gap-1.5 text-xs">
+            <span className="font-medium text-foreground">{t("badge")}</span>
+            <span className="text-muted-foreground">
               {t("versionShort", { version: artifact.currentVersion })}
             </span>
           </span>
-          <span className="line-clamp-2 text-sm font-semibold text-foreground">
+          <span className="line-clamp-2 text-sm font-medium text-foreground">
             {title}
           </span>
-          <span className="truncate text-[11px] text-muted-foreground">
+          <span className="truncate text-xs text-muted-foreground">
             {authorName ? `${t("by", { name: authorName })} · ` : ""}
             {t("edited", { time: formatRelativeShort(editedAt) })}
           </span>

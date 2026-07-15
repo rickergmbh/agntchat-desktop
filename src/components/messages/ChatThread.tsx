@@ -1074,12 +1074,10 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
           of scroll position. Was inside the scrollable div, so typing
           fired while the user was scrolled up was hidden below the fold. */}
       {typingLabel && (
-        <div
-          className={cn(
-            "border-t border-border bg-card/80 backdrop-blur px-4 py-1 text-[11px] italic",
-            typingHasAgent ? "text-primary" : "text-muted-foreground"
+        <div className="flex items-center gap-1.5 border-t border-border bg-card/80 px-4 py-1 text-xs text-muted-foreground backdrop-blur">
+          {typingHasAgent && (
+            <span className="h-1 w-1 shrink-0 animate-pulse rounded-full bg-primary" />
           )}
-        >
           {typingLabel}
         </div>
       )}

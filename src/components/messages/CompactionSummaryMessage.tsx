@@ -28,11 +28,11 @@ export function CompactionSummaryMessage({ message }: { message: Message }) {
   const narrative = data.narrative ?? "";
 
   return (
-    <div className="my-2 overflow-hidden rounded-lg border border-border bg-muted/40">
+    <div className="my-2 overflow-hidden rounded-lg border border-border bg-card">
       <button
         type="button"
         onClick={() => setExpanded((v) => !v)}
-        className="flex w-full items-center gap-2 px-3 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/60"
+        className="flex w-full items-center gap-2 px-3 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-surface-hover"
       >
         <Archive className="h-3.5 w-3.5 shrink-0" />
         <span className="flex-1 text-left">

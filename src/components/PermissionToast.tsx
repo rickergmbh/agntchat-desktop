@@ -112,15 +112,15 @@ export function PermissionToastCard({
   return (
     <div className="pointer-events-auto rounded-lg border border-border bg-card p-4 shadow-lg">
       <div className="flex items-start gap-3">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-amber-500/15 text-amber-500">
-          <ShieldQuestion size={16} />
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted">
+          <ShieldQuestion size={16} className="text-warning" />
         </div>
         <div className="min-w-0">
           <p className="text-sm font-medium">{t("permissionToast.title")}</p>
           <p className="mt-1 break-words text-xs text-muted-foreground">
             {description || t("permissionToast.subtitle", { agent: toolName })}
           </p>
-          <p className="mt-1 font-mono text-[10px] uppercase tracking-wide text-muted-foreground/70">
+          <p className="mt-1 truncate font-mono text-xs text-muted-foreground">
             {toolName}
           </p>
         </div>

@@ -74,7 +74,7 @@ function SenderHeader({
       <span className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
         {senderName}
         {isAgent && (
-          <span className="inline-flex items-center gap-1 rounded bg-bubble-agent-accent/10 px-1.5 py-0.5 text-[10px] font-bold text-bubble-agent-accent">
+          <span className="inline-flex items-center gap-1 rounded-sm border border-border px-1 py-px text-[11px] font-medium text-muted-foreground">
             <Bot className="h-3 w-3" />
             {t("agent")}
           </span>

@@ -325,7 +325,7 @@ function PriceBadge({ price }: { price: ResultPrice }) {
 
   return (
     <div className="flex items-baseline gap-1.5">
-      <span className="text-base font-bold">
+      <span className="text-base font-semibold tabular-nums text-foreground">
         {sym}
         {price.amount.toLocaleString()}
       </span>
@@ -339,7 +339,7 @@ function PriceBadge({ price }: { price: ResultPrice }) {
         </span>
       )}
       {price.discount_pct != null && (
-        <span className="rounded-full bg-success/10 px-1.5 py-0.5 text-[10px] font-semibold text-success">
+        <span className="text-xs font-medium tabular-nums text-success">
           -{price.discount_pct}%
         </span>
       )}
@@ -361,13 +361,13 @@ function AmenityChips({ amenities }: { amenities: string[] }) {
       {visible.map((a) => (
         <span
           key={a}
-          className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
+          className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground"
         >
           {a}
         </span>
       ))}
       {overflow > 0 && (
-        <span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+        <span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
           +{overflow} more
         </span>
       )}
@@ -385,7 +385,7 @@ function Highlights({ highlights }: { highlights: string[] }) {
       {highlights.map((h) => (
         <span
           key={h}
-          className="inline-flex items-center rounded-full bg-success/10 px-2 py-0.5 text-[10px] font-medium text-success"
+          className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-foreground"
         >
           {h}
         </span>
@@ -398,16 +398,15 @@ function Highlights({ highlights }: { highlights: string[] }) {
 // Highlight color mapping
 // ---------------------------------------------------------------------------
 
-// Callout (magazine-style) border + accent color for `display: "highlight"`
-// fields. The pill / badge styling was too small and "chip-like" for what
-// agents actually use highlight for — the headline at the top of a brief
-// card, or a punchy talking-point at the bottom. Callouts get a 4px colored
-// left rule, larger semibold text, and the same color tint on the icon.
-const CALLOUT_ACCENT: Record<string, { border: string; text: string }> = {
-  success: { border: "border-success", text: "text-success" },
-  warning: { border: "border-warning", text: "text-warning" },
-  destructive: { border: "border-destructive", text: "text-destructive" },
-  primary: { border: "border-primary", text: "text-primary" },
+// Callout (magazine-style) accent for `display: "highlight"` fields — the
+// headline at the top of a brief card, or a punchy talking-point at the
+// bottom. Quiet-card rules: the left rule stays neutral (structure, not
+// status); the schema color lands only on the small icon glyph.
+const CALLOUT_ACCENT: Record<string, { text: string }> = {
+  success: { text: "text-success" },
+  warning: { text: "text-warning" },
+  destructive: { text: "text-destructive" },
+  primary: { text: "text-primary" },
 };
 
 // ---------------------------------------------------------------------------
@@ -464,7 +463,7 @@ function CollapsibleBody({
       )}
     >
       {label && (
-        <div className="mb-1 flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+        <div className="mb-1 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
           {IconComp && <IconComp className="h-3 w-3" />}
           <span>{label}</span>
         </div>
@@ -536,7 +535,7 @@ function DetailSection({
                 href={url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-primary underline"
+                className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-primary underline"
               >
                 {text}
               </a>
@@ -545,7 +544,7 @@ function DetailSection({
           return (
             <span
               key={f.key}
-              className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
+              className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground"
             >
               {text}
             </span>
@@ -604,12 +603,7 @@ function DetailSection({
       const text = `${field.label ? `${field.label}: ` : ""}${String(val)}`;
 
       const callout = (
-        <div
-          className={cn(
-            "flex items-start gap-2 border-l-4 pl-3 py-1 text-[15px] font-semibold leading-snug text-foreground",
-            accent.border,
-          )}
-        >
+        <div className="flex items-start gap-2 border-l-2 border-border-strong py-1 pl-3 text-[15px] font-semibold leading-snug text-foreground">
           {IconComp && (
             <IconComp className={cn("mt-0.5 h-4 w-4 shrink-0", accent.text)} />
           )}
@@ -657,21 +651,16 @@ function DetailSection({
           {field.label && (
             <span className="text-muted-foreground">{field.label}:</span>
           )}
-          <span
-            className={cn(
-              "inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-[10px] font-medium",
-              positive
-                ? "bg-success/10 text-success"
-                : "bg-destructive/10 text-destructive",
-            )}
-          >
+          <span className="inline-flex items-center gap-1">
             {positive ? (
-              <ArrowUpRight className="h-3 w-3" />
+              <ArrowUpRight className="h-3.5 w-3.5 shrink-0 text-success" />
             ) : (
-              <ArrowDownRight className="h-3 w-3" />
+              <ArrowDownRight className="h-3.5 w-3.5 shrink-0 text-destructive" />
             )}
-            {positive ? "\u2191" : "\u2193"} {Math.abs(num)}
-            {field.format === "percent" ? "%" : ""}
+            <span className="font-medium tabular-nums text-foreground">
+              {Math.abs(num)}
+              {field.format === "percent" ? "%" : ""}
+            </span>
           </span>
         </div>,
       );
@@ -873,7 +862,7 @@ function Citations({
 }) {
   if (citations.length === 0) return null;
   return (
-    <div className="flex flex-wrap items-center gap-1.5 text-[10px] text-muted-foreground">
+    <div className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
       <span>Sources:</span>
       {citations.map((c, i) => (
         <span key={i}>
@@ -926,7 +915,7 @@ function ResultCard({
   const isMagazineCard = bodyFieldCount >= 2 && !isEmailCard;
 
   return (
-    <div className="rounded-lg border border-border bg-card overflow-hidden shadow-sm">
+    <div className="overflow-hidden rounded-lg border border-border bg-card">
       {/* Hero image */}
       {item.image_url && (
         <img
@@ -944,7 +933,7 @@ function ResultCard({
             <TypeIcon className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
             <div className="min-w-0">
               {item.title && (
-                <h4 className="text-sm font-semibold leading-tight">
+                <h4 className="text-sm font-medium leading-snug text-foreground">
                   {item.title}
                 </h4>
               )}
