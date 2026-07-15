@@ -195,8 +195,8 @@ export function AgentRow({
 
   const isRunning = managed.processStatus === "running";
 
-  const handleToggle = async (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleToggle = async (e?: React.MouseEvent) => {
+    e?.stopPropagation();
     try {
       if (isRunning) {
         await stopAgent(managed.agent.id);
@@ -238,8 +238,8 @@ export function AgentRow({
   // row spins immediately; the presence store clears it when the agent reports
   // online (or after a safety timeout).
   const remoteOnline = liveOnline;
-  const handleBringOnline = async (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleBringOnline = async (e?: React.MouseEvent) => {
+    e?.stopPropagation();
     markWaking([managed.agent.id]);
     try {
       await restartHostedAgents([managed.agent.id]);
@@ -468,7 +468,7 @@ export function AgentRow({
               // identically regardless of where the agent runs.
               <AgentPowerSwitch
                 checked={false}
-                onToggle={(_next, e) => handleBringOnline(e)}
+                onToggle={() => handleBringOnline()}
                 label={t("row.bringOnline")}
               />
             )
@@ -499,13 +499,13 @@ export function AgentRow({
           ) : isRunning ? (
             <AgentPowerSwitch
               checked
-              onToggle={(_next, e) => handleToggle(e)}
+              onToggle={() => handleToggle()}
               label={t("row.takeOffline")}
             />
           ) : (
             <AgentPowerSwitch
               checked={false}
-              onToggle={(_next, e) => handleToggle(e)}
+              onToggle={() => handleToggle()}
               busy={starting}
               disabled={!canStart}
               label={t("row.bringOnline")}

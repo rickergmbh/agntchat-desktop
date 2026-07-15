@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { Loader2 } from "lucide-react";
 
 import { Switch } from "@/components/ui/switch";
@@ -15,7 +14,7 @@ export interface AgentPowerSwitchProps {
   /** Whether the agent is online (switch on = green, off = muted). */
   checked: boolean;
   /** Fired when the user flips the switch. `next` is the requested state. */
-  onToggle?: (next: boolean, e: React.MouseEvent) => void;
+  onToggle?: (next: boolean) => void;
   /** Action in flight — shows a spinner and disables the switch. */
   busy?: boolean;
   disabled?: boolean;
@@ -51,9 +50,7 @@ export function AgentPowerSwitch({
         // On = online → green (success); off = muted (base `bg-input`).
         className="data-checked:bg-success"
         onClick={(e) => e.stopPropagation()}
-        onCheckedChange={(next, event) =>
-          onToggle?.(next, event as unknown as React.MouseEvent)
-        }
+        onCheckedChange={(next) => onToggle?.(next)}
       />
     </span>
   );
