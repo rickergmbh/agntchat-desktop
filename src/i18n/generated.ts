@@ -4005,6 +4005,7 @@ export const resources = {
         "reconnectAll": "Reconnect to enable all services",
         "scopes": "Scopes: {{scopes}}",
         "status": {
+          "active": "Connected",
           "expired": "Expired",
           "refreshFailed": "Refresh failed",
           "revoked": "Revoked"
@@ -4097,6 +4098,7 @@ export const resources = {
           "oauthStartFailed": "Failed to start authorization flow.",
           "saveFailed": "Failed to save the connection."
         },
+        "notConnected": "Not connected",
         "pasteToken": "Paste your API token",
         "placeholders": {
           "endpointUrl": "https://api.example.com/v1",
@@ -4109,7 +4111,8 @@ export const resources = {
         "providerUid": "Username / ID (optional)",
         "savedMessage": "{{name}} has been saved.",
         "secret": "Secret",
-        "unchanged": "Unchanged"
+        "unchanged": "Unchanged",
+        "waiting": "Waiting…"
       },
       "language": {
         "description": "Language used across the app interface",
@@ -8907,6 +8910,7 @@ export const resources = {
         "reconnectAll": "Vuelve a conectar para habilitar todos los servicios",
         "scopes": "Ámbitos: {{scopes}}",
         "status": {
+          "active": "Conectado",
           "expired": "Caducada",
           "refreshFailed": "Error al renovar",
           "revoked": "Revocada"
@@ -8999,6 +9003,7 @@ export const resources = {
           "oauthStartFailed": "No se pudo iniciar el flujo de autorización.",
           "saveFailed": "No se pudo guardar la conexión."
         },
+        "notConnected": "No conectado",
         "pasteToken": "Pega tu token de API",
         "placeholders": {
           "endpointUrl": "https://api.example.com/v1",
@@ -9011,7 +9016,8 @@ export const resources = {
         "providerUid": "Usuario / ID (opcional)",
         "savedMessage": "{{name}} se ha guardado.",
         "secret": "Secreto",
-        "unchanged": "Sin cambios"
+        "unchanged": "Sin cambios",
+        "waiting": "Esperando…"
       },
       "language": {
         "description": "Idioma de la interfaz de la aplicación",
@@ -13809,6 +13815,7 @@ export const resources = {
         "reconnectAll": "Erneut verbinden, um alle Dienste zu aktivieren",
         "scopes": "Berechtigungen: {{scopes}}",
         "status": {
+          "active": "Verbunden",
           "expired": "Abgelaufen",
           "refreshFailed": "Aktualisierung fehlgeschlagen",
           "revoked": "Widerrufen"
@@ -13901,6 +13908,7 @@ export const resources = {
           "oauthStartFailed": "Autorisierungsvorgang konnte nicht gestartet werden.",
           "saveFailed": "Verbindung konnte nicht gespeichert werden."
         },
+        "notConnected": "Nicht verbunden",
         "pasteToken": "Fügen Sie Ihr API-Token ein",
         "placeholders": {
           "endpointUrl": "https://api.example.com/v1",
@@ -13913,7 +13921,8 @@ export const resources = {
         "providerUid": "Benutzername / ID (optional)",
         "savedMessage": "{{name}} wurde gespeichert.",
         "secret": "Geheim",
-        "unchanged": "Unverändert"
+        "unchanged": "Unverändert",
+        "waiting": "Warten…"
       },
       "language": {
         "description": "In der App-Oberfläche verwendete Sprache",
@@ -18711,6 +18720,7 @@ export const resources = {
         "reconnectAll": "Reconnectez-vous pour activer tous les services",
         "scopes": "Portées : {{scopes}}",
         "status": {
+          "active": "Connecté",
           "expired": "Expiré",
           "refreshFailed": "Échec du rafraîchissement",
           "revoked": "Révoqué"
@@ -18803,6 +18813,7 @@ export const resources = {
           "oauthStartFailed": "Échec du démarrage du flux d'autorisation.",
           "saveFailed": "Échec de l'enregistrement de la connexion."
         },
+        "notConnected": "Non connecté",
         "pasteToken": "Collez votre jeton API",
         "placeholders": {
           "endpointUrl": "https://api.example.com/v1",
@@ -18815,7 +18826,8 @@ export const resources = {
         "providerUid": "Nom d'utilisateur / ID (facultatif)",
         "savedMessage": "{{name}} a été enregistré.",
         "secret": "Secret",
-        "unchanged": "Inchangé"
+        "unchanged": "Inchangé",
+        "waiting": "En attente…"
       },
       "language": {
         "description": "Langue utilisée dans l'ensemble de l'interface de l'application",
@@ -23613,6 +23625,7 @@ export const resources = {
         "reconnectAll": "Reconecte para ativar todos os serviços",
         "scopes": "Escopos: {{scopes}}",
         "status": {
+          "active": "Conectado",
           "expired": "Expirado",
           "refreshFailed": "Falha ao renovar",
           "revoked": "Revogado"
@@ -23705,6 +23718,7 @@ export const resources = {
           "oauthStartFailed": "Falha ao iniciar o fluxo de autorização.",
           "saveFailed": "Falha ao salvar a conexão."
         },
+        "notConnected": "Não conectado",
         "pasteToken": "Cole seu token de API",
         "placeholders": {
           "endpointUrl": "https://api.example.com/v1",
@@ -23717,7 +23731,8 @@ export const resources = {
         "providerUid": "Nome de usuário / ID (opcional)",
         "savedMessage": "{{name}} foi salvo.",
         "secret": "Secreto",
-        "unchanged": "Sem alterações"
+        "unchanged": "Sem alterações",
+        "waiting": "Aguardando…"
       },
       "language": {
         "description": "Idioma usado em toda a interface do app",
@@ -28515,6 +28530,7 @@ export const resources = {
         "reconnectAll": "再接続してすべてのサービスを有効にする",
         "scopes": "スコープ: {{scopes}}",
         "status": {
+          "active": "接続済み",
           "expired": "期限切れ",
           "refreshFailed": "更新に失敗しました",
           "revoked": "取り消し済み"
@@ -28607,6 +28623,7 @@ export const resources = {
           "oauthStartFailed": "認証フローの開始に失敗しました。",
           "saveFailed": "接続の保存に失敗しました。"
         },
+        "notConnected": "未接続",
         "pasteToken": "APIトークンを貼り付けてください",
         "placeholders": {
           "endpointUrl": "https://api.example.com/v1",
@@ -28619,7 +28636,8 @@ export const resources = {
         "providerUid": "ユーザー名／ID（任意）",
         "savedMessage": "{{name}}を保存しました。",
         "secret": "シークレット",
-        "unchanged": "変更なし"
+        "unchanged": "変更なし",
+        "waiting": "待機中…"
       },
       "language": {
         "description": "アプリ全体のインターフェースで使用する言語",
@@ -33417,6 +33435,7 @@ export const resources = {
         "reconnectAll": "重新连接以启用所有服务",
         "scopes": "权限范围：{{scopes}}",
         "status": {
+          "active": "已连接",
           "expired": "已过期",
           "refreshFailed": "刷新失败",
           "revoked": "已撤销"
@@ -33509,6 +33528,7 @@ export const resources = {
           "oauthStartFailed": "启动授权流程失败。",
           "saveFailed": "保存连接失败。"
         },
+        "notConnected": "未连接",
         "pasteToken": "粘贴你的 API 令牌",
         "placeholders": {
           "endpointUrl": "https://api.example.com/v1",
@@ -33521,7 +33541,8 @@ export const resources = {
         "providerUid": "用户名 / ID（可选）",
         "savedMessage": "{{name}} 已保存。",
         "secret": "密文",
-        "unchanged": "未更改"
+        "unchanged": "未更改",
+        "waiting": "等待中…"
       },
       "language": {
         "description": "整个应用界面所使用的语言",
@@ -38319,6 +38340,7 @@ export const resources = {
         "reconnectAll": "모든 서비스를 사용하려면 다시 연결하세요",
         "scopes": "범위: {{scopes}}",
         "status": {
+          "active": "연결됨",
           "expired": "만료됨",
           "refreshFailed": "새로고침 실패",
           "revoked": "취소됨"
@@ -38411,6 +38433,7 @@ export const resources = {
           "oauthStartFailed": "인증 절차 시작 실패.",
           "saveFailed": "연결 저장 실패."
         },
+        "notConnected": "연결되지 않음",
         "pasteToken": "API 토큰을 붙여넣으세요",
         "placeholders": {
           "endpointUrl": "https://api.example.com/v1",
@@ -38423,7 +38446,8 @@ export const resources = {
         "providerUid": "사용자 이름 / ID (선택사항)",
         "savedMessage": "{{name}}이(가) 저장되었습니다.",
         "secret": "비밀 값",
-        "unchanged": "변경 없음"
+        "unchanged": "변경 없음",
+        "waiting": "대기 중…"
       },
       "language": {
         "description": "앱 인터페이스 전반에서 사용되는 언어",
@@ -43221,6 +43245,7 @@ export const resources = {
         "reconnectAll": "Riconnetti per abilitare tutti i servizi",
         "scopes": "Ambiti: {{scopes}}",
         "status": {
+          "active": "Connesso",
           "expired": "Scaduto",
           "refreshFailed": "Aggiornamento non riuscito",
           "revoked": "Revocato"
@@ -43313,6 +43338,7 @@ export const resources = {
           "oauthStartFailed": "Impossibile avviare il flusso di autorizzazione.",
           "saveFailed": "Impossibile salvare la connessione."
         },
+        "notConnected": "Non connesso",
         "pasteToken": "Incolla il tuo token API",
         "placeholders": {
           "endpointUrl": "https://api.example.com/v1",
@@ -43325,7 +43351,8 @@ export const resources = {
         "providerUid": "Nome utente / ID (opzionale)",
         "savedMessage": "{{name}} è stato salvato.",
         "secret": "Segreto",
-        "unchanged": "Invariato"
+        "unchanged": "Invariato",
+        "waiting": "In attesa…"
       },
       "language": {
         "description": "Lingua usata nell'interfaccia dell'app",
@@ -48123,6 +48150,7 @@ export const resources = {
         "reconnectAll": "सभी सेवाएँ सक्षम करने के लिए फिर से कनेक्ट करें",
         "scopes": "स्कोप: {{scopes}}",
         "status": {
+          "active": "कनेक्ट हो गया",
           "expired": "समाप्त",
           "refreshFailed": "रीफ़्रेश विफल",
           "revoked": "रद्द किया गया"
@@ -48215,6 +48243,7 @@ export const resources = {
           "oauthStartFailed": "प्राधिकरण फ़्लो शुरू करना विफल।",
           "saveFailed": "कनेक्शन सहेजना विफल।"
         },
+        "notConnected": "कनेक्ट नहीं है",
         "pasteToken": "अपना API टोकन पेस्ट करें",
         "placeholders": {
           "endpointUrl": "https://api.example.com/v1",
@@ -48227,7 +48256,8 @@ export const resources = {
         "providerUid": "यूज़रनेम / ID (वैकल्पिक)",
         "savedMessage": "{{name}} सहेज दिया गया है।",
         "secret": "गुप्त",
-        "unchanged": "अपरिवर्तित"
+        "unchanged": "अपरिवर्तित",
+        "waiting": "प्रतीक्षा में…"
       },
       "language": {
         "description": "ऐप इंटरफ़ेस में उपयोग की जाने वाली भाषा",

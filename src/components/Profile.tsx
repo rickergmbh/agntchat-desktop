@@ -3701,7 +3701,7 @@ function ProviderRow({
             </p>
           ) : (
             <p className="text-xs text-muted-foreground truncate mt-0.5">
-              {provider.description || "Not connected"}
+              {provider.description || t("integrations.notConnected")}
             </p>
           )}
         </div>
@@ -3710,7 +3710,7 @@ function ProviderRow({
           {isConnecting ? (
             <Button variant="outline" size="sm" disabled>
               <Loader2 className="w-3.5 h-3.5 animate-spin" />
-              Waiting...
+              {t("integrations.waiting")}
             </Button>
           ) : isConnected ? (
             <>
@@ -3729,18 +3729,18 @@ function ProviderRow({
                 onClick={onDisconnect}
                 className="text-muted-foreground hover:text-destructive"
               >
-                Disconnect
+                {t("common:disconnect")}
               </Button>
             </>
           ) : provider.type === "oauth2" ? (
             <Button variant="outline" size="sm" onClick={onConnectOAuth}>
               <ExternalLink className="w-3.5 h-3.5" />
-              Connect
+              {t("common:connect")}
             </Button>
           ) : (
             <Button variant="outline" size="sm" onClick={onConnectToken}>
               <Key className="w-3.5 h-3.5" />
-              Connect
+              {t("common:connect")}
             </Button>
           )}
         </div>
@@ -3779,6 +3779,7 @@ function GoogleServicesDetail({
   credential: api.UserCredential;
   onReconnect: () => void;
 }) {
+  const { t } = useTranslation("settings");
   const scopeStr = credential.scopes.join(" ");
   const services = GOOGLE_SERVICES.map((svc) => ({
     ...svc,
@@ -3816,7 +3817,7 @@ function GoogleServicesDetail({
           className="flex items-center gap-1 text-[11px] text-primary hover:underline cursor-pointer"
         >
           <RefreshCw className="w-3 h-3" />
-          Reconnect to enable all services
+          {t("connections.reconnectAll")}
         </button>
       )}
     </div>
