@@ -47,6 +47,7 @@ import {
   TONES,
   SPECIALTIES_BY_ROLE,
   buildSoulMd,
+  specialtySlug,
   specialtyToCapability,
   type AgentType,
   type ToneKey,
@@ -404,8 +405,15 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
       setCustomSpecialties(p.specialties.filter((s) => !options.includes(s)));
       setTone(p.tone);
       setCustomTone(null);
-      setDescription(p.description);
-      setCustomInstructions(p.instructions);
+      // Prefill in the user's language — the server preset carries English
+      // canonical text as the fallback. Both fields stay fully editable, so
+      // whatever the user keeps (or rewrites) is what lands on the agent.
+      setDescription(
+        t(`create.presets.${p.id}.description`, { defaultValue: p.description })
+      );
+      setCustomInstructions(
+        t(`create.presets.${p.id}.instructions`, { defaultValue: p.instructions })
+      );
       setSelectedTools(p.tools ?? []);
       // Preset default model (only meaningful on the claude_cli backend the
       // wizard starts on; a later provider switch re-defaults it anyway).
@@ -1041,15 +1049,15 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
 
               {step === "role" && (
                 <div className="grid grid-cols-2 gap-2">
-                  {agentTypes.map((t) => {
-                    const Icon = TYPE_ICONS[t.id] ?? Bot;
-                    const selected = agentRole === t.id;
+                  {agentTypes.map((type) => {
+                    const Icon = TYPE_ICONS[type.id] ?? Bot;
+                    const selected = agentRole === type.id;
                     return (
                       <button
-                        key={t.id}
+                        key={type.id}
                         type="button"
                         onClick={() => {
-                          setAgentRole(t.id as AgentType);
+                          setAgentRole(type.id as AgentType);
                           setSpecialties([]);
                           setCustomSpecialties([]);
                         }}
@@ -1066,9 +1074,11 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                             selected ? "text-primary" : "text-text-muted"
                           )}
                         />
-                        <span className="text-xs font-medium">{t.label}</span>
+                        <span className="text-xs font-medium">
+                          {t(`roles.${type.id}.label`, { defaultValue: type.label })}
+                        </span>
                         <span className="text-[10px] leading-tight text-text-muted">
-                          {t.description}
+                          {t(`roles.${type.id}.desc`, { defaultValue: type.description })}
                         </span>
                       </button>
                     );
@@ -1080,14 +1090,14 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <div className="flex flex-wrap gap-1.5">
-                      {TONES.map((t) => {
-                        const selected = tone === t.key;
+                      {TONES.map((tn) => {
+                        const selected = tone === tn.key;
                         return (
                           <button
-                            key={t.key}
+                            key={tn.key}
                             type="button"
                             onClick={() => {
-                              setTone(t.key);
+                              setTone(tn.key);
                               setCustomTone(null);
                             }}
                             className={cn(
@@ -1097,7 +1107,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                                 : "border-border hover:bg-accent"
                             )}
                           >
-                            {t.label}
+                            {t(`tones.${tn.key}`, { defaultValue: tn.label })}
                           </button>
                         );
                       })}
@@ -1175,7 +1185,9 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
 
               {step === "specialties" && (
                 <div className="space-y-2">
-                  <p className="text-xs text-text-muted">{specialtyCatalog.label}</p>
+                  <p className="text-xs text-text-muted">
+                    {t(`create.specialtiesTitleByRole.${agentRole}`)}
+                  </p>
                   <div className="flex flex-wrap gap-1.5">
                     {specialtyCatalog.options.map((s) => {
                       const isOn = specialties.includes(s);
@@ -1191,7 +1203,9 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                               : "border-border hover:bg-accent"
                           )}
                         >
-                          {s}
+                          {t(`create.specialtyOptions.${specialtySlug(s)}`, {
+                            defaultValue: s,
+                          })}
                         </button>
                       );
                     })}
@@ -1200,7 +1214,9 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                         key={s}
                         className="inline-flex items-center gap-1 rounded-full border border-primary bg-primary px-3 py-1 text-xs text-primary-foreground"
                       >
-                        {s}
+                        {t(`create.specialtyOptions.${specialtySlug(s)}`, {
+                          defaultValue: s,
+                        })}
                         <button
                           type="button"
                           onClick={() => removeCustomSpecialty(s)}
@@ -1781,7 +1797,9 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                           {(tone || customTone) && (
                             <span className="rounded-full bg-accent px-2 py-0.5 text-[10px] text-accent-foreground">
                               {tone
-                                ? TONES.find((t) => t.key === tone)?.label
+                                ? t(`tones.${tone}`, {
+                                    defaultValue: TONES.find((tn) => tn.key === tone)?.label,
+                                  })
                                 : customTone}
                             </span>
                           )}
@@ -1790,7 +1808,9 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                               key={s}
                               className="rounded-full bg-accent px-2 py-0.5 text-[10px] text-accent-foreground"
                             >
-                              {s}
+                              {t(`create.specialtyOptions.${specialtySlug(s)}`, {
+                                defaultValue: s,
+                              })}
                             </span>
                           ))}
                           {allSpecialties.length > 4 && (

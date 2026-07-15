@@ -19,6 +19,18 @@ export const TONES = [
 
 export type ToneKey = (typeof TONES)[number]["key"];
 
+/** Maps a canonical specialty option ("QA & Testing") to its i18n key slug
+ *  ("qaTesting") under create.specialtyOptions.*. Display-only — the
+ *  canonical English value is what's stored and fed to the soul builder. */
+export function specialtySlug(value: string): string {
+  const words = value.replace(/[^A-Za-z0-9 ]+/g, " ").trim().split(/\s+/);
+  return words
+    .map((w, i) =>
+      i === 0 ? w.toLowerCase() : w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()
+    )
+    .join("");
+}
+
 export const SPECIALTIES_BY_ROLE: Record<
   AgentType,
   { label: string; options: string[] }
