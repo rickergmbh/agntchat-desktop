@@ -1687,19 +1687,19 @@ function FeatureFlagsTab() {
         stays off for everyone else. Changes take effect immediately — no
         redeploy.
       </p>
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+      <div className="divide-y divide-border rounded-lg border border-border">
         {flags.map((flag) => (
-          <FeatureFlagCard key={flag.key} flag={flag} onChanged={onFlagChanged} setError={setError} />
+          <FeatureFlagRow key={flag.key} flag={flag} onChanged={onFlagChanged} setError={setError} />
         ))}
         {flags.length === 0 && (
-          <p className="py-8 text-sm text-muted-foreground">No feature flags defined.</p>
+          <p className="px-4 py-8 text-sm text-muted-foreground">No feature flags defined.</p>
         )}
       </div>
     </div>
   );
 }
 
-function FeatureFlagCard({
+function FeatureFlagRow({
   flag,
   onChanged,
   setError,
@@ -1709,6 +1709,7 @@ function FeatureFlagCard({
   setError: (msg: string | null) => void;
 }) {
   const [busy, setBusy] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const [search, setSearch] = useState("");
   const [results, setResults] = useState<api.AdminUser[]>([]);
   const [searching, setSearching] = useState(false);
@@ -1761,138 +1762,130 @@ function FeatureFlagCard({
   }, [search, flag.allowedParticipantIds]);
 
   return (
-    <div
-      className={cn(
-        // NOTE: no `overflow-hidden` here — the user-search dropdown in the
-        // allowlist section is absolutely positioned and would be clipped by
-        // the card. The header rounds its own top corners instead.
-        "flex flex-col rounded-xl border bg-card shadow-sm transition-colors",
-        flag.enabled ? "border-primary/40" : "border-border"
-      )}
-    >
-      {/* Card header — a tinted strip so each flag reads as its own object,
-          with the on/off state mirrored in both the strip and the badge. */}
-      <div
-        className={cn(
-          "flex items-start justify-between gap-4 rounded-t-xl border-b p-4",
-          flag.enabled ? "border-primary/30 bg-primary/5" : "border-border bg-muted/30"
-        )}
-      >
-        <div className="min-w-0">
-          <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-sm font-semibold">
-            {flag.key}
-          </code>
+    // NOTE: no `overflow-hidden` anywhere in this row — the user-search
+    // dropdown in the allowlist panel is absolutely positioned and would be
+    // clipped by it.
+    <div>
+      <div className="flex items-center gap-3 px-3 py-2.5">
+        <button
+          type="button"
+          onClick={() => setExpanded((e) => !e)}
+          aria-expanded={expanded}
+          aria-label={`${flag.key} early access`}
+          className="flex min-w-0 flex-1 items-center gap-2 text-left"
+        >
+          <ChevronRight
+            className={cn(
+              "h-4 w-4 shrink-0 text-muted-foreground transition-transform",
+              expanded && "rotate-90"
+            )}
+          />
+          <code className="shrink-0 font-mono text-sm font-semibold">{flag.key}</code>
           {flag.description && (
-            <p className="mt-2 text-xs text-muted-foreground">{flag.description}</p>
+            <span className="truncate text-xs text-muted-foreground">{flag.description}</span>
           )}
-        </div>
-        <div className="flex shrink-0 flex-col items-end gap-2">
-          <div className="flex items-center gap-2">
-            {busy && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
-            <Switch
-              checked={flag.enabled}
-              disabled={busy}
-              onCheckedChange={(v) => void run(() => api.setFeatureFlagEnabled(flag.key, v))}
-            />
-          </div>
-          <Badge
-            variant={flag.enabled ? "default" : flag.allowed.length > 0 ? "outline" : "secondary"}
-          >
-            {flag.enabled
-              ? "On for everyone"
-              : flag.allowed.length > 0
-                ? `On for ${flag.allowed.length} ${flag.allowed.length === 1 ? "person" : "people"}`
-                : "Off"}
+        </button>
+        {!flag.enabled && flag.allowed.length > 0 && (
+          <Badge variant="outline" className="shrink-0">
+            On for {flag.allowed.length} {flag.allowed.length === 1 ? "person" : "people"}
           </Badge>
-        </div>
+        )}
+        {busy && <Loader2 className="h-4 w-4 shrink-0 animate-spin text-muted-foreground" />}
+        <Switch
+          checked={flag.enabled}
+          disabled={busy}
+          onCheckedChange={(v) => void run(() => api.setFeatureFlagEnabled(flag.key, v))}
+        />
       </div>
 
       {/* Per-user allowlist — early-access cohort, used when the global flag is
           off. Members see the feature even while everyone else doesn't. */}
-      <div className="p-4">
-        <Label className="text-xs text-muted-foreground">
-          Early access {flag.enabled && "(superseded while On for everyone)"}
-        </Label>
+      {expanded && (
+        <div className="px-3 pb-3 pl-9">
+          <Label className="text-xs text-muted-foreground">
+            Early access {flag.enabled && "(superseded while On for everyone)"}
+          </Label>
 
-        {flag.allowed.length > 0 ? (
-          <div className="mt-2 flex flex-wrap gap-1.5">
-            {flag.allowed.map((u) => (
-              <span
-                key={u.id}
-                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/40 py-0.5 pl-1 pr-1.5 text-xs"
-              >
-                <Avatar className="h-4 w-4">
-                  {u.avatarUrl ? (
-                    <AvatarImage src={u.avatarUrl} alt={u.displayName} displaySize={16} />
-                  ) : null}
-                  <AvatarFallback className="text-[8px]">
-                    {initials(u.displayName, u.email)}
-                  </AvatarFallback>
-                </Avatar>
-                <span className="max-w-[140px] truncate">{u.displayName}</span>
-                <button
-                  type="button"
-                  disabled={busy}
-                  onClick={() => void run(() => api.revokeFeatureFlag(flag.key, u.id))}
-                  className="text-muted-foreground hover:text-destructive"
-                  aria-label={`Remove ${u.displayName}`}
+          {flag.allowed.length > 0 ? (
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {flag.allowed.map((u) => (
+                <span
+                  key={u.id}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/40 py-0.5 pl-1 pr-1.5 text-xs"
                 >
-                  <X className="h-3 w-3" />
-                </button>
-              </span>
-            ))}
-          </div>
-        ) : (
-          <p className="mt-1 text-xs text-muted-foreground">No users in early access.</p>
-        )}
-
-        <div className="relative mt-2 max-w-sm">
-          <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            disabled={flag.enabled}
-            placeholder={
-              flag.enabled ? "Turn off to scope to specific users…" : "Add a user by name or email…"
-            }
-            className="pl-8"
-          />
-          {!flag.enabled && (searching || results.length > 0) && search.trim().length >= 2 && (
-            <div className="absolute z-10 mt-1 w-full overflow-hidden rounded-md border border-border bg-popover shadow-md">
-              {searching ? (
-                <div className="px-3 py-2 text-xs text-muted-foreground">Searching…</div>
-              ) : (
-                results.slice(0, 6).map((u) => (
+                  <Avatar className="h-4 w-4">
+                    {u.avatarUrl ? (
+                      <AvatarImage src={u.avatarUrl} alt={u.displayName} displaySize={16} />
+                    ) : null}
+                    <AvatarFallback className="text-[8px]">
+                      {initials(u.displayName, u.email)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="max-w-[140px] truncate">{u.displayName}</span>
                   <button
                     type="button"
-                    key={u.id}
                     disabled={busy}
-                    onClick={() => {
-                      setSearch("");
-                      setResults([]);
-                      void run(() => api.grantFeatureFlag(flag.key, u.id));
-                    }}
-                    className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-muted"
+                    onClick={() => void run(() => api.revokeFeatureFlag(flag.key, u.id))}
+                    className="text-muted-foreground hover:text-destructive"
+                    aria-label={`Remove ${u.displayName}`}
                   >
-                    <Avatar className="h-6 w-6">
-                      {u.avatarUrl ? (
-                        <AvatarImage src={u.avatarUrl} alt={u.displayName} displaySize={24} />
-                      ) : null}
-                      <AvatarFallback className="text-[9px]">
-                        {initials(u.displayName, u.email)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="min-w-0">
-                      <div className="truncate">{u.displayName}</div>
-                      <div className="truncate text-xs text-muted-foreground">{u.email}</div>
-                    </div>
+                    <X className="h-3 w-3" />
                   </button>
-                ))
-              )}
+                </span>
+              ))}
             </div>
+          ) : (
+            <p className="mt-1 text-xs text-muted-foreground">No users in early access.</p>
           )}
+
+          <div className="relative mt-2 max-w-sm">
+            <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              disabled={flag.enabled}
+              placeholder={
+                flag.enabled ? "Turn off to scope to specific users…" : "Add a user by name or email…"
+              }
+              className="pl-8"
+            />
+            {!flag.enabled && (searching || results.length > 0) && search.trim().length >= 2 && (
+              <div className="absolute z-10 mt-1 w-full overflow-hidden rounded-md border border-border bg-popover shadow-md">
+                {searching ? (
+                  <div className="px-3 py-2 text-xs text-muted-foreground">Searching…</div>
+                ) : (
+                  results.slice(0, 6).map((u) => (
+                    <button
+                      type="button"
+                      key={u.id}
+                      disabled={busy}
+                      onClick={() => {
+                        setSearch("");
+                        setResults([]);
+                        void run(() => api.grantFeatureFlag(flag.key, u.id));
+                      }}
+                      className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-muted"
+                    >
+                      <Avatar className="h-6 w-6">
+                        {u.avatarUrl ? (
+                          <AvatarImage src={u.avatarUrl} alt={u.displayName} displaySize={24} />
+                        ) : null}
+                        <AvatarFallback className="text-[9px]">
+                          {initials(u.displayName, u.email)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="min-w-0">
+                        <div className="truncate">{u.displayName}</div>
+                        <div className="truncate text-xs text-muted-foreground">{u.email}</div>
+                      </div>
+                    </button>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
