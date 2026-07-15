@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
+  AlertTriangle,
   Ban,
   Check,
   ChevronDown,
@@ -58,9 +59,15 @@ function firstLine(text: string): string {
 }
 
 /** Visual tone of a task state; drives only the status glyph (rule 2). */
-type TaskTone = "pending" | "working" | "success" | "failure" | "neutral";
+export type TaskTone =
+  | "pending"
+  | "working"
+  | "success"
+  | "failure"
+  | "warning"
+  | "neutral";
 
-function StatusGlyph({ tone }: { tone: TaskTone }) {
+export function StatusGlyph({ tone }: { tone: TaskTone }) {
   switch (tone) {
     case "working":
       return (
@@ -77,6 +84,10 @@ function StatusGlyph({ tone }: { tone: TaskTone }) {
           strokeWidth={2.5}
         />
       );
+    case "warning":
+      return (
+        <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-warning" />
+      );
     case "neutral":
       return <Ban className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />;
     case "pending":
@@ -86,21 +97,24 @@ function StatusGlyph({ tone }: { tone: TaskTone }) {
   }
 }
 
-/** Shared first row of every task surface: glyph · label · context · meta. */
-function StatusLine({
+/** Shared first row of every task surface: glyph · label · context · meta.
+ *  Pass `glyph` to override the tone glyph (e.g. lifecycle icons). */
+export function StatusLine({
   tone,
+  glyph,
   label,
   context,
   end,
 }: {
-  tone: TaskTone;
+  tone?: TaskTone;
+  glyph?: React.ReactNode;
   label: string;
   context?: string;
   end?: React.ReactNode;
 }) {
   return (
     <div className="flex items-center gap-2">
-      <StatusGlyph tone={tone} />
+      {glyph ?? (tone ? <StatusGlyph tone={tone} /> : null)}
       <span className="shrink-0 text-xs font-medium text-foreground">
         {label}
       </span>

@@ -1,22 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
+  AlertTriangle,
   ArrowRightLeft,
-  Ban,
-  Bot,
-  CheckCircle,
   ChevronDown,
   ChevronRight,
-  Clock,
   Copy,
   Check as CheckIcon,
   Eye,
   Forward,
-  Loader2,
-  PlayCircle,
-  XCircle,
   Zap,
-  AlertTriangle,
   MessageSquarePlus,
 } from "lucide-react";
 import { cn, formatClockTime } from "../../lib/utils";
@@ -28,11 +21,17 @@ import { useChatStore } from "../../stores/chatStore";
 import { useAgentStore } from "../../stores/agentStore";
 import { MarkdownContent } from "./MarkdownContent";
 import { StopTaskButton } from "./StopTaskButton";
+import { StatusGlyph, StatusLine, type TaskTone } from "./TaskMessages";
 
 /**
  * Renders task-lifecycle status messages that the backend emits as
  * `StatusUpdate` / `status_update` with the real data in JSON inside
  * `message.content`. Without this renderer those land as raw JSON text.
+ *
+ * Visual language follows the "quiet card" rules documented in
+ * TaskMessages.tsx: one neutral surface for every state, status color
+ * confined to the small glyph, fixed anatomy, sentence case, one motion
+ * source.
  *
  * Payloads in the wild use different field names for the assignee depending
  * on the lifecycle event — `agent_name` / `agent_avatar_url` for working /
@@ -164,46 +163,33 @@ function resolveAgentName(payload: StatusPayload, message: Message): string {
   );
 }
 
-function resolveAvatarUrl(
-  payload: StatusPayload,
-  message: Message
-): string | undefined {
+/** Shared neutral container for every status card (quiet-card rule 1). */
+function Card({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    payload.agent_avatar_url ?? payload.assignee_avatar_url ?? message.sender?.avatarUrl
+    <div className="my-2 w-full">
+      <div
+        className={cn(
+          "overflow-hidden rounded-lg border border-border bg-card",
+          className
+        )}
+      >
+        {children}
+      </div>
+    </div>
   );
 }
 
-function AgentAvatar({
-  name,
-  avatarUrl,
-  size = 32,
-}: {
-  name: string;
-  avatarUrl?: string;
-  size?: number;
-}) {
-  const initials = name
-    .split(/\s+/)
-    .map((w) => w[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-  if (avatarUrl) {
-    return (
-      <img
-        src={avatarUrl}
-        alt={name}
-        className="rounded-full object-cover"
-        style={{ width: size, height: size }}
-      />
-    );
-  }
+/** Hairline footer strip inside a card body (task id, work-room link). */
+function CardFooter({ children }: { children: React.ReactNode }) {
   return (
-    <div
-      className="flex items-center justify-center rounded-full bg-primary/20 text-[10px] font-semibold text-primary"
-      style={{ width: size, height: size }}
-    >
-      {initials}
+    <div className="mt-2 flex items-center justify-between gap-2 border-t border-border pt-2">
+      {children}
     </div>
   );
 }
@@ -220,17 +206,16 @@ function CopyableTaskId({ taskId }: { taskId: string }) {
     <button
       onClick={handleCopy}
       type="button"
-      className="mt-2 flex items-center gap-1.5 border-t border-border pt-2 text-left"
+      className="flex items-center gap-1.5 text-left"
       title={t("card.copyTaskId")}
     >
-      <span className="text-[10px] text-muted-foreground/60">ID</span>
-      <span className="font-mono text-[10px] text-muted-foreground/60">
-        {taskId.slice(0, 8)}...
+      <span className="font-mono text-xs text-muted-foreground">
+        {taskId.slice(0, 8)}…
       </span>
       {copied ? (
-        <CheckIcon className="h-2.5 w-2.5 text-success" />
+        <CheckIcon className="h-3 w-3 text-success" />
       ) : (
-        <Copy className="h-2.5 w-2.5 text-muted-foreground/40" />
+        <Copy className="h-3 w-3 text-muted-foreground" />
       )}
     </button>
   );
@@ -259,18 +244,22 @@ function LiveProgressTimeline({ steps }: { steps: string[] }) {
   const currentStep = steps[steps.length - 1];
 
   return (
-    <div className="mt-3 space-y-1.5 border-t border-border pt-3">
+    <div className="mt-2 space-y-1 border-t border-border pt-2">
       {pastSteps.map((step, i) => (
         <div key={i} className="flex items-center gap-2">
-          <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-muted-foreground/30" />
-          <span className="text-[11px] text-muted-foreground/50">{step}</span>
+          <span className="h-1 w-1 shrink-0 rounded-full bg-border-strong" />
+          <span className="min-w-0 truncate text-xs text-muted-foreground">
+            {step}
+          </span>
         </div>
       ))}
       <div className="flex items-center gap-2">
-        <div className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-primary" />
-        <span className="text-[11px] font-medium text-foreground">{currentStep}</span>
+        <span className="h-1 w-1 shrink-0 rounded-full bg-primary" />
+        <span className="min-w-0 flex-1 truncate text-xs font-medium text-foreground">
+          {currentStep}
+        </span>
         {elapsed > 0 && (
-          <span className="ml-auto text-[10px] tabular-nums text-muted-foreground/50">
+          <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
             {formatDuration(elapsed)}
           </span>
         )}
@@ -290,38 +279,118 @@ function WorkingCard({
 }) {
   const { t } = useTranslation("tasks");
   const agentName = resolveAgentName(payload, message);
-  const avatarUrl = resolveAvatarUrl(payload, message);
   const title = payload.title || t("untitled");
 
   return (
-    <div className="my-2 w-full">
-      <div className="overflow-hidden rounded-xl border border-border bg-card">
-        <div className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <AgentAvatar name={agentName} avatarUrl={avatarUrl} size={36} />
-              <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 animate-pulse rounded-full border-2 border-card bg-primary" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold text-foreground">{agentName}</p>
-              <p className="text-xs text-muted-foreground">{t("card.workingOnThis")}</p>
-            </div>
-            <Loader2 className="h-4 w-4 animate-spin text-primary" />
-            {payload.task_id && (
-              <StopTaskButton taskId={payload.task_id} title={title} />
-            )}
-          </div>
-
-          <p className="mt-3 text-sm font-semibold leading-snug text-foreground">
-            {title}
-          </p>
-
-          <LiveProgressTimeline steps={recentSteps} />
-
-          {payload.task_id && <CopyableTaskId taskId={payload.task_id} />}
-        </div>
+    <Card>
+      <div className="px-3 py-2.5">
+        <StatusLine
+          tone="working"
+          label={t("status.in_progress")}
+          context={agentName}
+          end={
+            payload.task_id ? (
+              <StopTaskButton
+                taskId={payload.task_id}
+                title={title}
+                className="h-6 w-6"
+              />
+            ) : undefined
+          }
+        />
+        <p className="mt-1.5 text-sm font-medium leading-snug text-foreground">
+          {title}
+        </p>
+        <LiveProgressTimeline steps={recentSteps} />
+        {payload.task_id && (
+          <CardFooter>
+            <CopyableTaskId taskId={payload.task_id} />
+          </CardFooter>
+        )}
       </div>
-    </div>
+    </Card>
+  );
+}
+
+/** Collapsed/expanded result card shared by completion + failure states. */
+function ResultStatusCard({
+  tone,
+  label,
+  payload,
+  message,
+  body,
+}: {
+  tone: TaskTone;
+  label: string;
+  payload: StatusPayload;
+  message: Message;
+  /** Rendered under the title when expanded. */
+  body?: React.ReactNode;
+}) {
+  const { t } = useTranslation("tasks");
+  const [expanded, setExpanded] = useState(false);
+  const setView = useNavStore((s) => s.setView);
+  const selectTask = useTaskStore((s) => s.selectTask);
+  const fetchTask = useTaskStore((s) => s.fetchTask);
+  const agentName = resolveAgentName(payload, message);
+  const title = payload.title || t("untitled");
+
+  const header = (
+    <button
+      type="button"
+      onClick={() => setExpanded(!expanded)}
+      className="flex w-full items-center gap-2 px-3 py-2 text-left transition-colors hover:bg-surface-hover"
+    >
+      <StatusGlyph tone={tone} />
+      <span className="shrink-0 text-xs font-medium text-foreground">
+        {label}
+      </span>
+      <span className="min-w-0 flex-1 truncate text-xs text-muted-foreground">
+        {expanded ? agentName : `${title} · ${agentName}`}
+      </span>
+      {payload.duration_seconds != null && (
+        <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
+          {formatDuration(payload.duration_seconds)}
+        </span>
+      )}
+      {expanded ? (
+        <ChevronDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+      ) : (
+        <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+      )}
+    </button>
+  );
+
+  if (!expanded) return <Card>{header}</Card>;
+
+  return (
+    <Card>
+      {header}
+      <div className="border-t border-border px-3 py-2.5">
+        <p className="text-sm font-medium leading-snug text-foreground">
+          {title}
+        </p>
+        {body}
+        {payload.task_id && (
+          <CardFooter>
+            <CopyableTaskId taskId={payload.task_id} />
+            <button
+              type="button"
+              onClick={() => {
+                const id = payload.task_id!;
+                selectTask(id);
+                setView("tasks");
+                void fetchTask(id);
+              }}
+              className="flex shrink-0 items-center gap-1 text-xs font-medium text-primary hover:underline"
+            >
+              {t("card.viewFullDetails")}
+              <ChevronRight className="h-3 w-3" />
+            </button>
+          </CardFooter>
+        )}
+      </div>
+    </Card>
   );
 }
 
@@ -333,88 +402,20 @@ function CompletionCard({
   message: Message;
 }) {
   const { t } = useTranslation("tasks");
-  const [expanded, setExpanded] = useState(false);
-  const setView = useNavStore((s) => s.setView);
-  const selectTask = useTaskStore((s) => s.selectTask);
-  const fetchTask = useTaskStore((s) => s.fetchTask);
-  const agentName = resolveAgentName(payload, message);
-  const avatarUrl = resolveAvatarUrl(payload, message);
-  const title = payload.title || t("untitled");
-  const summary = payload.summary;
-
-  if (!expanded) {
-    return (
-      <div className="my-2 w-full">
-        <button
-          type="button"
-          onClick={() => setExpanded(true)}
-          className="flex w-full items-center gap-3 rounded-xl bg-success px-4 py-2.5 text-left transition-colors hover:bg-success/90"
-        >
-          <CheckCircle className="h-[18px] w-[18px] shrink-0 text-white" />
-          <div className="min-w-0 flex-1">
-            <span className="text-xs font-semibold text-white">{t("card.taskComplete")}</span>
-            <p className="mt-0.5 truncate text-xs text-white/75">
-              {title} · {agentName}
-            </p>
-          </div>
-          <ChevronRight className="h-4 w-4 shrink-0 text-white/50" />
-        </button>
-      </div>
-    );
-  }
-
   return (
-    <div className="my-2 w-full">
-      <div className="overflow-hidden rounded-xl border border-border bg-success/5">
-        <button
-          type="button"
-          onClick={() => setExpanded(false)}
-          className="flex w-full items-center gap-3 p-4 pb-0 text-left"
-        >
-          <AgentAvatar name={agentName} avatarUrl={avatarUrl} size={36} />
-          <div className="min-w-0 flex-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-success dark:text-success">
-              {t("card.taskComplete")}
-            </span>
-            <p className="text-xs text-muted-foreground">{agentName}</p>
+    <ResultStatusCard
+      tone="success"
+      label={t("lifecycle.task_complete")}
+      payload={payload}
+      message={message}
+      body={
+        payload.summary ? (
+          <div className="mt-2">
+            <MarkdownContent content={payload.summary} />
           </div>
-          <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground/50" />
-        </button>
-        <div className="px-4 pb-4">
-          <p className="mt-3 text-sm font-semibold leading-snug text-foreground">
-            {title}
-          </p>
-          {summary && (
-            <div className="mt-3 border-t border-success/10 pt-3">
-              <MarkdownContent content={summary} />
-            </div>
-          )}
-          {payload.duration_seconds != null && (
-            <div className="mt-2 flex items-center gap-1.5 text-[10px] text-muted-foreground/60">
-              <Clock className="h-3 w-3" />
-              <span>{t("card.completedIn", { duration: formatDuration(payload.duration_seconds) })}</span>
-            </div>
-          )}
-          {payload.task_id && <CopyableTaskId taskId={payload.task_id} />}
-
-          {payload.task_id && (
-            <button
-              type="button"
-              onClick={() => {
-                const id = payload.task_id!;
-                selectTask(id);
-                setView("tasks");
-                void fetchTask(id);
-              }}
-              className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-lg border border-border bg-background/50 py-2 text-xs font-medium text-primary transition-colors hover:bg-accent"
-            >
-              {t("card.viewFullDetails")}
-              <ChevronRight className="h-3.5 w-3.5" />
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
+        ) : undefined
+      }
+    />
   );
 }
 
@@ -426,73 +427,26 @@ function FailureCard({
   message: Message;
 }) {
   const { t } = useTranslation("tasks");
-  const [expanded, setExpanded] = useState(false);
-  const agentName = resolveAgentName(payload, message);
-  const avatarUrl = resolveAvatarUrl(payload, message);
-  const title = payload.title || t("untitled");
   const error = payload.error || payload.summary;
-
-  if (!expanded) {
-    return (
-      <div className="my-2 w-full">
-        <button
-          type="button"
-          onClick={() => setExpanded(true)}
-          className="flex w-full items-center gap-3 rounded-xl border border-destructive/20 border-l-4 border-l-destructive bg-destructive/5 px-4 py-2.5 text-left transition-colors hover:bg-destructive/10"
-        >
-          <XCircle className="h-[18px] w-[18px] shrink-0 text-destructive" />
-          <div className="min-w-0 flex-1">
-            <span className="text-xs font-semibold text-destructive dark:text-destructive">
-              {t("card.taskFailed")}
-            </span>
-            <p className="mt-0.5 truncate text-xs text-muted-foreground">
-              {title} · {agentName}
-            </p>
-          </div>
-          <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground/50" />
-        </button>
-      </div>
-    );
-  }
-
   return (
-    <div className="my-2 w-full">
-      <div className="overflow-hidden rounded-xl border border-destructive/20 border-l-4 border-l-destructive bg-destructive/5">
-        <button
-          type="button"
-          onClick={() => setExpanded(false)}
-          className="flex w-full items-center gap-3 p-4 pb-0 text-left"
-        >
-          <AgentAvatar name={agentName} avatarUrl={avatarUrl} size={36} />
-          <div className="min-w-0 flex-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-destructive dark:text-destructive">
-              {t("card.taskFailed")}
-            </span>
-            <p className="text-xs text-muted-foreground">{agentName}</p>
-          </div>
-          <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground/50" />
-        </button>
-        <div className="px-4 pb-4">
-          <p className="mt-3 text-sm font-semibold leading-snug text-foreground">
-            {title}
+    <ResultStatusCard
+      tone="failure"
+      label={t("lifecycle.task_failed")}
+      payload={payload}
+      message={message}
+      body={
+        error ? (
+          <p className="mt-2 text-xs leading-relaxed text-foreground">
+            {error}
           </p>
-          {error && (
-            <div className="mt-3 flex items-start gap-2 rounded-lg border border-destructive/10 bg-destructive/5 p-3">
-              <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-destructive" />
-              <p className="text-xs leading-relaxed text-destructive dark:text-destructive">
-                {error}
-              </p>
-            </div>
-          )}
-          {payload.task_id && <CopyableTaskId taskId={payload.task_id} />}
-        </div>
-      </div>
-    </div>
+        ) : undefined
+      }
+    />
   );
 }
 
-/** Slim amber banner shown when a task was created successfully but the
- *  capability handshake flagged something. */
+/** Shown when a task was created successfully but the capability
+ *  handshake flagged something. */
 function CapabilityWarningCard({
   payload,
   message,
@@ -502,7 +456,6 @@ function CapabilityWarningCard({
 }) {
   const { t } = useTranslation("tasks");
   const agentName = resolveAgentName(payload, message);
-  const avatarUrl = resolveAvatarUrl(payload, message);
   const headline =
     payload.kind === "snapshot_error"
       ? t("capability.snapshotError")
@@ -531,37 +484,32 @@ function CapabilityWarningCard({
       : undefined;
 
   return (
-    <div className="my-2 w-full">
-      <div className="flex w-full items-start gap-3 rounded-xl border border-warning/40 border-l-4 border-l-warning bg-warning/5 px-4 py-2.5">
-        <AgentAvatar name={agentName} avatarUrl={avatarUrl} size={20} />
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-1.5">
-            <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-warning" />
-            <span className="text-xs font-semibold text-warning">{headline}</span>
-          </div>
-          {payload.title && (
-            <p className="mt-0.5 truncate text-xs text-muted-foreground">
-              {agentName} &middot; {payload.title}
-            </p>
-          )}
-          {detail && (
-            <p className="mt-1 text-xs leading-relaxed text-foreground">{detail}</p>
-          )}
-          {payload.required_tools && payload.required_tools.length > 0 && (
-            <p className="mt-1 truncate font-mono text-[10px] text-muted-foreground/80">
-              {t("capability.required", { tools: payload.required_tools.join(", ") })}
-            </p>
-          )}
-        </div>
+    <Card>
+      <div className="px-3 py-2.5">
+        <StatusLine
+          tone="warning"
+          label={headline}
+          context={
+            payload.title ? `${agentName} · ${payload.title}` : agentName
+          }
+        />
+        {detail && (
+          <p className="mt-1.5 text-xs leading-relaxed text-foreground">
+            {detail}
+          </p>
+        )}
+        {payload.required_tools && payload.required_tools.length > 0 && (
+          <p className="mt-1 truncate font-mono text-xs text-muted-foreground">
+            {t("capability.required", {
+              tools: payload.required_tools.join(", "),
+            })}
+          </p>
+        )}
       </div>
-    </div>
+    </Card>
   );
 }
 
-/** Slim banner shown when an agent's `create_task` MCP call was rejected
- *  (misroute / bad assignee / unauthorized). No `task_id` exists since the
- *  task was never persisted — without this card the only signal is the
- *  LLM's narration, which often glosses over the failure. */
 /** Server-side error_kind → user-facing label + next-step hint (as tasks:
  *  namespace keys, resolved with t() at render time). Source of truth for
  *  the kinds is `Agentchat.Tasks.FailureArtifact.classify/1`.
@@ -584,6 +532,10 @@ function humanizeRequestFailure(kind?: string): { labelKey: string; hintKey?: st
   }
 }
 
+/** Shown when an agent's `create_task` MCP call was rejected (misroute /
+ *  bad assignee / unauthorized). No `task_id` exists since the task was
+ *  never persisted — without this card the only signal is the LLM's
+ *  narration, which often glosses over the failure. */
 function RequestFailedCard({
   payload,
   message,
@@ -593,7 +545,6 @@ function RequestFailedCard({
 }) {
   const { t } = useTranslation("tasks");
   const agentName = resolveAgentName(payload, message);
-  const avatarUrl = resolveAvatarUrl(payload, message);
   const error = payload.error;
   const { labelKey, hintKey } = humanizeRequestFailure(payload.error_kind);
   const hint = hintKey ? t(hintKey) : undefined;
@@ -606,38 +557,39 @@ function RequestFailedCard({
       : null;
 
   return (
-    <div className="my-2 w-full">
-      <div className="flex w-full items-start gap-3 rounded-xl border border-destructive/20 border-l-4 border-l-destructive bg-destructive/5 px-4 py-2.5">
-        <AgentAvatar name={agentName} avatarUrl={avatarUrl} size={20} />
-        <div className="min-w-0 flex-1 space-y-0.5">
-          <div className="flex items-center gap-1.5">
+    <Card>
+      <div className="px-3 py-2.5">
+        <StatusLine
+          glyph={
             <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-destructive" />
-            <span className="text-xs font-semibold text-destructive">
-              {t(labelKey)}
-            </span>
-          </div>
-          <p className="text-xs text-muted-foreground">
-            {t("requestFailed.couldntCreate", { name: agentName })}
+          }
+          label={t(labelKey)}
+          context={t("requestFailed.couldntCreate", { name: agentName })}
+        />
+        {payload.attempted_title && (
+          <p className="mt-1.5 line-clamp-2 text-sm font-medium leading-snug text-foreground">
+            "{payload.attempted_title}"
           </p>
-          {payload.attempted_title && (
-            <p className="line-clamp-2 text-xs font-medium text-foreground">
-              "{payload.attempted_title}"
-            </p>
-          )}
-          {hint && (
-            <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{hint}</p>
-          )}
-          {error && !hint && (
-            <p className="mt-1 text-xs leading-relaxed text-foreground">{error}</p>
-          )}
-          {resolvedAssignees && (
-            <p className="mt-1 truncate text-xs text-muted-foreground/80">
-              {t("requestFailed.triedToAssign", { names: resolvedAssignees.join(", ") })}
-            </p>
-          )}
-        </div>
+        )}
+        {hint && (
+          <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+            {hint}
+          </p>
+        )}
+        {error && !hint && (
+          <p className="mt-1 text-xs leading-relaxed text-foreground">
+            {error}
+          </p>
+        )}
+        {resolvedAssignees && (
+          <p className="mt-1 truncate text-xs text-muted-foreground">
+            {t("requestFailed.triedToAssign", {
+              names: resolvedAssignees.join(", "),
+            })}
+          </p>
+        )}
       </div>
-    </div>
+    </Card>
   );
 }
 
@@ -652,19 +604,17 @@ function CancelledCard({
   const agentName = resolveAgentName(payload, message);
   const title = payload.title || t("untitled");
   return (
-    <div className="my-2 w-full">
-      <div className="flex w-full items-center gap-3 rounded-xl border border-muted-foreground/20 border-l-4 border-l-muted-foreground bg-muted/50 px-4 py-2.5">
-        <Ban className="h-[18px] w-[18px] shrink-0 text-muted-foreground" />
-        <div className="min-w-0 flex-1">
-          <span className="text-xs font-semibold text-muted-foreground">
-            {t("card.taskCancelled")}
-          </span>
-          <p className="mt-0.5 truncate text-xs text-muted-foreground/70">
-            {title} · {agentName}
-          </p>
-        </div>
+    <Card>
+      <div className="flex items-center gap-2 px-3 py-2">
+        <StatusGlyph tone="neutral" />
+        <span className="shrink-0 text-xs font-medium text-foreground">
+          {t("lifecycle.task_cancelled")}
+        </span>
+        <span className="min-w-0 flex-1 truncate text-xs text-muted-foreground">
+          {title} · {agentName}
+        </span>
       </div>
-    </div>
+    </Card>
   );
 }
 
@@ -679,7 +629,6 @@ function LifecycleCard({
 }) {
   const { t } = useTranslation("tasks");
   const agentName = resolveAgentName(payload, message);
-  const avatarUrl = resolveAvatarUrl(payload, message);
   const title = payload.title || t("untitled");
 
   const config: Record<
@@ -687,31 +636,23 @@ function LifecycleCard({
     {
       label: string;
       meta: string;
-      Icon: typeof CheckCircle;
-      borderColor: string;
-      iconColor: string;
+      Icon: typeof Forward;
     }
   > = {
     task_delegated: {
       label: t("card.taskAssigned"),
       meta: t("card.assignedTo", { name: agentName }),
       Icon: Forward,
-      borderColor: "border-l-primary",
-      iconColor: "text-primary",
     },
     task_self_assigned: {
       label: t("card.workingOnIt"),
       meta: t("card.isOnIt", { name: agentName }),
       Icon: Zap,
-      borderColor: "border-l-warning",
-      iconColor: "text-warning",
     },
     task_accepted: {
       label: t("card.taskAccepted"),
       meta: t("card.pickedUpBy", { name: agentName }),
       Icon: Eye,
-      borderColor: "border-l-primary",
-      iconColor: "text-primary",
     },
   };
 
@@ -723,8 +664,6 @@ function LifecycleCard({
       : lifecycle.replace(/_/g, " "),
     meta: agentName,
     Icon: ArrowRightLeft,
-    borderColor: "border-l-muted-foreground",
-    iconColor: "text-muted-foreground",
   };
 
   const Icon = c.Icon;
@@ -738,40 +677,39 @@ function LifecycleCard({
     lifecycle === "task_in_progress";
 
   return (
-    <div className="my-2 w-full">
-      <div
-        className={cn(
-          "overflow-hidden rounded-xl border border-border border-l-4 bg-card p-4",
-          c.borderColor
-        )}
-      >
-        <div className="flex items-center gap-3">
-          <AgentAvatar name={agentName} avatarUrl={avatarUrl} size={32} />
-          <div className="min-w-0 flex-1">
-            <span
-              className={cn(
-                "text-[10px] font-bold uppercase tracking-wider",
-                c.iconColor
-              )}
-            >
-              {c.label}
-            </span>
-            <p className="mt-0.5 text-sm font-semibold leading-snug text-foreground">
-              {title}
-            </p>
-            <p className="mt-0.5 text-xs text-muted-foreground">{c.meta}</p>
-          </div>
-          <Icon className={cn("h-5 w-5 shrink-0", c.iconColor)} />
-          {stoppable && payload.task_id && (
-            <StopTaskButton taskId={payload.task_id} title={title} />
-          )}
-        </div>
-        {payload.task_id && <CopyableTaskId taskId={payload.task_id} />}
-        {payload.work_conversation_id && (
-          <WorkRoomLink workConversationId={payload.work_conversation_id} />
+    <Card>
+      <div className="px-3 py-2.5">
+        <StatusLine
+          glyph={<Icon className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />}
+          label={c.label}
+          context={c.meta}
+          end={
+            stoppable && payload.task_id ? (
+              <StopTaskButton
+                taskId={payload.task_id}
+                title={title}
+                className="h-6 w-6"
+              />
+            ) : undefined
+          }
+        />
+        <p className="mt-1.5 text-sm font-medium leading-snug text-foreground">
+          {title}
+        </p>
+        {(payload.task_id || payload.work_conversation_id) && (
+          <CardFooter>
+            {payload.task_id ? (
+              <CopyableTaskId taskId={payload.task_id} />
+            ) : (
+              <span />
+            )}
+            {payload.work_conversation_id && (
+              <WorkRoomLink workConversationId={payload.work_conversation_id} />
+            )}
+          </CardFooter>
         )}
       </div>
-    </div>
+    </Card>
   );
 }
 
@@ -792,7 +730,7 @@ function WorkRoomLink({ workConversationId }: { workConversationId: string }) {
         setActiveConversation(workConversationId);
         setView("chat");
       }}
-      className="mt-2 inline-flex items-center gap-1.5 rounded-md bg-primary/10 px-2.5 py-1.5 text-xs font-semibold text-primary hover:bg-primary/15"
+      className="flex shrink-0 items-center gap-1 text-xs font-medium text-primary hover:underline"
     >
       <MessageSquarePlus className="h-3 w-3" />
       {t("card.openWorkRoom")}
@@ -836,8 +774,8 @@ export function StatusUpdateMessage({ message }: { message: Message }) {
   }
 
   // task_request_failed: backend rejected the agent's create_task call.
-  // No task_id exists — render a slim destructive banner so the user
-  // doesn't have to trust the LLM's narration of what happened.
+  // No task_id exists — render a failure card so the user doesn't have
+  // to trust the LLM's narration of what happened.
   if (payload.type === "task_request_failed") {
     return <RequestFailedCard payload={payload} message={message} />;
   }
@@ -882,52 +820,38 @@ export function StatusUpdateMessage({ message }: { message: Message }) {
   }
 
   // Fallback: unknown lifecycle with no task_id — render a compact status row.
-  const Icon =
+  const tone: TaskTone =
     lifecycle === "task_complete"
-      ? CheckCircle
+      ? "success"
       : lifecycle === "task_failed"
-      ? XCircle
+      ? "failure"
       : lifecycle === "task_cancelled"
-      ? Ban
+      ? "neutral"
       : lifecycle === "task_in_progress"
-      ? PlayCircle
-      : ArrowRightLeft;
-
-  const iconColor =
-    lifecycle === "task_complete"
-      ? "text-success"
-      : lifecycle === "task_failed"
-      ? "text-destructive"
-      : lifecycle === "task_cancelled"
-      ? "text-muted-foreground"
-      : lifecycle === "task_in_progress"
-      ? "text-warning"
-      : "text-muted-foreground";
+      ? "working"
+      : "pending";
 
   return (
-    <div className="my-2 flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2">
-      <Icon className={cn("h-4 w-4 shrink-0", iconColor)} />
-      <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-semibold">
-            {LIFECYCLE_TYPES.has(lifecycle)
-              ? t(`lifecycle.${lifecycle}`)
-              : lifecycle.replace(/_/g, " ")}
+    <div className="my-2 rounded-lg border border-border bg-card px-3 py-2">
+      <div className="flex items-center gap-2">
+        <StatusGlyph tone={tone} />
+        <span className="shrink-0 text-xs font-medium text-foreground">
+          {LIFECYCLE_TYPES.has(lifecycle)
+            ? t(`lifecycle.${lifecycle}`)
+            : lifecycle.replace(/_/g, " ")}
+        </span>
+        {message.sender?.displayName && (
+          <span className="min-w-0 truncate text-xs text-muted-foreground">
+            {message.sender.displayName}
           </span>
-          {message.sender?.displayName && (
-            <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
-              <Bot className="h-2.5 w-2.5" />
-              {message.sender.displayName}
-            </span>
-          )}
-        </div>
-        {payload.summary && (
-          <p className="mt-0.5 text-xs text-muted-foreground">{payload.summary}</p>
         )}
+        <span className="ml-auto shrink-0 text-xs tabular-nums text-muted-foreground">
+          {formatClockTime(message.insertedAt)}
+        </span>
       </div>
-      <span className="shrink-0 text-[10px] text-muted-foreground">
-        {formatClockTime(message.insertedAt)}
-      </span>
+      {payload.summary && (
+        <p className="mt-1 text-xs text-muted-foreground">{payload.summary}</p>
+      )}
     </div>
   );
 }
