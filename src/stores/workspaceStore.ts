@@ -23,6 +23,14 @@ interface WorkspaceState {
   applyRemoteSwitch: (orgId: string) => Promise<void>;
   initWsListeners: () => () => void;
 
+  /** Per-workspace count of items needing the user (unread messages +
+   *  pending permission approvals) from GET /api/me/workspace-attention.
+   *  The switcher tile badges the sum for workspaces other than the
+   *  active one so a workspace doesn't silently accumulate things
+   *  needing them. Refetched (debounced) on the relevant WS events. */
+  attentionByOrg: Record<string, number>;
+  fetchWorkspaceAttention: () => Promise<void>;
+
   // Stage 3 management actions — same shape as web.
   createWorkspace: (name: string) => Promise<api.Organization>;
   renameWorkspace: (orgId: string, name: string) => Promise<void>;
@@ -48,6 +56,7 @@ interface WorkspaceState {
 export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   switching: false,
   pendingId: null,
+  attentionByOrg: {},
   lastError: null,
 
   switch: async (orgId) => {
@@ -119,8 +128,31 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       ws.on("workspaces_updated", () => {
         void get().refresh();
       }),
+      // Anything that can change another workspace's attention count —
+      // a message landing, a read on another device, a permission
+      // request appearing or being resolved — schedules one debounced
+      // refetch instead of tracking deltas client-side.
+      ws.on("new_message", () => scheduleAttentionRefetch()),
+      ws.on("conversation_read", () => scheduleAttentionRefetch()),
+      ws.on("permission_request", () => scheduleAttentionRefetch()),
+      ws.on("permission_resolved", () => scheduleAttentionRefetch()),
     ];
     return () => unsubs.forEach((u) => u());
+  },
+
+  fetchWorkspaceAttention: async () => {
+    // The endpoint sits behind the `workspaces` flag (404 when off) —
+    // don't poll it for users the feature is dark for.
+    if (useAuthStore.getState().participant?.features?.workspaces !== true) return;
+
+    try {
+      const rows = await api.getWorkspaceAttention();
+      const next: Record<string, number> = {};
+      for (const row of rows) next[row.organizationId] = row.total;
+      set({ attentionByOrg: next });
+    } catch {
+      // Transient — the badge just stays stale until the next trigger.
+    }
   },
 
   // --- Workspace management ----------------------------------------
@@ -217,6 +249,21 @@ async function refetchOrgScoped() {
   } finally {
     if (ownsFlag) useWorkspaceStore.setState({ switching: false });
   }
+  // Reads that happened in the workspace we just left change its
+  // attention count; refresh the switcher badge alongside the re-key.
+  void useWorkspaceStore.getState().fetchWorkspaceAttention();
+}
+
+// One trailing-edge timer coalesces bursts of WS events (message storms,
+// bulk permission resolutions) into a single attention refetch.
+let attentionTimer: ReturnType<typeof setTimeout> | null = null;
+
+function scheduleAttentionRefetch() {
+  if (attentionTimer) return;
+  attentionTimer = setTimeout(() => {
+    attentionTimer = null;
+    void useWorkspaceStore.getState().fetchWorkspaceAttention();
+  }, 1500);
 }
 
 async function doRefetchOrgScoped() {

@@ -27,6 +27,13 @@ export function WorkspaceSwitcher() {
   const switchWorkspace = useWorkspaceStore((s) => s.switch);
   const switching = useWorkspaceStore((s) => s.switching);
   const pendingId = useWorkspaceStore((s) => s.pendingId);
+  const attentionByOrg = useWorkspaceStore((s) => s.attentionByOrg);
+
+  // Seed the cross-workspace attention counts; WS events keep them
+  // fresh from here (see workspaceStore.initWsListeners).
+  useEffect(() => {
+    void useWorkspaceStore.getState().fetchWorkspaceAttention();
+  }, []);
 
   const [open, setOpen] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
@@ -65,9 +72,13 @@ export function WorkspaceSwitcher() {
   const activeName = active?.name ?? t("workspace.workspace");
   const activeIsPersonal = active?.isPersonal ?? false;
 
-  const otherWorkspaceAgents = workspaces
+  // Sum items needing the user (unread messages + pending permission
+  // approvals) across workspaces OTHER than the active one — the badge
+  // that keeps a backgrounded workspace from silently accumulating
+  // things that need them.
+  const otherWorkspaceAttention = workspaces
     .filter((w) => w.id !== active?.id)
-    .reduce((sum, w) => sum + (w.agentCount ?? 0), 0);
+    .reduce((sum, w) => sum + (attentionByOrg[w.id] ?? 0), 0);
 
   return (
     <div
@@ -93,15 +104,18 @@ export function WorkspaceSwitcher() {
           avatarUrl={active?.avatarUrl}
           isPersonal={activeIsPersonal}
         />
-        {otherWorkspaceAgents > 0 && (
-          <span
-            className="absolute right-0.5 top-0.5 h-1.5 w-1.5 rounded-full bg-primary ring-2 ring-rail"
-            title={t("workspace.agentsInOtherWorkspaces", {
-              count: otherWorkspaceAgents,
-            })}
-          />
-        )}
       </button>
+      {/* Outside the button — its overflow-hidden would clip the badge. */}
+      {otherWorkspaceAttention > 0 && (
+        <span
+          className="pointer-events-none absolute -right-1 -top-1 z-10 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[9px] font-semibold leading-none text-primary-foreground ring-2 ring-rail"
+          title={t("workspace.attentionInOtherWorkspaces", {
+            count: otherWorkspaceAttention,
+          })}
+        >
+          {otherWorkspaceAttention > 99 ? "99+" : otherWorkspaceAttention}
+        </span>
+      )}
 
       {open && (
         <div
@@ -151,6 +165,13 @@ export function WorkspaceSwitcher() {
                       </span>
                     )}
                   </div>
+                  {(attentionByOrg[w.id] ?? 0) > 0 && !isActive && (
+                    <span className="flex h-4 min-w-4 shrink-0 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold leading-none text-primary-foreground">
+                      {(attentionByOrg[w.id] ?? 0) > 99
+                        ? "99+"
+                        : attentionByOrg[w.id]}
+                    </span>
+                  )}
                   {(w.agentCount ?? 0) > 0 && !isActive && (
                     <span
                       className="shrink-0 rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground"

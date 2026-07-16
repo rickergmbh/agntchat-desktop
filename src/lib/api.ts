@@ -337,6 +337,21 @@ export async function setActiveOrganization(orgId: string): Promise<Participant>
   });
 }
 
+/** Per-workspace count of items needing the user (unread messages +
+ *  pending permission approvals). Endpoint sits behind the `workspaces`
+ *  feature flag — 404 when the flag is off. */
+export interface WorkspaceAttentionRow {
+  organizationId: string;
+  total: number;
+}
+
+export async function getWorkspaceAttention(): Promise<WorkspaceAttentionRow[]> {
+  const res = await request<{ attention: WorkspaceAttentionRow[] }>(
+    "/api/me/workspace-attention"
+  );
+  return res.attention;
+}
+
 // --- Workspace management (stage 3) ---
 
 export interface PendingWorkspaceInvite {
