@@ -1053,10 +1053,8 @@ export const resources = {
         "keyCopied": "API key copied to clipboard.",
         "keyCopiedMessage": "API key copied to clipboard.",
         "later": "Later",
-        "openSetupGuide": "Open Setup Guide",
         "readyMessage": "Your agent clone has been created.\n\nAgent ID:\n{{agentId}}\n\nAPI Key:\n{{apiKey}}\n\nSave this key — it won't be shown again.",
-        "readyTitle": "{{name}} — Ready to Set Up",
-        "setupGuide": "Setup Guide"
+        "readyTitle": "{{name}} — Ready to Set Up"
       },
       "publish": {
         "categories": "Categories",
@@ -5951,10 +5949,8 @@ export const resources = {
         "keyCopied": "Clave API copiada al portapapeles.",
         "keyCopiedMessage": "Clave API copiada al portapapeles.",
         "later": "Más tarde",
-        "openSetupGuide": "Abrir guía de configuración",
         "readyMessage": "Se ha creado el clon de tu agente.\n\nID del agente:\n{{agentId}}\n\nClave API:\n{{apiKey}}\n\nGuarda esta clave — no se volverá a mostrar.",
-        "readyTitle": "{{name}} — Listo para configurar",
-        "setupGuide": "Guía de configuración"
+        "readyTitle": "{{name}} — Listo para configurar"
       },
       "publish": {
         "categories": "Categorías",
@@ -10849,10 +10845,8 @@ export const resources = {
         "keyCopied": "API-Schlüssel in die Zwischenablage kopiert.",
         "keyCopiedMessage": "API-Schlüssel in die Zwischenablage kopiert.",
         "later": "Später",
-        "openSetupGuide": "Einrichtungsanleitung öffnen",
         "readyMessage": "Ihr Agenten-Klon wurde erstellt.\n\nAgent-ID:\n{{agentId}}\n\nAPI-Schlüssel:\n{{apiKey}}\n\nSpeichern Sie diesen Schlüssel — er wird nicht erneut angezeigt.",
-        "readyTitle": "{{name}} — bereit zur Einrichtung",
-        "setupGuide": "Einrichtungsanleitung"
+        "readyTitle": "{{name}} — bereit zur Einrichtung"
       },
       "publish": {
         "categories": "Kategorien",
@@ -15747,10 +15741,8 @@ export const resources = {
         "keyCopied": "Clé API copiée dans le presse-papiers.",
         "keyCopiedMessage": "Clé API copiée dans le presse-papiers.",
         "later": "Plus tard",
-        "openSetupGuide": "Ouvrir le guide de configuration",
         "readyMessage": "Votre clone d'agent a été créé.\n\nID de l'agent :\n{{agentId}}\n\nClé API :\n{{apiKey}}\n\nEnregistrez cette clé — elle ne sera plus affichée.",
-        "readyTitle": "{{name}} — Prêt à configurer",
-        "setupGuide": "Guide de configuration"
+        "readyTitle": "{{name}} — Prêt à configurer"
       },
       "publish": {
         "categories": "Catégories",
@@ -20645,10 +20637,8 @@ export const resources = {
         "keyCopied": "Chave de API copiada para a área de transferência.",
         "keyCopiedMessage": "Chave de API copiada para a área de transferência.",
         "later": "Mais Tarde",
-        "openSetupGuide": "Abrir Guia de Configuração",
         "readyMessage": "Seu clone de agente foi criado.\n\nID do Agente:\n{{agentId}}\n\nChave de API:\n{{apiKey}}\n\nSalve esta chave — ela não será exibida novamente.",
-        "readyTitle": "{{name}} — Pronto para Configurar",
-        "setupGuide": "Guia de Configuração"
+        "readyTitle": "{{name}} — Pronto para Configurar"
       },
       "publish": {
         "categories": "Categorias",
@@ -25543,10 +25533,8 @@ export const resources = {
         "keyCopied": "APIキーをクリップボードにコピーしました。",
         "keyCopiedMessage": "APIキーをクリップボードにコピーしました。",
         "later": "後で",
-        "openSetupGuide": "セットアップガイドを開く",
         "readyMessage": "エージェントの複製が作成されました。\n\nエージェントID:\n{{agentId}}\n\nAPIキー:\n{{apiKey}}\n\nこのキーを保存してください — 二度と表示されません。",
-        "readyTitle": "{{name}} — セットアップ準備完了",
-        "setupGuide": "セットアップガイド"
+        "readyTitle": "{{name}} — セットアップ準備完了"
       },
       "publish": {
         "categories": "カテゴリー",
@@ -30441,10 +30429,8 @@ export const resources = {
         "keyCopied": "API 密钥已复制到剪贴板。",
         "keyCopiedMessage": "API 密钥已复制到剪贴板。",
         "later": "稍后",
-        "openSetupGuide": "打开设置指南",
         "readyMessage": "你的智能体克隆体已创建。\n\n智能体 ID：\n{{agentId}}\n\nAPI 密钥：\n{{apiKey}}\n\n请保存此密钥——它不会再次显示。",
-        "readyTitle": "{{name}} — 已准备好进行设置",
-        "setupGuide": "设置指南"
+        "readyTitle": "{{name}} — 已准备好进行设置"
       },
       "publish": {
         "categories": "分类",
@@ -35339,10 +35325,8 @@ export const resources = {
         "keyCopied": "API 키가 클립보드에 복사되었습니다.",
         "keyCopiedMessage": "API 키가 클립보드에 복사되었습니다.",
         "later": "나중에",
-        "openSetupGuide": "설정 가이드 열기",
         "readyMessage": "에이전트 복제본이 생성되었습니다.\n\n에이전트 ID:\n{{agentId}}\n\nAPI 키:\n{{apiKey}}\n\n이 키를 저장해두세요 — 다시 표시되지 않습니다.",
-        "readyTitle": "{{name}} — 설정 준비 완료",
-        "setupGuide": "설정 가이드"
+        "readyTitle": "{{name}} — 설정 준비 완료"
       },
       "publish": {
         "categories": "카테고리",
@@ -40237,10 +40221,8 @@ export const resources = {
         "keyCopied": "Chiave API copiata negli appunti.",
         "keyCopiedMessage": "Chiave API copiata negli appunti.",
         "later": "Più tardi",
-        "openSetupGuide": "Apri Guida alla Configurazione",
         "readyMessage": "Il clone del tuo agente è stato creato.\n\nID Agente:\n{{agentId}}\n\nChiave API:\n{{apiKey}}\n\nSalva questa chiave — non verrà mostrata di nuovo.",
-        "readyTitle": "{{name}} — Pronto per la Configurazione",
-        "setupGuide": "Guida alla Configurazione"
+        "readyTitle": "{{name}} — Pronto per la Configurazione"
       },
       "publish": {
         "categories": "Categorie",
@@ -45135,10 +45117,8 @@ export const resources = {
         "keyCopied": "API की क्लिपबोर्ड पर कॉपी हो गई।",
         "keyCopiedMessage": "API की क्लिपबोर्ड पर कॉपी हो गई।",
         "later": "बाद में",
-        "openSetupGuide": "सेटअप गाइड खोलें",
         "readyMessage": "आपके एजेंट का क्लोन बना दिया गया है।\n\nएजेंट आईडी:\n{{agentId}}\n\nAPI की:\n{{apiKey}}\n\nयह की सहेज लें — यह दोबारा नहीं दिखाई जाएगी।",
-        "readyTitle": "{{name}} — सेटअप के लिए तैयार",
-        "setupGuide": "सेटअप गाइड"
+        "readyTitle": "{{name}} — सेटअप के लिए तैयार"
       },
       "publish": {
         "categories": "श्रेणियाँ",
