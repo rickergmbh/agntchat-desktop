@@ -64,6 +64,17 @@ export const resources = {
       "avatar": {
         "chooseNew": "Choose New Photo",
         "chooseOption": "Choose an option",
+        "crop": {
+          "errors": {
+            "canvasUnavailable": "Canvas 2d context unavailable",
+            "encodeFailed": "Couldn't encode {{format}}",
+            "failed": "Crop failed",
+            "readFailed": "Could not read image",
+            "tooLarge": "Avatar exceeds {{limitKb}} KB after compression — try a smaller or simpler image."
+          },
+          "title": "Adjust Photo",
+          "zoomLabel": "Zoom"
+        },
         "resetDone": "Avatar reset to the original agent's image.",
         "resetFailed": "Failed to reset avatar.",
         "resetToOriginal": "Reset to Original",
@@ -4960,6 +4971,17 @@ export const resources = {
       "avatar": {
         "chooseNew": "Elegir nueva foto",
         "chooseOption": "Elige una opción",
+        "crop": {
+          "errors": {
+            "canvasUnavailable": "Contexto 2D del lienzo no disponible",
+            "encodeFailed": "No se pudo codificar {{format}}",
+            "failed": "Error al recortar",
+            "readFailed": "No se pudo leer la imagen",
+            "tooLarge": "La imagen supera {{limitKb}} KB tras la compresión: prueba con una imagen más pequeña o sencilla."
+          },
+          "title": "Ajustar foto",
+          "zoomLabel": "Zoom"
+        },
         "resetDone": "El avatar se restableció a la imagen del agente original.",
         "resetFailed": "No se pudo restablecer el avatar.",
         "resetToOriginal": "Restablecer al original",
@@ -9856,6 +9878,17 @@ export const resources = {
       "avatar": {
         "chooseNew": "Neues Foto auswählen",
         "chooseOption": "Option auswählen",
+        "crop": {
+          "errors": {
+            "canvasUnavailable": "Canvas-2D-Kontext nicht verfügbar",
+            "encodeFailed": "{{format}} konnte nicht kodiert werden",
+            "failed": "Zuschneiden fehlgeschlagen",
+            "readFailed": "Bild konnte nicht gelesen werden",
+            "tooLarge": "Das Bild überschreitet nach der Komprimierung {{limitKb}} KB – versuche ein kleineres oder einfacheres Bild."
+          },
+          "title": "Foto anpassen",
+          "zoomLabel": "Zoom"
+        },
         "resetDone": "Avatar wurde auf das Originalbild des Agenten zurückgesetzt.",
         "resetFailed": "Zurücksetzen des Avatars fehlgeschlagen.",
         "resetToOriginal": "Auf Original zurücksetzen",
@@ -14752,6 +14785,17 @@ export const resources = {
       "avatar": {
         "chooseNew": "Choisir une nouvelle photo",
         "chooseOption": "Choisir une option",
+        "crop": {
+          "errors": {
+            "canvasUnavailable": "Contexte 2D du canvas indisponible",
+            "encodeFailed": "Impossible d'encoder {{format}}",
+            "failed": "Échec du recadrage",
+            "readFailed": "Impossible de lire l'image",
+            "tooLarge": "L'image dépasse {{limitKb}} Ko après compression — essayez une image plus petite ou plus simple."
+          },
+          "title": "Ajuster la photo",
+          "zoomLabel": "Zoom"
+        },
         "resetDone": "Avatar réinitialisé à l'image d'origine de l'agent.",
         "resetFailed": "Échec de la réinitialisation de l'avatar.",
         "resetToOriginal": "Réinitialiser à l'original",
@@ -19648,6 +19692,17 @@ export const resources = {
       "avatar": {
         "chooseNew": "Escolher Nova Foto",
         "chooseOption": "Escolha uma opção",
+        "crop": {
+          "errors": {
+            "canvasUnavailable": "Contexto 2D do canvas indisponível",
+            "encodeFailed": "Não foi possível codificar {{format}}",
+            "failed": "Falha ao recortar",
+            "readFailed": "Não foi possível ler a imagem",
+            "tooLarge": "A imagem excede {{limitKb}} KB após a compressão — tente uma imagem menor ou mais simples."
+          },
+          "title": "Ajustar foto",
+          "zoomLabel": "Zoom"
+        },
         "resetDone": "Avatar redefinido para a imagem original do agente.",
         "resetFailed": "Falha ao redefinir o avatar.",
         "resetToOriginal": "Redefinir para o Original",
@@ -24544,6 +24599,17 @@ export const resources = {
       "avatar": {
         "chooseNew": "新しい写真を選択",
         "chooseOption": "オプションを選択",
+        "crop": {
+          "errors": {
+            "canvasUnavailable": "キャンバスの 2D コンテキストを利用できません",
+            "encodeFailed": "{{format}} をエンコードできませんでした",
+            "failed": "切り抜きに失敗しました",
+            "readFailed": "画像を読み込めませんでした",
+            "tooLarge": "圧縮後も画像が {{limitKb}} KB を超えています。より小さい、またはシンプルな画像をお試しください。"
+          },
+          "title": "写真を調整",
+          "zoomLabel": "ズーム"
+        },
         "resetDone": "アバターを元のエージェントの画像にリセットしました。",
         "resetFailed": "アバターのリセットに失敗しました。",
         "resetToOriginal": "元に戻す",
@@ -29440,6 +29506,17 @@ export const resources = {
       "avatar": {
         "chooseNew": "选择新照片",
         "chooseOption": "选择一个选项",
+        "crop": {
+          "errors": {
+            "canvasUnavailable": "画布 2D 上下文不可用",
+            "encodeFailed": "无法编码为 {{format}}",
+            "failed": "裁剪失败",
+            "readFailed": "无法读取图片",
+            "tooLarge": "压缩后图片仍超过 {{limitKb}} KB — 请尝试更小或更简单的图片。"
+          },
+          "title": "调整照片",
+          "zoomLabel": "缩放"
+        },
         "resetDone": "头像已重置为原始智能体的图片。",
         "resetFailed": "重置头像失败。",
         "resetToOriginal": "重置为原始头像",
@@ -34336,6 +34413,17 @@ export const resources = {
       "avatar": {
         "chooseNew": "새 사진 선택",
         "chooseOption": "옵션 선택",
+        "crop": {
+          "errors": {
+            "canvasUnavailable": "캔버스 2D 컨텍스트를 사용할 수 없습니다",
+            "encodeFailed": "{{format}}(으)로 인코딩할 수 없습니다",
+            "failed": "자르기에 실패했습니다",
+            "readFailed": "이미지를 읽을 수 없습니다",
+            "tooLarge": "압축 후에도 이미지가 {{limitKb}}KB를 초과합니다. 더 작거나 단순한 이미지를 사용해 보세요."
+          },
+          "title": "사진 조정",
+          "zoomLabel": "확대/축소"
+        },
         "resetDone": "아바타가 원래 에이전트 이미지로 재설정되었습니다.",
         "resetFailed": "아바타 재설정에 실패했습니다.",
         "resetToOriginal": "원본으로 재설정",
@@ -39232,6 +39320,17 @@ export const resources = {
       "avatar": {
         "chooseNew": "Scegli Nuova Foto",
         "chooseOption": "Scegli un'opzione",
+        "crop": {
+          "errors": {
+            "canvasUnavailable": "Contesto 2D del canvas non disponibile",
+            "encodeFailed": "Impossibile codificare {{format}}",
+            "failed": "Ritaglio non riuscito",
+            "readFailed": "Impossibile leggere l'immagine",
+            "tooLarge": "L'immagine supera {{limitKb}} KB dopo la compressione: prova con un'immagine più piccola o più semplice."
+          },
+          "title": "Regola foto",
+          "zoomLabel": "Zoom"
+        },
         "resetDone": "Avatar ripristinato all'immagine originale dell'agente.",
         "resetFailed": "Impossibile ripristinare l'avatar.",
         "resetToOriginal": "Ripristina Originale",
@@ -44128,6 +44227,17 @@ export const resources = {
       "avatar": {
         "chooseNew": "नई फ़ोटो चुनें",
         "chooseOption": "एक विकल्प चुनें",
+        "crop": {
+          "errors": {
+            "canvasUnavailable": "कैनवास 2D कॉन्टेक्स्ट उपलब्ध नहीं है",
+            "encodeFailed": "{{format}} को एन्कोड नहीं किया जा सका",
+            "failed": "क्रॉप विफल रहा",
+            "readFailed": "छवि नहीं पढ़ी जा सकी",
+            "tooLarge": "संपीड़न के बाद छवि {{limitKb}} KB से बड़ी है — कोई छोटी या सरल छवि आज़माएँ।"
+          },
+          "title": "फ़ोटो समायोजित करें",
+          "zoomLabel": "ज़ूम"
+        },
         "resetDone": "अवतार मूल एजेंट की छवि पर रीसेट कर दिया गया।",
         "resetFailed": "अवतार रीसेट करने में विफल।",
         "resetToOriginal": "मूल पर रीसेट करें",

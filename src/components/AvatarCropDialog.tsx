@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import Cropper, { type Area } from "react-easy-crop";
 import {
   Dialog,
@@ -20,7 +21,13 @@ interface AvatarCropDialogProps {
 
 const SUPPORTED_FORMATS = ["image/jpeg", "image/png", "image/webp"];
 
-async function cropImage(imageSrc: string, pixelCrop: Area): Promise<Blob> {
+type Translate = (key: string, opts?: Record<string, unknown>) => string;
+
+async function cropImage(
+  imageSrc: string,
+  pixelCrop: Area,
+  t: Translate
+): Promise<Blob> {
   const policy = await getAvatarPolicy();
   // Tauri webviews (WebKit on macOS, WebView2 on Windows) don't all support
   // every encoding format. Whitelist what we know works; fall back to JPEG.
@@ -31,7 +38,7 @@ async function cropImage(imageSrc: string, pixelCrop: Area): Promise<Blob> {
   const image = new Image();
   await new Promise<void>((resolve, reject) => {
     image.onload = () => resolve();
-    image.onerror = () => reject(new Error("Could not read image"));
+    image.onerror = () => reject(new Error(t("avatar.crop.errors.readFailed")));
     image.src = imageSrc;
   });
 
@@ -39,7 +46,7 @@ async function cropImage(imageSrc: string, pixelCrop: Area): Promise<Blob> {
   canvas.width = policy.targetSize;
   canvas.height = policy.targetSize;
   const ctx = canvas.getContext("2d");
-  if (!ctx) throw new Error("Canvas 2d context unavailable");
+  if (!ctx) throw new Error(t("avatar.crop.errors.canvasUnavailable"));
 
   // Only JPEG needs a white matte (it can't carry alpha); WebP/PNG keep
   // their transparency. Keys off the resolved `format`, which may have
@@ -64,7 +71,10 @@ async function cropImage(imageSrc: string, pixelCrop: Area): Promise<Blob> {
   const encode = (q: number) =>
     new Promise<Blob>((resolve, reject) => {
       canvas.toBlob(
-        (b) => (b ? resolve(b) : reject(new Error(`Couldn't encode ${format}`))),
+        (b) =>
+          b
+            ? resolve(b)
+            : reject(new Error(t("avatar.crop.errors.encodeFailed", { format }))),
         format,
         q
       );
@@ -74,7 +84,7 @@ async function cropImage(imageSrc: string, pixelCrop: Area): Promise<Blob> {
   if (blob.size > policy.maxBytes) blob = await encode(0.7);
   if (blob.size > policy.maxBytes) {
     const limitKb = Math.round(policy.maxBytes / 1000);
-    throw new Error(`Avatar exceeds ${limitKb} KB after compression — try a smaller or simpler image.`);
+    throw new Error(t("avatar.crop.errors.tooLarge", { limitKb }));
   }
 
   return blob;
@@ -86,6 +96,7 @@ export function AvatarCropDialog({
   onClose,
   onConfirm,
 }: AvatarCropDialogProps) {
+  const { t } = useTranslation("agents");
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
@@ -104,10 +115,10 @@ export function AvatarCropDialog({
     setError(null);
     setSaving(true);
     try {
-      const blob = await cropImage(imageSrc, croppedAreaPixels);
+      const blob = await cropImage(imageSrc, croppedAreaPixels, t);
       onConfirm(blob);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Crop failed");
+      setError(e instanceof Error ? e.message : t("avatar.crop.errors.failed"));
     } finally {
       setSaving(false);
     }
@@ -117,7 +128,7 @@ export function AvatarCropDialog({
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="sm:max-w-md" showCloseButton={false}>
         <DialogHeader>
-          <DialogTitle>Adjust Photo</DialogTitle>
+          <DialogTitle>{t("avatar.crop.title")}</DialogTitle>
         </DialogHeader>
 
         <div className="relative w-full aspect-square rounded-lg overflow-hidden bg-black/90">
@@ -143,6 +154,7 @@ export function AvatarCropDialog({
             step={0.05}
             value={zoom}
             onChange={(e) => setZoom(Number(e.target.value))}
+            aria-label={t("avatar.crop.zoomLabel")}
             className="flex-1 h-1.5 accent-primary cursor-pointer"
           />
           <ZoomIn className="w-4 h-4 text-muted-foreground flex-shrink-0" />
@@ -154,10 +166,10 @@ export function AvatarCropDialog({
 
         <DialogFooter>
           <Button variant="outline" onClick={onClose} disabled={saving}>
-            Cancel
+            {t("common:cancel")}
           </Button>
           <Button onClick={handleSave} disabled={saving || !croppedAreaPixels}>
-            {saving ? "Saving..." : "Save"}
+            {saving ? t("common:saving") : t("common:save")}
           </Button>
         </DialogFooter>
       </DialogContent>

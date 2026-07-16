@@ -41,7 +41,7 @@ import { useLlmKeyStore } from "../stores/llmKeyStore";
 import { useModelCatalog } from "../stores/modelCatalogStore";
 import { useAgentTypes } from "../lib/agentTypes";
 import { useFieldLimits } from "../lib/fieldLimits";
-import { uploadAvatar } from "../lib/imageProcessor";
+import { uploadProcessedBlob } from "../lib/imageProcessor";
 import { EXECUTION_MODES, EFFORT_LEVELS } from "../lib/models";
 import {
   TONES,
@@ -77,6 +77,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { AvatarCropDialog } from "./AvatarCropDialog";
 import { BotMascot } from "./onboarding/BotMascot";
 import { LetterReveal } from "./onboarding/LetterReveal";
 import { AmbientParticles } from "./onboarding/AmbientParticles";
@@ -185,6 +186,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   // photo
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [cropImageSrc, setCropImageSrc] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   // role
   const [agentRole, setAgentRole] = useState<AgentType>("worker");
@@ -484,12 +486,31 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
 
   const handleAvatarPick = () => fileInputRef.current?.click();
 
-  const handleAvatarFile = async (file: File | undefined) => {
+  const handleAvatarFile = (file: File | undefined) => {
     if (!file) return;
+    setError(null);
+    // Hand the raw file to the crop dialog rather than uploading it — the
+    // upload only happens once the user has framed the shot.
+    setCropImageSrc(URL.createObjectURL(file));
+  };
+
+  const closeCrop = () => {
+    setCropImageSrc((src) => {
+      if (src) URL.revokeObjectURL(src);
+      return null;
+    });
+  };
+
+  const handleCropConfirm = async (blob: Blob) => {
+    closeCrop();
     setUploadingAvatar(true);
     setError(null);
     try {
-      const url = await uploadAvatar(file, `pending-${Date.now()}`);
+      const url = await uploadProcessedBlob(
+        blob,
+        blob.type || "image/jpeg",
+        `avatars/pending-${Date.now()}`
+      );
       setAvatarUrl(url);
     } catch (e) {
       setError(e instanceof Error ? e.message : t("create.errors.uploadFailed"));
@@ -895,6 +916,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   }
 
   return (
+    <>
     <Dialog open onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[480px] p-0 gap-0 overflow-hidden">
         <div className="relative">
@@ -1054,7 +1076,12 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                     type="file"
                     accept="image/jpeg,image/png,image/webp"
                     className="hidden"
-                    onChange={(e) => handleAvatarFile(e.target.files?.[0])}
+                    onChange={(e) => {
+                      handleAvatarFile(e.target.files?.[0]);
+                      // Clear the value so picking the same file again after
+                      // cancelling the crop still fires onChange.
+                      e.target.value = "";
+                    }}
                   />
                 </div>
               )}
@@ -1947,6 +1974,19 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
         </div>
       </DialogContent>
     </Dialog>
+
+    {/* Alongside the wizard rather than inside its DialogContent, so the
+        cropper is its own top-level layer and the wizard stays open behind
+        it. */}
+    {cropImageSrc && (
+      <AvatarCropDialog
+        open
+        imageSrc={cropImageSrc}
+        onClose={closeCrop}
+        onConfirm={handleCropConfirm}
+      />
+    )}
+    </>
   );
 }
 
