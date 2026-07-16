@@ -11,7 +11,6 @@ import {
   Plus,
   Search,
   Play,
-  Power,
   Square,
   Star,
   CheckCircle,
@@ -432,7 +431,6 @@ export function Dashboard() {
     });
   const [startingAll, setStartingAll] = useState(false);
   const [stoppingAll, setStoppingAll] = useState(false);
-  const [wakingHosted, setWakingHosted] = useState(false);
   const markWaking = usePresenceStore((s) => s.markWaking);
   const healthIntervalRef = useRef<ReturnType<typeof setInterval>>(null);
   const activityIntervalRef = useRef<ReturnType<typeof setInterval>>(null);
@@ -669,24 +667,16 @@ export function Dashboard() {
     return () => window.removeEventListener("keydown", onKey);
   }, [selectedListingId]);
 
-  // Online count via the canonical `isAgentOnline` helper — the SAME rule the
-  // rail counter and per-row dots use, so the header count can't drift from
-  // the rest of the UI (issue #64). Presence (WS) OR, for local agents only, a
-  // local subprocess in its pre-heartbeat window; org-host agents are
-  // presence-only (their bridge runs on a remote VM, no local subprocess).
   const presenceOnline = usePresenceStore((s) => s.online);
-
-  const onlineCount = Object.values(agents).filter((m) =>
-    isAgentOnline(m, presenceOnline)
-  ).length;
   const totalCount = Object.keys(agents).length;
   // Raw hostnames, not display labels — the elsewhere-check compares
   // against this machine's own name.
   const agentDeviceHostnames = usePresenceStore((s) => s.agentDeviceHostnames);
   const myDevice = useLocalDeviceName();
-  // "Start All" only targets locally-runnable agents — flipping an
-  // org-host agent into "starting" here would do nothing useful since
-  // the Tauri command short-circuits to AgentStatus::Remote. Agents whose
+  // The local-start half of "Bring all online" — org-host agents are excluded
+  // here (they restart via the server, see offlineHosted below) since flipping
+  // one into "starting" locally would do nothing useful: the Tauri command
+  // short-circuits to AgentStatus::Remote. Agents whose
   // bridge is alive on ANOTHER of the user's machines are also skipped:
   // bulk-starting must never silently take an agent over from the machine
   // it's running on (the per-row Play button confirms that explicitly).
@@ -706,8 +696,38 @@ export function Dashboard() {
     (m) => m.processStatus === "running" && m.agent.runtime !== "org_host"
   );
 
+  // Hosted (org-host) agents that are currently offline. Unlike local agents,
+  // these run on a remote VM and can't be "started" locally — they're brought
+  // back via the server, which restarts each bridge on its host. Common after a
+  // host restart leaves a whole fleet offline.
+  // Hosted runtime is behind the `org_hosts` flag; when off there's no hosted
+  // fleet to bring online.
+  const orgHostsEnabled = useAuthStore((s) => s.participant?.features?.org_hosts === true);
+  const offlineHosted = orgHostsEnabled
+    ? Object.values(agents).filter(
+        (m) => m.agent.runtime === "org_host" && !isAgentOnline(m, presenceOnline)
+      )
+    : [];
+
   const handleStartAll = async () => {
     setStartingAll(true);
+    // Hosted agents first — one server call restarts every offline bridge on
+    // its host, and the per-row "Bringing online…" spinners run while the
+    // local starts below proceed.
+    if (offlineHosted.length > 0) {
+      const ids = offlineHosted.map((m) => m.agent.id);
+      // Spin each offline hosted row immediately; the presence store clears a
+      // row when its agent reports online (or after a safety timeout).
+      markWaking(ids);
+      try {
+        await restartHostedAgents(ids);
+        // Bridges reconnect asynchronously; refetch so presence catches up
+        // (the WS presence push also updates the rows as each comes online).
+        await fetchAgents();
+      } catch {
+        // best-effort — leave the button for a retry
+      }
+    }
     for (let i = 0; i < stoppedWithKeys.length; i++) {
       try {
         await startAgent(stoppedWithKeys[i].agent.id);
@@ -735,37 +755,6 @@ export function Dashboard() {
       }
     }
     setStoppingAll(false);
-  };
-
-  // Hosted (org-host) agents that are currently offline. Unlike local agents,
-  // these run on a remote VM and can't be "started" locally — they're brought
-  // back via the server, which restarts each bridge on its host. Common after a
-  // host restart leaves a whole fleet offline.
-  // Hosted runtime is behind the `org_hosts` flag; when off there's no hosted
-  // fleet to bring online, so suppress the bulk action entirely.
-  const orgHostsEnabled = useAuthStore((s) => s.participant?.features?.org_hosts === true);
-  const offlineHosted = orgHostsEnabled
-    ? Object.values(agents).filter(
-        (m) => m.agent.runtime === "org_host" && !isAgentOnline(m, presenceOnline)
-      )
-    : [];
-
-  const handleBringHostedOnline = async () => {
-    const ids = offlineHosted.map((m) => m.agent.id);
-    setWakingHosted(true);
-    // Spin each offline hosted row immediately; the presence store clears a
-    // row when its agent reports online (or after a safety timeout).
-    markWaking(ids);
-    try {
-      await restartHostedAgents(ids);
-      // Bridges reconnect asynchronously; refetch so presence catches up (the
-      // WS presence push also updates the rows as each comes online).
-      await fetchAgents();
-    } catch {
-      // best-effort — leave the button for a retry
-    } finally {
-      setWakingHosted(false);
-    }
   };
 
   // Directory drawer mirrors the agent drawer pattern — keeps the
@@ -889,7 +878,7 @@ export function Dashboard() {
           </div>
           {activeTab === "agents" && (
             <>
-              {onlineCount < totalCount && stoppedWithKeys.length > 0 && (
+              {(stoppedWithKeys.length > 0 || offlineHosted.length > 0) && (
                 <Button
                   size="sm"
                   variant="outline"
@@ -898,30 +887,13 @@ export function Dashboard() {
                   title={t("bulk.bringAllOnline")}
                   className="shrink-0 min-w-0"
                 >
-                  <Play className="w-3.5 h-3.5" />
-                  <span className="hidden @min-[420px]:inline truncate">
-                    {startingAll ? t("bulk.starting") : t("bulk.bringAllOnline")}
-                  </span>
-                </Button>
-              )}
-              {offlineHosted.length > 0 && (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={handleBringHostedOnline}
-                  disabled={wakingHosted}
-                  title={t("bulk.bringOnlineTitle", { count: offlineHosted.length })}
-                  className="shrink-0 min-w-0"
-                >
-                  {wakingHosted ? (
+                  {startingAll ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
                   ) : (
-                    <Power className="w-3.5 h-3.5" />
+                    <Play className="w-3.5 h-3.5" />
                   )}
                   <span className="hidden @min-[420px]:inline truncate">
-                    {wakingHosted
-                      ? t("bulk.bringingOnline")
-                      : t("bulk.bringOnlineCount", { count: offlineHosted.length })}
+                    {startingAll ? t("bulk.starting") : t("bulk.bringAllOnline")}
                   </span>
                 </Button>
               )}
