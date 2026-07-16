@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 import { useAgentStore } from "../stores/agentStore";
 import { useAuthStore } from "../stores/authStore";
-import { useActiveWorkspace, useWorkspacesEnabled } from "../stores/workspaceStore";
+import { useActiveWorkspace, useWorkspaces, useWorkspacesEnabled } from "../stores/workspaceStore";
 import {
   updateAgentRuntime,
   authorizeProvider,
@@ -275,10 +275,10 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
         // picker shows an empty state; preset assignment still works by name
       });
   }, []);
-  // visibility — Personal (default) is cross-workspace, Workspace pins
-  // to the user's currently-active workspace. Backend rejects pinning
-  // anywhere else, so there's no picker.
-  const [visibility, setVisibility] = useState<"personal" | "workspace">("personal");
+  // Visibility pin set: null = all workspaces (organizationIds omitted,
+  // the default), otherwise the workspace ids to pin the new agent to —
+  // any workspaces the owner belongs to, Personal included.
+  const [visibilityOrgIds, setVisibilityOrgIds] = useState<string[] | null>(null);
   const activeWorkspace = useActiveWorkspace();
   // brain — backend / model / execution mode / effort / key / safety
   const [backend, setBackend] = useState("claude_cli");
@@ -629,11 +629,11 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
           ? { metadata: { computer_use_enabled: true } }
           : {}),
         ...(llmApiKeyIdPin ? { llmApiKeyId: llmApiKeyIdPin } : {}),
-        // Workspace pin (only when user explicitly picked it AND we're
-        // in a non-Personal workspace — UI gates the toggle on this
-        // already so backend's not_active_workspace guard shouldn't fire).
-        ...(visibility === "workspace" && activeWorkspace && !activeWorkspace.isPersonal
-          ? { organizationId: activeWorkspace.id }
+        // Visibility: omit organizationIds (= all-workspaces default)
+        // unless the user picked a pin set on the review step — any
+        // workspaces they belong to, Personal included.
+        ...(visibilityOrgIds && visibilityOrgIds.length > 0
+          ? { organizationIds: visibilityOrgIds }
           : {}),
       });
 
@@ -740,7 +740,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     participant,
     catalog,
     activeWorkspace,
-    visibility,
+    visibilityOrgIds,
     t,
   ]);
 
@@ -1884,56 +1884,10 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                   </div>
 
                   {workspacesEnabled && (
-                  <div className="space-y-1.5">
-                    <Label className="text-xs">{t("create.visibility.label")}</Label>
-                    <div className="grid grid-cols-2 gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setVisibility("personal")}
-                        className={cn(
-                          "flex flex-col rounded-lg border p-2.5 text-left transition-colors",
-                          visibility === "personal"
-                            ? "border-primary bg-primary/5"
-                            : "border-border hover:bg-accent"
-                        )}
-                      >
-                        <span className="text-xs font-medium">{t("create.visibility.personal")}</span>
-                        <span className="text-[10px] text-text-muted">
-                          {t("create.visibility.personalDescription")}
-                        </span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (activeWorkspace && !activeWorkspace.isPersonal)
-                            setVisibility("workspace");
-                        }}
-                        disabled={!activeWorkspace || activeWorkspace.isPersonal}
-                        className={cn(
-                          "flex flex-col rounded-lg border p-2.5 text-left transition-colors",
-                          visibility === "workspace"
-                            ? "border-primary bg-primary/5"
-                            : "border-border hover:bg-accent",
-                          (!activeWorkspace || activeWorkspace.isPersonal) &&
-                            "cursor-not-allowed opacity-50"
-                        )}
-                      >
-                        <span className="text-xs font-medium">
-                          {t("create.visibility.pinnedTo", {
-                            workspace:
-                              activeWorkspace && !activeWorkspace.isPersonal
-                                ? activeWorkspace.name
-                                : t("create.visibility.thisWorkspace"),
-                          })}
-                        </span>
-                        <span className="text-[10px] text-text-muted">
-                          {activeWorkspace && !activeWorkspace.isPersonal
-                            ? t("create.visibility.onlyThisWorkspace")
-                            : t("create.visibility.switchToShared")}
-                        </span>
-                      </button>
-                    </div>
-                  </div>
+                    <VisibilityChoice
+                      value={visibilityOrgIds}
+                      onChange={setVisibilityOrgIds}
+                    />
                   )}
                 </div>
               )}
@@ -1989,6 +1943,76 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
         </div>
       </DialogContent>
     </Dialog>
+  );
+}
+
+/**
+ * Workspace visibility on the review step: All workspaces
+ * (organizationIds omitted — the agent follows the owner everywhere,
+ * the default) or a selected SET of workspaces. Mirrors the
+ * VisibilityField on the agent config Profile tab.
+ */
+function VisibilityChoice({
+  value,
+  onChange,
+}: {
+  value: string[] | null;
+  onChange: (v: string[] | null) => void;
+}) {
+  const { t } = useTranslation("agents");
+  const allWorkspaces = useWorkspaces();
+  const personal = allWorkspaces.find((w) => w.isPersonal);
+
+  const toggle = (id: string) => {
+    const current = value ?? [];
+    const next = current.includes(id)
+      ? current.filter((x) => x !== id)
+      : [...current, id];
+    onChange(next.length === 0 ? null : next);
+  };
+
+  return (
+    <div className="space-y-1.5">
+      <Label className="text-xs">{t("visibility.label")}</Label>
+      <div className="space-y-1.5 rounded-lg border border-border p-2.5">
+        <label className="flex cursor-pointer items-center gap-2 text-xs font-medium">
+          <input
+            type="checkbox"
+            checked={value === null}
+            onChange={() =>
+              value === null
+                ? onChange(personal ? [personal.id] : [])
+                : onChange(null)
+            }
+            className="h-3.5 w-3.5 accent-primary"
+          />
+          {t("visibility.all")}
+        </label>
+        <div className="ml-5 space-y-1 border-l border-border pl-3">
+          {allWorkspaces.map((w) => (
+            <label
+              key={w.id}
+              className={cn(
+                "flex items-center gap-2 text-xs",
+                value === null ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+              )}
+            >
+              <input
+                type="checkbox"
+                disabled={value === null}
+                checked={value !== null && value.includes(w.id)}
+                onChange={() => toggle(w.id)}
+                className="h-3.5 w-3.5 accent-primary"
+              />
+              {w.name}
+            </label>
+          ))}
+        </div>
+      </div>
+      <p className="text-[11px] text-text-muted">
+        {value === null ? t("visibility.allHint") : t("visibility.selectedHint")}
+      </p>
+    </div>
   );
 }
 

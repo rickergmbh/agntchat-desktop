@@ -2956,6 +2956,97 @@ function FieldRow({
 // resolved with t() at render time, never at module scope.
 const AGENT_TYPES = ["worker", "orchestrator", "reviewer", "observer"] as const;
 
+/**
+ * Workspace visibility: either the agent follows the owner into EVERY
+ * workspace (organizationIds null), or it's pinned to a selected SET of
+ * workspaces (any the owner belongs to — Personal included, so
+ * "Personal only" is just the set {Personal}). Membership is the
+ * tenancy boundary, so the checklist offers every workspace with no
+ * switch-then-pin dance. Unchecking the last workspace falls back to
+ * All workspaces.
+ *
+ * `value`: null = all workspaces; otherwise the pinned workspace ids.
+ */
+function VisibilityField({
+  value,
+  onChange,
+}: {
+  value: string[] | null;
+  onChange: (v: string[] | null) => void;
+}) {
+  const { t } = useTranslation("agents");
+  const allWorkspaces = useWorkspaces();
+  const personal = allWorkspaces.find((w) => w.isPersonal);
+  // Pins to workspaces the owner has since left stay representable so
+  // opening this panel doesn't silently drop them from the set.
+  const orphanedIds = (value ?? []).filter(
+    (id) => !allWorkspaces.some((w) => w.id === id)
+  );
+
+  const toggle = (id: string) => {
+    const current = value ?? [];
+    const next = current.includes(id)
+      ? current.filter((x) => x !== id)
+      : [...current, id];
+    onChange(next.length === 0 ? null : next);
+  };
+
+  return (
+    <div className="space-y-1.5 mt-4">
+      <Label className="text-xs">{t("visibility.label")}</Label>
+      <div className="space-y-1.5 rounded-lg border border-border p-2.5">
+        <label className="flex cursor-pointer items-center gap-2 text-xs font-medium">
+          <input
+            type="checkbox"
+            checked={value === null}
+            onChange={() =>
+              value === null
+                ? onChange(personal ? [personal.id] : [])
+                : onChange(null)
+            }
+            className="h-3.5 w-3.5 accent-primary"
+          />
+          {t("visibility.all")}
+        </label>
+        <div className="ml-5 space-y-1 border-l border-border pl-3">
+          {allWorkspaces.map((w) => (
+            <label
+              key={w.id}
+              className={cn(
+                "flex items-center gap-2 text-xs",
+                value === null ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+              )}
+            >
+              <input
+                type="checkbox"
+                disabled={value === null}
+                checked={value !== null && value.includes(w.id)}
+                onChange={() => toggle(w.id)}
+                className="h-3.5 w-3.5 accent-primary"
+              />
+              {w.name}
+            </label>
+          ))}
+          {orphanedIds.map((id) => (
+            <label key={id} className="flex cursor-pointer items-center gap-2 text-xs">
+              <input
+                type="checkbox"
+                checked
+                onChange={() => toggle(id)}
+                className="h-3.5 w-3.5 accent-primary"
+              />
+              {t("settings:workspace.fallbackName")}
+            </label>
+          ))}
+        </div>
+      </div>
+      <p className="text-[11px] text-muted-foreground">
+        {value === null ? t("visibility.allHint") : t("visibility.selectedHint")}
+      </p>
+    </div>
+  );
+}
+
 function ProfileSection({
   agent,
 }: {
@@ -2964,17 +3055,16 @@ function ProfileSection({
   const { t } = useTranslation("agents");
   const { fetchAgents } = useAgentStore();
   const limits = useFieldLimits();
-  const activeWorkspace = useActiveWorkspace();
   const workspacesEnabled = useWorkspacesEnabled();
   const [name, setName] = useState(agent.displayName);
   const [desc, setDesc] = useState(agent.description ?? "");
   const [agentType, setAgentType] = useState(agent.agentType || "worker");
   const [caps, setCaps] = useState((agent.capabilities ?? []).join(", "));
-  // Visibility: "personal" = organizationId null (cross-workspace),
-  // "workspace" = pinned to the user's currently-active workspace.
-  // Backend rejects pinning to any other workspace, so no picker.
-  const [visibility, setVisibility] = useState<"personal" | "workspace">(
-    agent.organizationId ? "workspace" : "personal"
+  // Visibility pin set: null = all workspaces (organizationIds null),
+  // otherwise the workspace ids the agent is pinned to. Any membership
+  // workspace is a valid target — see VisibilityField.
+  const [visibilityOrgIds, setVisibilityOrgIds] = useState<string[] | null>(
+    agent.organizationIds ?? null
   );
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -2986,9 +3076,10 @@ function ProfileSection({
   // the profile focused on editable fields.
   const [detailsOpen, setDetailsOpen] = useState(false);
 
-  const initialVisibility: "personal" | "workspace" = agent.organizationId
-    ? "workspace"
-    : "personal";
+  // Order-insensitive comparison — the checklist can re-add ids in any order.
+  const visKey = (v: string[] | null) => (v === null ? "all" : [...v].sort().join(","));
+  const initialVisibilityOrgIds = agent.organizationIds ?? null;
+  const visibilityDirty = visKey(visibilityOrgIds) !== visKey(initialVisibilityOrgIds);
 
   const handleCopyId = useCallback(() => {
     navigator.clipboard.writeText(agent.id);
@@ -3003,13 +3094,13 @@ function ProfileSection({
     setDesc(agent.description ?? "");
     setAgentType(agent.agentType || "worker");
     setCaps((agent.capabilities ?? []).join(", "));
-    setVisibility(agent.organizationId ? "workspace" : "personal");
+    setVisibilityOrgIds(agent.organizationIds ?? null);
   }, [
     agent.displayName,
     agent.description,
     agent.agentType,
     agent.capabilities,
-    agent.organizationId,
+    agent.organizationIds,
   ]);
 
   const dirty =
@@ -3017,7 +3108,7 @@ function ProfileSection({
     desc !== (agent.description ?? "") ||
     agentType !== (agent.agentType || "worker") ||
     caps !== (agent.capabilities ?? []).join(", ") ||
-    visibility !== initialVisibility;
+    visibilityDirty;
 
   const handleSave = useCallback(async () => {
     const trimmedName = name.trim();
@@ -3034,16 +3125,11 @@ function ProfileSection({
         .filter(Boolean);
       const trimmedDesc = desc.trim();
 
-      // Only send organizationId when the user actually changed visibility
-      // — sending it on every save would either be a no-op or surface
-      // 403 not_active_workspace if the user has switched workspaces
-      // between visits.
-      const visibilityPatch =
-        visibility === initialVisibility
-          ? {}
-          : visibility === "personal"
-          ? { organizationId: null as string | null }
-          : { organizationId: activeWorkspace?.id ?? null };
+      // Only include organizationIds in the patch when the user actually
+      // changed visibility — a partial update must never clobber it.
+      const visibilityPatch = visibilityDirty
+        ? { organizationIds: visibilityOrgIds }
+        : {};
 
       await updateAgent(agent.id, {
         displayName: trimmedName,
@@ -3060,7 +3146,7 @@ function ProfileSection({
     } finally {
       setSaving(false);
     }
-  }, [agent.id, name, desc, agentType, caps, visibility, initialVisibility, activeWorkspace?.id, fetchAgents, t]);
+  }, [agent.id, name, desc, agentType, caps, visibilityOrgIds, visibilityDirty, fetchAgents, t]);
 
   const handleAvatarClick = () => {
     const input = document.createElement("input");
@@ -3195,55 +3281,7 @@ function ProfileSection({
         </div>
 
         {workspacesEnabled && (
-        <div className="space-y-1.5 mt-4">
-          <Label className="text-xs">{t("wizard.visibility.label")}</Label>
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={() => setVisibility("personal")}
-              className={cn(
-                "flex flex-col rounded-lg border p-2.5 text-left transition-colors",
-                visibility === "personal"
-                  ? "border-primary bg-primary/5"
-                  : "border-border hover:bg-accent"
-              )}
-            >
-              <span className="text-xs font-medium">{t("wizard.visibility.personal")}</span>
-              <span className="text-[10px] text-muted-foreground">
-                {t("wizard.visibility.personalHint")}
-              </span>
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                if (activeWorkspace && !activeWorkspace.isPersonal) setVisibility("workspace");
-              }}
-              disabled={!activeWorkspace || activeWorkspace.isPersonal}
-              className={cn(
-                "flex flex-col rounded-lg border p-2.5 text-left transition-colors",
-                visibility === "workspace"
-                  ? "border-primary bg-primary/5"
-                  : "border-border hover:bg-accent",
-                (!activeWorkspace || activeWorkspace.isPersonal) &&
-                  "cursor-not-allowed opacity-50"
-              )}
-            >
-              <span className="text-xs font-medium">
-                {t("wizard.visibility.pinnedTo", {
-                  name:
-                    activeWorkspace && !activeWorkspace.isPersonal
-                      ? activeWorkspace.name
-                      : t("wizard.visibility.thisWorkspace"),
-                })}
-              </span>
-              <span className="text-[10px] text-muted-foreground">
-                {activeWorkspace && !activeWorkspace.isPersonal
-                  ? t("wizard.visibility.pinnedHint")
-                  : t("wizard.visibility.pinDisabledHint")}
-              </span>
-            </button>
-          </div>
-        </div>
+          <VisibilityField value={visibilityOrgIds} onChange={setVisibilityOrgIds} />
         )}
 
         {error && (

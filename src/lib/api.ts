@@ -434,7 +434,9 @@ export async function createAgent(data: {
   soulMd?: string;
   modelConfig?: Record<string, unknown>;
   metadata?: Record<string, unknown>;
-  organizationId?: string | null;
+  /** Workspace visibility pin set. Omit for all workspaces (the
+   *  default); a non-empty list pins visibility to those workspaces. */
+  organizationIds?: string[];
   /** "local" skips the backend's default host auto-placement. */
   runtime?: "local" | "org_host";
 }): Promise<{ agent: Agent; apiKey: string }> {
@@ -3164,7 +3166,13 @@ export interface Agent {
   runtime?: AgentRuntime;
   presenceMode?: PresenceMode;
   idleTimeoutSeconds?: number | null;
+  /** Org-host RUNTIME org (which org's VM runs the bridge) — set via
+   *  PATCH /api/agents/:id/runtime. NOT the visibility pin. */
   organizationId?: string | null;
+  /** Workspace visibility pin set. Null/absent = all workspaces (the
+   *  agent follows the owner everywhere); a list = visible only in
+   *  those workspaces. PATCHable via `organizationIds`. */
+  organizationIds?: string[] | null;
   assignedHostId?: string | null;
   /** Human-set policy gating how/where this agent may spawn sub-agents.
    *  Absent when never set (the agent then inherits up the ownership tree). */

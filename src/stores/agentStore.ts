@@ -284,10 +284,10 @@ interface AgentState {
     /** Pin the agent to a specific saved LLM key. Omit to resolve to the
      *  user's default for the provider at runtime. */
     llmApiKeyId?: string | null;
-    /** Workspace pin. Omit/`null` for personal (cross-workspace, the
-     *  default). A UUID pins to that workspace; backend rejects any
-     *  value other than the caller's currently-active workspace. */
-    organizationId?: string | null;
+    /** Workspace visibility pin set. Omit for all workspaces (the
+     *  default, cross-workspace). A non-empty list pins visibility to
+     *  those workspaces — any the owner belongs to. */
+    organizationIds?: string[];
     /** Explicit runtime choice. "local" tells the backend to SKIP its
      *  default host auto-placement (without this, every new agent lands on
      *  the owner's org host when one exists). Omit for the hosted default. */
@@ -1010,7 +1010,7 @@ export const useAgentStore = create<AgentState>((set, get) => ({
       llmApiKeyId: selectedKeyId,
       ...apiData
     } = data;
-    // `metadata` and `organizationId` (if present in apiData) flow
+    // `metadata` and `organizationIds` (if present in apiData) flow
     // straight through to the API. Cross-device fields
     // (computer_use_enabled etc.) live in metadata; the modal composes
     // the right snake_case keys directly.
@@ -1166,19 +1166,21 @@ export const useAgentStore = create<AgentState>((set, get) => ({
       ws.on("agent_updated", (payload) => {
         const incoming = payload as Partial<api.Agent> & {
           id?: string;
-          organizationId?: string;
+          organizationIds?: string[] | null;
         };
         const agentId = incoming?.id;
         if (!agentId) return;
 
-        // Slack-style: drop events for agents in a workspace the
-        // user isn't currently active in.
+        // Slack-style: drop events for agents pinned to workspaces the
+        // user isn't currently active in. Null/empty organizationIds =
+        // visible everywhere, so those always pass.
         const activeOrg =
           useAuthStore.getState().participant?.activeOrganizationId;
         if (
-          incoming.organizationId &&
+          incoming.organizationIds &&
+          incoming.organizationIds.length > 0 &&
           activeOrg &&
-          incoming.organizationId !== activeOrg
+          !incoming.organizationIds.includes(activeOrg)
         ) {
           return;
         }

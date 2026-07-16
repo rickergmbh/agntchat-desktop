@@ -634,21 +634,7 @@ export const resources = {
         "toneTitle": "How should they talk?",
         "toolsHint": "Pick the integrations this agent should work with. You can change this anytime in the agent's Tools tab.",
         "toolsTitle": "Which tools can they use?",
-        "typePlaceholder": "Type...",
-        "visibility": {
-          "label": "Visibility",
-          "onlyThisWorkspace": "Only visible in this workspace",
-          "personal": "Personal",
-          "personalDescription": "Follows you across all your workspaces",
-          "pinnedTo": "Pinned to {{workspace}}",
-          "switchToShared": "Switch to a shared workspace to pin",
-          "thisWorkspace": "this workspace"
-        },
-        "visibilityPersonal": "Personal",
-        "visibilityPersonalHint": "All your workspaces",
-        "visibilitySwitchHint": "Switch to a shared workspace",
-        "visibilityWorkspace": "Workspace",
-        "visibilityWorkspaceHint": "This workspace only"
+        "typePlaceholder": "Type..."
       },
       "createAgent": "Create Agent",
       "createFirstAgent": "Create your first agent",
@@ -705,7 +691,6 @@ export const resources = {
         "descriptionPlaceholder": "What does this agent do?",
         "role": "Agent Role",
         "title": "Edit Agent",
-        "visibility": "Visibility",
         "wakeUrl": "Wake URL"
       },
       "editDetails": "Edit Details",
@@ -1719,14 +1704,13 @@ export const resources = {
       "viewDetails": "View Details",
       "viewProfile": "View Profile",
       "visibility": {
+        "all": "All workspaces",
+        "allHint": "Follows you into every workspace",
         "friendsOnly": "Friends only",
-        "personal": "Personal",
-        "personalHint": "Visible in all your workspaces.",
+        "label": "Visibility",
         "public": "Public",
-        "switchHint": "Switch to a shared workspace to pin.",
-        "unlisted": "Unlisted (link only)",
-        "workspace": "Workspace",
-        "workspaceHint": "Only visible in {{name}}."
+        "selectedHint": "Only visible in the checked workspaces",
+        "unlisted": "Unlisted (link only)"
       },
       "wizard": {
         "addSpecialtyPlaceholder": "Add a specialty",
@@ -1799,16 +1783,7 @@ export const resources = {
         "tapToChange": "Tap to change",
         "tapToChoosePhoto": "Tap to choose a photo (optional)",
         "untitled": "Untitled",
-        "usesDefaultHint": "Uses your saved default — won't be changed.",
-        "visibility": {
-          "label": "Visibility",
-          "personal": "Personal",
-          "personalHint": "Visible in all your workspaces",
-          "pinDisabledHint": "Switch to a shared workspace to pin",
-          "pinnedHint": "Only visible in this workspace",
-          "pinnedTo": "Pinned to {{name}}",
-          "thisWorkspace": "this workspace"
-        }
+        "usesDefaultHint": "Uses your saved default — won't be changed."
       }
     },
     "artifacts": {
@@ -5557,21 +5532,7 @@ export const resources = {
         "toneTitle": "¿Cómo debería hablar?",
         "toolsHint": "Elige las integraciones con las que trabajará este agente. Puedes cambiarlo en cualquier momento en la pestaña Herramientas del agente.",
         "toolsTitle": "¿Qué herramientas puede usar?",
-        "typePlaceholder": "Escribe...",
-        "visibility": {
-          "label": "Visibilidad",
-          "onlyThisWorkspace": "Solo visible en este espacio de trabajo",
-          "personal": "Personal",
-          "personalDescription": "Te acompaña en todos tus espacios de trabajo",
-          "pinnedTo": "Fijado a {{workspace}}",
-          "switchToShared": "Cambia a un espacio de trabajo compartido para fijarlo",
-          "thisWorkspace": "este espacio de trabajo"
-        },
-        "visibilityPersonal": "Personal",
-        "visibilityPersonalHint": "Todos tus espacios de trabajo",
-        "visibilitySwitchHint": "Cambia a un espacio de trabajo compartido",
-        "visibilityWorkspace": "Espacio de trabajo",
-        "visibilityWorkspaceHint": "Solo este espacio de trabajo"
+        "typePlaceholder": "Escribe..."
       },
       "createAgent": "Crear agente",
       "createFirstAgent": "Crea tu primer agente",
@@ -5628,7 +5589,6 @@ export const resources = {
         "descriptionPlaceholder": "¿Qué hace este agente?",
         "role": "Rol del agente",
         "title": "Editar agente",
-        "visibility": "Visibilidad",
         "wakeUrl": "URL de activación"
       },
       "editDetails": "Editar detalles",
@@ -6642,14 +6602,13 @@ export const resources = {
       "viewDetails": "Ver detalles",
       "viewProfile": "Ver perfil",
       "visibility": {
+        "all": "Todos los espacios de trabajo",
+        "allHint": "Te acompaña en todos los espacios de trabajo",
         "friendsOnly": "Solo amigos",
-        "personal": "Personal",
-        "personalHint": "Visible en todos tus espacios de trabajo.",
+        "label": "Visibilidad",
         "public": "Público",
-        "switchHint": "Cambia a un espacio de trabajo compartido para fijarlo.",
-        "unlisted": "No listado (solo con enlace)",
-        "workspace": "Espacio de trabajo",
-        "workspaceHint": "Solo visible en {{name}}."
+        "selectedHint": "Solo visible en los espacios de trabajo marcados",
+        "unlisted": "No listado (solo con enlace)"
       },
       "wizard": {
         "addSpecialtyPlaceholder": "Añadir una especialidad",
@@ -6722,16 +6681,7 @@ export const resources = {
         "tapToChange": "Toca para cambiar",
         "tapToChoosePhoto": "Toca para elegir una foto (opcional)",
         "untitled": "Sin título",
-        "usesDefaultHint": "Usa tu clave predeterminada guardada — no se modificará.",
-        "visibility": {
-          "label": "Visibilidad",
-          "personal": "Personal",
-          "personalHint": "Visible en todos tus espacios de trabajo",
-          "pinDisabledHint": "Cambia a un espacio de trabajo compartido para fijarlo",
-          "pinnedHint": "Solo visible en este espacio de trabajo",
-          "pinnedTo": "Fijado a {{name}}",
-          "thisWorkspace": "este espacio de trabajo"
-        }
+        "usesDefaultHint": "Usa tu clave predeterminada guardada — no se modificará."
       }
     },
     "artifacts": {
@@ -10480,21 +10430,7 @@ export const resources = {
         "toneTitle": "Wie sollen sie sprechen?",
         "toolsHint": "Wählen Sie die Integrationen, mit denen dieser Agent arbeiten soll. Sie können das jederzeit im Tools-Tab des Agenten ändern.",
         "toolsTitle": "Welche Werkzeuge dürfen sie nutzen?",
-        "typePlaceholder": "Eingeben...",
-        "visibility": {
-          "label": "Sichtbarkeit",
-          "onlyThisWorkspace": "Nur in diesem Workspace sichtbar",
-          "personal": "Persönlich",
-          "personalDescription": "Folgt Ihnen in allen Ihren Workspaces",
-          "pinnedTo": "Angepinnt an {{workspace}}",
-          "switchToShared": "Zu einem gemeinsamen Workspace wechseln, um anzupinnen",
-          "thisWorkspace": "diesen Workspace"
-        },
-        "visibilityPersonal": "Persönlich",
-        "visibilityPersonalHint": "Alle Ihre Workspaces",
-        "visibilitySwitchHint": "Zu einem gemeinsamen Workspace wechseln",
-        "visibilityWorkspace": "Workspace",
-        "visibilityWorkspaceHint": "Nur dieser Workspace"
+        "typePlaceholder": "Eingeben..."
       },
       "createAgent": "Agent erstellen",
       "createFirstAgent": "Erstellen Sie Ihren ersten Agenten",
@@ -10551,7 +10487,6 @@ export const resources = {
         "descriptionPlaceholder": "Was macht dieser Agent?",
         "role": "Agentenrolle",
         "title": "Agent bearbeiten",
-        "visibility": "Sichtbarkeit",
         "wakeUrl": "Wake-URL"
       },
       "editDetails": "Details bearbeiten",
@@ -11565,14 +11500,13 @@ export const resources = {
       "viewDetails": "Details anzeigen",
       "viewProfile": "Profil anzeigen",
       "visibility": {
+        "all": "Alle Arbeitsbereiche",
+        "allHint": "Begleitet Sie in jeden Arbeitsbereich",
         "friendsOnly": "Nur Freunde",
-        "personal": "Persönlich",
-        "personalHint": "In allen Ihren Arbeitsbereichen sichtbar.",
+        "label": "Sichtbarkeit",
         "public": "Öffentlich",
-        "switchHint": "Wechseln Sie zu einem gemeinsamen Arbeitsbereich, um anzuheften.",
-        "unlisted": "Nicht gelistet (nur per Link)",
-        "workspace": "Arbeitsbereich",
-        "workspaceHint": "Nur sichtbar in {{name}}."
+        "selectedHint": "Nur in den markierten Arbeitsbereichen sichtbar",
+        "unlisted": "Nicht gelistet (nur per Link)"
       },
       "wizard": {
         "addSpecialtyPlaceholder": "Spezialität hinzufügen",
@@ -11645,16 +11579,7 @@ export const resources = {
         "tapToChange": "Zum Ändern tippen",
         "tapToChoosePhoto": "Zum Auswählen eines Fotos tippen (optional)",
         "untitled": "Unbenannt",
-        "usesDefaultHint": "Verwendet Ihren gespeicherten Standard — wird nicht geändert.",
-        "visibility": {
-          "label": "Sichtbarkeit",
-          "personal": "Persönlich",
-          "personalHint": "Sichtbar in allen Ihren Workspaces",
-          "pinDisabledHint": "Zu einem gemeinsamen Workspace wechseln, um anzupinnen",
-          "pinnedHint": "Nur in diesem Workspace sichtbar",
-          "pinnedTo": "Angepinnt an {{name}}",
-          "thisWorkspace": "diesen Workspace"
-        }
+        "usesDefaultHint": "Verwendet Ihren gespeicherten Standard — wird nicht geändert."
       }
     },
     "artifacts": {
@@ -15403,21 +15328,7 @@ export const resources = {
         "toneTitle": "Comment doivent-ils parler ?",
         "toolsHint": "Choisissez les intégrations avec lesquelles cet agent travaillera. Modifiable à tout moment dans l'onglet Outils de l'agent.",
         "toolsTitle": "Quels outils peut-il utiliser ?",
-        "typePlaceholder": "Tapez...",
-        "visibility": {
-          "label": "Visibilité",
-          "onlyThisWorkspace": "Visible uniquement dans cet espace de travail",
-          "personal": "Personnel",
-          "personalDescription": "Vous suit dans tous vos espaces de travail",
-          "pinnedTo": "Épinglé à {{workspace}}",
-          "switchToShared": "Passez à un espace de travail partagé pour épingler",
-          "thisWorkspace": "cet espace de travail"
-        },
-        "visibilityPersonal": "Personnel",
-        "visibilityPersonalHint": "Tous vos espaces de travail",
-        "visibilitySwitchHint": "Passer à un espace de travail partagé",
-        "visibilityWorkspace": "Espace de travail",
-        "visibilityWorkspaceHint": "Cet espace de travail uniquement"
+        "typePlaceholder": "Tapez..."
       },
       "createAgent": "Créer un agent",
       "createFirstAgent": "Créez votre premier agent",
@@ -15474,7 +15385,6 @@ export const resources = {
         "descriptionPlaceholder": "Que fait cet agent ?",
         "role": "Rôle de l'agent",
         "title": "Modifier l'agent",
-        "visibility": "Visibilité",
         "wakeUrl": "URL de réveil"
       },
       "editDetails": "Modifier les détails",
@@ -16488,14 +16398,13 @@ export const resources = {
       "viewDetails": "Voir les détails",
       "viewProfile": "Voir le profil",
       "visibility": {
+        "all": "Tous les espaces de travail",
+        "allHint": "Vous suit dans chaque espace de travail",
         "friendsOnly": "Amis uniquement",
-        "personal": "Personnel",
-        "personalHint": "Visible dans tous vos espaces de travail.",
+        "label": "Visibilité",
         "public": "Public",
-        "switchHint": "Passez à un espace de travail partagé pour épingler.",
-        "unlisted": "Non répertorié (lien uniquement)",
-        "workspace": "Espace de travail",
-        "workspaceHint": "Visible uniquement dans {{name}}."
+        "selectedHint": "Visible uniquement dans les espaces de travail cochés",
+        "unlisted": "Non répertorié (lien uniquement)"
       },
       "wizard": {
         "addSpecialtyPlaceholder": "Ajouter une spécialité",
@@ -16568,16 +16477,7 @@ export const resources = {
         "tapToChange": "Touchez pour changer",
         "tapToChoosePhoto": "Touchez pour choisir une photo (facultatif)",
         "untitled": "Sans titre",
-        "usesDefaultHint": "Utilise votre valeur par défaut enregistrée — ne sera pas modifiée.",
-        "visibility": {
-          "label": "Visibilité",
-          "personal": "Personnel",
-          "personalHint": "Visible dans tous vos espaces de travail",
-          "pinDisabledHint": "Passez à un espace de travail partagé pour épingler",
-          "pinnedHint": "Visible uniquement dans cet espace de travail",
-          "pinnedTo": "Épinglé à {{name}}",
-          "thisWorkspace": "cet espace de travail"
-        }
+        "usesDefaultHint": "Utilise votre valeur par défaut enregistrée — ne sera pas modifiée."
       }
     },
     "artifacts": {
@@ -20326,21 +20226,7 @@ export const resources = {
         "toneTitle": "Como eles devem falar?",
         "toolsHint": "Escolha as integrações com as quais este agente vai trabalhar. Você pode mudar isso a qualquer momento na aba Ferramentas do agente.",
         "toolsTitle": "Quais ferramentas ele pode usar?",
-        "typePlaceholder": "Digite...",
-        "visibility": {
-          "label": "Visibilidade",
-          "onlyThisWorkspace": "Visível apenas neste espaço de trabalho",
-          "personal": "Pessoal",
-          "personalDescription": "Acompanha você em todos os seus espaços de trabalho",
-          "pinnedTo": "Fixado em {{workspace}}",
-          "switchToShared": "Mude para um espaço de trabalho compartilhado para fixar",
-          "thisWorkspace": "este espaço de trabalho"
-        },
-        "visibilityPersonal": "Pessoal",
-        "visibilityPersonalHint": "Todos os seus espaços de trabalho",
-        "visibilitySwitchHint": "Mude para um espaço de trabalho compartilhado",
-        "visibilityWorkspace": "Espaço de Trabalho",
-        "visibilityWorkspaceHint": "Apenas este espaço de trabalho"
+        "typePlaceholder": "Digite..."
       },
       "createAgent": "Criar Agente",
       "createFirstAgent": "Crie seu primeiro agente",
@@ -20397,7 +20283,6 @@ export const resources = {
         "descriptionPlaceholder": "O que este agente faz?",
         "role": "Função do Agente",
         "title": "Editar Agente",
-        "visibility": "Visibilidade",
         "wakeUrl": "URL de Ativação"
       },
       "editDetails": "Editar Detalhes",
@@ -21411,14 +21296,13 @@ export const resources = {
       "viewDetails": "Ver Detalhes",
       "viewProfile": "Ver Perfil",
       "visibility": {
+        "all": "Todos os espaços de trabalho",
+        "allHint": "Acompanha você em todos os espaços de trabalho",
         "friendsOnly": "Somente amigos",
-        "personal": "Pessoal",
-        "personalHint": "Visível em todos os seus workspaces.",
+        "label": "Visibilidade",
         "public": "Público",
-        "switchHint": "Mude para um workspace compartilhado para fixar.",
-        "unlisted": "Não listado (somente link)",
-        "workspace": "Workspace",
-        "workspaceHint": "Visível apenas em {{name}}."
+        "selectedHint": "Visível apenas nos espaços de trabalho marcados",
+        "unlisted": "Não listado (somente link)"
       },
       "wizard": {
         "addSpecialtyPlaceholder": "Adicionar uma especialidade",
@@ -21491,16 +21375,7 @@ export const resources = {
         "tapToChange": "Toque para trocar",
         "tapToChoosePhoto": "Toque para escolher uma foto (opcional)",
         "untitled": "Sem título",
-        "usesDefaultHint": "Usa seu padrão salvo — não será alterado.",
-        "visibility": {
-          "label": "Visibilidade",
-          "personal": "Pessoal",
-          "personalHint": "Visível em todos os seus espaços de trabalho",
-          "pinDisabledHint": "Mude para um espaço de trabalho compartilhado para fixar",
-          "pinnedHint": "Visível apenas neste espaço de trabalho",
-          "pinnedTo": "Fixado em {{name}}",
-          "thisWorkspace": "este espaço de trabalho"
-        }
+        "usesDefaultHint": "Usa seu padrão salvo — não será alterado."
       }
     },
     "artifacts": {
@@ -25249,21 +25124,7 @@ export const resources = {
         "toneTitle": "どのように話しますか？",
         "toolsHint": "このエージェントが使う連携を選んでください。エージェントのツールタブでいつでも変更できます。",
         "toolsTitle": "使えるツールを選びましょう",
-        "typePlaceholder": "入力…",
-        "visibility": {
-          "label": "公開設定",
-          "onlyThisWorkspace": "このワークスペースのみで表示",
-          "personal": "個人",
-          "personalDescription": "すべてのワークスペースであなたに追従します",
-          "pinnedTo": "{{workspace}}に固定",
-          "switchToShared": "固定するには共有ワークスペースに切り替えてください",
-          "thisWorkspace": "このワークスペース"
-        },
-        "visibilityPersonal": "個人",
-        "visibilityPersonalHint": "すべてのワークスペース",
-        "visibilitySwitchHint": "共有ワークスペースに切り替える",
-        "visibilityWorkspace": "ワークスペース",
-        "visibilityWorkspaceHint": "このワークスペースのみ"
+        "typePlaceholder": "入力…"
       },
       "createAgent": "エージェントを作成",
       "createFirstAgent": "最初のエージェントを作成",
@@ -25320,7 +25181,6 @@ export const resources = {
         "descriptionPlaceholder": "このエージェントは何をしますか？",
         "role": "エージェントの役割",
         "title": "エージェントを編集",
-        "visibility": "公開範囲",
         "wakeUrl": "起動URL"
       },
       "editDetails": "詳細を編集",
@@ -26334,14 +26194,13 @@ export const resources = {
       "viewDetails": "詳細を見る",
       "viewProfile": "プロフィールを見る",
       "visibility": {
+        "all": "すべてのワークスペース",
+        "allHint": "すべてのワークスペースであなたに同行します",
         "friendsOnly": "フレンドのみ",
-        "personal": "個人",
-        "personalHint": "あなたのすべてのワークスペースで表示されます。",
+        "label": "表示範囲",
         "public": "公開",
-        "switchHint": "固定するには共有ワークスペースに切り替えてください。",
-        "unlisted": "非公開（リンクのみ）",
-        "workspace": "ワークスペース",
-        "workspaceHint": "{{name}}でのみ表示されます。"
+        "selectedHint": "チェックしたワークスペースのみに表示されます",
+        "unlisted": "非公開（リンクのみ）"
       },
       "wizard": {
         "addSpecialtyPlaceholder": "専門分野を追加",
@@ -26414,16 +26273,7 @@ export const resources = {
         "tapToChange": "タップして変更",
         "tapToChoosePhoto": "タップして写真を選択（任意）",
         "untitled": "無題",
-        "usesDefaultHint": "保存済みの既定値を使用します — 変更されません。",
-        "visibility": {
-          "label": "公開設定",
-          "personal": "個人",
-          "personalHint": "すべてのワークスペースで表示",
-          "pinDisabledHint": "固定するには共有ワークスペースに切り替えてください",
-          "pinnedHint": "このワークスペースのみで表示",
-          "pinnedTo": "{{name}}に固定",
-          "thisWorkspace": "このワークスペース"
-        }
+        "usesDefaultHint": "保存済みの既定値を使用します — 変更されません。"
       }
     },
     "artifacts": {
@@ -30172,21 +30022,7 @@ export const resources = {
         "toneTitle": "他们应该如何说话？",
         "toolsHint": "选择这个智能体要使用的集成。可随时在智能体的“工具”标签中更改。",
         "toolsTitle": "它可以使用哪些工具？",
-        "typePlaceholder": "输入……",
-        "visibility": {
-          "label": "可见性",
-          "onlyThisWorkspace": "仅在此工作区可见",
-          "personal": "个人",
-          "personalDescription": "在您所有的工作区中跟随您",
-          "pinnedTo": "已固定至 {{workspace}}",
-          "switchToShared": "切换到共享工作区以固定",
-          "thisWorkspace": "此工作区"
-        },
-        "visibilityPersonal": "个人",
-        "visibilityPersonalHint": "您所有的工作区",
-        "visibilitySwitchHint": "切换到共享工作区",
-        "visibilityWorkspace": "工作区",
-        "visibilityWorkspaceHint": "仅此工作区"
+        "typePlaceholder": "输入……"
       },
       "createAgent": "创建智能体",
       "createFirstAgent": "创建你的第一个智能体",
@@ -30243,7 +30079,6 @@ export const resources = {
         "descriptionPlaceholder": "此智能体的功能是什么？",
         "role": "智能体角色",
         "title": "编辑智能体",
-        "visibility": "可见性",
         "wakeUrl": "唤醒 URL"
       },
       "editDetails": "编辑详情",
@@ -31257,14 +31092,13 @@ export const resources = {
       "viewDetails": "查看详情",
       "viewProfile": "查看个人资料",
       "visibility": {
+        "all": "所有工作区",
+        "allHint": "跟随你进入每个工作区",
         "friendsOnly": "仅好友",
-        "personal": "个人",
-        "personalHint": "在你所有的工作区中可见。",
+        "label": "可见范围",
         "public": "公开",
-        "switchHint": "切换到共享工作区以固定。",
-        "unlisted": "不公开（仅链接可见）",
-        "workspace": "工作区",
-        "workspaceHint": "仅在 {{name}} 中可见。"
+        "selectedHint": "仅在勾选的工作区中可见",
+        "unlisted": "不公开（仅链接可见）"
       },
       "wizard": {
         "addSpecialtyPlaceholder": "添加专长",
@@ -31337,16 +31171,7 @@ export const resources = {
         "tapToChange": "点击更改",
         "tapToChoosePhoto": "点击选择照片（可选）",
         "untitled": "未命名",
-        "usesDefaultHint": "使用您已保存的默认设置 — 不会更改。",
-        "visibility": {
-          "label": "可见性",
-          "personal": "个人",
-          "personalHint": "在您所有的工作区中可见",
-          "pinDisabledHint": "切换到共享工作区以固定",
-          "pinnedHint": "仅在此工作区可见",
-          "pinnedTo": "已固定至 {{name}}",
-          "thisWorkspace": "此工作区"
-        }
+        "usesDefaultHint": "使用您已保存的默认设置 — 不会更改。"
       }
     },
     "artifacts": {
@@ -35095,21 +34920,7 @@ export const resources = {
         "toneTitle": "어떻게 말해야 할까요?",
         "toolsHint": "이 에이전트가 사용할 통합을 선택하세요. 에이전트의 도구 탭에서 언제든지 변경할 수 있습니다.",
         "toolsTitle": "어떤 도구를 사용할 수 있나요?",
-        "typePlaceholder": "입력...",
-        "visibility": {
-          "label": "공개 범위",
-          "onlyThisWorkspace": "이 워크스페이스에서만 표시됩니다",
-          "personal": "개인",
-          "personalDescription": "모든 워크스페이스에서 따라다닙니다",
-          "pinnedTo": "{{workspace}}에 고정됨",
-          "switchToShared": "고정하려면 공유 워크스페이스로 전환하세요",
-          "thisWorkspace": "이 워크스페이스"
-        },
-        "visibilityPersonal": "개인",
-        "visibilityPersonalHint": "모든 워크스페이스",
-        "visibilitySwitchHint": "공유 워크스페이스로 전환",
-        "visibilityWorkspace": "워크스페이스",
-        "visibilityWorkspaceHint": "이 워크스페이스에서만"
+        "typePlaceholder": "입력..."
       },
       "createAgent": "에이전트 만들기",
       "createFirstAgent": "첫 에이전트를 만들어보세요",
@@ -35166,7 +34977,6 @@ export const resources = {
         "descriptionPlaceholder": "이 에이전트는 무엇을 하나요?",
         "role": "에이전트 역할",
         "title": "에이전트 편집",
-        "visibility": "공개 범위",
         "wakeUrl": "웨이크 URL"
       },
       "editDetails": "세부정보 편집",
@@ -36180,14 +35990,13 @@ export const resources = {
       "viewDetails": "세부정보 보기",
       "viewProfile": "프로필 보기",
       "visibility": {
+        "all": "모든 워크스페이스",
+        "allHint": "모든 워크스페이스에서 함께합니다",
         "friendsOnly": "친구만",
-        "personal": "개인",
-        "personalHint": "모든 워크스페이스에서 표시됩니다.",
+        "label": "표시 범위",
         "public": "공개",
-        "switchHint": "고정하려면 공유 워크스페이스로 전환하세요.",
-        "unlisted": "비공개(링크 전용)",
-        "workspace": "워크스페이스",
-        "workspaceHint": "{{name}}에서만 표시됩니다."
+        "selectedHint": "선택한 워크스페이스에서만 표시됩니다",
+        "unlisted": "비공개(링크 전용)"
       },
       "wizard": {
         "addSpecialtyPlaceholder": "전문 분야 추가",
@@ -36260,16 +36069,7 @@ export const resources = {
         "tapToChange": "탭하여 변경",
         "tapToChoosePhoto": "탭하여 사진 선택(선택 사항)",
         "untitled": "제목 없음",
-        "usesDefaultHint": "저장된 기본값을 사용합니다 — 변경되지 않습니다.",
-        "visibility": {
-          "label": "공개 범위",
-          "personal": "개인",
-          "personalHint": "모든 워크스페이스에서 표시됩니다",
-          "pinDisabledHint": "고정하려면 공유 워크스페이스로 전환하세요",
-          "pinnedHint": "이 워크스페이스에서만 표시됩니다",
-          "pinnedTo": "{{name}}에 고정됨",
-          "thisWorkspace": "이 워크스페이스"
-        }
+        "usesDefaultHint": "저장된 기본값을 사용합니다 — 변경되지 않습니다."
       }
     },
     "artifacts": {
@@ -40018,21 +39818,7 @@ export const resources = {
         "toneTitle": "Come dovrebbero parlare?",
         "toolsHint": "Scegli le integrazioni con cui questo agente lavorerà. Puoi cambiarle in qualsiasi momento nella scheda Strumenti dell'agente.",
         "toolsTitle": "Quali strumenti può usare?",
-        "typePlaceholder": "Digita...",
-        "visibility": {
-          "label": "Visibilità",
-          "onlyThisWorkspace": "Visibile solo in questa area di lavoro",
-          "personal": "Personale",
-          "personalDescription": "Ti segue in tutte le tue aree di lavoro",
-          "pinnedTo": "Fissato a {{workspace}}",
-          "switchToShared": "Passa a un'area di lavoro condivisa per fissare",
-          "thisWorkspace": "questa area di lavoro"
-        },
-        "visibilityPersonal": "Personale",
-        "visibilityPersonalHint": "Tutte le tue aree di lavoro",
-        "visibilitySwitchHint": "Passa a un'area di lavoro condivisa",
-        "visibilityWorkspace": "Area di lavoro",
-        "visibilityWorkspaceHint": "Solo questa area di lavoro"
+        "typePlaceholder": "Digita..."
       },
       "createAgent": "Crea Agente",
       "createFirstAgent": "Crea il tuo primo agente",
@@ -40089,7 +39875,6 @@ export const resources = {
         "descriptionPlaceholder": "Cosa fa questo agente?",
         "role": "Ruolo Agente",
         "title": "Modifica Agente",
-        "visibility": "Visibilità",
         "wakeUrl": "URL di Risveglio"
       },
       "editDetails": "Modifica Dettagli",
@@ -41103,14 +40888,13 @@ export const resources = {
       "viewDetails": "Visualizza Dettagli",
       "viewProfile": "Visualizza Profilo",
       "visibility": {
+        "all": "Tutti gli spazi di lavoro",
+        "allHint": "Ti segue in ogni spazio di lavoro",
         "friendsOnly": "Solo amici",
-        "personal": "Personale",
-        "personalHint": "Visibile in tutti i tuoi workspace.",
+        "label": "Visibilità",
         "public": "Pubblico",
-        "switchHint": "Passa a un workspace condiviso per fissare.",
-        "unlisted": "Non elencato (solo link)",
-        "workspace": "Workspace",
-        "workspaceHint": "Visibile solo in {{name}}."
+        "selectedHint": "Visibile solo negli spazi di lavoro selezionati",
+        "unlisted": "Non elencato (solo link)"
       },
       "wizard": {
         "addSpecialtyPlaceholder": "Aggiungi una specialità",
@@ -41183,16 +40967,7 @@ export const resources = {
         "tapToChange": "Tocca per cambiare",
         "tapToChoosePhoto": "Tocca per scegliere una foto (opzionale)",
         "untitled": "Senza titolo",
-        "usesDefaultHint": "Usa il tuo predefinito salvato — non verrà modificato.",
-        "visibility": {
-          "label": "Visibilità",
-          "personal": "Personale",
-          "personalHint": "Visibile in tutte le tue aree di lavoro",
-          "pinDisabledHint": "Passa a un'area di lavoro condivisa per fissare",
-          "pinnedHint": "Visibile solo in questa area di lavoro",
-          "pinnedTo": "Fissato a {{name}}",
-          "thisWorkspace": "questa area di lavoro"
-        }
+        "usesDefaultHint": "Usa il tuo predefinito salvato — non verrà modificato."
       }
     },
     "artifacts": {
@@ -44941,21 +44716,7 @@ export const resources = {
         "toneTitle": "उन्हें कैसे बात करनी चाहिए?",
         "toolsHint": "चुनें कि यह एजेंट किन इंटीग्रेशनों के साथ काम करे। इसे एजेंट के टूल्स टैब में कभी भी बदला जा सकता है।",
         "toolsTitle": "वे कौन से टूल इस्तेमाल कर सकते हैं?",
-        "typePlaceholder": "टाइप करें...",
-        "visibility": {
-          "label": "दृश्यता",
-          "onlyThisWorkspace": "केवल इस वर्कस्पेस में दिखाई देता है",
-          "personal": "व्यक्तिगत",
-          "personalDescription": "आपके सभी वर्कस्पेस में आपके साथ रहता है",
-          "pinnedTo": "{{workspace}} में पिन किया गया",
-          "switchToShared": "पिन करने के लिए एक साझा वर्कस्पेस पर स्विच करें",
-          "thisWorkspace": "यह वर्कस्पेस"
-        },
-        "visibilityPersonal": "व्यक्तिगत",
-        "visibilityPersonalHint": "आपके सभी वर्कस्पेस",
-        "visibilitySwitchHint": "एक साझा वर्कस्पेस पर स्विच करें",
-        "visibilityWorkspace": "वर्कस्पेस",
-        "visibilityWorkspaceHint": "केवल यह वर्कस्पेस"
+        "typePlaceholder": "टाइप करें..."
       },
       "createAgent": "एजेंट बनाएँ",
       "createFirstAgent": "अपना पहला एजेंट बनाएँ",
@@ -45012,7 +44773,6 @@ export const resources = {
         "descriptionPlaceholder": "यह एजेंट क्या करता है?",
         "role": "एजेंट की भूमिका",
         "title": "एजेंट संपादित करें",
-        "visibility": "दृश्यता",
         "wakeUrl": "वेक URL"
       },
       "editDetails": "विवरण संपादित करें",
@@ -46026,14 +45786,13 @@ export const resources = {
       "viewDetails": "विवरण देखें",
       "viewProfile": "प्रोफ़ाइल देखें",
       "visibility": {
+        "all": "सभी वर्कस्पेस",
+        "allHint": "हर वर्कस्पेस में आपके साथ रहता है",
         "friendsOnly": "केवल मित्र",
-        "personal": "पर्सनल",
-        "personalHint": "आपके सभी वर्कस्पेस में दिखाई देता है।",
+        "label": "दृश्यता",
         "public": "पब्लिक",
-        "switchHint": "पिन करने के लिए एक शेयर्ड वर्कस्पेस पर स्विच करें।",
-        "unlisted": "अनलिस्टेड (केवल लिंक से)",
-        "workspace": "वर्कस्पेस",
-        "workspaceHint": "केवल {{name}} में दिखाई देता है।"
+        "selectedHint": "केवल चिह्नित वर्कस्पेस में दिखाई देगा",
+        "unlisted": "अनलिस्टेड (केवल लिंक से)"
       },
       "wizard": {
         "addSpecialtyPlaceholder": "एक विशेषता जोड़ें",
@@ -46106,16 +45865,7 @@ export const resources = {
         "tapToChange": "बदलने के लिए टैप करें",
         "tapToChoosePhoto": "फ़ोटो चुनने के लिए टैप करें (वैकल्पिक)",
         "untitled": "शीर्षकहीन",
-        "usesDefaultHint": "आपके सहेजे गए डिफ़ॉल्ट का उपयोग करता है — इसे बदला नहीं जाएगा।",
-        "visibility": {
-          "label": "दृश्यता",
-          "personal": "व्यक्तिगत",
-          "personalHint": "आपके सभी वर्कस्पेस में दिखाई देता है",
-          "pinDisabledHint": "पिन करने के लिए एक साझा वर्कस्पेस पर स्विच करें",
-          "pinnedHint": "केवल इस वर्कस्पेस में दिखाई देता है",
-          "pinnedTo": "{{name}} में पिन किया गया",
-          "thisWorkspace": "यह वर्कस्पेस"
-        }
+        "usesDefaultHint": "आपके सहेजे गए डिफ़ॉल्ट का उपयोग करता है — इसे बदला नहीं जाएगा।"
       }
     },
     "artifacts": {
