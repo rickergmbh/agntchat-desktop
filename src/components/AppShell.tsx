@@ -63,6 +63,16 @@ export function AppShell() {
   const participant = useAuthStore((s) => s.participant);
   const [showProfile, setShowProfile] = useState(false);
 
+  // Mirrors LeftRail's isWorkspaceMode — the "friends" view doubles as the
+  // Members view in a shared workspace, so the view gate below must match
+  // the rail gate exactly.
+  const shellWorkspacesEnabled = useWorkspacesEnabled();
+  const shellActiveWorkspace = useActiveWorkspace();
+  const shellWorkspaceMembersMode =
+    shellWorkspacesEnabled &&
+    shellActiveWorkspace !== null &&
+    !shellActiveWorkspace.isPersonal;
+
   // Connect socket + wire store listeners once we have auth
   useWebSocket();
 
@@ -117,8 +127,16 @@ export function AppShell() {
         ) : view === "friends" ? (
           // Friends is behind a runtime feature flag (resolved per-user on /me).
           // A stale persisted "friends" view falls back to the dashboard when
-          // the flag is off for this user.
-          participant?.features?.friends ? <FriendsView /> : <Dashboard />
+          // the flag is off for this user — EXCEPT in workspace mode, where
+          // this same view is the org-scoped "Members" view (the rail slot
+          // flips its label) and must mount with friends off. Without the
+          // workspace-mode arm, the Members button silently rendered the
+          // agents dashboard.
+          participant?.features?.friends || shellWorkspaceMembersMode ? (
+            <FriendsView />
+          ) : (
+            <Dashboard />
+          )
         ) : view === "files" ? (
           <FilesView onOpenConversation={handleOpenConversation} />
         ) : view === "templates" ? (

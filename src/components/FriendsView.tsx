@@ -1160,6 +1160,7 @@ function MembersView({
   workspaceName: string;
   callerRole: "owner" | "admin" | "member";
 }) {
+  const { t } = useTranslation("friends");
   const currentUserId = useAuthStore((s) => s.participant?.id);
   const setView = useNavStore((s) => s.setView);
   const conversations = useChatStore((s) => s.conversations);
@@ -1190,7 +1191,7 @@ function MembersView({
       .catch((e) => {
         if (!cancelled) {
           setMembers([]);
-          setError(e instanceof Error ? e.message : "Could not load members");
+          setError(e instanceof Error ? e.message : t("errors.loadMembersFailed"));
         }
       })
       .finally(() => {
@@ -1223,7 +1224,7 @@ function MembersView({
       setActiveConversation(convId);
       setView("chat");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not start chat");
+      setError(e instanceof Error ? e.message : t("errors.startChat"));
     } finally {
       setBusyId(null);
     }
@@ -1241,10 +1242,9 @@ function MembersView({
               <Users className="w-3.5 h-3.5 text-primary-foreground" />
             </div>
             <div className="min-w-0">
-              <h1 className="truncate text-sm font-semibold leading-tight">Members</h1>
+              <h1 className="truncate text-sm font-semibold leading-tight">{t("nav:members")}</h1>
               <p className="text-[11px] text-muted-foreground">
-                {memberCount}
-                {memberCount === 1 ? " person" : " people"} in {workspaceName}
+                {t("membersCount", { count: memberCount, workspace: workspaceName })}
               </p>
             </div>
           </div>
@@ -1252,7 +1252,7 @@ function MembersView({
         {isAdminOrOwner && (
           <Button size="sm" onClick={() => setSettingsOpen(true)}>
             <UserPlus className="mr-1 h-3 w-3" />
-            Invite member
+            {t("invite")}
           </Button>
         )}
       </header>
@@ -1266,18 +1266,16 @@ function MembersView({
       <div className="flex-1 overflow-y-auto px-4 py-4">
         {loading && !members ? (
           <div className="flex items-center gap-2 py-6 text-sm text-muted-foreground">
-            <Loader2 className="h-4 w-4 animate-spin" /> Loading members…
+            <Loader2 className="h-4 w-4 animate-spin" /> {t("loadingMembers")}
           </div>
         ) : memberCount === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center px-8 py-16 text-center">
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
               <Users className="h-7 w-7" />
             </div>
-            <p className="mt-4 text-sm font-semibold text-foreground">No members yet</p>
+            <p className="mt-4 text-sm font-semibold text-foreground">{t("empty.noMembers")}</p>
             <p className="mt-1 max-w-sm text-xs leading-relaxed text-muted-foreground">
-              {isAdminOrOwner
-                ? "Invite teammates to this workspace to start collaborating."
-                : "This workspace doesn't have any other members yet."}
+              {isAdminOrOwner ? t("empty.noMembersAdminHint") : t("empty.noMembersHint")}
             </p>
           </div>
         ) : (
@@ -1319,8 +1317,9 @@ function MemberRow({
   busy: boolean;
   onMessage: () => void;
 }) {
+  const { t } = useTranslation("friends");
   const p = member.participant;
-  const displayName = p?.displayName ?? "Member";
+  const displayName = p?.displayName ?? t("memberFallback");
   const roleBadge =
     member.role === "owner" || member.role === "admin"
       ? "bg-primary/10 text-primary"
@@ -1340,7 +1339,7 @@ function MemberRow({
         <div className="flex items-center gap-1.5">
           <span className="truncate text-sm font-semibold">{displayName}</span>
           {isSelf && (
-            <span className="text-[10px] text-muted-foreground">(you)</span>
+            <span className="text-[10px] text-muted-foreground">{t("youMarker")}</span>
           )}
         </div>
         <div className="mt-1 flex items-center gap-2">
@@ -1350,7 +1349,7 @@ function MemberRow({
               roleBadge
             )}
           >
-            {member.role}
+            {t(`role.${member.role}`, { defaultValue: member.role })}
           </span>
           <span className="flex items-center gap-1 text-[11px]">
             <span
@@ -1360,7 +1359,7 @@ function MemberRow({
               )}
             />
             <span className={online ? "font-medium text-success" : "text-muted-foreground"}>
-              {online ? "Online" : "Offline"}
+              {online ? t("common:online") : t("common:offline")}
             </span>
           </span>
         </div>
@@ -1371,7 +1370,7 @@ function MemberRow({
           variant="outline"
           disabled={busy}
           onClick={onMessage}
-          title={`Message ${displayName}`}
+          title={t("messageUser", { name: displayName })}
           className="shrink-0"
         >
           {busy ? (
