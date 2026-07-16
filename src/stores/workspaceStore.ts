@@ -24,7 +24,7 @@ interface WorkspaceState {
   initWsListeners: () => () => void;
 
   // Stage 3 management actions — same shape as web.
-  createWorkspace: (name: string, slug?: string) => Promise<api.Organization>;
+  createWorkspace: (name: string) => Promise<api.Organization>;
   renameWorkspace: (orgId: string, name: string) => Promise<void>;
   /** Set or clear the workspace avatar URL. Pass null to remove. */
   setWorkspaceAvatar: (orgId: string, avatarUrl: string | null) => Promise<void>;
@@ -125,9 +125,8 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
 
   // --- Workspace management ----------------------------------------
 
-  createWorkspace: async (name, slug) => {
-    const finalSlug = slug ?? deriveSlug(name);
-    const org = await api.createOrganization(name, finalSlug);
+  createWorkspace: async (name) => {
+    const org = await api.createOrganization(name);
     await get().refresh();
     await get().switch(org.id);
     return org;
@@ -204,15 +203,6 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     }
   },
 }));
-
-function deriveSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 24) || `ws-${Math.random().toString(36).slice(2, 8)}`;
-}
 
 // Raises `switching` for the wipe+refetch window when no switch flow
 // already owns it (the delete/leave defensive wipes call this

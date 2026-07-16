@@ -336,7 +336,6 @@ function GeneralTab({
         <section className="space-y-2">
           <label className="text-xs font-medium">{t("workspace.identifiersLabel")}</label>
           <ReadOnlyField label={t("workspace.idLabel")} value={workspace.id} />
-          <ReadOnlyField label={t("workspace.slugLabel")} value={workspace.slug} />
           <p className="text-[11px] text-muted-foreground">
             {t("workspace.identifiersHint")}
           </p>

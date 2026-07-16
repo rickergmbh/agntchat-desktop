@@ -621,7 +621,6 @@ export async function getAgentRuntimeOptions(
 export interface Organization {
   id: string;
   name: string;
-  slug: string;
   avatarUrl?: string | null;
   isPersonal?: boolean;
   ownerHumanId: string;
@@ -729,15 +728,12 @@ export async function listOrganizations(): Promise<Organization[]> {
   return res.organizations;
 }
 
-export async function createOrganization(
-  name: string,
-  slug: string
-): Promise<Organization> {
+export async function createOrganization(name: string): Promise<Organization> {
   const res = await request<{ organization: Organization }>(
     "/api/organizations",
     {
       method: "POST",
-      body: JSON.stringify({ name, slug }),
+      body: JSON.stringify({ name }),
     }
   );
   return res.organization;
@@ -2532,7 +2528,6 @@ export async function setDeviceNickname(
 export interface WorkspaceMembership {
   id: string;
   name: string;
-  slug: string;
   /** Optional workspace avatar — sidebar tile renders it when set;
    *  falls back to initials of the name otherwise. */
   avatarUrl?: string | null;
