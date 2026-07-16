@@ -70,7 +70,7 @@ export const resources = {
         "title": "Profile Picture"
       },
       "bringOnline": {
-        "noDesktopBody": "This agent runs on your computer. Open the desktop app on a computer where you're signed in, then try again.",
+        "noDesktopBody": "This agent runs on your computer, so the desktop app needs to be open and signed in before it can come online. Hosted (cloud) agents are coming soon.",
         "noDesktopTitle": "No desktop available"
       },
       "bulk": {
@@ -2783,7 +2783,9 @@ export const resources = {
       "viewOnlyBadge": "View only",
       "wake": {
         "bridgeRequired": "{{names}} — bridge must be running on host machine.",
-        "cantWakeTitle": "Can't Wake"
+        "cantWakeTitle": "Can't Wake",
+        "noDesktopBody": "This agent runs on your computer, so the desktop app needs to be open and signed in before it can come online. Hosted (cloud) agents are coming soon.",
+        "noDesktopTitle": "Desktop app needed"
       },
       "waking": "Waking…",
       "welcomeBody": "Conversations live here once you have an agent to chat with. Create your first agent to get started.",
@@ -4990,7 +4992,7 @@ export const resources = {
         "title": "Foto de perfil"
       },
       "bringOnline": {
-        "noDesktopBody": "Este agente se ejecuta en tu ordenador. Abre la app de escritorio en un ordenador donde hayas iniciado sesión e inténtalo de nuevo.",
+        "noDesktopBody": "Este agente se ejecuta en tu ordenador, así que la app de escritorio debe estar abierta y con la sesión iniciada antes de que pueda conectarse. Los agentes alojados (en la nube) llegarán pronto.",
         "noDesktopTitle": "No hay escritorio disponible"
       },
       "bulk": {
@@ -7703,7 +7705,9 @@ export const resources = {
       "viewOnlyBadge": "Solo lectura",
       "wake": {
         "bridgeRequired": "{{names}} — el puente debe estar en ejecución en la máquina anfitriona.",
-        "cantWakeTitle": "No se puede despertar"
+        "cantWakeTitle": "No se puede despertar",
+        "noDesktopBody": "Este agente se ejecuta en tu ordenador, así que la app de escritorio debe estar abierta y con la sesión iniciada antes de que pueda conectarse. Los agentes alojados (en la nube) llegarán pronto.",
+        "noDesktopTitle": "Se necesita la app de escritorio"
       },
       "waking": "Despertando…",
       "welcomeBody": "Las conversaciones aparecerán aquí cuando tengas un agente con quien chatear. Crea tu primer agente para empezar.",
@@ -9910,7 +9914,7 @@ export const resources = {
         "title": "Profilbild"
       },
       "bringOnline": {
-        "noDesktopBody": "Dieser Agent läuft auf deinem Computer. Öffne die Desktop-App auf einem Computer, auf dem du angemeldet bist, und versuche es erneut.",
+        "noDesktopBody": "Dieser Agent läuft auf deinem Computer — die Desktop-App muss geöffnet und angemeldet sein, bevor er online gehen kann. Gehostete (Cloud-)Agenten kommen bald.",
         "noDesktopTitle": "Kein Desktop verfügbar"
       },
       "bulk": {
@@ -12623,7 +12627,9 @@ export const resources = {
       "viewOnlyBadge": "Nur ansehen",
       "wake": {
         "bridgeRequired": "{{names}} — Bridge muss auf dem Host-Rechner laufen.",
-        "cantWakeTitle": "Aufwecken nicht möglich"
+        "cantWakeTitle": "Aufwecken nicht möglich",
+        "noDesktopBody": "Dieser Agent läuft auf deinem Computer — die Desktop-App muss geöffnet und angemeldet sein, bevor er online gehen kann. Gehostete (Cloud-)Agenten kommen bald.",
+        "noDesktopTitle": "Desktop-App erforderlich"
       },
       "waking": "Wird geweckt…",
       "welcomeBody": "Hier erscheinen Ihre Unterhaltungen, sobald Sie einen Agenten zum Chatten haben. Erstellen Sie Ihren ersten Agenten, um loszulegen.",
@@ -14830,7 +14836,7 @@ export const resources = {
         "title": "Photo de profil"
       },
       "bringOnline": {
-        "noDesktopBody": "Cet agent s'exécute sur votre ordinateur. Ouvrez l'application de bureau sur un ordinateur où vous êtes connecté, puis réessayez.",
+        "noDesktopBody": "Cet agent s'exécute sur votre ordinateur : l'application de bureau doit être ouverte et connectée avant qu'il puisse passer en ligne. Les agents hébergés (dans le cloud) arrivent bientôt.",
         "noDesktopTitle": "Aucun ordinateur disponible"
       },
       "bulk": {
@@ -17543,7 +17549,9 @@ export const resources = {
       "viewOnlyBadge": "Lecture seule",
       "wake": {
         "bridgeRequired": "{{names}} — le pont doit être en cours d'exécution sur la machine hôte.",
-        "cantWakeTitle": "Réveil impossible"
+        "cantWakeTitle": "Réveil impossible",
+        "noDesktopBody": "Cet agent s'exécute sur votre ordinateur : l'application de bureau doit être ouverte et connectée avant qu'il puisse passer en ligne. Les agents hébergés (dans le cloud) arrivent bientôt.",
+        "noDesktopTitle": "Application de bureau requise"
       },
       "waking": "Réveil en cours…",
       "welcomeBody": "Les conversations apparaissent ici dès que vous avez un agent avec qui discuter. Créez votre premier agent pour commencer.",
@@ -19750,7 +19758,7 @@ export const resources = {
         "title": "Foto de Perfil"
       },
       "bringOnline": {
-        "noDesktopBody": "Este agente roda no seu computador. Abra o app de desktop em um computador onde você está conectado e tente novamente.",
+        "noDesktopBody": "Este agente roda no seu computador, então o app de desktop precisa estar aberto e conectado antes que ele possa ficar online. Agentes hospedados (na nuvem) chegam em breve.",
         "noDesktopTitle": "Nenhum desktop disponível"
       },
       "bulk": {
@@ -22463,7 +22471,9 @@ export const resources = {
       "viewOnlyBadge": "Somente visualização",
       "wake": {
         "bridgeRequired": "{{names}} — a bridge precisa estar rodando na máquina host.",
-        "cantWakeTitle": "Não é possível acordar"
+        "cantWakeTitle": "Não é possível acordar",
+        "noDesktopBody": "Este agente roda no seu computador, então o app de desktop precisa estar aberto e conectado antes que ele possa ficar online. Agentes hospedados (na nuvem) chegam em breve.",
+        "noDesktopTitle": "App de desktop necessário"
       },
       "waking": "Acordando…",
       "welcomeBody": "As conversas aparecem aqui assim que você tiver um agente para conversar. Crie seu primeiro agente para começar.",
@@ -24670,7 +24680,7 @@ export const resources = {
         "title": "プロフィール画像"
       },
       "bringOnline": {
-        "noDesktopBody": "このエージェントはあなたのパソコンで動きます。サインイン済みのパソコンでデスクトップアプリを開いてから、もう一度お試しください。",
+        "noDesktopBody": "このエージェントはあなたのパソコンで動くため、オンラインにするにはデスクトップアプリを開いてサインインしておく必要があります。ホスト型（クラウド）エージェントは近日提供予定です。",
         "noDesktopTitle": "利用できるデスクトップがありません"
       },
       "bulk": {
@@ -27383,7 +27393,9 @@ export const resources = {
       "viewOnlyBadge": "閲覧のみ",
       "wake": {
         "bridgeRequired": "{{names}} — ホストマシンでブリッジが実行されている必要があります。",
-        "cantWakeTitle": "起動できません"
+        "cantWakeTitle": "起動できません",
+        "noDesktopBody": "このエージェントはあなたのパソコンで動くため、オンラインにするにはデスクトップアプリを開いてサインインしておく必要があります。ホスト型（クラウド）エージェントは近日提供予定です。",
+        "noDesktopTitle": "デスクトップアプリが必要です"
       },
       "waking": "起動中…",
       "welcomeBody": "エージェントとチャットできるようになると、ここに会話が表示されます。最初のエージェントを作成して始めましょう。",
@@ -29590,7 +29602,7 @@ export const resources = {
         "title": "个人资料图片"
       },
       "bringOnline": {
-        "noDesktopBody": "该智能体在你的电脑上运行。请在已登录的电脑上打开桌面应用，然后重试。",
+        "noDesktopBody": "该智能体在你的电脑上运行，因此需要先打开桌面应用并保持登录，才能让它上线。托管（云端）智能体即将推出。",
         "noDesktopTitle": "没有可用的桌面端"
       },
       "bulk": {
@@ -32303,7 +32315,9 @@ export const resources = {
       "viewOnlyBadge": "仅查看",
       "wake": {
         "bridgeRequired": "{{names}}——需要在主机设备上运行 bridge。",
-        "cantWakeTitle": "无法唤醒"
+        "cantWakeTitle": "无法唤醒",
+        "noDesktopBody": "该智能体在你的电脑上运行，因此需要先打开桌面应用并保持登录，才能让它上线。托管（云端）智能体即将推出。",
+        "noDesktopTitle": "需要桌面应用"
       },
       "waking": "唤醒中…",
       "welcomeBody": "当你有可对话的智能体时，对话会显示在这里。创建你的第一个智能体开始使用。",
@@ -34510,7 +34524,7 @@ export const resources = {
         "title": "프로필 사진"
       },
       "bringOnline": {
-        "noDesktopBody": "이 에이전트는 사용자의 컴퓨터에서 실행됩니다. 로그인되어 있는 컴퓨터에서 데스크톱 앱을 연 다음 다시 시도하세요.",
+        "noDesktopBody": "이 에이전트는 사용자의 컴퓨터에서 실행되므로, 온라인으로 전환하려면 먼저 데스크톱 앱이 열려 있고 로그인되어 있어야 합니다. 호스팅(클라우드) 에이전트가 곧 제공될 예정입니다.",
         "noDesktopTitle": "사용 가능한 데스크톱 없음"
       },
       "bulk": {
@@ -37223,7 +37237,9 @@ export const resources = {
       "viewOnlyBadge": "보기 전용",
       "wake": {
         "bridgeRequired": "{{names}} — 호스트 머신에서 브리지가 실행 중이어야 합니다.",
-        "cantWakeTitle": "깨울 수 없음"
+        "cantWakeTitle": "깨울 수 없음",
+        "noDesktopBody": "이 에이전트는 사용자의 컴퓨터에서 실행되므로, 온라인으로 전환하려면 먼저 데스크톱 앱이 열려 있고 로그인되어 있어야 합니다. 호스팅(클라우드) 에이전트가 곧 제공될 예정입니다.",
+        "noDesktopTitle": "데스크톱 앱 필요"
       },
       "waking": "깨우는 중…",
       "welcomeBody": "채팅할 에이전트가 있으면 대화가 이곳에 표시됩니다. 첫 에이전트를 만들어 시작해 보세요.",
@@ -39430,7 +39446,7 @@ export const resources = {
         "title": "Immagine del Profilo"
       },
       "bringOnline": {
-        "noDesktopBody": "Questo agente gira sul tuo computer. Apri l'app desktop su un computer in cui hai effettuato l'accesso e riprova.",
+        "noDesktopBody": "Questo agente gira sul tuo computer, quindi l'app desktop deve essere aperta e con l'accesso effettuato prima che possa andare online. Gli agenti ospitati (nel cloud) arriveranno presto.",
         "noDesktopTitle": "Nessun desktop disponibile"
       },
       "bulk": {
@@ -42143,7 +42159,9 @@ export const resources = {
       "viewOnlyBadge": "Sola visualizzazione",
       "wake": {
         "bridgeRequired": "{{names}} — il bridge deve essere in esecuzione sulla macchina host.",
-        "cantWakeTitle": "Impossibile svegliare"
+        "cantWakeTitle": "Impossibile svegliare",
+        "noDesktopBody": "Questo agente gira sul tuo computer, quindi l'app desktop deve essere aperta e con l'accesso effettuato prima che possa andare online. Gli agenti ospitati (nel cloud) arriveranno presto.",
+        "noDesktopTitle": "Serve l'app desktop"
       },
       "waking": "Risveglio in corso…",
       "welcomeBody": "Le conversazioni vivono qui una volta che hai un agente con cui chattare. Crea il tuo primo agente per iniziare.",
@@ -44350,7 +44368,7 @@ export const resources = {
         "title": "प्रोफ़ाइल फ़ोटो"
       },
       "bringOnline": {
-        "noDesktopBody": "यह एजेंट आपके कंप्यूटर पर चलता है। जिस कंप्यूटर पर आप साइन इन हैं वहाँ डेस्कटॉप ऐप खोलें और फिर से प्रयास करें।",
+        "noDesktopBody": "यह एजेंट आपके कंप्यूटर पर चलता है, इसलिए इसे ऑनलाइन लाने से पहले डेस्कटॉप ऐप खुला और साइन-इन होना ज़रूरी है। होस्टेड (क्लाउड) एजेंट जल्द आ रहे हैं।",
         "noDesktopTitle": "कोई डेस्कटॉप उपलब्ध नहीं"
       },
       "bulk": {
@@ -47063,7 +47081,9 @@ export const resources = {
       "viewOnlyBadge": "केवल देखने योग्य",
       "wake": {
         "bridgeRequired": "{{names}} — होस्ट मशीन पर ब्रिज चल रहा होना चाहिए।",
-        "cantWakeTitle": "जगा नहीं सकते"
+        "cantWakeTitle": "जगा नहीं सकते",
+        "noDesktopBody": "यह एजेंट आपके कंप्यूटर पर चलता है, इसलिए इसे ऑनलाइन लाने से पहले डेस्कटॉप ऐप खुला और साइन-इन होना ज़रूरी है। होस्टेड (क्लाउड) एजेंट जल्द आ रहे हैं।",
+        "noDesktopTitle": "डेस्कटॉप ऐप ज़रूरी है"
       },
       "waking": "जगाया जा रहा है…",
       "welcomeBody": "जब आपके पास चैट करने के लिए कोई एजेंट होगा, तो बातचीत यहाँ दिखाई देंगी। शुरू करने के लिए अपना पहला एजेंट बनाएँ।",
