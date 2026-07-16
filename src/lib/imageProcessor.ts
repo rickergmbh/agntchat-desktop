@@ -139,7 +139,10 @@ export async function processAvatarFile(file: File | Blob): Promise<ProcessedAva
     throw new Error(`Image exceeds ${limitKb} KB after compression — try a smaller or simpler image.`);
   }
 
-  return { blob, contentType: format, size: blob.size };
+  // Trust the blob over `format`: toBlob silently substitutes PNG when it
+  // can't encode the requested type, so what we asked for isn't necessarily
+  // what we got — and the key's extension is derived from this.
+  return { blob, contentType: blob.type || format, size: blob.size };
 }
 
 /**
@@ -160,8 +163,11 @@ export async function uploadProcessedBlob(
   contentType: string,
   basePath: string
 ): Promise<string> {
-  const policy = await getAvatarPolicy();
-  const filename = `${basePath}.${extensionFor(policy.format)}`;
+  // Extension comes from the bytes we're actually sending, not from
+  // policy.format — those diverge whenever the webview can't encode the
+  // policy format and we fall back to JPEG. `basePath` must not carry its
+  // own extension.
+  const filename = `${basePath}.${extensionFor(contentType)}`;
 
   const { url: uploadUrl, publicUrl } = await presignAvatarUpload(
     filename,

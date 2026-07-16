@@ -187,7 +187,7 @@ function GeneralTab({
     setUploadingAvatar(true);
     setError(null);
     try {
-      const url = await uploadAvatar(file, `workspace-avatars/${workspace.id}.jpg`);
+      const url = await uploadAvatar(file, `workspace-avatars/${workspace.id}`);
       await setWorkspaceAvatar(workspace.id, url);
     } catch (err) {
       setError(err instanceof Error ? err.message : t("workspace.errors.avatarUpload"));
