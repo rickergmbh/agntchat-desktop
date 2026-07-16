@@ -1896,6 +1896,7 @@ export async function createRoutine(data: {
   description?: string;
   report_to?: string;
   max_runs?: number;
+  organization_id?: string;
 }): Promise<{ routine: Routine }> {
   return request("/api/routines", {
     method: "POST",
@@ -3292,6 +3293,7 @@ export interface Routine {
   id: string;
   participantId: string;
   ownerId: string;
+  organizationId?: string;
   name: string;
   description?: string;
   instructions: string;

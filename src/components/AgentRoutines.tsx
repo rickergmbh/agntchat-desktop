@@ -4,6 +4,7 @@ import i18n from "../i18n";
 import { useAgentStore } from "../stores/agentStore";
 import { useChatStore } from "../stores/chatStore";
 import { useAuthStore } from "../stores/authStore";
+import { useWorkspaces, useWorkspacesEnabled } from "../stores/workspaceStore";
 import {
   type Routine,
   listRoutines,
@@ -622,6 +623,23 @@ export function AgentRoutines({ agentId }: AgentRoutinesProps) {
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  // Routines are workspace-scoped; label the ones pinned to a workspace other
+  // than the one the user is currently looking at.
+  const activeOrgId = useAuthStore((s) => s.participant?.activeOrganizationId);
+  const workspaces = useWorkspaces();
+  const workspacesEnabled = useWorkspacesEnabled();
+  const workspaceLabel = useCallback(
+    (routine: Routine): string | null => {
+      if (!workspacesEnabled || !routine.organizationId) return null;
+      if (routine.organizationId === activeOrgId) return null;
+      return (
+        workspaces.find((w) => w.id === routine.organizationId)?.name ??
+        i18n.t("agents:routines.otherWorkspace")
+      );
+    },
+    [workspacesEnabled, activeOrgId, workspaces],
+  );
+
   const fetchRoutines = useCallback(async () => {
     try {
       setError(null);
@@ -696,7 +714,9 @@ export function AgentRoutines({ agentId }: AgentRoutinesProps) {
       ) : (
         <>
           <div className="space-y-2">
-            {routines.map((routine) => (
+            {routines.map((routine) => {
+              const wsLabel = workspaceLabel(routine);
+              return (
               <div
                 key={routine.id}
                 className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-accent/5 transition-colors"
@@ -710,6 +730,15 @@ export function AgentRoutines({ agentId }: AgentRoutinesProps) {
                     >
                       {t(`status.${routine.status}`, { defaultValue: routine.status })}
                     </Badge>
+                    {wsLabel && (
+                      <Badge
+                        variant="outline"
+                        className="text-[10px] px-1.5 py-0 max-w-32 truncate"
+                        title={t("routines.inWorkspace", { name: wsLabel })}
+                      >
+                        {wsLabel}
+                      </Badge>
+                    )}
                     {routine.consecutiveFailures > 0 && (
                       <Badge variant="destructive" className="text-[10px] px-1.5 py-0">
                         <AlertTriangle className="w-2.5 h-2.5 mr-0.5" />
@@ -785,7 +814,8 @@ export function AgentRoutines({ agentId }: AgentRoutinesProps) {
                   )}
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
 
           <Button size="sm" variant="outline" onClick={() => setShowCreate(true)}>
@@ -838,6 +868,10 @@ function CreateRoutineDialog({
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Pin new routines to the workspace the user is currently looking at
+  // (backend falls back to agent home org → owner Personal when omitted).
+  const activeOrgId = useAuthStore((s) => s.participant?.activeOrganizationId);
+
   // Get available templates from the agent's structured_capabilities
   const { agents } = useAgentStore();
   const agentName = useMemo(
@@ -880,6 +914,7 @@ function CreateRoutineDialog({
         ...(reportTo ? { report_to: reportTo } : {}),
         ...(maxRuns ? { max_runs: parseInt(maxRuns) } : {}),
         ...(responseTemplate ? { response_template: responseTemplate } : {}),
+        ...(activeOrgId ? { organization_id: activeOrgId } : {}),
       });
       resetForm();
       onClose();
