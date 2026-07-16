@@ -136,7 +136,7 @@ const STEP_SUBTITLE_KEYS: Record<WizardStep, string> = {
 };
 
 export function CreateAgentModal({ onClose }: { onClose: () => void }) {
-  const { t } = useTranslation("agents");
+  const { t, i18n } = useTranslation("agents");
   const { createAgent, selectAgent } = useAgentStore();
   const limits = useFieldLimits();
 
@@ -392,6 +392,18 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     () => [...specialties, ...customSpecialties],
     [specialties, customSpecialties]
   );
+
+  // Only some specialties have a tailored placeholder in the catalog, so the
+  // first one that does wins and the rest fall back to the role's "default".
+  // Specialties are picked after this step, so they're only set here when a
+  // preset seeded them.
+  const descPlaceholder = useMemo(() => {
+    const match = specialties.find((s) =>
+      i18n.exists(`agents:create.descPlaceholders.${agentRole}.${specialtySlug(s)}`)
+    );
+    const suffix = match ? specialtySlug(match) : "default";
+    return t(`create.descPlaceholders.${agentRole}.${suffix}`);
+  }, [agentRole, specialties, t, i18n]);
 
   // Apply a starting point (or "scratch" = null). Sets role FIRST and then
   // specialties in the same handler — the role step's own click handler
@@ -1166,15 +1178,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                       id="agent-desc"
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
-                      placeholder={t(
-                        agentRole === "orchestrator"
-                          ? "create.descPlaceholder.orchestrator"
-                          : agentRole === "reviewer"
-                            ? "create.descPlaceholder.reviewer"
-                            : agentRole === "observer"
-                              ? "create.descPlaceholder.observer"
-                              : "create.descPlaceholder.worker"
-                      )}
+                      placeholder={descPlaceholder}
                       rows={3}
                       maxLength={limits.agent.description}
                       className="resize-none"
