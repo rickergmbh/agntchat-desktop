@@ -6,7 +6,6 @@ import { useAuthStore } from "./authStore";
 import { useChatStore } from "./chatStore";
 import { useAgentStore } from "./agentStore";
 import { useTaskStore } from "./taskStore";
-import { usePresenceStore } from "./presenceStore";
 import { useStreamingStore } from "./streamingStore";
 import type { Participant, WorkspaceMembership } from "../lib/api";
 
@@ -294,7 +293,11 @@ async function doRefetchOrgScoped() {
 
   useTaskStore.setState({ tasks: [] });
 
-  usePresenceStore.setState({ online: new Set<string>() });
+  // Streaming is conversation-keyed and those conversations are gone —
+  // clear it. Presence is deliberately NOT wiped: it's participant-keyed,
+  // not workspace-keyed, and the authoritative presence_snapshot only
+  // arrives on user-channel JOIN (never on switch) — wiping here made
+  // hosted agents render offline after every switch. See web store.
   useStreamingStore.setState({ streams: {} });
 
   // 3. Refetch the current workspace's lists. Agent threads are
