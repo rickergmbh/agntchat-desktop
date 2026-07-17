@@ -146,6 +146,18 @@ export async function wakeAgent(
 }
 
 /**
+ * Owner-only "take this agent offline" — counterpart of wakeAgent. Hosted:
+ * the backend records the stop intent (parks the recovery worker) and kills
+ * the bridge on its host VM. Local: routes a stop request to the signed-in
+ * desktop running it.
+ */
+export async function stopAgent(
+  agentId: string
+): Promise<{ stopped: boolean; status?: string; reason?: string }> {
+  return request(`/api/agents/${agentId}/stop`, { method: "POST" });
+}
+
+/**
  * Mint an owner delegation token to remote-start a local agent whose API key
  * isn't on this machine (it was created on the phone/web or another device).
  * The bridge exchanges this JWT for a normal agent token exactly like a

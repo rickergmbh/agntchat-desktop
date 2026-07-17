@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAgentStore, type ManagedAgent } from "../stores/agentStore";
 import { usePresenceStore } from "../stores/presenceStore";
@@ -7,7 +7,12 @@ import { useModelCatalog } from "../stores/modelCatalogStore";
 import { formatBackendLabel } from "../lib/models";
 import { cn } from "../lib/utils";
 import { Crown, Cloud, Laptop, Link2, ChevronRight, ChevronDown, Loader2 } from "lucide-react";
-import { restartHostedAgents, forceResetAgent } from "../lib/api";
+import {
+  restartHostedAgents,
+  forceResetAgent,
+  stopAgent as stopAgentRemote,
+} from "../lib/api";
+import { useAuthStore } from "../stores/authStore";
 import { runningElsewhereOn, useLocalDeviceName } from "../hooks/useRunningElsewhere";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -248,6 +253,34 @@ export function AgentRow({
     }
   };
 
+  // "Take offline" for a running HOSTED agent — mirror of handleBringOnline
+  // and of the web AgentsPage row. The backend records the stop intent
+  // (parking the recovery worker so it stays down) and kills the bridge on
+  // its host VM. Gated on the org_hosts flag like every hosted control.
+  // Presence flipping offline is the success signal; the timeout is the
+  // safety net for a stop that never lands.
+  const orgHostsEnabled = useAuthStore((s) => s.participant?.features?.org_hosts === true);
+  const [stoppingHosted, setStoppingHosted] = useState(false);
+  const [stopHostedError, setStopHostedError] = useState<string | null>(null);
+  useEffect(() => {
+    if (!remoteOnline) setStoppingHosted(false);
+  }, [remoteOnline]);
+  const handleTakeOfflineHosted = async () => {
+    setStopHostedError(null);
+    setStoppingHosted(true);
+    window.setTimeout(() => setStoppingHosted(false), 30_000);
+    try {
+      // The API stop (not the store's local-subprocess stopAgent, which this
+      // would otherwise shadow) — hosted agents have no local process.
+      await stopAgentRemote(managed.agent.id);
+    } catch (err) {
+      setStoppingHosted(false);
+      setStopHostedError(
+        err instanceof Error ? err.message : t("errors.takeOfflineFailed")
+      );
+    }
+  };
+
   // Reasons the start action can't fire. Surfaced as a warning icon in
   // place of the play button so the user sees something is wrong without
   // clicking through. `starting` is transient and already reflected in the
@@ -445,22 +478,33 @@ export function AgentRow({
                   }
                 />
                 <TooltipContent side="left" className="text-xs">
-                  Sub-agent — started and retired by its parent agent
+                  {t("row.subAgentHint")}
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
           ) : isOrgHost ? (
             waking ? (
               <AgentPowerSwitch checked busy label={t("row.bringingOnline")} />
+            ) : stoppingHosted ? (
+              <AgentPowerSwitch checked busy label={t("row.takingOffline")} />
+            ) : remoteOnline && orgHostsEnabled ? (
+              // Live on the org host — flipping the switch stops the bridge
+              // on the host (backend parks recovery so it stays down until
+              // the owner brings it back). Parity with the web agents list.
+              <AgentPowerSwitch
+                checked
+                onToggle={() => handleTakeOfflineHosted()}
+                label={t("row.takeOffline")}
+                tooltip={stopHostedError ?? undefined}
+              />
             ) : remoteOnline ? (
-              // Live on the org host — the switch reads green (online) but is
-              // disabled here: a hosted agent is started/stopped on the host,
-              // not from this device.
+              // Live on the org host but not controllable here (org_hosts
+              // flag off) — green switch, disabled, with a hint.
               <AgentPowerSwitch
                 checked
                 disabled
                 label={t("common:online")}
-                tooltip="Runs on the org host — started and stopped there, not from this device"
+                tooltip={t("row.hostedRunningHint")}
               />
             ) : (
               // Offline hosted agent — flipping the switch restarts its bridge
