@@ -1977,6 +1977,7 @@ export async function createLoop(data: {
   trigger_mode: "continuous" | "interval";
   interval_minutes?: number;
   max_iterations?: number;
+  organization_id?: string;
 }): Promise<{ loop: AgentLoop }> {
   return request("/api/loops", {
     method: "POST",
@@ -3407,6 +3408,7 @@ export interface AgentLoop {
   conversationId?: string;
   goal: string;
   iterationDirective?: string;
+  organizationId?: string;
   triggerMode: "continuous" | "interval";
   intervalMinutes?: number;
   minDelaySeconds: number;

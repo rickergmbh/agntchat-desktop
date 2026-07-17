@@ -2,6 +2,11 @@ import { useEffect, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import i18n from "../i18n";
 import {
+  useActiveWorkspace,
+  useWorkspaces,
+  useWorkspacesEnabled,
+} from "../stores/workspaceStore";
+import {
   type AgentLoop,
   listLoops,
   createLoop,
@@ -96,6 +101,10 @@ interface LoopFormState {
   triggerMode: TriggerMode;
   intervalMinutes: string;
   maxIterations: string;
+  // "__personal__" = owner's Personal workspace (no pin); otherwise a
+  // workspace id. The shadcn Select can't hold an empty-string value, so
+  // the sentinel stands in for "unpinned" in both create and edit.
+  organizationId: string;
 }
 
 function defaultFormState(): LoopFormState {
@@ -105,6 +114,7 @@ function defaultFormState(): LoopFormState {
     triggerMode: "continuous",
     intervalMinutes: "60",
     maxIterations: "50",
+    organizationId: "__personal__",
   };
 }
 
@@ -116,6 +126,8 @@ function LoopFormFields({
   setState: (next: LoopFormState) => void;
 }) {
   const { t } = useTranslation("agents");
+  const workspacesEnabled = useWorkspacesEnabled();
+  const workspaces = useWorkspaces();
 
   return (
     <>
@@ -192,6 +204,42 @@ function LoopFormFields({
           className="w-32"
         />
       </div>
+
+      {/* Workspace pin — only meaningful when the owner belongs to more
+          than one workspace. "__personal__" is the Select-safe stand-in
+          for "unpinned" (owner's Personal workspace). */}
+      {workspacesEnabled && workspaces.length > 1 && (
+        <div className="space-y-1.5">
+          <Label className="text-xs">{t("workspacePin.label")}</Label>
+          <Select
+            value={state.organizationId || "__personal__"}
+            onValueChange={(v) => {
+              if (!v) return;
+              setState({ ...state, organizationId: v });
+            }}
+          >
+            <SelectTrigger>
+              <SelectValue>
+                {(val: unknown) =>
+                  String(val) === "__personal__"
+                    ? t("pulse.defaultWorkspace")
+                    : workspaces.find((w) => w.id === String(val))?.name ??
+                      String(val ?? "")
+                }
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="__personal__">{t("pulse.defaultWorkspace")}</SelectItem>
+              {workspaces.map((w) => (
+                <SelectItem key={w.id} value={w.id}>{w.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <p className="text-[11px] text-muted-foreground">
+            {t("workspacePin.hint")}
+          </p>
+        </div>
+      )}
     </>
   );
 }
@@ -506,12 +554,21 @@ function CreateLoopDialog({
   agentId: string;
 }) {
   const { t } = useTranslation("agents");
-  const [form, setForm] = useState<LoopFormState>(() => defaultFormState());
+  const workspacesEnabled = useWorkspacesEnabled();
+  const activeWorkspace = useActiveWorkspace();
+  // Pre-select the workspace the user is currently in (a real workspace,
+  // not Personal); otherwise leave unpinned.
+  const initialOrgId =
+    workspacesEnabled && activeWorkspace ? activeWorkspace.id : "__personal__";
+  const [form, setForm] = useState<LoopFormState>(() => ({
+    ...defaultFormState(),
+    organizationId: initialOrgId,
+  }));
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const resetForm = () => {
-    setForm(defaultFormState());
+    setForm({ ...defaultFormState(), organizationId: initialOrgId });
     setError(null);
   };
 
@@ -531,6 +588,9 @@ function CreateLoopDialog({
           ? { interval_minutes: fields.interval_minutes as number }
           : {}),
         max_iterations: fields.max_iterations as number,
+        ...(form.organizationId !== "__personal__"
+          ? { organization_id: form.organizationId }
+          : {}),
       });
       resetForm();
       onClose();
@@ -592,6 +652,7 @@ function EditLoopDialog({
         triggerMode: loop.triggerMode,
         intervalMinutes: String(loop.intervalMinutes ?? 60),
         maxIterations: String(loop.maxIterations),
+        organizationId: loop.organizationId ?? "__personal__",
       });
       setError(null);
     }
@@ -602,7 +663,12 @@ function EditLoopDialog({
     setSaving(true);
     setError(null);
     try {
-      await updateLoop(loop.id, formToFields(form));
+      await updateLoop(loop.id, {
+        ...formToFields(form),
+        // Always send on PATCH: "" clears the pin, a workspace id sets it.
+        organization_id:
+          form.organizationId === "__personal__" ? "" : form.organizationId,
+      });
       onClose();
     } catch (e) {
       setError(saveErrorMessage(e));

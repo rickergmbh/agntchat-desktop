@@ -4,7 +4,11 @@ import i18n from "../i18n";
 import { useAgentStore } from "../stores/agentStore";
 import { useChatStore } from "../stores/chatStore";
 import { useAuthStore } from "../stores/authStore";
-import { useWorkspaces, useWorkspacesEnabled } from "../stores/workspaceStore";
+import {
+  useActiveWorkspace,
+  useWorkspaces,
+  useWorkspacesEnabled,
+} from "../stores/workspaceStore";
 import {
   type Routine,
   listRoutines,
@@ -868,9 +872,16 @@ function CreateRoutineDialog({
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Pin new routines to the workspace the user is currently looking at
-  // (backend falls back to agent home org → owner Personal when omitted).
-  const activeOrgId = useAuthStore((s) => s.participant?.activeOrganizationId);
+  // Workspace pin. "__personal__" = owner's Personal workspace (no pin);
+  // otherwise a workspace id. Org is immutable after creation, so this
+  // picker lives only on the create form. Pre-select the workspace the
+  // user is currently in (a real workspace, not Personal).
+  const workspacesEnabled = useWorkspacesEnabled();
+  const workspaces = useWorkspaces();
+  const activeWorkspace = useActiveWorkspace();
+  const [organizationId, setOrganizationId] = useState(
+    workspacesEnabled && activeWorkspace ? activeWorkspace.id : "__personal__",
+  );
 
   // Get available templates from the agent's structured_capabilities
   const { agents } = useAgentStore();
@@ -895,6 +906,9 @@ function CreateRoutineDialog({
     setReportTo("");
     setMaxRuns("");
     setResponseTemplate("");
+    setOrganizationId(
+      workspacesEnabled && activeWorkspace ? activeWorkspace.id : "__personal__",
+    );
     setError(null);
   };
 
@@ -914,7 +928,9 @@ function CreateRoutineDialog({
         ...(reportTo ? { report_to: reportTo } : {}),
         ...(maxRuns ? { max_runs: parseInt(maxRuns) } : {}),
         ...(responseTemplate ? { response_template: responseTemplate } : {}),
-        ...(activeOrgId ? { organization_id: activeOrgId } : {}),
+        ...(organizationId !== "__personal__"
+          ? { organization_id: organizationId }
+          : {}),
       });
       resetForm();
       onClose();
@@ -1004,6 +1020,43 @@ function CreateRoutineDialog({
               </Select>
               <p className="text-xs text-muted-foreground">
                 {t("routines.templateHint")}
+              </p>
+            </div>
+          )}
+
+          {/* Workspace pin — only meaningful when the owner belongs to more
+              than one workspace. "__personal__" is the Select-safe stand-in
+              for "unpinned" (owner's Personal workspace). Org is immutable
+              after creation, so this appears only on the create form. */}
+          {workspacesEnabled && workspaces.length > 1 && (
+            <div className="space-y-1.5">
+              <Label className="text-xs">{t("workspacePin.label")}</Label>
+              <Select
+                value={organizationId || "__personal__"}
+                onValueChange={(v) => {
+                  if (!v) return;
+                  setOrganizationId(v);
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue>
+                    {(val: unknown) =>
+                      String(val) === "__personal__"
+                        ? t("pulse.defaultWorkspace")
+                        : workspaces.find((w) => w.id === String(val))?.name ??
+                          String(val ?? "")
+                    }
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__personal__">{t("pulse.defaultWorkspace")}</SelectItem>
+                  {workspaces.map((w) => (
+                    <SelectItem key={w.id} value={w.id}>{w.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-[11px] text-muted-foreground">
+                {t("workspacePin.hint")}
               </p>
             </div>
           )}

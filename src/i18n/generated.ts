@@ -1788,6 +1788,10 @@ export const resources = {
         "tapToChoosePhoto": "Tap to choose a photo (optional)",
         "untitled": "Untitled",
         "usesDefaultHint": "Uses your saved default — won't be changed."
+      },
+      "workspacePin": {
+        "hint": "Which workspace this runs in and posts to. Defaults to your Personal workspace.",
+        "label": "Workspace"
       }
     },
     "artifacts": {
@@ -6725,6 +6729,10 @@ export const resources = {
         "tapToChoosePhoto": "Toca para elegir una foto (opcional)",
         "untitled": "Sin título",
         "usesDefaultHint": "Usa tu clave predeterminada guardada — no se modificará."
+      },
+      "workspacePin": {
+        "hint": "En qué espacio de trabajo se ejecuta y publica. Por defecto, tu espacio Personal.",
+        "label": "Espacio de trabajo"
       }
     },
     "artifacts": {
@@ -11662,6 +11670,10 @@ export const resources = {
         "tapToChoosePhoto": "Zum Auswählen eines Fotos tippen (optional)",
         "untitled": "Unbenannt",
         "usesDefaultHint": "Verwendet Ihren gespeicherten Standard — wird nicht geändert."
+      },
+      "workspacePin": {
+        "hint": "In welchem Arbeitsbereich dies läuft und postet. Standardmäßig Ihr persönlicher Arbeitsbereich.",
+        "label": "Arbeitsbereich"
       }
     },
     "artifacts": {
@@ -16599,6 +16611,10 @@ export const resources = {
         "tapToChoosePhoto": "Touchez pour choisir une photo (facultatif)",
         "untitled": "Sans titre",
         "usesDefaultHint": "Utilise votre valeur par défaut enregistrée — ne sera pas modifiée."
+      },
+      "workspacePin": {
+        "hint": "Dans quel espace de travail cela s'exécute et publie. Par défaut, votre espace de travail personnel.",
+        "label": "Espace de travail"
       }
     },
     "artifacts": {
@@ -21536,6 +21552,10 @@ export const resources = {
         "tapToChoosePhoto": "Toque para escolher uma foto (opcional)",
         "untitled": "Sem título",
         "usesDefaultHint": "Usa seu padrão salvo — não será alterado."
+      },
+      "workspacePin": {
+        "hint": "Em qual espaço de trabalho isto é executado e publica. Por padrão, o seu espaço de trabalho Pessoal.",
+        "label": "Espaço de trabalho"
       }
     },
     "artifacts": {
@@ -26473,6 +26493,10 @@ export const resources = {
         "tapToChoosePhoto": "タップして写真を選択（任意）",
         "untitled": "無題",
         "usesDefaultHint": "保存済みの既定値を使用します — 変更されません。"
+      },
+      "workspacePin": {
+        "hint": "これが実行され投稿されるワークスペース。デフォルトはあなたの個人ワークスペースです。",
+        "label": "ワークスペース"
       }
     },
     "artifacts": {
@@ -31410,6 +31434,10 @@ export const resources = {
         "tapToChoosePhoto": "点击选择照片（可选）",
         "untitled": "未命名",
         "usesDefaultHint": "使用您已保存的默认设置 — 不会更改。"
+      },
+      "workspacePin": {
+        "hint": "此项运行并发布到的工作区。默认为您的个人工作区。",
+        "label": "工作区"
       }
     },
     "artifacts": {
@@ -36347,6 +36375,10 @@ export const resources = {
         "tapToChoosePhoto": "탭하여 사진 선택(선택 사항)",
         "untitled": "제목 없음",
         "usesDefaultHint": "저장된 기본값을 사용합니다 — 변경되지 않습니다."
+      },
+      "workspacePin": {
+        "hint": "이 작업이 실행되고 게시되는 워크스페이스입니다. 기본값은 개인 워크스페이스입니다.",
+        "label": "워크스페이스"
       }
     },
     "artifacts": {
@@ -41284,6 +41316,10 @@ export const resources = {
         "tapToChoosePhoto": "Tocca per scegliere una foto (opzionale)",
         "untitled": "Senza titolo",
         "usesDefaultHint": "Usa il tuo predefinito salvato — non verrà modificato."
+      },
+      "workspacePin": {
+        "hint": "In quale spazio di lavoro viene eseguito e pubblica. Per impostazione predefinita, il tuo spazio di lavoro Personale.",
+        "label": "Spazio di lavoro"
       }
     },
     "artifacts": {
@@ -46221,6 +46257,10 @@ export const resources = {
         "tapToChoosePhoto": "फ़ोटो चुनने के लिए टैप करें (वैकल्पिक)",
         "untitled": "शीर्षकहीन",
         "usesDefaultHint": "आपके सहेजे गए डिफ़ॉल्ट का उपयोग करता है — इसे बदला नहीं जाएगा।"
+      },
+      "workspacePin": {
+        "hint": "यह किस कार्यस्थान में चलता है और पोस्ट करता है। डिफ़ॉल्ट रूप से आपका व्यक्तिगत कार्यस्थान।",
+        "label": "कार्यस्थान"
       }
     },
     "artifacts": {
