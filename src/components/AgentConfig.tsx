@@ -3993,9 +3993,9 @@ function RuntimePanel({
           <RuntimeRadio
             label={t("runtime.hosted")}
             icon={Cloud}
-            tag={orgHostsEnabled ? t("config.runtime.recommendedTag") : undefined}
+            tag={orgHostsEnabled ? t("runtime.alwaysOn") : undefined}
             comingSoon={!orgHostsEnabled}
-            description={t("config.runtime.hostedDescription")}
+            description={t("runtime.hostedRadioDescription")}
             selected={pendingRuntime === "org_host"}
             onClick={() => canSwitchToOrgHost && setPendingRuntime("org_host")}
             disabled={!orgHostsEnabled || !canSwitchToOrgHost}
@@ -4003,7 +4003,8 @@ function RuntimePanel({
           <RuntimeRadio
             label={t("runtime.local")}
             icon={Laptop}
-            description={t("config.runtime.localDescription")}
+            tag={orgHostsEnabled ? t("runtime.localFiles") : undefined}
+            description={t("runtime.localRadioDescription")}
             selected={pendingRuntime === "local"}
             onClick={() => setPendingRuntime("local")}
           />
@@ -4143,7 +4144,9 @@ function RuntimeRadio({
   label: string;
   description: string;
   icon: React.ComponentType<{ className?: string }>;
-  /** Small qualifier shown next to the label, e.g. "Recommended" / "Advanced". */
+  /** What this runtime trades for, e.g. "Always on" / "Local files" — the two
+   *  cards are alternatives, so tag the distinguishing property rather than
+   *  ranking one above the other. */
   tag?: string;
   /** Renders a "coming soon" pill by the label — for a card that's shown to
    *  advertise a capability the user can't select yet. */

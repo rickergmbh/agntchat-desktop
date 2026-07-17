@@ -267,13 +267,9 @@ export const resources = {
           "triggerNow": "Trigger Now"
         },
         "runtime": {
-          "advancedTag": "Advanced",
-          "hostedDescription": "Always-on in the cloud, included with your subscription. Stays connected and working even when your desktop is closed — no setup.",
           "hostedNoPickerExplain": "Runs always-on in the cloud using your plan's shared brain — nothing else to set up. Switch back to Local anytime to use your own model on this machine.",
           "loadingHosts": "Loading hosts…",
-          "localDescription": "Runs on this machine, using your own model and tools. For when you want hands-on control — goes offline when you quit the app.",
           "pickHostPlaceholder": "Pick a host",
-          "recommendedTag": "Recommended",
           "sectionTitle": "Runtime",
           "settingUp": "Your hosted environment is still being set up — try again in a moment."
         },
@@ -1344,7 +1340,6 @@ export const resources = {
       "runningCount_one": "{{count}} running",
       "runningCount_other": "{{count}} running",
       "runtime": {
-        "advancedTag": "Advanced",
         "alwaysOn": "Always on",
         "host": "Host",
         "hostOption": "{{name}} ({{status}})",
@@ -1352,13 +1347,13 @@ export const resources = {
         "hostedActiveDescription": "Runs always-on in the cloud using your plan's shared brain — nothing else to set up. Switch back to Local anytime to use your own model on this machine.",
         "hostedComingSoonHint": "Hosted agents run always-on in the cloud. It's coming soon — for now, agents run locally.",
         "hostedHint": "Runs always-on in the cloud using your plan's shared brain — nothing else to set up.",
-        "hostedRadioDescription": "Always-on in the cloud, included with your subscription. Stays connected and working even when your computer is closed.",
+        "hostedRadioDescription": "Runs in the cloud, included with your subscription. Stays connected and working even when your computer is closed — but can't reach anything on this machine.",
         "idleTimeout": "Idle timeout (seconds)",
         "local": "Local",
-        "localRadioDescription": "Runs on this machine, using your own model and tools. Goes offline when you quit the app.",
+        "localFiles": "Local files",
+        "localRadioDescription": "Runs on this machine, with access to your own files, model, and tools. Goes offline when you quit the app.",
         "manual": "Manual",
         "presence": "Presence",
-        "recommendedTag": "Recommended",
         "subscribeHint": "Hosted is included with a subscription — subscribe to run this agent always-on in the cloud, even when your computer is closed.",
         "updateFailed": "Could not update runtime",
         "wakeOnDemand": "Wake on demand"
@@ -5203,13 +5198,9 @@ export const resources = {
           "triggerNow": "Activar ahora"
         },
         "runtime": {
-          "advancedTag": "Avanzado",
-          "hostedDescription": "Siempre activo en la nube, incluido con tu suscripción. Sigue conectado y funcionando aunque cierres el escritorio — sin configuración.",
           "hostedNoPickerExplain": "Se ejecuta siempre activo en la nube usando el cerebro compartido de tu plan — no hay nada más que configurar. Vuelve a Local cuando quieras para usar tu propio modelo en este equipo.",
           "loadingHosts": "Cargando hosts…",
-          "localDescription": "Se ejecuta en este equipo, usando tu propio modelo y herramientas. Ideal cuando quieres control directo — se desconecta al cerrar la app.",
           "pickHostPlaceholder": "Elige un host",
-          "recommendedTag": "Recomendado",
           "sectionTitle": "Entorno de ejecución",
           "settingUp": "Tu entorno alojado todavía se está configurando — inténtalo de nuevo en un momento."
         },
@@ -6280,7 +6271,6 @@ export const resources = {
       "runningCount_one": "{{count}} en ejecución",
       "runningCount_other": "{{count}} en ejecución",
       "runtime": {
-        "advancedTag": "Avanzado",
         "alwaysOn": "Siempre activo",
         "host": "Host",
         "hostOption": "{{name}} ({{status}})",
@@ -6288,13 +6278,13 @@ export const resources = {
         "hostedActiveDescription": "Se ejecuta siempre activo en la nube usando el cerebro compartido de tu plan; no hay nada más que configurar. Cambia a Local en cualquier momento para usar tu propio modelo en esta máquina.",
         "hostedComingSoonHint": "Los agentes alojados se ejecutan siempre activos en la nube. Estará disponible pronto; por ahora, los agentes se ejecutan localmente.",
         "hostedHint": "Se ejecuta siempre activo en la nube usando el cerebro compartido de tu plan; no hay nada más que configurar.",
-        "hostedRadioDescription": "Siempre activo en la nube, incluido con tu suscripción. Permanece conectado y trabajando aunque cierres tu computadora.",
+        "hostedRadioDescription": "Se ejecuta en la nube, incluido con tu suscripción. Permanece conectado y trabajando aunque cierres tu computadora — pero no puede acceder a nada de este equipo.",
         "idleTimeout": "Tiempo de inactividad (segundos)",
         "local": "Local",
-        "localRadioDescription": "Se ejecuta en esta máquina, usando tu propio modelo y herramientas. Se desconecta cuando cierras la aplicación.",
+        "localFiles": "Archivos locales",
+        "localRadioDescription": "Se ejecuta en esta máquina, con acceso a tus propios archivos, modelo y herramientas. Se desconecta cuando cierras la aplicación.",
         "manual": "Manual",
         "presence": "Presencia",
-        "recommendedTag": "Recomendado",
         "subscribeHint": "El alojamiento está incluido con la suscripción: suscríbete para ejecutar este agente siempre activo en la nube, incluso con tu ordenador apagado.",
         "updateFailed": "No se pudo actualizar el entorno de ejecución",
         "wakeOnDemand": "Despertar a demanda"
@@ -10139,13 +10129,9 @@ export const resources = {
           "triggerNow": "Jetzt auslösen"
         },
         "runtime": {
-          "advancedTag": "Erweitert",
-          "hostedDescription": "Immer aktiv in der Cloud, in Ihrem Abonnement enthalten. Bleibt verbunden und arbeitet weiter, auch wenn Ihr Desktop geschlossen ist — keine Einrichtung nötig.",
           "hostedNoPickerExplain": "Läuft immer aktiv in der Cloud mit dem gemeinsamen Gehirn Ihres Plans — sonst nichts einzurichten. Jederzeit zurück zu Lokal wechseln, um Ihr eigenes Modell auf diesem Rechner zu verwenden.",
           "loadingHosts": "Hosts werden geladen…",
-          "localDescription": "Läuft auf diesem Rechner, mit Ihrem eigenen Modell und Ihren eigenen Tools. Für alle, die volle Kontrolle möchten — geht offline, wenn Sie die App beenden.",
           "pickHostPlaceholder": "Einen Host auswählen",
-          "recommendedTag": "Empfohlen",
           "sectionTitle": "Laufzeit",
           "settingUp": "Ihre gehostete Umgebung wird noch eingerichtet — versuchen Sie es gleich noch einmal."
         },
@@ -11216,7 +11202,6 @@ export const resources = {
       "runningCount_one": "{{count}} läuft",
       "runningCount_other": "{{count}} laufen",
       "runtime": {
-        "advancedTag": "Erweitert",
         "alwaysOn": "Immer aktiv",
         "host": "Host",
         "hostOption": "{{name}} ({{status}})",
@@ -11224,13 +11209,13 @@ export const resources = {
         "hostedActiveDescription": "Läuft immer aktiv in der Cloud mit dem gemeinsamen Gehirn Ihres Plans — nichts weiter einzurichten. Wechseln Sie jederzeit zurück zu Lokal, um Ihr eigenes Modell auf diesem Rechner zu verwenden.",
         "hostedComingSoonHint": "Gehostete Agenten laufen dauerhaft in der Cloud. Bald verfügbar – vorerst laufen Agenten lokal.",
         "hostedHint": "Läuft immer aktiv in der Cloud mit dem gemeinsamen Gehirn Ihres Plans — nichts weiter einzurichten.",
-        "hostedRadioDescription": "Immer aktiv in der Cloud, im Abonnement enthalten. Bleibt verbunden und aktiv, auch wenn Ihr Computer ausgeschaltet ist.",
+        "hostedRadioDescription": "Läuft in der Cloud, im Abonnement enthalten. Bleibt verbunden und aktiv, auch wenn Ihr Computer ausgeschaltet ist — hat aber keinen Zugriff auf diesen Rechner.",
         "idleTimeout": "Leerlauf-Timeout (Sekunden)",
         "local": "Lokal",
-        "localRadioDescription": "Läuft auf diesem Rechner mit Ihrem eigenen Modell und Ihren eigenen Tools. Geht offline, wenn Sie die App beenden.",
+        "localFiles": "Lokale Dateien",
+        "localRadioDescription": "Läuft auf diesem Rechner, mit Zugriff auf Ihre eigenen Dateien, Ihr Modell und Ihre Tools. Geht offline, wenn Sie die App beenden.",
         "manual": "Manuell",
         "presence": "Anwesenheit",
-        "recommendedTag": "Empfohlen",
         "subscribeHint": "Gehostet ist im Abonnement enthalten — abonnieren Sie, um diesen Agenten immer aktiv in der Cloud laufen zu lassen, auch wenn Ihr Computer ausgeschaltet ist.",
         "updateFailed": "Laufzeitumgebung konnte nicht aktualisiert werden",
         "wakeOnDemand": "Bei Bedarf aufwecken"
@@ -15075,13 +15060,9 @@ export const resources = {
           "triggerNow": "Déclencher maintenant"
         },
         "runtime": {
-          "advancedTag": "Avancé",
-          "hostedDescription": "Toujours actif dans le cloud, inclus avec votre abonnement. Reste connecté et opérationnel même lorsque votre bureau est fermé — aucune configuration nécessaire.",
           "hostedNoPickerExplain": "S'exécute toujours actif dans le cloud en utilisant le cerveau partagé de votre forfait — rien d'autre à configurer. Repassez à Local à tout moment pour utiliser votre propre modèle sur cette machine.",
           "loadingHosts": "Chargement des hôtes…",
-          "localDescription": "S'exécute sur cette machine, avec votre propre modèle et vos propres outils. Pour un contrôle pratique — passe hors ligne lorsque vous quittez l'application.",
           "pickHostPlaceholder": "Choisissez un hôte",
-          "recommendedTag": "Recommandé",
           "sectionTitle": "Exécution",
           "settingUp": "Votre environnement hébergé est encore en cours de configuration — réessayez dans un instant."
         },
@@ -16152,7 +16133,6 @@ export const resources = {
       "runningCount_one": "{{count}} en cours d'exécution",
       "runningCount_other": "{{count}} en cours d'exécution",
       "runtime": {
-        "advancedTag": "Avancé",
         "alwaysOn": "Toujours actif",
         "host": "Hôte",
         "hostOption": "{{name}} ({{status}})",
@@ -16160,13 +16140,13 @@ export const resources = {
         "hostedActiveDescription": "S'exécute en permanence dans le cloud en utilisant le cerveau partagé de votre forfait — rien d'autre à configurer. Repassez à Local à tout moment pour utiliser votre propre modèle sur cette machine.",
         "hostedComingSoonHint": "Les agents hébergés fonctionnent en continu dans le cloud. Bientôt disponible — pour l'instant, les agents s'exécutent localement.",
         "hostedHint": "S'exécute en permanence dans le cloud en utilisant le cerveau partagé de votre forfait — rien d'autre à configurer.",
-        "hostedRadioDescription": "Toujours actif dans le cloud, inclus avec votre abonnement. Reste connecté et opérationnel même lorsque votre ordinateur est fermé.",
+        "hostedRadioDescription": "S'exécute dans le cloud, inclus avec votre abonnement. Reste connecté et opérationnel même lorsque votre ordinateur est fermé — mais n'a accès à rien sur cette machine.",
         "idleTimeout": "Délai d'inactivité (secondes)",
         "local": "Local",
-        "localRadioDescription": "S'exécute sur cette machine, en utilisant votre propre modèle et vos propres outils. Passe hors ligne lorsque vous quittez l'application.",
+        "localFiles": "Fichiers locaux",
+        "localRadioDescription": "S'exécute sur cette machine, avec accès à vos propres fichiers, modèle et outils. Passe hors ligne lorsque vous quittez l'application.",
         "manual": "Manuel",
         "presence": "Présence",
-        "recommendedTag": "Recommandé",
         "subscribeHint": "L'hébergement est inclus avec un abonnement — abonnez-vous pour exécuter cet agent en permanence dans le cloud, même lorsque votre ordinateur est fermé.",
         "updateFailed": "Impossible de mettre à jour l'environnement d'exécution",
         "wakeOnDemand": "Réveil à la demande"
@@ -20011,13 +19991,9 @@ export const resources = {
           "triggerNow": "Acionar Agora"
         },
         "runtime": {
-          "advancedTag": "Avançado",
-          "hostedDescription": "Sempre ativo na nuvem, incluído na sua assinatura. Permanece conectado e funcionando mesmo quando o desktop está fechado — sem configuração.",
           "hostedNoPickerExplain": "Executa sempre ativo na nuvem usando o cérebro compartilhado do seu plano — nada mais para configurar. Volte para Local a qualquer momento para usar seu próprio modelo nesta máquina.",
           "loadingHosts": "Carregando hosts…",
-          "localDescription": "Executa nesta máquina, usando seu próprio modelo e ferramentas. Para quando você quer controle prático — fica offline quando você fecha o app.",
           "pickHostPlaceholder": "Escolha um host",
-          "recommendedTag": "Recomendado",
           "sectionTitle": "Ambiente de Execução",
           "settingUp": "Seu ambiente hospedado ainda está sendo configurado — tente novamente em instantes."
         },
@@ -21088,7 +21064,6 @@ export const resources = {
       "runningCount_one": "{{count}} em execução",
       "runningCount_other": "{{count}} em execução",
       "runtime": {
-        "advancedTag": "Avançado",
         "alwaysOn": "Sempre ativo",
         "host": "Host",
         "hostOption": "{{name}} ({{status}})",
@@ -21096,13 +21071,13 @@ export const resources = {
         "hostedActiveDescription": "Executa sempre ativo na nuvem usando o cérebro compartilhado do seu plano — não há mais nada para configurar. Volte para Local a qualquer momento para usar seu próprio modelo nesta máquina.",
         "hostedComingSoonHint": "Agentes hospedados funcionam sempre ativos na nuvem. Em breve — por enquanto, os agentes são executados localmente.",
         "hostedHint": "Executa sempre ativo na nuvem usando o cérebro compartilhado do seu plano — não há mais nada para configurar.",
-        "hostedRadioDescription": "Sempre ativo na nuvem, incluído na sua assinatura. Permanece conectado e funcionando mesmo quando seu computador está fechado.",
+        "hostedRadioDescription": "Executa na nuvem, incluído na sua assinatura. Permanece conectado e funcionando mesmo quando seu computador está fechado — mas não acessa nada desta máquina.",
         "idleTimeout": "Tempo limite de inatividade (segundos)",
         "local": "Local",
-        "localRadioDescription": "Executa nesta máquina, usando seu próprio modelo e ferramentas. Fica offline quando você sai do aplicativo.",
+        "localFiles": "Arquivos locais",
+        "localRadioDescription": "Executa nesta máquina, com acesso aos seus próprios arquivos, modelo e ferramentas. Fica offline quando você sai do aplicativo.",
         "manual": "Manual",
         "presence": "Presença",
-        "recommendedTag": "Recomendado",
         "subscribeHint": "Hospedado está incluído em uma assinatura — assine para executar este agente sempre ativo na nuvem, mesmo quando seu computador estiver fechado.",
         "updateFailed": "Não foi possível atualizar o ambiente de execução",
         "wakeOnDemand": "Ativar sob demanda"
@@ -24947,13 +24922,9 @@ export const resources = {
           "triggerNow": "今すぐ実行"
         },
         "runtime": {
-          "advancedTag": "詳細",
-          "hostedDescription": "クラウドで常時稼働、サブスクリプションに含まれます。デスクトップを閉じても接続と動作を維持します — セットアップ不要。",
           "hostedNoPickerExplain": "プランの共有頭脳を使ってクラウドで常時稼働します — 他に設定することはありません。いつでもローカルに戻して、このマシンで自分のモデルを使用できます。",
           "loadingHosts": "ホストを読み込んでいます…",
-          "localDescription": "このマシンで、あなた自身のモデルとツールを使って実行します。手動での管理をしたい場合向けです — アプリを終了するとオフラインになります。",
           "pickHostPlaceholder": "ホストを選択",
-          "recommendedTag": "おすすめ",
           "sectionTitle": "ランタイム",
           "settingUp": "ホスト環境はまだセットアップ中です — しばらくしてからもう一度お試しください。"
         },
@@ -26024,7 +25995,6 @@ export const resources = {
       "runningCount_one": "{{count}}件実行中",
       "runningCount_other": "{{count}}件実行中",
       "runtime": {
-        "advancedTag": "上級",
         "alwaysOn": "常時稼働",
         "host": "ホスト",
         "hostOption": "{{name}}（{{status}}）",
@@ -26032,13 +26002,13 @@ export const resources = {
         "hostedActiveDescription": "あなたのプランの共有ブレインを使ってクラウドで常時稼働します — 他に設定は不要です。このマシンで自分のモデルを使いたい場合は、いつでもローカルに切り替えられます。",
         "hostedComingSoonHint": "ホスト型エージェントはクラウドで常時稼働します。近日公開予定です。当面はエージェントはローカルで動作します。",
         "hostedHint": "あなたのプランの共有ブレインを使ってクラウドで常時稼働します — 他に設定は不要です。",
-        "hostedRadioDescription": "サブスクリプションに含まれる、クラウドでの常時稼働です。コンピューターを閉じても接続と動作を維持します。",
+        "hostedRadioDescription": "サブスクリプションに含まれる、クラウドでの実行です。コンピューターを閉じても接続と動作を維持しますが、このマシン上のものにはアクセスできません。",
         "idleTimeout": "アイドルタイムアウト（秒）",
         "local": "ローカル",
-        "localRadioDescription": "このマシンで、自分のモデルとツールを使って実行されます。アプリを終了するとオフラインになります。",
+        "localFiles": "ローカルファイル",
+        "localRadioDescription": "このマシンで、自分のファイル・モデル・ツールにアクセスして実行されます。アプリを終了するとオフラインになります。",
         "manual": "手動",
         "presence": "プレゼンス",
-        "recommendedTag": "おすすめ",
         "subscribeHint": "ホスト型はサブスクリプションに含まれます — 登録すると、コンピューターを閉じてもこのエージェントをクラウドで常時稼働できます。",
         "updateFailed": "ランタイムを更新できませんでした",
         "wakeOnDemand": "オンデマンドで起動"
@@ -29883,13 +29853,9 @@ export const resources = {
           "triggerNow": "立即触发"
         },
         "runtime": {
-          "advancedTag": "高级",
-          "hostedDescription": "在云端持续在线，包含在您的订阅中。即使关闭桌面应用，也能保持连接并持续工作 — 无需设置。",
           "hostedNoPickerExplain": "使用您套餐的共享大脑在云端持续运行 — 无需其他设置。您可以随时切换回本地模式，在此计算机上使用自己的模型。",
           "loadingHosts": "正在加载主机……",
-          "localDescription": "在此计算机上运行，使用您自己的模型和工具。适合需要亲自掌控的场景 — 退出应用后将离线。",
           "pickHostPlaceholder": "选择一台主机",
-          "recommendedTag": "推荐",
           "sectionTitle": "运行时",
           "settingUp": "您的托管环境仍在设置中 — 请稍后再试。"
         },
@@ -30960,7 +30926,6 @@ export const resources = {
       "runningCount_one": "{{count}} 个正在运行",
       "runningCount_other": "{{count}} 个正在运行",
       "runtime": {
-        "advancedTag": "高级",
         "alwaysOn": "始终在线",
         "host": "主机",
         "hostOption": "{{name}}（{{status}}）",
@@ -30968,13 +30933,13 @@ export const resources = {
         "hostedActiveDescription": "始终在云端运行，使用你套餐的共享大脑——无需其他设置。随时可切换回本地，在本机上使用你自己的模型。",
         "hostedComingSoonHint": "托管智能体在云端始终在线运行。即将推出 — 目前智能体在本地运行。",
         "hostedHint": "始终在云端运行，使用你套餐的共享大脑——无需其他设置。",
-        "hostedRadioDescription": "始终在云端运行，包含在你的订阅中。即使你的电脑关闭，也能保持连接并持续工作。",
+        "hostedRadioDescription": "在云端运行，包含在你的订阅中。即使你的电脑关闭，也能保持连接并持续工作 — 但无法访问这台机器上的任何内容。",
         "idleTimeout": "空闲超时（秒）",
         "local": "本地",
-        "localRadioDescription": "运行在本机上，使用你自己的模型和工具。退出应用后即离线。",
+        "localFiles": "本地文件",
+        "localRadioDescription": "运行在本机上，可访问你自己的文件、模型和工具。退出应用后即离线。",
         "manual": "手动",
         "presence": "在线状态",
-        "recommendedTag": "推荐",
         "subscribeHint": "托管功能包含在订阅中——订阅后即可让此智能体始终在云端运行，即使你的电脑已关闭。",
         "updateFailed": "无法更新运行环境",
         "wakeOnDemand": "按需唤醒"
@@ -34819,13 +34784,9 @@ export const resources = {
           "triggerNow": "지금 실행"
         },
         "runtime": {
-          "advancedTag": "고급",
-          "hostedDescription": "구독에 포함된, 클라우드에서 항상 켜져 있는 상태입니다. 데스크톱을 닫아도 연결과 작업이 유지됩니다 — 별도 설정이 필요 없습니다.",
           "hostedNoPickerExplain": "요금제의 공유 브레인을 사용해 클라우드에서 항상 실행됩니다 — 별도로 설정할 것이 없습니다. 언제든 로컬로 전환하여 이 컴퓨터에서 자신의 모델을 사용할 수 있습니다.",
           "loadingHosts": "호스트 불러오는 중…",
-          "localDescription": "자신의 모델과 도구를 사용해 이 컴퓨터에서 실행됩니다. 직접 제어하고 싶을 때 적합하며 — 앱을 종료하면 오프라인 상태가 됩니다.",
           "pickHostPlaceholder": "호스트 선택",
-          "recommendedTag": "추천",
           "sectionTitle": "런타임",
           "settingUp": "호스팅 환경이 아직 설정 중입니다 — 잠시 후 다시 시도하세요."
         },
@@ -35896,7 +35857,6 @@ export const resources = {
       "runningCount_one": "{{count}}개 실행 중",
       "runningCount_other": "{{count}}개 실행 중",
       "runtime": {
-        "advancedTag": "고급",
         "alwaysOn": "항상 켜짐",
         "host": "호스트",
         "hostOption": "{{name}} ({{status}})",
@@ -35904,13 +35864,13 @@ export const resources = {
         "hostedActiveDescription": "회원님 플랜의 공유 브레인을 사용해 클라우드에서 항상 실행됩니다 — 다른 설정은 필요 없습니다. 언제든 로컬로 전환하여 이 기기에서 자신의 모델을 사용할 수 있습니다.",
         "hostedComingSoonHint": "호스팅 에이전트는 클라우드에서 항상 실행됩니다. 곧 제공될 예정이며, 현재는 에이전트가 로컬에서 실행됩니다.",
         "hostedHint": "회원님 플랜의 공유 브레인을 사용해 클라우드에서 항상 실행됩니다 — 다른 설정은 필요 없습니다.",
-        "hostedRadioDescription": "클라우드에서 항상 켜져 있으며 구독에 포함됩니다. 컴퓨터를 닫아도 계속 연결되어 작동합니다.",
+        "hostedRadioDescription": "구독에 포함된, 클라우드에서 실행됩니다. 컴퓨터를 닫아도 계속 연결되어 작동하지만, 이 기기의 어떤 것에도 접근할 수 없습니다.",
         "idleTimeout": "유휴 타임아웃(초)",
         "local": "로컬",
-        "localRadioDescription": "이 기기에서 자신의 모델과 도구를 사용해 실행됩니다. 앱을 종료하면 오프라인이 됩니다.",
+        "localFiles": "로컬 파일",
+        "localRadioDescription": "이 기기에서 자신의 파일, 모델, 도구에 접근하여 실행됩니다. 앱을 종료하면 오프라인이 됩니다.",
         "manual": "수동",
         "presence": "상태 표시",
-        "recommendedTag": "추천",
         "subscribeHint": "호스팅은 구독에 포함됩니다 — 구독하면 컴퓨터를 닫아도 이 에이전트를 클라우드에서 항상 실행할 수 있습니다.",
         "updateFailed": "런타임을 업데이트할 수 없습니다",
         "wakeOnDemand": "요청 시 깨우기"
@@ -39755,13 +39715,9 @@ export const resources = {
           "triggerNow": "Attiva ora"
         },
         "runtime": {
-          "advancedTag": "Avanzate",
-          "hostedDescription": "Sempre attivo nel cloud, incluso nel tuo abbonamento. Rimane connesso e operativo anche quando il tuo desktop è chiuso — nessuna configurazione.",
           "hostedNoPickerExplain": "Viene eseguito sempre attivo nel cloud usando il cervello condiviso del tuo piano — nient'altro da configurare. Torna a Locale in qualsiasi momento per usare il tuo modello su questa macchina.",
           "loadingHosts": "Caricamento host…",
-          "localDescription": "Viene eseguito su questa macchina, usando il tuo modello e i tuoi strumenti. Per quando vuoi un controllo diretto — va offline quando chiudi l'app.",
           "pickHostPlaceholder": "Scegli un host",
-          "recommendedTag": "Consigliato",
           "sectionTitle": "Runtime",
           "settingUp": "Il tuo ambiente hosted è ancora in fase di configurazione — riprova tra poco."
         },
@@ -40832,7 +40788,6 @@ export const resources = {
       "runningCount_one": "{{count}} in esecuzione",
       "runningCount_other": "{{count}} in esecuzione",
       "runtime": {
-        "advancedTag": "Avanzato",
         "alwaysOn": "Sempre attivo",
         "host": "Host",
         "hostOption": "{{name}} ({{status}})",
@@ -40840,13 +40795,13 @@ export const resources = {
         "hostedActiveDescription": "Viene eseguito sempre attivo nel cloud usando il modello condiviso del tuo piano — nient'altro da configurare. Torna a Locale in qualsiasi momento per usare il tuo modello su questa macchina.",
         "hostedComingSoonHint": "Gli agenti ospitati funzionano sempre attivi nel cloud. In arrivo presto — per ora gli agenti vengono eseguiti localmente.",
         "hostedHint": "Viene eseguito sempre attivo nel cloud usando il modello condiviso del tuo piano — nient'altro da configurare.",
-        "hostedRadioDescription": "Sempre attivo nel cloud, incluso nel tuo abbonamento. Rimane connesso e operativo anche quando il tuo computer è spento.",
+        "hostedRadioDescription": "Viene eseguito nel cloud, incluso nel tuo abbonamento. Rimane connesso e operativo anche quando il tuo computer è spento — ma non può accedere a nulla su questa macchina.",
         "idleTimeout": "Timeout di inattività (secondi)",
         "local": "Locale",
-        "localRadioDescription": "Viene eseguito su questa macchina, usando il tuo modello e i tuoi strumenti. Va offline quando chiudi l'app.",
+        "localFiles": "File locali",
+        "localRadioDescription": "Viene eseguito su questa macchina, con accesso ai tuoi file, al tuo modello e ai tuoi strumenti. Va offline quando chiudi l'app.",
         "manual": "Manuale",
         "presence": "Presenza",
-        "recommendedTag": "Consigliato",
         "subscribeHint": "Ospitato è incluso con un abbonamento — abbonati per eseguire questo agente sempre attivo nel cloud, anche quando il tuo computer è spento.",
         "updateFailed": "Impossibile aggiornare il runtime",
         "wakeOnDemand": "Risveglio su richiesta"
@@ -44691,13 +44646,9 @@ export const resources = {
           "triggerNow": "अभी ट्रिगर करें"
         },
         "runtime": {
-          "advancedTag": "उन्नत",
-          "hostedDescription": "क्लाउड में हमेशा चालू, आपकी सदस्यता के साथ शामिल। आपका डेस्कटॉप बंद होने पर भी कनेक्टेड और काम करते रहता है — कोई सेटअप नहीं।",
           "hostedNoPickerExplain": "आपकी योजना के साझा ब्रेन का उपयोग करते हुए क्लाउड में हमेशा चालू रहता है — और कुछ भी सेट अप करने की आवश्यकता नहीं। इस मशीन पर अपना खुद का मॉडल उपयोग करने के लिए कभी भी लोकल पर वापस स्विच करें।",
           "loadingHosts": "होस्ट लोड हो रहे हैं…",
-          "localDescription": "इस मशीन पर, आपके अपने मॉडल और टूल का उपयोग करके चलता है। जब आपको हाथों-हाथ नियंत्रण चाहिए हो तब के लिए — ऐप बंद करने पर ऑफ़लाइन हो जाता है।",
           "pickHostPlaceholder": "एक होस्ट चुनें",
-          "recommendedTag": "अनुशंसित",
           "sectionTitle": "रनटाइम",
           "settingUp": "आपका होस्टेड एनवायरनमेंट अभी भी सेट अप हो रहा है — कुछ ही देर में फिर से प्रयास करें।"
         },
@@ -45768,7 +45719,6 @@ export const resources = {
       "runningCount_one": "{{count}} चल रहा है",
       "runningCount_other": "{{count}} चल रहे हैं",
       "runtime": {
-        "advancedTag": "एडवांस्ड",
         "alwaysOn": "हमेशा चालू",
         "host": "होस्ट",
         "hostOption": "{{name}} ({{status}})",
@@ -45776,13 +45726,13 @@ export const resources = {
         "hostedActiveDescription": "आपके प्लान के शेयर्ड ब्रेन का उपयोग करते हुए क्लाउड में हमेशा-चालू चलता है — कुछ और सेट करने की ज़रूरत नहीं। इस मशीन पर अपने खुद के मॉडल का उपयोग करने के लिए कभी भी लोकल पर वापस स्विच करें।",
         "hostedComingSoonHint": "होस्टेड एजेंट क्लाउड में हमेशा चालू रहते हैं। जल्द आ रहा है — फ़िलहाल, एजेंट स्थानीय रूप से चलते हैं।",
         "hostedHint": "आपके प्लान के शेयर्ड ब्रेन का उपयोग करते हुए क्लाउड में हमेशा-चालू चलता है — कुछ और सेट करने की ज़रूरत नहीं।",
-        "hostedRadioDescription": "क्लाउड में हमेशा-चालू, आपकी सब्सक्रिप्शन में शामिल। आपका कंप्यूटर बंद होने पर भी कनेक्टेड और काम करता रहता है।",
+        "hostedRadioDescription": "क्लाउड में चलता है, आपकी सब्सक्रिप्शन में शामिल। आपका कंप्यूटर बंद होने पर भी कनेक्टेड और काम करता रहता है — लेकिन इस मशीन की किसी भी चीज़ तक नहीं पहुँच सकता।",
         "idleTimeout": "आइडल टाइमआउट (सेकंड)",
         "local": "लोकल",
-        "localRadioDescription": "इस मशीन पर, आपके अपने मॉडल और टूल्स का उपयोग करके चलता है। ऐप बंद करने पर ऑफ़लाइन हो जाता है।",
+        "localFiles": "लोकल फ़ाइलें",
+        "localRadioDescription": "इस मशीन पर चलता है, आपकी अपनी फ़ाइलों, मॉडल और टूल्स तक पहुँच के साथ। ऐप बंद करने पर ऑफ़लाइन हो जाता है।",
         "manual": "मैनुअल",
         "presence": "उपस्थिति",
-        "recommendedTag": "अनुशंसित",
         "subscribeHint": "होस्टेड सब्सक्रिप्शन के साथ शामिल है — इस एजेंट को हमेशा-चालू क्लाउड में चलाने के लिए सब्सक्राइब करें, भले ही आपका कंप्यूटर बंद हो।",
         "updateFailed": "रनटाइम अपडेट नहीं हो सका",
         "wakeOnDemand": "मांग पर जगाएँ"
