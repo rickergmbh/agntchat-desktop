@@ -2037,6 +2037,8 @@ export interface UserCredential {
   // Custom-endpoint extras (see backend serializer). Secret field VALUES are
   // never returned — only their key/label/secret flag in `fieldDefs`.
   endpoint?: string;
+  // What the API is / how to call it, in the owner's words. Reaches agents.
+  description?: string;
   fieldDefs?: CredentialFieldDef[];
   publicFields?: Record<string, string>;
   // How the primary token is sent on outbound calls: "bearer" (default) |
@@ -2139,6 +2141,9 @@ export async function storeProviderToken(
   extras?: {
     providerUid?: string;
     endpoint?: string;
+    // Freeform notes on what the API is / how to call it. Surfaced to agents
+    // in their prompt — without it they only know the bare endpoint URL.
+    description?: string;
     fields?: CredentialFieldInput[];
     label?: string;
     authMode?: CustomAuthMode;
@@ -2156,6 +2161,7 @@ export async function storeProviderToken(
       token,
       providerUid: extras?.providerUid,
       endpoint: extras?.endpoint,
+      description: extras?.description,
       fields: extras?.fields,
       label: extras?.label,
       authMode: extras?.authMode,
@@ -2175,6 +2181,9 @@ export async function updateProviderConnection(
   changes: {
     label?: string;
     endpoint?: string;
+    // An explicit "" clears the description; omitting the key leaves the
+    // stored one alone (so a grant-only edit can't wipe it).
+    description?: string;
     fields?: CredentialFieldInput[];
     authMode?: CustomAuthMode;
     authHeader?: string;
@@ -2187,6 +2196,7 @@ export async function updateProviderConnection(
     body: JSON.stringify({
       label: changes.label,
       endpoint: changes.endpoint,
+      description: changes.description,
       fields: changes.fields,
       authMode: changes.authMode,
       authHeader: changes.authHeader,

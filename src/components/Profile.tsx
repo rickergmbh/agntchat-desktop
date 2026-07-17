@@ -253,6 +253,9 @@ export function Profile({ onClose }: { onClose: () => void }) {
   const [customApiDialog, setCustomApiDialog] = useState(false);
   const [customName, setCustomName] = useState("");
   const [customEndpoint, setCustomEndpoint] = useState("");
+  // What the API is / how to call it. This is the only thing that tells an
+  // agent what lives behind the endpoint — without it, it has to guess.
+  const [customDescription, setCustomDescription] = useState("");
   const [customApiKey, setCustomApiKey] = useState("");
   // How the primary API key is sent on outbound calls.
   const [customAuthMode, setCustomAuthMode] =
@@ -527,6 +530,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
         : ""
     );
     setCustomEndpoint(customCredential?.endpoint ?? "");
+    setCustomDescription(customCredential?.description ?? "");
     setCustomApiKey("");
     const authMode = customCredential?.authMode ?? "bearer";
     setCustomAuthMode(authMode);
@@ -574,9 +578,18 @@ export function Profile({ onClose }: { onClose: () => void }) {
       setCustomApiError(t("customApis.errors.apiKeyRequired"));
       return;
     }
-    if (customAuthMode === "header" && !customAuthHeader.trim()) {
-      setCustomApiError(t("customApis.errors.headerNameRequired"));
-      return;
+    if (customAuthMode === "header") {
+      if (!customAuthHeader.trim()) {
+        setCustomApiError(t("customApis.errors.headerNameRequired"));
+        return;
+      }
+      // An HTTP field name is an RFC 9110 token. Mirrors the backend's
+      // write-time check so a pasted value in the name slot is caught here
+      // instead of dying at call time with an opaque client error.
+      if (!/^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/.test(customAuthHeader.trim())) {
+        setCustomApiError(t("customApis.errors.headerNameInvalid"));
+        return;
+      }
     }
 
     setSavingCustomApi(true);
@@ -598,6 +611,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
         editing && !customApiKey.trim()
           ? await api.updateProviderConnection("custom", {
               endpoint: customEndpoint.trim(),
+              description: customDescription.trim(),
               label: customName.trim() || undefined,
               fields,
               authMode: customAuthMode,
@@ -605,6 +619,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
             })
           : await api.storeProviderToken("custom", customApiKey.trim(), {
               endpoint: customEndpoint.trim(),
+              description: customDescription.trim(),
               label: customName.trim() || undefined,
               fields,
               authMode: customAuthMode,
@@ -1363,6 +1378,24 @@ export function Profile({ onClose }: { onClose: () => void }) {
                 placeholder="https://api.example.com/v1"
                 className="font-mono text-xs"
               />
+            </div>
+            {/* The agent's only source of truth for what this endpoint serves.
+                Without it the prompt carries a bare hostname and the model has
+                to guess paths and schema. */}
+            <div className="space-y-1.5">
+              <Label className="text-xs">{t("customApis.description")}</Label>
+              <Textarea
+                value={customDescription}
+                onChange={(e) => {
+                  setCustomDescription(e.target.value);
+                  setCustomApiError(null);
+                }}
+                placeholder={t("customApis.descriptionPlaceholder")}
+                className="min-h-16 text-xs"
+              />
+              <p className="text-muted-foreground text-xs">
+                {t("customApis.descriptionHint")}
+              </p>
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs">
