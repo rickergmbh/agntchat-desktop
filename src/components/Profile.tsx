@@ -1074,16 +1074,19 @@ export function Profile({ onClose }: { onClose: () => void }) {
             </section>
 
             {/* Payment — its own category (matches web), not just another row
-                in the Connected Accounts list. */}
-            <section>
-              <SectionHeader
-                title={t("wallet.title")}
-                subtitle={t("wallet.description")}
-              />
-              <div className="rounded-xl border border-border bg-card divide-y divide-border overflow-hidden">
-                <PaymentWalletRow />
-              </div>
-            </section>
+                in the Connected Accounts list. Behind the `payments_wallet`
+                flag; the backend routes 404 when it's off. */}
+            {participant?.features?.payments_wallet === true && (
+              <section>
+                <SectionHeader
+                  title={t("wallet.title")}
+                  subtitle={t("wallet.description")}
+                />
+                <div className="rounded-xl border border-border bg-card divide-y divide-border overflow-hidden">
+                  <PaymentWalletRow />
+                </div>
+              </section>
+            )}
           </div>
         )}
 
