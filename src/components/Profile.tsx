@@ -2119,7 +2119,6 @@ function LlmApiKeysSection() {
     switch (providerId) {
       case "anthropic": return "sk-ant-...";
       case "openai": return "sk-...";
-      case "xai": return "xai-...";
       default: return t("common:apiKey");
     }
   };

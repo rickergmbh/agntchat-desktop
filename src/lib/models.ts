@@ -59,30 +59,6 @@ export const PROVIDERS: ProviderConfig[] = [
     ],
   },
   {
-    id: "google",
-    label: "Google",
-    requiresLlmKey: true,
-    supportedModes: ["single_shot", "code_action"],
-    models: [
-      { id: "gemini-2.5-pro", label: "Gemini 2.5 Pro" },
-      { id: "gemini-2.5-flash", label: "Gemini 2.5 Flash" },
-      { id: "gemini-2.0-flash", label: "Gemini 2.0 Flash" },
-      { id: "gemini-1.5-pro", label: "Gemini 1.5 Pro" },
-      { id: "gemini-1.5-flash", label: "Gemini 1.5 Flash" },
-    ],
-  },
-  {
-    id: "xai",
-    label: "xAI",
-    requiresLlmKey: true,
-    supportedModes: ["single_shot", "tool_use"],
-    models: [
-      { id: "grok-3", label: "Grok 3" },
-      { id: "grok-3-mini", label: "Grok 3 Mini" },
-      { id: "grok-2", label: "Grok 2" },
-    ],
-  },
-  {
     id: "claude_cli",
     label: "Claude Code",
     requiresLlmKey: false,
