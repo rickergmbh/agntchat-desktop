@@ -570,6 +570,8 @@ function InvitesTab({ workspace }: { workspace: WorkspaceMembership }) {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<"admin" | "member">("member");
   const [sending, setSending] = useState(false);
+  const [resendingId, setResendingId] = useState<string | null>(null);
+  const [resentId, setResentId] = useState<string | null>(null);
 
   const sendInvite = useWorkspaceStore((s) => s.sendInvite);
   const revokeInvite = useWorkspaceStore((s) => s.revokeInvite);
@@ -605,6 +607,21 @@ function InvitesTab({ workspace }: { workspace: WorkspaceMembership }) {
       setError(e instanceof Error ? e.message : t("workspace.errors.sendInvite"));
     } finally {
       setSending(false);
+    }
+  }
+
+  async function handleResend(invite: OrganizationInvite) {
+    setResendingId(invite.id);
+    setResentId(null);
+    setError(null);
+    try {
+      await api.resendOrganizationInvite(workspace.id, invite.id);
+      await load();
+      setResentId(invite.id);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t("workspace.errors.resendInvite"));
+    } finally {
+      setResendingId(null);
     }
   }
 
@@ -681,11 +698,35 @@ function InvitesTab({ workspace }: { workspace: WorkspaceMembership }) {
               >
                 <Mail className="h-4 w-4 shrink-0 text-muted-foreground" />
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm">{invite.email}</p>
+                  <div className="flex items-center gap-2">
+                    <p className="truncate text-sm">{invite.email}</p>
+                    {invite.status === "expired" && (
+                      <span className="shrink-0 rounded-full bg-warning/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-warning">
+                        {t("workspace.inviteStatus.expired")}
+                      </span>
+                    )}
+                  </div>
                   <p className="text-[11px] text-muted-foreground">
                     {t(`workspace.roles.${invite.role}`)}
                   </p>
                 </div>
+                {resentId === invite.id && (
+                  <span className="text-[11px] text-success">
+                    {t("workspace.inviteResent")}
+                  </span>
+                )}
+                <button
+                  type="button"
+                  onClick={() => handleResend(invite)}
+                  disabled={resendingId === invite.id}
+                  className="rounded-md px-2 py-1 text-xs text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-50"
+                >
+                  {resendingId === invite.id ? (
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                  ) : (
+                    t("workspace.resendInvite")
+                  )}
+                </button>
                 <button
                   type="button"
                   onClick={() => handleRevoke(invite)}

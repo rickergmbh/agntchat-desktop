@@ -13,6 +13,7 @@ interface FriendState {
   respondFriend: (id: string, decision: "accepted" | "rejected") => Promise<api.UserConnection | undefined>;
   revokeFriend: (id: string) => Promise<api.UserConnection | undefined>;
   blockFriend: (id: string) => Promise<api.UserConnection | undefined>;
+  unblockFriend: (id: string) => Promise<api.UserConnection | undefined>;
   upsertConnection: (connection: api.UserConnection) => void;
   initWsListeners: () => () => void;
 }
@@ -110,6 +111,14 @@ export const useFriendStore = create<FriendState>((set, get) => ({
 
   blockFriend: async (id) => {
     const response = await api.blockFriend(id);
+    if (response.connection) {
+      set((s) => ({ connections: upsert(s.connections, response.connection) }));
+    }
+    return response.connection;
+  },
+
+  unblockFriend: async (id) => {
+    const response = await api.unblockFriend(id);
     if (response.connection) {
       set((s) => ({ connections: upsert(s.connections, response.connection) }));
     }

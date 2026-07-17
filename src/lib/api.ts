@@ -373,6 +373,10 @@ export async function acceptPendingWorkspaceInvite(inviteId: string): Promise<vo
   await request(`/api/me/pending-invites/${inviteId}/accept`, { method: "POST" });
 }
 
+export async function declinePendingWorkspaceInvite(inviteId: string): Promise<void> {
+  await request(`/api/me/pending-invites/${inviteId}/decline`, { method: "POST" });
+}
+
 export async function renameOrganization(orgId: string, name: string): Promise<void> {
   await request(`/api/organizations/${orgId}`, {
     method: "PATCH",
@@ -1435,6 +1439,7 @@ export interface OrganizationInvite {
   organizationId: string;
   email: string;
   role: "admin" | "member";
+  status: "pending" | "expired" | "redeemed";
   expiresAt: string;
   redeemedAt: string | null;
   createdByParticipantId: string;
@@ -1461,6 +1466,18 @@ export async function createOrganizationInvite(
       method: "POST",
       body: JSON.stringify({ email, role }),
     }
+  );
+  return res.invite;
+}
+
+/** Rotates the invite token/expiry and re-sends the invite email. */
+export async function resendOrganizationInvite(
+  orgId: string,
+  inviteId: string
+): Promise<OrganizationInvite> {
+  const res = await request<{ invite: OrganizationInvite }>(
+    `/api/organizations/${orgId}/invites/${inviteId}/resend`,
+    { method: "POST" }
   );
   return res.invite;
 }
@@ -2952,6 +2969,36 @@ export async function revokeFriend(id: string): Promise<{ connection: UserConnec
 
 export async function blockFriend(id: string): Promise<{ connection: UserConnection }> {
   return request(`/api/friends/${id}/block`, { method: "POST" });
+}
+
+/** Unblock a blocked connection. Only the blocker may call this. */
+export async function unblockFriend(id: string): Promise<{ connection: UserConnection }> {
+  return request(`/api/friends/${id}/block`, { method: "DELETE" });
+}
+
+export type ReportReason =
+  | "harassment"
+  | "spam"
+  | "impersonation"
+  | "inappropriate_content"
+  | "other";
+
+export interface UserReport {
+  id: string;
+  status: string;
+  reason: ReportReason;
+}
+
+export async function reportUser(payload: {
+  reportedParticipantId: string;
+  reason: ReportReason;
+  details?: string;
+  conversationId?: string;
+}): Promise<{ report: UserReport }> {
+  return request("/api/reports", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
 }
 
 export async function listFriendAgents(friendId: string): Promise<{ listings: DirectoryListing[] }> {

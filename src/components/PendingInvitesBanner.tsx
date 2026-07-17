@@ -22,6 +22,7 @@ export function PendingInvitesBanner({ onAllResolved }: Props) {
   const [invites, setInvites] = useState<api.PendingWorkspaceInvite[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [acceptingId, setAcceptingId] = useState<string | null>(null);
+  const [decliningId, setDecliningId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -55,6 +56,20 @@ export function PendingInvitesBanner({ onAllResolved }: Props) {
       setError(e instanceof Error ? e.message : t("workspace.acceptFailed"));
     } finally {
       setAcceptingId(null);
+    }
+  }
+
+  async function handleDecline(invite: api.PendingWorkspaceInvite) {
+    setDecliningId(invite.id);
+    setError(null);
+    try {
+      await api.declinePendingWorkspaceInvite(invite.id);
+      setInvites((prev) => (prev ?? []).filter((i) => i.id !== invite.id));
+      if ((invites ?? []).length <= 1) onAllResolved?.();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t("workspace.declineFailed"));
+    } finally {
+      setDecliningId(null);
     }
   }
 
@@ -96,8 +111,20 @@ export function PendingInvitesBanner({ onAllResolved }: Props) {
             </div>
             <button
               type="button"
+              onClick={() => handleDecline(invite)}
+              disabled={decliningId === invite.id || acceptingId === invite.id}
+              className="rounded-md px-2 py-0.5 text-xs text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-50"
+            >
+              {decliningId === invite.id ? (
+                <Loader2 className="h-3 w-3 animate-spin" />
+              ) : (
+                t("workspace.declineInvite")
+              )}
+            </button>
+            <button
+              type="button"
               onClick={() => handleAccept(invite)}
-              disabled={acceptingId === invite.id}
+              disabled={acceptingId === invite.id || decliningId === invite.id}
               className="rounded-md px-2 py-0.5 text-xs hover:bg-accent disabled:opacity-50"
             >
               {acceptingId === invite.id ? (

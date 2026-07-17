@@ -17,11 +17,21 @@ import {
   Users,
   Ban,
   CalendarDays,
+  Flag,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "../lib/utils";
 import i18n from "../i18n";
 import * as api from "../lib/api";
@@ -142,6 +152,7 @@ export function FriendsView({ onNavigate }: { onNavigate?: () => void } = {}) {
     respondFriend,
     revokeFriend,
     blockFriend,
+    unblockFriend,
   } = useFriendStore();
 
   const [segment, setSegment] = useState<Segment>("friends");
@@ -150,9 +161,17 @@ export function FriendsView({ onNavigate }: { onNavigate?: () => void } = {}) {
   const [searching, setSearching] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const [selectedConnectionId, setSelectedConnectionId] = useState<string | null>(null);
+  const [reportTarget, setReportTarget] = useState<api.Participant | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!notice) return;
+    const id = setTimeout(() => setNotice(null), 3000);
+    return () => clearTimeout(id);
+  }, [notice]);
 
   useEffect(() => {
     fetchConnections();
@@ -194,6 +213,11 @@ export function FriendsView({ onNavigate }: { onNavigate?: () => void } = {}) {
   );
   const friends = useMemo(
     () => connections.filter((c) => c.status === "accepted"),
+    [connections]
+  );
+  // The backend only returns blocked connections to the blocker.
+  const blocked = useMemo(
+    () => connections.filter((c) => c.status === "blocked"),
     [connections]
   );
 
@@ -274,6 +298,24 @@ export function FriendsView({ onNavigate }: { onNavigate?: () => void } = {}) {
     } finally {
       setBusyId(null);
     }
+  };
+
+  const handleUnblock = async (connection: api.UserConnection) => {
+    if (!confirm(t("unblockConfirm"))) return;
+    setBusyId(connection.id);
+    setError(null);
+    try {
+      await unblockFriend(connection.id);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t("errors.unblockUser"));
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const handleReport = (connection: api.UserConnection) => {
+    const person = otherParticipant(connection, currentUserId);
+    if (person) setReportTarget(person);
   };
 
   const handleMessage = async (connection: api.UserConnection) => {
@@ -397,6 +439,12 @@ export function FriendsView({ onNavigate }: { onNavigate?: () => void } = {}) {
         </div>
       )}
 
+      {notice && (
+        <div className="mx-4 mt-3 rounded-md border border-success/20 bg-success/10 px-4 py-2 text-sm text-success">
+          {notice}
+        </div>
+      )}
+
       <div className="flex flex-1 flex-col overflow-hidden">
         {search.trim().length >= 2 && (
           <section className="border-b border-border bg-card/30">
@@ -430,30 +478,50 @@ export function FriendsView({ onNavigate }: { onNavigate?: () => void } = {}) {
           <div className="py-20 text-center text-sm text-muted-foreground">
             {t("loadingFriends")}
           </div>
-        ) : currentList.length === 0 ? (
+        ) : currentList.length === 0 && !(segment === "friends" && blocked.length > 0) ? (
           <FriendsEmptyState
             segment={segment}
             onFindPeople={() => searchInputRef.current?.focus()}
           />
         ) : segment === "friends" ? (
           <div className="flex-1 overflow-y-auto px-4 py-4">
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-3">
-              {currentList.map((connection) => {
-                const person = otherParticipant(connection, currentUserId);
-                return (
-                  <FriendCard
-                    key={connection.id}
-                    connection={connection}
-                    currentUserId={currentUserId}
-                    busy={busyId === connection.id}
-                    online={person?.id ? onlineSet.has(person.id) : false}
-                    onRevoke={() => handleRevoke(connection)}
-                    onMessage={() => handleMessage(connection)}
-                    onOpenProfile={() => setSelectedConnectionId(connection.id)}
-                  />
-                );
-              })}
-            </div>
+            {currentList.length > 0 && (
+              <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-3">
+                {currentList.map((connection) => {
+                  const person = otherParticipant(connection, currentUserId);
+                  return (
+                    <FriendCard
+                      key={connection.id}
+                      connection={connection}
+                      currentUserId={currentUserId}
+                      busy={busyId === connection.id}
+                      online={person?.id ? onlineSet.has(person.id) : false}
+                      onRevoke={() => handleRevoke(connection)}
+                      onMessage={() => handleMessage(connection)}
+                      onOpenProfile={() => setSelectedConnectionId(connection.id)}
+                    />
+                  );
+                })}
+              </div>
+            )}
+            {blocked.length > 0 && (
+              <section className={cn(currentList.length > 0 && "mt-6")}>
+                <h2 className="mb-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                  {t("blockedUsers")}
+                </h2>
+                <div className="space-y-1.5">
+                  {blocked.map((connection) => (
+                    <BlockedUserRow
+                      key={connection.id}
+                      connection={connection}
+                      currentUserId={currentUserId}
+                      busy={busyId === connection.id}
+                      onUnblock={() => handleUnblock(connection)}
+                    />
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
         ) : (
           <div className="flex-1 overflow-y-auto px-4 py-4">
@@ -473,6 +541,7 @@ export function FriendsView({ onNavigate }: { onNavigate?: () => void } = {}) {
                   onReject={() => handleRespond(connection.id, "rejected")}
                   onRevoke={() => handleRevoke(connection)}
                   onBlock={() => handleBlock(connection)}
+                  onReport={() => handleReport(connection)}
                 />
               ))}
             </div>
@@ -489,7 +558,16 @@ export function FriendsView({ onNavigate }: { onNavigate?: () => void } = {}) {
         onMessage={() => selectedConnection && handleMessage(selectedConnection)}
         onUnfriend={() => selectedConnection && handleRevoke(selectedConnection)}
         onBlock={() => selectedConnection && handleBlock(selectedConnection)}
+        onReport={() => selectedConnection && handleReport(selectedConnection)}
       />
+
+      {reportTarget && (
+        <ReportUserDialog
+          person={reportTarget}
+          onClose={() => setReportTarget(null)}
+          onSubmitted={() => setNotice(t("report.submitted"))}
+        />
+      )}
     </div>
   );
 }
@@ -721,6 +799,7 @@ function FriendProfileDrawer({
   onMessage,
   onUnfriend,
   onBlock,
+  onReport,
 }: {
   open: boolean;
   connection: api.UserConnection | null;
@@ -730,6 +809,7 @@ function FriendProfileDrawer({
   onMessage: () => void;
   onUnfriend: () => void;
   onBlock: () => void;
+  onReport: () => void;
 }) {
   const { t } = useTranslation("friends");
   if (!connection) return null;
@@ -766,6 +846,7 @@ function FriendProfileDrawer({
           onMessage={onMessage}
           onUnfriend={onUnfriend}
           onBlock={onBlock}
+          onReport={onReport}
         />
       </div>
     </>
@@ -779,6 +860,7 @@ function FriendProfileBody({
   onMessage,
   onUnfriend,
   onBlock,
+  onReport,
 }: {
   connection: api.UserConnection;
   person: api.Participant;
@@ -786,6 +868,7 @@ function FriendProfileBody({
   onMessage: () => void;
   onUnfriend: () => void;
   onBlock: () => void;
+  onReport: () => void;
 }) {
   const { t } = useTranslation("friends");
   const [listings, setListings] = useState<api.DirectoryListing[] | null>(null);
@@ -957,6 +1040,16 @@ function FriendProfileBody({
           >
             <Ban className="h-4 w-4" />
           </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={onReport}
+            disabled={busy}
+            title={t("report.action")}
+            className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+          >
+            <Flag className="h-4 w-4" />
+          </Button>
         </div>
 
         <section className="mt-7">
@@ -1088,6 +1181,7 @@ function ConnectionCard({
   onReject,
   onRevoke,
   onBlock,
+  onReport,
 }: {
   connection: api.UserConnection;
   currentUserId?: string;
@@ -1098,7 +1192,9 @@ function ConnectionCard({
   onReject: () => void;
   onRevoke: () => void;
   onBlock: () => void;
+  onReport: () => void;
 }) {
+  const { t } = useTranslation("friends");
   const person = otherParticipant(connection, currentUserId);
   return (
     <div className="rounded-xl border border-border bg-card p-4 transition-colors hover:bg-surface-hover">
@@ -1134,12 +1230,152 @@ function ConnectionCard({
             <Button size="sm" variant="ghost" className="text-destructive" onClick={onBlock}>
               <ShieldOff className="mr-1 h-3 w-3" />Block
             </Button>
+            <Button size="sm" variant="ghost" className="text-destructive" onClick={onReport}>
+              <Flag className="mr-1 h-3 w-3" />{t("report.action")}
+            </Button>
           </>
         ) : (
           <Button size="sm" variant="outline" onClick={onRevoke}>Cancel request</Button>
         )}
       </div>
     </div>
+  );
+}
+
+function BlockedUserRow({
+  connection,
+  currentUserId,
+  busy,
+  onUnblock,
+}: {
+  connection: api.UserConnection;
+  currentUserId?: string;
+  busy: boolean;
+  onUnblock: () => void;
+}) {
+  const { t } = useTranslation("friends");
+  const person = otherParticipant(connection, currentUserId);
+  return (
+    <div className="flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3">
+      <Avatar className="h-9 w-9">
+        {person?.avatarUrl && <AvatarImage src={person.avatarUrl} displaySize={36} />}
+        <AvatarFallback>{initials(person?.displayName)}</AvatarFallback>
+      </Avatar>
+      <div className="min-w-0 flex-1">
+        <div className="truncate text-sm font-semibold">
+          {person?.displayName ?? t("common:unknown")}
+        </div>
+        <div className="truncate text-xs text-muted-foreground">{makeHandle(person)}</div>
+      </div>
+      {busy ? (
+        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+      ) : (
+        <Button size="sm" variant="outline" onClick={onUnblock}>
+          <ShieldOff className="mr-1 h-3 w-3" />
+          {t("unblock")}
+        </Button>
+      )}
+    </div>
+  );
+}
+
+const REPORT_REASONS: api.ReportReason[] = [
+  "harassment",
+  "spam",
+  "impersonation",
+  "inappropriate_content",
+  "other",
+];
+
+function ReportUserDialog({
+  person,
+  onClose,
+  onSubmitted,
+}: {
+  person: api.Participant;
+  onClose: () => void;
+  onSubmitted: () => void;
+}) {
+  const { t } = useTranslation("friends");
+  const [reason, setReason] = useState<api.ReportReason | null>(null);
+  const [details, setDetails] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async () => {
+    if (!reason || submitting) return;
+    setSubmitting(true);
+    setError(null);
+    try {
+      await api.reportUser({
+        reportedParticipantId: person.id,
+        reason,
+        ...(details.trim() ? { details: details.trim() } : {}),
+      });
+      onSubmitted();
+      onClose();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t("errors.reportUser"));
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <Dialog
+      open
+      onOpenChange={(open) => {
+        if (!open && !submitting) onClose();
+      }}
+    >
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>{t("report.title")}</DialogTitle>
+          <DialogDescription>{t("report.message")}</DialogDescription>
+        </DialogHeader>
+
+        <div className="flex flex-wrap gap-1.5">
+          {REPORT_REASONS.map((value) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => setReason(value)}
+              className={cn(
+                "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
+                reason === value
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "border-border text-muted-foreground hover:bg-muted hover:text-foreground"
+              )}
+            >
+              {t(`report.reasons.${value}`)}
+            </button>
+          ))}
+        </div>
+
+        <Textarea
+          value={details}
+          onChange={(e) => setDetails(e.target.value)}
+          placeholder={t("report.detailsPlaceholder")}
+          rows={3}
+          className="resize-none"
+        />
+
+        {error && (
+          <p className="text-xs text-destructive" role="alert">
+            {error}
+          </p>
+        )}
+
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose} disabled={submitting}>
+            {t("common:cancel")}
+          </Button>
+          <Button onClick={handleSubmit} disabled={!reason || submitting}>
+            {submitting && <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />}
+            {t("report.submit")}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
