@@ -16,6 +16,8 @@ type Tab = "general" | "members" | "hosts" | "models" | "invites";
 interface Props {
   workspaceId: string;
   onClose: () => void;
+  /** Tab to open on. Members-area "Invite" jumps straight to invites. */
+  initialTab?: Tab;
 }
 
 /**
@@ -30,9 +32,9 @@ interface Props {
  * stale snapshot and clicking actions runs them against a workspace
  * the user is no longer in.
  */
-export function WorkspaceSettingsModal({ workspaceId, onClose }: Props) {
+export function WorkspaceSettingsModal({ workspaceId, onClose, initialTab }: Props) {
   const { t } = useTranslation("settings");
-  const [tab, setTab] = useState<Tab>("general");
+  const [tab, setTab] = useState<Tab>(initialTab ?? "general");
   const workspace = useWorkspaces().find((w) => w.id === workspaceId);
 
   // Auto-close if the workspace disappears from the user's

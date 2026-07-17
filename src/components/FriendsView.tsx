@@ -1533,6 +1533,7 @@ function MembersView({
       {settingsOpen && (
         <WorkspaceSettingsModal
           workspaceId={workspaceId}
+          initialTab="invites"
           onClose={() => setSettingsOpen(false)}
         />
       )}
