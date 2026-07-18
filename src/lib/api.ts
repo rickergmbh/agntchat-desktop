@@ -1750,6 +1750,9 @@ export interface Memory {
 export interface FamilyMemory {
   id: string;
   familyRootId: string;
+  // null/absent = family-global (visible in every workspace); set = scoped
+  // to that workspace only (two-tier family memory, backend migration 296).
+  organizationId?: string | null;
   category: MemoryCategory;
   key: string;
   content: string;
@@ -1772,6 +1775,12 @@ export interface MemoryInput {
   tags?: string[];
   force?: boolean;
   reason?: string;
+  // Family memories only. `organizationId` pins the row to one workspace;
+  // `scope: "family"` makes it family-global (also the backend default for
+  // human writes). Edits must resend the row's scope — the upsert key is
+  // (scope, category, key).
+  scope?: "family" | "workspace";
+  organizationId?: string;
 }
 
 export async function getAgentMemories(

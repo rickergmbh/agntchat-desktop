@@ -3307,6 +3307,14 @@ export const resources = {
       "participants": "Participants",
       "roles": "Roles",
       "saveFailed": "Failed to save memory.",
+      "scope": {
+        "familyOption": "Family-wide (all workspaces)",
+        "familyWide": "Family-wide",
+        "fixed": "The scope can't be changed after creation.",
+        "hint": "Family-wide memories are visible in every workspace. Workspace memories only apply in the selected workspace.",
+        "label": "Scope",
+        "otherWorkspace": "Other workspace"
+      },
       "sections": {
         "completedWork": "Completed Work",
         "currentState": "Current State",
@@ -8249,6 +8257,14 @@ export const resources = {
       "participants": "Participantes",
       "roles": "Roles",
       "saveFailed": "No se pudo guardar la memoria.",
+      "scope": {
+        "familyOption": "Toda la familia (todos los espacios de trabajo)",
+        "familyWide": "Toda la familia",
+        "fixed": "El alcance no se puede cambiar después de la creación.",
+        "hint": "Las memorias de toda la familia son visibles en todos los espacios de trabajo. Las memorias de espacio de trabajo solo se aplican en el espacio seleccionado.",
+        "label": "Alcance",
+        "otherWorkspace": "Otro espacio de trabajo"
+      },
       "sections": {
         "completedWork": "Trabajo completado",
         "currentState": "Estado actual",
@@ -13191,6 +13207,14 @@ export const resources = {
       "participants": "Teilnehmer",
       "roles": "Rollen",
       "saveFailed": "Erinnerung konnte nicht gespeichert werden.",
+      "scope": {
+        "familyOption": "Familienweit (alle Arbeitsbereiche)",
+        "familyWide": "Familienweit",
+        "fixed": "Der Geltungsbereich kann nach der Erstellung nicht geändert werden.",
+        "hint": "Familienweite Erinnerungen sind in jedem Arbeitsbereich sichtbar. Arbeitsbereich-Erinnerungen gelten nur im ausgewählten Arbeitsbereich.",
+        "label": "Geltungsbereich",
+        "otherWorkspace": "Anderer Arbeitsbereich"
+      },
       "sections": {
         "completedWork": "Abgeschlossene Arbeit",
         "currentState": "Aktueller Status",
@@ -18133,6 +18157,14 @@ export const resources = {
       "participants": "Participants",
       "roles": "Rôles",
       "saveFailed": "Échec de l'enregistrement de la mémoire.",
+      "scope": {
+        "familyOption": "Toute la famille (tous les espaces de travail)",
+        "familyWide": "Toute la famille",
+        "fixed": "La portée ne peut pas être modifiée après la création.",
+        "hint": "Les mémoires familiales sont visibles dans tous les espaces de travail. Les mémoires d'espace de travail ne s'appliquent qu'à l'espace sélectionné.",
+        "label": "Portée",
+        "otherWorkspace": "Autre espace de travail"
+      },
       "sections": {
         "completedWork": "Travail terminé",
         "currentState": "État actuel",
@@ -23075,6 +23107,14 @@ export const resources = {
       "participants": "Participantes",
       "roles": "Funções",
       "saveFailed": "Falha ao salvar memória.",
+      "scope": {
+        "familyOption": "Toda a família (todos os espaços de trabalho)",
+        "familyWide": "Toda a família",
+        "fixed": "O âmbito não pode ser alterado após a criação.",
+        "hint": "Memórias de toda a família são visíveis em todos os espaços de trabalho. Memórias de espaço de trabalho aplicam-se apenas ao espaço selecionado.",
+        "label": "Âmbito",
+        "otherWorkspace": "Outro espaço de trabalho"
+      },
       "sections": {
         "completedWork": "Trabalho concluído",
         "currentState": "Estado atual",
@@ -28017,6 +28057,14 @@ export const resources = {
       "participants": "参加者",
       "roles": "役割",
       "saveFailed": "メモリーの保存に失敗しました。",
+      "scope": {
+        "familyOption": "ファミリー全体（すべてのワークスペース）",
+        "familyWide": "ファミリー全体",
+        "fixed": "スコープは作成後に変更できません。",
+        "hint": "ファミリー全体のメモリーはすべてのワークスペースで表示されます。ワークスペースのメモリーは選択したワークスペースでのみ適用されます。",
+        "label": "スコープ",
+        "otherWorkspace": "他のワークスペース"
+      },
       "sections": {
         "completedWork": "完了した作業",
         "currentState": "現在の状態",
@@ -32959,6 +33007,14 @@ export const resources = {
       "participants": "参与者",
       "roles": "角色",
       "saveFailed": "保存记忆失败。",
+      "scope": {
+        "familyOption": "全家庭（所有工作区）",
+        "familyWide": "全家庭",
+        "fixed": "范围在创建后无法更改。",
+        "hint": "全家庭记忆在所有工作区中可见。工作区记忆仅适用于所选工作区。",
+        "label": "范围",
+        "otherWorkspace": "其他工作区"
+      },
       "sections": {
         "completedWork": "已完成的工作",
         "currentState": "当前状态",
@@ -37901,6 +37957,14 @@ export const resources = {
       "participants": "참가자",
       "roles": "역할",
       "saveFailed": "메모리 저장에 실패했습니다.",
+      "scope": {
+        "familyOption": "가족 전체 (모든 워크스페이스)",
+        "familyWide": "가족 전체",
+        "fixed": "범위는 생성 후 변경할 수 없습니다.",
+        "hint": "가족 전체 메모리는 모든 워크스페이스에 표시됩니다. 워크스페이스 메모리는 선택한 워크스페이스에만 적용됩니다.",
+        "label": "범위",
+        "otherWorkspace": "다른 워크스페이스"
+      },
       "sections": {
         "completedWork": "완료된 작업",
         "currentState": "현재 상태",
@@ -42843,6 +42907,14 @@ export const resources = {
       "participants": "Partecipanti",
       "roles": "Ruoli",
       "saveFailed": "Impossibile salvare la memoria.",
+      "scope": {
+        "familyOption": "Tutta la famiglia (tutti gli spazi di lavoro)",
+        "familyWide": "Tutta la famiglia",
+        "fixed": "L'ambito non può essere modificato dopo la creazione.",
+        "hint": "Le memorie di tutta la famiglia sono visibili in ogni spazio di lavoro. Le memorie di spazio di lavoro si applicano solo allo spazio selezionato.",
+        "label": "Ambito",
+        "otherWorkspace": "Altro spazio di lavoro"
+      },
       "sections": {
         "completedWork": "Lavoro completato",
         "currentState": "Stato attuale",
@@ -47785,6 +47857,14 @@ export const resources = {
       "participants": "प्रतिभागी",
       "roles": "भूमिकाएँ",
       "saveFailed": "मेमोरी सहेजना विफल।",
+      "scope": {
+        "familyOption": "पूरे परिवार के लिए (सभी कार्यस्थान)",
+        "familyWide": "पूरे परिवार के लिए",
+        "fixed": "बनाने के बाद दायरा बदला नहीं जा सकता।",
+        "hint": "पूरे परिवार की मेमोरी हर कार्यस्थान में दिखाई देती है। कार्यस्थान मेमोरी केवल चुने गए कार्यस्थान में लागू होती है।",
+        "label": "दायरा",
+        "otherWorkspace": "अन्य कार्यस्थान"
+      },
       "sections": {
         "completedWork": "पूर्ण किया गया कार्य",
         "currentState": "वर्तमान स्थिति",

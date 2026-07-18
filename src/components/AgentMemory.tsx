@@ -13,6 +13,7 @@ import {
   saveFamilyMemory,
   deleteFamilyMemory,
 } from "../lib/api";
+import { useWorkspaces, useWorkspacesEnabled } from "../stores/workspaceStore";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -68,8 +69,32 @@ const CATEGORY_LABEL_KEYS: Record<MemoryCategory, string> = {
 // drives where writes go.
 type AnyMemory = Memory | FamilyMemory;
 
+// Sentinel for "family-global" in the workspace-scope selector — a family
+// memory with no organizationId is visible in every workspace. Distinct from
+// the loops' "__personal__" sentinel: family-wide means ALL workspaces.
+const FAMILY_WIDE_SCOPE = "__family__";
+
 export function AgentMemory({ agentId, agentName }: AgentMemoryProps) {
   const { t } = useTranslation("memory");
+
+  // Workspace context for the two-tier family scope badge. Hidden while
+  // workspaces are off or there's only one — every row would carry the same
+  // badge.
+  const workspaces = useWorkspaces();
+  const workspacesEnabled = useWorkspacesEnabled();
+  const scopeSelectable = workspacesEnabled && workspaces.length > 1;
+  const familyScopeLabel = useCallback(
+    (m: AnyMemory): string | null => {
+      if (!scopeSelectable) return null;
+      const orgId = "organizationId" in m ? m.organizationId : null;
+      if (!orgId) return t("scope.familyWide");
+      return (
+        workspaces.find((w) => w.id === orgId)?.name ?? t("scope.otherWorkspace")
+      );
+    },
+    [scopeSelectable, workspaces, t]
+  );
+
   const [agentMemories, setAgentMemories] = useState<Memory[]>([]);
   const [familyMemories, setFamilyMemories] = useState<FamilyMemory[]>([]);
   const [loading, setLoading] = useState(true);
@@ -177,6 +202,7 @@ export function AgentMemory({ agentId, agentName }: AgentMemoryProps) {
             title={t("familyMemories")}
             subtitle={t("familyNotice")}
             shared
+            scopeLabel={familyScopeLabel}
             memories={familyMemories}
             emptyHint={t("emptyFamilyHint")}
             onAdd={() => {
@@ -217,6 +243,7 @@ function MemorySection({
   title,
   subtitle,
   shared = false,
+  scopeLabel,
   memories,
   emptyHint,
   onAdd,
@@ -228,6 +255,8 @@ function MemorySection({
   title: string;
   subtitle: string;
   shared?: boolean;
+  // Family list only: resolves a row to its workspace badge text.
+  scopeLabel?: (m: AnyMemory) => string | null;
   memories: AnyMemory[];
   emptyHint: string;
   onAdd: () => void;
@@ -285,6 +314,7 @@ function MemorySection({
                     key={m.id}
                     memory={m}
                     shared={shared}
+                    scopeBadge={scopeLabel ? scopeLabel(m) : null}
                     onEdit={() => onEdit(m)}
                     onDelete={onDelete}
                     onDeleted={onDeleted}
@@ -304,12 +334,15 @@ function MemorySection({
 function MemoryRow({
   memory,
   shared,
+  scopeBadge,
   onEdit,
   onDelete,
   onDeleted,
 }: {
   memory: AnyMemory;
   shared: boolean;
+  // Family rows: workspace name the row is scoped to, or the family-wide label.
+  scopeBadge?: string | null;
   onEdit: () => void;
   onDelete: (m: AnyMemory) => Promise<unknown>;
   onDeleted: () => void;
@@ -348,6 +381,11 @@ function MemoryRow({
             {typeof memory.confidence === "number" && (
               <Badge variant="outline" className="text-[10px] px-1.5 py-0">
                 {Math.round(memory.confidence * 100)}%
+              </Badge>
+            )}
+            {scopeBadge && (
+              <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                {scopeBadge}
               </Badge>
             )}
           </div>
@@ -433,6 +471,17 @@ function MemoryFormDialog({
 }) {
   const { t } = useTranslation("memory");
   const isEdit = !!existing;
+
+  // Two-tier family scope. Selectable on create, locked on edit — the scope
+  // is part of the row's identity (the upsert key is scope + category + key).
+  const workspaces = useWorkspaces();
+  const workspacesEnabled = useWorkspacesEnabled();
+  const scopeSelectable = workspacesEnabled && workspaces.length > 1;
+  const [organizationId, setOrganizationId] = useState<string>(
+    (existing && "organizationId" in existing && existing.organizationId) ||
+      FAMILY_WIDE_SCOPE
+  );
+
   const [category, setCategory] = useState<MemoryCategory>(
     existing?.category ?? "fact"
   );
@@ -501,6 +550,9 @@ function MemoryFormDialog({
       } else {
         // Family memories have no PATCH — an edit is a forced POST of the same
         // category + key. A brand-new collision surfaces a friendly message.
+        // The scope is part of the upsert key, so always send it — an edit
+        // that omitted it would land in the human default (family-global)
+        // instead of the row's own workspace.
         const body: MemoryInput = {
           category,
           key: trimmedKey,
@@ -509,6 +561,9 @@ function MemoryFormDialog({
           description: description.trim() || undefined,
           tags: tagsList,
           force: isEdit ? true : undefined,
+          ...(organizationId === FAMILY_WIDE_SCOPE
+            ? { scope: "family" as const }
+            : { organizationId }),
         };
         try {
           await saveFamilyMemory(body);
@@ -558,6 +613,43 @@ function MemoryFormDialog({
         )}
 
         <div className="space-y-4">
+          {/* Two-tier scope — family-wide or pinned to one workspace. Only
+              shown with >1 workspace; locked on edit since the scope is part
+              of the row's identity. */}
+          {scope === "family" && scopeSelectable && (
+            <div className="space-y-1.5">
+              <Label className="text-xs">{t("scope.label")}</Label>
+              <Select
+                value={organizationId}
+                onValueChange={(v) => v && setOrganizationId(v)}
+                disabled={isEdit}
+              >
+                <SelectTrigger>
+                  <SelectValue>
+                    {(val: unknown) =>
+                      String(val) === FAMILY_WIDE_SCOPE
+                        ? t("scope.familyOption")
+                        : workspaces.find((w) => w.id === String(val))?.name ??
+                          t("scope.otherWorkspace")
+                    }
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={FAMILY_WIDE_SCOPE}>
+                    {t("scope.familyOption")}
+                  </SelectItem>
+                  {workspaces.map((w) => (
+                    <SelectItem key={w.id} value={w.id}>
+                      {w.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-[11px] text-muted-foreground">
+                {isEdit ? t("scope.fixed") : t("scope.hint")}
+              </p>
+            </div>
+          )}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label className="text-xs">{t("form.category")}</Label>
