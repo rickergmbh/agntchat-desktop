@@ -1597,10 +1597,11 @@ export const resources = {
       "subAgents": {
         "allowSpawning": "Allow spawning",
         "disabledHint": "This agent cannot spawn sub-agents.",
-        "enabledHint": "Helpers run on your own machine alongside this agent.",
+        "enabledHint": "Helpers can run on your own machine or on your organization's shared host.",
         "maxConcurrent": "Max helpers at once",
         "maxDepth": "Max nesting depth",
         "runLocally": "Run helpers locally",
+        "runOnOrgHost": "Run helpers on org host",
         "title": "Sub-agents"
       },
       "subAgents_one": "{{count}} sub-agent",
@@ -6538,10 +6539,11 @@ export const resources = {
       "subAgents": {
         "allowSpawning": "Permitir crear subagentes",
         "disabledHint": "Este agente no puede crear subagentes.",
-        "enabledHint": "Los ayudantes se ejecutan en tu propia máquina junto a este agente.",
+        "enabledHint": "Los ayudantes pueden ejecutarse en tu propia máquina o en el host compartido de tu organización.",
         "maxConcurrent": "Máximo de ayudantes a la vez",
         "maxDepth": "Profundidad máxima de anidación",
         "runLocally": "Ejecutar ayudantes localmente",
+        "runOnOrgHost": "Ejecutar ayudantes en el host de la organización",
         "title": "Subagentes"
       },
       "subAgents_one": "{{count}} subagente",
@@ -11479,10 +11481,11 @@ export const resources = {
       "subAgents": {
         "allowSpawning": "Erzeugen erlauben",
         "disabledHint": "Dieser Agent kann keine Unteragenten erzeugen.",
-        "enabledHint": "Helfer laufen zusammen mit diesem Agenten auf Ihrem eigenen Rechner.",
+        "enabledHint": "Helfer können auf Ihrem eigenen Rechner oder auf dem gemeinsamen Host Ihrer Organisation laufen.",
         "maxConcurrent": "Max. Helfer gleichzeitig",
         "maxDepth": "Max. Verschachtelungstiefe",
         "runLocally": "Helfer lokal ausführen",
+        "runOnOrgHost": "Helfer auf dem Organisations-Host ausführen",
         "title": "Unteragenten"
       },
       "subAgents_one": "{{count}} Unteragent",
@@ -16420,10 +16423,11 @@ export const resources = {
       "subAgents": {
         "allowSpawning": "Autoriser la création",
         "disabledHint": "Cet agent ne peut pas créer de sous-agents.",
-        "enabledHint": "Les assistants s'exécutent sur votre propre machine aux côtés de cet agent.",
+        "enabledHint": "Les assistants peuvent s'exécuter sur votre propre machine ou sur l'hôte partagé de votre organisation.",
         "maxConcurrent": "Nombre max d'assistants simultanés",
         "maxDepth": "Profondeur d'imbrication max",
         "runLocally": "Exécuter les assistants localement",
+        "runOnOrgHost": "Exécuter les assistants sur l'hôte de l'organisation",
         "title": "Sous-agents"
       },
       "subAgents_one": "{{count}} sous-agent",
@@ -21361,10 +21365,11 @@ export const resources = {
       "subAgents": {
         "allowSpawning": "Permitir geração",
         "disabledHint": "Este agente não pode gerar subagentes.",
-        "enabledHint": "Ajudantes são executados na sua própria máquina junto com este agente.",
+        "enabledHint": "Ajudantes podem ser executados na sua própria máquina ou no host compartilhado da sua organização.",
         "maxConcurrent": "Máximo de ajudantes simultâneos",
         "maxDepth": "Profundidade máxima de aninhamento",
         "runLocally": "Executar ajudantes localmente",
+        "runOnOrgHost": "Executar ajudantes no host da organização",
         "title": "Subagentes"
       },
       "subAgents_one": "{{count}} subagente",
@@ -26302,10 +26307,11 @@ export const resources = {
       "subAgents": {
         "allowSpawning": "生成を許可",
         "disabledHint": "このエージェントはサブエージェントを生成できません。",
-        "enabledHint": "ヘルパーはこのエージェントと一緒にあなたのマシン上で実行されます。",
+        "enabledHint": "ヘルパーはあなたのマシン上、または組織の共有ホスト上で実行できます。",
         "maxConcurrent": "同時に実行できる最大ヘルパー数",
         "maxDepth": "最大ネスト深度",
         "runLocally": "ヘルパーをローカルで実行",
+        "runOnOrgHost": "ヘルパーを組織ホストで実行",
         "title": "サブエージェント"
       },
       "subAgents_one": "サブエージェント{{count}}件",
@@ -31243,10 +31249,11 @@ export const resources = {
       "subAgents": {
         "allowSpawning": "允许生成子智能体",
         "disabledHint": "此智能体无法生成子智能体。",
-        "enabledHint": "助手与此智能体一同运行在你自己的设备上。",
+        "enabledHint": "助手可以在你自己的设备上或组织的共享主机上运行。",
         "maxConcurrent": "同时运行的最大助手数",
         "maxDepth": "最大嵌套深度",
         "runLocally": "在本地运行助手",
+        "runOnOrgHost": "在组织主机上运行助手",
         "title": "子智能体"
       },
       "subAgents_one": "{{count}} 个子智能体",
@@ -36184,10 +36191,11 @@ export const resources = {
       "subAgents": {
         "allowSpawning": "생성 허용",
         "disabledHint": "이 에이전트는 하위 에이전트를 생성할 수 없습니다.",
-        "enabledHint": "헬퍼는 이 에이전트와 함께 회원님의 기기에서 실행됩니다.",
+        "enabledHint": "헬퍼는 회원님의 기기 또는 조직의 공유 호스트에서 실행될 수 있습니다.",
         "maxConcurrent": "동시 헬퍼 최대 수",
         "maxDepth": "최대 중첩 깊이",
         "runLocally": "헬퍼를 로컬에서 실행",
+        "runOnOrgHost": "헬퍼를 조직 호스트에서 실행",
         "title": "하위 에이전트"
       },
       "subAgents_one": "하위 에이전트 {{count}}개",
@@ -41125,10 +41133,11 @@ export const resources = {
       "subAgents": {
         "allowSpawning": "Consenti generazione",
         "disabledHint": "Questo agente non può generare sotto-agenti.",
-        "enabledHint": "Gli assistenti vengono eseguiti sulla tua macchina insieme a questo agente.",
+        "enabledHint": "Gli assistenti possono essere eseguiti sulla tua macchina o sull'host condiviso della tua organizzazione.",
         "maxConcurrent": "Assistenti massimi contemporanei",
         "maxDepth": "Profondità massima di annidamento",
         "runLocally": "Esegui gli assistenti localmente",
+        "runOnOrgHost": "Esegui gli assistenti sull'host dell'organizzazione",
         "title": "Sotto-agenti"
       },
       "subAgents_one": "{{count}} sotto-agente",
@@ -46066,10 +46075,11 @@ export const resources = {
       "subAgents": {
         "allowSpawning": "स्पॉनिंग की अनुमति दें",
         "disabledHint": "यह एजेंट उप-एजेंट स्पॉन नहीं कर सकता।",
-        "enabledHint": "हेल्पर इस एजेंट के साथ आपकी अपनी मशीन पर चलते हैं।",
+        "enabledHint": "हेल्पर आपकी अपनी मशीन पर या आपके संगठन के साझा होस्ट पर चल सकते हैं।",
         "maxConcurrent": "एक साथ अधिकतम हेल्पर",
         "maxDepth": "अधिकतम नेस्टिंग गहराई",
         "runLocally": "हेल्पर स्थानीय रूप से चलाएँ",
+        "runOnOrgHost": "हेल्पर संगठन होस्ट पर चलाएँ",
         "title": "उप-एजेंट"
       },
       "subAgents_one": "{{count}} उप-एजेंट",

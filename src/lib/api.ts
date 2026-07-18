@@ -3192,7 +3192,7 @@ export interface ResponseTemplate {
  *  AgentConfig.tsx, mirroring Agentchat.Accounts.SubAgentPolicy). */
 export interface SubAgentPolicy {
   spawning_enabled?: boolean;
-  allowed_runtimes?: "local"[];
+  allowed_runtimes?: ("local" | "org_host")[];
   max_concurrent?: number;
   max_depth?: number;
   default_ttl_minutes?: number;
@@ -3252,7 +3252,7 @@ export interface Agent {
    *  so the desktop never holds their API key locally. */
   spawn?: {
     purpose?: string;
-    runtime?: "local";
+    runtime?: "local" | "org_host";
     spawned_at?: string;
     last_used_at?: string;
     expires_at?: string;

@@ -1552,7 +1552,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
 // sparse, so the UI merges over these for display.
 const SUB_AGENT_POLICY_DEFAULTS = {
   spawning_enabled: true,
-  allowed_runtimes: ["local"] as "local"[],
+  allowed_runtimes: ["local", "org_host"] as ("local" | "org_host")[],
   max_concurrent: 5,
   max_depth: 2,
   default_ttl_minutes: 1440,
@@ -1606,7 +1606,7 @@ function SubAgentsSection({ agent }: { agent: Agent }) {
   );
 
   const toggleRuntime = useCallback(
-    (runtime: "local", on: boolean) => {
+    (runtime: "local" | "org_host", on: boolean) => {
       const next = new Set(policy.allowed_runtimes);
       if (on) next.add(runtime);
       else next.delete(runtime);
@@ -1614,7 +1614,7 @@ function SubAgentsSection({ agent }: { agent: Agent }) {
         setError(t("policy.atLeastOneRuntimeMessage"));
         return;
       }
-      void savePolicy({ allowed_runtimes: Array.from(next) as "local"[] });
+      void savePolicy({ allowed_runtimes: Array.from(next) as ("local" | "org_host")[] });
     },
     [policy.allowed_runtimes, savePolicy, t]
   );
@@ -1646,6 +1646,15 @@ function SubAgentsSection({ agent }: { agent: Agent }) {
                 checked={policy.allowed_runtimes.includes("local")}
                 disabled={saving}
                 onCheckedChange={(v) => toggleRuntime("local", v)}
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <Label className="text-sm">{t("subAgents.runOnOrgHost")}</Label>
+              <Switch
+                checked={policy.allowed_runtimes.includes("org_host")}
+                disabled={saving}
+                onCheckedChange={(v) => toggleRuntime("org_host", v)}
               />
             </div>
 
