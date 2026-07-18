@@ -2006,6 +2006,11 @@ function VisibilityChoice({
   const { t } = useTranslation("agents");
   const allWorkspaces = useWorkspaces();
   const personal = allWorkspaces.find((w) => w.isPersonal);
+  const active = useActiveWorkspace();
+  // Turning "All workspaces" off seeds the pin set with the workspace
+  // the user is currently in (fallback: Personal) — see VisibilityField
+  // on the agent config Profile tab.
+  const seed = active ?? personal;
 
   const toggle = (id: string) => {
     const current = value ?? [];
@@ -2025,7 +2030,7 @@ function VisibilityChoice({
             checked={value === null}
             onChange={() =>
               value === null
-                ? onChange(personal ? [personal.id] : [])
+                ? onChange(seed ? [seed.id] : [])
                 : onChange(null)
             }
             className="h-3.5 w-3.5 accent-primary"

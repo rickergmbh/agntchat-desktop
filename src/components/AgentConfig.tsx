@@ -2986,6 +2986,12 @@ function VisibilityField({
   const { t } = useTranslation("agents");
   const allWorkspaces = useWorkspaces();
   const personal = allWorkspaces.find((w) => w.isPersonal);
+  const active = useActiveWorkspace();
+  // Turning "All workspaces" off seeds the pin set with the workspace
+  // the user is currently in — that's almost always the one they mean
+  // to scope to. Personal is only the fallback when no active workspace
+  // is resolvable.
+  const seed = active ?? personal;
   // Pins to workspaces the owner has since left stay representable so
   // opening this panel doesn't silently drop them from the set.
   const orphanedIds = (value ?? []).filter(
@@ -3010,7 +3016,7 @@ function VisibilityField({
             checked={value === null}
             onChange={() =>
               value === null
-                ? onChange(personal ? [personal.id] : [])
+                ? onChange(seed ? [seed.id] : [])
                 : onChange(null)
             }
             className="h-3.5 w-3.5 accent-primary"
