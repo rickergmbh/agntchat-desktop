@@ -170,7 +170,11 @@ type SectionValue = (typeof SECTIONS)[number]["value"];
 // agents can actually resolve it (encrypted at rest, walks the ownership
 // chain). A single custom endpoint per user, with an API key plus any number
 // of extra named values (secret ones encrypted).
-type CustomFieldRow = api.CredentialFieldInput;
+// `existing` marks rows prefilled from stored fieldDefs on edit. A secret
+// row's value is never returned by the server, so an existing secret with a
+// blank value means "unchanged" and MUST still be submitted — dropping it
+// would delete the field's definition (and stored value) server-side.
+type CustomFieldRow = api.CredentialFieldInput & { existing?: boolean };
 
 // ---------------------------------------------------------------------------
 // Component
@@ -542,6 +546,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
         label: d.label,
         secret: d.secret,
         value: d.secret ? "" : customCredential?.publicFields?.[d.key] ?? "",
+        existing: true,
       }))
     );
     // Reveal Advanced up front when the connection already relies on it, so
@@ -595,8 +600,16 @@ export function Profile({ onClose }: { onClose: () => void }) {
     setSavingCustomApi(true);
     setCustomApiError(null);
     try {
+      // Keep existing secret rows even with a blank value: blank means
+      // "unchanged" (the server never echoes secret values), and omitting
+      // the row would delete the field server-side. Blank NON-secret rows
+      // and never-filled new rows are genuinely empty — drop those.
       const fields = customFields
-        .filter((f) => f.key.trim() !== "" && f.value.trim() !== "")
+        .filter(
+          (f) =>
+            f.key.trim() !== "" &&
+            (f.value.trim() !== "" || (f.secret && f.existing))
+        )
         .map((f) => ({
           key: f.key.trim(),
           label: f.label.trim() || f.key.trim(),
@@ -1519,7 +1532,9 @@ export function Profile({ onClose }: { onClose: () => void }) {
                       }
                       placeholder={
                         field.secret
-                          ? t("customApis.valueEncryptedPlaceholder")
+                          ? field.existing
+                            ? t("customApis.unchanged")
+                            : t("customApis.valueEncryptedPlaceholder")
                           : t("customApis.valuePlaceholder")
                       }
                       className="font-mono text-xs"
