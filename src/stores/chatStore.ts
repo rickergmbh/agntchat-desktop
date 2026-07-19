@@ -749,7 +749,24 @@ export const useChatStore = create<ChatState>((set, get) => ({
   addMessage: (conversationId, message) => {
     set((s) => {
       const existing = s.messages[conversationId] ?? [];
-      if (existing.some((m) => m.id === message.id)) return s;
+      const dupIdx = existing.findIndex((m) => m.id === message.id);
+      if (dupIdx !== -1) {
+        // Same-id re-broadcast — the server re-sends a message when its
+        // content changes after the fact (e.g. the voice-note transcript
+        // folded into a file message's content JSON). Merge the updated
+        // fields into the stored copy instead of dropping the event;
+        // locally-derived state (reactions) is preserved.
+        const stored = existing[dupIdx]!;
+        if (stored.content === message.content) return s;
+        const updated = [...existing];
+        updated[dupIdx] = {
+          ...stored,
+          content: message.content,
+          metadata: message.metadata ?? stored.metadata,
+          fileAttachments: message.fileAttachments ?? stored.fileAttachments,
+        };
+        return { messages: { ...s.messages, [conversationId]: updated } };
+      }
 
       // Nonce replacement: the server echo of our own message replaces the
       // optimistic placeholder we inserted in sendMessage.

@@ -16,6 +16,7 @@ import {
   AttachmentTitle,
 } from "@/components/ui/attachment";
 import { ReplyBanner } from "./ReplyBanner";
+import { VoiceRecorderButton } from "./VoiceRecorderButton";
 import { isResolvedThread } from "../../lib/thread-selectors";
 import {
   MentionPicker,
@@ -97,6 +98,9 @@ export const MessageComposer = forwardRef<
   // into pending .txt attachments (a removable pill each). Uploaded on send,
   // then ride along with the text message.
   const [pastedTexts, setPastedTexts] = useState<PastedText[]>([]);
+  // Voice note recording in progress — the recorder bar replaces the
+  // textarea + attach button for the duration.
+  const [voiceActive, setVoiceActive] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const lastTypingAtRef = useRef(0);
@@ -461,49 +465,63 @@ export const MessageComposer = forwardRef<
             accept="image/*,.pdf,.doc,.docx,.txt,.md,.json,.csv,.xlsx,.zip"
             onChange={handleFileSelect}
           />
-          <Button
-            size="icon"
-            variant="ghost"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={uploading || attachment != null}
-            title="Attach file"
-            type="button"
-            className="text-muted-foreground"
-          >
-            <Paperclip className="w-4 h-4" />
-          </Button>
+          {!voiceActive && (
+            <Button
+              size="icon"
+              variant="ghost"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading || attachment != null}
+              title="Attach file"
+              type="button"
+              className="text-muted-foreground"
+            >
+              <Paperclip className="w-4 h-4" />
+            </Button>
+          )}
 
-          <textarea
-            ref={textareaRef}
-            value={draft}
-            onChange={handleChange}
-            onKeyDown={handleKeyDown}
-            onKeyUp={handleSelectionChange}
-            onClick={handleSelectionChange}
-            onPaste={handlePaste}
-            placeholder={
-              attachment
-                ? attachment.isImage
-                  ? t("composerPlaceholderImage")
-                  : t("composerPlaceholderFile")
-                : t("composerPlaceholder")
-            }
-            rows={1}
-            className="flex-1 resize-none rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground scrollbar-autohide"
-            style={{ maxHeight: MAX_HEIGHT }}
-          />
-          <Button
-            size="icon"
-            onClick={handleSend}
-            disabled={!canSend}
-            title="Send (Enter)"
-          >
-            {uploading ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Send className="w-4 h-4" />
-            )}
-          </Button>
+          {!voiceActive && (
+            <textarea
+              ref={textareaRef}
+              value={draft}
+              onChange={handleChange}
+              onKeyDown={handleKeyDown}
+              onKeyUp={handleSelectionChange}
+              onClick={handleSelectionChange}
+              onPaste={handlePaste}
+              placeholder={
+                attachment
+                  ? attachment.isImage
+                    ? t("composerPlaceholderImage")
+                    : t("composerPlaceholderFile")
+                  : t("composerPlaceholder")
+              }
+              rows={1}
+              className="flex-1 resize-none rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground scrollbar-autohide"
+              style={{ maxHeight: MAX_HEIGHT }}
+            />
+          )}
+          {/* Empty composer: the send button gives way to the voice-note
+              recorder (which renders the recording bar + send while active). */}
+          {!canSend && !sending && !uploading ? (
+            <VoiceRecorderButton
+              conversationId={conversationId}
+              onActiveChange={setVoiceActive}
+              onError={setError}
+            />
+          ) : (
+            <Button
+              size="icon"
+              onClick={handleSend}
+              disabled={!canSend}
+              title="Send (Enter)"
+            >
+              {uploading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Send className="w-4 h-4" />
+              )}
+            </Button>
+          )}
         </div>
       </div>
     </div>

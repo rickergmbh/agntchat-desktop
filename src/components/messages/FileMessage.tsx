@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react";
-import { FileIcon, ImageIcon, Download, Loader2, ExternalLink } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { FileIcon, ImageIcon, Download, Loader2, ExternalLink, Play, Pause } from "lucide-react";
+import { cn } from "@/lib/utils";
 import {
   Attachment,
   AttachmentContent,
@@ -18,6 +20,9 @@ interface FileContent {
   contentType?: string;
   sizeBytes?: number;
   caption?: string;
+  /** Whisper transcript, folded into the content JSON by the backend once
+   *  transcription of an audio upload completes. */
+  transcript?: string;
 }
 
 function safeParseJson<T>(str: string, fallback: T): T {
@@ -30,6 +35,165 @@ function safeParseJson<T>(str: string, fallback: T): T {
 
 function isImage(contentType?: string): boolean {
   return contentType?.startsWith("image/") ?? false;
+}
+
+function isAudio(contentType?: string): boolean {
+  return contentType?.startsWith("audio/") ?? false;
+}
+
+function formatTime(seconds: number): string {
+  if (!Number.isFinite(seconds)) return "0:00";
+  const total = Math.max(0, Math.floor(seconds));
+  return `${Math.floor(total / 60)}:${(total % 60).toString().padStart(2, "0")}`;
+}
+
+/** Inline player for an audio file message (voice note), with the Whisper
+ *  transcript from the message's content JSON rendered underneath. Mirrors
+ *  AudioMessage in web/src/components/messages/FileMessage.tsx. */
+function AudioMessage({
+  url,
+  loading,
+  transcript,
+  caption,
+}: {
+  url: string | null;
+  loading: boolean;
+  transcript?: string;
+  caption?: string;
+}) {
+  const { t } = useTranslation("files");
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [playing, setPlaying] = useState(false);
+  const [position, setPosition] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [transcriptExpanded, setTranscriptExpanded] = useState(false);
+
+  const handleToggle = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (audio.paused) {
+      void audio.play();
+    } else {
+      audio.pause();
+    }
+  }, []);
+
+  // MediaRecorder blobs (webm/opus) often carry no duration metadata and
+  // report Infinity; forcing a seek to a huge offset makes the browser scan
+  // the container and emit a real durationchange.
+  const handleLoadedMetadata = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (Number.isFinite(audio.duration)) {
+      setDuration(audio.duration);
+    } else {
+      const onSeeked = () => {
+        audio.removeEventListener("seeked", onSeeked);
+        audio.currentTime = 0;
+      };
+      audio.addEventListener("seeked", onSeeked);
+      audio.currentTime = 1e10;
+    }
+  }, []);
+
+  const handleSeek = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      const audio = audioRef.current;
+      if (!audio || duration <= 0) return;
+      const rect = e.currentTarget.getBoundingClientRect();
+      const fraction = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+      audio.currentTime = fraction * duration;
+    },
+    [duration]
+  );
+
+  const progress = duration > 0 ? Math.min(1, position / duration) : 0;
+
+  return (
+    <div className="min-w-[220px] space-y-1.5">
+      <div className="flex items-center gap-2.5">
+        <button
+          onClick={handleToggle}
+          disabled={!url}
+          aria-label={playing ? t("pauseVoiceNote") : t("playVoiceNote")}
+          type="button"
+          className={cn(
+            "flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-[1.5px] border-current",
+            !url && "opacity-50"
+          )}
+        >
+          {loading ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : playing ? (
+            <Pause className="h-4 w-4" />
+          ) : (
+            <Play className="ml-0.5 h-4 w-4" />
+          )}
+        </button>
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-medium">{t("voiceNote")}</p>
+          <div
+            className="mt-1.5 h-[3px] cursor-pointer rounded-full bg-current/20"
+            onClick={handleSeek}
+            role="slider"
+            aria-valuemin={0}
+            aria-valuemax={Math.round(duration)}
+            aria-valuenow={Math.round(position)}
+          >
+            <div
+              className="h-full rounded-full bg-current"
+              style={{ width: `${progress * 100}%` }}
+            />
+          </div>
+          <p className="mt-1 text-[11px] tabular-nums opacity-70">
+            {duration > 0
+              ? `${formatTime(position)} / ${formatTime(duration)}`
+              : formatTime(position)}
+          </p>
+        </div>
+      </div>
+      {url && (
+        <audio
+          ref={audioRef}
+          src={url}
+          preload="metadata"
+          onLoadedMetadata={handleLoadedMetadata}
+          onDurationChange={() => {
+            const d = audioRef.current?.duration;
+            if (d && Number.isFinite(d)) setDuration(d);
+          }}
+          onTimeUpdate={() => setPosition(audioRef.current?.currentTime ?? 0)}
+          onPlay={() => setPlaying(true)}
+          onPause={() => setPlaying(false)}
+          onEnded={() => {
+            setPlaying(false);
+            setPosition(0);
+            if (audioRef.current) audioRef.current.currentTime = 0;
+          }}
+        />
+      )}
+      {caption && <p className="text-sm">{caption}</p>}
+      {transcript && (
+        <button
+          onClick={() => setTranscriptExpanded((v) => !v)}
+          className="block w-full text-left"
+          type="button"
+        >
+          <p className="text-[10px] font-bold uppercase tracking-wide opacity-60">
+            {t("transcript")}
+          </p>
+          <p
+            className={cn(
+              "mt-0.5 whitespace-pre-wrap text-sm opacity-90",
+              !transcriptExpanded && "line-clamp-3"
+            )}
+          >
+            {transcript}
+          </p>
+        </button>
+      )}
+    </div>
+  );
 }
 
 function useDownloadUrl(attachmentId?: string, existingUrl?: string) {
@@ -158,6 +322,17 @@ export function FileMessage({ message }: { message: Message }) {
   const contentType = file.contentType ?? attachment?.contentType;
   const size = file.sizeBytes ?? attachment?.sizeBytes;
   const { url, loading } = useDownloadUrl(attachmentId, attachment?.downloadUrl);
+
+  if (isAudio(contentType)) {
+    return (
+      <AudioMessage
+        url={url}
+        loading={loading}
+        transcript={file.transcript}
+        caption={file.caption}
+      />
+    );
+  }
 
   if (isImage(contentType)) {
     // Every state (loading / loaded / error) renders inside the same
