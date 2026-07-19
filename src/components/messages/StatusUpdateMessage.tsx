@@ -744,8 +744,17 @@ export function StatusUpdateMessage({ message }: { message: Message }) {
   const payload = safeParseJson<StatusPayload>(message.content, {
     summary: message.content,
   });
+  // Watchdog redrive nudges (parked-thread / commitment re-checks) are
+  // agent-directed prompts, not user-facing content — skip them entirely,
+  // same as thread_completed below.
+  if (message.metadata?.parked_recheck || message.metadata?.commitment_recheck) {
+    return null;
+  }
+  // No lifecycle info at all (e.g. plain-text content) must NOT default to
+  // task_in_progress — that renders a fake spinning "Task in progress" card
+  // with no task behind it. Fall through to the compact status row instead.
   const rawLifecycle =
-    payload.lifecycle_type ?? payload.type ?? payload.status ?? "task_in_progress";
+    payload.lifecycle_type ?? payload.type ?? payload.status ?? "status_update";
   const lifecycle = BARE_STATUS_TO_LIFECYCLE[rawLifecycle] ?? rawLifecycle;
 
   const liveMeta = useTaskStore((s) =>
