@@ -26,7 +26,7 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self'; connect-src 'self' ipc: http://ipc.localhost https://agentchat-backend.fly.dev wss://agentchat-backend.fly.dev https://eu.i.posthog.com https://*.supabase.co; img-src 'self' asset: http://asset.localhost data: blob: https:; media-src 'self' blob: https://*.supabase.co; style-src 'self' 'unsafe-inline'; font-src 'self' data:; script-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
+      "csp": "default-src 'self'; connect-src 'self' ipc: http://ipc.localhost https://agentchat-backend.fly.dev wss://agentchat-backend.fly.dev https://*.posthog.com https://*.supabase.co; img-src 'self' asset: http://asset.localhost data: blob: https:; media-src 'self' blob: https://*.supabase.co; style-src 'self' 'unsafe-inline'; font-src 'self' data:; script-src 'self' https://*.posthog.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
     },
     "trayIcon": {
       "iconPath": "icons/tray-icon.png",
