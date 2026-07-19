@@ -2770,6 +2770,16 @@ export const resources = {
         "tappedSkipped": "You tapped “{{label}}” — skipped"
       },
       "viewOnlyBadge": "View only",
+      "voice": {
+        "cancelRecording": "Cancel recording",
+        "holdHint": "Hold to record a voice note",
+        "micDenied": "Allow microphone access to record voice notes.",
+        "notSupported": "Voice recording isn't supported in this browser.",
+        "record": "Record voice note",
+        "recording": "Recording…",
+        "releaseToSend": "Release to send",
+        "send": "Send voice note"
+      },
       "wake": {
         "bridgeRequired": "{{names}} — bridge must be running on host machine.",
         "cantWakeTitle": "Can't Wake",
@@ -3091,15 +3101,19 @@ export const resources = {
       "openTaskTitle": "Open task: {{name}}",
       "panelTitle": "Files in this chat",
       "pastedText": "Pasted text",
+      "pauseVoiceNote": "Pause voice note",
+      "playVoiceNote": "Play voice note",
       "removeAttachment": "Remove attachment",
       "searchChats": "Search chats…",
       "searchChatsPlaceholder": "Search chats…",
       "searchPlaceholder": "Search files…",
       "subtitle": "Everything you and your agents have created, across every chat and task.",
+      "transcript": "Transcript",
       "untitledChat": "Untitled chat",
       "untitledTask": "Untitled task",
       "uploadFailed": "Upload failed",
-      "uploading": "Uploading…"
+      "uploading": "Uploading…",
+      "voiceNote": "Voice note"
     },
     "friends": {
       "accept": "Accept",
@@ -7725,6 +7739,16 @@ export const resources = {
         "tappedSkipped": "Tocaste “{{label}}” — omitido"
       },
       "viewOnlyBadge": "Solo lectura",
+      "voice": {
+        "cancelRecording": "Cancelar grabación",
+        "holdHint": "Mantén pulsado para grabar una nota de voz",
+        "micDenied": "Permite el acceso al micrófono para grabar notas de voz.",
+        "notSupported": "La grabación de voz no es compatible con este navegador.",
+        "record": "Grabar nota de voz",
+        "recording": "Grabando…",
+        "releaseToSend": "Suelta para enviar",
+        "send": "Enviar nota de voz"
+      },
       "wake": {
         "bridgeRequired": "{{names}} — el puente debe estar en ejecución en la máquina anfitriona.",
         "cantWakeTitle": "No se puede despertar",
@@ -8046,15 +8070,19 @@ export const resources = {
       "openTaskTitle": "Abrir tarea: {{name}}",
       "panelTitle": "Archivos de este chat",
       "pastedText": "Texto pegado",
+      "pauseVoiceNote": "Pausar nota de voz",
+      "playVoiceNote": "Reproducir nota de voz",
       "removeAttachment": "Quitar adjunto",
       "searchChats": "Buscar chats…",
       "searchChatsPlaceholder": "Buscar chats…",
       "searchPlaceholder": "Buscar archivos…",
       "subtitle": "Todo lo que tú y tus agentes han creado, en todos los chats y tareas.",
+      "transcript": "Transcripción",
       "untitledChat": "Chat sin título",
       "untitledTask": "Tarea sin título",
       "uploadFailed": "Error al subir el archivo",
-      "uploading": "Subiendo…"
+      "uploading": "Subiendo…",
+      "voiceNote": "Nota de voz"
     },
     "friends": {
       "accept": "Aceptar",
@@ -12680,6 +12708,16 @@ export const resources = {
         "tappedSkipped": "Sie haben auf „{{label}}“ getippt — übersprungen"
       },
       "viewOnlyBadge": "Nur ansehen",
+      "voice": {
+        "cancelRecording": "Aufnahme abbrechen",
+        "holdHint": "Zum Aufnehmen gedrückt halten",
+        "micDenied": "Erlaube den Mikrofonzugriff, um Sprachnotizen aufzunehmen.",
+        "notSupported": "Sprachaufnahmen werden in diesem Browser nicht unterstützt.",
+        "record": "Sprachnotiz aufnehmen",
+        "recording": "Aufnahme läuft…",
+        "releaseToSend": "Zum Senden loslassen",
+        "send": "Sprachnotiz senden"
+      },
       "wake": {
         "bridgeRequired": "{{names}} — Bridge muss auf dem Host-Rechner laufen.",
         "cantWakeTitle": "Aufwecken nicht möglich",
@@ -13001,15 +13039,19 @@ export const resources = {
       "openTaskTitle": "Aufgabe öffnen: {{name}}",
       "panelTitle": "Dateien in diesem Chat",
       "pastedText": "Eingefügter Text",
+      "pauseVoiceNote": "Sprachnotiz pausieren",
+      "playVoiceNote": "Sprachnotiz abspielen",
       "removeAttachment": "Anhang entfernen",
       "searchChats": "Chats suchen…",
       "searchChatsPlaceholder": "Chats suchen…",
       "searchPlaceholder": "Dateien suchen…",
       "subtitle": "Alles, was Sie und Ihre Agenten erstellt haben, über alle Chats und Aufgaben hinweg.",
+      "transcript": "Transkript",
       "untitledChat": "Unbenannter Chat",
       "untitledTask": "Unbenannte Aufgabe",
       "uploadFailed": "Hochladen fehlgeschlagen",
-      "uploading": "Wird hochgeladen…"
+      "uploading": "Wird hochgeladen…",
+      "voiceNote": "Sprachnotiz"
     },
     "friends": {
       "accept": "Annehmen",
@@ -17635,6 +17677,16 @@ export const resources = {
         "tappedSkipped": "Vous avez appuyé sur «{{label}}» — ignoré"
       },
       "viewOnlyBadge": "Lecture seule",
+      "voice": {
+        "cancelRecording": "Annuler l'enregistrement",
+        "holdHint": "Maintenez appuyé pour enregistrer une note vocale",
+        "micDenied": "Autorisez l'accès au micro pour enregistrer des notes vocales.",
+        "notSupported": "L'enregistrement vocal n'est pas pris en charge par ce navigateur.",
+        "record": "Enregistrer une note vocale",
+        "recording": "Enregistrement…",
+        "releaseToSend": "Relâchez pour envoyer",
+        "send": "Envoyer la note vocale"
+      },
       "wake": {
         "bridgeRequired": "{{names}} — le pont doit être en cours d'exécution sur la machine hôte.",
         "cantWakeTitle": "Réveil impossible",
@@ -17956,15 +18008,19 @@ export const resources = {
       "openTaskTitle": "Ouvrir la tâche : {{name}}",
       "panelTitle": "Fichiers dans cette conversation",
       "pastedText": "Texte collé",
+      "pauseVoiceNote": "Mettre en pause la note vocale",
+      "playVoiceNote": "Lire la note vocale",
       "removeAttachment": "Supprimer la pièce jointe",
       "searchChats": "Rechercher des conversations…",
       "searchChatsPlaceholder": "Rechercher des conversations…",
       "searchPlaceholder": "Rechercher des fichiers…",
       "subtitle": "Tout ce que vous et vos agents avez créé, dans toutes les conversations et tâches.",
+      "transcript": "Transcription",
       "untitledChat": "Conversation sans titre",
       "untitledTask": "Tâche sans titre",
       "uploadFailed": "Échec du téléversement",
-      "uploading": "Téléversement…"
+      "uploading": "Téléversement…",
+      "voiceNote": "Note vocale"
     },
     "friends": {
       "accept": "Accepter",
@@ -22590,6 +22646,16 @@ export const resources = {
         "tappedSkipped": "Você tocou em “{{label}}” — ignorado"
       },
       "viewOnlyBadge": "Somente visualização",
+      "voice": {
+        "cancelRecording": "Cancelar gravação",
+        "holdHint": "Segure para gravar uma nota de voz",
+        "micDenied": "Permita o acesso ao microfone para gravar notas de voz.",
+        "notSupported": "A gravação de voz não é compatível com este navegador.",
+        "record": "Gravar nota de voz",
+        "recording": "Gravando…",
+        "releaseToSend": "Solte para enviar",
+        "send": "Enviar nota de voz"
+      },
       "wake": {
         "bridgeRequired": "{{names}} — a bridge precisa estar rodando na máquina host.",
         "cantWakeTitle": "Não é possível acordar",
@@ -22911,15 +22977,19 @@ export const resources = {
       "openTaskTitle": "Abrir tarefa: {{name}}",
       "panelTitle": "Arquivos neste chat",
       "pastedText": "Texto colado",
+      "pauseVoiceNote": "Pausar nota de voz",
+      "playVoiceNote": "Reproduzir nota de voz",
       "removeAttachment": "Remover anexo",
       "searchChats": "Buscar conversas…",
       "searchChatsPlaceholder": "Buscar conversas…",
       "searchPlaceholder": "Buscar arquivos…",
       "subtitle": "Tudo que você e seus agentes criaram, em todas as conversas e tarefas.",
+      "transcript": "Transcrição",
       "untitledChat": "Conversa sem título",
       "untitledTask": "Tarefa sem título",
       "uploadFailed": "Falha no envio",
-      "uploading": "Enviando…"
+      "uploading": "Enviando…",
+      "voiceNote": "Nota de voz"
     },
     "friends": {
       "accept": "Aceitar",
@@ -27545,6 +27615,16 @@ export const resources = {
         "tappedSkipped": "「{{label}}」をタップしました — スキップ"
       },
       "viewOnlyBadge": "閲覧のみ",
+      "voice": {
+        "cancelRecording": "録音をキャンセル",
+        "holdHint": "長押しで録音",
+        "micDenied": "ボイスメッセージを録音するにはマイクへのアクセスを許可してください。",
+        "notSupported": "このブラウザは音声録音に対応していません。",
+        "record": "ボイスメッセージを録音",
+        "recording": "録音中…",
+        "releaseToSend": "指を離して送信",
+        "send": "ボイスメッセージを送信"
+      },
       "wake": {
         "bridgeRequired": "{{names}} — ホストマシンでブリッジが実行されている必要があります。",
         "cantWakeTitle": "起動できません",
@@ -27866,15 +27946,19 @@ export const resources = {
       "openTaskTitle": "タスクを開く: {{name}}",
       "panelTitle": "このチャット内のファイル",
       "pastedText": "貼り付けたテキスト",
+      "pauseVoiceNote": "ボイスメッセージを一時停止",
+      "playVoiceNote": "ボイスメッセージを再生",
       "removeAttachment": "添付ファイルを削除",
       "searchChats": "チャットを検索…",
       "searchChatsPlaceholder": "チャットを検索…",
       "searchPlaceholder": "ファイルを検索…",
       "subtitle": "あなたとあなたのエージェントがすべてのチャットとタスクで作成したすべてのもの。",
+      "transcript": "文字起こし",
       "untitledChat": "無題のチャット",
       "untitledTask": "無題のタスク",
       "uploadFailed": "アップロードに失敗しました",
-      "uploading": "アップロード中…"
+      "uploading": "アップロード中…",
+      "voiceNote": "ボイスメッセージ"
     },
     "friends": {
       "accept": "承認",
@@ -32500,6 +32584,16 @@ export const resources = {
         "tappedSkipped": "你点击了「{{label}}」——已跳过"
       },
       "viewOnlyBadge": "仅查看",
+      "voice": {
+        "cancelRecording": "取消录音",
+        "holdHint": "按住录音",
+        "micDenied": "请允许使用麦克风以录制语音消息。",
+        "notSupported": "此浏览器不支持语音录制。",
+        "record": "录制语音消息",
+        "recording": "录音中…",
+        "releaseToSend": "松开发送",
+        "send": "发送语音消息"
+      },
       "wake": {
         "bridgeRequired": "{{names}}——需要在主机设备上运行 bridge。",
         "cantWakeTitle": "无法唤醒",
@@ -32821,15 +32915,19 @@ export const resources = {
       "openTaskTitle": "打开任务：{{name}}",
       "panelTitle": "此聊天中的文件",
       "pastedText": "粘贴的文本",
+      "pauseVoiceNote": "暂停语音消息",
+      "playVoiceNote": "播放语音消息",
       "removeAttachment": "移除附件",
       "searchChats": "搜索聊天…",
       "searchChatsPlaceholder": "搜索聊天…",
       "searchPlaceholder": "搜索文件…",
       "subtitle": "你和你的智能体在每个聊天和任务中创建的所有内容。",
+      "transcript": "转写文本",
       "untitledChat": "未命名聊天",
       "untitledTask": "未命名任务",
       "uploadFailed": "上传失败",
-      "uploading": "上传中…"
+      "uploading": "上传中…",
+      "voiceNote": "语音消息"
     },
     "friends": {
       "accept": "接受",
@@ -37455,6 +37553,16 @@ export const resources = {
         "tappedSkipped": "“{{label}}”을(를) 탭했습니다 — 건너뜀"
       },
       "viewOnlyBadge": "보기 전용",
+      "voice": {
+        "cancelRecording": "녹음 취소",
+        "holdHint": "길게 눌러 녹음하세요",
+        "micDenied": "음성 메모를 녹음하려면 마이크 접근을 허용하세요.",
+        "notSupported": "이 브라우저는 음성 녹음을 지원하지 않습니다.",
+        "record": "음성 메모 녹음",
+        "recording": "녹음 중…",
+        "releaseToSend": "손을 떼면 전송됩니다",
+        "send": "음성 메모 보내기"
+      },
       "wake": {
         "bridgeRequired": "{{names}} — 호스트 머신에서 브리지가 실행 중이어야 합니다.",
         "cantWakeTitle": "깨울 수 없음",
@@ -37776,15 +37884,19 @@ export const resources = {
       "openTaskTitle": "작업 열기: {{name}}",
       "panelTitle": "이 채팅의 파일",
       "pastedText": "붙여넣은 텍스트",
+      "pauseVoiceNote": "음성 메모 일시정지",
+      "playVoiceNote": "음성 메모 재생",
       "removeAttachment": "첨부 파일 제거",
       "searchChats": "채팅 검색…",
       "searchChatsPlaceholder": "채팅 검색…",
       "searchPlaceholder": "파일 검색…",
       "subtitle": "사용자와 에이전트가 모든 채팅과 작업에서 만든 모든 것입니다.",
+      "transcript": "텍스트 변환",
       "untitledChat": "제목 없는 채팅",
       "untitledTask": "제목 없는 작업",
       "uploadFailed": "업로드 실패",
-      "uploading": "업로드 중…"
+      "uploading": "업로드 중…",
+      "voiceNote": "음성 메모"
     },
     "friends": {
       "accept": "수락",
@@ -42410,6 +42522,16 @@ export const resources = {
         "tappedSkipped": "Hai toccato “{{label}}” — saltato"
       },
       "viewOnlyBadge": "Sola visualizzazione",
+      "voice": {
+        "cancelRecording": "Annulla registrazione",
+        "holdHint": "Tieni premuto per registrare una nota vocale",
+        "micDenied": "Consenti l'accesso al microfono per registrare note vocali.",
+        "notSupported": "La registrazione vocale non è supportata in questo browser.",
+        "record": "Registra nota vocale",
+        "recording": "Registrazione…",
+        "releaseToSend": "Rilascia per inviare",
+        "send": "Invia nota vocale"
+      },
       "wake": {
         "bridgeRequired": "{{names}} — il bridge deve essere in esecuzione sulla macchina host.",
         "cantWakeTitle": "Impossibile svegliare",
@@ -42731,15 +42853,19 @@ export const resources = {
       "openTaskTitle": "Apri attività: {{name}}",
       "panelTitle": "File in questa chat",
       "pastedText": "Testo incollato",
+      "pauseVoiceNote": "Metti in pausa la nota vocale",
+      "playVoiceNote": "Riproduci nota vocale",
       "removeAttachment": "Rimuovi allegato",
       "searchChats": "Cerca chat…",
       "searchChatsPlaceholder": "Cerca chat…",
       "searchPlaceholder": "Cerca file…",
       "subtitle": "Tutto ciò che tu e i tuoi agenti avete creato, in ogni chat e attività.",
+      "transcript": "Trascrizione",
       "untitledChat": "Chat senza titolo",
       "untitledTask": "Attività senza titolo",
       "uploadFailed": "Caricamento non riuscito",
-      "uploading": "Caricamento in corso…"
+      "uploading": "Caricamento in corso…",
+      "voiceNote": "Nota vocale"
     },
     "friends": {
       "accept": "Accetta",
@@ -47365,6 +47491,16 @@ export const resources = {
         "tappedSkipped": "आपने “{{label}}” टैप किया — छोड़ दिया गया"
       },
       "viewOnlyBadge": "केवल देखने योग्य",
+      "voice": {
+        "cancelRecording": "रिकॉर्डिंग रद्द करें",
+        "holdHint": "रिकॉर्ड करने के लिए दबाए रखें",
+        "micDenied": "वॉयस नोट रिकॉर्ड करने के लिए माइक्रोफ़ोन की अनुमति दें।",
+        "notSupported": "यह ब्राउज़र वॉयस रिकॉर्डिंग का समर्थन नहीं करता।",
+        "record": "वॉयस नोट रिकॉर्ड करें",
+        "recording": "रिकॉर्डिंग जारी…",
+        "releaseToSend": "भेजने के लिए छोड़ें",
+        "send": "वॉयस नोट भेजें"
+      },
       "wake": {
         "bridgeRequired": "{{names}} — होस्ट मशीन पर ब्रिज चल रहा होना चाहिए।",
         "cantWakeTitle": "जगा नहीं सकते",
@@ -47686,15 +47822,19 @@ export const resources = {
       "openTaskTitle": "कार्य खोलें: {{name}}",
       "panelTitle": "इस चैट में फ़ाइलें",
       "pastedText": "पेस्ट किया गया टेक्स्ट",
+      "pauseVoiceNote": "वॉयस नोट रोकें",
+      "playVoiceNote": "वॉयस नोट चलाएँ",
       "removeAttachment": "अटैचमेंट हटाएँ",
       "searchChats": "चैट खोजें…",
       "searchChatsPlaceholder": "चैट खोजें…",
       "searchPlaceholder": "फ़ाइलें खोजें…",
       "subtitle": "हर चैट और कार्य में, आपने और आपके एजेंटों ने जो कुछ भी बनाया है।",
+      "transcript": "प्रतिलेख",
       "untitledChat": "अशीर्षक चैट",
       "untitledTask": "अशीर्षक कार्य",
       "uploadFailed": "अपलोड विफल",
-      "uploading": "अपलोड हो रहा है…"
+      "uploading": "अपलोड हो रहा है…",
+      "voiceNote": "वॉयस नोट"
     },
     "friends": {
       "accept": "स्वीकार करें",
