@@ -4745,6 +4745,8 @@ export const resources = {
         "normal": "Normal",
         "urgent": "Urgent"
       },
+      "queuedPreview_one": "+{{count}} task queued",
+      "queuedPreview_other": "+{{count}} tasks queued",
       "request": {
         "acceptanceCriteria": "Acceptance Criteria",
         "newTask": "New Task",
@@ -9714,6 +9716,8 @@ export const resources = {
         "normal": "Normal",
         "urgent": "Urgente"
       },
+      "queuedPreview_one": "+{{count}} tarea en cola",
+      "queuedPreview_other": "+{{count}} tareas en cola",
       "request": {
         "acceptanceCriteria": "Criterios de aceptación",
         "newTask": "Nueva tarea",
@@ -14683,6 +14687,8 @@ export const resources = {
         "normal": "Normal",
         "urgent": "Dringend"
       },
+      "queuedPreview_one": "+{{count}} wartende Aufgabe",
+      "queuedPreview_other": "+{{count}} wartende Aufgaben",
       "request": {
         "acceptanceCriteria": "Abnahmekriterien",
         "newTask": "Neue Aufgabe",
@@ -19652,6 +19658,8 @@ export const resources = {
         "normal": "Normale",
         "urgent": "Urgente"
       },
+      "queuedPreview_one": "+{{count}} tâche en attente",
+      "queuedPreview_other": "+{{count}} tâches en attente",
       "request": {
         "acceptanceCriteria": "Critères d'acceptation",
         "newTask": "Nouvelle tâche",
@@ -24621,6 +24629,8 @@ export const resources = {
         "normal": "Normal",
         "urgent": "Urgente"
       },
+      "queuedPreview_one": "+{{count}} tarefa na fila",
+      "queuedPreview_other": "+{{count}} tarefas na fila",
       "request": {
         "acceptanceCriteria": "Critérios de Aceitação",
         "newTask": "Nova Tarefa",
@@ -29590,6 +29600,8 @@ export const resources = {
         "normal": "通常",
         "urgent": "至急"
       },
+      "queuedPreview_one": "+{{count}}件のタスクが待機中",
+      "queuedPreview_other": "+{{count}}件のタスクが待機中",
       "request": {
         "acceptanceCriteria": "受け入れ基準",
         "newTask": "新規タスク",
@@ -34559,6 +34571,8 @@ export const resources = {
         "normal": "普通",
         "urgent": "紧急"
       },
+      "queuedPreview_one": "+{{count}} 个任务排队中",
+      "queuedPreview_other": "+{{count}} 个任务排队中",
       "request": {
         "acceptanceCriteria": "验收标准",
         "newTask": "新任务",
@@ -39528,6 +39542,8 @@ export const resources = {
         "normal": "보통",
         "urgent": "긴급"
       },
+      "queuedPreview_one": "+{{count}}개 작업 대기 중",
+      "queuedPreview_other": "+{{count}}개 작업 대기 중",
       "request": {
         "acceptanceCriteria": "승인 기준",
         "newTask": "새 작업",
@@ -44497,6 +44513,8 @@ export const resources = {
         "normal": "Normale",
         "urgent": "Urgente"
       },
+      "queuedPreview_one": "+{{count}} attività in coda",
+      "queuedPreview_other": "+{{count}} attività in coda",
       "request": {
         "acceptanceCriteria": "Criteri di accettazione",
         "newTask": "Nuova attività",
@@ -49466,6 +49484,8 @@ export const resources = {
         "normal": "सामान्य",
         "urgent": "तत्काल"
       },
+      "queuedPreview_one": "+{{count}} कार्य कतार में",
+      "queuedPreview_other": "+{{count}} कार्य कतार में",
       "request": {
         "acceptanceCriteria": "स्वीकृति मानदंड",
         "newTask": "नया कार्य",
