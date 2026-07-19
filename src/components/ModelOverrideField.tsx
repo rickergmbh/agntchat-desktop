@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Label } from "@/components/ui/label";
 import {
@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { getAgentRuntimeOptions } from "../lib/api";
 import { useAgentStore } from "../stores/agentStore";
 import { useModelCatalog } from "../stores/modelCatalogStore";
 
@@ -30,13 +31,38 @@ export function ModelOverrideField({
   onChange: (v: string) => void;
 }) {
   const { t } = useTranslation("agents");
-  const backend =
+  const localBackend =
     useAgentStore((s) => s.agents[agentId]?.config.backend) || "anthropic";
+  const isHosted = useAgentStore(
+    (s) => s.agents[agentId]?.agent.runtime === "org_host"
+  );
   const ensureLoaded = useModelCatalog((s) => s.ensureLoaded);
   const modelsFor = useModelCatalog((s) => s.modelsFor);
   useEffect(() => {
     void ensureLoaded();
   }, [ensureLoaded]);
+  // Hosted agents inherit the host seat's provider, not their stored
+  // model_config — resolve it like the Runtime panel so the option list
+  // matches what will actually execute the run.
+  const [hostBackend, setHostBackend] = useState<string | null>(null);
+  useEffect(() => {
+    if (!isHosted || !agentId) {
+      setHostBackend(null);
+      return;
+    }
+    let cancelled = false;
+    getAgentRuntimeOptions(agentId)
+      .then((opts) => {
+        if (!cancelled) setHostBackend(opts.backend?.backend ?? null);
+      })
+      .catch(() => {
+        if (!cancelled) setHostBackend(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isHosted, agentId]);
+  const backend = hostBackend ?? localBackend;
   const models = modelsFor(backend);
   // Keep a stored value selectable even when it's no longer in the catalog
   // (renamed/retired model) so opening the editor doesn't silently clear it.
