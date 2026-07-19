@@ -34,6 +34,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { ModelOverrideField } from "./ModelOverrideField";
 import {
   Repeat,
   Plus,
@@ -105,6 +106,8 @@ interface LoopFormState {
   // workspace id. The shadcn Select can't hold an empty-string value, so
   // the sentinel stands in for "unpinned" in both create and edit.
   organizationId: string;
+  // "" = the agent's default model; a model id runs iterations on that model.
+  model: string;
 }
 
 function defaultFormState(): LoopFormState {
@@ -115,13 +118,16 @@ function defaultFormState(): LoopFormState {
     intervalMinutes: "60",
     maxIterations: "50",
     organizationId: "__personal__",
+    model: "",
   };
 }
 
 function LoopFormFields({
+  agentId,
   state,
   setState,
 }: {
+  agentId: string;
   state: LoopFormState;
   setState: (next: LoopFormState) => void;
 }) {
@@ -240,6 +246,12 @@ function LoopFormFields({
           </p>
         </div>
       )}
+
+      <ModelOverrideField
+        agentId={agentId}
+        value={state.model}
+        onChange={(v) => setState({ ...state, model: v })}
+      />
     </>
   );
 }
@@ -254,6 +266,8 @@ function formToFields(state: LoopFormState): Record<string, unknown> {
       ? { interval_minutes: clamp(parseInt(state.intervalMinutes, 10) || 60, 5, 1440) }
       : {}),
     max_iterations: clamp(parseInt(state.maxIterations, 10) || 50, 1, 500),
+    // Sent verbatim on PATCH so "" clears the override (→ agent default).
+    model: state.model,
   };
 }
 
@@ -588,6 +602,7 @@ function CreateLoopDialog({
           ? { interval_minutes: fields.interval_minutes as number }
           : {}),
         max_iterations: fields.max_iterations as number,
+        ...(form.model ? { model: form.model } : {}),
         ...(form.organizationId !== "__personal__"
           ? { organization_id: form.organizationId }
           : {}),
@@ -613,7 +628,7 @@ function CreateLoopDialog({
           <DialogTitle>{t("loops.createTitle")}</DialogTitle>
         </DialogHeader>
         <div className="flex-1 min-h-0 overflow-y-auto px-6 py-4 space-y-4">
-          <LoopFormFields state={form} setState={setForm} />
+          <LoopFormFields agentId={agentId} state={form} setState={setForm} />
           {error && <p className="text-xs text-destructive">{error}</p>}
         </div>
 
@@ -653,6 +668,7 @@ function EditLoopDialog({
         intervalMinutes: String(loop.intervalMinutes ?? 60),
         maxIterations: String(loop.maxIterations),
         organizationId: loop.organizationId ?? "__personal__",
+        model: loop.model ?? "",
       });
       setError(null);
     }
@@ -684,7 +700,11 @@ function EditLoopDialog({
           <DialogTitle>{t("loops.editTitle")}</DialogTitle>
         </DialogHeader>
         <div className="flex-1 min-h-0 overflow-y-auto px-6 py-4 space-y-4">
-          <LoopFormFields state={form} setState={setForm} />
+          <LoopFormFields
+            agentId={loop?.participantId ?? ""}
+            state={form}
+            setState={setForm}
+          />
           {error && <p className="text-xs text-destructive">{error}</p>}
         </div>
 

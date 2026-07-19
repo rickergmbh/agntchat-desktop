@@ -23,6 +23,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { ModelOverrideField } from "./ModelOverrideField";
 import {
   Select,
   SelectContent,
@@ -869,6 +870,8 @@ function CreateRoutineDialog({
   const [reportTo, setReportTo] = useState("");
   const [maxRuns, setMaxRuns] = useState("");
   const [responseTemplate, setResponseTemplate] = useState("");
+  // "" = the agent's default model; a model id runs this routine on that model.
+  const [model, setModel] = useState("");
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -906,6 +909,7 @@ function CreateRoutineDialog({
     setReportTo("");
     setMaxRuns("");
     setResponseTemplate("");
+    setModel("");
     setOrganizationId(
       workspacesEnabled && activeWorkspace ? activeWorkspace.id : "__personal__",
     );
@@ -928,6 +932,7 @@ function CreateRoutineDialog({
         ...(reportTo ? { report_to: reportTo } : {}),
         ...(maxRuns ? { max_runs: parseInt(maxRuns) } : {}),
         ...(responseTemplate ? { response_template: responseTemplate } : {}),
+        ...(model ? { model } : {}),
         ...(organizationId !== "__personal__"
           ? { organization_id: organizationId }
           : {}),
@@ -1024,6 +1029,8 @@ function CreateRoutineDialog({
             </div>
           )}
 
+          <ModelOverrideField agentId={agentId} value={model} onChange={setModel} />
+
           {/* Workspace pin — only meaningful when the owner belongs to more
               than one workspace. "__personal__" is the Select-safe stand-in
               for "unpinned" (owner's Personal workspace). Org is immutable
@@ -1095,6 +1102,8 @@ function EditRoutineDialog({
   const [instructions, setInstructions] = useState("");
   const [schedule, setSchedule] = useState<ScheduleState>(() => defaultScheduleState());
   const [responseTemplate, setResponseTemplate] = useState("");
+  // "" = the agent's default model; a model id runs this routine on that model.
+  const [model, setModel] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -1112,6 +1121,7 @@ function EditRoutineDialog({
       setDescription(routine.description || "");
       setInstructions(routine.instructions);
       setResponseTemplate(routine.responseTemplate || "");
+      setModel(routine.model || "");
       setSchedule(parseRoutineSchedule(routine));
       setError(null);
     }
@@ -1126,6 +1136,7 @@ function EditRoutineDialog({
     if (instructions !== routine.instructions) return true;
     if ((description || "") !== (routine.description || "")) return true;
     if ((responseTemplate || "") !== (routine.responseTemplate || "")) return true;
+    if ((model || "") !== (routine.model || "")) return true;
     const built = buildScheduleConfig(schedule);
     if (built.scheduleType !== routine.scheduleType) return true;
     const cfg = routine.scheduleConfig as {
@@ -1141,7 +1152,7 @@ function EditRoutineDialog({
     const newExpr = (built.scheduleConfig as { expression?: string }).expression ?? null;
     if (origEvery !== newEvery || origExpr !== newExpr) return true;
     return false;
-  }, [routine, name, instructions, description, responseTemplate, schedule]);
+  }, [routine, name, instructions, description, responseTemplate, model, schedule]);
 
   const handleSave = async () => {
     if (!routine) return;
@@ -1157,6 +1168,8 @@ function EditRoutineDialog({
         schedule_type: scheduleType,
         schedule_config: scheduleConfig,
         response_template: responseTemplate || null,
+        // "" clears the override (→ agent's default model).
+        model,
       });
       onClose();
     } catch (e) {
@@ -1215,6 +1228,12 @@ function EditRoutineDialog({
               </Select>
             </div>
           )}
+
+          <ModelOverrideField
+            agentId={routine?.participantId ?? ""}
+            value={model}
+            onChange={setModel}
+          />
 
           {error && <p className="text-xs text-destructive">{error}</p>}
         </div>

@@ -124,6 +124,7 @@ import { AgentTools } from "./AgentTools";
 import { AgentMemory } from "./AgentMemory";
 import { AgentTemplates } from "./AgentTemplates";
 import { AgentRoutines } from "./AgentRoutines";
+import { ModelOverrideField } from "./ModelOverrideField";
 import { AgentLoops } from "./AgentLoops";
 import { AvatarCropDialog } from "./AvatarCropDialog";
 import { AgentConfigTour, type TourRect } from "./AgentConfigTour";
@@ -2109,6 +2110,8 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
   // id pins the pulse there. The Select maps "" ↔ a sentinel value since
   // shadcn Select can't hold an empty-string item value.
   const [organizationId, setOrganizationId] = useState("");
+  // "" = the agent's default model; a model id runs pulses on that model.
+  const [pulseModel, setPulseModel] = useState("");
   const [dirty, setDirty] = useState(false);
 
   // AI "describe the idea" field for authoring/reassessing the checklist.
@@ -2131,6 +2134,7 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
       setActiveEnd(d.pulseConfig?.activeHours?.end ?? 22);
       setTimezone(d.pulseConfig?.timezone ?? "Etc/UTC");
       setOrganizationId(d.pulseConfig?.organizationId ?? "");
+      setPulseModel(d.pulseConfig?.model ?? "");
       setDirty(false);
       setProposed(false);
       setLoadError(null);
@@ -2207,6 +2211,8 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
         timezone,
         // "" clears the override server-side (→ owner's Personal workspace).
         organization_id: organizationId,
+        // "" clears the model override (→ agent's default model).
+        model: pulseModel,
       });
       await fetchData();
       setHbResult(t("config.pulse.saved"));
@@ -2516,6 +2522,14 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
               </p>
             </div>
           )}
+          <ModelOverrideField
+            agentId={managed.agent.id}
+            value={pulseModel}
+            onChange={(v) => {
+              setPulseModel(v);
+              setDirty(true);
+            }}
+          />
         </div>
       </Section>
 

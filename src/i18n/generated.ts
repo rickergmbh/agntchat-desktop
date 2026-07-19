@@ -1025,6 +1025,11 @@ export const resources = {
         "timeout": "Timeout",
         "timeoutSeconds": "Timeout (seconds)"
       },
+      "modelOverride": {
+        "agentDefault": "Agent default",
+        "hint": "Run this on a different model than the agent's default.",
+        "label": "Model"
+      },
       "myAgents": "My Agents",
       "noAgentsFound": "No agents found.",
       "noAgentsMatchSearch": "No agents match your search",
@@ -5974,6 +5979,11 @@ export const resources = {
         "selectProviderPlaceholder": "Selecciona un proveedor",
         "timeout": "Tiempo de espera",
         "timeoutSeconds": "Tiempo de espera (segundos)"
+      },
+      "modelOverride": {
+        "agentDefault": "Modelo predeterminado del agente",
+        "hint": "Ejecútalo con un modelo distinto al predeterminado del agente.",
+        "label": "Modelo"
       },
       "myAgents": "Mis agentes",
       "noAgentsFound": "No se encontraron agentes.",
@@ -10925,6 +10935,11 @@ export const resources = {
         "timeout": "Timeout",
         "timeoutSeconds": "Timeout (Sekunden)"
       },
+      "modelOverride": {
+        "agentDefault": "Standardmodell des Agenten",
+        "hint": "Mit einem anderen Modell als dem Standardmodell des Agenten ausführen.",
+        "label": "Modell"
+      },
       "myAgents": "Meine Agenten",
       "noAgentsFound": "Keine Agenten gefunden.",
       "noAgentsMatchSearch": "Keine Agenten entsprechen Ihrer Suche",
@@ -15874,6 +15889,11 @@ export const resources = {
         "selectProviderPlaceholder": "Sélectionnez un fournisseur",
         "timeout": "Délai d'expiration",
         "timeoutSeconds": "Délai d'expiration (secondes)"
+      },
+      "modelOverride": {
+        "agentDefault": "Modèle par défaut de l'agent",
+        "hint": "Exécuter avec un autre modèle que le modèle par défaut de l'agent.",
+        "label": "Modèle"
       },
       "myAgents": "Mes agents",
       "noAgentsFound": "Aucun agent trouvé.",
@@ -20825,6 +20845,11 @@ export const resources = {
         "timeout": "Tempo Limite",
         "timeoutSeconds": "Tempo Limite (segundos)"
       },
+      "modelOverride": {
+        "agentDefault": "Modelo padrão do agente",
+        "hint": "Executar com um modelo diferente do padrão do agente.",
+        "label": "Modelo"
+      },
       "myAgents": "Meus Agentes",
       "noAgentsFound": "Nenhum agente encontrado.",
       "noAgentsMatchSearch": "Nenhum agente corresponde à sua busca",
@@ -25774,6 +25799,11 @@ export const resources = {
         "selectProviderPlaceholder": "プロバイダーを選択",
         "timeout": "タイムアウト",
         "timeoutSeconds": "タイムアウト（秒）"
+      },
+      "modelOverride": {
+        "agentDefault": "エージェントのデフォルト",
+        "hint": "エージェントのデフォルトとは別のモデルで実行します。",
+        "label": "モデル"
       },
       "myAgents": "マイエージェント",
       "noAgentsFound": "エージェントが見つかりません。",
@@ -30725,6 +30755,11 @@ export const resources = {
         "timeout": "超时时间",
         "timeoutSeconds": "超时时间（秒）"
       },
+      "modelOverride": {
+        "agentDefault": "智能体默认模型",
+        "hint": "使用与智能体默认模型不同的模型运行。",
+        "label": "模型"
+      },
       "myAgents": "我的智能体",
       "noAgentsFound": "未找到智能体。",
       "noAgentsMatchSearch": "没有符合搜索条件的智能体",
@@ -35674,6 +35709,11 @@ export const resources = {
         "selectProviderPlaceholder": "제공업체 선택",
         "timeout": "타임아웃",
         "timeoutSeconds": "타임아웃(초)"
+      },
+      "modelOverride": {
+        "agentDefault": "에이전트 기본 모델",
+        "hint": "에이전트 기본 모델이 아닌 다른 모델로 실행합니다.",
+        "label": "모델"
       },
       "myAgents": "내 에이전트",
       "noAgentsFound": "에이전트를 찾을 수 없습니다.",
@@ -40625,6 +40665,11 @@ export const resources = {
         "timeout": "Timeout",
         "timeoutSeconds": "Timeout (secondi)"
       },
+      "modelOverride": {
+        "agentDefault": "Modello predefinito dell'agente",
+        "hint": "Esegui con un modello diverso da quello predefinito dell'agente.",
+        "label": "Modello"
+      },
       "myAgents": "I Miei Agenti",
       "noAgentsFound": "Nessun agente trovato.",
       "noAgentsMatchSearch": "Nessun agente corrisponde alla tua ricerca",
@@ -45574,6 +45619,11 @@ export const resources = {
         "selectProviderPlaceholder": "एक प्रोवाइडर चुनें",
         "timeout": "टाइमआउट",
         "timeoutSeconds": "टाइमआउट (सेकंड)"
+      },
+      "modelOverride": {
+        "agentDefault": "एजेंट का डिफ़ॉल्ट मॉडल",
+        "hint": "एजेंट के डिफ़ॉल्ट से अलग मॉडल पर चलाएँ।",
+        "label": "मॉडल"
       },
       "myAgents": "मेरे एजेंट",
       "noAgentsFound": "कोई एजेंट नहीं मिला।",

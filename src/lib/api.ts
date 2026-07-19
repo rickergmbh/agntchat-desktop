@@ -1947,6 +1947,7 @@ export async function createRoutine(data: {
   description?: string;
   report_to?: string;
   max_runs?: number;
+  model?: string;
   organization_id?: string;
 }): Promise<{ routine: Routine }> {
   return request("/api/routines", {
@@ -1986,6 +1987,7 @@ export async function createLoop(data: {
   trigger_mode: "continuous" | "interval";
   interval_minutes?: number;
   max_iterations?: number;
+  model?: string;
   organization_id?: string;
 }): Promise<{ loop: AgentLoop }> {
   return request("/api/loops", {
@@ -3406,6 +3408,8 @@ export interface Routine {
   expiresAt?: string;
   consecutiveFailures: number;
   responseTemplate?: string;
+  /** Per-routine model override; absent → agent's default model. */
+  model?: string;
   insertedAt: string;
   updatedAt: string;
 }
@@ -3440,6 +3444,8 @@ export interface AgentLoop {
   deadline?: string;
   tokenBudget?: number;
   tokensUsed: number;
+  /** Per-loop model override; absent → agent's default model. */
+  model?: string | null;
   lastIterationAt?: string;
   nextIterationAt?: string;
   insertedAt: string;
