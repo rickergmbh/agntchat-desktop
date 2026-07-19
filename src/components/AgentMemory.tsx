@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import {
   type Memory,
@@ -13,7 +13,11 @@ import {
   saveFamilyMemory,
   deleteFamilyMemory,
 } from "../lib/api";
-import { useWorkspaces, useWorkspacesEnabled } from "../stores/workspaceStore";
+import {
+  useActiveWorkspace,
+  useWorkspaces,
+  useWorkspacesEnabled,
+} from "../stores/workspaceStore";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -82,6 +86,7 @@ export function AgentMemory({ agentId, agentName }: AgentMemoryProps) {
   // badge.
   const workspaces = useWorkspaces();
   const workspacesEnabled = useWorkspacesEnabled();
+  const activeWorkspace = useActiveWorkspace();
   const scopeSelectable = workspacesEnabled && workspaces.length > 1;
   const familyScopeLabel = useCallback(
     (m: AnyMemory): string | null => {
@@ -96,7 +101,21 @@ export function AgentMemory({ agentId, agentName }: AgentMemoryProps) {
   );
 
   const [agentMemories, setAgentMemories] = useState<Memory[]>([]);
-  const [familyMemories, setFamilyMemories] = useState<FamilyMemory[]>([]);
+  const [allFamilyMemories, setAllFamilyMemories] = useState<FamilyMemory[]>([]);
+
+  // Workspace isolation: the manager shows the active workspace's view —
+  // family-global rows plus rows scoped to the workspace you're standing in
+  // (the same read rule agents get). Another workspace's memories are managed
+  // by switching to that workspace; they never surface here.
+  const familyMemories = useMemo(
+    () =>
+      workspacesEnabled && activeWorkspace
+        ? allFamilyMemories.filter(
+            (m) => !m.organizationId || m.organizationId === activeWorkspace.id
+          )
+        : allFamilyMemories,
+    [allFamilyMemories, workspacesEnabled, activeWorkspace]
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -116,7 +135,7 @@ export function AgentMemory({ agentId, agentName }: AgentMemoryProps) {
         getFamilyMemories(),
       ]);
       setAgentMemories(agent.memories || []);
-      setFamilyMemories(family.memories || []);
+      setAllFamilyMemories(family.memories || []);
     } catch (e) {
       setError(e instanceof Error ? e.message : t("errors.loadFailed"));
     } finally {
@@ -474,13 +493,23 @@ function MemoryFormDialog({
 
   // Two-tier family scope. Selectable on create, locked on edit — the scope
   // is part of the row's identity (the upsert key is scope + category + key).
+  // New memories default to the workspace you're standing in (when it's a
+  // real, non-Personal one) — mirroring the loops/routines pickers.
   const workspaces = useWorkspaces();
   const workspacesEnabled = useWorkspacesEnabled();
+  const activeWorkspace = useActiveWorkspace();
   const scopeSelectable = workspacesEnabled && workspaces.length > 1;
-  const [organizationId, setOrganizationId] = useState<string>(
-    (existing && "organizationId" in existing && existing.organizationId) ||
-      FAMILY_WIDE_SCOPE
-  );
+  const [organizationId, setOrganizationId] = useState<string>(() => {
+    if (existing) {
+      return (
+        ("organizationId" in existing && existing.organizationId) ||
+        FAMILY_WIDE_SCOPE
+      );
+    }
+    return scopeSelectable && activeWorkspace && !activeWorkspace.isPersonal
+      ? activeWorkspace.id
+      : FAMILY_WIDE_SCOPE;
+  });
 
   const [category, setCategory] = useState<MemoryCategory>(
     existing?.category ?? "fact"
