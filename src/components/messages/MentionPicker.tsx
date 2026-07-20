@@ -38,8 +38,9 @@ export function extractMentionQuery(text: string, cursorPos: number): string | n
 
 /**
  * Replace the active `@query` token at `cursorPos` with the given display
- * name. Uses `@[Name With Spaces] ` for multi-word names (so the server can
- * round-trip the mention unambiguously) and `@Name ` otherwise.
+ * name. Plain `@Name ` even for multi-word names — the server resolves those
+ * (full-name scan in Mentions.resolve_pool) and clients render them bold, so
+ * users never see the legacy `@[Name]` bracket syntax.
  */
 export function insertMention(
   text: string,
@@ -48,8 +49,7 @@ export function insertMention(
 ): { text: string; cursor: number } {
   const before = text.slice(0, cursorPos);
   const after = text.slice(cursorPos);
-  const hasSpaces = displayName.includes(" ");
-  const mention = hasSpaces ? `@[${displayName}] ` : `@${displayName} `;
+  const mention = `@${displayName} `;
   const newBefore = before.replace(/@\[[^\]]*$|@\w*$/, mention);
   return { text: newBefore + after, cursor: newBefore.length };
 }

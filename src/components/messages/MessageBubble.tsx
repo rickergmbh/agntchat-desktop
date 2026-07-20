@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useAuthStore } from "../../stores/authStore";
 import { useChatStore } from "../../stores/chatStore";
 import { cn, formatClockTime } from "../../lib/utils";
+import { boldMentions } from "../../lib/mentions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Bubble, BubbleContent } from "@/components/ui/bubble";
 import {
@@ -272,7 +273,14 @@ export const MessageBubble = memo(function MessageBubble({
               <ResultPresentationMessage message={message} />
             ) : (
               <>
-                {message.content?.trim() ? <MarkdownContent content={message.content} /> : null}
+                {message.content?.trim() ? (
+                  <MarkdownContent
+                    content={boldMentions(
+                      message.content,
+                      message.metadata?.mentions as { displayName?: string }[] | undefined
+                    )}
+                  />
+                ) : null}
                 <RideAlongAttachments message={message} />
               </>
             )}
