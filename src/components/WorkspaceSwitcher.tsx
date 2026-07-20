@@ -18,7 +18,10 @@ import { cn } from "../lib/utils";
  * workspaces list, pending invites, error banner, and "Create
  * workspace".
  *
- * Mirrors `web/src/components/WorkspaceSwitcher.tsx`.
+ * Mirrors `web/src/components/WorkspaceSwitcher.tsx`. Selecting a
+ * workspace closes the dropdown immediately; the rail tile spins until
+ * the switch lands (the dropdown reopens with the error banner if it
+ * fails).
  */
 export function WorkspaceSwitcher() {
   const { t } = useTranslation("settings");
@@ -72,6 +75,13 @@ export function WorkspaceSwitcher() {
   const activeName = active?.name ?? t("workspace.workspace");
   const activeIsPersonal = active?.isPersonal ?? false;
 
+  // While a switch is in flight the dropdown is already closed — the
+  // rail tile is the loading surface: spinner + target's name in the
+  // tooltip.
+  const pendingWorkspace = pendingId
+    ? workspaces.find((w) => w.id === pendingId)
+    : undefined;
+
   // Sum items needing the user (unread messages + pending permission
   // approvals) across workspaces OTHER than the active one — the badge
   // that keeps a backgrounded workspace from silently accumulating
@@ -97,13 +107,17 @@ export function WorkspaceSwitcher() {
         )}
         aria-haspopup="listbox"
         aria-expanded={open}
-        title={activeName}
+        title={switching ? (pendingWorkspace?.name ?? activeName) : activeName}
       >
-        <WorkspaceAvatar
-          name={activeName}
-          avatarUrl={active?.avatarUrl}
-          isPersonal={activeIsPersonal}
-        />
+        {switching ? (
+          <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+        ) : (
+          <WorkspaceAvatar
+            name={activeName}
+            avatarUrl={active?.avatarUrl}
+            isPersonal={activeIsPersonal}
+          />
+        )}
       </button>
       {/* Outside the button — its overflow-hidden would clip the badge. */}
       {otherWorkspaceAttention > 0 && (
@@ -139,11 +153,14 @@ export function WorkspaceSwitcher() {
                 <button
                   type="button"
                   disabled={switching || isActive}
-                  onClick={async () => {
-                    if (!isActive) {
-                      await switchWorkspace(w.id);
-                    }
+                  onClick={() => {
+                    // Close immediately — the rail tile spins while
+                    // the switch runs. Reopen on failure so the
+                    // ErrorBanner is actually seen.
                     setOpen(false);
+                    if (!isActive) {
+                      switchWorkspace(w.id).catch(() => setOpen(true));
+                    }
                   }}
                   className={cn(
                     "flex flex-1 items-center gap-2 rounded-sm px-1 py-1 text-left text-sm transition-colors",
