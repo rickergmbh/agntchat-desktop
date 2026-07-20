@@ -2350,6 +2350,10 @@ export const resources = {
       },
       "directMessage": "Direct message",
       "dropToAttach": "Drop to attach",
+      "errorReport": {
+        "details": "Details",
+        "fallback": "An error occurred"
+      },
       "errors": {
         "createChannelFailed": "Failed to create channel",
         "createFailed": "Failed to create conversation",
@@ -7321,6 +7325,10 @@ export const resources = {
       },
       "directMessage": "Mensaje directo",
       "dropToAttach": "Suelta para adjuntar",
+      "errorReport": {
+        "details": "Detalles",
+        "fallback": "Se produjo un error"
+      },
       "errors": {
         "createChannelFailed": "No se pudo crear el canal",
         "createFailed": "No se pudo crear la conversación",
@@ -12292,6 +12300,10 @@ export const resources = {
       },
       "directMessage": "Direktnachricht",
       "dropToAttach": "Zum Anhängen hier ablegen",
+      "errorReport": {
+        "details": "Details",
+        "fallback": "Ein Fehler ist aufgetreten"
+      },
       "errors": {
         "createChannelFailed": "Erstellen des Kanals fehlgeschlagen",
         "createFailed": "Erstellen der Unterhaltung fehlgeschlagen",
@@ -17263,6 +17275,10 @@ export const resources = {
       },
       "directMessage": "Message direct",
       "dropToAttach": "Déposer pour joindre",
+      "errorReport": {
+        "details": "Détails",
+        "fallback": "Une erreur s'est produite"
+      },
       "errors": {
         "createChannelFailed": "Échec de la création du canal",
         "createFailed": "Échec de la création de la conversation",
@@ -22234,6 +22250,10 @@ export const resources = {
       },
       "directMessage": "Mensagem direta",
       "dropToAttach": "Solte para anexar",
+      "errorReport": {
+        "details": "Detalhes",
+        "fallback": "Ocorreu um erro"
+      },
       "errors": {
         "createChannelFailed": "Falha ao criar canal",
         "createFailed": "Falha ao criar conversa",
@@ -27205,6 +27225,10 @@ export const resources = {
       },
       "directMessage": "ダイレクトメッセージ",
       "dropToAttach": "ドロップして添付",
+      "errorReport": {
+        "details": "詳細",
+        "fallback": "エラーが発生しました"
+      },
       "errors": {
         "createChannelFailed": "チャンネルの作成に失敗しました",
         "createFailed": "会話の作成に失敗しました",
@@ -32176,6 +32200,10 @@ export const resources = {
       },
       "directMessage": "私信",
       "dropToAttach": "拖放以添加附件",
+      "errorReport": {
+        "details": "详情",
+        "fallback": "发生错误"
+      },
       "errors": {
         "createChannelFailed": "创建频道失败",
         "createFailed": "创建对话失败",
@@ -37147,6 +37175,10 @@ export const resources = {
       },
       "directMessage": "다이렉트 메시지",
       "dropToAttach": "여기에 놓아 첨부",
+      "errorReport": {
+        "details": "세부 정보",
+        "fallback": "오류가 발생했습니다"
+      },
       "errors": {
         "createChannelFailed": "채널 생성 실패",
         "createFailed": "대화 생성 실패",
@@ -42118,6 +42150,10 @@ export const resources = {
       },
       "directMessage": "Messaggio diretto",
       "dropToAttach": "Trascina per allegare",
+      "errorReport": {
+        "details": "Dettagli",
+        "fallback": "Si è verificato un errore"
+      },
       "errors": {
         "createChannelFailed": "Impossibile creare il canale",
         "createFailed": "Impossibile creare la conversazione",
@@ -47089,6 +47125,10 @@ export const resources = {
       },
       "directMessage": "डायरेक्ट संदेश",
       "dropToAttach": "जोड़ने के लिए यहाँ छोड़ें",
+      "errorReport": {
+        "details": "विवरण",
+        "fallback": "एक त्रुटि हुई"
+      },
       "errors": {
         "createChannelFailed": "चैनल बनाना विफल",
         "createFailed": "बातचीत बनाना विफल",
