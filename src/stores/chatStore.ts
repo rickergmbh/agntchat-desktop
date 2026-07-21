@@ -528,10 +528,21 @@ export const useChatStore = create<ChatState>((set, get) => ({
   },
 
   stopAgents: async (conversationId) => {
-    await api.stopConversationAgents(conversationId);
+    // Anchor the stop to the newest server-persisted message on screen. If a
+    // newer human message reaches the server before this request (slow
+    // network, 429 retry), the server no-ops the stop instead of freezing —
+    // a late freeze would land after that message's unfreeze check and
+    // swallow its response. Pending optimistic sends have local-only ids the
+    // server can't resolve, so skip them.
+    const msgs = get().messages[conversationId] ?? [];
+    const lastPersisted = [...msgs].reverse().find((m) => !m.pending);
+    const result = await api.stopConversationAgents(conversationId, lastPersisted?.id);
     // The backend broadcasts `cancelled` for every active stream, but clear
-    // locally too so the bubble drops the instant the request resolves.
-    useStreamingStore.getState().clearStream(conversationId);
+    // locally too so the bubble drops the instant the request resolves. A
+    // stale stop means the current stream answers a newer message — leave it.
+    if (!result?.stale) {
+      useStreamingStore.getState().clearStream(conversationId);
+    }
   },
 
   leaveConversation: async (conversationId, participantId) => {

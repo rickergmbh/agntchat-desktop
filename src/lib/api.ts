@@ -2933,10 +2933,20 @@ export async function deleteConversationRest(conversationId: string): Promise<vo
 }
 
 /** Halt any in-flight agent turns in this conversation. Used by the chat
- *  header menu's "Stop Agents" action. */
-export async function stopConversationAgents(conversationId: string): Promise<void> {
-  await request(`/api/conversations/${conversationId}/stop-agents`, {
+ *  header menu's "Stop Agents" action and the streaming bubble's stop button.
+ *
+ *  `lastMessageId` anchors the stop to the newest message the user had on
+ *  screen when they pressed Stop. If a newer human message reaches the server
+ *  first (slow request, 429 retry), the server treats the stop as stale and
+ *  no-ops — otherwise the freeze would land after that message's unfreeze
+ *  check and swallow its response. */
+export async function stopConversationAgents(
+  conversationId: string,
+  lastMessageId?: string
+): Promise<{ stopped: boolean; stale?: boolean }> {
+  return request(`/api/conversations/${conversationId}/stop-agents`, {
     method: "POST",
+    body: JSON.stringify(lastMessageId ? { lastMessageId } : {}),
   });
 }
 
