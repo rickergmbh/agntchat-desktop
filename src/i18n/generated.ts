@@ -1610,9 +1610,9 @@ export const resources = {
       "tasksPerMonth_one": "{{count}} task/mo",
       "tasksPerMonth_other": "{{count}} tasks/mo",
       "templates": {
-        "addFailed": "Failed to add template",
-        "assignedTemplatesHeader": "Assigned Templates",
-        "removeFailed": "Failed to remove template"
+        "addFailed": "Failed to add card",
+        "assignedTemplatesHeader": "Assigned Cards",
+        "removeFailed": "Failed to remove card"
       },
       "thisAgent": "this agent",
       "tones": {
@@ -4863,11 +4863,11 @@ export const resources = {
       "workRoom": "Work room"
     },
     "templates": {
-      "add": "Add Template",
+      "add": "Add Card",
       "addField": "Add Field",
-      "addTemplate": "Add Template",
+      "addTemplate": "Add Card",
       "addToAgent": "Add to Agent",
-      "allAssigned": "All available templates are already assigned.",
+      "allAssigned": "All available cards are already assigned.",
       "assigned": "Assigned",
       "cardPreview": "Card Preview",
       "colors": {
@@ -4876,14 +4876,14 @@ export const resources = {
         "red": "Red",
         "yellow": "Yellow"
       },
-      "copyId": "Copy template ID",
-      "count_one": "{{count}} template",
-      "count_other": "{{count}} templates",
-      "create": "Create Template",
-      "createTemplate": "Create Template",
-      "createTooltip": "Create template",
-      "deleteConfirm": "Delete template \"{{name}}\"? This cannot be undone.",
-      "descriptionPlaceholder": "What does this template display?",
+      "copyId": "Copy card ID",
+      "count_one": "{{count}} card",
+      "count_other": "{{count}} cards",
+      "create": "Create Card",
+      "createTemplate": "Create Card",
+      "createTooltip": "Create card",
+      "deleteConfirm": "Delete card \"{{name}}\"? This cannot be undone.",
+      "descriptionPlaceholder": "What does this card display?",
       "details": {
         "nonstop": "Nonstop",
         "stops_one": "{{count}} stop",
@@ -4901,14 +4901,14 @@ export const resources = {
       },
       "docs": "Docs",
       "empty": {
-        "subtitle": "Platform templates define how agents present results",
-        "title": "No Templates"
+        "subtitle": "Platform cards define how agents present results",
+        "title": "No Cards"
       },
-      "emptyDescription": "Templates define how this agent formats structured results (hotels, emails, products, etc.)",
+      "emptyDescription": "Cards define how this agent formats structured results (hotels, emails, products, etc.)",
       "emptyHint": "Create one to get started.",
-      "emptyLabel": "No templates yet",
+      "emptyLabel": "No cards yet",
       "errors": {
-        "loadFailed": "Failed to load templates",
+        "loadFailed": "Failed to load cards",
         "previewFailed": "Failed to generate preview"
       },
       "field": {
@@ -4940,26 +4940,26 @@ export const resources = {
       "fields_other": "{{count}} fields",
       "filterAll_one": "All ({{count}})",
       "filterAll_other": "All ({{count}})",
-      "gallery": "Template Gallery",
+      "gallery": "Card Gallery",
       "hidePreview": "Hide Card Preview",
       "highlightColor": "Highlight Color",
-      "loading": "Loading templates…",
-      "name": "Template Name",
-      "nameHint": "Use snake_case. This identifies the template in API calls.",
-      "new": "New Template",
-      "newTitle": "New Template",
+      "loading": "Loading cards…",
+      "name": "Card Name",
+      "nameHint": "Use snake_case. This identifies the card in API calls.",
+      "new": "New Card",
+      "newTitle": "New Card",
       "noFields": "No fields defined yet. Add one to get started.",
-      "noMatches": "No matching templates.",
-      "noSampleData": "No sample data on this template. The rendered HTML further down uses the server's preview pipeline regardless.",
+      "noMatches": "No matching cards.",
+      "noSampleData": "No sample data on this card. The rendered HTML further down uses the server's preview pipeline regardless.",
       "noSampleDataShort": "No sample data — add sampleData to see a preview",
-      "notFound": "Template not found",
+      "notFound": "Card not found",
       "previewFailed": "Failed to generate preview",
       "previewLabel": "Card as delivered to conversation",
       "rawJson": "Raw JSON",
       "removeField": "Remove field",
       "removeFromAgent": "Remove from Agent",
       "renderedHtml": "Rendered HTML",
-      "resizeList": "Resize template list",
+      "resizeList": "Resize card list",
       "resultType": {
         "event": "Event",
         "flight": "Flight",
@@ -4983,7 +4983,7 @@ export const resources = {
       "sampleData": "Sample Data",
       "sampleTitle": "Sample {{type}}",
       "saveChanges": "Save Changes",
-      "searchPlaceholder": "Search templates...",
+      "searchPlaceholder": "Search cards...",
       "sections": {
         "cardPreview": "Card Preview",
         "details": "Details",
@@ -4991,14 +4991,14 @@ export const resources = {
         "rawJson": "Raw JSON",
         "renderedHtml": "Rendered HTML"
       },
-      "select": "Select a template",
+      "select": "Select a card",
       "selectHint": "Pick one from the left to see its preview, fields, and raw JSON.",
-      "selectTemplate": "Select a template",
-      "selectToPreview": "Select a template to preview",
-      "setNameForPreview": "Set a template name above to generate a preview.",
-      "setNameHint": "Set a template name above to generate a preview.",
+      "selectTemplate": "Select a card",
+      "selectToPreview": "Select a card to preview",
+      "setNameForPreview": "Set a card name above to generate a preview.",
+      "setNameHint": "Set a card name above to generate a preview.",
       "showPreview": "Show Card Preview",
-      "template": "Template"
+      "template": "Card"
     }
   },
   "es": {
@@ -6584,9 +6584,9 @@ export const resources = {
       "tasksPerMonth_one": "{{count}} tarea/mes",
       "tasksPerMonth_other": "{{count}} tareas/mes",
       "templates": {
-        "addFailed": "Error al añadir la plantilla",
-        "assignedTemplatesHeader": "Plantillas asignadas",
-        "removeFailed": "Error al quitar la plantilla"
+        "addFailed": "Error al añadir la tarjeta",
+        "assignedTemplatesHeader": "Tarjetas asignadas",
+        "removeFailed": "Error al quitar la tarjeta"
       },
       "thisAgent": "este agente",
       "tones": {
@@ -9837,11 +9837,11 @@ export const resources = {
       "workRoom": "Sala de trabajo"
     },
     "templates": {
-      "add": "Añadir plantilla",
+      "add": "Añadir tarjeta",
       "addField": "Añadir campo",
-      "addTemplate": "Añadir plantilla",
+      "addTemplate": "Añadir tarjeta",
       "addToAgent": "Añadir al agente",
-      "allAssigned": "Todas las plantillas disponibles ya están asignadas.",
+      "allAssigned": "Todas las tarjetas disponibles ya están asignadas.",
       "assigned": "Asignadas",
       "cardPreview": "Vista previa de la tarjeta",
       "colors": {
@@ -9850,14 +9850,14 @@ export const resources = {
         "red": "Rojo",
         "yellow": "Amarillo"
       },
-      "copyId": "Copiar ID de la plantilla",
-      "count_one": "{{count}} plantilla",
-      "count_other": "{{count}} plantillas",
-      "create": "Crear plantilla",
-      "createTemplate": "Crear plantilla",
-      "createTooltip": "Crear plantilla",
-      "deleteConfirm": "¿Eliminar la plantilla «{{name}}»? Esta acción no se puede deshacer.",
-      "descriptionPlaceholder": "¿Qué muestra esta plantilla?",
+      "copyId": "Copiar ID de la tarjeta",
+      "count_one": "{{count}} tarjeta",
+      "count_other": "{{count}} tarjetas",
+      "create": "Crear tarjeta",
+      "createTemplate": "Crear tarjeta",
+      "createTooltip": "Crear tarjeta",
+      "deleteConfirm": "¿Eliminar la tarjeta «{{name}}»? Esta acción no se puede deshacer.",
+      "descriptionPlaceholder": "¿Qué muestra esta tarjeta?",
       "details": {
         "nonstop": "Sin escalas",
         "stops_one": "{{count}} escala",
@@ -9875,14 +9875,14 @@ export const resources = {
       },
       "docs": "Documentación",
       "empty": {
-        "subtitle": "Las plantillas de la plataforma definen cómo los agentes presentan los resultados",
-        "title": "No hay plantillas"
+        "subtitle": "Las tarjetas de la plataforma definen cómo los agentes presentan los resultados",
+        "title": "No hay tarjetas"
       },
-      "emptyDescription": "Las plantillas definen cómo este agente da formato a los resultados estructurados (hoteles, correos, productos, etc.)",
+      "emptyDescription": "Las tarjetas definen cómo este agente da formato a los resultados estructurados (hoteles, correos, productos, etc.)",
       "emptyHint": "Crea una para empezar.",
-      "emptyLabel": "Aún no hay plantillas",
+      "emptyLabel": "Aún no hay tarjetas",
       "errors": {
-        "loadFailed": "No se pudieron cargar las plantillas",
+        "loadFailed": "No se pudieron cargar las tarjetas",
         "previewFailed": "No se pudo generar la vista previa"
       },
       "field": {
@@ -9914,26 +9914,26 @@ export const resources = {
       "fields_other": "{{count}} campos",
       "filterAll_one": "Todas ({{count}})",
       "filterAll_other": "Todas ({{count}})",
-      "gallery": "Galería de plantillas",
+      "gallery": "Galería de tarjetas",
       "hidePreview": "Ocultar vista previa de la tarjeta",
       "highlightColor": "Color de resaltado",
-      "loading": "Cargando plantillas…",
-      "name": "Nombre de la plantilla",
-      "nameHint": "Usa snake_case. Identifica la plantilla en las llamadas a la API.",
-      "new": "Nueva plantilla",
-      "newTitle": "Nueva plantilla",
+      "loading": "Cargando tarjetas…",
+      "name": "Nombre de la tarjeta",
+      "nameHint": "Usa snake_case. Identifica la tarjeta en las llamadas a la API.",
+      "new": "Nueva tarjeta",
+      "newTitle": "Nueva tarjeta",
       "noFields": "Aún no hay campos definidos. Añade uno para empezar.",
-      "noMatches": "No hay plantillas que coincidan.",
-      "noSampleData": "Esta plantilla no tiene datos de ejemplo. El HTML renderizado más abajo usa igualmente el proceso de vista previa del servidor.",
+      "noMatches": "No hay tarjetas que coincidan.",
+      "noSampleData": "Esta tarjeta no tiene datos de ejemplo. El HTML renderizado más abajo usa igualmente el proceso de vista previa del servidor.",
       "noSampleDataShort": "Sin datos de ejemplo: añade sampleData para ver una vista previa",
-      "notFound": "Plantilla no encontrada",
+      "notFound": "Tarjeta no encontrada",
       "previewFailed": "No se pudo generar la vista previa",
       "previewLabel": "Tarjeta tal como se entrega en la conversación",
       "rawJson": "JSON sin procesar",
       "removeField": "Quitar campo",
       "removeFromAgent": "Quitar del agente",
       "renderedHtml": "HTML renderizado",
-      "resizeList": "Redimensionar la lista de plantillas",
+      "resizeList": "Redimensionar la lista de tarjetas",
       "resultType": {
         "event": "Evento",
         "flight": "Vuelo",
@@ -9957,7 +9957,7 @@ export const resources = {
       "sampleData": "Datos de ejemplo",
       "sampleTitle": "Ejemplo de {{type}}",
       "saveChanges": "Guardar cambios",
-      "searchPlaceholder": "Buscar plantillas...",
+      "searchPlaceholder": "Buscar tarjetas...",
       "sections": {
         "cardPreview": "Vista previa de la tarjeta",
         "details": "Detalles",
@@ -9965,14 +9965,14 @@ export const resources = {
         "rawJson": "JSON sin procesar",
         "renderedHtml": "HTML renderizado"
       },
-      "select": "Selecciona una plantilla",
+      "select": "Selecciona una tarjeta",
       "selectHint": "Elige una a la izquierda para ver su vista previa, sus campos y su JSON sin procesar.",
-      "selectTemplate": "Selecciona una plantilla",
-      "selectToPreview": "Selecciona una plantilla para previsualizarla",
-      "setNameForPreview": "Escribe arriba un nombre de plantilla para generar la vista previa.",
-      "setNameHint": "Escribe un nombre de plantilla arriba para generar una vista previa.",
+      "selectTemplate": "Selecciona una tarjeta",
+      "selectToPreview": "Selecciona una tarjeta para previsualizarla",
+      "setNameForPreview": "Escribe arriba un nombre de tarjeta para generar la vista previa.",
+      "setNameHint": "Escribe un nombre de tarjeta arriba para generar una vista previa.",
       "showPreview": "Mostrar vista previa de la tarjeta",
-      "template": "Plantilla"
+      "template": "Tarjeta"
     }
   },
   "de": {
@@ -11558,9 +11558,9 @@ export const resources = {
       "tasksPerMonth_one": "{{count}} Aufgabe/Monat",
       "tasksPerMonth_other": "{{count}} Aufgaben/Monat",
       "templates": {
-        "addFailed": "Hinzufügen der Vorlage fehlgeschlagen",
-        "assignedTemplatesHeader": "Zugewiesene Vorlagen",
-        "removeFailed": "Entfernen der Vorlage fehlgeschlagen"
+        "addFailed": "Hinzufügen der Karte fehlgeschlagen",
+        "assignedTemplatesHeader": "Zugewiesene Karten",
+        "removeFailed": "Entfernen der Karte fehlgeschlagen"
       },
       "thisAgent": "dieser Agent",
       "tones": {
@@ -14811,11 +14811,11 @@ export const resources = {
       "workRoom": "Arbeitsraum"
     },
     "templates": {
-      "add": "Vorlage hinzufügen",
+      "add": "Karte hinzufügen",
       "addField": "Feld hinzufügen",
-      "addTemplate": "Vorlage hinzufügen",
+      "addTemplate": "Karte hinzufügen",
       "addToAgent": "Zum Agenten hinzufügen",
-      "allAssigned": "Alle verfügbaren Vorlagen sind bereits zugewiesen.",
+      "allAssigned": "Alle verfügbaren Karten sind bereits zugewiesen.",
       "assigned": "Zugewiesen",
       "cardPreview": "Kartenvorschau",
       "colors": {
@@ -14824,14 +14824,14 @@ export const resources = {
         "red": "Rot",
         "yellow": "Gelb"
       },
-      "copyId": "Vorlagen-ID kopieren",
-      "count_one": "{{count}} Vorlage",
-      "count_other": "{{count}} Vorlagen",
-      "create": "Vorlage erstellen",
-      "createTemplate": "Vorlage erstellen",
-      "createTooltip": "Vorlage erstellen",
-      "deleteConfirm": "Vorlage \"{{name}}\" löschen? Dies kann nicht rückgängig gemacht werden.",
-      "descriptionPlaceholder": "Was zeigt diese Vorlage an?",
+      "copyId": "Karten-ID kopieren",
+      "count_one": "{{count}} Karte",
+      "count_other": "{{count}} Karten",
+      "create": "Karte erstellen",
+      "createTemplate": "Karte erstellen",
+      "createTooltip": "Karte erstellen",
+      "deleteConfirm": "Karte \"{{name}}\" löschen? Dies kann nicht rückgängig gemacht werden.",
+      "descriptionPlaceholder": "Was zeigt diese Karte an?",
       "details": {
         "nonstop": "Nonstop",
         "stops_one": "{{count}} Zwischenstopp",
@@ -14849,14 +14849,14 @@ export const resources = {
       },
       "docs": "Dokumentation",
       "empty": {
-        "subtitle": "Plattform-Vorlagen legen fest, wie Agenten Ergebnisse präsentieren",
-        "title": "Keine Vorlagen"
+        "subtitle": "Plattform-Karten legen fest, wie Agenten Ergebnisse präsentieren",
+        "title": "Keine Karten"
       },
-      "emptyDescription": "Vorlagen legen fest, wie dieser Agent strukturierte Ergebnisse formatiert (Hotels, E-Mails, Produkte usw.)",
+      "emptyDescription": "Karten legen fest, wie dieser Agent strukturierte Ergebnisse formatiert (Hotels, E-Mails, Produkte usw.)",
       "emptyHint": "Erstellen Sie eine, um loszulegen.",
-      "emptyLabel": "Noch keine Vorlagen",
+      "emptyLabel": "Noch keine Karten",
       "errors": {
-        "loadFailed": "Vorlagen konnten nicht geladen werden",
+        "loadFailed": "Karten konnten nicht geladen werden",
         "previewFailed": "Vorschau konnte nicht erstellt werden"
       },
       "field": {
@@ -14888,26 +14888,26 @@ export const resources = {
       "fields_other": "{{count}} Felder",
       "filterAll_one": "Alle ({{count}})",
       "filterAll_other": "Alle ({{count}})",
-      "gallery": "Vorlagengalerie",
+      "gallery": "Kartengalerie",
       "hidePreview": "Kartenvorschau ausblenden",
       "highlightColor": "Hervorhebungsfarbe",
-      "loading": "Vorlagen werden geladen…",
-      "name": "Vorlagenname",
-      "nameHint": "Verwenden Sie snake_case. Dies identifiziert die Vorlage in API-Aufrufen.",
-      "new": "Neue Vorlage",
-      "newTitle": "Neue Vorlage",
+      "loading": "Karten werden geladen…",
+      "name": "Kartenname",
+      "nameHint": "Verwenden Sie snake_case. Dies identifiziert die Karte in API-Aufrufen.",
+      "new": "Neue Karte",
+      "newTitle": "Neue Karte",
       "noFields": "Noch keine Felder definiert. Fügen Sie eines hinzu, um loszulegen.",
-      "noMatches": "Keine passenden Vorlagen.",
-      "noSampleData": "Keine Beispieldaten für diese Vorlage. Das weiter unten gerenderte HTML nutzt trotzdem die Vorschau-Pipeline des Servers.",
+      "noMatches": "Keine passenden Karten.",
+      "noSampleData": "Keine Beispieldaten für diese Karte. Das weiter unten gerenderte HTML nutzt trotzdem die Vorschau-Pipeline des Servers.",
       "noSampleDataShort": "Keine Beispieldaten — sampleData hinzufügen, um eine Vorschau zu sehen",
-      "notFound": "Vorlage nicht gefunden",
+      "notFound": "Karte nicht gefunden",
       "previewFailed": "Vorschau konnte nicht erstellt werden",
       "previewLabel": "Karte, wie sie an die Unterhaltung übermittelt wird",
       "rawJson": "Roh-JSON",
       "removeField": "Feld entfernen",
       "removeFromAgent": "Vom Agenten entfernen",
       "renderedHtml": "Gerendertes HTML",
-      "resizeList": "Größe der Vorlagenliste ändern",
+      "resizeList": "Größe der Kartenliste ändern",
       "resultType": {
         "event": "Veranstaltung",
         "flight": "Flug",
@@ -14931,7 +14931,7 @@ export const resources = {
       "sampleData": "Beispieldaten",
       "sampleTitle": "Beispiel {{type}}",
       "saveChanges": "Änderungen speichern",
-      "searchPlaceholder": "Vorlagen durchsuchen...",
+      "searchPlaceholder": "Karten durchsuchen...",
       "sections": {
         "cardPreview": "Kartenvorschau",
         "details": "Details",
@@ -14939,14 +14939,14 @@ export const resources = {
         "rawJson": "Roh-JSON",
         "renderedHtml": "Gerendertes HTML"
       },
-      "select": "Vorlage auswählen",
+      "select": "Karte auswählen",
       "selectHint": "Wählen Sie links eine aus, um Vorschau, Felder und Roh-JSON zu sehen.",
-      "selectTemplate": "Vorlage auswählen",
-      "selectToPreview": "Vorlage zur Vorschau auswählen",
-      "setNameForPreview": "Legen Sie oben einen Vorlagennamen fest, um eine Vorschau zu erstellen.",
-      "setNameHint": "Legen Sie oben einen Vorlagennamen fest, um eine Vorschau zu erstellen.",
+      "selectTemplate": "Karte auswählen",
+      "selectToPreview": "Karte zur Vorschau auswählen",
+      "setNameForPreview": "Legen Sie oben einen Kartennamen fest, um eine Vorschau zu erstellen.",
+      "setNameHint": "Legen Sie oben einen Kartennamen fest, um eine Vorschau zu erstellen.",
       "showPreview": "Kartenvorschau anzeigen",
-      "template": "Vorlage"
+      "template": "Karte"
     }
   },
   "fr": {
@@ -16532,9 +16532,9 @@ export const resources = {
       "tasksPerMonth_one": "{{count}} tâche/mois",
       "tasksPerMonth_other": "{{count}} tâches/mois",
       "templates": {
-        "addFailed": "Échec de l'ajout du modèle",
-        "assignedTemplatesHeader": "Modèles assignés",
-        "removeFailed": "Échec de la suppression du modèle"
+        "addFailed": "Échec de l'ajout de la carte",
+        "assignedTemplatesHeader": "Cartes assignées",
+        "removeFailed": "Échec de la suppression de la carte"
       },
       "thisAgent": "cet agent",
       "tones": {
@@ -19785,11 +19785,11 @@ export const resources = {
       "workRoom": "Salle de travail"
     },
     "templates": {
-      "add": "Ajouter un modèle",
+      "add": "Ajouter une carte",
       "addField": "Ajouter un champ",
-      "addTemplate": "Ajouter un modèle",
+      "addTemplate": "Ajouter une carte",
       "addToAgent": "Ajouter à l'agent",
-      "allAssigned": "Tous les modèles disponibles sont déjà assignés.",
+      "allAssigned": "Toutes les cartes disponibles sont déjà assignées.",
       "assigned": "Assigné",
       "cardPreview": "Aperçu de la carte",
       "colors": {
@@ -19798,14 +19798,14 @@ export const resources = {
         "red": "Rouge",
         "yellow": "Jaune"
       },
-      "copyId": "Copier l'ID du modèle",
-      "count_one": "{{count}} modèle",
-      "count_other": "{{count}} modèles",
-      "create": "Créer un modèle",
-      "createTemplate": "Créer un modèle",
-      "createTooltip": "Créer un modèle",
-      "deleteConfirm": "Supprimer le modèle « {{name}} » ? Cette action est irréversible.",
-      "descriptionPlaceholder": "Que doit afficher ce modèle ?",
+      "copyId": "Copier l'ID de la carte",
+      "count_one": "{{count}} carte",
+      "count_other": "{{count}} cartes",
+      "create": "Créer une carte",
+      "createTemplate": "Créer une carte",
+      "createTooltip": "Créer une carte",
+      "deleteConfirm": "Supprimer la carte « {{name}} » ? Cette action est irréversible.",
+      "descriptionPlaceholder": "Que doit afficher cette carte ?",
       "details": {
         "nonstop": "Sans escale",
         "stops_one": "{{count}} escale",
@@ -19823,14 +19823,14 @@ export const resources = {
       },
       "docs": "Documentation",
       "empty": {
-        "subtitle": "Les modèles de plateforme définissent comment les agents présentent les résultats",
-        "title": "Aucun modèle"
+        "subtitle": "Les cartes de la plateforme définissent comment les agents présentent les résultats",
+        "title": "Aucune carte"
       },
-      "emptyDescription": "Les modèles définissent comment cet agent formate les résultats structurés (hôtels, e-mails, produits, etc.)",
-      "emptyHint": "Créez-en un pour commencer.",
-      "emptyLabel": "Aucun modèle pour le moment",
+      "emptyDescription": "Les cartes définissent comment cet agent formate les résultats structurés (hôtels, e-mails, produits, etc.)",
+      "emptyHint": "Créez-en une pour commencer.",
+      "emptyLabel": "Aucune carte pour le moment",
       "errors": {
-        "loadFailed": "Échec du chargement des modèles",
+        "loadFailed": "Échec du chargement des cartes",
         "previewFailed": "Échec de la génération de l'aperçu"
       },
       "field": {
@@ -19862,26 +19862,26 @@ export const resources = {
       "fields_other": "{{count}} champs",
       "filterAll_one": "Tous ({{count}})",
       "filterAll_other": "Tous ({{count}})",
-      "gallery": "Galerie de modèles",
+      "gallery": "Galerie de cartes",
       "hidePreview": "Masquer l'aperçu de la carte",
       "highlightColor": "Couleur de mise en évidence",
-      "loading": "Chargement des modèles…",
-      "name": "Nom du modèle",
-      "nameHint": "Utilisez le snake_case. Cela identifie le modèle dans les appels API.",
-      "new": "Nouveau modèle",
-      "newTitle": "Nouveau modèle",
+      "loading": "Chargement des cartes…",
+      "name": "Nom de la carte",
+      "nameHint": "Utilisez le snake_case. Cela identifie la carte dans les appels API.",
+      "new": "Nouvelle carte",
+      "newTitle": "Nouvelle carte",
       "noFields": "Aucun champ défini pour le moment. Ajoutez-en un pour commencer.",
-      "noMatches": "Aucun modèle correspondant.",
-      "noSampleData": "Aucune donnée d'exemple sur ce modèle. Le HTML rendu ci-dessous utilise malgré tout le pipeline de prévisualisation du serveur.",
+      "noMatches": "Aucune carte correspondante.",
+      "noSampleData": "Aucune donnée d'exemple sur cette carte. Le HTML rendu ci-dessous utilise malgré tout le pipeline de prévisualisation du serveur.",
       "noSampleDataShort": "Aucune donnée d'exemple — ajoutez sampleData pour voir un aperçu",
-      "notFound": "Modèle introuvable",
+      "notFound": "Carte introuvable",
       "previewFailed": "Échec de la génération de l'aperçu",
       "previewLabel": "Carte telle que livrée à la conversation",
       "rawJson": "JSON brut",
       "removeField": "Supprimer le champ",
       "removeFromAgent": "Retirer de l'agent",
       "renderedHtml": "HTML rendu",
-      "resizeList": "Redimensionner la liste des modèles",
+      "resizeList": "Redimensionner la liste des cartes",
       "resultType": {
         "event": "Événement",
         "flight": "Vol",
@@ -19905,7 +19905,7 @@ export const resources = {
       "sampleData": "Données d'exemple",
       "sampleTitle": "Exemple de {{type}}",
       "saveChanges": "Enregistrer les modifications",
-      "searchPlaceholder": "Rechercher des modèles...",
+      "searchPlaceholder": "Rechercher des cartes...",
       "sections": {
         "cardPreview": "Aperçu de la carte",
         "details": "Détails",
@@ -19913,14 +19913,14 @@ export const resources = {
         "rawJson": "JSON brut",
         "renderedHtml": "HTML rendu"
       },
-      "select": "Sélectionner un modèle",
-      "selectHint": "Choisissez-en un à gauche pour voir son aperçu, ses champs et son JSON brut.",
-      "selectTemplate": "Sélectionner un modèle",
-      "selectToPreview": "Sélectionnez un modèle à prévisualiser",
-      "setNameForPreview": "Définissez un nom de modèle ci-dessus pour générer un aperçu.",
-      "setNameHint": "Définissez un nom de modèle ci-dessus pour générer un aperçu.",
+      "select": "Sélectionner une carte",
+      "selectHint": "Choisissez-en une à gauche pour voir son aperçu, ses champs et son JSON brut.",
+      "selectTemplate": "Sélectionner une carte",
+      "selectToPreview": "Sélectionnez une carte à prévisualiser",
+      "setNameForPreview": "Définissez un nom de carte ci-dessus pour générer un aperçu.",
+      "setNameHint": "Définissez un nom de carte ci-dessus pour générer un aperçu.",
       "showPreview": "Afficher l'aperçu de la carte",
-      "template": "Modèle"
+      "template": "Carte"
     }
   },
   "pt": {
@@ -21506,9 +21506,9 @@ export const resources = {
       "tasksPerMonth_one": "{{count}} tarefa/mês",
       "tasksPerMonth_other": "{{count}} tarefas/mês",
       "templates": {
-        "addFailed": "Falha ao adicionar modelo",
-        "assignedTemplatesHeader": "Modelos Atribuídos",
-        "removeFailed": "Falha ao remover modelo"
+        "addFailed": "Falha ao adicionar cartão",
+        "assignedTemplatesHeader": "Cartões atribuídos",
+        "removeFailed": "Falha ao remover cartão"
       },
       "thisAgent": "este agente",
       "tones": {
@@ -24759,11 +24759,11 @@ export const resources = {
       "workRoom": "Sala de trabalho"
     },
     "templates": {
-      "add": "Adicionar modelo",
+      "add": "Adicionar cartão",
       "addField": "Adicionar campo",
-      "addTemplate": "Adicionar modelo",
+      "addTemplate": "Adicionar cartão",
       "addToAgent": "Adicionar ao agente",
-      "allAssigned": "Todos os modelos disponíveis já foram atribuídos.",
+      "allAssigned": "Todos os cartões disponíveis já foram atribuídos.",
       "assigned": "Atribuído",
       "cardPreview": "Prévia do card",
       "colors": {
@@ -24772,14 +24772,14 @@ export const resources = {
         "red": "Vermelho",
         "yellow": "Amarelo"
       },
-      "copyId": "Copiar ID do modelo",
-      "count_one": "{{count}} modelo",
-      "count_other": "{{count}} modelos",
-      "create": "Criar modelo",
-      "createTemplate": "Criar modelo",
-      "createTooltip": "Criar modelo",
-      "deleteConfirm": "Excluir o modelo \"{{name}}\"? Isso não pode ser desfeito.",
-      "descriptionPlaceholder": "O que este modelo exibe?",
+      "copyId": "Copiar ID do cartão",
+      "count_one": "{{count}} cartão",
+      "count_other": "{{count}} cartões",
+      "create": "Criar cartão",
+      "createTemplate": "Criar cartão",
+      "createTooltip": "Criar cartão",
+      "deleteConfirm": "Excluir o cartão \"{{name}}\"? Isso não pode ser desfeito.",
+      "descriptionPlaceholder": "O que este cartão exibe?",
       "details": {
         "nonstop": "Sem escalas",
         "stops_one": "{{count}} escala",
@@ -24797,14 +24797,14 @@ export const resources = {
       },
       "docs": "Documentação",
       "empty": {
-        "subtitle": "Os modelos da plataforma definem como os agentes apresentam resultados",
-        "title": "Nenhum modelo"
+        "subtitle": "Os cartões da plataforma definem como os agentes apresentam resultados",
+        "title": "Nenhum cartão"
       },
-      "emptyDescription": "Os modelos definem como este agente formata resultados estruturados (hotéis, e-mails, produtos etc.)",
+      "emptyDescription": "Os cartões definem como este agente formata resultados estruturados (hotéis, e-mails, produtos etc.)",
       "emptyHint": "Crie um para começar.",
-      "emptyLabel": "Nenhum modelo ainda",
+      "emptyLabel": "Nenhum cartão ainda",
       "errors": {
-        "loadFailed": "Falha ao carregar modelos",
+        "loadFailed": "Falha ao carregar cartões",
         "previewFailed": "Falha ao gerar a prévia"
       },
       "field": {
@@ -24836,26 +24836,26 @@ export const resources = {
       "fields_other": "{{count}} campos",
       "filterAll_one": "Todos ({{count}})",
       "filterAll_other": "Todos ({{count}})",
-      "gallery": "Galeria de modelos",
+      "gallery": "Galeria de cartões",
       "hidePreview": "Ocultar prévia do card",
       "highlightColor": "Cor de destaque",
-      "loading": "Carregando modelos…",
-      "name": "Nome do modelo",
-      "nameHint": "Use snake_case. Isso identifica o modelo nas chamadas de API.",
-      "new": "Novo modelo",
-      "newTitle": "Novo modelo",
+      "loading": "Carregando cartões…",
+      "name": "Nome do cartão",
+      "nameHint": "Use snake_case. Isso identifica o cartão nas chamadas de API.",
+      "new": "Novo cartão",
+      "newTitle": "Novo cartão",
       "noFields": "Nenhum campo definido ainda. Adicione um para começar.",
-      "noMatches": "Nenhum modelo correspondente.",
-      "noSampleData": "Nenhum dado de exemplo neste modelo. O HTML renderizado logo abaixo usa o pipeline de prévia do servidor de qualquer forma.",
+      "noMatches": "Nenhum cartão correspondente.",
+      "noSampleData": "Nenhum dado de exemplo neste cartão. O HTML renderizado logo abaixo usa o pipeline de prévia do servidor de qualquer forma.",
       "noSampleDataShort": "Nenhum dado de exemplo — adicione sampleData para ver uma prévia",
-      "notFound": "Modelo não encontrado",
+      "notFound": "Cartão não encontrado",
       "previewFailed": "Falha ao gerar a prévia",
       "previewLabel": "Card como é entregue na conversa",
       "rawJson": "JSON bruto",
       "removeField": "Remover campo",
       "removeFromAgent": "Remover do agente",
       "renderedHtml": "HTML renderizado",
-      "resizeList": "Redimensionar lista de modelos",
+      "resizeList": "Redimensionar lista de cartões",
       "resultType": {
         "event": "Evento",
         "flight": "Voo",
@@ -24879,7 +24879,7 @@ export const resources = {
       "sampleData": "Dados de exemplo",
       "sampleTitle": "Exemplo de {{type}}",
       "saveChanges": "Salvar alterações",
-      "searchPlaceholder": "Pesquisar modelos...",
+      "searchPlaceholder": "Pesquisar cartões...",
       "sections": {
         "cardPreview": "Prévia do card",
         "details": "Detalhes",
@@ -24887,14 +24887,14 @@ export const resources = {
         "rawJson": "JSON bruto",
         "renderedHtml": "HTML renderizado"
       },
-      "select": "Selecione um modelo",
+      "select": "Selecione um cartão",
       "selectHint": "Escolha um à esquerda para ver sua prévia, campos e JSON bruto.",
-      "selectTemplate": "Selecione um modelo",
-      "selectToPreview": "Selecione um modelo para pré-visualizar",
-      "setNameForPreview": "Defina um nome de modelo acima para gerar uma prévia.",
-      "setNameHint": "Defina um nome de modelo acima para gerar uma prévia.",
+      "selectTemplate": "Selecione um cartão",
+      "selectToPreview": "Selecione um cartão para pré-visualizar",
+      "setNameForPreview": "Defina um nome de cartão acima para gerar uma prévia.",
+      "setNameHint": "Defina um nome de cartão acima para gerar uma prévia.",
       "showPreview": "Mostrar prévia do card",
-      "template": "Modelo"
+      "template": "Cartão"
     }
   },
   "ja": {
@@ -26480,9 +26480,9 @@ export const resources = {
       "tasksPerMonth_one": "{{count}}件/月",
       "tasksPerMonth_other": "{{count}}件/月",
       "templates": {
-        "addFailed": "テンプレートの追加に失敗しました",
-        "assignedTemplatesHeader": "割り当てられたテンプレート",
-        "removeFailed": "テンプレートの削除に失敗しました"
+        "addFailed": "カードの追加に失敗しました",
+        "assignedTemplatesHeader": "割り当てられたカード",
+        "removeFailed": "カードの削除に失敗しました"
       },
       "thisAgent": "このエージェント",
       "tones": {
@@ -29733,11 +29733,11 @@ export const resources = {
       "workRoom": "作業ルーム"
     },
     "templates": {
-      "add": "テンプレートを追加",
+      "add": "カードを追加",
       "addField": "フィールドを追加",
-      "addTemplate": "テンプレートを追加",
+      "addTemplate": "カードを追加",
       "addToAgent": "エージェントに追加",
-      "allAssigned": "利用可能なテンプレートはすべて割り当て済みです。",
+      "allAssigned": "利用可能なカードはすべて割り当て済みです。",
       "assigned": "割り当て済み",
       "cardPreview": "カードプレビュー",
       "colors": {
@@ -29746,14 +29746,14 @@ export const resources = {
         "red": "赤",
         "yellow": "黄"
       },
-      "copyId": "テンプレートIDをコピー",
-      "count_one": "{{count}}件のテンプレート",
-      "count_other": "{{count}}件のテンプレート",
-      "create": "テンプレートを作成",
-      "createTemplate": "テンプレートを作成",
-      "createTooltip": "テンプレートを作成",
-      "deleteConfirm": "テンプレート「{{name}}」を削除しますか？この操作は元に戻せません。",
-      "descriptionPlaceholder": "このテンプレートは何を表示しますか？",
+      "copyId": "カードIDをコピー",
+      "count_one": "{{count}}件のカード",
+      "count_other": "{{count}}件のカード",
+      "create": "カードを作成",
+      "createTemplate": "カードを作成",
+      "createTooltip": "カードを作成",
+      "deleteConfirm": "カード「{{name}}」を削除しますか？この操作は元に戻せません。",
+      "descriptionPlaceholder": "このカードは何を表示しますか？",
       "details": {
         "nonstop": "直行",
         "stops_one": "{{count}}回経由",
@@ -29771,14 +29771,14 @@ export const resources = {
       },
       "docs": "ドキュメント",
       "empty": {
-        "subtitle": "プラットフォームテンプレートは、エージェントが結果をどのように表示するかを定義します",
-        "title": "テンプレートがありません"
+        "subtitle": "プラットフォームカードは、エージェントが結果をどのように表示するかを定義します",
+        "title": "カードがありません"
       },
-      "emptyDescription": "テンプレートは、このエージェントが構造化された結果（ホテル、メール、商品など）をどのように整形するかを定義します",
+      "emptyDescription": "カードは、このエージェントが構造化された結果（ホテル、メール、商品など）をどのように整形するかを定義します",
       "emptyHint": "作成して始めましょう。",
-      "emptyLabel": "テンプレートがまだありません",
+      "emptyLabel": "カードがまだありません",
       "errors": {
-        "loadFailed": "テンプレートの読み込みに失敗しました",
+        "loadFailed": "カードの読み込みに失敗しました",
         "previewFailed": "プレビューの生成に失敗しました"
       },
       "field": {
@@ -29810,26 +29810,26 @@ export const resources = {
       "fields_other": "{{count}}件のフィールド",
       "filterAll_one": "すべて（{{count}}）",
       "filterAll_other": "すべて（{{count}}）",
-      "gallery": "テンプレートギャラリー",
+      "gallery": "カードギャラリー",
       "hidePreview": "カードプレビューを非表示",
       "highlightColor": "ハイライトカラー",
-      "loading": "テンプレートを読み込み中…",
-      "name": "テンプレート名",
-      "nameHint": "snake_caseを使用してください。API呼び出しでこのテンプレートを識別するために使用されます。",
-      "new": "新しいテンプレート",
-      "newTitle": "新しいテンプレート",
+      "loading": "カードを読み込み中…",
+      "name": "カード名",
+      "nameHint": "snake_caseを使用してください。API呼び出しでこのカードを識別するために使用されます。",
+      "new": "新しいカード",
+      "newTitle": "新しいカード",
       "noFields": "フィールドがまだ定義されていません。追加して始めましょう。",
-      "noMatches": "一致するテンプレートがありません。",
-      "noSampleData": "このテンプレートにはサンプルデータがありません。以下のレンダリング済みHTMLは、サーバーのプレビューパイプラインを使用して生成されています。",
+      "noMatches": "一致するカードがありません。",
+      "noSampleData": "このカードにはサンプルデータがありません。以下のレンダリング済みHTMLは、サーバーのプレビューパイプラインを使用して生成されています。",
       "noSampleDataShort": "サンプルデータがありません — sampleDataを追加するとプレビューが表示されます",
-      "notFound": "テンプレートが見つかりません",
+      "notFound": "カードが見つかりません",
       "previewFailed": "プレビューの生成に失敗しました",
       "previewLabel": "会話に配信されるカードの表示",
       "rawJson": "生のJSON",
       "removeField": "フィールドを削除",
       "removeFromAgent": "エージェントから削除",
       "renderedHtml": "レンダリング済みHTML",
-      "resizeList": "テンプレートリストのサイズを変更",
+      "resizeList": "カードリストのサイズを変更",
       "resultType": {
         "event": "イベント",
         "flight": "フライト",
@@ -29853,7 +29853,7 @@ export const resources = {
       "sampleData": "サンプルデータ",
       "sampleTitle": "サンプル {{type}}",
       "saveChanges": "変更を保存",
-      "searchPlaceholder": "テンプレートを検索...",
+      "searchPlaceholder": "カードを検索...",
       "sections": {
         "cardPreview": "カードプレビュー",
         "details": "詳細",
@@ -29861,14 +29861,14 @@ export const resources = {
         "rawJson": "生のJSON",
         "renderedHtml": "レンダリング済みHTML"
       },
-      "select": "テンプレートを選択",
+      "select": "カードを選択",
       "selectHint": "左側から1つ選択すると、プレビュー、フィールド、生のJSONを確認できます。",
-      "selectTemplate": "テンプレートを選択",
-      "selectToPreview": "プレビューするテンプレートを選択してください",
-      "setNameForPreview": "上でテンプレート名を設定するとプレビューが生成されます。",
-      "setNameHint": "上でテンプレート名を設定するとプレビューが生成されます。",
+      "selectTemplate": "カードを選択",
+      "selectToPreview": "プレビューするカードを選択してください",
+      "setNameForPreview": "上でカード名を設定するとプレビューが生成されます。",
+      "setNameHint": "上でカード名を設定するとプレビューが生成されます。",
       "showPreview": "カードプレビューを表示",
-      "template": "テンプレート"
+      "template": "カード"
     }
   },
   "zh": {
@@ -31454,9 +31454,9 @@ export const resources = {
       "tasksPerMonth_one": "{{count}} 个任务/月",
       "tasksPerMonth_other": "{{count}} 个任务/月",
       "templates": {
-        "addFailed": "添加模板失败",
-        "assignedTemplatesHeader": "已分配的模板",
-        "removeFailed": "移除模板失败"
+        "addFailed": "添加卡片失败",
+        "assignedTemplatesHeader": "已分配的卡片",
+        "removeFailed": "移除卡片失败"
       },
       "thisAgent": "此智能体",
       "tones": {
@@ -34707,11 +34707,11 @@ export const resources = {
       "workRoom": "工作间"
     },
     "templates": {
-      "add": "添加模板",
+      "add": "添加卡片",
       "addField": "添加字段",
-      "addTemplate": "添加模板",
+      "addTemplate": "添加卡片",
       "addToAgent": "添加到智能体",
-      "allAssigned": "所有可用模板均已分配。",
+      "allAssigned": "所有可用卡片均已分配。",
       "assigned": "已分配",
       "cardPreview": "卡片预览",
       "colors": {
@@ -34720,14 +34720,14 @@ export const resources = {
         "red": "红色",
         "yellow": "黄色"
       },
-      "copyId": "复制模板 ID",
-      "count_one": "{{count}} 个模板",
-      "count_other": "{{count}} 个模板",
-      "create": "创建模板",
-      "createTemplate": "创建模板",
-      "createTooltip": "创建模板",
-      "deleteConfirm": "删除模板“{{name}}”？此操作无法撤销。",
-      "descriptionPlaceholder": "此模板用于展示什么内容？",
+      "copyId": "复制卡片 ID",
+      "count_one": "{{count}} 张卡片",
+      "count_other": "{{count}} 张卡片",
+      "create": "创建卡片",
+      "createTemplate": "创建卡片",
+      "createTooltip": "创建卡片",
+      "deleteConfirm": "删除卡片“{{name}}”？此操作无法撤销。",
+      "descriptionPlaceholder": "此卡片用于展示什么内容？",
       "details": {
         "nonstop": "直飞",
         "stops_one": "{{count}} 次经停",
@@ -34745,14 +34745,14 @@ export const resources = {
       },
       "docs": "文档",
       "empty": {
-        "subtitle": "平台模板定义了智能体呈现结果的方式",
-        "title": "暂无模板"
+        "subtitle": "平台卡片定义了智能体呈现结果的方式",
+        "title": "暂无卡片"
       },
-      "emptyDescription": "模板定义了此智能体如何格式化结构化结果（酒店、邮件、产品等）",
+      "emptyDescription": "卡片定义了此智能体如何格式化结构化结果（酒店、邮件、产品等）",
       "emptyHint": "创建一个以开始使用。",
-      "emptyLabel": "暂无模板",
+      "emptyLabel": "暂无卡片",
       "errors": {
-        "loadFailed": "加载模板失败",
+        "loadFailed": "加载卡片失败",
         "previewFailed": "生成预览失败"
       },
       "field": {
@@ -34784,26 +34784,26 @@ export const resources = {
       "fields_other": "{{count}} 个字段",
       "filterAll_one": "全部（{{count}}）",
       "filterAll_other": "全部（{{count}}）",
-      "gallery": "模板库",
+      "gallery": "卡片库",
       "hidePreview": "隐藏卡片预览",
       "highlightColor": "高亮颜色",
-      "loading": "正在加载模板…",
-      "name": "模板名称",
-      "nameHint": "使用 snake_case 格式。此名称用于在 API 调用中标识模板。",
-      "new": "新建模板",
-      "newTitle": "新建模板",
+      "loading": "正在加载卡片…",
+      "name": "卡片名称",
+      "nameHint": "使用 snake_case 格式。此名称用于在 API 调用中标识卡片。",
+      "new": "新建卡片",
+      "newTitle": "新建卡片",
       "noFields": "尚未定义任何字段。添加一个以开始使用。",
-      "noMatches": "没有匹配的模板。",
-      "noSampleData": "此模板没有示例数据。下方渲染的 HTML 仍会使用服务器的预览流程生成。",
+      "noMatches": "没有匹配的卡片。",
+      "noSampleData": "此卡片没有示例数据。下方渲染的 HTML 仍会使用服务器的预览流程生成。",
       "noSampleDataShort": "没有示例数据——添加 sampleData 以查看预览",
-      "notFound": "未找到模板",
+      "notFound": "未找到卡片",
       "previewFailed": "生成预览失败",
       "previewLabel": "卡片在对话中的实际展示效果",
       "rawJson": "原始 JSON",
       "removeField": "移除字段",
       "removeFromAgent": "从智能体中移除",
       "renderedHtml": "渲染后的 HTML",
-      "resizeList": "调整模板列表大小",
+      "resizeList": "调整卡片列表大小",
       "resultType": {
         "event": "活动",
         "flight": "航班",
@@ -34827,7 +34827,7 @@ export const resources = {
       "sampleData": "示例数据",
       "sampleTitle": "示例 {{type}}",
       "saveChanges": "保存更改",
-      "searchPlaceholder": "搜索模板…",
+      "searchPlaceholder": "搜索卡片…",
       "sections": {
         "cardPreview": "卡片预览",
         "details": "详情",
@@ -34835,14 +34835,14 @@ export const resources = {
         "rawJson": "原始 JSON",
         "renderedHtml": "渲染后的 HTML"
       },
-      "select": "选择一个模板",
-      "selectHint": "从左侧选择一个模板以查看其预览、字段和原始 JSON。",
-      "selectTemplate": "选择一个模板",
-      "selectToPreview": "选择一个模板以预览",
-      "setNameForPreview": "在上方设置模板名称以生成预览。",
-      "setNameHint": "在上方设置模板名称以生成预览。",
+      "select": "选择一张卡片",
+      "selectHint": "从左侧选择一张卡片以查看其预览、字段和原始 JSON。",
+      "selectTemplate": "选择一张卡片",
+      "selectToPreview": "选择一张卡片以预览",
+      "setNameForPreview": "在上方设置卡片名称以生成预览。",
+      "setNameHint": "在上方设置卡片名称以生成预览。",
       "showPreview": "显示卡片预览",
-      "template": "模板"
+      "template": "卡片"
     }
   },
   "ko": {
@@ -36428,9 +36428,9 @@ export const resources = {
       "tasksPerMonth_one": "월 {{count}}건",
       "tasksPerMonth_other": "월 {{count}}건",
       "templates": {
-        "addFailed": "템플릿 추가에 실패했습니다",
-        "assignedTemplatesHeader": "할당된 템플릿",
-        "removeFailed": "템플릿 제거에 실패했습니다"
+        "addFailed": "카드 추가에 실패했습니다",
+        "assignedTemplatesHeader": "할당된 카드",
+        "removeFailed": "카드 제거에 실패했습니다"
       },
       "thisAgent": "이 에이전트",
       "tones": {
@@ -39681,11 +39681,11 @@ export const resources = {
       "workRoom": "작업방"
     },
     "templates": {
-      "add": "템플릿 추가",
+      "add": "카드 추가",
       "addField": "필드 추가",
-      "addTemplate": "템플릿 추가",
+      "addTemplate": "카드 추가",
       "addToAgent": "에이전트에 추가",
-      "allAssigned": "사용 가능한 모든 템플릿이 이미 할당되었습니다.",
+      "allAssigned": "사용 가능한 모든 카드가 이미 할당되었습니다.",
       "assigned": "할당됨",
       "cardPreview": "카드 미리보기",
       "colors": {
@@ -39694,14 +39694,14 @@ export const resources = {
         "red": "빨강",
         "yellow": "노랑"
       },
-      "copyId": "템플릿 ID 복사",
-      "count_one": "템플릿 {{count}}개",
-      "count_other": "템플릿 {{count}}개",
-      "create": "템플릿 만들기",
-      "createTemplate": "템플릿 만들기",
-      "createTooltip": "템플릿 만들기",
-      "deleteConfirm": "템플릿 \"{{name}}\"을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
-      "descriptionPlaceholder": "이 템플릿은 무엇을 표시하나요?",
+      "copyId": "카드 ID 복사",
+      "count_one": "카드 {{count}}개",
+      "count_other": "카드 {{count}}개",
+      "create": "카드 만들기",
+      "createTemplate": "카드 만들기",
+      "createTooltip": "카드 만들기",
+      "deleteConfirm": "카드 \"{{name}}\"을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+      "descriptionPlaceholder": "이 카드는 무엇을 표시하나요?",
       "details": {
         "nonstop": "직항",
         "stops_one": "경유 {{count}}회",
@@ -39719,14 +39719,14 @@ export const resources = {
       },
       "docs": "문서",
       "empty": {
-        "subtitle": "플랫폼 템플릿은 에이전트가 결과를 표시하는 방식을 정의합니다",
-        "title": "템플릿 없음"
+        "subtitle": "플랫폼 카드는 에이전트가 결과를 표시하는 방식을 정의합니다",
+        "title": "카드 없음"
       },
-      "emptyDescription": "템플릿은 이 에이전트가 구조화된 결과(호텔, 이메일, 제품 등)를 표시하는 방식을 정의합니다",
+      "emptyDescription": "카드는 이 에이전트가 구조화된 결과(호텔, 이메일, 제품 등)를 표시하는 방식을 정의합니다",
       "emptyHint": "시작하려면 하나 만드세요.",
-      "emptyLabel": "아직 템플릿이 없습니다",
+      "emptyLabel": "아직 카드가 없습니다",
       "errors": {
-        "loadFailed": "템플릿 로드 실패",
+        "loadFailed": "카드 로드 실패",
         "previewFailed": "미리보기 생성 실패"
       },
       "field": {
@@ -39758,26 +39758,26 @@ export const resources = {
       "fields_other": "필드 {{count}}개",
       "filterAll_one": "전체 ({{count}})",
       "filterAll_other": "전체 ({{count}})",
-      "gallery": "템플릿 갤러리",
+      "gallery": "카드 갤러리",
       "hidePreview": "카드 미리보기 숨기기",
       "highlightColor": "강조 색상",
-      "loading": "템플릿 불러오는 중…",
-      "name": "템플릿 이름",
-      "nameHint": "snake_case를 사용하세요. API 호출에서 템플릿을 식별하는 데 사용됩니다.",
-      "new": "새 템플릿",
-      "newTitle": "새 템플릿",
+      "loading": "카드 불러오는 중…",
+      "name": "카드 이름",
+      "nameHint": "snake_case를 사용하세요. API 호출에서 카드를 식별하는 데 사용됩니다.",
+      "new": "새 카드",
+      "newTitle": "새 카드",
       "noFields": "아직 정의된 필드가 없습니다. 시작하려면 하나 추가하세요.",
-      "noMatches": "일치하는 템플릿이 없습니다.",
-      "noSampleData": "이 템플릿에는 샘플 데이터가 없습니다. 아래의 렌더링된 HTML은 그와 상관없이 서버의 미리보기 파이프라인을 사용합니다.",
+      "noMatches": "일치하는 카드가 없습니다.",
+      "noSampleData": "이 카드에는 샘플 데이터가 없습니다. 아래의 렌더링된 HTML은 그와 상관없이 서버의 미리보기 파이프라인을 사용합니다.",
       "noSampleDataShort": "샘플 데이터 없음 — 미리보기를 보려면 sampleData를 추가하세요",
-      "notFound": "템플릿을 찾을 수 없습니다",
+      "notFound": "카드를 찾을 수 없습니다",
       "previewFailed": "미리보기 생성 실패",
       "previewLabel": "대화에 전달되는 카드",
       "rawJson": "원본 JSON",
       "removeField": "필드 제거",
       "removeFromAgent": "에이전트에서 제거",
       "renderedHtml": "렌더링된 HTML",
-      "resizeList": "템플릿 목록 크기 조정",
+      "resizeList": "카드 목록 크기 조정",
       "resultType": {
         "event": "이벤트",
         "flight": "항공편",
@@ -39801,7 +39801,7 @@ export const resources = {
       "sampleData": "샘플 데이터",
       "sampleTitle": "샘플 {{type}}",
       "saveChanges": "변경 사항 저장",
-      "searchPlaceholder": "템플릿 검색...",
+      "searchPlaceholder": "카드 검색...",
       "sections": {
         "cardPreview": "카드 미리보기",
         "details": "세부 정보",
@@ -39809,14 +39809,14 @@ export const resources = {
         "rawJson": "원본 JSON",
         "renderedHtml": "렌더링된 HTML"
       },
-      "select": "템플릿을 선택하세요",
+      "select": "카드를 선택하세요",
       "selectHint": "왼쪽에서 하나를 선택하면 미리보기, 필드, 원본 JSON을 볼 수 있습니다.",
-      "selectTemplate": "템플릿을 선택하세요",
-      "selectToPreview": "미리보려면 템플릿을 선택하세요",
-      "setNameForPreview": "미리보기를 생성하려면 위에 템플릿 이름을 입력하세요.",
-      "setNameHint": "미리보기를 생성하려면 위에 템플릿 이름을 입력하세요.",
+      "selectTemplate": "카드를 선택하세요",
+      "selectToPreview": "미리보려면 카드를 선택하세요",
+      "setNameForPreview": "미리보기를 생성하려면 위에 카드 이름을 입력하세요.",
+      "setNameHint": "미리보기를 생성하려면 위에 카드 이름을 입력하세요.",
       "showPreview": "카드 미리보기 표시",
-      "template": "템플릿"
+      "template": "카드"
     }
   },
   "it": {
@@ -41402,9 +41402,9 @@ export const resources = {
       "tasksPerMonth_one": "{{count}} attività/mese",
       "tasksPerMonth_other": "{{count}} attività/mese",
       "templates": {
-        "addFailed": "Impossibile aggiungere il template",
-        "assignedTemplatesHeader": "Template Assegnati",
-        "removeFailed": "Impossibile rimuovere il template"
+        "addFailed": "Impossibile aggiungere la scheda",
+        "assignedTemplatesHeader": "Schede assegnate",
+        "removeFailed": "Impossibile rimuovere la scheda"
       },
       "thisAgent": "questo agente",
       "tones": {
@@ -44655,11 +44655,11 @@ export const resources = {
       "workRoom": "Stanza di lavoro"
     },
     "templates": {
-      "add": "Aggiungi modello",
+      "add": "Aggiungi scheda",
       "addField": "Aggiungi campo",
-      "addTemplate": "Aggiungi modello",
+      "addTemplate": "Aggiungi scheda",
       "addToAgent": "Aggiungi all'agente",
-      "allAssigned": "Tutti i modelli disponibili sono già assegnati.",
+      "allAssigned": "Tutte le schede disponibili sono già assegnate.",
       "assigned": "Assegnato",
       "cardPreview": "Anteprima scheda",
       "colors": {
@@ -44668,14 +44668,14 @@ export const resources = {
         "red": "Rosso",
         "yellow": "Giallo"
       },
-      "copyId": "Copia ID modello",
-      "count_one": "{{count}} modello",
-      "count_other": "{{count}} modelli",
-      "create": "Crea modello",
-      "createTemplate": "Crea modello",
-      "createTooltip": "Crea modello",
-      "deleteConfirm": "Eliminare il modello \"{{name}}\"? Questa azione non può essere annullata.",
-      "descriptionPlaceholder": "Cosa mostra questo modello?",
+      "copyId": "Copia ID scheda",
+      "count_one": "{{count}} scheda",
+      "count_other": "{{count}} schede",
+      "create": "Crea scheda",
+      "createTemplate": "Crea scheda",
+      "createTooltip": "Crea scheda",
+      "deleteConfirm": "Eliminare la scheda \"{{name}}\"? Questa azione non può essere annullata.",
+      "descriptionPlaceholder": "Cosa mostra questa scheda?",
       "details": {
         "nonstop": "Diretto",
         "stops_one": "{{count}} scalo",
@@ -44693,14 +44693,14 @@ export const resources = {
       },
       "docs": "Documentazione",
       "empty": {
-        "subtitle": "I modelli della piattaforma definiscono come gli agenti presentano i risultati",
-        "title": "Nessun modello"
+        "subtitle": "Le schede della piattaforma definiscono come gli agenti presentano i risultati",
+        "title": "Nessuna scheda"
       },
-      "emptyDescription": "I modelli definiscono come questo agente formatta i risultati strutturati (hotel, email, prodotti, ecc.)",
-      "emptyHint": "Creane uno per iniziare.",
-      "emptyLabel": "Ancora nessun modello",
+      "emptyDescription": "Le schede definiscono come questo agente formatta i risultati strutturati (hotel, email, prodotti, ecc.)",
+      "emptyHint": "Creane una per iniziare.",
+      "emptyLabel": "Ancora nessuna scheda",
       "errors": {
-        "loadFailed": "Impossibile caricare i modelli",
+        "loadFailed": "Impossibile caricare le schede",
         "previewFailed": "Impossibile generare l'anteprima"
       },
       "field": {
@@ -44732,26 +44732,26 @@ export const resources = {
       "fields_other": "{{count}} campi",
       "filterAll_one": "Tutti ({{count}})",
       "filterAll_other": "Tutti ({{count}})",
-      "gallery": "Galleria modelli",
+      "gallery": "Galleria schede",
       "hidePreview": "Nascondi anteprima scheda",
       "highlightColor": "Colore evidenziazione",
-      "loading": "Caricamento dei modelli…",
-      "name": "Nome modello",
-      "nameHint": "Usa snake_case. Identifica il modello nelle chiamate API.",
-      "new": "Nuovo modello",
-      "newTitle": "Nuovo modello",
+      "loading": "Caricamento delle schede…",
+      "name": "Nome scheda",
+      "nameHint": "Usa snake_case. Identifica la scheda nelle chiamate API.",
+      "new": "Nuova scheda",
+      "newTitle": "Nuova scheda",
       "noFields": "Nessun campo ancora definito. Aggiungine uno per iniziare.",
-      "noMatches": "Nessun modello corrispondente.",
-      "noSampleData": "Nessun dato di esempio su questo modello. L'HTML renderizzato più sotto usa comunque la pipeline di anteprima del server.",
+      "noMatches": "Nessuna scheda corrispondente.",
+      "noSampleData": "Nessun dato di esempio su questa scheda. L'HTML renderizzato più sotto usa comunque la pipeline di anteprima del server.",
       "noSampleDataShort": "Nessun dato di esempio — aggiungi sampleData per vedere un'anteprima",
-      "notFound": "Modello non trovato",
+      "notFound": "Scheda non trovata",
       "previewFailed": "Impossibile generare l'anteprima",
       "previewLabel": "Scheda come consegnata alla conversazione",
       "rawJson": "JSON grezzo",
       "removeField": "Rimuovi campo",
       "removeFromAgent": "Rimuovi dall'agente",
       "renderedHtml": "HTML renderizzato",
-      "resizeList": "Ridimensiona elenco modelli",
+      "resizeList": "Ridimensiona elenco schede",
       "resultType": {
         "event": "Evento",
         "flight": "Volo",
@@ -44775,7 +44775,7 @@ export const resources = {
       "sampleData": "Dati di esempio",
       "sampleTitle": "Esempio {{type}}",
       "saveChanges": "Salva modifiche",
-      "searchPlaceholder": "Cerca modelli...",
+      "searchPlaceholder": "Cerca schede...",
       "sections": {
         "cardPreview": "Anteprima scheda",
         "details": "Dettagli",
@@ -44783,14 +44783,14 @@ export const resources = {
         "rawJson": "JSON grezzo",
         "renderedHtml": "HTML renderizzato"
       },
-      "select": "Seleziona un modello",
-      "selectHint": "Scegline uno a sinistra per vedere l'anteprima, i campi e il JSON grezzo.",
-      "selectTemplate": "Seleziona un modello",
-      "selectToPreview": "Seleziona un modello per l'anteprima",
-      "setNameForPreview": "Imposta un nome modello sopra per generare un'anteprima.",
-      "setNameHint": "Imposta un nome modello sopra per generare un'anteprima.",
+      "select": "Seleziona una scheda",
+      "selectHint": "Scegline una a sinistra per vedere l'anteprima, i campi e il JSON grezzo.",
+      "selectTemplate": "Seleziona una scheda",
+      "selectToPreview": "Seleziona una scheda per l'anteprima",
+      "setNameForPreview": "Imposta un nome scheda sopra per generare un'anteprima.",
+      "setNameHint": "Imposta un nome scheda sopra per generare un'anteprima.",
       "showPreview": "Mostra anteprima scheda",
-      "template": "Modello"
+      "template": "Scheda"
     }
   },
   "hi": {
@@ -46376,9 +46376,9 @@ export const resources = {
       "tasksPerMonth_one": "{{count}} कार्य/माह",
       "tasksPerMonth_other": "{{count}} कार्य/माह",
       "templates": {
-        "addFailed": "टेम्पलेट जोड़ने में विफल",
-        "assignedTemplatesHeader": "असाइन किए गए टेम्पलेट्स",
-        "removeFailed": "टेम्पलेट हटाने में विफल"
+        "addFailed": "कार्ड जोड़ने में विफल",
+        "assignedTemplatesHeader": "असाइन किए गए कार्ड",
+        "removeFailed": "कार्ड हटाने में विफल"
       },
       "thisAgent": "यह एजेंट",
       "tones": {
@@ -49629,11 +49629,11 @@ export const resources = {
       "workRoom": "वर्क रूम"
     },
     "templates": {
-      "add": "टेम्पलेट जोड़ें",
+      "add": "कार्ड जोड़ें",
       "addField": "फ़ील्ड जोड़ें",
-      "addTemplate": "टेम्पलेट जोड़ें",
+      "addTemplate": "कार्ड जोड़ें",
       "addToAgent": "एजेंट में जोड़ें",
-      "allAssigned": "सभी उपलब्ध टेम्पलेट पहले से असाइन किए जा चुके हैं।",
+      "allAssigned": "सभी उपलब्ध कार्ड पहले से असाइन किए जा चुके हैं।",
       "assigned": "असाइन किया गया",
       "cardPreview": "कार्ड पूर्वावलोकन",
       "colors": {
@@ -49642,14 +49642,14 @@ export const resources = {
         "red": "लाल",
         "yellow": "पीला"
       },
-      "copyId": "टेम्पलेट ID कॉपी करें",
-      "count_one": "{{count}} टेम्पलेट",
-      "count_other": "{{count}} टेम्पलेट",
-      "create": "टेम्पलेट बनाएँ",
-      "createTemplate": "टेम्पलेट बनाएँ",
-      "createTooltip": "टेम्पलेट बनाएँ",
-      "deleteConfirm": "टेम्पलेट \"{{name}}\" हटाएँ? इसे पूर्ववत नहीं किया जा सकता।",
-      "descriptionPlaceholder": "यह टेम्पलेट क्या प्रदर्शित करता है?",
+      "copyId": "कार्ड ID कॉपी करें",
+      "count_one": "{{count}} कार्ड",
+      "count_other": "{{count}} कार्ड",
+      "create": "कार्ड बनाएँ",
+      "createTemplate": "कार्ड बनाएँ",
+      "createTooltip": "कार्ड बनाएँ",
+      "deleteConfirm": "कार्ड \"{{name}}\" हटाएँ? इसे पूर्ववत नहीं किया जा सकता।",
+      "descriptionPlaceholder": "यह कार्ड क्या प्रदर्शित करता है?",
       "details": {
         "nonstop": "नॉनस्टॉप",
         "stops_one": "{{count}} स्टॉप",
@@ -49667,14 +49667,14 @@ export const resources = {
       },
       "docs": "दस्तावेज़",
       "empty": {
-        "subtitle": "प्लेटफ़ॉर्म टेम्पलेट तय करते हैं कि एजेंट परिणाम कैसे प्रस्तुत करें",
-        "title": "कोई टेम्पलेट नहीं"
+        "subtitle": "प्लेटफ़ॉर्म कार्ड तय करते हैं कि एजेंट परिणाम कैसे प्रस्तुत करें",
+        "title": "कोई कार्ड नहीं"
       },
-      "emptyDescription": "टेम्पलेट तय करते हैं कि यह एजेंट संरचित परिणामों (होटल, ईमेल, उत्पाद, आदि) को कैसे फ़ॉर्मेट करे",
+      "emptyDescription": "कार्ड तय करते हैं कि यह एजेंट संरचित परिणामों (होटल, ईमेल, उत्पाद, आदि) को कैसे फ़ॉर्मेट करे",
       "emptyHint": "शुरू करने के लिए एक बनाएँ।",
-      "emptyLabel": "अभी तक कोई टेम्पलेट नहीं",
+      "emptyLabel": "अभी तक कोई कार्ड नहीं",
       "errors": {
-        "loadFailed": "टेम्पलेट लोड करना विफल",
+        "loadFailed": "कार्ड लोड करना विफल",
         "previewFailed": "पूर्वावलोकन बनाना विफल"
       },
       "field": {
@@ -49706,26 +49706,26 @@ export const resources = {
       "fields_other": "{{count}} फ़ील्ड",
       "filterAll_one": "सभी ({{count}})",
       "filterAll_other": "सभी ({{count}})",
-      "gallery": "टेम्पलेट गैलरी",
+      "gallery": "कार्ड गैलरी",
       "hidePreview": "कार्ड पूर्वावलोकन छिपाएँ",
       "highlightColor": "हाइलाइट रंग",
-      "loading": "टेम्पलेट लोड हो रहे हैं…",
-      "name": "टेम्पलेट नाम",
-      "nameHint": "snake_case उपयोग करें। यह API कॉल में टेम्पलेट की पहचान करता है।",
-      "new": "नया टेम्पलेट",
-      "newTitle": "नया टेम्पलेट",
+      "loading": "कार्ड लोड हो रहे हैं…",
+      "name": "कार्ड नाम",
+      "nameHint": "snake_case उपयोग करें। यह API कॉल में कार्ड की पहचान करता है।",
+      "new": "नया कार्ड",
+      "newTitle": "नया कार्ड",
       "noFields": "अभी तक कोई फ़ील्ड परिभाषित नहीं। शुरू करने के लिए एक जोड़ें।",
-      "noMatches": "कोई मेल खाता टेम्पलेट नहीं।",
-      "noSampleData": "इस टेम्पलेट पर कोई सैंपल डेटा नहीं है। नीचे दिया गया रेंडर किया गया HTML फिर भी सर्वर की पूर्वावलोकन पाइपलाइन का उपयोग करता है।",
+      "noMatches": "कोई मेल खाता कार्ड नहीं।",
+      "noSampleData": "इस कार्ड पर कोई सैंपल डेटा नहीं है। नीचे दिया गया रेंडर किया गया HTML फिर भी सर्वर की पूर्वावलोकन पाइपलाइन का उपयोग करता है।",
       "noSampleDataShort": "कोई सैंपल डेटा नहीं — पूर्वावलोकन देखने के लिए sampleData जोड़ें",
-      "notFound": "टेम्पलेट नहीं मिला",
+      "notFound": "कार्ड नहीं मिला",
       "previewFailed": "पूर्वावलोकन बनाना विफल",
       "previewLabel": "बातचीत में भेजे गए अनुसार कार्ड",
       "rawJson": "रॉ JSON",
       "removeField": "फ़ील्ड हटाएँ",
       "removeFromAgent": "एजेंट से हटाएँ",
       "renderedHtml": "रेंडर किया गया HTML",
-      "resizeList": "टेम्पलेट सूची का आकार बदलें",
+      "resizeList": "कार्ड सूची का आकार बदलें",
       "resultType": {
         "event": "आयोजन",
         "flight": "फ़्लाइट",
@@ -49749,7 +49749,7 @@ export const resources = {
       "sampleData": "सैंपल डेटा",
       "sampleTitle": "सैंपल {{type}}",
       "saveChanges": "बदलाव सहेजें",
-      "searchPlaceholder": "टेम्पलेट खोजें...",
+      "searchPlaceholder": "कार्ड खोजें...",
       "sections": {
         "cardPreview": "कार्ड पूर्वावलोकन",
         "details": "विवरण",
@@ -49757,14 +49757,14 @@ export const resources = {
         "rawJson": "रॉ JSON",
         "renderedHtml": "रेंडर किया गया HTML"
       },
-      "select": "एक टेम्पलेट चुनें",
+      "select": "एक कार्ड चुनें",
       "selectHint": "इसका पूर्वावलोकन, फ़ील्ड और रॉ JSON देखने के लिए बाएँ से एक चुनें।",
-      "selectTemplate": "एक टेम्पलेट चुनें",
-      "selectToPreview": "पूर्वावलोकन के लिए एक टेम्पलेट चुनें",
-      "setNameForPreview": "पूर्वावलोकन बनाने के लिए ऊपर टेम्पलेट नाम सेट करें।",
-      "setNameHint": "पूर्वावलोकन बनाने के लिए ऊपर टेम्पलेट नाम सेट करें।",
+      "selectTemplate": "एक कार्ड चुनें",
+      "selectToPreview": "पूर्वावलोकन के लिए एक कार्ड चुनें",
+      "setNameForPreview": "पूर्वावलोकन बनाने के लिए ऊपर कार्ड नाम सेट करें।",
+      "setNameHint": "पूर्वावलोकन बनाने के लिए ऊपर कार्ड नाम सेट करें।",
       "showPreview": "कार्ड पूर्वावलोकन दिखाएँ",
-      "template": "टेम्पलेट"
+      "template": "कार्ड"
     }
   }
 } as const;
