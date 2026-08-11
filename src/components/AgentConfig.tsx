@@ -673,7 +673,9 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
         { value: "memory", label: t("memory:title"), icon: Brain, badge: badges.memory },
         {
           value: "templates",
-          label: t("nav:templates"),
+          // "Response Cards" — the shared feature name across all three
+          // clients; the rail is sized to fit it in every locale.
+          label: t("settings:manage.templates"),
           icon: LayoutTemplate,
           badge: templateCount,
         },
@@ -689,8 +691,11 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
             key: "sharing",
             name: t("sections.sharing"),
             sections: [
-              { value: "share", label: t("config.share.title"), icon: Share2 },
-              { value: "publish", label: t("publish.submit"), icon: Globe2 },
+              // Short section labels (not the panel titles / submit-button
+              // copy) — same keys web's rail uses, and "Im Verzeichnis
+              // veröffentlichen" would truncate here.
+              { value: "share", label: t("sections.share"), icon: Share2 },
+              { value: "publish", label: t("sections.publish"), icon: Globe2 },
             ],
           },
         ]
@@ -708,7 +713,7 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
   return (
     <div className="relative flex h-full">
       {/* Vertical section rail — labelled rows, grouped by category */}
-      <div className="w-48 border-r border-border bg-muted/30 flex flex-col flex-shrink-0">
+      <div className="w-56 border-r border-border bg-muted/30 flex flex-col flex-shrink-0">
         {/* Avatar lives in its own h-14 band with a bottom border so the
             divider lines up continuously with the content panel's
             AgentHeader divider — no offset across the seam. */}
@@ -747,7 +752,11 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                     )}
                   >
                     <section.icon className="w-4 h-4 flex-shrink-0" />
-                    <span className="truncate">{section.label}</span>
+                    {/* w-56 is the narrowest width at which no rail label
+                        truncates in any of the 10 locales (es/pt "Response
+                        Cards" are the longest); title is the safety net if a
+                        future label outgrows it. */}
+                    <span className="truncate" title={section.label}>{section.label}</span>
                     <RailBadge
                       badge={section.badge}
                       active={activeSection === section.value}

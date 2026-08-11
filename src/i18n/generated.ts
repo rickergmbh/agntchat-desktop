@@ -471,8 +471,8 @@ export const resources = {
             "title": "What is Soul.md?"
           },
           "templates": {
-            "message": "Response templates control how your agent presents its results — like a layout for the information it returns.\n\nFor example, a hotel template might show the property name, star rating, price, and amenities in a nice card. A flight template might show departure times, airlines, and layover info.\n\nWithout templates, your agent sends plain text. With them, results are displayed as rich, structured cards that are easy to read and act on.",
-            "title": "What are Response Templates?"
+            "message": "Response cards control how your agent presents its results — like a layout for the information it returns.\n\nFor example, a hotel card might show the property name, star rating, price, and amenities. A flight card might show departure times, airlines, and layover info.\n\nWithout cards, your agent sends plain text. With them, results are displayed as rich, structured layouts that are easy to read and act on.",
+            "title": "What are Response Cards?"
           }
         },
         "inputRequirements": "Input Requirements",
@@ -551,7 +551,7 @@ export const resources = {
         "providerDefault": "Provider default (Anthropic)",
         "removeCustomTone": "Remove custom tone",
         "removeSpecialty": "Remove {{name}}",
-        "responseTemplates": "Response Templates",
+        "responseTemplates": "Response Cards",
         "review": {
           "brain": "Brain",
           "computerUse": "Computer use",
@@ -687,9 +687,6 @@ export const resources = {
       },
       "disconnectConfirm": "Disconnect from this agent? You'll lose access.",
       "discover": {
-        "browse": "Browse the agent directory",
-        "featured_one": "{{count}} featured agent to explore",
-        "featured_other": "{{count}} featured agents to explore",
         "title": "Discover Agents"
       },
       "edit": {
@@ -1269,8 +1266,8 @@ export const resources = {
         "newRoutine": "New Routine",
         "nextRun": "Next: {{time}}",
         "noDaysSelected": "(no days selected)",
-        "noTemplate": "No template",
-        "noTemplatePlainText": "No template — plain text output",
+        "noTemplate": "No card",
+        "noTemplatePlainText": "No card — plain text output",
         "notScheduled": "Not scheduled",
         "orSendToAnother": "Or send to another conversation:",
         "otherWorkspace": "Other workspace",
@@ -1284,8 +1281,8 @@ export const resources = {
         "reportDefaultHint": "By default, this routine posts each run's result to your DM with {{name}}. Pick another conversation to send it somewhere else instead.",
         "reportDefaultOption": "Your DM with {{name}} (default)",
         "reportHint": "By default, this routine posts each run's result to your DM with {{agentName}}. Pick another conversation to send it somewhere else instead.",
-        "responseTemplate": "Response Template",
-        "responseTemplateOptional": "Response template (optional)",
+        "responseTemplate": "Response Card",
+        "responseTemplateOptional": "Response card (optional)",
         "runCount_one": "{{count}} run",
         "runCount_other": "{{count}} runs",
         "runEvery": "Run every",
@@ -1293,7 +1290,7 @@ export const resources = {
         "saveFailed": "Failed to save routine",
         "schedule": "Schedule",
         "switchToMyTimezone": "Switch to my current timezone ({{timezone}})",
-        "templateHint": "Agent will format output using this template's card layout",
+        "templateHint": "Agent will format output using this card's layout",
         "thisAgent": "this agent",
         "timeOfDay": "Time of day",
         "timeOfDayUtc": "Time of day (UTC)",
@@ -3390,7 +3387,7 @@ export const resources = {
       "settings": "Settings",
       "signOut": "Sign Out",
       "tasks": "Tasks",
-      "templates": "Templates"
+      "templates": "Response Cards"
     },
     "onboarding": {
       "cards": {
@@ -4256,8 +4253,8 @@ export const resources = {
         "friendsDescription": "Search people, respond to requests, and manage friends",
         "llmKeysDescription": "Anthropic, OpenAI, etc. — used by your agents",
         "semanticMemory": "Configure the OpenAI key that powers by-meaning memory recall",
-        "templates": "Response Templates",
-        "templatesDescription": "Create and manage templates for agent result presentation"
+        "templates": "Response Cards",
+        "templatesDescription": "Create and manage cards for agent result presentation"
       },
       "memory": {
         "activeStatus": "Active — agents recall memories by meaning",
@@ -5450,8 +5447,8 @@ export const resources = {
             "title": "¿Qué es Soul.md?"
           },
           "templates": {
-            "message": "Las plantillas de respuesta controlan cómo presenta tu agente sus resultados — como un diseño para la información que devuelve.\n\nPor ejemplo, una plantilla de hotel puede mostrar el nombre del alojamiento, las estrellas, el precio y los servicios en una tarjeta. Una plantilla de vuelos puede mostrar horas de salida, aerolíneas y escalas.\n\nSin plantillas, tu agente envía texto plano. Con ellas, los resultados se muestran como tarjetas estructuradas y fáciles de leer.",
-            "title": "¿Qué son las plantillas de respuesta?"
+            "message": "Las tarjetas de respuesta controlan cómo presenta tu agente sus resultados — como un diseño para la información que devuelve.\n\nPor ejemplo, una tarjeta de hotel puede mostrar el nombre del alojamiento, las estrellas, el precio y los servicios. Una tarjeta de vuelos puede mostrar horas de salida, aerolíneas y escalas.\n\nSin tarjetas, tu agente envía texto plano. Con ellas, los resultados se muestran de forma estructurada y fácil de leer.",
+            "title": "¿Qué son las tarjetas de respuesta?"
           }
         },
         "inputRequirements": "Requisitos de entrada",
@@ -5530,7 +5527,7 @@ export const resources = {
         "providerDefault": "Proveedor predeterminado (Anthropic)",
         "removeCustomTone": "Quitar el tono personalizado",
         "removeSpecialty": "Quitar {{name}}",
-        "responseTemplates": "Plantillas de respuesta",
+        "responseTemplates": "Tarjetas de respuesta",
         "review": {
           "brain": "Cerebro",
           "computerUse": "Uso del ordenador",
@@ -5666,9 +5663,6 @@ export const resources = {
       },
       "disconnectConfirm": "¿Desconectarte de este agente? Perderás el acceso.",
       "discover": {
-        "browse": "Explora el directorio de agentes",
-        "featured_one": "{{count}} agente destacado para explorar",
-        "featured_other": "{{count}} agentes destacados para explorar",
         "title": "Descubrir agentes"
       },
       "edit": {
@@ -6248,8 +6242,8 @@ export const resources = {
         "newRoutine": "Nueva rutina",
         "nextRun": "Próxima: {{time}}",
         "noDaysSelected": "(ningún día seleccionado)",
-        "noTemplate": "Sin plantilla",
-        "noTemplatePlainText": "Sin plantilla — salida de texto sin formato",
+        "noTemplate": "Sin tarjeta",
+        "noTemplatePlainText": "Sin tarjeta — salida de texto sin formato",
         "notScheduled": "Sin programar",
         "orSendToAnother": "O envíalo a otra conversación:",
         "otherWorkspace": "Otro espacio de trabajo",
@@ -6263,8 +6257,8 @@ export const resources = {
         "reportDefaultHint": "De forma predeterminada, esta rutina publica el resultado de cada ejecución en tu mensaje directo con {{name}}. Elige otra conversación para enviarlo a otro lugar.",
         "reportDefaultOption": "Tu mensaje directo con {{name}} (predeterminado)",
         "reportHint": "Por defecto, esta rutina publica el resultado de cada ejecución en tu chat directo con {{agentName}}. Elige otra conversación para enviarlo a otro lugar.",
-        "responseTemplate": "Plantilla de respuesta",
-        "responseTemplateOptional": "Plantilla de respuesta (opcional)",
+        "responseTemplate": "Tarjeta de respuesta",
+        "responseTemplateOptional": "Tarjeta de respuesta (opcional)",
         "runCount_one": "{{count}} ejecución",
         "runCount_other": "{{count}} ejecuciones",
         "runEvery": "Ejecutar cada",
@@ -6272,7 +6266,7 @@ export const resources = {
         "saveFailed": "No se pudo guardar la rutina",
         "schedule": "Programación",
         "switchToMyTimezone": "Cambiar a mi zona horaria actual ({{timezone}})",
-        "templateHint": "El agente dará formato al resultado con el diseño de tarjeta de esta plantilla",
+        "templateHint": "El agente dará formato al resultado con el diseño de esta tarjeta",
         "thisAgent": "este agente",
         "timeOfDay": "Hora del día",
         "timeOfDayUtc": "Hora del día (UTC)",
@@ -8369,7 +8363,7 @@ export const resources = {
       "settings": "Ajustes",
       "signOut": "Cerrar sesión",
       "tasks": "Tareas",
-      "templates": "Plantillas"
+      "templates": "Tarjetas de respuesta"
     },
     "onboarding": {
       "cards": {
@@ -9235,8 +9229,8 @@ export const resources = {
         "friendsDescription": "Busca personas, responde a solicitudes y gestiona tus amigos",
         "llmKeysDescription": "Anthropic, OpenAI, etc. — las usan tus agentes",
         "semanticMemory": "Configura la clave de OpenAI que permite el recuerdo de memoria por significado",
-        "templates": "Plantillas de respuesta",
-        "templatesDescription": "Crea y gestiona plantillas para la presentación de resultados de los agentes"
+        "templates": "Tarjetas de respuesta",
+        "templatesDescription": "Crea y gestiona tarjetas para la presentación de resultados de los agentes"
       },
       "memory": {
         "activeStatus": "Activo: los agentes recuerdan por significado",
@@ -10429,8 +10423,8 @@ export const resources = {
             "title": "Was ist Soul.md?"
           },
           "templates": {
-            "message": "Antwortvorlagen steuern, wie Ihr Agent seine Ergebnisse präsentiert — wie ein Layout für die zurückgegebenen Informationen.\n\nEine Hotelvorlage könnte beispielsweise den Namen der Unterkunft, die Sternebewertung, den Preis und die Ausstattung in einer schönen Karte anzeigen. Eine Flugvorlage könnte Abflugzeiten, Fluggesellschaften und Zwischenstoppinformationen anzeigen.\n\nOhne Vorlagen sendet Ihr Agent einfachen Text. Mit ihnen werden Ergebnisse als übersichtliche, strukturierte Karten angezeigt, die leicht zu lesen und umzusetzen sind.",
-            "title": "Was sind Antwortvorlagen?"
+            "message": "Antwortkarten steuern, wie Ihr Agent seine Ergebnisse präsentiert — wie ein Layout für die zurückgegebenen Informationen.\n\nEine Hotelkarte könnte beispielsweise den Namen der Unterkunft, die Sternebewertung, den Preis und die Ausstattung anzeigen. Eine Flugkarte könnte Abflugzeiten, Fluggesellschaften und Zwischenstoppinformationen anzeigen.\n\nOhne Karten sendet Ihr Agent einfachen Text. Mit ihnen werden Ergebnisse übersichtlich und strukturiert angezeigt, sodass sie leicht zu lesen und umzusetzen sind.",
+            "title": "Was sind Antwortkarten?"
           }
         },
         "inputRequirements": "Eingabeanforderungen",
@@ -10509,7 +10503,7 @@ export const resources = {
         "providerDefault": "Anbieter-Standard (Anthropic)",
         "removeCustomTone": "Benutzerdefinierten Tonfall entfernen",
         "removeSpecialty": "{{name}} entfernen",
-        "responseTemplates": "Antwortvorlagen",
+        "responseTemplates": "Antwortkarten",
         "review": {
           "brain": "Gehirn",
           "computerUse": "Computernutzung",
@@ -10645,9 +10639,6 @@ export const resources = {
       },
       "disconnectConfirm": "Verbindung zu diesem Agenten trennen? Sie verlieren den Zugriff.",
       "discover": {
-        "browse": "Agentenverzeichnis durchsuchen",
-        "featured_one": "{{count}} vorgestellter Agent zum Entdecken",
-        "featured_other": "{{count}} vorgestellte Agenten zum Entdecken",
         "title": "Agenten entdecken"
       },
       "edit": {
@@ -11227,8 +11218,8 @@ export const resources = {
         "newRoutine": "Neue Routine",
         "nextRun": "Nächste: {{time}}",
         "noDaysSelected": "(keine Tage ausgewählt)",
-        "noTemplate": "Keine Vorlage",
-        "noTemplatePlainText": "Keine Vorlage — reine Textausgabe",
+        "noTemplate": "Keine Karte",
+        "noTemplatePlainText": "Keine Karte — reine Textausgabe",
         "notScheduled": "Nicht geplant",
         "orSendToAnother": "Oder an eine andere Unterhaltung senden:",
         "otherWorkspace": "Anderer Arbeitsbereich",
@@ -11242,8 +11233,8 @@ export const resources = {
         "reportDefaultHint": "Standardmäßig postet diese Routine das Ergebnis jeder Ausführung in Ihre Direktnachricht mit {{name}}. Wählen Sie eine andere Unterhaltung, um es stattdessen anderswohin zu senden.",
         "reportDefaultOption": "Ihre Direktnachricht mit {{name}} (Standard)",
         "reportHint": "Standardmäßig postet diese Routine das Ergebnis jeder Ausführung in Ihre Direktnachricht mit {{agentName}}. Wählen Sie eine andere Unterhaltung, um es stattdessen anderswohin zu senden.",
-        "responseTemplate": "Antwortvorlage",
-        "responseTemplateOptional": "Antwortvorlage (optional)",
+        "responseTemplate": "Antwortkarte",
+        "responseTemplateOptional": "Antwortkarte (optional)",
         "runCount_one": "{{count}} Ausführung",
         "runCount_other": "{{count}} Ausführungen",
         "runEvery": "Ausführen alle",
@@ -11251,7 +11242,7 @@ export const resources = {
         "saveFailed": "Routine konnte nicht gespeichert werden",
         "schedule": "Zeitplan",
         "switchToMyTimezone": "Zu meiner aktuellen Zeitzone wechseln ({{timezone}})",
-        "templateHint": "Der Agent formatiert die Ausgabe im Kartenlayout dieser Vorlage",
+        "templateHint": "Der Agent formatiert die Ausgabe im Layout dieser Karte",
         "thisAgent": "diesen Agenten",
         "timeOfDay": "Tageszeit",
         "timeOfDayUtc": "Tageszeit (UTC)",
@@ -13348,7 +13339,7 @@ export const resources = {
       "settings": "Einstellungen",
       "signOut": "Abmelden",
       "tasks": "Aufgaben",
-      "templates": "Vorlagen"
+      "templates": "Antwortkarten"
     },
     "onboarding": {
       "cards": {
@@ -14214,8 +14205,8 @@ export const resources = {
         "friendsDescription": "Suchen Sie nach Personen, beantworten Sie Anfragen und verwalten Sie Freunde",
         "llmKeysDescription": "Anthropic, OpenAI usw. — verwendet von Ihren Agenten",
         "semanticMemory": "Konfiguriere den OpenAI-Schlüssel für die bedeutungsbasierte Erinnerung",
-        "templates": "Antwortvorlagen",
-        "templatesDescription": "Erstellen und verwalten Sie Vorlagen für die Ergebnisdarstellung der Agenten"
+        "templates": "Antwortkarten",
+        "templatesDescription": "Erstellen und verwalten Sie Karten für die Ergebnisdarstellung der Agenten"
       },
       "memory": {
         "activeStatus": "Aktiv – Agenten rufen Erinnerungen nach Bedeutung ab",
@@ -15408,8 +15399,8 @@ export const resources = {
             "title": "Qu'est-ce que le Soul.md ?"
           },
           "templates": {
-            "message": "Les modèles de réponse contrôlent la façon dont votre agent présente ses résultats — comme une mise en page pour les informations qu'il renvoie.\n\nPar exemple, un modèle d'hôtel pourrait afficher le nom de l'établissement, sa note, son prix et ses équipements dans une jolie carte. Un modèle de vol pourrait afficher les heures de départ, les compagnies aériennes et les informations d'escale.\n\nSans modèles, votre agent envoie du texte brut. Avec eux, les résultats s'affichent sous forme de cartes structurées et riches, faciles à lire et à exploiter.",
-            "title": "Que sont les modèles de réponse ?"
+            "message": "Les cartes de réponse contrôlent la façon dont votre agent présente ses résultats — comme une mise en page pour les informations qu'il renvoie.\n\nPar exemple, une carte d'hôtel pourrait afficher le nom de l'établissement, sa note, son prix et ses équipements. Une carte de vol pourrait afficher les heures de départ, les compagnies aériennes et les informations d'escale.\n\nSans cartes, votre agent envoie du texte brut. Avec elles, les résultats s'affichent de façon structurée et riche, faciles à lire et à exploiter.",
+            "title": "Que sont les cartes de réponse ?"
           }
         },
         "inputRequirements": "Exigences d'entrée",
@@ -15488,7 +15479,7 @@ export const resources = {
         "providerDefault": "Fournisseur par défaut (Anthropic)",
         "removeCustomTone": "Retirer le ton personnalisé",
         "removeSpecialty": "Retirer {{name}}",
-        "responseTemplates": "Modèles de réponse",
+        "responseTemplates": "Cartes de réponse",
         "review": {
           "brain": "Cerveau",
           "computerUse": "Utilisation de l'ordinateur",
@@ -15624,9 +15615,6 @@ export const resources = {
       },
       "disconnectConfirm": "Se déconnecter de cet agent ? Vous perdrez l'accès.",
       "discover": {
-        "browse": "Parcourir l'annuaire des agents",
-        "featured_one": "{{count}} agent en vedette à découvrir",
-        "featured_other": "{{count}} agents en vedette à découvrir",
         "title": "Découvrir des agents"
       },
       "edit": {
@@ -16206,8 +16194,8 @@ export const resources = {
         "newRoutine": "Nouvelle routine",
         "nextRun": "Prochaine : {{time}}",
         "noDaysSelected": "(aucun jour sélectionné)",
-        "noTemplate": "Aucun modèle",
-        "noTemplatePlainText": "Aucun modèle — sortie en texte brut",
+        "noTemplate": "Aucune carte",
+        "noTemplatePlainText": "Aucune carte — sortie en texte brut",
         "notScheduled": "Non planifié",
         "orSendToAnother": "Ou envoyer à une autre conversation :",
         "otherWorkspace": "Autre espace de travail",
@@ -16221,8 +16209,8 @@ export const resources = {
         "reportDefaultHint": "Par défaut, cette routine publie le résultat de chaque exécution dans votre message privé avec {{name}}. Choisissez une autre conversation pour l'envoyer ailleurs.",
         "reportDefaultOption": "Votre message privé avec {{name}} (par défaut)",
         "reportHint": "Par défaut, cette routine publie le résultat de chaque exécution dans votre message privé avec {{agentName}}. Choisissez une autre conversation pour l'envoyer ailleurs.",
-        "responseTemplate": "Modèle de réponse",
-        "responseTemplateOptional": "Modèle de réponse (facultatif)",
+        "responseTemplate": "Carte de réponse",
+        "responseTemplateOptional": "Carte de réponse (facultatif)",
         "runCount_one": "{{count}} exécution",
         "runCount_other": "{{count}} exécutions",
         "runEvery": "Exécuter toutes les",
@@ -16230,7 +16218,7 @@ export const resources = {
         "saveFailed": "Échec de l'enregistrement de la routine",
         "schedule": "Planification",
         "switchToMyTimezone": "Passer à mon fuseau horaire actuel ({{timezone}})",
-        "templateHint": "L'agent mettra en forme la sortie selon la mise en page de ce modèle",
+        "templateHint": "L'agent mettra en forme la sortie selon la mise en page de cette carte",
         "thisAgent": "cet agent",
         "timeOfDay": "Heure de la journée",
         "timeOfDayUtc": "Heure de la journée (UTC)",
@@ -18327,7 +18315,7 @@ export const resources = {
       "settings": "Paramètres",
       "signOut": "Se déconnecter",
       "tasks": "Tâches",
-      "templates": "Modèles"
+      "templates": "Cartes de réponse"
     },
     "onboarding": {
       "cards": {
@@ -19193,8 +19181,8 @@ export const resources = {
         "friendsDescription": "Recherchez des personnes, répondez aux demandes et gérez vos amis",
         "llmKeysDescription": "Anthropic, OpenAI, etc. — utilisées par vos agents",
         "semanticMemory": "Configurez la clé OpenAI qui permet le rappel de mémoire par sens",
-        "templates": "Modèles de réponse",
-        "templatesDescription": "Créez et gérez des modèles pour la présentation des résultats des agents"
+        "templates": "Cartes de réponse",
+        "templatesDescription": "Créez et gérez des cartes pour la présentation des résultats des agents"
       },
       "memory": {
         "activeStatus": "Actif : les agents se souviennent par le sens",
@@ -20387,8 +20375,8 @@ export const resources = {
             "title": "O que é o Soul.md?"
           },
           "templates": {
-            "message": "Os modelos de resposta controlam como seu agente apresenta seus resultados — como um layout para as informações que ele retorna.\n\nPor exemplo, um modelo de hotel pode mostrar o nome do estabelecimento, classificação por estrelas, preço e comodidades em um cartão bonito. Um modelo de voo pode mostrar horários de partida, companhias aéreas e informações de conexão.\n\nSem modelos, seu agente envia texto simples. Com eles, os resultados são exibidos como cartões estruturados e ricos, fáceis de ler e agir.",
-            "title": "O que são Modelos de Resposta?"
+            "message": "Os cartões de resposta controlam como seu agente apresenta seus resultados — como um layout para as informações que ele retorna.\n\nPor exemplo, um cartão de hotel pode mostrar o nome do estabelecimento, classificação por estrelas, preço e comodidades. Um cartão de voo pode mostrar horários de partida, companhias aéreas e informações de conexão.\n\nSem cartões, seu agente envia texto simples. Com eles, os resultados são exibidos de forma estruturada e rica, fáceis de ler e agir.",
+            "title": "O que são Cartões de Resposta?"
           }
         },
         "inputRequirements": "Requisitos de Entrada",
@@ -20467,7 +20455,7 @@ export const resources = {
         "providerDefault": "Padrão do provedor (Anthropic)",
         "removeCustomTone": "Remover tom personalizado",
         "removeSpecialty": "Remover {{name}}",
-        "responseTemplates": "Modelos de Resposta",
+        "responseTemplates": "Cartões de Resposta",
         "review": {
           "brain": "Cérebro",
           "computerUse": "Uso do computador",
@@ -20603,9 +20591,6 @@ export const resources = {
       },
       "disconnectConfirm": "Desconectar deste agente? Você perderá o acesso.",
       "discover": {
-        "browse": "Navegar pelo diretório de agentes",
-        "featured_one": "{{count}} agente em destaque para explorar",
-        "featured_other": "{{count}} agentes em destaque para explorar",
         "title": "Descobrir Agentes"
       },
       "edit": {
@@ -21185,8 +21170,8 @@ export const resources = {
         "newRoutine": "Nova Rotina",
         "nextRun": "Próxima: {{time}}",
         "noDaysSelected": "(nenhum dia selecionado)",
-        "noTemplate": "Sem modelo",
-        "noTemplatePlainText": "Sem modelo — saída em texto simples",
+        "noTemplate": "Sem cartão",
+        "noTemplatePlainText": "Sem cartão — saída em texto simples",
         "notScheduled": "Não agendado",
         "orSendToAnother": "Ou enviar para outra conversa:",
         "otherWorkspace": "Outro espaço de trabalho",
@@ -21200,8 +21185,8 @@ export const resources = {
         "reportDefaultHint": "Por padrão, esta rotina posta o resultado de cada execução na sua DM com {{name}}. Escolha outra conversa para enviá-lo a outro lugar.",
         "reportDefaultOption": "Sua DM com {{name}} (padrão)",
         "reportHint": "Por padrão, esta rotina posta o resultado de cada execução na sua DM com {{agentName}}. Escolha outra conversa para enviá-lo a outro lugar.",
-        "responseTemplate": "Modelo de Resposta",
-        "responseTemplateOptional": "Modelo de resposta (opcional)",
+        "responseTemplate": "Cartão de Resposta",
+        "responseTemplateOptional": "Cartão de resposta (opcional)",
         "runCount_one": "{{count}} execução",
         "runCount_other": "{{count}} execuções",
         "runEvery": "Executar a cada",
@@ -21209,7 +21194,7 @@ export const resources = {
         "saveFailed": "Falha ao salvar rotina",
         "schedule": "Agendamento",
         "switchToMyTimezone": "Mudar para o meu fuso horário atual ({{timezone}})",
-        "templateHint": "O agente formatará a saída usando o layout de cartão deste modelo",
+        "templateHint": "O agente formatará a saída usando o layout deste cartão",
         "thisAgent": "este agente",
         "timeOfDay": "Horário do dia",
         "timeOfDayUtc": "Horário do dia (UTC)",
@@ -23306,7 +23291,7 @@ export const resources = {
       "settings": "Configurações",
       "signOut": "Sair",
       "tasks": "Tarefas",
-      "templates": "Modelos"
+      "templates": "Cartões de resposta"
     },
     "onboarding": {
       "cards": {
@@ -24172,8 +24157,8 @@ export const resources = {
         "friendsDescription": "Pesquise pessoas, responda a solicitações e gerencie amigos",
         "llmKeysDescription": "Anthropic, OpenAI etc. — usados pelos seus agentes",
         "semanticMemory": "Configure a chave OpenAI que ativa a recuperação de memória por significado",
-        "templates": "Modelos de resposta",
-        "templatesDescription": "Crie e gerencie modelos para a apresentação de resultados dos agentes"
+        "templates": "Cartões de resposta",
+        "templatesDescription": "Crie e gerencie cartões para a apresentação de resultados dos agentes"
       },
       "memory": {
         "activeStatus": "Ativo — os agentes lembram por significado",
@@ -25366,8 +25351,8 @@ export const resources = {
             "title": "Soul.mdとは？"
           },
           "templates": {
-            "message": "レスポンステンプレートは、エージェントが結果をどのように提示するか — つまり返す情報のレイアウトを制御します。\n\n例えば、ホテル用テンプレートは物件名、星評価、価格、設備をカードで見やすく表示するかもしれません。フライト用テンプレートは出発時刻、航空会社、乗り継ぎ情報を表示するかもしれません。\n\nテンプレートがない場合、エージェントはプレーンテキストを送信します。テンプレートがあれば、結果は読みやすく操作しやすい、リッチで構造化されたカードとして表示されます。",
-            "title": "レスポンステンプレートとは？"
+            "message": "レスポンスカードは、エージェントが結果をどのように提示するか — つまり返す情報のレイアウトを制御します。\n\n例えば、ホテル用カードは物件名、星評価、価格、設備を見やすく表示するかもしれません。フライト用カードは出発時刻、航空会社、乗り継ぎ情報を表示するかもしれません。\n\nカードがない場合、エージェントはプレーンテキストを送信します。カードがあれば、結果は読みやすく操作しやすい、リッチで構造化された形式で表示されます。",
+            "title": "レスポンスカードとは？"
           }
         },
         "inputRequirements": "入力要件",
@@ -25446,7 +25431,7 @@ export const resources = {
         "providerDefault": "プロバイダーの既定値（Anthropic）",
         "removeCustomTone": "カスタムトーンを削除",
         "removeSpecialty": "{{name}}を削除",
-        "responseTemplates": "レスポンステンプレート",
+        "responseTemplates": "レスポンスカード",
         "review": {
           "brain": "頭脳",
           "computerUse": "コンピュータ操作",
@@ -25582,9 +25567,6 @@ export const resources = {
       },
       "disconnectConfirm": "このエージェントとの接続を解除しますか？アクセス権を失います。",
       "discover": {
-        "browse": "エージェントディレクトリを閲覧",
-        "featured_one": "注目のエージェント{{count}}件をチェック",
-        "featured_other": "注目のエージェント{{count}}件をチェック",
         "title": "エージェントを発見"
       },
       "edit": {
@@ -26164,8 +26146,8 @@ export const resources = {
         "newRoutine": "新しいルーティン",
         "nextRun": "次回：{{time}}",
         "noDaysSelected": "（曜日が選択されていません）",
-        "noTemplate": "テンプレートなし",
-        "noTemplatePlainText": "テンプレートなし — プレーンテキスト出力",
+        "noTemplate": "カードなし",
+        "noTemplatePlainText": "カードなし — プレーンテキスト出力",
         "notScheduled": "未スケジュール",
         "orSendToAnother": "または別の会話に送信：",
         "otherWorkspace": "別のワークスペース",
@@ -26179,8 +26161,8 @@ export const resources = {
         "reportDefaultHint": "既定では、このルーティンは各実行結果を{{name}}とのDMに投稿します。別の会話を選んで、代わりにそちらへ送信することもできます。",
         "reportDefaultOption": "{{name}}とのDM（既定）",
         "reportHint": "既定では、このルーティンは各実行結果を{{agentName}}とのDMに投稿します。別の会話を選んで、代わりにそちらへ送信することもできます。",
-        "responseTemplate": "レスポンステンプレート",
-        "responseTemplateOptional": "レスポンステンプレート（任意）",
+        "responseTemplate": "レスポンスカード",
+        "responseTemplateOptional": "レスポンスカード（任意）",
         "runCount_one": "{{count}}回実行",
         "runCount_other": "{{count}}回実行",
         "runEvery": "実行間隔",
@@ -26188,7 +26170,7 @@ export const resources = {
         "saveFailed": "ルーティンの保存に失敗しました",
         "schedule": "スケジュール",
         "switchToMyTimezone": "現在のタイムゾーン（{{timezone}}）に切り替える",
-        "templateHint": "エージェントはこのテンプレートのカードレイアウトで出力を整形します",
+        "templateHint": "エージェントはこのカードのレイアウトで出力を整形します",
         "thisAgent": "このエージェント",
         "timeOfDay": "時刻",
         "timeOfDayUtc": "時刻（UTC）",
@@ -28285,7 +28267,7 @@ export const resources = {
       "settings": "設定",
       "signOut": "ログアウト",
       "tasks": "タスク",
-      "templates": "テンプレート"
+      "templates": "レスポンスカード"
     },
     "onboarding": {
       "cards": {
@@ -29151,8 +29133,8 @@ export const resources = {
         "friendsDescription": "人を検索し、リクエストに応答し、フレンドを管理します",
         "llmKeysDescription": "Anthropic、OpenAIなど — エージェントが使用します",
         "semanticMemory": "意味ベースのメモリ想起を可能にする OpenAI キーを設定します",
-        "templates": "レスポンステンプレート",
-        "templatesDescription": "エージェントの結果表示用テンプレートを作成・管理します"
+        "templates": "レスポンスカード",
+        "templatesDescription": "エージェントの結果表示用カードを作成・管理します"
       },
       "memory": {
         "activeStatus": "有効 — エージェントが意味で記憶を思い出します",
@@ -30345,8 +30327,8 @@ export const resources = {
             "title": "什么是 Soul.md？"
           },
           "templates": {
-            "message": "响应模板控制智能体呈现结果的方式 — 相当于其返回信息的排版布局。\n\n例如，酒店模板可能会在一张精美的卡片中显示物业名称、星级、价格和设施。航班模板可能会显示出发时间、航空公司和中转信息。\n\n没有模板时，智能体只发送纯文本。使用模板后，结果会以丰富、结构化的卡片形式呈现，便于阅读和操作。",
-            "title": "什么是响应模板？"
+            "message": "响应卡片控制智能体呈现结果的方式 — 相当于其返回信息的排版布局。\n\n例如，酒店卡片可能会显示物业名称、星级、价格和设施。航班卡片可能会显示出发时间、航空公司和中转信息。\n\n没有卡片时，智能体只发送纯文本。使用卡片后，结果会以丰富、结构化的形式呈现，便于阅读和操作。",
+            "title": "什么是响应卡片？"
           }
         },
         "inputRequirements": "输入要求",
@@ -30425,7 +30407,7 @@ export const resources = {
         "providerDefault": "提供商默认值（Anthropic）",
         "removeCustomTone": "移除自定义语气",
         "removeSpecialty": "移除 {{name}}",
-        "responseTemplates": "响应模板",
+        "responseTemplates": "响应卡片",
         "review": {
           "brain": "大脑",
           "computerUse": "计算机使用",
@@ -30561,9 +30543,6 @@ export const resources = {
       },
       "disconnectConfirm": "断开与此智能体的连接？你将失去访问权限。",
       "discover": {
-        "browse": "浏览智能体目录",
-        "featured_one": "{{count}} 个精选智能体待探索",
-        "featured_other": "{{count}} 个精选智能体待探索",
         "title": "发现智能体"
       },
       "edit": {
@@ -31143,8 +31122,8 @@ export const resources = {
         "newRoutine": "新建例程",
         "nextRun": "下次：{{time}}",
         "noDaysSelected": "（未选择天数）",
-        "noTemplate": "无模板",
-        "noTemplatePlainText": "无模板 — 纯文本输出",
+        "noTemplate": "无卡片",
+        "noTemplatePlainText": "无卡片 — 纯文本输出",
         "notScheduled": "未安排计划",
         "orSendToAnother": "或发送到其他对话：",
         "otherWorkspace": "其他工作区",
@@ -31158,8 +31137,8 @@ export const resources = {
         "reportDefaultHint": "默认情况下，此例程会将每次运行的结果发布到您与 {{name}} 的私信中。您可以选择其他对话，将结果发送到别处。",
         "reportDefaultOption": "您与 {{name}} 的私信（默认）",
         "reportHint": "默认情况下，此例程会将每次运行的结果发布到您与 {{agentName}} 的私信中。您可以选择其他对话，将结果发送到别处。",
-        "responseTemplate": "响应模板",
-        "responseTemplateOptional": "响应模板（可选）",
+        "responseTemplate": "响应卡片",
+        "responseTemplateOptional": "响应卡片（可选）",
         "runCount_one": "{{count}} 次运行",
         "runCount_other": "{{count}} 次运行",
         "runEvery": "运行间隔",
@@ -31167,7 +31146,7 @@ export const resources = {
         "saveFailed": "保存例程失败",
         "schedule": "计划",
         "switchToMyTimezone": "切换到我当前的时区（{{timezone}}）",
-        "templateHint": "智能体将使用此模板的卡片布局来格式化输出",
+        "templateHint": "智能体将使用此卡片的布局来格式化输出",
         "thisAgent": "此智能体",
         "timeOfDay": "一天中的时间",
         "timeOfDayUtc": "一天中的时间（UTC）",
@@ -33264,7 +33243,7 @@ export const resources = {
       "settings": "设置",
       "signOut": "退出登录",
       "tasks": "任务",
-      "templates": "模板"
+      "templates": "响应卡片"
     },
     "onboarding": {
       "cards": {
@@ -34130,8 +34109,8 @@ export const resources = {
         "friendsDescription": "搜索用户、回应请求并管理好友",
         "llmKeysDescription": "Anthropic、OpenAI 等——供你的智能体使用",
         "semanticMemory": "配置用于按含义回忆记忆的 OpenAI 密钥",
-        "templates": "响应模板",
-        "templatesDescription": "创建和管理用于智能体结果展示的模板"
+        "templates": "响应卡片",
+        "templatesDescription": "创建和管理用于智能体结果展示的卡片"
       },
       "memory": {
         "activeStatus": "已启用——代理按含义回忆记忆",
@@ -35324,8 +35303,8 @@ export const resources = {
             "title": "Soul.md란 무엇인가요?"
           },
           "templates": {
-            "message": "응답 템플릿은 에이전트가 결과를 표시하는 방식 — 반환하는 정보의 레이아웃 — 을 제어합니다.\n\n예를 들어, 호텔 템플릿은 숙소 이름, 별점, 가격, 편의시설을 멋진 카드 형태로 보여줄 수 있습니다. 항공편 템플릿은 출발 시간, 항공사, 경유 정보를 보여줄 수 있습니다.\n\n템플릿이 없으면 에이전트는 일반 텍스트를 보냅니다. 템플릿이 있으면 결과가 읽고 실행하기 쉬운 풍부한 구조화된 카드로 표시됩니다.",
-            "title": "응답 템플릿이란 무엇인가요?"
+            "message": "응답 카드는 에이전트가 결과를 표시하는 방식 — 반환하는 정보의 레이아웃 — 을 제어합니다.\n\n예를 들어, 호텔 카드는 숙소 이름, 별점, 가격, 편의시설을 보여줄 수 있습니다. 항공편 카드는 출발 시간, 항공사, 경유 정보를 보여줄 수 있습니다.\n\n카드가 없으면 에이전트는 일반 텍스트를 보냅니다. 카드가 있으면 결과가 읽고 실행하기 쉬운 풍부한 구조로 표시됩니다.",
+            "title": "응답 카드란 무엇인가요?"
           }
         },
         "inputRequirements": "입력 요구사항",
@@ -35404,7 +35383,7 @@ export const resources = {
         "providerDefault": "제공업체 기본값(Anthropic)",
         "removeCustomTone": "사용자 지정 어조 제거",
         "removeSpecialty": "{{name}} 제거",
-        "responseTemplates": "응답 템플릿",
+        "responseTemplates": "응답 카드",
         "review": {
           "brain": "브레인",
           "computerUse": "컴퓨터 사용",
@@ -35540,9 +35519,6 @@ export const resources = {
       },
       "disconnectConfirm": "이 에이전트와 연결을 해제하시겠습니까? 접근 권한을 잃게 됩니다.",
       "discover": {
-        "browse": "에이전트 디렉토리 둘러보기",
-        "featured_one": "탐색할 추천 에이전트 {{count}}개",
-        "featured_other": "탐색할 추천 에이전트 {{count}}개",
         "title": "에이전트 둘러보기"
       },
       "edit": {
@@ -36122,8 +36098,8 @@ export const resources = {
         "newRoutine": "새 루틴",
         "nextRun": "다음: {{time}}",
         "noDaysSelected": "(선택된 요일 없음)",
-        "noTemplate": "템플릿 없음",
-        "noTemplatePlainText": "템플릿 없음 — 일반 텍스트 출력",
+        "noTemplate": "카드 없음",
+        "noTemplatePlainText": "카드 없음 — 일반 텍스트 출력",
         "notScheduled": "예약되지 않음",
         "orSendToAnother": "또는 다른 대화로 보내기:",
         "otherWorkspace": "다른 워크스페이스",
@@ -36137,8 +36113,8 @@ export const resources = {
         "reportDefaultHint": "기본적으로 이 루틴은 각 실행 결과를 {{name}}와(과)의 DM에 게시합니다. 다른 곳으로 보내려면 다른 대화를 선택하세요.",
         "reportDefaultOption": "{{name}}와(과)의 DM(기본값)",
         "reportHint": "기본적으로 이 루틴은 각 실행 결과를 {{agentName}}와(과)의 DM에 게시합니다. 다른 곳으로 보내려면 다른 대화를 선택하세요.",
-        "responseTemplate": "응답 템플릿",
-        "responseTemplateOptional": "응답 템플릿(선택 사항)",
+        "responseTemplate": "응답 카드",
+        "responseTemplateOptional": "응답 카드(선택 사항)",
         "runCount_one": "{{count}}회 실행",
         "runCount_other": "{{count}}회 실행",
         "runEvery": "실행 간격",
@@ -36146,7 +36122,7 @@ export const resources = {
         "saveFailed": "루틴 저장 실패",
         "schedule": "일정",
         "switchToMyTimezone": "현재 시간대로 전환({{timezone}})",
-        "templateHint": "에이전트가 이 템플릿의 카드 레이아웃을 사용해 출력을 형식화합니다",
+        "templateHint": "에이전트가 이 카드의 레이아웃을 사용해 출력을 형식화합니다",
         "thisAgent": "이 에이전트",
         "timeOfDay": "시간",
         "timeOfDayUtc": "시간(UTC)",
@@ -38243,7 +38219,7 @@ export const resources = {
       "settings": "설정",
       "signOut": "로그아웃",
       "tasks": "작업",
-      "templates": "템플릿"
+      "templates": "응답 카드"
     },
     "onboarding": {
       "cards": {
@@ -39109,8 +39085,8 @@ export const resources = {
         "friendsDescription": "사람 검색, 요청 응답, 친구 관리",
         "llmKeysDescription": "Anthropic, OpenAI 등 — 에이전트가 사용",
         "semanticMemory": "의미 기반 메모리 회상을 지원하는 OpenAI 키를 설정합니다",
-        "templates": "응답 템플릿",
-        "templatesDescription": "에이전트 결과 표시용 템플릿을 만들고 관리하세요"
+        "templates": "응답 카드",
+        "templatesDescription": "에이전트 결과 표시용 카드를 만들고 관리하세요"
       },
       "memory": {
         "activeStatus": "활성 — 에이전트가 의미로 기억을 떠올립니다",
@@ -40303,8 +40279,8 @@ export const resources = {
             "title": "Cos'è Soul.md?"
           },
           "templates": {
-            "message": "I modelli di risposta controllano come il tuo agente presenta i suoi risultati — come un layout per le informazioni che restituisce.\n\nAd esempio, un modello per hotel potrebbe mostrare il nome della struttura, la valutazione a stelle, il prezzo e i servizi in una bella scheda. Un modello per voli potrebbe mostrare orari di partenza, compagnie aeree e informazioni sugli scali.\n\nSenza modelli, il tuo agente invia testo semplice. Con essi, i risultati vengono visualizzati come schede ricche e strutturate, facili da leggere e su cui agire.",
-            "title": "Cosa sono i Modelli di Risposta?"
+            "message": "Le schede di risposta controllano come il tuo agente presenta i suoi risultati — come un layout per le informazioni che restituisce.\n\nAd esempio, una scheda per hotel potrebbe mostrare il nome della struttura, la valutazione a stelle, il prezzo e i servizi. Una scheda per voli potrebbe mostrare orari di partenza, compagnie aeree e informazioni sugli scali.\n\nSenza schede, il tuo agente invia testo semplice. Con esse, i risultati vengono visualizzati in modo ricco e strutturato, facili da leggere e su cui agire.",
+            "title": "Cosa sono le Schede di Risposta?"
           }
         },
         "inputRequirements": "Requisiti di input",
@@ -40383,7 +40359,7 @@ export const resources = {
         "providerDefault": "Provider predefinito (Anthropic)",
         "removeCustomTone": "Rimuovi tono personalizzato",
         "removeSpecialty": "Rimuovi {{name}}",
-        "responseTemplates": "Modelli di risposta",
+        "responseTemplates": "Schede di risposta",
         "review": {
           "brain": "Cervello",
           "computerUse": "Uso del computer",
@@ -40519,9 +40495,6 @@ export const resources = {
       },
       "disconnectConfirm": "Disconnettersi da questo agente? Perderai l'accesso.",
       "discover": {
-        "browse": "Sfoglia la directory degli agenti",
-        "featured_one": "{{count}} agente in evidenza da esplorare",
-        "featured_other": "{{count}} agenti in evidenza da esplorare",
         "title": "Scopri Agenti"
       },
       "edit": {
@@ -41101,8 +41074,8 @@ export const resources = {
         "newRoutine": "Nuova routine",
         "nextRun": "Prossima: {{time}}",
         "noDaysSelected": "(nessun giorno selezionato)",
-        "noTemplate": "Nessun modello",
-        "noTemplatePlainText": "Nessun modello — output in testo semplice",
+        "noTemplate": "Nessuna scheda",
+        "noTemplatePlainText": "Nessuna scheda — output in testo semplice",
         "notScheduled": "Non pianificato",
         "orSendToAnother": "Oppure invia a un'altra conversazione:",
         "otherWorkspace": "Altro spazio di lavoro",
@@ -41116,8 +41089,8 @@ export const resources = {
         "reportDefaultHint": "Per impostazione predefinita, questa routine pubblica il risultato di ogni esecuzione nel tuo DM con {{name}}. Scegli un'altra conversazione per inviarlo altrove.",
         "reportDefaultOption": "Il tuo DM con {{name}} (predefinito)",
         "reportHint": "Per impostazione predefinita, questa routine pubblica il risultato di ogni esecuzione nel tuo DM con {{agentName}}. Scegli un'altra conversazione per inviarlo altrove.",
-        "responseTemplate": "Modello di risposta",
-        "responseTemplateOptional": "Modello di risposta (opzionale)",
+        "responseTemplate": "Scheda di risposta",
+        "responseTemplateOptional": "Scheda di risposta (opzionale)",
         "runCount_one": "{{count}} esecuzione",
         "runCount_other": "{{count}} esecuzioni",
         "runEvery": "Esegui ogni",
@@ -41125,7 +41098,7 @@ export const resources = {
         "saveFailed": "Impossibile salvare la routine",
         "schedule": "Pianificazione",
         "switchToMyTimezone": "Passa al mio fuso orario attuale ({{timezone}})",
-        "templateHint": "L'agente formatterà l'output usando il layout a scheda di questo modello",
+        "templateHint": "L'agente formatterà l'output usando il layout di questa scheda",
         "thisAgent": "questo agente",
         "timeOfDay": "Ora del giorno",
         "timeOfDayUtc": "Ora del giorno (UTC)",
@@ -43222,7 +43195,7 @@ export const resources = {
       "settings": "Impostazioni",
       "signOut": "Esci",
       "tasks": "Attività",
-      "templates": "Modelli"
+      "templates": "Schede di risposta"
     },
     "onboarding": {
       "cards": {
@@ -44088,8 +44061,8 @@ export const resources = {
         "friendsDescription": "Cerca persone, rispondi alle richieste e gestisci gli amici",
         "llmKeysDescription": "Anthropic, OpenAI, ecc. — usate dai tuoi agenti",
         "semanticMemory": "Configura la chiave OpenAI che alimenta il richiamo della memoria per significato",
-        "templates": "Modelli di risposta",
-        "templatesDescription": "Crea e gestisci modelli per la presentazione dei risultati degli agenti"
+        "templates": "Schede di risposta",
+        "templatesDescription": "Crea e gestisci schede per la presentazione dei risultati degli agenti"
       },
       "memory": {
         "activeStatus": "Attivo: gli agenti richiamano i ricordi per significato",
@@ -45282,8 +45255,8 @@ export const resources = {
             "title": "Soul.md क्या है?"
           },
           "templates": {
-            "message": "रिस्पॉन्स टेम्पलेट नियंत्रित करते हैं कि आपका एजेंट अपने परिणाम कैसे प्रस्तुत करता है — यह उस जानकारी के लिए एक लेआउट जैसा है जो वह लौटाता है।\n\nउदाहरण के लिए, एक होटल टेम्पलेट प्रॉपर्टी का नाम, स्टार रेटिंग, कीमत और सुविधाओं को एक अच्छे कार्ड में दिखा सकता है। एक फ़्लाइट टेम्पलेट प्रस्थान समय, एयरलाइनों और लेओवर की जानकारी दिखा सकता है।\n\nटेम्पलेट के बिना, आपका एजेंट सादा टेक्स्ट भेजता है। इनके साथ, परिणाम समृद्ध, संरचित कार्ड के रूप में दिखाए जाते हैं जिन्हें पढ़ना और उन पर कार्रवाई करना आसान होता है।",
-            "title": "रिस्पॉन्स टेम्पलेट क्या हैं?"
+            "message": "रिस्पॉन्स कार्ड नियंत्रित करते हैं कि आपका एजेंट अपने परिणाम कैसे प्रस्तुत करता है — यह उस जानकारी के लिए एक लेआउट जैसा है जो वह लौटाता है।\n\nउदाहरण के लिए, एक होटल कार्ड प्रॉपर्टी का नाम, स्टार रेटिंग, कीमत और सुविधाएँ दिखा सकता है। एक फ़्लाइट कार्ड प्रस्थान समय, एयरलाइनों और लेओवर की जानकारी दिखा सकता है।\n\nकार्ड के बिना, आपका एजेंट सादा टेक्स्ट भेजता है। इनके साथ, परिणाम समृद्ध, संरचित रूप में दिखाए जाते हैं जिन्हें पढ़ना और उन पर कार्रवाई करना आसान होता है।",
+            "title": "रिस्पॉन्स कार्ड क्या हैं?"
           }
         },
         "inputRequirements": "इनपुट आवश्यकताएँ",
@@ -45362,7 +45335,7 @@ export const resources = {
         "providerDefault": "प्रोवाइडर डिफ़ॉल्ट (Anthropic)",
         "removeCustomTone": "कस्टम लहज़ा हटाएँ",
         "removeSpecialty": "{{name}} हटाएँ",
-        "responseTemplates": "रिस्पॉन्स टेम्पलेट",
+        "responseTemplates": "रिस्पॉन्स कार्ड",
         "review": {
           "brain": "ब्रेन",
           "computerUse": "कंप्यूटर उपयोग",
@@ -45498,9 +45471,6 @@ export const resources = {
       },
       "disconnectConfirm": "इस एजेंट से डिस्कनेक्ट करें? आप एक्सेस खो देंगे।",
       "discover": {
-        "browse": "एजेंट डायरेक्ट्री ब्राउज़ करें",
-        "featured_one": "खोजबीन के लिए {{count}} फ़ीचर्ड एजेंट",
-        "featured_other": "खोजबीन के लिए {{count}} फ़ीचर्ड एजेंट्स",
         "title": "एजेंट खोजें"
       },
       "edit": {
@@ -46080,8 +46050,8 @@ export const resources = {
         "newRoutine": "नया रूटीन",
         "nextRun": "अगला: {{time}}",
         "noDaysSelected": "(कोई दिन चयनित नहीं)",
-        "noTemplate": "कोई टेम्पलेट नहीं",
-        "noTemplatePlainText": "कोई टेम्पलेट नहीं — सादा टेक्स्ट आउटपुट",
+        "noTemplate": "कोई कार्ड नहीं",
+        "noTemplatePlainText": "कोई कार्ड नहीं — सादा टेक्स्ट आउटपुट",
         "notScheduled": "शेड्यूल नहीं किया गया",
         "orSendToAnother": "या किसी अन्य वार्तालाप में भेजें:",
         "otherWorkspace": "अन्य वर्कस्पेस",
@@ -46095,8 +46065,8 @@ export const resources = {
         "reportDefaultHint": "डिफ़ॉल्ट रूप से, यह रूटीन हर रन का परिणाम {{name}} के साथ आपके DM में पोस्ट करता है। इसे कहीं और भेजने के लिए कोई अन्य वार्तालाप चुनें।",
         "reportDefaultOption": "{{name}} के साथ आपका DM (डिफ़ॉल्ट)",
         "reportHint": "डिफ़ॉल्ट रूप से, यह रूटीन हर रन का परिणाम {{agentName}} के साथ आपके DM में पोस्ट करता है। इसे कहीं और भेजने के लिए कोई अन्य वार्तालाप चुनें।",
-        "responseTemplate": "रिस्पॉन्स टेम्पलेट",
-        "responseTemplateOptional": "रिस्पॉन्स टेम्पलेट (वैकल्पिक)",
+        "responseTemplate": "रिस्पॉन्स कार्ड",
+        "responseTemplateOptional": "रिस्पॉन्स कार्ड (वैकल्पिक)",
         "runCount_one": "{{count}} रन",
         "runCount_other": "{{count}} रन",
         "runEvery": "हर बार चलाएँ",
@@ -46104,7 +46074,7 @@ export const resources = {
         "saveFailed": "रूटीन सहेजना विफल",
         "schedule": "शेड्यूल",
         "switchToMyTimezone": "मेरे वर्तमान समय क्षेत्र पर स्विच करें ({{timezone}})",
-        "templateHint": "एजेंट इस टेम्पलेट के कार्ड लेआउट का उपयोग करके आउटपुट फ़ॉर्मेट करेगा",
+        "templateHint": "एजेंट इस कार्ड के लेआउट का उपयोग करके आउटपुट फ़ॉर्मेट करेगा",
         "thisAgent": "यह एजेंट",
         "timeOfDay": "दिन का समय",
         "timeOfDayUtc": "दिन का समय (UTC)",
@@ -48201,7 +48171,7 @@ export const resources = {
       "settings": "सेटिंग्स",
       "signOut": "साइन आउट",
       "tasks": "कार्य",
-      "templates": "टेम्पलेट"
+      "templates": "रिस्पॉन्स कार्ड"
     },
     "onboarding": {
       "cards": {
@@ -49067,8 +49037,8 @@ export const resources = {
         "friendsDescription": "लोगों को खोजें, अनुरोधों का जवाब दें और मित्रों को प्रबंधित करें",
         "llmKeysDescription": "Anthropic, OpenAI, आदि — आपके एजेंट द्वारा उपयोग किए जाते हैं",
         "semanticMemory": "अर्थ के आधार पर मेमोरी स्मरण सक्षम करने वाली OpenAI कुंजी कॉन्फ़िगर करें",
-        "templates": "प्रतिक्रिया टेम्पलेट",
-        "templatesDescription": "एजेंट परिणाम प्रस्तुति के लिए टेम्पलेट बनाएँ और प्रबंधित करें"
+        "templates": "रिस्पॉन्स कार्ड",
+        "templatesDescription": "एजेंट परिणाम प्रस्तुति के लिए कार्ड बनाएँ और प्रबंधित करें"
       },
       "memory": {
         "activeStatus": "सक्रिय — एजेंट अर्थ के आधार पर यादें याद करते हैं",
