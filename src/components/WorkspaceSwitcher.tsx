@@ -276,12 +276,15 @@ function ErrorBanner() {
 }
 
 /**
- * 36px rounded-square avatar tile. Avatar URL wins; otherwise renders
- * 1–2 initial characters derived from the workspace name. Personal
- * workspaces get a subtle user-icon corner so they're recognizable
+ * Fills its parent (which owns the size and the rounded clip). Avatar URL
+ * wins; otherwise renders 1–2 initial characters derived from the workspace
+ * name. Personal workspaces get a user icon instead so they're recognizable
  * when the user has multiple workspaces with similar names.
+ *
+ * Exported so anything picking a workspace (agent Visibility, …) shows the
+ * same tile the switcher does.
  */
-function WorkspaceAvatar({
+export function WorkspaceAvatar({
   name,
   avatarUrl,
   isPersonal,

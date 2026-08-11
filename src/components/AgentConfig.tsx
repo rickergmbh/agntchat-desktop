@@ -59,7 +59,6 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Select,
@@ -112,6 +111,7 @@ import {
   Laptop,
   Brain,
   MessageCircle,
+  ListChecks,
 } from "lucide-react";
 import {
   Dialog,
@@ -128,6 +128,7 @@ import { ModelOverrideField } from "./ModelOverrideField";
 import { AgentLoops } from "./AgentLoops";
 import { AvatarCropDialog } from "./AvatarCropDialog";
 import { AgentConfigTour, type TourRect } from "./AgentConfigTour";
+import { WorkspaceAvatar } from "./WorkspaceSwitcher";
 import { FTUE_KEYS, hasSeenTour, markTourSeen } from "../lib/ftue";
 
 // First-run orientation for the details pane. Each step spotlights one
@@ -189,6 +190,9 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
   // flag. When off, the Runtime panel is hidden entirely — hosting doesn't exist
   // for this user and agents run locally only.
   const orgHostsEnabled = useAuthStore((s) => s.participant?.features?.org_hosts === true);
+  // Workspace visibility only exists when workspaces do — the sidebar row and
+  // its panel are both gated on it.
+  const workspacesEnabled = useWorkspacesEnabled();
   // Last backend-sync failure for this agent. The connection/model is only
   // honored at spawn time if it persisted server-side, so a failed sync is a
   // silent footgun (the original Bedrock bug) — show it inline.
@@ -455,8 +459,9 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
 
   // Sidebar tabs grouped to mirror the mobile agent-detail screen's
   // section vocabulary (Profile / Model / Capabilities / Operations).
-  // Each group renders as an icon cluster separated from the next by
-  // a hairline divider — tooltips on each icon carry the full label.
+  // Each group renders as a cluster of labelled rows separated from the
+  // next by a hairline divider. Labels are always visible (no tooltips) —
+  // `group.name` only feeds the tour copy now.
   const sectionGroups: Array<{
     key: string;
     name: string;
@@ -468,6 +473,12 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
       sections: [
         { value: "profile", label: t("nav:profile"), icon: User },
         { value: "soul", label: t("soul.title"), icon: FileText },
+        // Workspace visibility stands on its own rather than sitting at the
+        // bottom of the profile form — it's a tenancy decision, not an
+        // identity field. Hidden entirely when workspaces are off.
+        ...(workspacesEnabled
+          ? [{ value: "visibility", label: t("visibility.label"), icon: Eye }]
+          : []),
       ],
     },
     {
@@ -513,90 +524,72 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
 
   return (
     <div className="relative flex h-full">
-      {/* Vertical icon sidebar */}
-      <TooltipProvider delay={300}>
-        <div className="w-12 border-r border-border bg-muted/30 flex flex-col items-center flex-shrink-0">
-          {/* Avatar lives in its own h-14 band with a bottom border so the
-              divider lines up continuously with the content panel's
-              AgentHeader divider — no offset across the seam. */}
-          <div className="h-14 shrink-0 flex items-center justify-center border-b border-border w-full">
-            <Avatar className="h-8 w-8 rounded-lg">
-              {agent.avatarUrl && <AvatarImage src={agent.avatarUrl} className="rounded-lg" />}
-              <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-xs font-semibold">
-                {agent.displayName.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-          </div>
+      {/* Vertical section rail — labelled rows, grouped by category */}
+      <div className="w-48 border-r border-border bg-muted/30 flex flex-col flex-shrink-0">
+        {/* Avatar lives in its own h-14 band with a bottom border so the
+            divider lines up continuously with the content panel's
+            AgentHeader divider — no offset across the seam. */}
+        <div className="h-14 shrink-0 flex items-center px-3 border-b border-border w-full">
+          <Avatar className="h-8 w-8 rounded-lg">
+            {agent.avatarUrl && <AvatarImage src={agent.avatarUrl} className="rounded-lg" />}
+            <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-xs font-semibold">
+              {agent.displayName.charAt(0).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+        </div>
 
-          <div className="flex flex-1 flex-col items-center gap-1 py-3">
+        {/* Scrolls on short windows — the capabilities group alone is seven
+            rows, so the rail can outgrow the viewport at text height. */}
+        <div className="flex flex-1 flex-col gap-1 py-3 px-2 overflow-y-auto">
           {sectionGroups.map((group, groupIdx) => (
-            <div key={group.key} className="flex flex-col items-center gap-1">
-              {/* The tour measures THIS inner wrapper — just the icon buttons —
+            <div key={group.key} className="flex flex-col gap-1">
+              {/* The tour measures THIS inner wrapper — just the buttons —
                   so the spotlight hugs them and doesn't extend down over the
                   group separator's margin below. */}
               <div
                 ref={(el) => {
                   groupRefs.current[group.key] = el;
                 }}
-                className="flex flex-col items-center gap-1"
+                className="flex flex-col gap-0.5"
               >
                 {group.sections.map((section) => (
-                  <Tooltip key={section.value}>
-                    <TooltipTrigger
-                      render={
-                        <button
-                          onClick={() => setActiveSection(section.value)}
-                          className={cn(
-                            "w-8 h-8 rounded-md flex items-center justify-center transition-colors",
-                            activeSection === section.value
-                              ? "bg-primary/10 text-primary"
-                              : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                          )}
-                        >
-                          <section.icon className="w-4 h-4" />
-                        </button>
-                      }
-                    />
-                    <TooltipContent side="right" className="text-xs">
-                      <div className="font-semibold">{section.label}</div>
-                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-0.5">
-                        {group.name}
-                      </div>
-                    </TooltipContent>
-                  </Tooltip>
+                  <button
+                    key={section.value}
+                    onClick={() => setActiveSection(section.value)}
+                    className={cn(
+                      "w-full flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm transition-colors",
+                      activeSection === section.value
+                        ? "bg-primary/10 text-primary font-medium"
+                        : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                    )}
+                  >
+                    <section.icon className="w-4 h-4 flex-shrink-0" />
+                    <span className="truncate">{section.label}</span>
+                  </button>
                 ))}
               </div>
-              {/* Hairline between groups so the categorization is
-                  visible without widening the sidebar. */}
+              {/* Hairline between groups so the categorization stays
+                  legible now that every row carries a label. */}
               {groupIdx < sectionGroups.length - 1 && (
-                <Separator className="w-6 my-1" />
+                <Separator className="my-1" />
               )}
             </div>
           ))}
 
           {/* Replay the first-run orientation tour on demand. Pinned to the
-              bottom of the rail so it never crowds the section icons. */}
-          <div className="mt-auto">
-            <Separator className="w-6 my-1" />
-            <Tooltip>
-              <TooltipTrigger
-                render={
-                  <button
-                    onClick={startTour}
-                    className="w-8 h-8 rounded-md flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                  >
-                    <HelpCircle className="w-4 h-4" />
-                  </button>
-                }
-              />
-              <TooltipContent side="right" className="text-xs">
-                <div className="font-semibold">{t("tour.replay")}</div>
-              </TooltipContent>
-            </Tooltip>
-          </div>
+              bottom of the rail so it never crowds the section rows. */}
+          <div className="mt-auto pt-1">
+            <Separator className="mb-1" />
+            <button
+              onClick={startTour}
+              className="w-full flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+            >
+              <HelpCircle className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate">{t("tour.replay")}</span>
+            </button>
           </div>
         </div>
-      </TooltipProvider>
+      </div>
 
       {/* First-run orientation overlay — spotlights each sidebar group. */}
       {tourStep !== null && (
@@ -1454,6 +1447,12 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
         {activeSection === "profile" && (
           <div className="flex-1 overflow-y-auto p-5 space-y-6">
             <ProfileSection agent={agent} />
+          </div>
+        )}
+
+        {workspacesEnabled && activeSection === "visibility" && (
+          <div className="flex-1 overflow-y-auto p-5 space-y-6">
+            <VisibilitySection agent={agent} />
           </div>
         )}
 
@@ -2989,6 +2988,8 @@ const AGENT_TYPES = ["worker", "orchestrator", "reviewer", "observer"] as const;
  * All workspaces.
  *
  * `value`: null = all workspaces; otherwise the pinned workspace ids.
+ *
+ * Rendered by VisibilitySection, which owns the title and the save.
  */
 function VisibilityField({
   value,
@@ -3020,59 +3021,215 @@ function VisibilityField({
     onChange(next.length === 0 ? null : next);
   };
 
+  const isAll = value === null;
+
+  // The two modes read as a choice, not a checkbox that disables a list —
+  // picking "Selected" seeds the set and reveals the workspace tiles.
+  const modes = [
+    {
+      all: true,
+      icon: Globe2,
+      title: t("visibility.all"),
+      hint: t("visibility.allHint"),
+    },
+    {
+      all: false,
+      icon: ListChecks,
+      title: t("visibility.selected"),
+      hint: t("visibility.selectedHint"),
+    },
+  ];
+
   return (
-    <div className="space-y-1.5 mt-4">
-      <Label className="text-xs">{t("visibility.label")}</Label>
-      <div className="space-y-1.5 rounded-lg border border-border p-2.5">
-        <label className="flex cursor-pointer items-center gap-2 text-xs font-medium">
-          <input
-            type="checkbox"
-            checked={value === null}
-            onChange={() =>
-              value === null
-                ? onChange(seed ? [seed.id] : [])
-                : onChange(null)
-            }
-            className="h-3.5 w-3.5 accent-primary"
-          />
-          {t("visibility.all")}
-        </label>
-        <div className="ml-5 space-y-1 border-l border-border pl-3">
-          {allWorkspaces.map((w) => (
-            <label
-              key={w.id}
+    <div className="space-y-3">
+      <div className="grid gap-2 sm:grid-cols-2">
+        {modes.map((mode) => {
+          const selected = mode.all === isAll;
+          return (
+            <button
+              key={String(mode.all)}
+              type="button"
+              aria-pressed={selected}
+              onClick={() => onChange(mode.all ? null : seed ? [seed.id] : [])}
               className={cn(
-                "flex items-center gap-2 text-xs",
-                value === null ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+                "flex flex-col gap-1.5 rounded-lg border p-3 text-left transition-colors",
+                selected
+                  ? "border-primary bg-primary/5"
+                  : "border-border hover:border-foreground/20 hover:bg-accent/50"
               )}
             >
-              <input
-                type="checkbox"
-                disabled={value === null}
-                checked={value !== null && value.includes(w.id)}
-                onChange={() => toggle(w.id)}
-                className="h-3.5 w-3.5 accent-primary"
+              <div className="flex items-center gap-2">
+                <mode.icon
+                  className={cn(
+                    "h-4 w-4 flex-shrink-0",
+                    selected ? "text-primary" : "text-muted-foreground"
+                  )}
+                />
+                <span
+                  className={cn(
+                    "text-xs font-medium",
+                    selected ? "text-primary" : "text-foreground"
+                  )}
+                >
+                  {mode.title}
+                </span>
+                {selected && <Check className="ml-auto h-3.5 w-3.5 flex-shrink-0 text-primary" />}
+              </div>
+              <p className="text-[11px] leading-snug text-muted-foreground">
+                {mode.hint}
+              </p>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Workspace tiles — only in Selected mode. Unchecking the last one
+          drops back to All (see toggle), which re-hides this grid. */}
+      {!isAll && (
+        <div className="grid gap-2 sm:grid-cols-2">
+          {allWorkspaces.map((w) => {
+            const checked = (value ?? []).includes(w.id);
+            return (
+              <WorkspaceChoice
+                key={w.id}
+                name={w.name}
+                avatarUrl={w.avatarUrl}
+                isPersonal={w.isPersonal}
+                sub={w.role ? t(`settings:workspace.roles.${w.role}`) : undefined}
+                checked={checked}
+                onToggle={() => toggle(w.id)}
               />
-              {w.name}
-            </label>
-          ))}
+            );
+          })}
+          {/* Pins to workspaces the owner has left — nameless, but shown so
+              they stay unpickable-by-accident rather than silently dropped. */}
           {orphanedIds.map((id) => (
-            <label key={id} className="flex cursor-pointer items-center gap-2 text-xs">
-              <input
-                type="checkbox"
-                checked
-                onChange={() => toggle(id)}
-                className="h-3.5 w-3.5 accent-primary"
-              />
-              {t("settings:workspace.fallbackName")}
-            </label>
+            <WorkspaceChoice
+              key={id}
+              name={t("settings:workspace.fallbackName")}
+              isPersonal={false}
+              checked
+              onToggle={() => toggle(id)}
+            />
           ))}
         </div>
-      </div>
-      <p className="text-[11px] text-muted-foreground">
-        {value === null ? t("visibility.allHint") : t("visibility.selectedHint")}
-      </p>
+      )}
     </div>
+  );
+}
+
+/** One selectable workspace tile in the Visibility picker. */
+function WorkspaceChoice({
+  name,
+  avatarUrl,
+  isPersonal,
+  sub,
+  checked,
+  onToggle,
+}: {
+  name: string;
+  avatarUrl?: string | null;
+  isPersonal: boolean;
+  sub?: string;
+  checked: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-pressed={checked}
+      onClick={onToggle}
+      className={cn(
+        "flex items-center gap-2.5 rounded-lg border p-2.5 text-left transition-colors",
+        checked
+          ? "border-primary bg-primary/5"
+          : "border-border hover:border-foreground/20 hover:bg-accent/50"
+      )}
+    >
+      <div className="h-8 w-8 flex-shrink-0 overflow-hidden rounded-lg">
+        <WorkspaceAvatar name={name} avatarUrl={avatarUrl} isPersonal={isPersonal} />
+      </div>
+      <div className="min-w-0 flex-1">
+        <div className="truncate text-xs font-medium">{name}</div>
+        {sub && <div className="truncate text-[11px] text-muted-foreground">{sub}</div>}
+      </div>
+      <span
+        className={cn(
+          "flex h-4 w-4 flex-shrink-0 items-center justify-center rounded border transition-colors",
+          checked ? "border-primary bg-primary text-primary-foreground" : "border-border"
+        )}
+      >
+        {checked && <Check className="h-3 w-3" />}
+      </span>
+    </button>
+  );
+}
+
+/**
+ * Standalone Visibility panel. The workspace pin set used to hang off the
+ * bottom of the profile form, where a tenancy decision read as one more
+ * identity field; it now saves on its own, independent of the profile.
+ */
+function VisibilitySection({ agent }: { agent: Agent }) {
+  const { t } = useTranslation("agents");
+  const { fetchAgents } = useAgentStore();
+  const [orgIds, setOrgIds] = useState<string[] | null>(
+    agent.organizationIds ?? null
+  );
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Order-insensitive comparison — the checklist can re-add ids in any order.
+  const visKey = (v: string[] | null) => (v === null ? "all" : [...v].sort().join(","));
+  const dirty = visKey(orgIds) !== visKey(agent.organizationIds ?? null);
+
+  // Re-seed when the agent payload refreshes (e.g. an edit from another
+  // window) so the checklist reflects current state.
+  useEffect(() => {
+    setOrgIds(agent.organizationIds ?? null);
+  }, [agent.organizationIds]);
+
+  const handleSave = useCallback(async () => {
+    setSaving(true);
+    setError(null);
+    try {
+      // Visibility is the only field this panel owns, so the patch carries
+      // organizationIds alone — nothing else can be clobbered.
+      await updateAgent(agent.id, { organizationIds: orgIds });
+      await fetchAgents();
+      setSaved(true);
+      setTimeout(() => setSaved(false), 1800);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t("visibility.saveFailed"));
+    } finally {
+      setSaving(false);
+    }
+  }, [agent.id, orgIds, fetchAgents, t]);
+
+  return (
+    <Section title={t("visibility.label")}>
+      <VisibilityField value={orgIds} onChange={setOrgIds} />
+
+      {error && <p className="text-xs text-destructive mt-2">{error}</p>}
+
+      <div className="flex items-center gap-2 mt-4">
+        <Button size="sm" onClick={handleSave} disabled={!dirty || saving}>
+          {saving ? (
+            <Loader2 className="w-3 h-3 animate-spin mr-1.5" />
+          ) : saved ? (
+            <Check className="w-3 h-3 mr-1.5" />
+          ) : null}
+          {saved ? t("common:saved") : t("common:save")}
+        </Button>
+        {dirty && !saving && (
+          // Shared save-bar copy — same string the profile panel uses.
+          <span className="text-[11px] text-muted-foreground">
+            {t("config.profile.unsavedChanges")}
+          </span>
+        )}
+      </div>
+    </Section>
   );
 }
 
@@ -3084,17 +3241,10 @@ function ProfileSection({
   const { t } = useTranslation("agents");
   const { fetchAgents } = useAgentStore();
   const limits = useFieldLimits();
-  const workspacesEnabled = useWorkspacesEnabled();
   const [name, setName] = useState(agent.displayName);
   const [desc, setDesc] = useState(agent.description ?? "");
   const [agentType, setAgentType] = useState(agent.agentType || "worker");
   const [caps, setCaps] = useState((agent.capabilities ?? []).join(", "));
-  // Visibility pin set: null = all workspaces (organizationIds null),
-  // otherwise the workspace ids the agent is pinned to. Any membership
-  // workspace is a valid target — see VisibilityField.
-  const [visibilityOrgIds, setVisibilityOrgIds] = useState<string[] | null>(
-    agent.organizationIds ?? null
-  );
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -3104,11 +3254,6 @@ function ProfileSection({
   // Read-only metadata (ID/owner/created) — collapsed by default to keep
   // the profile focused on editable fields.
   const [detailsOpen, setDetailsOpen] = useState(false);
-
-  // Order-insensitive comparison — the checklist can re-add ids in any order.
-  const visKey = (v: string[] | null) => (v === null ? "all" : [...v].sort().join(","));
-  const initialVisibilityOrgIds = agent.organizationIds ?? null;
-  const visibilityDirty = visKey(visibilityOrgIds) !== visKey(initialVisibilityOrgIds);
 
   const handleCopyId = useCallback(() => {
     navigator.clipboard.writeText(agent.id);
@@ -3123,21 +3268,18 @@ function ProfileSection({
     setDesc(agent.description ?? "");
     setAgentType(agent.agentType || "worker");
     setCaps((agent.capabilities ?? []).join(", "));
-    setVisibilityOrgIds(agent.organizationIds ?? null);
   }, [
     agent.displayName,
     agent.description,
     agent.agentType,
     agent.capabilities,
-    agent.organizationIds,
   ]);
 
   const dirty =
     name !== agent.displayName ||
     desc !== (agent.description ?? "") ||
     agentType !== (agent.agentType || "worker") ||
-    caps !== (agent.capabilities ?? []).join(", ") ||
-    visibilityDirty;
+    caps !== (agent.capabilities ?? []).join(", ");
 
   const handleSave = useCallback(async () => {
     const trimmedName = name.trim();
@@ -3154,18 +3296,13 @@ function ProfileSection({
         .filter(Boolean);
       const trimmedDesc = desc.trim();
 
-      // Only include organizationIds in the patch when the user actually
-      // changed visibility — a partial update must never clobber it.
-      const visibilityPatch = visibilityDirty
-        ? { organizationIds: visibilityOrgIds }
-        : {};
-
+      // organizationIds is deliberately absent — visibility saves from its
+      // own panel, and a partial update must never clobber it.
       await updateAgent(agent.id, {
         displayName: trimmedName,
         description: trimmedDesc || null,
         agentType,
         capabilities: trimmedCaps,
-        ...visibilityPatch,
       });
       await fetchAgents();
       setSaved(true);
@@ -3175,7 +3312,7 @@ function ProfileSection({
     } finally {
       setSaving(false);
     }
-  }, [agent.id, name, desc, agentType, caps, visibilityOrgIds, visibilityDirty, fetchAgents, t]);
+  }, [agent.id, name, desc, agentType, caps, fetchAgents, t]);
 
   const handleAvatarClick = () => {
     const input = document.createElement("input");
@@ -3308,10 +3445,6 @@ function ProfileSection({
             {t("config.profile.capabilitiesHint")}
           </p>
         </div>
-
-        {workspacesEnabled && (
-          <VisibilityField value={visibilityOrgIds} onChange={setVisibilityOrgIds} />
-        )}
 
         {error && (
           <p className="text-xs text-destructive mt-2">{error}</p>

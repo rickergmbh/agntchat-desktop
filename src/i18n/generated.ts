@@ -1720,6 +1720,7 @@ export const resources = {
         "label": "Visibility",
         "public": "Public",
         "saveFailed": "Failed to save visibility.",
+        "selected": "Selected workspaces",
         "selectedHint": "Only visible in the checked workspaces",
         "unlisted": "Unlisted (link only)"
       },
@@ -6698,6 +6699,7 @@ export const resources = {
         "label": "Visibilidad",
         "public": "Público",
         "saveFailed": "No se pudo guardar la visibilidad.",
+        "selected": "Espacios de trabajo seleccionados",
         "selectedHint": "Solo visible en los espacios de trabajo marcados",
         "unlisted": "No listado (solo con enlace)"
       },
@@ -11676,6 +11678,7 @@ export const resources = {
         "label": "Sichtbarkeit",
         "public": "Öffentlich",
         "saveFailed": "Sichtbarkeit konnte nicht gespeichert werden.",
+        "selected": "Ausgewählte Arbeitsbereiche",
         "selectedHint": "Nur in den markierten Arbeitsbereichen sichtbar",
         "unlisted": "Nicht gelistet (nur per Link)"
       },
@@ -16654,6 +16657,7 @@ export const resources = {
         "label": "Visibilité",
         "public": "Public",
         "saveFailed": "Échec de l'enregistrement de la visibilité.",
+        "selected": "Espaces de travail sélectionnés",
         "selectedHint": "Visible uniquement dans les espaces de travail cochés",
         "unlisted": "Non répertorié (lien uniquement)"
       },
@@ -21632,6 +21636,7 @@ export const resources = {
         "label": "Visibilidade",
         "public": "Público",
         "saveFailed": "Falha ao salvar a visibilidade.",
+        "selected": "Espaços de trabalho selecionados",
         "selectedHint": "Visível apenas nos espaços de trabalho marcados",
         "unlisted": "Não listado (somente link)"
       },
@@ -26610,6 +26615,7 @@ export const resources = {
         "label": "表示範囲",
         "public": "公開",
         "saveFailed": "表示範囲の保存に失敗しました。",
+        "selected": "選択したワークスペース",
         "selectedHint": "チェックしたワークスペースのみに表示されます",
         "unlisted": "非公開（リンクのみ）"
       },
@@ -31588,6 +31594,7 @@ export const resources = {
         "label": "可见范围",
         "public": "公开",
         "saveFailed": "保存可见范围失败。",
+        "selected": "选定的工作区",
         "selectedHint": "仅在勾选的工作区中可见",
         "unlisted": "不公开（仅链接可见）"
       },
@@ -36566,6 +36573,7 @@ export const resources = {
         "label": "표시 범위",
         "public": "공개",
         "saveFailed": "표시 범위 저장 실패.",
+        "selected": "선택한 워크스페이스",
         "selectedHint": "선택한 워크스페이스에서만 표시됩니다",
         "unlisted": "비공개(링크 전용)"
       },
@@ -41544,6 +41552,7 @@ export const resources = {
         "label": "Visibilità",
         "public": "Pubblico",
         "saveFailed": "Impossibile salvare la visibilità.",
+        "selected": "Spazi di lavoro selezionati",
         "selectedHint": "Visibile solo negli spazi di lavoro selezionati",
         "unlisted": "Non elencato (solo link)"
       },
@@ -46522,6 +46531,7 @@ export const resources = {
         "label": "दृश्यता",
         "public": "पब्लिक",
         "saveFailed": "दृश्यता सहेजना विफल।",
+        "selected": "चयनित वर्कस्पेस",
         "selectedHint": "केवल चिह्नित वर्कस्पेस में दिखाई देगा",
         "unlisted": "अनलिस्टेड (केवल लिंक से)"
       },
