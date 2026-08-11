@@ -251,21 +251,25 @@ export function AgentMemory({ agentId, agentName, onCount }: AgentMemoryProps) {
           Agent memories lead since they're the per-agent ones being edited. */}
       <Tabs defaultValue="agent" className="w-full">
         <TabsList>
+          {/* Counts are the FULL set, not the loaded page. Showing
+              `memories.length` here made a paged list look capped: an agent
+              with 231 memories read "(50)" until you scrolled down and hit
+              Load more. */}
           <TabsTrigger value="agent" className="gap-1.5">
             <Brain className="w-3.5 h-3.5" />
             {t("agentMemories")}
-            {agentMemories.length > 0 && (
+            {agentPage.total > 0 && (
               <span className="text-[10px] text-muted-foreground">
-                ({agentMemories.length})
+                ({agentPage.total})
               </span>
             )}
           </TabsTrigger>
           <TabsTrigger value="family" className="gap-1.5">
             <Users className="w-3.5 h-3.5" />
             {t("familyMemories")}
-            {familyMemories.length > 0 && (
+            {familyPage.total > 0 && (
               <span className="text-[10px] text-muted-foreground">
-                ({familyMemories.length})
+                ({familyPage.total})
               </span>
             )}
           </TabsTrigger>
