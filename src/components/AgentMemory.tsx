@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import {
   type Memory,
@@ -101,21 +101,22 @@ export function AgentMemory({ agentId, agentName }: AgentMemoryProps) {
   );
 
   const [agentMemories, setAgentMemories] = useState<Memory[]>([]);
-  const [allFamilyMemories, setAllFamilyMemories] = useState<FamilyMemory[]>([]);
+  const [familyMemories, setFamilyMemories] = useState<FamilyMemory[]>([]);
+  const [agentPage, setAgentPage] = useState({ total: 0, hasMore: false });
+  const [familyPage, setFamilyPage] = useState({ total: 0, hasMore: false });
+  const [loadingMore, setLoadingMore] = useState<"agent" | "family" | null>(null);
 
   // Workspace isolation: the manager shows the active workspace's view —
   // family-global rows plus rows scoped to the workspace you're standing in
   // (the same read rule agents get). Another workspace's memories are managed
   // by switching to that workspace; they never surface here.
-  const familyMemories = useMemo(
-    () =>
-      workspacesEnabled && activeWorkspace
-        ? allFamilyMemories.filter(
-            (m) => !m.organizationId || m.organizationId === activeWorkspace.id
-          )
-        : allFamilyMemories,
-    [allFamilyMemories, workspacesEnabled, activeWorkspace]
-  );
+  //
+  // The scope is applied SERVER-side. Filtering the page client-side instead
+  // would break paging: an offset page could consist entirely of another
+  // workspace's rows and render as empty, and the total would count rows this
+  // view can never show.
+  const familyScope =
+    workspacesEnabled && activeWorkspace ? activeWorkspace.id : null;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -132,16 +133,75 @@ export function AgentMemory({ agentId, agentName }: AgentMemoryProps) {
     try {
       const [agent, family] = await Promise.all([
         getAgentMemories(agentId),
-        getFamilyMemories(),
+        getFamilyMemories({ organizationId: familyScope }),
       ]);
       setAgentMemories(agent.memories || []);
-      setAllFamilyMemories(family.memories || []);
+      setFamilyMemories(family.memories || []);
+      setAgentPage({
+        total: agent.total ?? agent.memories?.length ?? 0,
+        hasMore: agent.hasMore ?? false,
+      });
+      setFamilyPage({
+        total: family.total ?? family.memories?.length ?? 0,
+        hasMore: family.hasMore ?? false,
+      });
     } catch (e) {
       setError(e instanceof Error ? e.message : t("errors.loadFailed"));
     } finally {
       setLoading(false);
     }
-  }, [agentId]);
+  }, [agentId, familyScope]);
+
+  // Both lists are ordered `updated_at DESC`, so an edit bumps a row to the
+  // front and shifts everything after it. Dedupe by id or the next offset page
+  // would re-deliver a row already on screen.
+  const appendUnique = <T extends { id: string }>(existing: T[], incoming: T[]): T[] => {
+    const seen = new Set(existing.map((m) => m.id));
+    return [...existing, ...incoming.filter((m) => !seen.has(m.id))];
+  };
+
+  const loadMoreAgent = useCallback(async () => {
+    if (loadingMore) return;
+    setLoadingMore("agent");
+    setError(null);
+    try {
+      const page = await getAgentMemories(agentId, { offset: agentMemories.length });
+      const merged = appendUnique(agentMemories, page.memories || []);
+      setAgentMemories(merged);
+      setAgentPage({
+        total: page.total ?? merged.length,
+        // Trust the server's flag, but stop if a page added nothing — a
+        // shifting window must not leave the button live with no way forward.
+        hasMore: (page.hasMore ?? false) && merged.length > agentMemories.length,
+      });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t("errors.loadFailed"));
+    } finally {
+      setLoadingMore(null);
+    }
+  }, [agentId, agentMemories, loadingMore, t]);
+
+  const loadMoreFamily = useCallback(async () => {
+    if (loadingMore) return;
+    setLoadingMore("family");
+    setError(null);
+    try {
+      const page = await getFamilyMemories({
+        offset: familyMemories.length,
+        organizationId: familyScope,
+      });
+      const merged = appendUnique(familyMemories, page.memories || []);
+      setFamilyMemories(merged);
+      setFamilyPage({
+        total: page.total ?? merged.length,
+        hasMore: (page.hasMore ?? false) && merged.length > familyMemories.length,
+      });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t("errors.loadFamilyFailed"));
+    } finally {
+      setLoadingMore(null);
+    }
+  }, [familyMemories, familyScope, loadingMore, t]);
 
   useEffect(() => {
     fetchAll();
@@ -200,6 +260,10 @@ export function AgentMemory({ agentId, agentName }: AgentMemoryProps) {
             title={t("agentMemories")}
             subtitle={t("agentSubtitle", { name: agentName || t("agents:thisAgent") })}
             memories={agentMemories}
+            total={agentPage.total}
+            hasMore={agentPage.hasMore}
+            loadingMore={loadingMore === "agent"}
+            onLoadMore={loadMoreAgent}
             emptyHint={t("emptyAgentHint")}
             onAdd={() => {
               setEditing(null);
@@ -223,6 +287,10 @@ export function AgentMemory({ agentId, agentName }: AgentMemoryProps) {
             shared
             scopeLabel={familyScopeLabel}
             memories={familyMemories}
+            total={familyPage.total}
+            hasMore={familyPage.hasMore}
+            loadingMore={loadingMore === "family"}
+            onLoadMore={loadMoreFamily}
             emptyHint={t("emptyFamilyHint")}
             onAdd={() => {
               setEditing(null);
@@ -264,6 +332,10 @@ function MemorySection({
   shared = false,
   scopeLabel,
   memories,
+  total,
+  hasMore,
+  loadingMore,
+  onLoadMore,
   emptyHint,
   onAdd,
   onEdit,
@@ -277,6 +349,13 @@ function MemorySection({
   // Family list only: resolves a row to its workspace badge text.
   scopeLabel?: (m: AnyMemory) => string | null;
   memories: AnyMemory[];
+  // Full size of the set behind `memories`, which is only the pages loaded so
+  // far. Before pagination this list silently stopped at the server's default
+  // of 50, stranding every older memory beyond review or deletion.
+  total: number;
+  hasMore: boolean;
+  loadingMore: boolean;
+  onLoadMore: () => void;
   emptyHint: string;
   onAdd: () => void;
   onEdit: (m: AnyMemory) => void;
@@ -342,6 +421,24 @@ function MemorySection({
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {(hasMore || memories.length < total) && (
+        <div className="flex flex-col items-center gap-2 pt-3">
+          <p className="text-xs text-muted-foreground">
+            {t("showingCount", { shown: memories.length, total })}
+          </p>
+          {hasMore && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onLoadMore}
+              disabled={loadingMore}
+            >
+              {loadingMore ? t("loading") : t("loadMore")}
+            </Button>
+          )}
         </div>
       )}
     </div>

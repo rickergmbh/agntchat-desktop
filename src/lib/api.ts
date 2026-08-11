@@ -1783,10 +1783,19 @@ export interface MemoryInput {
   organizationId?: string;
 }
 
+/** Paginated list envelope returned by both memory index endpoints. */
+export interface MemoryPage<T> {
+  memories: T[];
+  total: number;
+  hasMore: boolean;
+}
+
 export async function getAgentMemories(
-  agentId: string
-): Promise<{ memories: Memory[] }> {
-  return request(`/api/agents/${agentId}/memories`);
+  agentId: string,
+  opts: { offset?: number } = {}
+): Promise<MemoryPage<Memory>> {
+  const qs = opts.offset ? `?offset=${opts.offset}` : "";
+  return request(`/api/agents/${agentId}/memories${qs}`);
 }
 
 export async function createAgentMemory(
@@ -1824,11 +1833,20 @@ export async function deleteAgentMemory(
   });
 }
 
-export async function getFamilyMemories(): Promise<{
-  familyRootId: string;
-  memories: FamilyMemory[];
-}> {
-  return request("/api/family/memories");
+/**
+ * `organizationId` scopes the list server-side to family-global rows plus that
+ * workspace's rows. It must be sent rather than filtered client-side: with
+ * paging, a client-side filter can drop an entire fetched page and report a
+ * total that counts rows the user can't see.
+ */
+export async function getFamilyMemories(
+  opts: { offset?: number; organizationId?: string | null } = {}
+): Promise<MemoryPage<FamilyMemory> & { familyRootId: string }> {
+  const params = new URLSearchParams();
+  if (opts.offset) params.set("offset", String(opts.offset));
+  if (opts.organizationId) params.set("organizationId", opts.organizationId);
+  const qs = params.toString();
+  return request(`/api/family/memories${qs ? `?${qs}` : ""}`);
 }
 
 /**

@@ -1719,6 +1719,7 @@ export const resources = {
         "friendsOnly": "Friends only",
         "label": "Visibility",
         "public": "Public",
+        "saveFailed": "Failed to save visibility.",
         "selectedHint": "Only visible in the checked workspaces",
         "unlisted": "Unlisted (link only)"
       },
@@ -3320,6 +3321,7 @@ export const resources = {
         "titleNewFamily": "New Family Memory"
       },
       "keyDecisions": "Key Decisions",
+      "loadMore": "Load more",
       "loading": "Loading memories…",
       "messageCount_one": "{{count}} msg",
       "messageCount_other": "{{count}} msgs",
@@ -3348,6 +3350,7 @@ export const resources = {
         "summary": "Summary"
       },
       "sharedBadge": "Shared",
+      "showingCount": "Showing {{shown}} of {{total}}",
       "snapshot": {
         "title": "Memory Snapshot v{{version}}"
       },
@@ -6694,6 +6697,7 @@ export const resources = {
         "friendsOnly": "Solo amigos",
         "label": "Visibilidad",
         "public": "Público",
+        "saveFailed": "No se pudo guardar la visibilidad.",
         "selectedHint": "Solo visible en los espacios de trabajo marcados",
         "unlisted": "No listado (solo con enlace)"
       },
@@ -8295,6 +8299,7 @@ export const resources = {
         "titleNewFamily": "Nueva memoria familiar"
       },
       "keyDecisions": "Decisiones clave",
+      "loadMore": "Cargar más",
       "loading": "Cargando memorias…",
       "messageCount_one": "{{count}} msj.",
       "messageCount_other": "{{count}} msjs.",
@@ -8323,6 +8328,7 @@ export const resources = {
         "summary": "Resumen"
       },
       "sharedBadge": "Compartida",
+      "showingCount": "Mostrando {{shown}} de {{total}}",
       "snapshot": {
         "title": "Instantánea de memoria v{{version}}"
       },
@@ -11669,6 +11675,7 @@ export const resources = {
         "friendsOnly": "Nur Freunde",
         "label": "Sichtbarkeit",
         "public": "Öffentlich",
+        "saveFailed": "Sichtbarkeit konnte nicht gespeichert werden.",
         "selectedHint": "Nur in den markierten Arbeitsbereichen sichtbar",
         "unlisted": "Nicht gelistet (nur per Link)"
       },
@@ -13270,6 +13277,7 @@ export const resources = {
         "titleNewFamily": "Neue Familien-Erinnerung"
       },
       "keyDecisions": "Wichtige Entscheidungen",
+      "loadMore": "Mehr laden",
       "loading": "Erinnerungen werden geladen…",
       "messageCount_one": "{{count}} Nachricht",
       "messageCount_other": "{{count}} Nachrichten",
@@ -13298,6 +13306,7 @@ export const resources = {
         "summary": "Zusammenfassung"
       },
       "sharedBadge": "Geteilt",
+      "showingCount": "{{shown}} von {{total}} angezeigt",
       "snapshot": {
         "title": "Erinnerungs-Snapshot v{{version}}"
       },
@@ -16644,6 +16653,7 @@ export const resources = {
         "friendsOnly": "Amis uniquement",
         "label": "Visibilité",
         "public": "Public",
+        "saveFailed": "Échec de l'enregistrement de la visibilité.",
         "selectedHint": "Visible uniquement dans les espaces de travail cochés",
         "unlisted": "Non répertorié (lien uniquement)"
       },
@@ -18245,6 +18255,7 @@ export const resources = {
         "titleNewFamily": "Nouvelle mémoire familiale"
       },
       "keyDecisions": "Décisions clés",
+      "loadMore": "Charger plus",
       "loading": "Chargement des souvenirs…",
       "messageCount_one": "{{count}} msg",
       "messageCount_other": "{{count}} msgs",
@@ -18273,6 +18284,7 @@ export const resources = {
         "summary": "Résumé"
       },
       "sharedBadge": "Partagé",
+      "showingCount": "Affichage de {{shown}} sur {{total}}",
       "snapshot": {
         "title": "Instantané de mémoire v{{version}}"
       },
@@ -21619,6 +21631,7 @@ export const resources = {
         "friendsOnly": "Somente amigos",
         "label": "Visibilidade",
         "public": "Público",
+        "saveFailed": "Falha ao salvar a visibilidade.",
         "selectedHint": "Visível apenas nos espaços de trabalho marcados",
         "unlisted": "Não listado (somente link)"
       },
@@ -23220,6 +23233,7 @@ export const resources = {
         "titleNewFamily": "Nova memória da família"
       },
       "keyDecisions": "Decisões-chave",
+      "loadMore": "Carregar mais",
       "loading": "Carregando memórias…",
       "messageCount_one": "{{count}} msg",
       "messageCount_other": "{{count}} msgs",
@@ -23248,6 +23262,7 @@ export const resources = {
         "summary": "Resumo"
       },
       "sharedBadge": "Compartilhada",
+      "showingCount": "Mostrando {{shown}} de {{total}}",
       "snapshot": {
         "title": "Instantâneo de memória v{{version}}"
       },
@@ -26594,6 +26609,7 @@ export const resources = {
         "friendsOnly": "フレンドのみ",
         "label": "表示範囲",
         "public": "公開",
+        "saveFailed": "表示範囲の保存に失敗しました。",
         "selectedHint": "チェックしたワークスペースのみに表示されます",
         "unlisted": "非公開（リンクのみ）"
       },
@@ -28195,6 +28211,7 @@ export const resources = {
         "titleNewFamily": "新しいファミリーメモリー"
       },
       "keyDecisions": "重要な決定",
+      "loadMore": "さらに読み込む",
       "loading": "メモリを読み込み中…",
       "messageCount_one": "メッセージ{{count}}件",
       "messageCount_other": "メッセージ{{count}}件",
@@ -28223,6 +28240,7 @@ export const resources = {
         "summary": "概要"
       },
       "sharedBadge": "共有",
+      "showingCount": "{{total}} 件中 {{shown}} 件を表示",
       "snapshot": {
         "title": "メモリースナップショット v{{version}}"
       },
@@ -31569,6 +31587,7 @@ export const resources = {
         "friendsOnly": "仅好友",
         "label": "可见范围",
         "public": "公开",
+        "saveFailed": "保存可见范围失败。",
         "selectedHint": "仅在勾选的工作区中可见",
         "unlisted": "不公开（仅链接可见）"
       },
@@ -33170,6 +33189,7 @@ export const resources = {
         "titleNewFamily": "新建家庭记忆"
       },
       "keyDecisions": "关键决策",
+      "loadMore": "加载更多",
       "loading": "正在加载记忆…",
       "messageCount_one": "{{count}} 条消息",
       "messageCount_other": "{{count}} 条消息",
@@ -33198,6 +33218,7 @@ export const resources = {
         "summary": "摘要"
       },
       "sharedBadge": "共享",
+      "showingCount": "显示 {{shown}} / {{total}} 条",
       "snapshot": {
         "title": "记忆快照 v{{version}}"
       },
@@ -36544,6 +36565,7 @@ export const resources = {
         "friendsOnly": "친구만",
         "label": "표시 범위",
         "public": "공개",
+        "saveFailed": "표시 범위 저장 실패.",
         "selectedHint": "선택한 워크스페이스에서만 표시됩니다",
         "unlisted": "비공개(링크 전용)"
       },
@@ -38145,6 +38167,7 @@ export const resources = {
         "titleNewFamily": "새 패밀리 메모리"
       },
       "keyDecisions": "주요 결정",
+      "loadMore": "더 보기",
       "loading": "기억 불러오는 중…",
       "messageCount_one": "메시지 {{count}}개",
       "messageCount_other": "메시지 {{count}}개",
@@ -38173,6 +38196,7 @@ export const resources = {
         "summary": "요약"
       },
       "sharedBadge": "공유됨",
+      "showingCount": "{{total}}개 중 {{shown}}개 표시",
       "snapshot": {
         "title": "메모리 스냅샷 v{{version}}"
       },
@@ -41519,6 +41543,7 @@ export const resources = {
         "friendsOnly": "Solo amici",
         "label": "Visibilità",
         "public": "Pubblico",
+        "saveFailed": "Impossibile salvare la visibilità.",
         "selectedHint": "Visibile solo negli spazi di lavoro selezionati",
         "unlisted": "Non elencato (solo link)"
       },
@@ -43120,6 +43145,7 @@ export const resources = {
         "titleNewFamily": "Nuova memoria di famiglia"
       },
       "keyDecisions": "Decisioni chiave",
+      "loadMore": "Carica altri",
       "loading": "Caricamento delle memorie…",
       "messageCount_one": "{{count}} msg",
       "messageCount_other": "{{count}} msg",
@@ -43148,6 +43174,7 @@ export const resources = {
         "summary": "Riepilogo"
       },
       "sharedBadge": "Condivisa",
+      "showingCount": "Visualizzati {{shown}} di {{total}}",
       "snapshot": {
         "title": "Istantanea memoria v{{version}}"
       },
@@ -46494,6 +46521,7 @@ export const resources = {
         "friendsOnly": "केवल मित्र",
         "label": "दृश्यता",
         "public": "पब्लिक",
+        "saveFailed": "दृश्यता सहेजना विफल।",
         "selectedHint": "केवल चिह्नित वर्कस्पेस में दिखाई देगा",
         "unlisted": "अनलिस्टेड (केवल लिंक से)"
       },
@@ -48095,6 +48123,7 @@ export const resources = {
         "titleNewFamily": "नई परिवार मेमोरी"
       },
       "keyDecisions": "मुख्य निर्णय",
+      "loadMore": "और लोड करें",
       "loading": "यादें लोड हो रही हैं…",
       "messageCount_one": "{{count}} संदेश",
       "messageCount_other": "{{count}} संदेश",
@@ -48123,6 +48152,7 @@ export const resources = {
         "summary": "सारांश"
       },
       "sharedBadge": "साझा",
+      "showingCount": "{{total}} में से {{shown}} दिखाए जा रहे हैं",
       "snapshot": {
         "title": "मेमोरी स्नैपशॉट v{{version}}"
       },
