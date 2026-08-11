@@ -40,6 +40,7 @@ import {
   type Connection,
   type AgentHealthDetail,
   type PulseData,
+  type PulseConfig,
   type Agent,
   type DirectoryListing,
 } from "../lib/api";
@@ -179,17 +180,22 @@ const SECTION_BADGES: Record<string, (agentId: string) => Promise<SectionBadge>>
     getAgentMemories(id).then((p) => p.total ?? (p.memories ?? []).length),
   routines: (id) => listRoutines(id).then((r) => (r.routines ?? []).length),
   loops: (id) => listLoops(id).then((r) => (r.loops ?? []).length),
-  // Pulse has nothing to count — what matters is whether it's beating. Same
-  // colors the mobile row uses, so a dot means the same thing on both: green
-  // running, amber failing, red paused. Off shows nothing.
-  pulse: (id) =>
-    getAgentPulse(id).then(({ pulseConfig }) => {
-      if (!pulseConfig?.enabled) return null;
-      if (pulseConfig.status === "paused") return { dot: "destructive" as const };
-      if ((pulseConfig.consecutiveFailures ?? 0) > 0) return { dot: "warning" as const };
-      return { dot: "success" as const };
-    }),
+  // Pulse has nothing to count — what matters is whether it's beating.
+  pulse: (id) => getAgentPulse(id).then((d) => pulseBadge(d.pulseConfig)),
 };
+
+/**
+ * Pulse state → rail dot. Same colors the mobile row uses, so a dot means the
+ * same thing on both: green running, amber failing, red paused. Off shows
+ * nothing. Shared by the badge fetch and by PulsePanel's live updates, so the
+ * two can't drift.
+ */
+function pulseBadge(config: PulseConfig | null | undefined): SectionBadge {
+  if (!config?.enabled) return null;
+  if (config.status === "paused") return { dot: "destructive" as const };
+  if ((config.consecutiveFailures ?? 0) > 0) return { dot: "warning" as const };
+  return { dot: "success" as const };
+}
 
 const sameBadge = (a: SectionBadge | undefined, b: SectionBadge) =>
   a === b ||
@@ -249,9 +255,10 @@ function RailBadge({ badge, active }: { badge?: SectionBadge; active: boolean })
  * Badges for the rail rows, mirroring the mobile agent-detail rows.
  *
  * Loaded once per agent so a section shows its size (or its pulse) before you
- * ever open it. Staying live afterwards costs one request, not six: the only
- * section whose badge can change is the one you're standing in, so its badge is
- * refreshed on the way out. While you're inside it the panel is the truth.
+ * ever open it. After that the open panel pushes its own number back through
+ * `setBadge` as it mutates — enabling pulse or adding a routine moves the badge
+ * immediately, with no extra request. The refresh on leaving a section is the
+ * backstop for panels that don't report (and for anything changed elsewhere).
  *
  * Badges are cosmetic — a failed fetch just leaves the row bare.
  */
@@ -291,7 +298,13 @@ function useSectionBadges(agentId: string, activeSection: string) {
     if (left !== activeSection) load(left);
   }, [activeSection, load]);
 
-  return badges;
+  // Stable identity — panels take this as a prop and call it from inside their
+  // own fetch callbacks, so a changing identity would re-trigger their effects.
+  const setBadge = useCallback((key: string, badge: SectionBadge) => {
+    setBadges((prev) => (sameBadge(prev[key], badge) ? prev : { ...prev, [key]: badge }));
+  }, []);
+
+  return { badges, setBadge };
 }
 
 // Display labels + one-line hints for the CLI connection (auth/runtime)
@@ -527,7 +540,21 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
 
   // Rail badges. Templates isn't fetched — the assigned set is already
   // on the agent record, so it stays live for free.
-  const badges = useSectionBadges(agent.id, activeSection);
+  const { badges, setBadge } = useSectionBadges(agent.id, activeSection);
+  // Stable per-section reporters. The panels take these as props and call them
+  // from inside their own fetch callbacks, so an identity that changed every
+  // render would re-trigger their effects — hence useMemo over inline arrows.
+  const report = useMemo(
+    () => ({
+      skills: (n: number) => setBadge("skills", n),
+      tools: (n: number) => setBadge("tools", n),
+      memory: (n: number) => setBadge("memory", n),
+      routines: (n: number) => setBadge("routines", n),
+      loops: (n: number) => setBadge("loops", n),
+      pulse: (config: PulseConfig | null) => setBadge("pulse", pulseBadge(config)),
+    }),
+    [setBadge]
+  );
   const templateCount = Object.keys(
     agent.structuredCapabilities?.detail_templates ?? {}
   ).length;
@@ -1630,19 +1657,23 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
 
         {activeSection === "skills" && (
           <div className="flex-1 overflow-y-auto">
-            <AgentSkills agentId={agent.id} />
+            <AgentSkills agentId={agent.id} onCount={report.skills} />
           </div>
         )}
 
         {activeSection === "tools" && (
           <div className="flex-1 overflow-y-auto">
-            <AgentTools agentId={agent.id} />
+            <AgentTools agentId={agent.id} onCount={report.tools} />
           </div>
         )}
 
         {activeSection === "memory" && (
           <div className="flex-1 overflow-y-auto">
-            <AgentMemory agentId={agent.id} agentName={agent.displayName} />
+            <AgentMemory
+              agentId={agent.id}
+              agentName={agent.displayName}
+              onCount={report.memory}
+            />
           </div>
         )}
 
@@ -1669,13 +1700,13 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
 
         {activeSection === "routines" && (
           <div className="flex-1 overflow-y-auto">
-            <AgentRoutines agentId={agent.id} />
+            <AgentRoutines agentId={agent.id} onCount={report.routines} />
           </div>
         )}
 
         {activeSection === "loops" && (
           <div className="flex-1 overflow-y-auto">
-            <AgentLoops agentId={agent.id} />
+            <AgentLoops agentId={agent.id} onCount={report.loops} />
           </div>
         )}
 
@@ -1692,7 +1723,10 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
         )}
 
         {activeSection === "pulse" && (
-          <PulsePanel managed={managed} />
+          <PulsePanel
+            managed={managed}
+            onPulseChange={report.pulse}
+          />
         )}
 
         {activeSection === "health" && (
@@ -2248,7 +2282,15 @@ function PublishSection({ agent }: { agent: Agent }) {
   );
 }
 
-function PulsePanel({ managed }: { managed: ManagedAgent }) {
+function PulsePanel({
+  managed,
+  onPulseChange,
+}: {
+  managed: ManagedAgent;
+  /** Reports pulse state up so the rail's dot tracks enable/disable/pause
+   *  immediately, without the rail refetching. */
+  onPulseChange?: (config: PulseConfig | null) => void;
+}) {
   const { t } = useTranslation("agents");
   const workspacesEnabled = useWorkspacesEnabled();
   const [data, setData] = useState<PulseData | null>(null);
@@ -2287,6 +2329,7 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
     try {
       const d = await getAgentPulse(managed.agent.id);
       setData(d);
+      onPulseChange?.(d.pulseConfig ?? null);
       setPulseMd(d.pulseMd || "");
       setIntervalMinutes(String(d.pulseConfig?.intervalMinutes ?? 30));
       setActiveStart(d.pulseConfig?.activeHours?.start ?? 8);
@@ -2307,10 +2350,12 @@ function PulsePanel({ managed }: { managed: ManagedAgent }) {
       if (status !== 404 && !/\b404\b/.test(msg)) {
         setLoadError(msg || t("pulse.errors.loadFailed"));
       }
+      // No pulse row (or an unreadable one) means no dot.
+      onPulseChange?.(null);
     } finally {
       setLoading(false);
     }
-  }, [managed.agent.id]);
+  }, [managed.agent.id, onPulseChange]);
 
   useEffect(() => {
     fetchData();

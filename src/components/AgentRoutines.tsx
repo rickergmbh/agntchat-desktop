@@ -233,6 +233,9 @@ function describeSchedule(state: ScheduleState): string {
 
 interface AgentRoutinesProps {
   agentId: string;
+  /** Reports this section's count up to the agent-detail rail badge, so the
+   *  number moves with the list instead of waiting for a refetch. */
+  onCount?: (n: number) => void;
 }
 
 function formatHourMinute12h(hour: number, minute: number): string {
@@ -619,7 +622,7 @@ function statusColor(status: string): string {
   }
 }
 
-export function AgentRoutines({ agentId }: AgentRoutinesProps) {
+export function AgentRoutines({ agentId, onCount }: AgentRoutinesProps) {
   const { t } = useTranslation("agents");
   const [routines, setRoutines] = useState<Routine[]>([]);
   const [loading, setLoading] = useState(true);
@@ -650,13 +653,14 @@ export function AgentRoutines({ agentId }: AgentRoutinesProps) {
       setError(null);
       const { routines: data } = await listRoutines(agentId);
       setRoutines(data || []);
+      onCount?.((data || []).length);
     } catch (e) {
       console.error("Failed to fetch routines:", e);
       setError(e instanceof Error ? e.message : i18n.t("agents:routines.errors.loadFailed"));
     } finally {
       setLoading(false);
     }
-  }, [agentId]);
+  }, [agentId, onCount]);
 
   useEffect(() => {
     fetchRoutines();

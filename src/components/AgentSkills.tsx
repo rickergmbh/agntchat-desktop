@@ -49,9 +49,12 @@ import {
 
 interface AgentSkillsProps {
   agentId: string;
+  /** Reports this section's count up to the agent-detail rail badge, so the
+   *  number moves with the list instead of waiting for a refetch. */
+  onCount?: (n: number) => void;
 }
 
-export function AgentSkills({ agentId }: AgentSkillsProps) {
+export function AgentSkills({ agentId, onCount }: AgentSkillsProps) {
   const { t } = useTranslation("agents");
   const [resolvedSkills, setResolvedSkills] = useState<Skill[]>([]);
   const [allSkills, setAllSkills] = useState<Skill[]>([]);
@@ -74,12 +77,13 @@ export function AgentSkills({ agentId }: AgentSkillsProps) {
       ]);
       setResolvedSkills(resolved.skills || []);
       setAllSkills(available.skills || []);
+      onCount?.((resolved.skills || []).length);
     } catch (e) {
       console.error("Failed to fetch skills:", e);
     } finally {
       setLoading(false);
     }
-  }, [agentId]);
+  }, [agentId, onCount]);
 
   useEffect(() => {
     fetchSkills();

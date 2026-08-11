@@ -49,6 +49,9 @@ import {
 interface AgentMemoryProps {
   agentId: string;
   agentName?: string;
+  /** Reports this section's count up to the agent-detail rail badge, so the
+   *  number moves with the list instead of waiting for a refetch. */
+  onCount?: (n: number) => void;
 }
 
 const CATEGORIES: MemoryCategory[] = [
@@ -92,7 +95,7 @@ type AnyMemory = Memory | FamilyMemory;
 // the loops' "__personal__" sentinel: family-wide means ALL workspaces.
 const FAMILY_WIDE_SCOPE = "__family__";
 
-export function AgentMemory({ agentId, agentName }: AgentMemoryProps) {
+export function AgentMemory({ agentId, agentName, onCount }: AgentMemoryProps) {
   const { t } = useTranslation("memory");
 
   // Workspace context for the two-tier family scope badge. Hidden while
@@ -151,20 +154,21 @@ export function AgentMemory({ agentId, agentName }: AgentMemoryProps) {
       ]);
       setAgentMemories(agent.memories || []);
       setFamilyMemories(family.memories || []);
-      setAgentPage({
-        total: agent.total ?? agent.memories?.length ?? 0,
-        hasMore: agent.hasMore ?? false,
-      });
+      const agentTotal = agent.total ?? agent.memories?.length ?? 0;
+      setAgentPage({ total: agentTotal, hasMore: agent.hasMore ?? false });
       setFamilyPage({
         total: family.total ?? family.memories?.length ?? 0,
         hasMore: family.hasMore ?? false,
       });
+      // The rail badge counts this agent's own rows, not the shared family
+      // ones — same split the two lists below use.
+      onCount?.(agentTotal);
     } catch (e) {
       setError(e instanceof Error ? e.message : t("errors.loadFailed"));
     } finally {
       setLoading(false);
     }
-  }, [agentId, familyScope]);
+  }, [agentId, familyScope, onCount]);
 
   // Both lists are ordered `updated_at DESC`, so an edit bumps a row to the
   // front and shifts everything after it. Dedupe by id or the next offset page

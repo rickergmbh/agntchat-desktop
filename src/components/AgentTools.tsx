@@ -48,6 +48,9 @@ function ToolDescription({ text }: { text: string }) {
 
 interface AgentToolsProps {
   agentId: string;
+  /** Reports this section's count up to the agent-detail rail badge, so the
+   *  number moves with the list instead of waiting for a refetch. */
+  onCount?: (n: number) => void;
 }
 
 /**
@@ -56,7 +59,7 @@ interface AgentToolsProps {
  * the matching integration SKILL stays dormant until they do. Global
  * platform tools are always available and listed read-only.
  */
-export function AgentTools({ agentId }: AgentToolsProps) {
+export function AgentTools({ agentId, onCount }: AgentToolsProps) {
   const { t } = useTranslation("agents");
   const [catalog, setCatalog] = useState<PlatformToolSummary[]>([]);
   const [assignedNames, setAssignedNames] = useState<Set<string>>(new Set());
@@ -77,17 +80,15 @@ export function AgentTools({ agentId }: AgentToolsProps) {
         listToolCatalog(),
       ]);
       setCatalog(allTools);
-      setAssignedNames(
-        new Set(
-          resolved.filter((tl) => tl.scope === "agent").map((tl) => tl.name)
-        )
-      );
+      const assigned = resolved.filter((tl) => tl.scope === "agent");
+      setAssignedNames(new Set(assigned.map((tl) => tl.name)));
+      onCount?.(assigned.length);
     } catch (e) {
       console.error("Failed to fetch tools:", e);
     } finally {
       setLoading(false);
     }
-  }, [agentId]);
+  }, [agentId, onCount]);
 
   useEffect(() => {
     fetchAll();

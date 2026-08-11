@@ -273,9 +273,12 @@ function formToFields(state: LoopFormState): Record<string, unknown> {
 
 interface AgentLoopsProps {
   agentId: string;
+  /** Reports this section's count up to the agent-detail rail badge, so the
+   *  number moves with the list instead of waiting for a refetch. */
+  onCount?: (n: number) => void;
 }
 
-export function AgentLoops({ agentId }: AgentLoopsProps) {
+export function AgentLoops({ agentId, onCount }: AgentLoopsProps) {
   const { t } = useTranslation("agents");
   const [loops, setLoops] = useState<AgentLoop[]>([]);
   const [loading, setLoading] = useState(true);
@@ -292,6 +295,7 @@ export function AgentLoops({ agentId }: AgentLoopsProps) {
       setError(null);
       const { loops: data } = await listLoops(agentId);
       setLoops(data || []);
+      onCount?.((data || []).length);
     } catch (e) {
       console.error("Failed to fetch loops:", e);
       setError(
@@ -300,7 +304,7 @@ export function AgentLoops({ agentId }: AgentLoopsProps) {
     } finally {
       setLoading(false);
     }
-  }, [agentId]);
+  }, [agentId, onCount]);
 
   useEffect(() => {
     fetchLoops();
