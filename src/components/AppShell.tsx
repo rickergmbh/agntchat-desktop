@@ -162,14 +162,23 @@ export function AppShell() {
       {/* Profile drawer — lifted to shell so it's reachable from any view */}
       <div
         className={cn(
-          "fixed inset-0 bg-black/20 z-40 transition-opacity duration-200",
+          // Scrim is deliberately heavy: the drawer is a full settings
+          // surface with its own rail, so a light dim read as "another
+          // panel of the app" rather than a layer above it.
+          "fixed inset-0 bg-black/50 z-40 transition-opacity duration-200",
+          // Blur as well as dim — the same separation cue the app's dialog
+          // overlay uses, and it survives themes where a flat dim doesn't.
+          "supports-backdrop-filter:backdrop-blur-xs",
           showProfile ? "opacity-100" : "opacity-0 pointer-events-none"
         )}
         onClick={() => setShowProfile(false)}
       />
       <div
         className={cn(
-          "fixed top-0 right-0 h-full w-[640px] max-w-[85vw] bg-card border-l border-border shadow-2xl z-50 overflow-hidden",
+          // 800px gives the settings forms room next to the 224px rail;
+          // max-w keeps a strip of the app visible so it still reads as a
+          // layer over the product, not a new screen.
+          "fixed top-0 right-0 h-full w-[800px] max-w-[85vw] bg-card border-l border-border shadow-2xl z-50 overflow-hidden",
           "transition-transform duration-300 ease-out",
           showProfile ? "translate-x-0" : "translate-x-full"
         )}
