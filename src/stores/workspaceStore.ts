@@ -28,6 +28,11 @@ interface WorkspaceState {
    *  active one so a workspace doesn't silently accumulate things
    *  needing them. Refetched (debounced) on the relevant WS events. */
   attentionByOrg: Record<string, number>;
+  /** Per-workspace count of in-flight tasks (pending/accepted/
+   *  in_progress/blocked, background pulse/routine work excluded) from
+   *  the same endpoint. Informational — rendered as its own badge in
+   *  the switcher rows, never summed into the attention badge. */
+  tasksByOrg: Record<string, number>;
   fetchWorkspaceAttention: () => Promise<void>;
 
   // Stage 3 management actions — same shape as web.
@@ -56,6 +61,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   switching: false,
   pendingId: null,
   attentionByOrg: {},
+  tasksByOrg: {},
   lastError: null,
 
   switch: async (orgId) => {
@@ -135,6 +141,10 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       ws.on("conversation_read", () => scheduleAttentionRefetch()),
       ws.on("permission_request", () => scheduleAttentionRefetch()),
       ws.on("permission_resolved", () => scheduleAttentionRefetch()),
+      // Task lifecycle changes move the per-workspace tasks badge.
+      ws.on("task_created", () => scheduleAttentionRefetch()),
+      ws.on("task_updated", () => scheduleAttentionRefetch()),
+      ws.on("task_completed", () => scheduleAttentionRefetch()),
     ];
     return () => unsubs.forEach((u) => u());
   },
@@ -147,8 +157,12 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     try {
       const rows = await api.getWorkspaceAttention();
       const next: Record<string, number> = {};
-      for (const row of rows) next[row.organizationId] = row.total;
-      set({ attentionByOrg: next });
+      const nextTasks: Record<string, number> = {};
+      for (const row of rows) {
+        next[row.organizationId] = row.total;
+        nextTasks[row.organizationId] = row.activeTasks ?? 0;
+      }
+      set({ attentionByOrg: next, tasksByOrg: nextTasks });
     } catch {
       // Transient — the badge just stays stale until the next trigger.
     }

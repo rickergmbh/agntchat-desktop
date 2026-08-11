@@ -350,11 +350,12 @@ export async function setActiveOrganization(orgId: string): Promise<Participant>
 }
 
 /** Per-workspace count of items needing the user (unread messages +
- *  pending permission approvals). Endpoint sits behind the `workspaces`
- *  feature flag — 404 when the flag is off. */
+ *  pending permission approvals) plus in-flight active tasks. Endpoint
+ *  sits behind the `workspaces` feature flag — 404 when the flag is off. */
 export interface WorkspaceAttentionRow {
   organizationId: string;
   total: number;
+  activeTasks: number;
 }
 
 export async function getWorkspaceAttention(): Promise<WorkspaceAttentionRow[]> {

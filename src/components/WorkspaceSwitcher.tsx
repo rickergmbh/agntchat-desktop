@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Check, Loader2, User, Building2, Settings, Plus } from "lucide-react";
+import { Check, ListChecks, Loader2, User, Settings, Plus } from "lucide-react";
 import {
   useWorkspaceStore,
   useWorkspaces,
@@ -31,6 +31,7 @@ export function WorkspaceSwitcher() {
   const switching = useWorkspaceStore((s) => s.switching);
   const pendingId = useWorkspaceStore((s) => s.pendingId);
   const attentionByOrg = useWorkspaceStore((s) => s.attentionByOrg);
+  const tasksByOrg = useWorkspaceStore((s) => s.tasksByOrg);
 
   // Seed the cross-workspace attention counts; WS events keep them
   // fresh from here (see workspaceStore.initWsListeners).
@@ -169,11 +170,13 @@ export function WorkspaceSwitcher() {
                   role="option"
                   aria-selected={isActive}
                 >
-                  {w.isPersonal ? (
-                    <User className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                  ) : (
-                    <Building2 className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                  )}
+                  <div className="h-5 w-5 shrink-0 overflow-hidden rounded">
+                    <WorkspaceAvatar
+                      name={w.name}
+                      avatarUrl={w.avatarUrl}
+                      isPersonal={w.isPersonal}
+                    />
+                  </div>
                   <div className="flex min-w-0 flex-1 flex-col">
                     <span className="truncate font-medium">{w.name}</span>
                     {!w.isPersonal && (
@@ -187,6 +190,17 @@ export function WorkspaceSwitcher() {
                       {(attentionByOrg[w.id] ?? 0) > 99
                         ? "99+"
                         : attentionByOrg[w.id]}
+                    </span>
+                  )}
+                  {(tasksByOrg[w.id] ?? 0) > 0 && (
+                    <span
+                      className="flex shrink-0 items-center gap-1 rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground"
+                      title={t("tasks:activeCount", {
+                        count: tasksByOrg[w.id],
+                      })}
+                    >
+                      <ListChecks className="h-2.5 w-2.5" />
+                      {(tasksByOrg[w.id] ?? 0) > 99 ? "99+" : tasksByOrg[w.id]}
                     </span>
                   )}
                   {(w.agentCount ?? 0) > 0 && !isActive && (
