@@ -228,6 +228,8 @@ type ThreadItem =
     }
   | { kind: "artifact"; id: string; insertedAt: string; artifact: Artifact };
 
+const EMPTY_THREAD_ITEMS: ThreadItem[] = [];
+
 function buildThreadItems(
   messages: Message[],
   agentConversations: Conversation[],
@@ -403,6 +405,9 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
   // so a single task_id renders as one live card, not a stack of three.
   const messages = useMemo(() => consolidate(rawMessages), [rawMessages]);
   const loading = useChatStore((s) => s.messagesLoading[conversationId] ?? false);
+  // The initial history load has settled (REST returned, or WS
+  // `recent_messages` landed). Gates `threadItems` — see below.
+  const historyLoaded = useChatStore((s) => s.historyLoaded[conversationId] ?? false);
   const hasMore = useChatStore((s) => s.hasMore[conversationId] ?? false);
   const fetchMessages = useChatStore((s) => s.fetchMessages);
   const fetchAgentConversations = useChatStore((s) => s.fetchAgentConversations);
@@ -483,9 +488,17 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
     [childAgentConversations]
   );
 
+  // Nothing until this conversation's own history has settled. Inline thread
+  // cards read `agentConversations` and artifact cards read `artifactStore` —
+  // both already warm when the pane switches — so building against an empty
+  // message array sends every one of them down buildThreadItems' "unanchored"
+  // path and renders them alone, as if they were the whole conversation.
   const threadItems = useMemo(
-    () => buildThreadItems(messages, childAgentConversations, artifacts),
-    [messages, childAgentConversations, artifacts]
+    () =>
+      historyLoaded
+        ? buildThreadItems(messages, childAgentConversations, artifacts)
+        : EMPTY_THREAD_ITEMS,
+    [historyLoaded, messages, childAgentConversations, artifacts]
   );
 
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -546,7 +559,10 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
   const deepLinkAttemptsRef = useRef(0);
 
   useEffect(() => {
-    if (messages.length === 0 && !loading) {
+    // Keyed on `historyLoaded`, not `messages.length` — a conversation can
+    // hold a stray message from a live `new_message` push without its history
+    // ever having been loaded, and that used to suppress the fetch entirely.
+    if (!historyLoaded && !loading) {
       fetchMessages(conversationId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -951,7 +967,10 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
         style={{ overflowAnchor: "none" }}
         className="flex-1 min-h-0 overflow-y-auto py-2 scrollbar-autohide"
       >
-        {loading && messages.length === 0 ? (
+        {/* Spin from the first frame, not from when `messagesLoading` flips —
+            it's false in the gap before the mount effect kicks the fetch off,
+            which is exactly the gap the stale cards used to fill. */}
+        {!historyLoaded && messages.length === 0 ? (
           <div className="flex items-center justify-center py-10">
             <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
           </div>

@@ -161,6 +161,15 @@ interface ChatState {
   // Messages (per conversation)
   messages: Record<string, Message[]>;
   messagesLoading: Record<string, boolean>;
+  /** Per-conversation: the initial history load has settled — a REST
+   *  `fetchMessages` (no `before`) returned, or a WS `recent_messages` push
+   *  landed. Distinct from `messagesLoading`, which is false both before the
+   *  fetch is kicked off and after it finishes. `ChatThread` gates its
+   *  timeline on this: inline thread cards and artifacts come from stores
+   *  that are already warm, so building the thread against an empty message
+   *  array renders them alone, unanchored, as if they were the conversation.
+   *  Set on failure too — the flag means "settled", not "succeeded". */
+  historyLoaded: Record<string, boolean>;
   hasMore: Record<string, boolean>;
   drafts: Record<string, string>;
 
@@ -284,6 +293,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
   pendingRename: null,
   messages: {},
   messagesLoading: {},
+  historyLoaded: {},
   hasMore: {},
   drafts: {},
   replyingTo: {},
@@ -571,12 +581,20 @@ export const useChatStore = create<ChatState>((set, get) => ({
           messages: { ...s.messages, [conversationId]: sortMessages(merged) },
           hasMore: { ...s.hasMore, [conversationId]: data.messages.length >= 30 },
           messagesLoading: { ...s.messagesLoading, [conversationId]: false },
+          // Scroll-back pages say nothing about whether the initial load landed.
+          ...(before
+            ? {}
+            : { historyLoaded: { ...s.historyLoaded, [conversationId]: true } }),
         };
       });
     } catch (e) {
       console.warn(`[chat] fetchMessages(${conversationId}) failed`, e);
       set((s) => ({
         messagesLoading: { ...s.messagesLoading, [conversationId]: false },
+        // Settled, not succeeded — otherwise a failed load spins forever.
+        ...(before
+          ? {}
+          : { historyLoaded: { ...s.historyLoaded, [conversationId]: true } }),
       }));
     }
   },
@@ -832,7 +850,10 @@ export const useChatStore = create<ChatState>((set, get) => ({
         );
         sorted = sortMessages(dedup([...messages, ...extras]));
       }
-      return { messages: { ...s.messages, [conversationId]: sorted } };
+      return {
+        messages: { ...s.messages, [conversationId]: sorted },
+        historyLoaded: { ...s.historyLoaded, [conversationId]: true },
+      };
     });
   },
 
