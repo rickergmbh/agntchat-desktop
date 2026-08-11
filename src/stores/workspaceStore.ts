@@ -303,7 +303,9 @@ async function doRefetchOrgScoped() {
   // 3. Refetch the current workspace's lists. Agent threads are
   //    explicitly fetched here (was missed in stage 2's desktop wipe
   //    — agent threads from the previous workspace lingered in the
-  //    sidebar until manual refresh).
+  //    sidebar until manual refresh). Tasks are refetched for the same
+  //    reason: the nav rail's active-task badge reads the store, so
+  //    deferring to the Tasks view left it stuck at 0 after a switch.
   await Promise.all([
     useChatStore.getState().fetchConversations().catch(() => {}),
     useChatStore
@@ -312,6 +314,7 @@ async function doRefetchOrgScoped() {
       .catch(() => {}),
     useChatStore.getState().fetchUnreadCounts().catch(() => {}),
     useAgentStore.getState().fetchAgents().catch(() => {}),
+    useTaskStore.getState().fetchTasks().catch(() => {}),
   ]);
 }
 
