@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Check, ListChecks, Loader2, User, Settings, Plus } from "lucide-react";
+import { Building2, Check, ListChecks, Loader2, User, Settings, Plus } from "lucide-react";
 import {
   useWorkspaceStore,
   useWorkspaces,
@@ -283,15 +283,13 @@ function ErrorBanner() {
 
 /**
  * Fills its parent (which owns the size and the rounded clip). Avatar URL
- * wins; otherwise renders 1–2 initial characters derived from the workspace
- * name. Personal workspaces get a user icon instead so they're recognizable
- * when the user has multiple workspaces with similar names.
+ * wins; otherwise renders a generic icon — user for Personal, building for
+ * shared workspaces — matching the mobile app's fallback.
  *
  * Exported so anything picking a workspace (agent Visibility, …) shows the
  * same tile the switcher does.
  */
 export function WorkspaceAvatar({
-  name,
   avatarUrl,
   isPersonal,
 }: {
@@ -310,25 +308,8 @@ export function WorkspaceAvatar({
     );
   }
   return (
-    <div
-      className={cn(
-        "flex h-full w-full items-center justify-center text-xs font-semibold",
-        isPersonal ? "bg-muted text-muted-foreground" : "bg-primary/15 text-primary"
-      )}
-    >
-      {isPersonal ? <User className="h-4 w-4" /> : workspaceInitials(name)}
+    <div className="flex h-full w-full items-center justify-center bg-muted text-muted-foreground">
+      {isPersonal ? <User className="h-4 w-4" /> : <Building2 className="h-4 w-4" />}
     </div>
   );
-}
-
-function workspaceInitials(name: string): string {
-  const trimmed = (name ?? "").trim();
-  if (!trimmed) return "?";
-  const words = trimmed.split(/\s+/);
-  const first = words[0] ?? "";
-  const second = words[1];
-  if (second && first) {
-    return (first.charAt(0) + second.charAt(0)).toUpperCase();
-  }
-  return trimmed.slice(0, 2).toUpperCase();
 }

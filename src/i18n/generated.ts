@@ -266,6 +266,7 @@ export const resources = {
           "scheduleHint": "Interval minimum 5 minutes — the scheduler runs every 5 minutes. Active hours use the selected timezone.",
           "triggerNow": "Trigger Now"
         },
+        "railTitle": "Settings",
         "runtime": {
           "hostedNoPickerExplain": "Runs always-on in the cloud using your plan's shared brain — nothing else to set up. Switch back to Local anytime to use your own model on this machine.",
           "loadingHosts": "Loading hosts…",
@@ -3777,7 +3778,13 @@ export const resources = {
       "localOwnersDevice": "Local (owner's device)",
       "logs": {
         "copyLogs": "Copy logs",
-        "empty": "No logs yet"
+        "empty": "No logs yet",
+        "filter": {
+          "all": "All",
+          "error": "Errors",
+          "message": "Messages",
+          "task": "Tasks"
+        }
       },
       "manage": "Manage",
       "manageAgent": "Manage — {{name}}",
@@ -5242,6 +5249,7 @@ export const resources = {
           "scheduleHint": "Intervalo mínimo de 5 minutos — el programador se ejecuta cada 5 minutos. El horario activo usa la zona horaria seleccionada.",
           "triggerNow": "Activar ahora"
         },
+        "railTitle": "Ajustes",
         "runtime": {
           "hostedNoPickerExplain": "Se ejecuta siempre activo en la nube usando el cerebro compartido de tu plan — no hay nada más que configurar. Vuelve a Local cuando quieras para usar tu propio modelo en este equipo.",
           "loadingHosts": "Cargando hosts…",
@@ -8753,7 +8761,13 @@ export const resources = {
       "localOwnersDevice": "Local (dispositivo del propietario)",
       "logs": {
         "copyLogs": "Copiar registros",
-        "empty": "Aún no hay registros"
+        "empty": "Aún no hay registros",
+        "filter": {
+          "all": "Todos",
+          "error": "Errores",
+          "message": "Mensajes",
+          "task": "Tareas"
+        }
       },
       "manage": "Gestionar",
       "manageAgent": "Gestionar — {{name}}",
@@ -10218,6 +10232,7 @@ export const resources = {
           "scheduleHint": "Intervall mindestens 5 Minuten — der Planer läuft alle 5 Minuten. Aktive Stunden verwenden die ausgewählte Zeitzone.",
           "triggerNow": "Jetzt auslösen"
         },
+        "railTitle": "Einstellungen",
         "runtime": {
           "hostedNoPickerExplain": "Läuft immer aktiv in der Cloud mit dem gemeinsamen Gehirn Ihres Plans — sonst nichts einzurichten. Jederzeit zurück zu Lokal wechseln, um Ihr eigenes Modell auf diesem Rechner zu verwenden.",
           "loadingHosts": "Hosts werden geladen…",
@@ -13729,7 +13744,13 @@ export const resources = {
       "localOwnersDevice": "Lokal (Gerät des Eigentümers)",
       "logs": {
         "copyLogs": "Logs kopieren",
-        "empty": "Noch keine Logs"
+        "empty": "Noch keine Logs",
+        "filter": {
+          "all": "Alle",
+          "error": "Fehler",
+          "message": "Nachrichten",
+          "task": "Aufgaben"
+        }
       },
       "manage": "Verwalten",
       "manageAgent": "Verwalten — {{name}}",
@@ -15194,6 +15215,7 @@ export const resources = {
           "scheduleHint": "Intervalle minimum de 5 minutes — le planificateur s'exécute toutes les 5 minutes. Les heures actives utilisent le fuseau horaire sélectionné.",
           "triggerNow": "Déclencher maintenant"
         },
+        "railTitle": "Paramètres",
         "runtime": {
           "hostedNoPickerExplain": "S'exécute toujours actif dans le cloud en utilisant le cerveau partagé de votre forfait — rien d'autre à configurer. Repassez à Local à tout moment pour utiliser votre propre modèle sur cette machine.",
           "loadingHosts": "Chargement des hôtes…",
@@ -18705,7 +18727,13 @@ export const resources = {
       "localOwnersDevice": "Local (appareil du propriétaire)",
       "logs": {
         "copyLogs": "Copier les journaux",
-        "empty": "Aucun journal pour l'instant"
+        "empty": "Aucun journal pour l'instant",
+        "filter": {
+          "all": "Tous",
+          "error": "Erreurs",
+          "message": "Messages",
+          "task": "Tâches"
+        }
       },
       "manage": "Gérer",
       "manageAgent": "Gérer — {{name}}",
@@ -20170,6 +20198,7 @@ export const resources = {
           "scheduleHint": "Intervalo mínimo de 5 minutos — o agendador executa a cada 5 minutos. Os horários ativos usam o fuso horário selecionado.",
           "triggerNow": "Acionar Agora"
         },
+        "railTitle": "Configurações",
         "runtime": {
           "hostedNoPickerExplain": "Executa sempre ativo na nuvem usando o cérebro compartilhado do seu plano — nada mais para configurar. Volte para Local a qualquer momento para usar seu próprio modelo nesta máquina.",
           "loadingHosts": "Carregando hosts…",
@@ -23681,7 +23710,13 @@ export const resources = {
       "localOwnersDevice": "Local (dispositivo do proprietário)",
       "logs": {
         "copyLogs": "Copiar logs",
-        "empty": "Ainda não há logs"
+        "empty": "Ainda não há logs",
+        "filter": {
+          "all": "Todos",
+          "error": "Erros",
+          "message": "Mensagens",
+          "task": "Tarefas"
+        }
       },
       "manage": "Gerenciar",
       "manageAgent": "Gerenciar — {{name}}",
@@ -25146,6 +25181,7 @@ export const resources = {
           "scheduleHint": "間隔は最小5分です — スケジューラーは5分ごとに実行されます。アクティブ時間帯は選択したタイムゾーンを使用します。",
           "triggerNow": "今すぐ実行"
         },
+        "railTitle": "設定",
         "runtime": {
           "hostedNoPickerExplain": "プランの共有頭脳を使ってクラウドで常時稼働します — 他に設定することはありません。いつでもローカルに戻して、このマシンで自分のモデルを使用できます。",
           "loadingHosts": "ホストを読み込んでいます…",
@@ -28657,7 +28693,13 @@ export const resources = {
       "localOwnersDevice": "ローカル（所有者のデバイス）",
       "logs": {
         "copyLogs": "ログをコピー",
-        "empty": "ログはまだありません"
+        "empty": "ログはまだありません",
+        "filter": {
+          "all": "すべて",
+          "error": "エラー",
+          "message": "メッセージ",
+          "task": "タスク"
+        }
       },
       "manage": "管理",
       "manageAgent": "管理 — {{name}}",
@@ -30122,6 +30164,7 @@ export const resources = {
           "scheduleHint": "间隔最小为 5 分钟 — 调度器每 5 分钟运行一次。活跃时段使用所选时区。",
           "triggerNow": "立即触发"
         },
+        "railTitle": "设置",
         "runtime": {
           "hostedNoPickerExplain": "使用您套餐的共享大脑在云端持续运行 — 无需其他设置。您可以随时切换回本地模式，在此计算机上使用自己的模型。",
           "loadingHosts": "正在加载主机……",
@@ -33633,7 +33676,13 @@ export const resources = {
       "localOwnersDevice": "本地（所有者设备）",
       "logs": {
         "copyLogs": "复制日志",
-        "empty": "暂无日志"
+        "empty": "暂无日志",
+        "filter": {
+          "all": "全部",
+          "error": "错误",
+          "message": "消息",
+          "task": "任务"
+        }
       },
       "manage": "管理",
       "manageAgent": "管理 — {{name}}",
@@ -35098,6 +35147,7 @@ export const resources = {
           "scheduleHint": "최소 간격은 5분입니다 — 스케줄러는 5분마다 실행됩니다. 활성 시간은 선택한 시간대를 사용합니다.",
           "triggerNow": "지금 실행"
         },
+        "railTitle": "설정",
         "runtime": {
           "hostedNoPickerExplain": "요금제의 공유 브레인을 사용해 클라우드에서 항상 실행됩니다 — 별도로 설정할 것이 없습니다. 언제든 로컬로 전환하여 이 컴퓨터에서 자신의 모델을 사용할 수 있습니다.",
           "loadingHosts": "호스트 불러오는 중…",
@@ -38609,7 +38659,13 @@ export const resources = {
       "localOwnersDevice": "로컬 (소유자 기기)",
       "logs": {
         "copyLogs": "로그 복사",
-        "empty": "아직 로그가 없습니다"
+        "empty": "아직 로그가 없습니다",
+        "filter": {
+          "all": "전체",
+          "error": "오류",
+          "message": "메시지",
+          "task": "작업"
+        }
       },
       "manage": "관리",
       "manageAgent": "관리 — {{name}}",
@@ -40074,6 +40130,7 @@ export const resources = {
           "scheduleHint": "Intervallo minimo di 5 minuti — lo scheduler viene eseguito ogni 5 minuti. Le ore attive usano il fuso orario selezionato.",
           "triggerNow": "Attiva ora"
         },
+        "railTitle": "Impostazioni",
         "runtime": {
           "hostedNoPickerExplain": "Viene eseguito sempre attivo nel cloud usando il cervello condiviso del tuo piano — nient'altro da configurare. Torna a Locale in qualsiasi momento per usare il tuo modello su questa macchina.",
           "loadingHosts": "Caricamento host…",
@@ -43585,7 +43642,13 @@ export const resources = {
       "localOwnersDevice": "Locale (dispositivo del proprietario)",
       "logs": {
         "copyLogs": "Copia log",
-        "empty": "Nessun log ancora"
+        "empty": "Nessun log ancora",
+        "filter": {
+          "all": "Tutti",
+          "error": "Errori",
+          "message": "Messaggi",
+          "task": "Attività"
+        }
       },
       "manage": "Gestisci",
       "manageAgent": "Gestisci — {{name}}",
@@ -45050,6 +45113,7 @@ export const resources = {
           "scheduleHint": "न्यूनतम अंतराल 5 मिनट — शेड्यूलर हर 5 मिनट में चलता है। सक्रिय घंटे चयनित समय क्षेत्र का उपयोग करते हैं।",
           "triggerNow": "अभी ट्रिगर करें"
         },
+        "railTitle": "सेटिंग्स",
         "runtime": {
           "hostedNoPickerExplain": "आपकी योजना के साझा ब्रेन का उपयोग करते हुए क्लाउड में हमेशा चालू रहता है — और कुछ भी सेट अप करने की आवश्यकता नहीं। इस मशीन पर अपना खुद का मॉडल उपयोग करने के लिए कभी भी लोकल पर वापस स्विच करें।",
           "loadingHosts": "होस्ट लोड हो रहे हैं…",
@@ -48561,7 +48625,13 @@ export const resources = {
       "localOwnersDevice": "लोकल (मालिक का डिवाइस)",
       "logs": {
         "copyLogs": "लॉग कॉपी करें",
-        "empty": "अभी तक कोई लॉग नहीं"
+        "empty": "अभी तक कोई लॉग नहीं",
+        "filter": {
+          "all": "सभी",
+          "error": "त्रुटियाँ",
+          "message": "संदेश",
+          "task": "कार्य"
+        }
       },
       "manage": "प्रबंधित करें",
       "manageAgent": "प्रबंधित करें — {{name}}",

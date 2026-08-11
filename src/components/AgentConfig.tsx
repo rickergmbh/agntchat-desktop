@@ -708,22 +708,25 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
         { value: "health", label: t("config.health.label"), icon: Activity },
       ],
     },
+    {
+      // Its own group at the bottom of the rail — deactivate/delete are
+      // destructive and shouldn't be buried at the bottom of Model,
+      // where they used to live alongside unrelated config fields.
+      key: "danger",
+      name: t("dangerZone"),
+      sections: [{ value: "danger", label: t("dangerZone"), icon: Trash2 }],
+    },
   ];
 
   return (
     <div className="relative flex h-full">
       {/* Vertical section rail — labelled rows, grouped by category */}
       <div className="w-56 border-r border-border bg-muted/30 flex flex-col flex-shrink-0">
-        {/* Avatar lives in its own h-14 band with a bottom border so the
+        {/* Title lives in its own h-14 band with a bottom border so the
             divider lines up continuously with the content panel's
             AgentHeader divider — no offset across the seam. */}
-        <div className="h-14 shrink-0 flex items-center px-3 border-b border-border w-full">
-          <Avatar className="h-8 w-8 rounded-lg">
-            {agent.avatarUrl && <AvatarImage src={agent.avatarUrl} className="rounded-lg" />}
-            <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-xs font-semibold">
-              {agent.displayName.charAt(0).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
+        <div className="h-14 shrink-0 flex items-center px-4 border-b border-border w-full">
+          <p className="truncate text-sm font-semibold">{t("config.railTitle")}</p>
         </div>
 
         {/* Scrolls on short windows — the capabilities group alone is seven
@@ -1634,9 +1637,6 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
               )}
             </Section>
             )}
-
-            {/* Danger Zone */}
-            <DangerZone agent={agent} onDeleted={() => selectAgent(null)} />
           </div>
         )}
 
@@ -1740,6 +1740,12 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
 
         {activeSection === "health" && (
           <HealthPanel managed={managed} />
+        )}
+
+        {activeSection === "danger" && (
+          <div className="flex-1 overflow-y-auto p-5 space-y-6">
+            <DangerZone agent={agent} onDeleted={() => selectAgent(null)} />
+          </div>
         )}
       </div>
     </div>
@@ -3855,9 +3861,6 @@ function DangerZone({
 }) {
   const { t } = useTranslation("agents");
   const { fetchAgents, stopAgent } = useAgentStore();
-  // Collapsed by default so destructive actions take a deliberate expand
-  // before they're reachable.
-  const [expanded, setExpanded] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [showConnections, setShowConnections] = useState(false);
   const [confirmName, setConfirmName] = useState("");
@@ -3942,59 +3945,40 @@ function DangerZone({
 
   return (
     <>
-      <Separator className="my-2" />
-      <div>
-        <button
-          type="button"
-          onClick={() => setExpanded((v) => !v)}
-          className="flex w-full items-center gap-1.5 mb-3 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider hover:text-foreground transition-colors"
-          aria-expanded={expanded}
+      <div className="space-y-2">
+        <Button
+          variant="outline"
+          size="sm"
+          className="w-full justify-start text-muted-foreground"
+          onClick={() => {
+            setShowConnections(true);
+            fetchConnections();
+          }}
         >
-          <ChevronDown
-            className={cn(
-              "w-3.5 h-3.5 transition-transform",
-              expanded ? "rotate-0" : "-rotate-90"
-            )}
-          />
-          {t("dangerZone")}
-        </button>
-        {expanded && (
-          <div className="space-y-2">
-            <Button
-              variant="outline"
-              size="sm"
-              className="w-full justify-start text-muted-foreground"
-              onClick={() => {
-                setShowConnections(true);
-                fetchConnections();
-              }}
-            >
-              <Unlink className="w-3.5 h-3.5 mr-2" />
-              {t("config.dangerZone.manageConnections")}
-            </Button>
+          <Unlink className="w-3.5 h-3.5 mr-2" />
+          {t("config.dangerZone.manageConnections")}
+        </Button>
 
-            <Button
-              variant="outline"
-              size="sm"
-              className="w-full justify-start text-warning hover:text-warning/90"
-              onClick={handleDeactivate}
-              disabled={deactivating}
-            >
-              <AlertTriangle className="w-3.5 h-3.5 mr-2" />
-              {deactivating ? t("config.dangerZone.deactivating") : t("deactivate.title")}
-            </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          className="w-full justify-start text-warning hover:text-warning/90"
+          onClick={handleDeactivate}
+          disabled={deactivating}
+        >
+          <AlertTriangle className="w-3.5 h-3.5 mr-2" />
+          {deactivating ? t("config.dangerZone.deactivating") : t("deactivate.title")}
+        </Button>
 
-            <Button
-              variant="outline"
-              size="sm"
-              className="w-full justify-start text-destructive hover:text-destructive/90"
-              onClick={() => setShowDelete(true)}
-            >
-              <Trash2 className="w-3.5 h-3.5 mr-2" />
-              {t("delete.permanently")}
-            </Button>
-          </div>
-        )}
+        <Button
+          variant="outline"
+          size="sm"
+          className="w-full justify-start text-destructive hover:text-destructive/90"
+          onClick={() => setShowDelete(true)}
+        >
+          <Trash2 className="w-3.5 h-3.5 mr-2" />
+          {t("delete.permanently")}
+        </Button>
       </div>
 
       {/* Delete Confirmation Dialog */}

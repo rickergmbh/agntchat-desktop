@@ -808,25 +808,6 @@ export function Dashboard() {
                 {activeCount}
               </span>
             </button>
-            <button
-              onClick={() => {
-                setActiveTab("directory");
-                selectAgent(null);
-              }}
-              className={cn(
-                "flex items-center gap-1.5 rounded-md px-2 py-1.5 text-sm font-medium transition-colors",
-                activeTab === "directory"
-                  ? "bg-accent text-accent-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              {t("directory")}
-              {!directoryEnabled && (
-                <span className="rounded-full bg-muted px-1.5 py-0.5 text-[9px] uppercase tracking-wide text-muted-foreground">
-                  {t("directorySoonBadge")}
-                </span>
-              )}
-            </button>
           </div>
 
           {/* Hide the header add button until the user has their first agent —
