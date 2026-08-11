@@ -161,13 +161,17 @@ const TOUR_STEPS: Array<{
 
 const TOUR_SEEN_KEY = FTUE_KEYS.agentConfigTour;
 
-// Rail badge counts, keyed by section value. Each entry owns the notion of
-// "count" its own panel shows: tools counts only agent-scoped assignments
-// (globals are always-on, not a per-agent number), memory counts the agent's
-// own rows (family memory is shared, not this agent's), skills counts the
-// resolved set the agent runs with. Templates is absent on purpose — the
-// assigned set already rides along on the agent record, so it needs no fetch.
-const SECTION_COUNTS: Record<string, (agentId: string) => Promise<number>> = {
+/** What a rail row can show on its right edge: a count, a status dot, or
+ *  nothing at all. */
+type SectionBadge = number | { dot: "success" | "warning" | "destructive" } | null;
+
+// Rail badges, keyed by section value. Each entry owns the notion of "badge"
+// its own panel shows: tools counts only agent-scoped assignments (globals are
+// always-on, not a per-agent number), memory counts the agent's own rows
+// (family memory is shared, not this agent's), skills counts the resolved set
+// the agent runs with. Templates is absent on purpose — the assigned set
+// already rides along on the agent record, so it needs no fetch.
+const SECTION_BADGES: Record<string, (agentId: string) => Promise<SectionBadge>> = {
   skills: (id) => getAgentSkills(id).then((r) => (r.skills ?? []).length),
   tools: (id) =>
     getAgentTools(id).then((tools) => tools.filter((tl) => tl.scope === "agent").length),
@@ -175,33 +179,99 @@ const SECTION_COUNTS: Record<string, (agentId: string) => Promise<number>> = {
     getAgentMemories(id).then((p) => p.total ?? (p.memories ?? []).length),
   routines: (id) => listRoutines(id).then((r) => (r.routines ?? []).length),
   loops: (id) => listLoops(id).then((r) => (r.loops ?? []).length),
+  // Pulse has nothing to count — what matters is whether it's beating. Same
+  // colors the mobile row uses, so a dot means the same thing on both: green
+  // running, amber failing, red paused. Off shows nothing.
+  pulse: (id) =>
+    getAgentPulse(id).then(({ pulseConfig }) => {
+      if (!pulseConfig?.enabled) return null;
+      if (pulseConfig.status === "paused") return { dot: "destructive" as const };
+      if ((pulseConfig.consecutiveFailures ?? 0) > 0) return { dot: "warning" as const };
+      return { dot: "success" as const };
+    }),
 };
 
+const sameBadge = (a: SectionBadge | undefined, b: SectionBadge) =>
+  a === b ||
+  (typeof a === "object" && a !== null && typeof b === "object" && b !== null && a.dot === b.dot);
+
 /**
- * Counts for the rail badges, mirroring the mobile agent-detail rows.
- *
- * Loaded once per agent so a section shows its size before you ever open it.
- * Staying live afterwards costs one request, not five: the only section whose
- * count can change is the one you're standing in, so its count is refreshed on
- * the way out. While you're inside it the list itself is the truth.
- *
- * Counts are cosmetic — a failed fetch just leaves the badge off.
+ * Right edge of a rail row: a count pill, or a status dot for sections whose
+ * state matters more than their size. Both are hidden when there's nothing to
+ * say — a count of zero renders nothing rather than "0", same as mobile.
  */
-function useSectionCounts(agentId: string, activeSection: string) {
-  const [counts, setCounts] = useState<Record<string, number>>({});
+function RailBadge({ badge, active }: { badge?: SectionBadge; active: boolean }) {
+  const { t } = useTranslation("agents");
+
+  if (typeof badge === "number") {
+    if (!badge) return null;
+    return (
+      <span
+        className={cn(
+          "ml-auto flex-shrink-0 rounded px-1.5 py-0.5 text-[10px] font-semibold tabular-nums",
+          active ? "bg-primary/20 text-primary" : "bg-muted-foreground/15 text-muted-foreground"
+        )}
+      >
+        {badge}
+      </span>
+    );
+  }
+
+  if (!badge) return null;
+
+  // The dot carries meaning by color alone, so it also carries a label for
+  // screen readers and on hover.
+  const label =
+    badge.dot === "destructive"
+      ? t("pulse.pausedAuto")
+      : badge.dot === "warning"
+        ? t("pulse.consecutiveFailures")
+        : t("common:on");
+
+  return (
+    <span
+      role="img"
+      aria-label={label}
+      title={label}
+      className={cn(
+        "ml-auto h-2 w-2 flex-shrink-0 rounded-full",
+        badge.dot === "destructive"
+          ? "bg-destructive"
+          : badge.dot === "warning"
+            ? "bg-warning"
+            : "bg-success"
+      )}
+    />
+  );
+}
+
+/**
+ * Badges for the rail rows, mirroring the mobile agent-detail rows.
+ *
+ * Loaded once per agent so a section shows its size (or its pulse) before you
+ * ever open it. Staying live afterwards costs one request, not six: the only
+ * section whose badge can change is the one you're standing in, so its badge is
+ * refreshed on the way out. While you're inside it the panel is the truth.
+ *
+ * Badges are cosmetic — a failed fetch just leaves the row bare.
+ */
+function useSectionBadges(agentId: string, activeSection: string) {
+  const [badges, setBadges] = useState<Record<string, SectionBadge>>({});
   // Guards against a slow response for the previous agent landing after a
   // switch and badging the new agent with the old one's numbers.
   const loadedFor = useRef(agentId);
 
   const load = useCallback(
     (key: string) => {
-      const fetcher = SECTION_COUNTS[key];
+      const fetcher = SECTION_BADGES[key];
       if (!fetcher) return;
       const forAgent = agentId;
       fetcher(forAgent)
-        .then((n) => {
+        .then((badge) => {
           if (loadedFor.current !== forAgent) return;
-          setCounts((prev) => (prev[key] === n ? prev : { ...prev, [key]: n }));
+          setBadges((prev) =>
+            sameBadge(prev[key], badge) ? prev : { ...prev, [key]: badge }
+          );
         })
         .catch(() => {});
     },
@@ -210,8 +280,8 @@ function useSectionCounts(agentId: string, activeSection: string) {
 
   useEffect(() => {
     loadedFor.current = agentId;
-    setCounts({});
-    Object.keys(SECTION_COUNTS).forEach(load);
+    setBadges({});
+    Object.keys(SECTION_BADGES).forEach(load);
   }, [agentId, load]);
 
   const previousSection = useRef(activeSection);
@@ -221,7 +291,7 @@ function useSectionCounts(agentId: string, activeSection: string) {
     if (left !== activeSection) load(left);
   }, [activeSection, load]);
 
-  return counts;
+  return badges;
 }
 
 // Display labels + one-line hints for the CLI connection (auth/runtime)
@@ -455,9 +525,9 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
   const [activeSection, setActiveSection] = useState("config");
   const [showGallery, setShowGallery] = useState(false);
 
-  // Rail badge counts. Templates isn't fetched — the assigned set is already
+  // Rail badges. Templates isn't fetched — the assigned set is already
   // on the agent record, so it stays live for free.
-  const counts = useSectionCounts(agent.id, activeSection);
+  const badges = useSectionBadges(agent.id, activeSection);
   const templateCount = Object.keys(
     agent.structuredCapabilities?.detail_templates ?? {}
   ).length;
@@ -544,8 +614,8 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
       value: string;
       label: string;
       icon: typeof Settings2;
-      /** Rail badge. Omitted (or 0) renders no badge. */
-      count?: number;
+      /** Rail badge: a count, a status dot, or nothing (0/null/absent). */
+      badge?: SectionBadge;
     }>;
   }> = [
     {
@@ -571,18 +641,18 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
       key: "capabilities",
       name: t("sections.capabilities"),
       sections: [
-        { value: "skills", label: t("skills.title"), icon: Sparkles, count: counts.skills },
-        { value: "tools", label: t("toolsTab.title"), icon: Wrench, count: counts.tools },
-        { value: "memory", label: t("memory:title"), icon: Brain, count: counts.memory },
+        { value: "skills", label: t("skills.title"), icon: Sparkles, badge: badges.skills },
+        { value: "tools", label: t("toolsTab.title"), icon: Wrench, badge: badges.tools },
+        { value: "memory", label: t("memory:title"), icon: Brain, badge: badges.memory },
         {
           value: "templates",
           label: t("nav:templates"),
           icon: LayoutTemplate,
-          count: templateCount,
+          badge: templateCount,
         },
-        { value: "routines", label: t("routines.title"), icon: Timer, count: counts.routines },
-        { value: "loops", label: t("loops.title"), icon: Repeat, count: counts.loops },
-        { value: "pulse", label: t("pulse.title"), icon: HeartPulse },
+        { value: "routines", label: t("routines.title"), icon: Timer, badge: badges.routines },
+        { value: "loops", label: t("loops.title"), icon: Repeat, badge: badges.loops },
+        { value: "pulse", label: t("pulse.title"), icon: HeartPulse, badge: badges.pulse },
       ],
     },
     // Sharing group gated behind the `agent_sharing` feature flag.
@@ -651,20 +721,10 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
                   >
                     <section.icon className="w-4 h-4 flex-shrink-0" />
                     <span className="truncate">{section.label}</span>
-                    {/* Count badge, same affordance as the mobile detail rows:
-                        hidden at zero rather than shown as "0". */}
-                    {!!section.count && (
-                      <span
-                        className={cn(
-                          "ml-auto flex-shrink-0 rounded px-1.5 py-0.5 text-[10px] font-semibold tabular-nums",
-                          activeSection === section.value
-                            ? "bg-primary/20 text-primary"
-                            : "bg-muted-foreground/15 text-muted-foreground"
-                        )}
-                      >
-                        {section.count}
-                      </span>
-                    )}
+                    <RailBadge
+                      badge={section.badge}
+                      active={activeSection === section.value}
+                    />
                   </button>
                 ))}
               </div>
