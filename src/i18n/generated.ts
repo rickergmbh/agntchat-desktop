@@ -4373,14 +4373,12 @@ export const resources = {
         "customApis": "Custom APIs",
         "friends": "Friends",
         "help": "Help",
-        "language": "Language",
         "llmKeys": "LLM Keys",
         "locationSharing": "Location Sharing",
         "manage": "Manage",
         "memory": "Memory",
         "notifications": "Notifications",
-        "profile": "Profile",
-        "region": "Region"
+        "profile": "Profile"
       },
       "signOutConfirm": "Are you sure you want to sign out?",
       "theme": {
@@ -9349,14 +9347,12 @@ export const resources = {
         "customApis": "APIs personalizadas",
         "friends": "Amigos",
         "help": "Ayuda",
-        "language": "Idioma",
         "llmKeys": "Claves LLM",
         "locationSharing": "Compartir ubicación",
         "manage": "Gestionar",
         "memory": "Memoria",
         "notifications": "Notificaciones",
-        "profile": "Perfil",
-        "region": "Región"
+        "profile": "Perfil"
       },
       "signOutConfirm": "¿Seguro que quieres cerrar sesión?",
       "theme": {
@@ -14325,14 +14321,12 @@ export const resources = {
         "customApis": "Benutzerdefinierte APIs",
         "friends": "Freunde",
         "help": "Hilfe",
-        "language": "Sprache",
         "llmKeys": "LLM-Schlüssel",
         "locationSharing": "Standortfreigabe",
         "manage": "Verwalten",
         "memory": "Erinnerungen",
         "notifications": "Benachrichtigungen",
-        "profile": "Profil",
-        "region": "Region"
+        "profile": "Profil"
       },
       "signOutConfirm": "Möchten Sie sich wirklich abmelden?",
       "theme": {
@@ -19301,14 +19295,12 @@ export const resources = {
         "customApis": "APIs personnalisées",
         "friends": "Amis",
         "help": "Aide",
-        "language": "Langue",
         "llmKeys": "Clés LLM",
         "locationSharing": "Partage de localisation",
         "manage": "Gérer",
         "memory": "Mémoire",
         "notifications": "Notifications",
-        "profile": "Profil",
-        "region": "Région"
+        "profile": "Profil"
       },
       "signOutConfirm": "Voulez-vous vraiment vous déconnecter ?",
       "theme": {
@@ -24277,14 +24269,12 @@ export const resources = {
         "customApis": "APIs personalizadas",
         "friends": "Amigos",
         "help": "Ajuda",
-        "language": "Idioma",
         "llmKeys": "Chaves de LLM",
         "locationSharing": "Compartilhamento de localização",
         "manage": "Gerenciar",
         "memory": "Memória",
         "notifications": "Notificações",
-        "profile": "Perfil",
-        "region": "Região"
+        "profile": "Perfil"
       },
       "signOutConfirm": "Tem certeza de que deseja sair?",
       "theme": {
@@ -29253,14 +29243,12 @@ export const resources = {
         "customApis": "カスタムAPI",
         "friends": "フレンド",
         "help": "ヘルプ",
-        "language": "言語",
         "llmKeys": "LLMキー",
         "locationSharing": "位置情報の共有",
         "manage": "管理",
         "memory": "メモリ",
         "notifications": "通知",
-        "profile": "プロフィール",
-        "region": "地域"
+        "profile": "プロフィール"
       },
       "signOutConfirm": "ログアウトしてもよろしいですか？",
       "theme": {
@@ -34229,14 +34217,12 @@ export const resources = {
         "customApis": "自定义 API",
         "friends": "好友",
         "help": "帮助",
-        "language": "语言",
         "llmKeys": "LLM 密钥",
         "locationSharing": "位置共享",
         "manage": "管理",
         "memory": "记忆",
         "notifications": "通知",
-        "profile": "个人资料",
-        "region": "地区"
+        "profile": "个人资料"
       },
       "signOutConfirm": "确定要退出登录吗？",
       "theme": {
@@ -39205,14 +39191,12 @@ export const resources = {
         "customApis": "사용자 지정 API",
         "friends": "친구",
         "help": "도움말",
-        "language": "언어",
         "llmKeys": "LLM 키",
         "locationSharing": "위치 공유",
         "manage": "관리",
         "memory": "메모리",
         "notifications": "알림",
-        "profile": "프로필",
-        "region": "지역"
+        "profile": "프로필"
       },
       "signOutConfirm": "로그아웃하시겠습니까?",
       "theme": {
@@ -44181,14 +44165,12 @@ export const resources = {
         "customApis": "API personalizzate",
         "friends": "Amici",
         "help": "Aiuto",
-        "language": "Lingua",
         "llmKeys": "Chiavi LLM",
         "locationSharing": "Condivisione posizione",
         "manage": "Gestisci",
         "memory": "Memoria",
         "notifications": "Notifiche",
-        "profile": "Profilo",
-        "region": "Regione"
+        "profile": "Profilo"
       },
       "signOutConfirm": "Sei sicuro di voler uscire?",
       "theme": {
@@ -49157,14 +49139,12 @@ export const resources = {
         "customApis": "कस्टम API",
         "friends": "मित्र",
         "help": "सहायता",
-        "language": "भाषा",
         "llmKeys": "LLM कुंजियाँ",
         "locationSharing": "लोकेशन साझाकरण",
         "manage": "प्रबंधित करें",
         "memory": "मेमोरी",
         "notifications": "सूचनाएँ",
-        "profile": "प्रोफ़ाइल",
-        "region": "क्षेत्र"
+        "profile": "प्रोफ़ाइल"
       },
       "signOutConfirm": "क्या आप वाकई साइन आउट करना चाहते हैं?",
       "theme": {

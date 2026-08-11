@@ -30,12 +30,6 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import {
   Select,
   SelectContent,
   SelectItem,
@@ -84,6 +78,7 @@ import {
   Clock,
   AtSign,
   Bot,
+  Languages,
 } from "lucide-react";
 import { deviceTimezone, filterTimezones, formatTimezoneLabel } from "../lib/timezones";
 import { getInitials } from "../lib/utils";
@@ -151,7 +146,11 @@ const SECTIONS = [
   { value: "profile", labelKey: "sections.profile", icon: User },
   { value: "friends", labelKey: "sections.friends", icon: Users },
   { value: "appearance", labelKey: "sections.appearance", icon: Palette },
-  { value: "region", labelKey: "sections.region", icon: Globe },
+  // Language and Timezone are their own rows, as on mobile — they were a
+  // combined "Region" section, which buried two unrelated settings behind a
+  // word neither of them uses. Same label keys mobile's rows use.
+  { value: "language", labelKey: "language.label", icon: Languages },
+  { value: "timezone", labelKey: "timezone.label", icon: Globe },
   { value: "notifications", labelKey: "sections.notifications", icon: Bell },
   { value: "memory", labelKey: "sections.memory", icon: Brain },
   { value: "llm-keys", labelKey: "sections.llmKeys", icon: Key },
@@ -689,71 +688,60 @@ export function Profile({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="flex h-full">
-      {/* Vertical icon sidebar — matches AgentConfig */}
-      <TooltipProvider delay={300}>
-        <div className="w-12 border-r border-border bg-muted/30 flex flex-col items-center py-3 gap-1 flex-shrink-0">
-          {/* User avatar at top */}
-          <div className="mb-2">
-            <Avatar className="h-8 w-8 rounded-lg">
-              {participant?.avatarUrl && (
-                <AvatarImage src={participant.avatarUrl} className="rounded-lg" />
-              )}
-              <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-xs font-semibold">
-                <User className="w-3.5 h-3.5" />
-              </AvatarFallback>
-            </Avatar>
-          </div>
+      {/* Vertical section rail — labelled rows, matching the agent-detail rail */}
+      <div className="w-56 border-r border-border bg-muted/30 flex flex-col flex-shrink-0">
+        {/* Avatar band, h-14 so its bottom border lines up with the content
+            panel's header divider across the seam. */}
+        <div className="h-14 shrink-0 flex items-center px-3 border-b border-border w-full">
+          <Avatar className="h-8 w-8 rounded-lg">
+            {participant?.avatarUrl && (
+              <AvatarImage src={participant.avatarUrl} className="rounded-lg" />
+            )}
+            <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-xs font-semibold">
+              <User className="w-3.5 h-3.5" />
+            </AvatarFallback>
+          </Avatar>
+        </div>
 
-          <Separator className="w-6 mb-1" />
-
+        {/* Scrolls on short windows — eleven labelled rows outgrow a small
+            viewport where eleven icons didn't. */}
+        <div className="flex flex-1 flex-col gap-0.5 py-3 px-2 overflow-y-auto">
           {visibleSections.map((section) => (
-            <Tooltip key={section.value}>
-              <TooltipTrigger
-                render={
-                  <button
-                    onClick={() => setActiveSection(section.value)}
-                    className={cn(
-                      "w-8 h-8 rounded-md flex items-center justify-center transition-colors",
-                      activeSection === section.value
-                        ? "bg-primary/10 text-primary"
-                        : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                    )}
-                  >
-                    <section.icon className="w-4 h-4" />
-                  </button>
-                }
-              />
-              <TooltipContent side="right" className="text-xs">
+            <button
+              key={section.value}
+              onClick={() => setActiveSection(section.value)}
+              className={cn(
+                "w-full flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm transition-colors",
+                activeSection === section.value
+                  ? "bg-primary/10 text-primary font-medium"
+                  : "text-muted-foreground hover:text-foreground hover:bg-accent"
+              )}
+            >
+              <section.icon className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate" title={t(section.labelKey)}>
                 {t(section.labelKey)}
-              </TooltipContent>
-            </Tooltip>
+              </span>
+            </button>
           ))}
 
-          {/* Close button at bottom */}
-          <div className="mt-auto">
-            <Tooltip>
-              <TooltipTrigger
-                render={
-                  <button
-                    onClick={onClose}
-                    className="w-8 h-8 rounded-md flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                }
-              />
-              <TooltipContent side="right" className="text-xs">
-                {t("common:close")}
-              </TooltipContent>
-            </Tooltip>
+          {/* Close, pinned to the bottom of the rail. */}
+          <div className="mt-auto pt-1">
+            <Separator className="mb-1" />
+            <button
+              onClick={onClose}
+              className="w-full flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+            >
+              <X className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate">{t("common:close")}</span>
+            </button>
           </div>
         </div>
-      </TooltipProvider>
+      </div>
 
       {/* Content panel */}
       <div className="flex-1 flex flex-col min-h-0 min-w-0 overflow-hidden">
         {/* Header */}
-        <div className="px-5 py-3 border-b border-border flex items-center gap-2.5 flex-shrink-0">
+        <div className="h-14 px-5 border-b border-border flex items-center gap-2.5 flex-shrink-0">
           <div className="min-w-0">
             <h2 className="text-sm font-semibold truncate">
               {(() => {
@@ -926,11 +914,17 @@ export function Profile({ onClose }: { onClose: () => void }) {
           </div>
         )}
 
-        {activeSection === "region" && (
+        {activeSection === "language" && (
           <div className="flex-1 overflow-y-auto p-5 space-y-6">
             <LanguageSection />
-            <Separator />
+          </div>
+        )}
+
+        {activeSection === "timezone" && (
+          <div className="flex-1 overflow-y-auto p-5 space-y-6">
             <TimezoneSection />
+            {/* Device nickname sits with Timezone: both describe THIS
+                machine, and the timezone picker offers "use device". */}
             <Separator />
             <DeviceSection />
           </div>
