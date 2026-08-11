@@ -7,6 +7,7 @@ import {
   updateAgent,
 } from "../lib/api";
 import { useAgentStore, type ManagedAgent } from "../stores/agentStore";
+import { TemplateCardPreview } from "./TemplateCardPreview";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -188,60 +189,23 @@ export function AgentTemplates({ managed }: AgentTemplatesProps) {
         </>
       )}
 
-      {/* View Template Dialog */}
+      {/* View Template Dialog — rendered card preview only */}
       <Dialog
         open={!!viewTemplate}
         onOpenChange={() => setViewTemplate(null)}
       >
-        <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{viewTemplate?.name}</DialogTitle>
+            <DialogTitle className="font-mono">{viewTemplate?.name}</DialogTitle>
+            {viewTemplate?.description && (
+              <p className="text-xs text-muted-foreground">
+                {viewTemplate.description}
+              </p>
+            )}
           </DialogHeader>
           {viewTemplate && (
-            <div className="space-y-3">
-              {viewTemplate.description && (
-                <p className="text-sm text-muted-foreground">
-                  {viewTemplate.description}
-                </p>
-              )}
-              <div className="flex gap-2 flex-wrap">
-                <Badge variant="secondary">{viewTemplate.resultType}</Badge>
-              </div>
-              <div>
-                <p className="text-xs font-semibold text-muted-foreground mb-2">
-                  {t("fieldsWithCount", { count: viewTemplate.fields.length })}
-                </p>
-                <div className="space-y-1">
-                  {viewTemplate.fields.map((f) => (
-                    <div
-                      key={f.key}
-                      className="flex items-center justify-between px-3 py-1.5 rounded border text-xs"
-                    >
-                      <span className="font-mono font-medium">{f.key}</span>
-                      <div className="flex items-center gap-2">
-                        {f.label && (
-                          <span className="text-muted-foreground">
-                            {f.label}
-                          </span>
-                        )}
-                        <Badge variant="outline" className="text-[10px]">
-                          {f.display}
-                        </Badge>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              {viewTemplate.sampleData && (
-                <div>
-                  <p className="text-xs font-semibold text-muted-foreground mb-2">
-                    {t("sampleData")}
-                  </p>
-                  <pre className="bg-muted rounded-lg p-3 text-xs font-mono overflow-x-auto">
-                    {JSON.stringify(viewTemplate.sampleData, null, 2)}
-                  </pre>
-                </div>
-              )}
+            <div className="flex justify-center rounded-xl border border-border bg-muted/20 p-4">
+              <TemplateCardPreview template={viewTemplate} />
             </div>
           )}
         </DialogContent>
@@ -281,7 +245,7 @@ function AddTemplateDialog({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{t("add")}</DialogTitle>
         </DialogHeader>
