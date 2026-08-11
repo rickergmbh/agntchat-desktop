@@ -180,10 +180,10 @@ function buildScheduleConfig(state: ScheduleState): {
 }
 
 const SCHEDULE_MODES: Array<{ key: ScheduleMode; labelKey: string }> = [
-  { key: "interval", labelKey: "routines.modes.interval" },
-  { key: "hourly", labelKey: "routines.modes.hourly" },
-  { key: "datetime", labelKey: "routines.modes.datetime" },
-  { key: "custom", labelKey: "routines.modes.custom" },
+  { key: "interval", labelKey: "routines.mode.interval" },
+  { key: "hourly", labelKey: "routines.mode.hourly" },
+  { key: "datetime", labelKey: "routines.mode.datetime" },
+  { key: "custom", labelKey: "routines.mode.custom" },
 ];
 
 const DAY_PRESETS: Array<{ key: string; labelKey: string; days: number[] }> = [

@@ -994,20 +994,6 @@ export const resources = {
         "triggerMode": "Trigger"
       },
       "memory": {
-        "category": {
-          "fact": "Fact",
-          "learning": "Learning",
-          "preference": "Preference",
-          "relationship": "Relationship",
-          "skill": "Skill"
-        },
-        "categoryPlural": {
-          "fact": "Facts",
-          "learning": "Learnings",
-          "preference": "Preferences",
-          "relationship": "Relationships",
-          "skill": "Skills"
-        },
         "deleteAgentConfirm": "Delete this agent memory (\"{{key}}\")? This only affects {{name}}.",
         "deleteFailed": "Failed to delete memory",
         "keyContentRequired": "Key and content are required.",
@@ -3283,6 +3269,20 @@ export const resources = {
       "alreadyExistsMessage": "A memory with key \"{{key}}\" already exists in {{category}}. Edit the existing memory instead.",
       "alreadyExistsTitle": "Already exists",
       "capabilities": "Capabilities",
+      "categoryPlural": {
+        "fact": "Facts",
+        "learning": "Learnings",
+        "preference": "Preferences",
+        "relationship": "Relationships",
+        "skill": "Skills"
+      },
+      "categorySingular": {
+        "fact": "Fact",
+        "learning": "Learning",
+        "preference": "Preference",
+        "relationship": "Relationship",
+        "skill": "Skill"
+      },
       "completedWork": "Completed Work",
       "confidence": "Confidence: {{percent}}%",
       "currentState": "Current State",
@@ -5973,20 +5973,6 @@ export const resources = {
         "triggerMode": "Disparador"
       },
       "memory": {
-        "category": {
-          "fact": "Dato",
-          "learning": "Aprendizaje",
-          "preference": "Preferencia",
-          "relationship": "Relación",
-          "skill": "Habilidad"
-        },
-        "categoryPlural": {
-          "fact": "Datos",
-          "learning": "Aprendizajes",
-          "preference": "Preferencias",
-          "relationship": "Relaciones",
-          "skill": "Habilidades"
-        },
         "deleteAgentConfirm": "¿Eliminar este recuerdo del agente (\"{{key}}\")? Esto solo afecta a {{name}}.",
         "deleteFailed": "Error al eliminar el recuerdo",
         "keyContentRequired": "Se requieren la clave y el contenido.",
@@ -8262,6 +8248,20 @@ export const resources = {
       "alreadyExistsMessage": "Ya existe una memoria con la clave \"{{key}}\" en {{category}}. Edita la memoria existente en su lugar.",
       "alreadyExistsTitle": "Ya existe",
       "capabilities": "Capacidades",
+      "categoryPlural": {
+        "fact": "Datos",
+        "learning": "Aprendizajes",
+        "preference": "Preferencias",
+        "relationship": "Relaciones",
+        "skill": "Habilidades"
+      },
+      "categorySingular": {
+        "fact": "Dato",
+        "learning": "Aprendizaje",
+        "preference": "Preferencia",
+        "relationship": "Relación",
+        "skill": "Habilidad"
+      },
       "completedWork": "Trabajo completado",
       "confidence": "Confianza: {{percent}}%",
       "currentState": "Estado actual",
@@ -10952,20 +10952,6 @@ export const resources = {
         "triggerMode": "Auslöser"
       },
       "memory": {
-        "category": {
-          "fact": "Fakt",
-          "learning": "Erkenntnis",
-          "preference": "Präferenz",
-          "relationship": "Beziehung",
-          "skill": "Fähigkeit"
-        },
-        "categoryPlural": {
-          "fact": "Fakten",
-          "learning": "Erkenntnisse",
-          "preference": "Präferenzen",
-          "relationship": "Beziehungen",
-          "skill": "Fähigkeiten"
-        },
         "deleteAgentConfirm": "Diese Agentenerinnerung („{{key}}“) löschen? Dies betrifft nur {{name}}.",
         "deleteFailed": "Löschen der Erinnerung fehlgeschlagen",
         "keyContentRequired": "Schlüssel und Inhalt sind erforderlich.",
@@ -13241,6 +13227,20 @@ export const resources = {
       "alreadyExistsMessage": "Eine Erinnerung mit dem Schlüssel \"{{key}}\" existiert bereits in {{category}}. Bearbeiten Sie stattdessen die vorhandene Erinnerung.",
       "alreadyExistsTitle": "Bereits vorhanden",
       "capabilities": "Fähigkeiten",
+      "categoryPlural": {
+        "fact": "Fakten",
+        "learning": "Erkenntnisse",
+        "preference": "Präferenzen",
+        "relationship": "Beziehungen",
+        "skill": "Fähigkeiten"
+      },
+      "categorySingular": {
+        "fact": "Fakt",
+        "learning": "Erkenntnis",
+        "preference": "Präferenz",
+        "relationship": "Beziehung",
+        "skill": "Fähigkeit"
+      },
       "completedWork": "Abgeschlossene Arbeit",
       "confidence": "Konfidenz: {{percent}}%",
       "currentState": "Aktueller Status",
@@ -15931,20 +15931,6 @@ export const resources = {
         "triggerMode": "Déclencheur"
       },
       "memory": {
-        "category": {
-          "fact": "Fait",
-          "learning": "Apprentissage",
-          "preference": "Préférence",
-          "relationship": "Relation",
-          "skill": "Compétence"
-        },
-        "categoryPlural": {
-          "fact": "Faits",
-          "learning": "Apprentissages",
-          "preference": "Préférences",
-          "relationship": "Relations",
-          "skill": "Compétences"
-        },
         "deleteAgentConfirm": "Supprimer ce souvenir de l'agent (« {{key}} ») ? Cela n'affecte que {{name}}.",
         "deleteFailed": "Échec de la suppression du souvenir",
         "keyContentRequired": "La clé et le contenu sont requis.",
@@ -18220,6 +18206,20 @@ export const resources = {
       "alreadyExistsMessage": "Une mémoire avec la clé «{{key}}» existe déjà dans {{category}}. Modifiez plutôt la mémoire existante.",
       "alreadyExistsTitle": "Existe déjà",
       "capabilities": "Capacités",
+      "categoryPlural": {
+        "fact": "Faits",
+        "learning": "Apprentissages",
+        "preference": "Préférences",
+        "relationship": "Relations",
+        "skill": "Compétences"
+      },
+      "categorySingular": {
+        "fact": "Fait",
+        "learning": "Apprentissage",
+        "preference": "Préférence",
+        "relationship": "Relation",
+        "skill": "Compétence"
+      },
       "completedWork": "Travail terminé",
       "confidence": "Confiance : {{percent}} %",
       "currentState": "État actuel",
@@ -20910,20 +20910,6 @@ export const resources = {
         "triggerMode": "Gatilho"
       },
       "memory": {
-        "category": {
-          "fact": "Fato",
-          "learning": "Aprendizado",
-          "preference": "Preferência",
-          "relationship": "Relacionamento",
-          "skill": "Habilidade"
-        },
-        "categoryPlural": {
-          "fact": "Fatos",
-          "learning": "Aprendizados",
-          "preference": "Preferências",
-          "relationship": "Relacionamentos",
-          "skill": "Habilidades"
-        },
         "deleteAgentConfirm": "Excluir esta memória do agente (\"{{key}}\")? Isso afeta apenas {{name}}.",
         "deleteFailed": "Falha ao excluir memória",
         "keyContentRequired": "Chave e conteúdo são obrigatórios.",
@@ -23199,6 +23185,20 @@ export const resources = {
       "alreadyExistsMessage": "Já existe uma memória com a chave \"{{key}}\" em {{category}}. Edite a memória existente.",
       "alreadyExistsTitle": "Já existe",
       "capabilities": "Capacidades",
+      "categoryPlural": {
+        "fact": "Fatos",
+        "learning": "Aprendizados",
+        "preference": "Preferências",
+        "relationship": "Relacionamentos",
+        "skill": "Habilidades"
+      },
+      "categorySingular": {
+        "fact": "Fato",
+        "learning": "Aprendizado",
+        "preference": "Preferência",
+        "relationship": "Relacionamento",
+        "skill": "Habilidade"
+      },
       "completedWork": "Trabalho concluído",
       "confidence": "Confiança: {{percent}}%",
       "currentState": "Estado atual",
@@ -25889,20 +25889,6 @@ export const resources = {
         "triggerMode": "トリガー"
       },
       "memory": {
-        "category": {
-          "fact": "事実",
-          "learning": "学び",
-          "preference": "好み",
-          "relationship": "関係",
-          "skill": "スキル"
-        },
-        "categoryPlural": {
-          "fact": "事実",
-          "learning": "学び",
-          "preference": "好み",
-          "relationship": "関係",
-          "skill": "スキル"
-        },
         "deleteAgentConfirm": "このエージェントの記憶（「{{key}}」）を削除しますか？{{name}}のみに影響します。",
         "deleteFailed": "記憶の削除に失敗しました",
         "keyContentRequired": "キーと内容は必須です。",
@@ -28178,6 +28164,20 @@ export const resources = {
       "alreadyExistsMessage": "キー「{{key}}」を持つメモリーは{{category}}にすでに存在します。既存のメモリーを編集してください。",
       "alreadyExistsTitle": "すでに存在します",
       "capabilities": "能力",
+      "categoryPlural": {
+        "fact": "事実",
+        "learning": "学び",
+        "preference": "好み",
+        "relationship": "関係",
+        "skill": "スキル"
+      },
+      "categorySingular": {
+        "fact": "事実",
+        "learning": "学び",
+        "preference": "好み",
+        "relationship": "関係",
+        "skill": "スキル"
+      },
       "completedWork": "完了した作業",
       "confidence": "信頼度: {{percent}}%",
       "currentState": "現在の状態",
@@ -30868,20 +30868,6 @@ export const resources = {
         "triggerMode": "触发方式"
       },
       "memory": {
-        "category": {
-          "fact": "事实",
-          "learning": "学习心得",
-          "preference": "偏好",
-          "relationship": "关系",
-          "skill": "技能"
-        },
-        "categoryPlural": {
-          "fact": "事实",
-          "learning": "学习心得",
-          "preference": "偏好",
-          "relationship": "关系",
-          "skill": "技能"
-        },
         "deleteAgentConfirm": "删除此智能体记忆（“{{key}}”）？这仅影响 {{name}}。",
         "deleteFailed": "删除记忆失败",
         "keyContentRequired": "键和内容均为必填项。",
@@ -33157,6 +33143,20 @@ export const resources = {
       "alreadyExistsMessage": "键为「{{key}}」的记忆已存在于 {{category}} 中。请编辑现有记忆。",
       "alreadyExistsTitle": "已存在",
       "capabilities": "能力",
+      "categoryPlural": {
+        "fact": "事实",
+        "learning": "学习心得",
+        "preference": "偏好",
+        "relationship": "关系",
+        "skill": "技能"
+      },
+      "categorySingular": {
+        "fact": "事实",
+        "learning": "学习心得",
+        "preference": "偏好",
+        "relationship": "关系",
+        "skill": "技能"
+      },
       "completedWork": "已完成的工作",
       "confidence": "置信度：{{percent}}%",
       "currentState": "当前状态",
@@ -35847,20 +35847,6 @@ export const resources = {
         "triggerMode": "트리거"
       },
       "memory": {
-        "category": {
-          "fact": "사실",
-          "learning": "학습",
-          "preference": "선호",
-          "relationship": "관계",
-          "skill": "스킬"
-        },
-        "categoryPlural": {
-          "fact": "사실",
-          "learning": "학습",
-          "preference": "선호",
-          "relationship": "관계",
-          "skill": "스킬"
-        },
         "deleteAgentConfirm": "이 에이전트 메모리(\"{{key}}\")를 삭제하시겠습니까? {{name}}에만 영향을 미칩니다.",
         "deleteFailed": "메모리 삭제에 실패했습니다",
         "keyContentRequired": "키와 내용은 필수입니다.",
@@ -38136,6 +38122,20 @@ export const resources = {
       "alreadyExistsMessage": "키 \"{{key}}\"를 가진 메모리가 {{category}}에 이미 있습니다. 기존 메모리를 수정하세요.",
       "alreadyExistsTitle": "이미 존재함",
       "capabilities": "기능",
+      "categoryPlural": {
+        "fact": "사실",
+        "learning": "학습",
+        "preference": "선호",
+        "relationship": "관계",
+        "skill": "스킬"
+      },
+      "categorySingular": {
+        "fact": "사실",
+        "learning": "학습",
+        "preference": "선호",
+        "relationship": "관계",
+        "skill": "스킬"
+      },
       "completedWork": "완료된 작업",
       "confidence": "신뢰도: {{percent}}%",
       "currentState": "현재 상태",
@@ -40826,20 +40826,6 @@ export const resources = {
         "triggerMode": "Trigger"
       },
       "memory": {
-        "category": {
-          "fact": "Fatto",
-          "learning": "Apprendimento",
-          "preference": "Preferenza",
-          "relationship": "Relazione",
-          "skill": "Competenza"
-        },
-        "categoryPlural": {
-          "fact": "Fatti",
-          "learning": "Apprendimenti",
-          "preference": "Preferenze",
-          "relationship": "Relazioni",
-          "skill": "Competenze"
-        },
         "deleteAgentConfirm": "Eliminare questa memoria dell'agente (\"{{key}}\")? Questo interessa solo {{name}}.",
         "deleteFailed": "Impossibile eliminare la memoria",
         "keyContentRequired": "Chiave e contenuto sono obbligatori.",
@@ -43115,6 +43101,20 @@ export const resources = {
       "alreadyExistsMessage": "Esiste già una memoria con la chiave \"{{key}}\" in {{category}}. Modifica invece la memoria esistente.",
       "alreadyExistsTitle": "Già esistente",
       "capabilities": "Capacità",
+      "categoryPlural": {
+        "fact": "Fatti",
+        "learning": "Apprendimenti",
+        "preference": "Preferenze",
+        "relationship": "Relazioni",
+        "skill": "Competenze"
+      },
+      "categorySingular": {
+        "fact": "Fatto",
+        "learning": "Apprendimento",
+        "preference": "Preferenza",
+        "relationship": "Relazione",
+        "skill": "Competenza"
+      },
       "completedWork": "Lavoro completato",
       "confidence": "Affidabilità: {{percent}}%",
       "currentState": "Stato attuale",
@@ -45805,20 +45805,6 @@ export const resources = {
         "triggerMode": "ट्रिगर"
       },
       "memory": {
-        "category": {
-          "fact": "तथ्य",
-          "learning": "सीख",
-          "preference": "प्राथमिकता",
-          "relationship": "रिश्ता",
-          "skill": "स्किल"
-        },
-        "categoryPlural": {
-          "fact": "तथ्य",
-          "learning": "सीखें",
-          "preference": "प्राथमिकताएँ",
-          "relationship": "रिश्ते",
-          "skill": "स्किल्स"
-        },
         "deleteAgentConfirm": "यह एजेंट मेमोरी (\"{{key}}\") हटाएँ? इससे केवल {{name}} प्रभावित होंगे।",
         "deleteFailed": "मेमोरी हटाने में विफल",
         "keyContentRequired": "की और कंटेंट आवश्यक हैं।",
@@ -48094,6 +48080,20 @@ export const resources = {
       "alreadyExistsMessage": "कुंजी \"{{key}}\" वाली एक मेमोरी {{category}} में पहले से मौजूद है। इसके बजाय मौजूदा मेमोरी संपादित करें।",
       "alreadyExistsTitle": "पहले से मौजूद है",
       "capabilities": "क्षमताएँ",
+      "categoryPlural": {
+        "fact": "तथ्य",
+        "learning": "सीखें",
+        "preference": "प्राथमिकताएँ",
+        "relationship": "रिश्ते",
+        "skill": "स्किल्स"
+      },
+      "categorySingular": {
+        "fact": "तथ्य",
+        "learning": "सीख",
+        "preference": "प्राथमिकता",
+        "relationship": "रिश्ता",
+        "skill": "स्किल"
+      },
       "completedWork": "पूर्ण किया गया कार्य",
       "confidence": "विश्वास स्तर: {{percent}}%",
       "currentState": "वर्तमान स्थिति",

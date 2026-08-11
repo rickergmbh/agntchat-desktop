@@ -60,12 +60,26 @@ const CATEGORIES: MemoryCategory[] = [
 ];
 
 // labelKey pattern — resolved with t() at render time, never at module scope.
+//
+// Two maps, because one label can't serve both spots: plural reads as a
+// section name (group headers, "already exists in Preferences") while a
+// dropdown option names a single category. They were previously one map
+// pointing at `categories.*`, which does not exist in the memory namespace —
+// so every one of these rendered as the raw key string.
 const CATEGORY_LABEL_KEYS: Record<MemoryCategory, string> = {
-  fact: "categories.fact",
-  preference: "categories.preference",
-  learning: "categories.learning",
-  relationship: "categories.relationship",
-  skill: "categories.skill",
+  fact: "categoryPlural.fact",
+  preference: "categoryPlural.preference",
+  learning: "categoryPlural.learning",
+  relationship: "categoryPlural.relationship",
+  skill: "categoryPlural.skill",
+};
+
+const CATEGORY_SINGULAR_KEYS: Record<MemoryCategory, string> = {
+  fact: "categorySingular.fact",
+  preference: "categorySingular.preference",
+  learning: "categorySingular.learning",
+  relationship: "categorySingular.relationship",
+  skill: "categorySingular.skill",
 };
 
 // A row is either an agent Memory or a FamilyMemory — both share the fields the
@@ -787,14 +801,14 @@ function MemoryFormDialog({
                 <SelectTrigger>
                   <SelectValue>
                     {(val: unknown) =>
-                      t(CATEGORY_LABEL_KEYS[val as MemoryCategory] ?? String(val))
+                      t(CATEGORY_SINGULAR_KEYS[val as MemoryCategory] ?? String(val))
                     }
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {CATEGORIES.map((c) => (
                     <SelectItem key={c} value={c}>
-                      {t(CATEGORY_LABEL_KEYS[c])}
+                      {t(CATEGORY_SINGULAR_KEYS[c])}
                     </SelectItem>
                   ))}
                 </SelectContent>
