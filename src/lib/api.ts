@@ -2620,9 +2620,6 @@ export interface WorkspaceMembership {
   avatarUrl?: string | null;
   isPersonal: boolean;
   role: "owner" | "admin" | "member";
-  /** Count of agents the caller owns in this workspace. Drives the
-   *  "you have N agents working in other workspaces" affordance. */
-  agentCount?: number;
 }
 
 // --- Messaging types + endpoints ---

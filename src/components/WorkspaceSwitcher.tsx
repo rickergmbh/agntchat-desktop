@@ -203,14 +203,6 @@ export function WorkspaceSwitcher() {
                       {(tasksByOrg[w.id] ?? 0) > 99 ? "99+" : tasksByOrg[w.id]}
                     </span>
                   )}
-                  {(w.agentCount ?? 0) > 0 && !isActive && (
-                    <span
-                      className="shrink-0 rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground"
-                      title={t("agents:count", { count: w.agentCount })}
-                    >
-                      {w.agentCount}
-                    </span>
-                  )}
                   {isPending ? (
                     <Loader2 className="h-3 w-3 shrink-0 animate-spin text-muted-foreground" />
                   ) : isActive ? (
