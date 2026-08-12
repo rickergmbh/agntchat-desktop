@@ -135,11 +135,15 @@ export function WorkspaceSwitcher() {
 
       {open && (
         <div
-          className="absolute left-full top-0 z-40 ml-2 max-h-[28rem] w-72 overflow-y-auto rounded-md border border-border bg-popover py-1 shadow-md"
+          className="absolute left-full top-0 z-40 ml-2 max-h-[28rem] w-72 overflow-y-auto rounded-lg border border-border bg-popover py-1 shadow-lg"
           role="listbox"
         >
           <ErrorBanner />
           <PendingInvitesBanner />
+
+          <div className="px-2 pb-1 pt-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+            {t("workspace.workspaces")}
+          </div>
 
           {workspaces.map((w, i) => {
             const isActive = w.id === active?.id;
@@ -153,8 +157,10 @@ export function WorkspaceSwitcher() {
               <div
                 key={w.id}
                 className={cn(
-                  "group flex items-center gap-1 px-1 py-0.5",
-                  isActive ? "bg-accent/40" : "hover:bg-accent/30"
+                  // Inset rounded highlight rather than a full-bleed band —
+                  // matches the app's card language (and the mobile sidebar).
+                  "group mx-1 flex items-center gap-1 rounded-md px-1 transition-colors",
+                  isActive ? "bg-accent" : "hover:bg-accent/50"
                 )}
               >
                 <button
@@ -170,13 +176,18 @@ export function WorkspaceSwitcher() {
                     }
                   }}
                   className={cn(
-                    "flex flex-1 items-center gap-2 rounded-sm px-1 py-1 text-left text-sm transition-colors",
+                    // min-h keeps the Personal row (no role subtitle) the
+                    // same height as the rest, so the active pill doesn't
+                    // render visibly squatter than its neighbours.
+                    "flex min-h-11 min-w-0 flex-1 items-center gap-2.5 py-1.5 text-left text-sm",
                     isActive ? "cursor-default" : "disabled:opacity-50"
                   )}
                   role="option"
                   aria-selected={isActive}
                 >
-                  <div className="h-5 w-5 shrink-0 overflow-hidden rounded">
+                  {/* One 28px slot for avatar and icon-fallback alike, so
+                      rows align whether or not a workspace has an image. */}
+                  <div className="h-7 w-7 shrink-0 overflow-hidden rounded-md">
                     <WorkspaceAvatar
                       name={w.name}
                       avatarUrl={w.avatarUrl}
@@ -184,9 +195,18 @@ export function WorkspaceSwitcher() {
                     />
                   </div>
                   <div className="flex min-w-0 flex-1 flex-col">
-                    <span className="truncate font-medium">{w.name}</span>
+                    <span
+                      className={cn(
+                        "truncate",
+                        isActive
+                          ? "font-semibold text-accent-foreground"
+                          : "font-medium"
+                      )}
+                    >
+                      {w.name}
+                    </span>
                     {!w.isPersonal && (
-                      <span className="text-[10px] text-muted-foreground">
+                      <span className="text-[10px] leading-tight text-muted-foreground">
                         {t(`workspace.roles.${w.role}`)}
                       </span>
                     )}
@@ -216,11 +236,11 @@ export function WorkspaceSwitcher() {
                   )}
                   {/* Fixed-width slot so the hotkey column doesn't shift
                       between the active row (check) and the rest (empty). */}
-                  <span className="flex h-3 w-3 shrink-0 items-center justify-center">
+                  <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center">
                     {isPending ? (
-                      <Loader2 className="h-3 w-3 animate-spin text-muted-foreground" />
+                      <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
                     ) : isActive ? (
-                      <Check className="h-3 w-3 text-primary" />
+                      <Check className="h-3.5 w-3.5 text-primary" />
                     ) : null}
                   </span>
                 </button>
@@ -233,34 +253,38 @@ export function WorkspaceSwitcher() {
                       setSettingsTargetId(w.id);
                       setOpen(false);
                     }}
-                    className="shrink-0 rounded-sm p-1 text-muted-foreground opacity-0 transition-opacity hover:bg-accent hover:text-foreground group-hover:opacity-100 focus:opacity-100"
+                    className="shrink-0 rounded-md p-1.5 text-muted-foreground opacity-0 transition hover:bg-muted hover:text-foreground group-hover:opacity-100 focus:opacity-100"
                     aria-label={t("workspace.settingsFor", { name: w.name })}
                     title={t("workspace.title")}
                   >
-                    <Settings className="h-3 w-3" />
+                    <Settings className="h-3.5 w-3.5" />
                   </button>
                 ) : (
                   // Same footprint as the gear so the Personal row's
                   // hotkey/check column lines up with the rest.
-                  <span aria-hidden className="h-5 w-5 shrink-0 p-1" />
+                  <span aria-hidden className="h-[26px] w-[26px] shrink-0" />
                 )}
               </div>
             );
           })}
 
-          <div className="my-1 border-t border-border" />
-
-          <button
-            type="button"
-            onClick={() => {
-              setShowCreate(true);
-              setOpen(false);
-            }}
-            className="flex w-full items-center gap-2 px-2 py-1.5 text-left text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-          >
-            <Plus className="h-3.5 w-3.5 shrink-0" />
-            <span>{t("workspace.create")}</span>
-          </button>
+          <div className="mt-1 px-1">
+            <button
+              type="button"
+              onClick={() => {
+                setShowCreate(true);
+                setOpen(false);
+              }}
+              className="group flex w-full items-center gap-2.5 rounded-md px-1 py-1.5 text-left text-sm transition-colors hover:bg-accent/50"
+            >
+              {/* Dashed peer of the workspace tiles — reads as "a workspace
+                  that isn't there yet" rather than a stray menu item. */}
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-dashed border-muted-foreground/40 text-muted-foreground transition-colors group-hover:border-muted-foreground/70 group-hover:text-foreground">
+                <Plus className="h-3.5 w-3.5" />
+              </span>
+              <span className="font-medium">{t("workspace.create")}</span>
+            </button>
+          </div>
         </div>
       )}
 
