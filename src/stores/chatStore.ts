@@ -253,6 +253,12 @@ interface ChatState {
    * opened. Used only to render a one-shot "New messages" divider; cleared
    * when the user navigates away or manually reopens the conversation. */
   firstUnreadIds: Record<string, string | undefined>;
+  /** Turn-group keys (message.turnGroupId, or message.id when unset) already
+   * counted toward this session's live unread increments, per conversation.
+   * Dedupes humanlike continuation bubbles and result_presentation carousel
+   * cards — the same logical agent turn — down to one increment. Reset
+   * whenever a conversation's unread is cleared (opened, read elsewhere). */
+  unreadTurnGroups: Record<string, Record<string, true>>;
 
   // Actions — session
   setActiveConversation: (
@@ -270,7 +276,10 @@ interface ChatState {
    *  on) it, so re-opening the same conversation doesn't re-trigger a jump. */
   clearScrollTarget: () => void;
   fetchUnreadCounts: () => Promise<void>;
-  incrementUnread: (conversationId: string) => void;
+  /** `turnGroupKey` is the message's turnGroupId, falling back to its id.
+   * A repeat key for a conversation (continuation bubble / carousel card
+   * sharing an agent turn) is a no-op. */
+  incrementUnread: (conversationId: string, turnGroupKey: string) => void;
   /** Mark a conversation read *only* if it's the one currently open (main pane
    * or side thread) AND this window is focused/visible. Called as messages
    * stream in so the server re-broadcasts `conversation_read` and our other
@@ -301,6 +310,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
   activeConversationId: null,
   activeThreadId: null,
   unreadCounts: {},
+  unreadTurnGroups: {},
   scrollTargetMessageId: null,
 
   fetchConversations: async () => {
@@ -890,6 +900,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
       activeConversationId: id,
       activeThreadId: null,
       unreadCounts: id ? { ...s.unreadCounts, [id]: 0 } : s.unreadCounts,
+      unreadTurnGroups: id ? { ...s.unreadTurnGroups, [id]: {} } : s.unreadTurnGroups,
       firstUnreadIds: captureFirstUnread(s.firstUnreadIds, s.messages, s.unreadCounts, id),
       scrollTargetMessageId: opts?.scrollToMessageId ?? null,
     }));
@@ -918,6 +929,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
     set((s) => ({
       activeThreadId: threadId,
       unreadCounts: { ...s.unreadCounts, [threadId]: 0 },
+      unreadTurnGroups: { ...s.unreadTurnGroups, [threadId]: {} },
       firstUnreadIds: captureFirstUnread(s.firstUnreadIds, s.messages, s.unreadCounts, threadId),
     }));
 
@@ -961,17 +973,31 @@ export const useChatStore = create<ChatState>((set, get) => ({
   fetchUnreadCounts: async () => {
     try {
       const data = await api.fetchUnreadCounts();
-      set({ unreadCounts: data.unreadCounts });
+      // The server count is now authoritative turn-grouped truth — restart
+      // live dedup tracking fresh rather than carrying forward turn keys
+      // from before this resync.
+      set({ unreadCounts: data.unreadCounts, unreadTurnGroups: {} });
     } catch (e) {
       console.warn("[chat] fetchUnreadCounts failed", e);
     }
   },
 
-  incrementUnread: (conversationId) => {
+  incrementUnread: (conversationId, turnGroupKey) => {
+    // Continuation bubbles and carousel cards from the same agent turn share
+    // a turnGroupKey — only the first one seen this unread session bumps the
+    // badge (issue #122). The server's own count (fetchUnreadCounts) is the
+    // periodic source of truth this reconciles against.
+    const seenGroups = get().unreadTurnGroups[conversationId];
+    if (seenGroups && seenGroups[turnGroupKey]) return;
+
     set((s) => ({
       unreadCounts: {
         ...s.unreadCounts,
         [conversationId]: (s.unreadCounts[conversationId] ?? 0) + 1,
+      },
+      unreadTurnGroups: {
+        ...s.unreadTurnGroups,
+        [conversationId]: { ...seenGroups, [turnGroupKey]: true },
       },
     }));
   },
@@ -1028,6 +1054,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
               : c
           ),
           unreadCounts: { ...s.unreadCounts, [threadId]: 0 },
+          unreadTurnGroups: { ...s.unreadTurnGroups, [threadId]: {} },
         }));
       } catch {
         // not a JSON payload — nothing to do
@@ -1209,7 +1236,14 @@ export const useChatStore = create<ChatState>((set, get) => ({
         // are observational and shouldn't accumulate badges.
         const isPersonal = get().conversations.some((c) => c.id === convId);
         if (isPersonal && convId !== get().activeConversationId) {
-          get().incrementUnread(convId);
+          // turnGroupId collapses humanlike continuation bubbles and
+          // result_presentation carousel cards from one agent turn into a
+          // single unread unit (issue #122); falls back to the message id
+          // for an ordinary standalone message.
+          const turnGroupKey = lastMessage?.turnGroupId || lastMessage?.id;
+          if (turnGroupKey) {
+            get().incrementUnread(convId, turnGroupKey);
+          }
         }
       })
     );
@@ -1223,7 +1257,10 @@ export const useChatStore = create<ChatState>((set, get) => ({
         if (!convId) return;
         set((s) => {
           if ((s.unreadCounts[convId] ?? 0) === 0) return s;
-          return { unreadCounts: { ...s.unreadCounts, [convId]: 0 } };
+          return {
+            unreadCounts: { ...s.unreadCounts, [convId]: 0 },
+            unreadTurnGroups: { ...s.unreadTurnGroups, [convId]: {} },
+          };
         });
       })
     );

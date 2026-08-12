@@ -23,6 +23,20 @@ import { AgentActivityIndicator } from "../AgentActivityIndicator";
 import type { AgentActivity } from "../../lib/agent-activity";
 import type { Conversation } from "../../lib/api";
 
+// Issue #122: the badge no longer prints an exact unread count (which read
+// as daunting and, pre-turn-grouping, could over-count a single agent reply
+// split into many rows). It shows THAT there's something new and a coarse
+// sense of scale via dot size — the "New messages" in-conversation divider
+// (firstUnreadIds) is what actually identifies what's new.
+type UnreadTier = "few" | "some" | "many";
+
+function unreadTier(count: number): UnreadTier | null {
+  if (count <= 0) return null;
+  if (count === 1) return "few";
+  if (count <= 4) return "some";
+  return "many";
+}
+
 export function ConversationList() {
   const { t } = useTranslation("chat");
   const conversations = useChatStore((s) => s.conversations);
@@ -135,6 +149,7 @@ const ConversationItem = memo(function ConversationItem({
   currentUserId?: string;
   onClick: () => void;
 }) {
+  const { t } = useTranslation("chat");
   const title = getConversationTitle(conversation, currentUserId);
   const isGroup = conversation.type === "group";
   const isChannel = conversation.type === "channel";
@@ -143,7 +158,8 @@ const ConversationItem = memo(function ConversationItem({
   );
   const otherMember = otherMembers[0]?.participant;
   const showGroupAvatar = isGroup || otherMembers.length >= 2;
-  const hasUnread = unreadCount > 0;
+  const tier = unreadTier(unreadCount);
+  const hasUnread = tier !== null;
   const timeStr = formatConversationTime(conversation.updatedAt);
 
   return (
@@ -212,10 +228,16 @@ const ConversationItem = memo(function ConversationItem({
           >
             {title}
           </span>
-          {hasUnread && (
-            <span className="flex h-4 min-w-4 shrink-0 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
-              {unreadCount > 99 ? "99+" : unreadCount}
-            </span>
+          {tier && (
+            <span
+              aria-label={t("newMessages")}
+              className={cn(
+                "shrink-0 rounded-full bg-primary",
+                tier === "few" && "h-2 w-2",
+                tier === "some" && "h-2.5 w-2.5",
+                tier === "many" && "h-3 w-3"
+              )}
+            />
           )}
           <span className="shrink-0 text-[10px] text-muted-foreground">{timeStr}</span>
         </div>

@@ -2675,6 +2675,11 @@ export interface Message {
   contentStructured?: MessageContentStructured;
   taskSnapshot?: TaskSnapshot;
   parentMessageId?: string;
+  /** Shared by humanlike continuation bubbles and result_presentation cards
+   * extracted from the same source text — dedupes one agent turn into a
+   * single unread unit. Falls back to `id` when unset (see chatStore
+   * incrementUnread). */
+  turnGroupId?: string;
   fileAttachments?: FileAttachment[];
   reactions?: MessageReaction[];
   insertedAt: string;
