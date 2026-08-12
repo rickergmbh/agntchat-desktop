@@ -1006,10 +1006,21 @@ export function Dashboard() {
               <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-3">
                 <Bot className="w-7 h-7 text-primary" />
               </div>
-              <p className="text-sm font-medium text-foreground">{t("empty.title")}</p>
-              <p className="text-xs text-muted-foreground mt-1 mb-4 max-w-xs">
-                {t("empty.createFirstHint")}
-              </p>
+              {totalCount === 0 ? (
+                <>
+                  <p className="text-sm font-medium text-foreground">{t("empty.title")}</p>
+                  <p className="text-xs text-muted-foreground mt-1 mb-4 max-w-xs">
+                    {t("empty.createFirstHint")}
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="text-sm font-medium text-foreground">{t("nav:agents")}</p>
+                  <p className="text-xs text-muted-foreground mt-1 mb-4 max-w-xs">
+                    {t("selectAgentHint")}
+                  </p>
+                </>
+              )}
               <Button size="sm" onClick={() => setShowCreate(true)}>
                 <Plus className="w-3.5 h-3.5" />
                 {t("createAgent")}
