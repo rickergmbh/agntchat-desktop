@@ -3653,7 +3653,8 @@ export const resources = {
         "unknownOwner": "Unknown owner",
         "updateTitle": "Pull latest code + restart",
         "user": "User",
-        "virtualMachine": "Virtual machine"
+        "virtualMachine": "Virtual machine",
+        "vmAlreadyRegistered": "already registered"
       },
       "hostName": "Host name",
       "hostStatus": {
@@ -8637,7 +8638,8 @@ export const resources = {
         "unknownOwner": "Propietario desconocido",
         "updateTitle": "Descargar el código más reciente y reiniciar",
         "user": "Usuario",
-        "virtualMachine": "Máquina virtual"
+        "virtualMachine": "Máquina virtual",
+        "vmAlreadyRegistered": "ya registrada"
       },
       "hostName": "Nombre del host",
       "hostStatus": {
@@ -13621,7 +13623,8 @@ export const resources = {
         "unknownOwner": "Unbekannter Eigentümer",
         "updateTitle": "Neuesten Code ziehen + neu starten",
         "user": "Nutzer",
-        "virtualMachine": "Virtuelle Maschine"
+        "virtualMachine": "Virtuelle Maschine",
+        "vmAlreadyRegistered": "bereits registriert"
       },
       "hostName": "Hostname",
       "hostStatus": {
@@ -18605,7 +18608,8 @@ export const resources = {
         "unknownOwner": "Propriétaire inconnu",
         "updateTitle": "Récupérer le dernier code + redémarrer",
         "user": "Utilisateur",
-        "virtualMachine": "Machine virtuelle"
+        "virtualMachine": "Machine virtuelle",
+        "vmAlreadyRegistered": "déjà enregistrée"
       },
       "hostName": "Nom de l'hôte",
       "hostStatus": {
@@ -23589,7 +23593,8 @@ export const resources = {
         "unknownOwner": "Proprietário desconhecido",
         "updateTitle": "Baixar código mais recente + reiniciar",
         "user": "Usuário",
-        "virtualMachine": "Máquina virtual"
+        "virtualMachine": "Máquina virtual",
+        "vmAlreadyRegistered": "já registrada"
       },
       "hostName": "Nome do host",
       "hostStatus": {
@@ -28573,7 +28578,8 @@ export const resources = {
         "unknownOwner": "不明な所有者",
         "updateTitle": "最新のコードを取得して再起動",
         "user": "ユーザー",
-        "virtualMachine": "仮想マシン"
+        "virtualMachine": "仮想マシン",
+        "vmAlreadyRegistered": "登録済み"
       },
       "hostName": "ホスト名",
       "hostStatus": {
@@ -33557,7 +33563,8 @@ export const resources = {
         "unknownOwner": "未知所有者",
         "updateTitle": "拉取最新代码并重启",
         "user": "用户",
-        "virtualMachine": "虚拟机"
+        "virtualMachine": "虚拟机",
+        "vmAlreadyRegistered": "已注册"
       },
       "hostName": "主机名称",
       "hostStatus": {
@@ -38541,7 +38548,8 @@ export const resources = {
         "unknownOwner": "알 수 없는 소유자",
         "updateTitle": "최신 코드 가져오기 + 재시작",
         "user": "사용자",
-        "virtualMachine": "가상 머신"
+        "virtualMachine": "가상 머신",
+        "vmAlreadyRegistered": "이미 등록됨"
       },
       "hostName": "호스트 이름",
       "hostStatus": {
@@ -43525,7 +43533,8 @@ export const resources = {
         "unknownOwner": "Proprietario sconosciuto",
         "updateTitle": "Scarica il codice più recente + riavvia",
         "user": "Utente",
-        "virtualMachine": "Macchina virtuale"
+        "virtualMachine": "Macchina virtuale",
+        "vmAlreadyRegistered": "già registrata"
       },
       "hostName": "Nome host",
       "hostStatus": {
@@ -48509,7 +48518,8 @@ export const resources = {
         "unknownOwner": "अज्ञात मालिक",
         "updateTitle": "नवीनतम कोड खींचें + पुनः आरंभ करें",
         "user": "उपयोगकर्ता",
-        "virtualMachine": "वर्चुअल मशीन"
+        "virtualMachine": "वर्चुअल मशीन",
+        "vmAlreadyRegistered": "पहले से पंजीकृत"
       },
       "hostName": "होस्ट नाम",
       "hostStatus": {

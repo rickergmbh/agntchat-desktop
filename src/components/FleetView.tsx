@@ -842,8 +842,10 @@ export function ConnectHostDialog({
         if (cancelled) return;
         setVms(list);
         // Preselect the VM the caller pointed us at and autofill from it.
+        // Never preselect a registered VM — it already backs a host, and
+        // re-enrolling it would strand that host's agents.
         if (initialVmId) {
-          const vm = list.find((v) => v.id === initialVmId);
+          const vm = list.find((v) => v.id === initialVmId && !v.registered);
           if (vm) {
             setSelectedVmId(vm.id);
             if (vm.ipv4) setSshHost(vm.ipv4);
@@ -977,10 +979,11 @@ export function ConnectHostDialog({
                 >
                   <option value="">{t("fleet.enterHostManually")}</option>
                   {vms.map((v) => (
-                    <option key={v.id} value={v.id}>
+                    <option key={v.id} value={v.id} disabled={v.registered}>
                       {v.hostname || v.id}
                       {v.ipv4 ? ` — ${v.ipv4}` : ""}
                       {v.state ? ` (${v.state})` : ""}
+                      {v.registered ? ` — ${t("fleet.vmAlreadyRegistered")}` : ""}
                     </option>
                   ))}
                 </select>

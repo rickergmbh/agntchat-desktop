@@ -708,6 +708,8 @@ export interface ProviderVm {
   state?: string | null;
   plan?: string | null;
   datacenter?: string | null;
+  /** Already backs a host (any org) — re-registering it would strand its agents. */
+  registered?: boolean;
 }
 
 /** One agent that runs on a host, with its resolved human owner. */
