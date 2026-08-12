@@ -513,7 +513,7 @@ export const resources = {
         "photoTitle": "Give your agent a face",
         "photoTitleNamed": "Give {{name}} a face",
         "presetHint": "Choose a ready-made agent, or build your own from scratch.",
-        "presetTitle": "Pick a starting point",
+        "presetTitle": "What kind of agent do you want?",
         "presets": {
           "assistant": {
             "description": "Personal assistant that keeps the day on track",
@@ -1770,7 +1770,7 @@ export const resources = {
           "details": "Any extra guidance?",
           "name": "What's their name?",
           "photo": "Give them a face",
-          "preset": "Pick a starting point",
+          "preset": "What kind of agent?",
           "review": "Ready to meet them?",
           "role": "What do they do?",
           "specialties": "What are they good at?",
@@ -5497,7 +5497,7 @@ export const resources = {
         "photoTitle": "Dale una cara a tu agente",
         "photoTitleNamed": "Dale una cara a {{name}}",
         "presetHint": "Elige un agente listo para usar o crea el tuyo desde cero.",
-        "presetTitle": "Elige un punto de partida",
+        "presetTitle": "¿Qué tipo de agente quieres?",
         "presets": {
           "assistant": {
             "description": "Asistente personal que mantiene el día en orden",
@@ -6754,7 +6754,7 @@ export const resources = {
           "details": "¿Alguna indicación adicional?",
           "name": "¿Cómo se llama?",
           "photo": "Dale una cara",
-          "preset": "Elige un punto de partida",
+          "preset": "¿Qué tipo de agente?",
           "review": "¿Listo para conocerlo?",
           "role": "¿Qué hace?",
           "specialties": "¿En qué se destaca?",
@@ -10481,7 +10481,7 @@ export const resources = {
         "photoTitle": "Geben Sie Ihrem Agenten ein Gesicht",
         "photoTitleNamed": "Geben Sie {{name}} ein Gesicht",
         "presetHint": "Wählen Sie einen vorgefertigten Agenten oder bauen Sie einen eigenen von Grund auf.",
-        "presetTitle": "Wählen Sie einen Ausgangspunkt",
+        "presetTitle": "Welche Art von Agent möchten Sie?",
         "presets": {
           "assistant": {
             "description": "Persönlicher Assistent, der den Tag auf Kurs hält",
@@ -11738,7 +11738,7 @@ export const resources = {
           "details": "Weitere Hinweise?",
           "name": "Wie heißt er?",
           "photo": "Gib ihm ein Gesicht",
-          "preset": "Wähle einen Ausgangspunkt",
+          "preset": "Welche Art von Agent?",
           "review": "Bereit, ihn kennenzulernen?",
           "role": "Was macht er?",
           "specialties": "Worin ist er gut?",
@@ -15465,7 +15465,7 @@ export const resources = {
         "photoTitle": "Donnez un visage à votre agent",
         "photoTitleNamed": "Donnez un visage à {{name}}",
         "presetHint": "Choisissez un agent prêt à l'emploi, ou créez le vôtre de zéro.",
-        "presetTitle": "Choisissez un point de départ",
+        "presetTitle": "Quel type d'agent voulez-vous ?",
         "presets": {
           "assistant": {
             "description": "Assistant personnel qui garde la journée sur les rails",
@@ -16722,7 +16722,7 @@ export const resources = {
           "details": "Des consignes supplémentaires ?",
           "name": "Quel est son nom ?",
           "photo": "Donnez-lui un visage",
-          "preset": "Choisissez un point de départ",
+          "preset": "Quel type d'agent ?",
           "review": "Prêt à le rencontrer ?",
           "role": "Que fait-il ?",
           "specialties": "Dans quoi excelle-t-il ?",
@@ -20449,7 +20449,7 @@ export const resources = {
         "photoTitle": "Dê um rosto ao seu agente",
         "photoTitleNamed": "Dê um rosto a {{name}}",
         "presetHint": "Escolha um agente pronto ou crie o seu do zero.",
-        "presetTitle": "Escolha um ponto de partida",
+        "presetTitle": "Que tipo de agente você quer?",
         "presets": {
           "assistant": {
             "description": "Assistente pessoal que mantém o dia nos trilhos",
@@ -21706,7 +21706,7 @@ export const resources = {
           "details": "Alguma orientação adicional?",
           "name": "Qual é o nome dele?",
           "photo": "Dê um rosto a ele",
-          "preset": "Escolha um ponto de partida",
+          "preset": "Que tipo de agente?",
           "review": "Pronto para conhecê-lo?",
           "role": "O que ele faz?",
           "specialties": "No que ele é bom?",
@@ -25433,7 +25433,7 @@ export const resources = {
         "photoTitle": "エージェントに顔を与える",
         "photoTitleNamed": "{{name}}に顔を与える",
         "presetHint": "既成のエージェントを選ぶか、ゼロから自分で作りましょう。",
-        "presetTitle": "出発点を選びましょう",
+        "presetTitle": "どんなエージェントにしますか？",
         "presets": {
           "assistant": {
             "description": "一日を順調に保つパーソナルアシスタント",
@@ -26690,7 +26690,7 @@ export const resources = {
           "details": "追加の指示はありますか？",
           "name": "名前は？",
           "photo": "顔を与えましょう",
-          "preset": "出発点を選ぶ",
+          "preset": "どんなエージェント？",
           "review": "会う準備はできましたか？",
           "role": "何をしますか？",
           "specialties": "何が得意ですか？",
@@ -30417,7 +30417,7 @@ export const resources = {
         "photoTitle": "为您的智能体添加头像",
         "photoTitleNamed": "为 {{name}} 添加头像",
         "presetHint": "选择一个现成的智能体，或从零开始自己打造。",
-        "presetTitle": "选择一个起点",
+        "presetTitle": "您想要什么类型的智能体？",
         "presets": {
           "assistant": {
             "description": "让一天井井有条的私人助理",
@@ -31674,7 +31674,7 @@ export const resources = {
           "details": "还有额外的指导吗？",
           "name": "给它起个名字？",
           "photo": "给它一张脸",
-          "preset": "选择一个起点",
+          "preset": "什么类型的智能体？",
           "review": "准备好见它了吗？",
           "role": "它做什么？",
           "specialties": "它擅长什么？",
@@ -35401,7 +35401,7 @@ export const resources = {
         "photoTitle": "에이전트에게 얼굴을 부여하세요",
         "photoTitleNamed": "{{name}}에게 얼굴을 부여하세요",
         "presetHint": "미리 만들어진 에이전트를 선택하거나 처음부터 직접 만들어 보세요.",
-        "presetTitle": "시작점을 선택하세요",
+        "presetTitle": "어떤 에이전트를 원하시나요?",
         "presets": {
           "assistant": {
             "description": "하루를 순조롭게 관리해 주는 개인 비서",
@@ -36658,7 +36658,7 @@ export const resources = {
           "details": "추가 지침이 있나요?",
           "name": "이름은 무엇인가요?",
           "photo": "얼굴을 만들어 주세요",
-          "preset": "시작점 선택",
+          "preset": "어떤 에이전트?",
           "review": "만날 준비가 되셨나요?",
           "role": "무슨 일을 하나요?",
           "specialties": "무엇을 잘하나요?",
@@ -40385,7 +40385,7 @@ export const resources = {
         "photoTitle": "Dai un volto al tuo agente",
         "photoTitleNamed": "Dai un volto a {{name}}",
         "presetHint": "Scegli un agente pronto all'uso o creane uno da zero.",
-        "presetTitle": "Scegli un punto di partenza",
+        "presetTitle": "Che tipo di agente vuoi?",
         "presets": {
           "assistant": {
             "description": "Assistente personale che tiene la giornata in carreggiata",
@@ -41642,7 +41642,7 @@ export const resources = {
           "details": "Altre indicazioni?",
           "name": "Come si chiama?",
           "photo": "Dagli un volto",
-          "preset": "Scegli un punto di partenza",
+          "preset": "Che tipo di agente?",
           "review": "Pronto a conoscerlo?",
           "role": "Cosa fa?",
           "specialties": "In cosa è bravo?",
@@ -45369,7 +45369,7 @@ export const resources = {
         "photoTitle": "अपने एजेंट को एक चेहरा दें",
         "photoTitleNamed": "{{name}} को एक चेहरा दें",
         "presetHint": "तैयार एजेंट चुनें, या शून्य से अपना खुद का बनाएँ।",
-        "presetTitle": "एक शुरुआती बिंदु चुनें",
+        "presetTitle": "आप किस तरह का एजेंट चाहते हैं?",
         "presets": {
           "assistant": {
             "description": "निजी सहायक जो दिन को व्यवस्थित रखता है",
@@ -46626,7 +46626,7 @@ export const resources = {
           "details": "कोई अतिरिक्त मार्गदर्शन?",
           "name": "इसका नाम क्या है?",
           "photo": "इसे एक चेहरा दें",
-          "preset": "एक प्रारंभिक बिंदु चुनें",
+          "preset": "किस तरह का एजेंट?",
           "review": "इससे मिलने के लिए तैयार हैं?",
           "role": "यह क्या करता है?",
           "specialties": "यह किसमें अच्छा है?",
