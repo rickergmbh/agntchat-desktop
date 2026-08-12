@@ -1720,7 +1720,8 @@ export const resources = {
         "saveFailed": "Failed to save visibility.",
         "selected": "Selected workspaces",
         "selectedHint": "Only visible in the checked workspaces",
-        "unlisted": "Unlisted (link only)"
+        "unlisted": "Unlisted (link only)",
+        "workspaceCount": "{{count}} workspaces"
       },
       "wizard": {
         "addSpecialtyPlaceholder": "Add a specialty",
@@ -6722,7 +6723,8 @@ export const resources = {
         "saveFailed": "No se pudo guardar la visibilidad.",
         "selected": "Espacios de trabajo seleccionados",
         "selectedHint": "Solo visible en los espacios de trabajo marcados",
-        "unlisted": "No listado (solo con enlace)"
+        "unlisted": "No listado (solo con enlace)",
+        "workspaceCount": "{{count}} espacios de trabajo"
       },
       "wizard": {
         "addSpecialtyPlaceholder": "Añadir una especialidad",
@@ -11724,7 +11726,8 @@ export const resources = {
         "saveFailed": "Sichtbarkeit konnte nicht gespeichert werden.",
         "selected": "Ausgewählte Arbeitsbereiche",
         "selectedHint": "Nur in den markierten Arbeitsbereichen sichtbar",
-        "unlisted": "Nicht gelistet (nur per Link)"
+        "unlisted": "Nicht gelistet (nur per Link)",
+        "workspaceCount": "{{count}} Arbeitsbereiche"
       },
       "wizard": {
         "addSpecialtyPlaceholder": "Spezialität hinzufügen",
@@ -16726,7 +16729,8 @@ export const resources = {
         "saveFailed": "Échec de l'enregistrement de la visibilité.",
         "selected": "Espaces de travail sélectionnés",
         "selectedHint": "Visible uniquement dans les espaces de travail cochés",
-        "unlisted": "Non répertorié (lien uniquement)"
+        "unlisted": "Non répertorié (lien uniquement)",
+        "workspaceCount": "{{count}} espaces de travail"
       },
       "wizard": {
         "addSpecialtyPlaceholder": "Ajouter une spécialité",
@@ -21728,7 +21732,8 @@ export const resources = {
         "saveFailed": "Falha ao salvar a visibilidade.",
         "selected": "Espaços de trabalho selecionados",
         "selectedHint": "Visível apenas nos espaços de trabalho marcados",
-        "unlisted": "Não listado (somente link)"
+        "unlisted": "Não listado (somente link)",
+        "workspaceCount": "{{count}} espaços de trabalho"
       },
       "wizard": {
         "addSpecialtyPlaceholder": "Adicionar uma especialidade",
@@ -26730,7 +26735,8 @@ export const resources = {
         "saveFailed": "表示範囲の保存に失敗しました。",
         "selected": "選択したワークスペース",
         "selectedHint": "チェックしたワークスペースのみに表示されます",
-        "unlisted": "非公開（リンクのみ）"
+        "unlisted": "非公開（リンクのみ）",
+        "workspaceCount": "{{count}} 件のワークスペース"
       },
       "wizard": {
         "addSpecialtyPlaceholder": "専門分野を追加",
@@ -31732,7 +31738,8 @@ export const resources = {
         "saveFailed": "保存可见范围失败。",
         "selected": "选定的工作区",
         "selectedHint": "仅在勾选的工作区中可见",
-        "unlisted": "不公开（仅链接可见）"
+        "unlisted": "不公开（仅链接可见）",
+        "workspaceCount": "{{count}} 个工作区"
       },
       "wizard": {
         "addSpecialtyPlaceholder": "添加专长",
@@ -36734,7 +36741,8 @@ export const resources = {
         "saveFailed": "표시 범위 저장 실패.",
         "selected": "선택한 워크스페이스",
         "selectedHint": "선택한 워크스페이스에서만 표시됩니다",
-        "unlisted": "비공개(링크 전용)"
+        "unlisted": "비공개(링크 전용)",
+        "workspaceCount": "워크스페이스 {{count}}개"
       },
       "wizard": {
         "addSpecialtyPlaceholder": "전문 분야 추가",
@@ -41736,7 +41744,8 @@ export const resources = {
         "saveFailed": "Impossibile salvare la visibilità.",
         "selected": "Spazi di lavoro selezionati",
         "selectedHint": "Visibile solo negli spazi di lavoro selezionati",
-        "unlisted": "Non elencato (solo link)"
+        "unlisted": "Non elencato (solo link)",
+        "workspaceCount": "{{count}} spazi di lavoro"
       },
       "wizard": {
         "addSpecialtyPlaceholder": "Aggiungi una specialità",
@@ -46738,7 +46747,8 @@ export const resources = {
         "saveFailed": "दृश्यता सहेजना विफल।",
         "selected": "चयनित वर्कस्पेस",
         "selectedHint": "केवल चिह्नित वर्कस्पेस में दिखाई देगा",
-        "unlisted": "अनलिस्टेड (केवल लिंक से)"
+        "unlisted": "अनलिस्टेड (केवल लिंक से)",
+        "workspaceCount": "{{count}} वर्कस्पेस"
       },
       "wizard": {
         "addSpecialtyPlaceholder": "एक विशेषता जोड़ें",
