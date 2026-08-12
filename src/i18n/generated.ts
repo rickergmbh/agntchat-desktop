@@ -3397,6 +3397,7 @@ export const resources = {
       "settings": "Settings",
       "signOut": "Sign Out",
       "tasks": "Tasks",
+      "team": "Team",
       "templates": "Response Cards"
     },
     "onboarding": {
@@ -8391,6 +8392,7 @@ export const resources = {
       "settings": "Ajustes",
       "signOut": "Cerrar sesión",
       "tasks": "Tareas",
+      "team": "Equipo",
       "templates": "Tarjetas de respuesta"
     },
     "onboarding": {
@@ -13385,6 +13387,7 @@ export const resources = {
       "settings": "Einstellungen",
       "signOut": "Abmelden",
       "tasks": "Aufgaben",
+      "team": "Team",
       "templates": "Antwortkarten"
     },
     "onboarding": {
@@ -18379,6 +18382,7 @@ export const resources = {
       "settings": "Paramètres",
       "signOut": "Se déconnecter",
       "tasks": "Tâches",
+      "team": "Équipe",
       "templates": "Cartes de réponse"
     },
     "onboarding": {
@@ -23373,6 +23377,7 @@ export const resources = {
       "settings": "Configurações",
       "signOut": "Sair",
       "tasks": "Tarefas",
+      "team": "Equipe",
       "templates": "Cartões de resposta"
     },
     "onboarding": {
@@ -28367,6 +28372,7 @@ export const resources = {
       "settings": "設定",
       "signOut": "ログアウト",
       "tasks": "タスク",
+      "team": "チーム",
       "templates": "レスポンスカード"
     },
     "onboarding": {
@@ -33361,6 +33367,7 @@ export const resources = {
       "settings": "设置",
       "signOut": "退出登录",
       "tasks": "任务",
+      "team": "团队",
       "templates": "响应卡片"
     },
     "onboarding": {
@@ -38355,6 +38362,7 @@ export const resources = {
       "settings": "설정",
       "signOut": "로그아웃",
       "tasks": "작업",
+      "team": "팀",
       "templates": "응답 카드"
     },
     "onboarding": {
@@ -43349,6 +43357,7 @@ export const resources = {
       "settings": "Impostazioni",
       "signOut": "Esci",
       "tasks": "Attività",
+      "team": "Team",
       "templates": "Schede di risposta"
     },
     "onboarding": {
@@ -48343,6 +48352,7 @@ export const resources = {
       "settings": "सेटिंग्स",
       "signOut": "साइन आउट",
       "tasks": "कार्य",
+      "team": "टीम",
       "templates": "रिस्पॉन्स कार्ड"
     },
     "onboarding": {
