@@ -54,6 +54,13 @@ export const resources = {
         "tool": "Tool: {{name}}"
       },
       "addAgent": "Add agent",
+      "addFromFamily": {
+        "action": "Add from your agents",
+        "addFailed": "Couldn't add that agent to this workspace. Try again.",
+        "addWithCount": "Add ({{count}})",
+        "empty": "All your agents are already in this workspace.",
+        "title": "Add from your agents"
+      },
       "agentDetails": "Agent Details",
       "agentId": "Agent ID",
       "apiKeyReveal": {
@@ -5049,6 +5056,13 @@ export const resources = {
         "tool": "Herramienta: {{name}}"
       },
       "addAgent": "Añadir agente",
+      "addFromFamily": {
+        "action": "Añadir desde tus agentes",
+        "addFailed": "No se pudo añadir ese agente a este espacio de trabajo. Inténtalo de nuevo.",
+        "addWithCount": "Añadir ({{count}})",
+        "empty": "Todos tus agentes ya están en este espacio de trabajo.",
+        "title": "Añadir desde tus agentes"
+      },
       "agentDetails": "Detalles del agente",
       "agentId": "ID del agente",
       "apiKeyReveal": {
@@ -10044,6 +10058,13 @@ export const resources = {
         "tool": "Tool: {{name}}"
       },
       "addAgent": "Agent hinzufügen",
+      "addFromFamily": {
+        "action": "Aus deinen Agenten hinzufügen",
+        "addFailed": "Der Agent konnte diesem Arbeitsbereich nicht hinzugefügt werden. Bitte erneut versuchen.",
+        "addWithCount": "Hinzufügen ({{count}})",
+        "empty": "Alle deine Agenten sind bereits in diesem Arbeitsbereich.",
+        "title": "Aus deinen Agenten hinzufügen"
+      },
       "agentDetails": "Agent-Details",
       "agentId": "Agent-ID",
       "apiKeyReveal": {
@@ -15039,6 +15060,13 @@ export const resources = {
         "tool": "Outil : {{name}}"
       },
       "addAgent": "Ajouter un agent",
+      "addFromFamily": {
+        "action": "Ajouter depuis vos agents",
+        "addFailed": "Impossible d'ajouter cet agent à cet espace de travail. Réessayez.",
+        "addWithCount": "Ajouter ({{count}})",
+        "empty": "Tous vos agents sont déjà dans cet espace de travail.",
+        "title": "Ajouter depuis vos agents"
+      },
       "agentDetails": "Détails de l'agent",
       "agentId": "ID de l'agent",
       "apiKeyReveal": {
@@ -20034,6 +20062,13 @@ export const resources = {
         "tool": "Ferramenta: {{name}}"
       },
       "addAgent": "Adicionar agente",
+      "addFromFamily": {
+        "action": "Adicionar dos seus agentes",
+        "addFailed": "Não foi possível adicionar esse agente a este espaço de trabalho. Tente novamente.",
+        "addWithCount": "Adicionar ({{count}})",
+        "empty": "Todos os seus agentes já estão neste espaço de trabalho.",
+        "title": "Adicionar dos seus agentes"
+      },
       "agentDetails": "Detalhes do Agente",
       "agentId": "ID do Agente",
       "apiKeyReveal": {
@@ -25029,6 +25064,13 @@ export const resources = {
         "tool": "ツール: {{name}}"
       },
       "addAgent": "エージェントを追加",
+      "addFromFamily": {
+        "action": "自分のエージェントから追加",
+        "addFailed": "このワークスペースにエージェントを追加できませんでした。もう一度お試しください。",
+        "addWithCount": "追加 ({{count}})",
+        "empty": "あなたのエージェントはすべて、すでにこのワークスペースにいます。",
+        "title": "自分のエージェントから追加"
+      },
       "agentDetails": "エージェントの詳細",
       "agentId": "エージェントID",
       "apiKeyReveal": {
@@ -30024,6 +30066,13 @@ export const resources = {
         "tool": "工具：{{name}}"
       },
       "addAgent": "添加智能体",
+      "addFromFamily": {
+        "action": "从您的智能体中添加",
+        "addFailed": "无法将该智能体添加到此工作区，请重试。",
+        "addWithCount": "添加 ({{count}})",
+        "empty": "您的所有智能体都已在此工作区中。",
+        "title": "从您的智能体中添加"
+      },
       "agentDetails": "智能体详情",
       "agentId": "智能体 ID",
       "apiKeyReveal": {
@@ -35019,6 +35068,13 @@ export const resources = {
         "tool": "도구: {{name}}"
       },
       "addAgent": "에이전트 추가",
+      "addFromFamily": {
+        "action": "내 에이전트에서 추가",
+        "addFailed": "이 워크스페이스에 에이전트를 추가하지 못했습니다. 다시 시도해 주세요.",
+        "addWithCount": "추가 ({{count}})",
+        "empty": "내 에이전트가 모두 이미 이 워크스페이스에 있습니다.",
+        "title": "내 에이전트에서 추가"
+      },
       "agentDetails": "에이전트 세부정보",
       "agentId": "에이전트 ID",
       "apiKeyReveal": {
@@ -40014,6 +40070,13 @@ export const resources = {
         "tool": "Strumento: {{name}}"
       },
       "addAgent": "Aggiungi agente",
+      "addFromFamily": {
+        "action": "Aggiungi dai tuoi agenti",
+        "addFailed": "Impossibile aggiungere questo agente a questo spazio di lavoro. Riprova.",
+        "addWithCount": "Aggiungi ({{count}})",
+        "empty": "Tutti i tuoi agenti sono già in questo spazio di lavoro.",
+        "title": "Aggiungi dai tuoi agenti"
+      },
       "agentDetails": "Dettagli Agente",
       "agentId": "ID Agente",
       "apiKeyReveal": {
@@ -45009,6 +45072,13 @@ export const resources = {
         "tool": "टूल: {{name}}"
       },
       "addAgent": "एजेंट जोड़ें",
+      "addFromFamily": {
+        "action": "अपने एजेंट में से जोड़ें",
+        "addFailed": "उस एजेंट को इस वर्कस्पेस में नहीं जोड़ा जा सका। फिर से प्रयास करें।",
+        "addWithCount": "जोड़ें ({{count}})",
+        "empty": "आपके सभी एजेंट पहले से ही इस वर्कस्पेस में हैं।",
+        "title": "अपने एजेंट में से जोड़ें"
+      },
       "agentDetails": "एजेंट विवरण",
       "agentId": "एजेंट आईडी",
       "apiKeyReveal": {
