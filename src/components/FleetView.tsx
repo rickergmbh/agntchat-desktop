@@ -892,7 +892,13 @@ export function ConnectHostDialog({
       setCreated({ hostId: res.host.id, publicKey: res.publicKey });
       onChanged();
     } catch (e) {
-      setError(e instanceof Error ? e.message : t("fleet.errors.connectFailed"));
+      // The backend refuses to re-enroll a box that already backs a host
+      // (typed IP / VM id bypassing the disabled picker rows).
+      if ((e as { code?: string })?.code === "host_already_registered") {
+        setError(t("fleet.errors.hostAlreadyRegistered"));
+      } else {
+        setError(e instanceof Error ? e.message : t("fleet.errors.connectFailed"));
+      }
     } finally {
       setSubmitting(false);
     }
