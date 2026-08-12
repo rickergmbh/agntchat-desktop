@@ -1714,12 +1714,14 @@ export const resources = {
       "visibility": {
         "all": "All workspaces",
         "allHint": "Follows you into every workspace",
+        "allShort": "All",
         "friendsOnly": "Friends only",
         "label": "Visibility",
         "public": "Public",
         "saveFailed": "Failed to save visibility.",
         "selected": "Selected workspaces",
         "selectedHint": "Only visible in the checked workspaces",
+        "selectedShort": "Selected",
         "unlisted": "Unlisted (link only)",
         "workspaceCount": "{{count}} workspaces"
       },
@@ -6717,12 +6719,14 @@ export const resources = {
       "visibility": {
         "all": "Todos los espacios de trabajo",
         "allHint": "Te acompaña en todos los espacios de trabajo",
+        "allShort": "Todos",
         "friendsOnly": "Solo amigos",
         "label": "Visibilidad",
         "public": "Público",
         "saveFailed": "No se pudo guardar la visibilidad.",
         "selected": "Espacios de trabajo seleccionados",
         "selectedHint": "Solo visible en los espacios de trabajo marcados",
+        "selectedShort": "Seleccionados",
         "unlisted": "No listado (solo con enlace)",
         "workspaceCount": "{{count}} espacios de trabajo"
       },
@@ -11720,12 +11724,14 @@ export const resources = {
       "visibility": {
         "all": "Alle Arbeitsbereiche",
         "allHint": "Begleitet Sie in jeden Arbeitsbereich",
+        "allShort": "Alle",
         "friendsOnly": "Nur Freunde",
         "label": "Sichtbarkeit",
         "public": "Öffentlich",
         "saveFailed": "Sichtbarkeit konnte nicht gespeichert werden.",
         "selected": "Ausgewählte Arbeitsbereiche",
         "selectedHint": "Nur in den markierten Arbeitsbereichen sichtbar",
+        "selectedShort": "Ausgewählt",
         "unlisted": "Nicht gelistet (nur per Link)",
         "workspaceCount": "{{count}} Arbeitsbereiche"
       },
@@ -16723,12 +16729,14 @@ export const resources = {
       "visibility": {
         "all": "Tous les espaces de travail",
         "allHint": "Vous suit dans chaque espace de travail",
+        "allShort": "Tous",
         "friendsOnly": "Amis uniquement",
         "label": "Visibilité",
         "public": "Public",
         "saveFailed": "Échec de l'enregistrement de la visibilité.",
         "selected": "Espaces de travail sélectionnés",
         "selectedHint": "Visible uniquement dans les espaces de travail cochés",
+        "selectedShort": "Sélectionnés",
         "unlisted": "Non répertorié (lien uniquement)",
         "workspaceCount": "{{count}} espaces de travail"
       },
@@ -21726,12 +21734,14 @@ export const resources = {
       "visibility": {
         "all": "Todos os espaços de trabalho",
         "allHint": "Acompanha você em todos os espaços de trabalho",
+        "allShort": "Todos",
         "friendsOnly": "Somente amigos",
         "label": "Visibilidade",
         "public": "Público",
         "saveFailed": "Falha ao salvar a visibilidade.",
         "selected": "Espaços de trabalho selecionados",
         "selectedHint": "Visível apenas nos espaços de trabalho marcados",
+        "selectedShort": "Selecionados",
         "unlisted": "Não listado (somente link)",
         "workspaceCount": "{{count}} espaços de trabalho"
       },
@@ -26729,12 +26739,14 @@ export const resources = {
       "visibility": {
         "all": "すべてのワークスペース",
         "allHint": "すべてのワークスペースであなたに同行します",
+        "allShort": "すべて",
         "friendsOnly": "フレンドのみ",
         "label": "表示範囲",
         "public": "公開",
         "saveFailed": "表示範囲の保存に失敗しました。",
         "selected": "選択したワークスペース",
         "selectedHint": "チェックしたワークスペースのみに表示されます",
+        "selectedShort": "選択済み",
         "unlisted": "非公開（リンクのみ）",
         "workspaceCount": "{{count}} 件のワークスペース"
       },
@@ -31732,12 +31744,14 @@ export const resources = {
       "visibility": {
         "all": "所有工作区",
         "allHint": "跟随你进入每个工作区",
+        "allShort": "全部",
         "friendsOnly": "仅好友",
         "label": "可见范围",
         "public": "公开",
         "saveFailed": "保存可见范围失败。",
         "selected": "选定的工作区",
         "selectedHint": "仅在勾选的工作区中可见",
+        "selectedShort": "已选定",
         "unlisted": "不公开（仅链接可见）",
         "workspaceCount": "{{count}} 个工作区"
       },
@@ -36735,12 +36749,14 @@ export const resources = {
       "visibility": {
         "all": "모든 워크스페이스",
         "allHint": "모든 워크스페이스에서 함께합니다",
+        "allShort": "전체",
         "friendsOnly": "친구만",
         "label": "표시 범위",
         "public": "공개",
         "saveFailed": "표시 범위 저장 실패.",
         "selected": "선택한 워크스페이스",
         "selectedHint": "선택한 워크스페이스에서만 표시됩니다",
+        "selectedShort": "선택됨",
         "unlisted": "비공개(링크 전용)",
         "workspaceCount": "워크스페이스 {{count}}개"
       },
@@ -41738,12 +41754,14 @@ export const resources = {
       "visibility": {
         "all": "Tutti gli spazi di lavoro",
         "allHint": "Ti segue in ogni spazio di lavoro",
+        "allShort": "Tutti",
         "friendsOnly": "Solo amici",
         "label": "Visibilità",
         "public": "Pubblico",
         "saveFailed": "Impossibile salvare la visibilità.",
         "selected": "Spazi di lavoro selezionati",
         "selectedHint": "Visibile solo negli spazi di lavoro selezionati",
+        "selectedShort": "Selezionati",
         "unlisted": "Non elencato (solo link)",
         "workspaceCount": "{{count}} spazi di lavoro"
       },
@@ -46741,12 +46759,14 @@ export const resources = {
       "visibility": {
         "all": "सभी वर्कस्पेस",
         "allHint": "हर वर्कस्पेस में आपके साथ रहता है",
+        "allShort": "सभी",
         "friendsOnly": "केवल मित्र",
         "label": "दृश्यता",
         "public": "पब्लिक",
         "saveFailed": "दृश्यता सहेजना विफल।",
         "selected": "चयनित वर्कस्पेस",
         "selectedHint": "केवल चिह्नित वर्कस्पेस में दिखाई देगा",
+        "selectedShort": "चयनित",
         "unlisted": "अनलिस्टेड (केवल लिंक से)",
         "workspaceCount": "{{count}} वर्कस्पेस"
       },
