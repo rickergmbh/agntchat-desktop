@@ -214,14 +214,18 @@ export function WorkspaceSwitcher() {
                       {hotkey}
                     </kbd>
                   )}
-                  {isPending ? (
-                    <Loader2 className="h-3 w-3 shrink-0 animate-spin text-muted-foreground" />
-                  ) : isActive ? (
-                    <Check className="h-3 w-3 shrink-0 text-primary" />
-                  ) : null}
+                  {/* Fixed-width slot so the hotkey column doesn't shift
+                      between the active row (check) and the rest (empty). */}
+                  <span className="flex h-3 w-3 shrink-0 items-center justify-center">
+                    {isPending ? (
+                      <Loader2 className="h-3 w-3 animate-spin text-muted-foreground" />
+                    ) : isActive ? (
+                      <Check className="h-3 w-3 text-primary" />
+                    ) : null}
+                  </span>
                 </button>
 
-                {!w.isPersonal && (
+                {!w.isPersonal ? (
                   <button
                     type="button"
                     onClick={(e) => {
@@ -235,6 +239,10 @@ export function WorkspaceSwitcher() {
                   >
                     <Settings className="h-3 w-3" />
                   </button>
+                ) : (
+                  // Same footprint as the gear so the Personal row's
+                  // hotkey/check column lines up with the rest.
+                  <span aria-hidden className="h-5 w-5 shrink-0 p-1" />
                 )}
               </div>
             );
