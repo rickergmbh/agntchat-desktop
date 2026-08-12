@@ -6,6 +6,7 @@ import {
   useWorkspaces,
   useActiveWorkspace,
 } from "../stores/workspaceStore";
+import { IS_MACOS } from "../hooks/useWorkspaceHotkeys";
 import { CreateWorkspaceDialog } from "./CreateWorkspaceDialog";
 import { WorkspaceSettingsModal } from "./WorkspaceSettingsModal";
 import { PendingInvitesBanner } from "./PendingInvitesBanner";
@@ -140,9 +141,14 @@ export function WorkspaceSwitcher() {
           <ErrorBanner />
           <PendingInvitesBanner />
 
-          {workspaces.map((w) => {
+          {workspaces.map((w, i) => {
             const isActive = w.id === active?.id;
             const isPending = pendingId === w.id;
+            // Cmd/Ctrl+1..9 hotkey hint — key names, not translatable copy.
+            const hotkey =
+              workspaces.length > 1 && i < 9
+                ? `${IS_MACOS ? "⌘" : "Ctrl+"}${i + 1}`
+                : null;
             return (
               <div
                 key={w.id}
@@ -202,6 +208,11 @@ export function WorkspaceSwitcher() {
                       <ListChecks className="h-2.5 w-2.5" />
                       {(tasksByOrg[w.id] ?? 0) > 99 ? "99+" : tasksByOrg[w.id]}
                     </span>
+                  )}
+                  {hotkey && (
+                    <kbd className="shrink-0 font-sans text-[10px] tracking-wide text-muted-foreground/70">
+                      {hotkey}
+                    </kbd>
                   )}
                   {isPending ? (
                     <Loader2 className="h-3 w-3 shrink-0 animate-spin text-muted-foreground" />

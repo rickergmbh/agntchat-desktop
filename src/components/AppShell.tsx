@@ -17,6 +17,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { cn } from "../lib/utils";
 import { useWebSocket } from "../hooks/useWebSocket";
+import { useWorkspaceHotkeys } from "../hooks/useWorkspaceHotkeys";
 import { useChatStore } from "../stores/chatStore";
 import { useAuthStore } from "../stores/authStore";
 import { useAgentStore } from "../stores/agentStore";
@@ -75,6 +76,9 @@ export function AppShell() {
 
   // Connect socket + wire store listeners once we have auth
   useWebSocket();
+
+  // Cmd/Ctrl+1..9 switches workspaces (Slack-style, switcher order).
+  useWorkspaceHotkeys();
 
   // The default view is never set via setView, so emit its $screen here —
   // otherwise a session spent entirely in the initial view has no screen
