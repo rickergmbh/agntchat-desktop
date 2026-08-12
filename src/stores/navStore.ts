@@ -7,6 +7,7 @@ export type View =
   | "agents"
   | "friends"
   | "files"
+  | "hosts"
   | "templates"
   | "previews"
   | "canvas"

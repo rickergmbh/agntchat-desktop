@@ -131,10 +131,15 @@ export function FleetView() {
             />
             {anthropicConnected ? t("fleet.anthropicConnected") : t("fleet.connectAnthropic")}
           </Button>
-          <Button variant="outline" size="sm" onClick={() => setProvisionOpen(true)}>
-            <Cloud className="h-3.5 w-3.5" />
-            {t("fleet.spinUpVm")}
-          </Button>
+          {/* Provisioning buys VPSes on the platform's Hostinger account, so
+              it's platform-operator only (backend-enforced too). Everyone
+              else self-hosts by connecting their own machine (Add host). */}
+          {participant?.platformAdmin && (
+            <Button variant="outline" size="sm" onClick={() => setProvisionOpen(true)}>
+              <Cloud className="h-3.5 w-3.5" />
+              {t("fleet.spinUpVm")}
+            </Button>
+          )}
           <Button size="sm" onClick={() => setConnectOpen(true)}>
             <Plus className="h-3.5 w-3.5" />
             {t("fleet.addHost")}
@@ -191,12 +196,14 @@ export function FleetView() {
           void refresh();
         }}
       />
-      <ProvisionDialog
-        orgId={orgId}
-        open={provisionOpen}
-        onOpenChange={setProvisionOpen}
-        onProvisioned={() => void refresh()}
-      />
+      {participant?.platformAdmin && (
+        <ProvisionDialog
+          orgId={orgId}
+          open={provisionOpen}
+          onOpenChange={setProvisionOpen}
+          onProvisioned={() => void refresh()}
+        />
+      )}
     </div>
   );
 }

@@ -5,6 +5,7 @@ import {
   User,
   Zap,
   LayoutTemplate,
+  Server,
   Shapes,
   FolderOpen,
   ShieldHalf,
@@ -43,6 +44,7 @@ import { FilesView } from "./files/FilesView";
 import { CanvasView } from "./canvas/CanvasView";
 import { Profile } from "./Profile";
 import { FriendsView } from "./FriendsView";
+import { FleetView } from "./FleetView";
 import { PlatformView } from "./PlatformView";
 import { WorkspaceSwitcher } from "./WorkspaceSwitcher";
 
@@ -52,6 +54,7 @@ type View =
   | "agents"
   | "friends"
   | "files"
+  | "hosts"
   | "templates"
   | "previews"
   | "canvas"
@@ -143,6 +146,12 @@ export function AppShell() {
           )
         ) : view === "files" ? (
           <FilesView onOpenConversation={handleOpenConversation} />
+        ) : view === "hosts" ? (
+          // Self-hosting (org hosts) is behind the org_hosts runtime flag —
+          // the backend 404s every host route without it, so a stale
+          // persisted "hosts" view falls back to the dashboard rather than
+          // rendering a surface that can only error.
+          participant?.features?.org_hosts ? <FleetView /> : <Dashboard />
         ) : view === "templates" ? (
           // Response templates are an admin-only area now (matches the rail,
           // which hides the button for non-admins).
@@ -346,6 +355,18 @@ function LeftRail({
           active={view === "files"}
           onClick={() => onChange("files")}
         />
+        {/* Self-hosting: run your agents on your own VM. Behind the
+            org_hosts runtime flag (resolved per-user on /me) — the backend
+            404s every host route when it's off, so the button hides
+            entirely rather than opening a dead surface. */}
+        {participant?.features?.org_hosts === true && (
+          <RailButton
+            icon={Server}
+            label={t("hosts")}
+            active={view === "hosts"}
+            onClick={() => onChange("hosts")}
+          />
+        )}
         {/* Divider separating the everyone-buttons above from the admin-only
             buttons (Templates, Platform) below. */}
         {participant?.platformAdmin && (
