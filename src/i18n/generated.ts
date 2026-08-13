@@ -1874,8 +1874,8 @@ export const resources = {
       "handleFormatHint": "1–15 characters: lowercase letters, numbers, or underscores.",
       "inviteEmailLocked": "This invitation was sent to {{email}}. To use a different address, ask your admin to send a new invitation.",
       "inviteSignInDescription": "Once you sign in, you'll be added to the team.",
-      "inviteSignupDescription": "Create your Simplifi account to join the team.",
-      "inviteSignupOrgDescription": "Create your Simplifi account to join {{orgName}} as {{role}}.",
+      "inviteSignupDescription": "Create your agntchat account to join the team.",
+      "inviteSignupOrgDescription": "Create your agntchat account to join {{orgName}} as {{role}}.",
       "joinOrg": "Join {{orgName}}",
       "password": "Password",
       "placeholders": {
@@ -1893,12 +1893,12 @@ export const resources = {
         "title": "Reset your password"
       },
       "signIn": "Sign In",
-      "signInSubtitle": "Sign in to Simplifi",
+      "signInSubtitle": "Sign in to agntchat",
       "signInToAcceptInvite": "Sign in to accept your invitation",
       "signUp": "Sign Up",
       "signUpSubtitle": "Create your account",
       "signingIn": "Signing in...",
-      "signupSubtitle": "Get started with Simplifi",
+      "signupSubtitle": "Get started with agntchat",
       "tagline": "Agent Management System",
       "welcomeBack": "Welcome back"
     },
@@ -2795,7 +2795,7 @@ export const resources = {
       },
       "waking": "Waking…",
       "welcomeBody": "Conversations live here once you have an agent to chat with. Create your first agent to get started.",
-      "welcomeTitle": "Welcome to Simplifi"
+      "welcomeTitle": "Welcome to agntchat"
     },
     "common": {
       "accept": "Accept",
@@ -6879,8 +6879,8 @@ export const resources = {
       "handleFormatHint": "De 1 a 15 caracteres: letras minúsculas, números o guiones bajos.",
       "inviteEmailLocked": "Esta invitación se envió a {{email}}. Para usar otra dirección, pide a tu administrador que envíe una nueva invitación.",
       "inviteSignInDescription": "En cuanto inicies sesión, se te añadirá al equipo.",
-      "inviteSignupDescription": "Crea tu cuenta de Simplifi para unirte al equipo.",
-      "inviteSignupOrgDescription": "Crea tu cuenta de Simplifi para unirte a {{orgName}} como {{role}}.",
+      "inviteSignupDescription": "Crea tu cuenta de agntchat para unirte al equipo.",
+      "inviteSignupOrgDescription": "Crea tu cuenta de agntchat para unirte a {{orgName}} como {{role}}.",
       "joinOrg": "Únete a {{orgName}}",
       "password": "Contraseña",
       "placeholders": {
@@ -6898,12 +6898,12 @@ export const resources = {
         "title": "Restablecer tu contraseña"
       },
       "signIn": "Iniciar sesión",
-      "signInSubtitle": "Inicia sesión en Simplifi",
+      "signInSubtitle": "Inicia sesión en agntchat",
       "signInToAcceptInvite": "Inicia sesión para aceptar tu invitación",
       "signUp": "Registrarse",
       "signUpSubtitle": "Crea tu cuenta",
       "signingIn": "Iniciando sesión...",
-      "signupSubtitle": "Empieza con Simplifi",
+      "signupSubtitle": "Empieza con agntchat",
       "tagline": "Sistema de gestión de agentes",
       "welcomeBack": "Bienvenido de nuevo"
     },
@@ -7800,7 +7800,7 @@ export const resources = {
       },
       "waking": "Despertando…",
       "welcomeBody": "Las conversaciones aparecerán aquí cuando tengas un agente con quien chatear. Crea tu primer agente para empezar.",
-      "welcomeTitle": "Bienvenido a Simplifi"
+      "welcomeTitle": "Bienvenido a agntchat"
     },
     "common": {
       "accept": "Aceptar",
@@ -11884,8 +11884,8 @@ export const resources = {
       "handleFormatHint": "1–15 Zeichen: Kleinbuchstaben, Zahlen oder Unterstriche.",
       "inviteEmailLocked": "Diese Einladung wurde an {{email}} gesendet. Um eine andere Adresse zu verwenden, bitten Sie Ihren Admin, eine neue Einladung zu senden.",
       "inviteSignInDescription": "Sobald Sie sich anmelden, werden Sie dem Team hinzugefügt.",
-      "inviteSignupDescription": "Erstellen Sie Ihr Simplifi-Konto, um dem Team beizutreten.",
-      "inviteSignupOrgDescription": "Erstellen Sie Ihr Simplifi-Konto, um {{orgName}} als {{role}} beizutreten.",
+      "inviteSignupDescription": "Erstellen Sie Ihr agntchat-Konto, um dem Team beizutreten.",
+      "inviteSignupOrgDescription": "Erstellen Sie Ihr agntchat-Konto, um {{orgName}} als {{role}} beizutreten.",
       "joinOrg": "{{orgName}} beitreten",
       "password": "Passwort",
       "placeholders": {
@@ -11903,12 +11903,12 @@ export const resources = {
         "title": "Passwort zurücksetzen"
       },
       "signIn": "Anmelden",
-      "signInSubtitle": "Bei Simplifi anmelden",
+      "signInSubtitle": "Bei agntchat anmelden",
       "signInToAcceptInvite": "Melden Sie sich an, um Ihre Einladung anzunehmen",
       "signUp": "Registrieren",
       "signUpSubtitle": "Erstellen Sie Ihr Konto",
       "signingIn": "Anmeldung läuft…",
-      "signupSubtitle": "Loslegen mit Simplifi",
+      "signupSubtitle": "Loslegen mit agntchat",
       "tagline": "Agentenverwaltungssystem",
       "welcomeBack": "Willkommen zurück"
     },
@@ -12805,7 +12805,7 @@ export const resources = {
       },
       "waking": "Wird geweckt…",
       "welcomeBody": "Hier erscheinen Ihre Unterhaltungen, sobald Sie einen Agenten zum Chatten haben. Erstellen Sie Ihren ersten Agenten, um loszulegen.",
-      "welcomeTitle": "Willkommen bei Simplifi"
+      "welcomeTitle": "Willkommen bei agntchat"
     },
     "common": {
       "accept": "Akzeptieren",
@@ -16889,8 +16889,8 @@ export const resources = {
       "handleFormatHint": "1 à 15 caractères : lettres minuscules, chiffres ou underscores.",
       "inviteEmailLocked": "Cette invitation a été envoyée à {{email}}. Pour utiliser une autre adresse, demandez à votre administrateur d'envoyer une nouvelle invitation.",
       "inviteSignInDescription": "Une fois connecté, vous serez ajouté à l'équipe.",
-      "inviteSignupDescription": "Créez votre compte Simplifi pour rejoindre l'équipe.",
-      "inviteSignupOrgDescription": "Créez votre compte Simplifi pour rejoindre {{orgName}} en tant que {{role}}.",
+      "inviteSignupDescription": "Créez votre compte agntchat pour rejoindre l'équipe.",
+      "inviteSignupOrgDescription": "Créez votre compte agntchat pour rejoindre {{orgName}} en tant que {{role}}.",
       "joinOrg": "Rejoindre {{orgName}}",
       "password": "Mot de passe",
       "placeholders": {
@@ -16908,12 +16908,12 @@ export const resources = {
         "title": "Réinitialiser votre mot de passe"
       },
       "signIn": "Se connecter",
-      "signInSubtitle": "Connectez-vous à Simplifi",
+      "signInSubtitle": "Connectez-vous à agntchat",
       "signInToAcceptInvite": "Connectez-vous pour accepter votre invitation",
       "signUp": "S'inscrire",
       "signUpSubtitle": "Créez votre compte",
       "signingIn": "Connexion en cours...",
-      "signupSubtitle": "Commencez avec Simplifi",
+      "signupSubtitle": "Commencez avec agntchat",
       "tagline": "Système de gestion d'agents",
       "welcomeBack": "Content de vous revoir"
     },
@@ -17810,7 +17810,7 @@ export const resources = {
       },
       "waking": "Réveil en cours…",
       "welcomeBody": "Les conversations apparaissent ici dès que vous avez un agent avec qui discuter. Créez votre premier agent pour commencer.",
-      "welcomeTitle": "Bienvenue sur Simplifi"
+      "welcomeTitle": "Bienvenue sur agntchat"
     },
     "common": {
       "accept": "Accepter",
@@ -21894,8 +21894,8 @@ export const resources = {
       "handleFormatHint": "1–15 caracteres: letras minúsculas, números ou sublinhados.",
       "inviteEmailLocked": "Este convite foi enviado para {{email}}. Para usar um endereço diferente, peça ao administrador para enviar um novo convite.",
       "inviteSignInDescription": "Assim que você entrar, será adicionado à equipe.",
-      "inviteSignupDescription": "Crie sua conta Simplifi para entrar na equipe.",
-      "inviteSignupOrgDescription": "Crie sua conta Simplifi para entrar em {{orgName}} como {{role}}.",
+      "inviteSignupDescription": "Crie sua conta agntchat para entrar na equipe.",
+      "inviteSignupOrgDescription": "Crie sua conta agntchat para entrar em {{orgName}} como {{role}}.",
       "joinOrg": "Entrar em {{orgName}}",
       "password": "Senha",
       "placeholders": {
@@ -21913,12 +21913,12 @@ export const resources = {
         "title": "Redefinir sua senha"
       },
       "signIn": "Entrar",
-      "signInSubtitle": "Entre no Simplifi",
+      "signInSubtitle": "Entre no agntchat",
       "signInToAcceptInvite": "Entre para aceitar seu convite",
       "signUp": "Cadastrar-se",
       "signUpSubtitle": "Crie sua conta",
       "signingIn": "Entrando...",
-      "signupSubtitle": "Comece a usar o Simplifi",
+      "signupSubtitle": "Comece a usar o agntchat",
       "tagline": "Sistema de gerenciamento de agentes",
       "welcomeBack": "Bem-vindo(a) de volta"
     },
@@ -22815,7 +22815,7 @@ export const resources = {
       },
       "waking": "Acordando…",
       "welcomeBody": "As conversas aparecem aqui assim que você tiver um agente para conversar. Crie seu primeiro agente para começar.",
-      "welcomeTitle": "Bem-vindo ao Simplifi"
+      "welcomeTitle": "Bem-vindo ao agntchat"
     },
     "common": {
       "accept": "Aceitar",
@@ -26899,8 +26899,8 @@ export const resources = {
       "handleFormatHint": "1〜15文字：小文字のアルファベット、数字、アンダースコアが使用できます。",
       "inviteEmailLocked": "この招待は{{email}}宛に送信されました。別のアドレスを使用するには、管理者に新しい招待の送信を依頼してください。",
       "inviteSignInDescription": "ログインすると、チームに追加されます。",
-      "inviteSignupDescription": "チームに参加するには、Simplifiアカウントを作成してください。",
-      "inviteSignupOrgDescription": "{{orgName}}に{{role}}として参加するには、Simplifiアカウントを作成してください。",
+      "inviteSignupDescription": "チームに参加するには、agntchatアカウントを作成してください。",
+      "inviteSignupOrgDescription": "{{orgName}}に{{role}}として参加するには、agntchatアカウントを作成してください。",
       "joinOrg": "{{orgName}}に参加",
       "password": "パスワード",
       "placeholders": {
@@ -26918,12 +26918,12 @@ export const resources = {
         "title": "パスワードをリセット"
       },
       "signIn": "ログイン",
-      "signInSubtitle": "Simplifiにログイン",
+      "signInSubtitle": "agntchatにログイン",
       "signInToAcceptInvite": "ログインして招待を承認",
       "signUp": "登録",
       "signUpSubtitle": "アカウントを作成",
       "signingIn": "ログイン中…",
-      "signupSubtitle": "Simplifiを始めましょう",
+      "signupSubtitle": "agntchatを始めましょう",
       "tagline": "エージェント管理システム",
       "welcomeBack": "おかえりなさい"
     },
@@ -27820,7 +27820,7 @@ export const resources = {
       },
       "waking": "起動中…",
       "welcomeBody": "エージェントとチャットできるようになると、ここに会話が表示されます。最初のエージェントを作成して始めましょう。",
-      "welcomeTitle": "Simplifiへようこそ"
+      "welcomeTitle": "agntchatへようこそ"
     },
     "common": {
       "accept": "承認",
@@ -31904,8 +31904,8 @@ export const resources = {
       "handleFormatHint": "1–15 个字符：小写字母、数字或下划线。",
       "inviteEmailLocked": "此邀请已发送至 {{email}}。如需使用其他邮箱，请让管理员重新发送邀请。",
       "inviteSignInDescription": "登录后，你将被添加到团队中。",
-      "inviteSignupDescription": "创建你的 Simplifi 账号以加入团队。",
-      "inviteSignupOrgDescription": "创建你的 Simplifi 账号，以 {{role}} 身份加入 {{orgName}}。",
+      "inviteSignupDescription": "创建你的 agntchat 账号以加入团队。",
+      "inviteSignupOrgDescription": "创建你的 agntchat 账号，以 {{role}} 身份加入 {{orgName}}。",
       "joinOrg": "加入 {{orgName}}",
       "password": "密码",
       "placeholders": {
@@ -31923,12 +31923,12 @@ export const resources = {
         "title": "重置密码"
       },
       "signIn": "登录",
-      "signInSubtitle": "登录 Simplifi",
+      "signInSubtitle": "登录 agntchat",
       "signInToAcceptInvite": "登录以接受邀请",
       "signUp": "注册",
       "signUpSubtitle": "创建你的账号",
       "signingIn": "正在登录……",
-      "signupSubtitle": "开始使用 Simplifi",
+      "signupSubtitle": "开始使用 agntchat",
       "tagline": "智能体管理系统",
       "welcomeBack": "欢迎回来"
     },
@@ -32825,7 +32825,7 @@ export const resources = {
       },
       "waking": "唤醒中…",
       "welcomeBody": "当你有可对话的智能体时，对话会显示在这里。创建你的第一个智能体开始使用。",
-      "welcomeTitle": "欢迎使用 Simplifi"
+      "welcomeTitle": "欢迎使用 agntchat"
     },
     "common": {
       "accept": "接受",
@@ -36909,8 +36909,8 @@ export const resources = {
       "handleFormatHint": "1~15자: 소문자, 숫자, 밑줄(_)만 사용 가능합니다.",
       "inviteEmailLocked": "이 초대는 {{email}}로 발송되었습니다. 다른 주소를 사용하려면 관리자에게 새 초대를 요청하세요.",
       "inviteSignInDescription": "로그인하면 팀에 추가됩니다.",
-      "inviteSignupDescription": "팀에 합류하려면 Simplifi 계정을 만드세요.",
-      "inviteSignupOrgDescription": "{{orgName}}에 {{role}}(으)로 합류하려면 Simplifi 계정을 만드세요.",
+      "inviteSignupDescription": "팀에 합류하려면 agntchat 계정을 만드세요.",
+      "inviteSignupOrgDescription": "{{orgName}}에 {{role}}(으)로 합류하려면 agntchat 계정을 만드세요.",
       "joinOrg": "{{orgName}} 합류하기",
       "password": "비밀번호",
       "placeholders": {
@@ -36928,12 +36928,12 @@ export const resources = {
         "title": "비밀번호 재설정"
       },
       "signIn": "로그인",
-      "signInSubtitle": "Simplifi에 로그인",
+      "signInSubtitle": "agntchat에 로그인",
       "signInToAcceptInvite": "로그인하여 초대를 수락하세요",
       "signUp": "회원가입",
       "signUpSubtitle": "계정 만들기",
       "signingIn": "로그인 중...",
-      "signupSubtitle": "Simplifi 시작하기",
+      "signupSubtitle": "agntchat 시작하기",
       "tagline": "에이전트 관리 시스템",
       "welcomeBack": "다시 오신 것을 환영합니다"
     },
@@ -37830,7 +37830,7 @@ export const resources = {
       },
       "waking": "깨우는 중…",
       "welcomeBody": "채팅할 에이전트가 있으면 대화가 이곳에 표시됩니다. 첫 에이전트를 만들어 시작해 보세요.",
-      "welcomeTitle": "Simplifi에 오신 것을 환영합니다"
+      "welcomeTitle": "agntchat에 오신 것을 환영합니다"
     },
     "common": {
       "accept": "수락",
@@ -41914,8 +41914,8 @@ export const resources = {
       "handleFormatHint": "1–15 caratteri: lettere minuscole, numeri o underscore.",
       "inviteEmailLocked": "Questo invito è stato inviato a {{email}}. Per usare un indirizzo diverso, chiedi al tuo amministratore di inviare un nuovo invito.",
       "inviteSignInDescription": "Una volta effettuato l'accesso, verrai aggiunto al team.",
-      "inviteSignupDescription": "Crea il tuo account Simplifi per unirti al team.",
-      "inviteSignupOrgDescription": "Crea il tuo account Simplifi per unirti a {{orgName}} come {{role}}.",
+      "inviteSignupDescription": "Crea il tuo account agntchat per unirti al team.",
+      "inviteSignupOrgDescription": "Crea il tuo account agntchat per unirti a {{orgName}} come {{role}}.",
       "joinOrg": "Unisciti a {{orgName}}",
       "password": "Password",
       "placeholders": {
@@ -41933,12 +41933,12 @@ export const resources = {
         "title": "Reimposta la tua password"
       },
       "signIn": "Accedi",
-      "signInSubtitle": "Accedi a Simplifi",
+      "signInSubtitle": "Accedi a agntchat",
       "signInToAcceptInvite": "Accedi per accettare il tuo invito",
       "signUp": "Registrati",
       "signUpSubtitle": "Crea il tuo account",
       "signingIn": "Accesso in corso...",
-      "signupSubtitle": "Inizia a usare Simplifi",
+      "signupSubtitle": "Inizia a usare agntchat",
       "tagline": "Sistema di gestione degli agenti",
       "welcomeBack": "Bentornato"
     },
@@ -42835,7 +42835,7 @@ export const resources = {
       },
       "waking": "Risveglio in corso…",
       "welcomeBody": "Le conversazioni vivono qui una volta che hai un agente con cui chattare. Crea il tuo primo agente per iniziare.",
-      "welcomeTitle": "Benvenuto in Simplifi"
+      "welcomeTitle": "Benvenuto in agntchat"
     },
     "common": {
       "accept": "Accetta",
@@ -46919,8 +46919,8 @@ export const resources = {
       "handleFormatHint": "1–15 वर्ण: लोअरकेस अक्षर, अंक, या अंडरस्कोर।",
       "inviteEmailLocked": "यह आमंत्रण {{email}} पर भेजा गया था। किसी अलग पते का उपयोग करने के लिए, अपने एडमिन से नया आमंत्रण भेजने को कहें।",
       "inviteSignInDescription": "साइन इन करते ही आपको टीम में जोड़ दिया जाएगा।",
-      "inviteSignupDescription": "टीम में शामिल होने के लिए अपना Simplifi खाता बनाएं।",
-      "inviteSignupOrgDescription": "{{orgName}} में {{role}} के रूप में शामिल होने के लिए अपना Simplifi खाता बनाएं।",
+      "inviteSignupDescription": "टीम में शामिल होने के लिए अपना agntchat खाता बनाएं।",
+      "inviteSignupOrgDescription": "{{orgName}} में {{role}} के रूप में शामिल होने के लिए अपना agntchat खाता बनाएं।",
       "joinOrg": "{{orgName}} में शामिल हों",
       "password": "पासवर्ड",
       "placeholders": {
@@ -46938,12 +46938,12 @@ export const resources = {
         "title": "अपना पासवर्ड रीसेट करें"
       },
       "signIn": "साइन इन",
-      "signInSubtitle": "Simplifi में साइन इन करें",
+      "signInSubtitle": "agntchat में साइन इन करें",
       "signInToAcceptInvite": "अपना आमंत्रण स्वीकार करने के लिए साइन इन करें",
       "signUp": "साइन अप",
       "signUpSubtitle": "अपना खाता बनाएं",
       "signingIn": "साइन इन हो रहा है...",
-      "signupSubtitle": "Simplifi के साथ शुरुआत करें",
+      "signupSubtitle": "agntchat के साथ शुरुआत करें",
       "tagline": "एजेंट प्रबंधन प्रणाली",
       "welcomeBack": "वापसी पर स्वागत है"
     },
@@ -47840,7 +47840,7 @@ export const resources = {
       },
       "waking": "जगाया जा रहा है…",
       "welcomeBody": "जब आपके पास चैट करने के लिए कोई एजेंट होगा, तो बातचीत यहाँ दिखाई देंगी। शुरू करने के लिए अपना पहला एजेंट बनाएँ।",
-      "welcomeTitle": "Simplifi में आपका स्वागत है"
+      "welcomeTitle": "agntchat में आपका स्वागत है"
     },
     "common": {
       "accept": "स्वीकार करें",

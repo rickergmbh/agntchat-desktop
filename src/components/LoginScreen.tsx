@@ -74,7 +74,7 @@ export function LoginScreen() {
           <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
             <Bot className="w-5 h-5 text-primary-foreground" />
           </div>
-          <h1 className="text-xl font-semibold text-text">Simplifi</h1>
+          <h1 className="text-xl font-semibold text-text">agntchat</h1>
         </div>
         <p className="text-text-secondary text-sm mb-8">{t("tagline")}</p>
 
