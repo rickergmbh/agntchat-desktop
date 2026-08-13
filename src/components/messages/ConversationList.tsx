@@ -9,6 +9,7 @@ import {
   getConversationTitle,
   getInitials,
   formatConversationTime,
+  unreadTier,
 } from "../../lib/utils";
 import {
   Hash,
@@ -22,20 +23,6 @@ import { GroupAvatar } from "./GroupAvatar";
 import { AgentActivityIndicator } from "../AgentActivityIndicator";
 import type { AgentActivity } from "../../lib/agent-activity";
 import type { Conversation } from "../../lib/api";
-
-// Issue #122: the badge no longer prints an exact unread count (which read
-// as daunting and, pre-turn-grouping, could over-count a single agent reply
-// split into many rows). It shows THAT there's something new and a coarse
-// sense of scale via dot size — the "New messages" in-conversation divider
-// (firstUnreadIds) is what actually identifies what's new.
-type UnreadTier = "few" | "some" | "many";
-
-function unreadTier(count: number): UnreadTier | null {
-  if (count <= 0) return null;
-  if (count === 1) return "few";
-  if (count <= 4) return "some";
-  return "many";
-}
 
 export function ConversationList() {
   const { t } = useTranslation("chat");

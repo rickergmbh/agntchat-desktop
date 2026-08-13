@@ -126,6 +126,20 @@ export function dayKey(iso: string | undefined): string {
   return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 }
 
+// Issue #122: unread badges (conversation rows, sidebar rail) show THAT
+// there's something new and a coarse sense of scale via size, never an
+// exact count — which read as daunting and, pre-turn-grouping, could
+// over-count a single agent reply split into many rows. The in-conversation
+// "New messages" divider is what actually identifies what's new.
+export type UnreadTier = "few" | "some" | "many";
+
+export function unreadTier(count: number): UnreadTier | null {
+  if (count <= 0) return null;
+  if (count === 1) return "few";
+  if (count <= 4) return "some";
+  return "many";
+}
+
 /** Human-readable day label for separator rows: "Today" / "Yesterday" / full
  * date for older. */
 export function formatDayLabel(iso: string | undefined): string {

@@ -16,7 +16,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { cn } from "../lib/utils";
+import { cn, unreadTier, type UnreadTier } from "../lib/utils";
 import { useWebSocket } from "../hooks/useWebSocket";
 import { useWorkspaceHotkeys } from "../hooks/useWorkspaceHotkeys";
 import { useChatStore } from "../stores/chatStore";
@@ -217,6 +217,7 @@ function LeftRail({
   onOpenProfile: () => void;
 }) {
   const { t } = useTranslation("nav");
+  const { t: tChat } = useTranslation("chat");
   const unread = useChatStore((s) => s.unreadCounts);
   const personalConversations = useChatStore((s) => s.conversations);
   // Only count unread against conversations in the personal "Chats" list —
@@ -308,7 +309,8 @@ function LeftRail({
           label={t("chats")}
           active={view === "chat"}
           onClick={() => onChange("chat")}
-          badge={totalUnread > 0 ? totalUnread : undefined}
+          badgeTier={unreadTier(totalUnread)}
+          badgeTierLabel={tChat("newMessages")}
         />
         <RailButton
           icon={Zap}
@@ -462,6 +464,8 @@ function RailButton({
   onClick,
   badge,
   badgeColor = "primary",
+  badgeTier,
+  badgeTierLabel,
   textBadge,
 }: {
   icon: React.ElementType;
@@ -470,6 +474,13 @@ function RailButton({
   onClick: () => void;
   badge?: number;
   badgeColor?: "primary" | "destructive";
+  /** Issue #122: coarse unread indicator — a size-tiered dot instead of an
+   *  exact digit. Takes priority over `badge` when set (Chats rail item only;
+   *  task/friend-request badges stay exact counts, they're action-needed
+   *  signals, not "there are new messages"). */
+  badgeTier?: UnreadTier | null;
+  /** Accessible label for `badgeTier`'s dot, since it renders no visible text. */
+  badgeTierLabel?: string;
   /** Free-form badge content (e.g. coloured "3/10" for agent online count).
    *  Ignored when `badge` is set. Rendered as a small chip pinned to the
    *  bottom-center of the icon so vertical rhythm of the rail is preserved. */
@@ -494,17 +505,30 @@ function RailButton({
       )}
     >
       <Icon className="w-5 h-5" />
-      {badge !== undefined && badge > 0 && (
+      {badgeTier ? (
         <span
+          aria-label={badgeTierLabel}
           className={cn(
-            "absolute top-0.5 right-0.5 min-w-[16px] h-4 px-1 rounded-full text-[9px] font-semibold flex items-center justify-center",
-            badgeClass
+            "absolute top-0.5 right-0.5 rounded-full bg-primary",
+            badgeTier === "few" && "h-2 w-2",
+            badgeTier === "some" && "h-2.5 w-2.5",
+            badgeTier === "many" && "h-3 w-3"
           )}
-        >
-          {badge > 99 ? "99+" : badge}
-        </span>
+        />
+      ) : (
+        badge !== undefined &&
+        badge > 0 && (
+          <span
+            className={cn(
+              "absolute top-0.5 right-0.5 min-w-[16px] h-4 px-1 rounded-full text-[9px] font-semibold flex items-center justify-center",
+              badgeClass
+            )}
+          >
+            {badge > 99 ? "99+" : badge}
+          </span>
+        )
       )}
-      {badge === undefined && textBadge && (
+      {badge === undefined && !badgeTier && textBadge && (
         <span
           className={cn(
             "absolute bottom-0.5 left-1/2 -translate-x-1/2 px-1 rounded-full text-[8px] font-semibold tabular-nums leading-none flex items-center justify-center h-3 bg-rail-accent ring-1 ring-rail-border",
