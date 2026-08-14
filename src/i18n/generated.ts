@@ -4610,11 +4610,24 @@ export const resources = {
         "heading": "Start chatting with your agents"
       },
       "demo": {
-        "agentName": "Mila · agent",
-        "agentReply": "On it. I found 3 options and booked the 10:00 slot — invite is in your calendar.",
-        "agentStatus": "online",
-        "humanMessage": "Can you set up the design review for Thursday?",
-        "humanName": "You"
+        "agentTag": "agent",
+        "joined": "Mila added Theo to the conversation",
+        "members": "You, Mila & Theo",
+        "msgHuman": "Morning — can we get the Q3 usage report out today?",
+        "msgMilaDone": "Report drafted — it's in your inbox.",
+        "msgMilaMention": "On it. Pulling in @Theo for the data.",
+        "msgTheoDone": "Done. Usage is up 34% — table attached.",
+        "msgTheoStart": "On it — querying now.",
+        "nameA": "Mila",
+        "nameB": "Theo",
+        "nameHuman": "You",
+        "online": "online",
+        "taskDone": "Done",
+        "taskInProgress": "In progress",
+        "taskLabel": "Task · assigned to Theo",
+        "taskTitle": "Pull Q3 usage numbers",
+        "title": "#q3-report",
+        "typing": "typing"
       },
       "download": {
         "heading": "Get the desktop app",
@@ -4627,28 +4640,63 @@ export const resources = {
       "features": {
         "artifacts": {
           "body": "Agents deliver documents, pages, and interactive output straight into the conversation — not links to somewhere else.",
-          "title": "Artifacts & canvas"
+          "title": "Artifacts & canvas",
+          "vDocMeta": "Delivered in #q3-report",
+          "vDocTitle": "Q3 report"
         },
         "channels": {
-          "body": "Group conversations, DMs, presence, and typing indicators over WebSockets — agents included.",
-          "title": "Real-time channels"
+          "body": "Group conversations, DMs, presence, and typing indicators over WebSockets — agents included. Your agents aren't behind a separate console; they're in the room.",
+          "point1": "Group chats, DMs, and threads with agents as members",
+          "point2": "Presence and typing indicators for every participant — human or agent",
+          "point3": "Built on Phoenix WebSockets, made for real time",
+          "title": "Real-time channels",
+          "vMeta": "5 members · 3 online",
+          "vMsg1": "Mockups are ready for review",
+          "vMsg2": "Nice — shipping the copy now",
+          "vTitle": "#design",
+          "vTyping": "Ari is typing…"
         },
         "heading": "Everything a team of humans and agents needs",
         "memory": {
           "body": "Agents remember context per workspace and recall their own past work when it matters.",
-          "title": "Memory that sticks"
+          "title": "Memory that sticks",
+          "vLabel": "Workspace memory",
+          "vMem1": "Launch date → Sep 12",
+          "vMem2": "Reports go out Fridays"
         },
         "tasks": {
-          "body": "Hand off work, watch progress live, and let agents split and route sub-tasks until the job is done.",
-          "title": "Task orchestration"
+          "body": "Hand off work without leaving the conversation. Agents scope the job, split it into sub-tasks, route pieces to each other, and report back — you watch it happen live.",
+          "point1": "Assign work in-conversation — no separate tool",
+          "point2": "Agents split big jobs into sub-tasks and route them",
+          "point3": "Live status from queued to done, right in the thread",
+          "title": "Task orchestration",
+          "vDone": "Done",
+          "vQueued": "Queued",
+          "vRunning": "In progress",
+          "vTask1": "Scope the report",
+          "vTask2": "Pull usage data",
+          "vTask3": "Draft the summary"
         },
         "workspace": {
-          "body": "Agents read your inbox, send email, and manage your calendar with per-user OAuth you control.",
-          "title": "Google Workspace built in"
+          "body": "Your agents plug straight into Gmail and Google Calendar. They read your inbox, draft and send email, and manage events — with per-user OAuth you grant and revoke.",
+          "point1": "Agents read, draft, and send email on your behalf",
+          "point2": "Calendar events created and managed in-chat",
+          "point3": "Per-user OAuth — you grant it, you revoke it",
+          "title": "Google Workspace built in",
+          "vCalLabel": "Event created",
+          "vCalTime": "Thu 10:00",
+          "vCalTitle": "Design review",
+          "vEmailLabel": "Email sent",
+          "vEmailSubject": "Q3 usage report",
+          "vEmailTo": "To: leadership"
         },
         "workspaces": {
           "body": "Organize agents and conversations by team or project, each with its own scope and roster.",
-          "title": "Workspaces"
+          "title": "Workspaces",
+          "vWs1": "Acme Inc",
+          "vWs1Meta": "6 agents · 4 humans",
+          "vWs2": "Personal",
+          "vWs2Meta": "2 agents"
         }
       },
       "footer": {
@@ -9722,11 +9770,24 @@ export const resources = {
         "heading": "Empieza a chatear con tus agentes"
       },
       "demo": {
-        "agentName": "Mila · agente",
-        "agentReply": "Voy con ello. Encontré 3 opciones y reservé el hueco de las 10:00 — la invitación está en tu calendario.",
-        "agentStatus": "en línea",
-        "humanMessage": "¿Puedes organizar la revisión de diseño para el jueves?",
-        "humanName": "Tú"
+        "agentTag": "agente",
+        "joined": "Mila añadió a Theo a la conversación",
+        "members": "Tú, Mila y Theo",
+        "msgHuman": "Buenos días — ¿podemos sacar hoy el informe de uso del Q3?",
+        "msgMilaDone": "Informe redactado — lo tienes en tu bandeja de entrada.",
+        "msgMilaMention": "Voy con ello. Traigo a @Theo para los datos.",
+        "msgTheoDone": "Listo. El uso sube un 34 % — tabla adjunta.",
+        "msgTheoStart": "Voy — lanzando la consulta.",
+        "nameA": "Mila",
+        "nameB": "Theo",
+        "nameHuman": "Tú",
+        "online": "en línea",
+        "taskDone": "Hecha",
+        "taskInProgress": "En curso",
+        "taskLabel": "Tarea · asignada a Theo",
+        "taskTitle": "Extraer las cifras de uso del Q3",
+        "title": "#q3-report",
+        "typing": "escribiendo"
       },
       "download": {
         "heading": "Descarga la app de escritorio",
@@ -9739,28 +9800,63 @@ export const resources = {
       "features": {
         "artifacts": {
           "body": "Los agentes entregan documentos, páginas y resultados interactivos directamente en la conversación — no enlaces a otro sitio.",
-          "title": "Artefactos y canvas"
+          "title": "Artefactos y canvas",
+          "vDocMeta": "Entregado en #q3-report",
+          "vDocTitle": "Informe Q3"
         },
         "channels": {
-          "body": "Conversaciones de grupo, mensajes directos, presencia e indicadores de escritura por WebSockets — agentes incluidos.",
-          "title": "Canales en tiempo real"
+          "body": "Conversaciones de grupo, mensajes directos, presencia e indicadores de escritura por WebSockets — agentes incluidos. Tus agentes no están detrás de una consola aparte; están en la sala.",
+          "point1": "Chats de grupo, mensajes directos e hilos con agentes como miembros",
+          "point2": "Presencia e indicadores de escritura para cada participante — humano o agente",
+          "point3": "Construido sobre WebSockets de Phoenix, hecho para el tiempo real",
+          "title": "Canales en tiempo real",
+          "vMeta": "5 miembros · 3 en línea",
+          "vMsg1": "Los mockups están listos para revisión",
+          "vMsg2": "Genial — envío los textos ahora",
+          "vTitle": "#design",
+          "vTyping": "Ari está escribiendo…"
         },
         "heading": "Todo lo que necesita un equipo de humanos y agentes",
         "memory": {
           "body": "Los agentes recuerdan el contexto por espacio de trabajo y recuperan su propio trabajo anterior cuando importa.",
-          "title": "Memoria que permanece"
+          "title": "Memoria que permanece",
+          "vLabel": "Memoria del espacio de trabajo",
+          "vMem1": "Fecha de lanzamiento → 12 sep",
+          "vMem2": "Los informes salen los viernes"
         },
         "tasks": {
-          "body": "Delega trabajo, sigue el progreso en vivo y deja que los agentes dividan y enruten subtareas hasta terminar el trabajo.",
-          "title": "Orquestación de tareas"
+          "body": "Delega trabajo sin salir de la conversación. Los agentes acotan el encargo, lo dividen en subtareas, se reparten las piezas entre ellos e informan al terminar — tú lo ves en directo.",
+          "point1": "Asigna trabajo en la conversación — sin herramientas aparte",
+          "point2": "Los agentes dividen encargos grandes en subtareas y las enrutan",
+          "point3": "Estado en vivo de en cola a hecha, en el propio hilo",
+          "title": "Orquestación de tareas",
+          "vDone": "Hecha",
+          "vQueued": "En cola",
+          "vRunning": "En curso",
+          "vTask1": "Acotar el informe",
+          "vTask2": "Extraer datos de uso",
+          "vTask3": "Redactar el resumen"
         },
         "workspace": {
-          "body": "Los agentes leen tu bandeja de entrada, envían correos y gestionan tu calendario con OAuth por usuario bajo tu control.",
-          "title": "Google Workspace integrado"
+          "body": "Tus agentes se conectan directamente a Gmail y Google Calendar. Leen tu bandeja, redactan y envían correos y gestionan eventos — con OAuth por usuario que tú concedes y revocas.",
+          "point1": "Los agentes leen, redactan y envían correo en tu nombre",
+          "point2": "Eventos de calendario creados y gestionados desde el chat",
+          "point3": "OAuth por usuario — tú lo concedes, tú lo revocas",
+          "title": "Google Workspace integrado",
+          "vCalLabel": "Evento creado",
+          "vCalTime": "Jue 10:00",
+          "vCalTitle": "Revisión de diseño",
+          "vEmailLabel": "Correo enviado",
+          "vEmailSubject": "Informe de uso del Q3",
+          "vEmailTo": "Para: dirección"
         },
         "workspaces": {
           "body": "Organiza agentes y conversaciones por equipo o proyecto, cada uno con su propio alcance y plantilla.",
-          "title": "Espacios de trabajo"
+          "title": "Espacios de trabajo",
+          "vWs1": "Acme Inc",
+          "vWs1Meta": "6 agentes · 4 humanos",
+          "vWs2": "Personal",
+          "vWs2Meta": "2 agentes"
         }
       },
       "footer": {
@@ -14834,11 +14930,24 @@ export const resources = {
         "heading": "Fang an, mit deinen Agenten zu chatten"
       },
       "demo": {
-        "agentName": "Mila · Agent",
-        "agentReply": "Mache ich. Ich habe 3 Optionen gefunden und den 10:00-Termin gebucht — die Einladung ist in deinem Kalender.",
-        "agentStatus": "online",
-        "humanMessage": "Kannst du das Design-Review für Donnerstag ansetzen?",
-        "humanName": "Du"
+        "agentTag": "Agent",
+        "joined": "Mila hat Theo zur Unterhaltung hinzugefügt",
+        "members": "Du, Mila & Theo",
+        "msgHuman": "Guten Morgen — schaffen wir den Q3-Nutzungsbericht heute noch?",
+        "msgMilaDone": "Bericht ist entworfen — liegt in deinem Postfach.",
+        "msgMilaMention": "Mache ich. Ich hole @Theo für die Daten dazu.",
+        "msgTheoDone": "Fertig. Nutzung +34 % — Tabelle angehängt.",
+        "msgTheoStart": "Übernehme ich — Abfrage läuft.",
+        "nameA": "Mila",
+        "nameB": "Theo",
+        "nameHuman": "Du",
+        "online": "online",
+        "taskDone": "Fertig",
+        "taskInProgress": "In Arbeit",
+        "taskLabel": "Aufgabe · zugewiesen an Theo",
+        "taskTitle": "Q3-Nutzungszahlen ziehen",
+        "title": "#q3-report",
+        "typing": "tippt"
       },
       "download": {
         "heading": "Hol dir die Desktop-App",
@@ -14851,28 +14960,63 @@ export const resources = {
       "features": {
         "artifacts": {
           "body": "Agenten liefern Dokumente, Seiten und interaktive Ergebnisse direkt in die Unterhaltung — keine Links irgendwohin.",
-          "title": "Artefakte & Canvas"
+          "title": "Artefakte & Canvas",
+          "vDocMeta": "Geliefert in #q3-report",
+          "vDocTitle": "Q3-Bericht"
         },
         "channels": {
-          "body": "Gruppenunterhaltungen, Direktnachrichten, Präsenz und Tipp-Indikatoren über WebSockets — Agenten inklusive.",
-          "title": "Echtzeit-Kanäle"
+          "body": "Gruppenunterhaltungen, Direktnachrichten, Präsenz und Tipp-Indikatoren über WebSockets — Agenten inklusive. Deine Agenten sitzen nicht hinter einer separaten Konsole; sie sind im Raum.",
+          "point1": "Gruppenchats, Direktnachrichten und Threads mit Agenten als Mitgliedern",
+          "point2": "Präsenz und Tipp-Indikatoren für alle Beteiligten — Mensch oder Agent",
+          "point3": "Auf Phoenix-WebSockets gebaut, gemacht für Echtzeit",
+          "title": "Echtzeit-Kanäle",
+          "vMeta": "5 Mitglieder · 3 online",
+          "vMsg1": "Die Mockups sind bereit fürs Review",
+          "vMsg2": "Stark — ich liefere jetzt die Texte",
+          "vTitle": "#design",
+          "vTyping": "Ari tippt …"
         },
         "heading": "Alles, was ein Team aus Menschen und Agenten braucht",
         "memory": {
           "body": "Agenten merken sich Kontext pro Workspace und erinnern sich an ihre eigene frühere Arbeit, wenn es darauf ankommt.",
-          "title": "Gedächtnis, das bleibt"
+          "title": "Gedächtnis, das bleibt",
+          "vLabel": "Workspace-Gedächtnis",
+          "vMem1": "Launch-Termin → 12. Sep",
+          "vMem2": "Berichte gehen freitags raus"
         },
         "tasks": {
-          "body": "Übergib Arbeit, verfolge den Fortschritt live und lass Agenten Teilaufgaben aufteilen und weiterleiten, bis die Sache erledigt ist.",
-          "title": "Aufgaben-Orchestrierung"
+          "body": "Übergib Arbeit, ohne die Unterhaltung zu verlassen. Agenten grenzen den Auftrag ein, zerlegen ihn in Teilaufgaben, verteilen die Teile untereinander und melden sich zurück — du siehst live zu.",
+          "point1": "Arbeit direkt in der Unterhaltung zuweisen — kein separates Tool",
+          "point2": "Agenten zerlegen große Aufträge in Teilaufgaben und verteilen sie",
+          "point3": "Live-Status von wartend bis fertig, direkt im Thread",
+          "title": "Aufgaben-Orchestrierung",
+          "vDone": "Fertig",
+          "vQueued": "Wartend",
+          "vRunning": "In Arbeit",
+          "vTask1": "Bericht eingrenzen",
+          "vTask2": "Nutzungsdaten ziehen",
+          "vTask3": "Zusammenfassung entwerfen"
         },
         "workspace": {
-          "body": "Agenten lesen dein Postfach, senden E-Mails und verwalten deinen Kalender — mit OAuth pro Nutzer unter deiner Kontrolle.",
-          "title": "Google Workspace integriert"
+          "body": "Deine Agenten docken direkt an Gmail und Google Kalender an. Sie lesen dein Postfach, entwerfen und senden E-Mails und verwalten Termine — mit OAuth pro Nutzer, das du erteilst und widerrufst.",
+          "point1": "Agenten lesen, entwerfen und senden E-Mails in deinem Namen",
+          "point2": "Kalendertermine direkt im Chat erstellt und verwaltet",
+          "point3": "OAuth pro Nutzer — du erteilst es, du widerrufst es",
+          "title": "Google Workspace integriert",
+          "vCalLabel": "Termin erstellt",
+          "vCalTime": "Do 10:00",
+          "vCalTitle": "Design-Review",
+          "vEmailLabel": "E-Mail gesendet",
+          "vEmailSubject": "Q3-Nutzungsbericht",
+          "vEmailTo": "An: Leadership"
         },
         "workspaces": {
           "body": "Organisiere Agenten und Unterhaltungen nach Team oder Projekt, jeweils mit eigenem Umfang und eigener Besetzung.",
-          "title": "Workspaces"
+          "title": "Workspaces",
+          "vWs1": "Acme Inc",
+          "vWs1Meta": "6 Agenten · 4 Menschen",
+          "vWs2": "Persönlich",
+          "vWs2Meta": "2 Agenten"
         }
       },
       "footer": {
@@ -19946,11 +20090,24 @@ export const resources = {
         "heading": "Commencez à discuter avec vos agents"
       },
       "demo": {
-        "agentName": "Mila · agent",
-        "agentReply": "Je m'en occupe. J'ai trouvé 3 options et réservé le créneau de 10 h — l'invitation est dans votre agenda.",
-        "agentStatus": "en ligne",
-        "humanMessage": "Tu peux organiser la revue de design pour jeudi ?",
-        "humanName": "Vous"
+        "agentTag": "agent",
+        "joined": "Mila a ajouté Theo à la conversation",
+        "members": "Vous, Mila et Theo",
+        "msgHuman": "Bonjour — on peut sortir le rapport d'usage du T3 aujourd'hui ?",
+        "msgMilaDone": "Rapport rédigé — il est dans votre boîte de réception.",
+        "msgMilaMention": "Je m'en occupe. J'appelle @Theo pour les données.",
+        "msgTheoDone": "Terminé. L'usage grimpe de 34 % — tableau joint.",
+        "msgTheoStart": "C'est parti — je lance la requête.",
+        "nameA": "Mila",
+        "nameB": "Theo",
+        "nameHuman": "Vous",
+        "online": "en ligne",
+        "taskDone": "Terminée",
+        "taskInProgress": "En cours",
+        "taskLabel": "Tâche · assignée à Theo",
+        "taskTitle": "Extraire les chiffres d'usage du T3",
+        "title": "#q3-report",
+        "typing": "en train d'écrire"
       },
       "download": {
         "heading": "Téléchargez l'app de bureau",
@@ -19963,28 +20120,63 @@ export const resources = {
       "features": {
         "artifacts": {
           "body": "Les agents livrent documents, pages et contenus interactifs directement dans la conversation — pas des liens vers ailleurs.",
-          "title": "Artefacts et canvas"
+          "title": "Artefacts et canvas",
+          "vDocMeta": "Livré dans #q3-report",
+          "vDocTitle": "Rapport T3"
         },
         "channels": {
-          "body": "Conversations de groupe, messages directs, présence et indicateurs de saisie via WebSockets — agents compris.",
-          "title": "Canaux en temps réel"
+          "body": "Conversations de groupe, messages directs, présence et indicateurs de saisie via WebSockets — agents compris. Vos agents ne sont pas derrière une console à part ; ils sont dans la pièce.",
+          "point1": "Discussions de groupe, messages directs et fils avec des agents comme membres",
+          "point2": "Présence et indicateurs de saisie pour chaque participant — humain ou agent",
+          "point3": "Bâti sur les WebSockets Phoenix, conçu pour le temps réel",
+          "title": "Canaux en temps réel",
+          "vMeta": "5 membres · 3 en ligne",
+          "vMsg1": "Les maquettes sont prêtes pour la revue",
+          "vMsg2": "Super — j'envoie les textes maintenant",
+          "vTitle": "#design",
+          "vTyping": "Ari est en train d'écrire…"
         },
         "heading": "Tout ce qu'il faut à une équipe d'humains et d'agents",
         "memory": {
           "body": "Les agents retiennent le contexte par espace de travail et retrouvent leur propre travail passé quand c'est utile.",
-          "title": "Une mémoire qui reste"
+          "title": "Une mémoire qui reste",
+          "vLabel": "Mémoire de l'espace de travail",
+          "vMem1": "Date de lancement → 12 sept.",
+          "vMem2": "Les rapports partent le vendredi"
         },
         "tasks": {
-          "body": "Confiez du travail, suivez la progression en direct et laissez les agents découper et router les sous-tâches jusqu'au bout.",
-          "title": "Orchestration des tâches"
+          "body": "Confiez du travail sans quitter la conversation. Les agents cadrent la mission, la découpent en sous-tâches, se répartissent les morceaux et rendent compte — vous regardez en direct.",
+          "point1": "Assignez du travail dans la conversation — pas d'outil à part",
+          "point2": "Les agents découpent les gros chantiers en sous-tâches et les routent",
+          "point3": "Statut en direct, de en attente à terminée, dans le fil même",
+          "title": "Orchestration des tâches",
+          "vDone": "Terminée",
+          "vQueued": "En attente",
+          "vRunning": "En cours",
+          "vTask1": "Cadrer le rapport",
+          "vTask2": "Extraire les données d'usage",
+          "vTask3": "Rédiger la synthèse"
         },
         "workspace": {
-          "body": "Les agents lisent votre boîte mail, envoient des e-mails et gèrent votre agenda avec un OAuth par utilisateur que vous contrôlez.",
-          "title": "Google Workspace intégré"
+          "body": "Vos agents se branchent directement sur Gmail et Google Agenda. Ils lisent votre boîte, rédigent et envoient des e-mails, gèrent vos événements — avec un OAuth par utilisateur que vous accordez et révoquez.",
+          "point1": "Les agents lisent, rédigent et envoient des e-mails en votre nom",
+          "point2": "Événements d'agenda créés et gérés depuis la discussion",
+          "point3": "OAuth par utilisateur — vous l'accordez, vous le révoquez",
+          "title": "Google Workspace intégré",
+          "vCalLabel": "Événement créé",
+          "vCalTime": "Jeu 10:00",
+          "vCalTitle": "Revue de design",
+          "vEmailLabel": "E-mail envoyé",
+          "vEmailSubject": "Rapport d'usage du T3",
+          "vEmailTo": "À : direction"
         },
         "workspaces": {
           "body": "Organisez agents et conversations par équipe ou par projet, chacun avec son périmètre et son effectif.",
-          "title": "Espaces de travail"
+          "title": "Espaces de travail",
+          "vWs1": "Acme Inc",
+          "vWs1Meta": "6 agents · 4 humains",
+          "vWs2": "Personnel",
+          "vWs2Meta": "2 agents"
         }
       },
       "footer": {
@@ -25058,11 +25250,24 @@ export const resources = {
         "heading": "Comece a conversar com seus agentes"
       },
       "demo": {
-        "agentName": "Mila · agente",
-        "agentReply": "Deixa comigo. Encontrei 3 opções e reservei o horário das 10:00 — o convite está no seu calendário.",
-        "agentStatus": "online",
-        "humanMessage": "Você consegue marcar a revisão de design para quinta?",
-        "humanName": "Você"
+        "agentTag": "agente",
+        "joined": "Mila adicionou Theo à conversa",
+        "members": "Você, Mila e Theo",
+        "msgHuman": "Bom dia — dá para sair o relatório de uso do Q3 hoje?",
+        "msgMilaDone": "Relatório redigido — está na sua caixa de entrada.",
+        "msgMilaMention": "Deixa comigo. Vou trazer o @Theo para os dados.",
+        "msgTheoDone": "Pronto. Uso subiu 34% — tabela anexada.",
+        "msgTheoStart": "Na mão — rodando a consulta agora.",
+        "nameA": "Mila",
+        "nameB": "Theo",
+        "nameHuman": "Você",
+        "online": "online",
+        "taskDone": "Concluída",
+        "taskInProgress": "Em andamento",
+        "taskLabel": "Tarefa · atribuída a Theo",
+        "taskTitle": "Extrair os números de uso do Q3",
+        "title": "#q3-report",
+        "typing": "digitando"
       },
       "download": {
         "heading": "Baixe o app para desktop",
@@ -25075,28 +25280,63 @@ export const resources = {
       "features": {
         "artifacts": {
           "body": "Agentes entregam documentos, páginas e resultados interativos direto na conversa — não links para outro lugar.",
-          "title": "Artefatos e canvas"
+          "title": "Artefatos e canvas",
+          "vDocMeta": "Entregue em #q3-report",
+          "vDocTitle": "Relatório Q3"
         },
         "channels": {
-          "body": "Conversas em grupo, mensagens diretas, presença e indicadores de digitação via WebSockets — agentes inclusos.",
-          "title": "Canais em tempo real"
+          "body": "Conversas em grupo, mensagens diretas, presença e indicadores de digitação via WebSockets — agentes inclusos. Seus agentes não ficam atrás de um console separado; eles estão na sala.",
+          "point1": "Chats em grupo, mensagens diretas e threads com agentes como membros",
+          "point2": "Presença e indicador de digitação para cada participante — humano ou agente",
+          "point3": "Construído sobre WebSockets do Phoenix, feito para tempo real",
+          "title": "Canais em tempo real",
+          "vMeta": "5 membros · 3 online",
+          "vMsg1": "Os mockups estão prontos para revisão",
+          "vMsg2": "Boa — mandando os textos agora",
+          "vTitle": "#design",
+          "vTyping": "Ari está digitando…"
         },
         "heading": "Tudo o que um time de humanos e agentes precisa",
         "memory": {
           "body": "Agentes lembram o contexto por workspace e resgatam o próprio trabalho anterior quando importa.",
-          "title": "Memória que fica"
+          "title": "Memória que fica",
+          "vLabel": "Memória do workspace",
+          "vMem1": "Data de lançamento → 12 set",
+          "vMem2": "Relatórios saem às sextas"
         },
         "tasks": {
-          "body": "Repasse trabalho, acompanhe o progresso ao vivo e deixe os agentes dividirem e rotearem subtarefas até o fim.",
-          "title": "Orquestração de tarefas"
+          "body": "Repasse trabalho sem sair da conversa. Os agentes delimitam o serviço, dividem em subtarefas, distribuem as partes entre si e reportam ao final — você acompanha ao vivo.",
+          "point1": "Atribua trabalho na própria conversa — sem ferramenta separada",
+          "point2": "Agentes dividem serviços grandes em subtarefas e as roteiam",
+          "point3": "Status ao vivo, de na fila a concluída, dentro do thread",
+          "title": "Orquestração de tarefas",
+          "vDone": "Concluída",
+          "vQueued": "Na fila",
+          "vRunning": "Em andamento",
+          "vTask1": "Delimitar o relatório",
+          "vTask2": "Extrair dados de uso",
+          "vTask3": "Redigir o resumo"
         },
         "workspace": {
-          "body": "Agentes leem sua caixa de entrada, enviam e-mails e gerenciam sua agenda com OAuth por usuário sob seu controle.",
-          "title": "Google Workspace integrado"
+          "body": "Seus agentes se conectam direto ao Gmail e ao Google Agenda. Eles leem sua caixa, redigem e enviam e-mails e gerenciam eventos — com OAuth por usuário que você concede e revoga.",
+          "point1": "Agentes leem, redigem e enviam e-mail em seu nome",
+          "point2": "Eventos de agenda criados e gerenciados no chat",
+          "point3": "OAuth por usuário — você concede, você revoga",
+          "title": "Google Workspace integrado",
+          "vCalLabel": "Evento criado",
+          "vCalTime": "Qui 10:00",
+          "vCalTitle": "Revisão de design",
+          "vEmailLabel": "E-mail enviado",
+          "vEmailSubject": "Relatório de uso do Q3",
+          "vEmailTo": "Para: liderança"
         },
         "workspaces": {
           "body": "Organize agentes e conversas por time ou projeto, cada um com seu próprio escopo e elenco.",
-          "title": "Workspaces"
+          "title": "Workspaces",
+          "vWs1": "Acme Inc",
+          "vWs1Meta": "6 agentes · 4 humanos",
+          "vWs2": "Pessoal",
+          "vWs2Meta": "2 agentes"
         }
       },
       "footer": {
@@ -30170,11 +30410,24 @@ export const resources = {
         "heading": "エージェントとのチャットを始めよう"
       },
       "demo": {
-        "agentName": "Mila · エージェント",
-        "agentReply": "了解です。候補を3つ見つけて10:00の枠を予約しました。招待はカレンダーに入っています。",
-        "agentStatus": "オンライン",
-        "humanMessage": "木曜日にデザインレビューを設定してくれる?",
-        "humanName": "あなた"
+        "agentTag": "エージェント",
+        "joined": "MilaがTheoを会話に追加しました",
+        "members": "あなた、Mila、Theo",
+        "msgHuman": "おはよう — Q3の利用レポート、今日中に出せる?",
+        "msgMilaDone": "レポートを書き上げました — 受信トレイに入っています。",
+        "msgMilaMention": "了解です。データ担当に@Theoを呼びますね。",
+        "msgTheoDone": "完了。利用は34%増 — 表を添付しました。",
+        "msgTheoStart": "了解 — クエリを実行中です。",
+        "nameA": "Mila",
+        "nameB": "Theo",
+        "nameHuman": "あなた",
+        "online": "オンライン",
+        "taskDone": "完了",
+        "taskInProgress": "進行中",
+        "taskLabel": "タスク · 担当: Theo",
+        "taskTitle": "Q3の利用データを抽出",
+        "title": "#q3-report",
+        "typing": "入力中"
       },
       "download": {
         "heading": "デスクトップアプリを入手",
@@ -30187,28 +30440,63 @@ export const resources = {
       "features": {
         "artifacts": {
           "body": "エージェントはドキュメント、ページ、インタラクティブな成果物を会話の中に直接届けます。外部リンクではありません。",
-          "title": "アーティファクトとキャンバス"
+          "title": "アーティファクトとキャンバス",
+          "vDocMeta": "#q3-report に納品",
+          "vDocTitle": "Q3レポート"
         },
         "channels": {
-          "body": "グループ会話、DM、プレゼンス、入力中インジケーターをWebSocketで。もちろんエージェントも対象です。",
-          "title": "リアルタイムチャンネル"
+          "body": "グループ会話、DM、プレゼンス、入力中インジケーターをWebSocketで。もちろんエージェントも対象です。エージェントは別のコンソールの向こうではなく、同じ部屋にいます。",
+          "point1": "エージェントがメンバーとして参加するグループチャット、DM、スレッド",
+          "point2": "人もエージェントも、全参加者にプレゼンスと入力中表示",
+          "point3": "Phoenix WebSocketベース、リアルタイムのための設計",
+          "title": "リアルタイムチャンネル",
+          "vMeta": "5人のメンバー · 3人オンライン",
+          "vMsg1": "モックアップ、レビューの準備できました",
+          "vMsg2": "いいね — コピーを今から反映します",
+          "vTitle": "#design",
+          "vTyping": "Ariが入力中…"
         },
         "heading": "人とエージェントのチームに必要なすべて",
         "memory": {
           "body": "エージェントはワークスペースごとにコンテキストを記憶し、必要なときに自分の過去の仕事を思い出します。",
-          "title": "定着するメモリー"
+          "title": "定着するメモリー",
+          "vLabel": "ワークスペースメモリー",
+          "vMem1": "ローンチ日 → 9月12日",
+          "vMem2": "レポートは毎週金曜に送付"
         },
         "tasks": {
-          "body": "仕事を任せて進捗をライブで確認。エージェントはサブタスクを分割・振り分けし、完了まで進めます。",
-          "title": "タスクオーケストレーション"
+          "body": "会話を離れずに仕事を任せられます。エージェントが作業を見極め、サブタスクに分割し、互いに振り分けて、終われば報告。あなたはライブで見守るだけ。",
+          "point1": "会話の中でそのまま仕事を割り当て — 別ツール不要",
+          "point2": "大きな仕事はエージェントがサブタスクに分割して振り分け",
+          "point3": "待機から完了まで、スレッド内でライブのステータス",
+          "title": "タスクオーケストレーション",
+          "vDone": "完了",
+          "vQueued": "待機中",
+          "vRunning": "進行中",
+          "vTask1": "レポートの範囲を決める",
+          "vTask2": "利用データを抽出",
+          "vTask3": "サマリーを書く"
         },
         "workspace": {
-          "body": "エージェントが受信トレイを読み、メールを送り、カレンダーを管理。ユーザーごとのOAuthはあなたの管理下に。",
-          "title": "Google Workspace統合"
+          "body": "エージェントはGmailとGoogleカレンダーに直接つながります。受信トレイを読み、メールを下書き・送信し、予定を管理 — ユーザーごとのOAuthは、あなたが許可し、あなたが取り消せます。",
+          "point1": "エージェントがあなたに代わってメールを読み、書き、送信",
+          "point2": "カレンダーの予定をチャット内で作成・管理",
+          "point3": "ユーザーごとのOAuth — 許可も取り消しもあなたの手に",
+          "title": "Google Workspace統合",
+          "vCalLabel": "予定を作成",
+          "vCalTime": "木 10:00",
+          "vCalTitle": "デザインレビュー",
+          "vEmailLabel": "メールを送信",
+          "vEmailSubject": "Q3利用レポート",
+          "vEmailTo": "宛先: リーダーシップ"
         },
         "workspaces": {
           "body": "エージェントと会話をチームやプロジェクトごとに整理。それぞれに独自のスコープとメンバー構成を。",
-          "title": "ワークスペース"
+          "title": "ワークスペース",
+          "vWs1": "Acme Inc",
+          "vWs1Meta": "エージェント6 · 人間4",
+          "vWs2": "パーソナル",
+          "vWs2Meta": "エージェント2"
         }
       },
       "footer": {
@@ -35282,11 +35570,24 @@ export const resources = {
         "heading": "开始和你的智能体聊天"
       },
       "demo": {
-        "agentName": "Mila · 智能体",
-        "agentReply": "交给我。我找到了 3 个方案并预订了 10:00 的时段——邀请已发送到你的日历。",
-        "agentStatus": "在线",
-        "humanMessage": "能帮我把设计评审安排在周四吗?",
-        "humanName": "你"
+        "agentTag": "智能体",
+        "joined": "Mila 已将 Theo 加入对话",
+        "members": "你、Mila 和 Theo",
+        "msgHuman": "早——Q3 用量报告今天能出吗?",
+        "msgMilaDone": "报告已起草——在你的收件箱里了。",
+        "msgMilaMention": "交给我。我拉 @Theo 来处理数据。",
+        "msgTheoDone": "搞定。用量上涨 34%——表格已附上。",
+        "msgTheoStart": "收到——正在查询。",
+        "nameA": "Mila",
+        "nameB": "Theo",
+        "nameHuman": "你",
+        "online": "在线",
+        "taskDone": "已完成",
+        "taskInProgress": "进行中",
+        "taskLabel": "任务 · 指派给 Theo",
+        "taskTitle": "提取 Q3 用量数据",
+        "title": "#q3-report",
+        "typing": "正在输入"
       },
       "download": {
         "heading": "获取桌面应用",
@@ -35299,28 +35600,63 @@ export const resources = {
       "features": {
         "artifacts": {
           "body": "智能体把文档、页面和交互式成果直接送进对话——而不是丢给你别处的链接。",
-          "title": "成果物与画布"
+          "title": "成果物与画布",
+          "vDocMeta": "已交付至 #q3-report",
+          "vDocTitle": "Q3 报告"
         },
         "channels": {
-          "body": "群聊、私信、在线状态和输入提示，全部通过 WebSocket 实时同步——智能体也不例外。",
-          "title": "实时频道"
+          "body": "群聊、私信、在线状态和输入提示，全部通过 WebSocket 实时同步——智能体也不例外。你的智能体不在另一个控制台后面，而是就在房间里。",
+          "point1": "群聊、私信和话题串，智能体作为正式成员参与",
+          "point2": "每位参与者都有在线状态和输入提示——无论人类还是智能体",
+          "point3": "基于 Phoenix WebSocket 构建，为实时而生",
+          "title": "实时频道",
+          "vMeta": "5 位成员 · 3 人在线",
+          "vMsg1": "设计稿准备好了，可以评审",
+          "vMsg2": "很好——文案我现在就交付",
+          "vTitle": "#design",
+          "vTyping": "Ari 正在输入…"
         },
         "heading": "人类与智能体团队所需的一切",
         "memory": {
           "body": "智能体按工作区记住上下文，并在需要时回忆起自己过去的工作。",
-          "title": "留得住的记忆"
+          "title": "留得住的记忆",
+          "vLabel": "工作区记忆",
+          "vMem1": "发布日期 → 9 月 12 日",
+          "vMem2": "报告每周五发出"
         },
         "tasks": {
-          "body": "交办工作、实时查看进度，让智能体拆分并分派子任务，直到完成。",
-          "title": "任务编排"
+          "body": "不用离开对话就能交办工作。智能体界定任务、拆成子任务、彼此分派，完成后向你汇报——你全程实时旁观。",
+          "point1": "在对话里直接指派工作——无需另一个工具",
+          "point2": "智能体把大活儿拆成子任务并分派出去",
+          "point3": "从排队到完成，状态在话题串里实时更新",
+          "title": "任务编排",
+          "vDone": "已完成",
+          "vQueued": "排队中",
+          "vRunning": "进行中",
+          "vTask1": "确定报告范围",
+          "vTask2": "提取用量数据",
+          "vTask3": "起草摘要"
         },
         "workspace": {
-          "body": "智能体可以读取你的收件箱、发送邮件、管理日历，基于由你掌控的按用户 OAuth 授权。",
-          "title": "内置 Google Workspace"
+          "body": "你的智能体直接接入 Gmail 和 Google 日历。它们读取收件箱、起草并发送邮件、管理日程——按用户授权的 OAuth，你来授予，你来撤销。",
+          "point1": "智能体代你阅读、起草和发送邮件",
+          "point2": "日历事件在聊天中创建和管理",
+          "point3": "按用户 OAuth 授权——你授予，你撤销",
+          "title": "内置 Google Workspace",
+          "vCalLabel": "已创建日程",
+          "vCalTime": "周四 10:00",
+          "vCalTitle": "设计评审",
+          "vEmailLabel": "已发送邮件",
+          "vEmailSubject": "Q3 用量报告",
+          "vEmailTo": "收件人: 管理层"
         },
         "workspaces": {
           "body": "按团队或项目组织智能体和对话，每个工作区都有自己的范围和成员。",
-          "title": "工作区"
+          "title": "工作区",
+          "vWs1": "Acme Inc",
+          "vWs1Meta": "6 个智能体 · 4 位人类",
+          "vWs2": "个人",
+          "vWs2Meta": "2 个智能体"
         }
       },
       "footer": {
@@ -40394,11 +40730,24 @@ export const resources = {
         "heading": "에이전트와 대화를 시작하세요"
       },
       "demo": {
-        "agentName": "Mila · 에이전트",
-        "agentReply": "맡겨 주세요. 3가지 옵션을 찾아 10:00 시간대를 예약했어요. 초대장은 캘린더에 있습니다.",
-        "agentStatus": "온라인",
-        "humanMessage": "목요일에 디자인 리뷰 잡아줄 수 있어?",
-        "humanName": "나"
+        "agentTag": "에이전트",
+        "joined": "Mila 님이 Theo 님을 대화에 추가했습니다",
+        "members": "나, Mila, Theo",
+        "msgHuman": "좋은 아침 — Q3 사용량 리포트 오늘 낼 수 있을까?",
+        "msgMilaDone": "리포트 초안 완성 — 받은편지함에 넣어 뒀어요.",
+        "msgMilaMention": "맡겨 주세요. 데이터는 @Theo를 불러올게요.",
+        "msgTheoDone": "끝났어요. 사용량 34% 증가 — 표 첨부했습니다.",
+        "msgTheoStart": "접수 — 지금 쿼리 돌리는 중입니다.",
+        "nameA": "Mila",
+        "nameB": "Theo",
+        "nameHuman": "나",
+        "online": "온라인",
+        "taskDone": "완료",
+        "taskInProgress": "진행 중",
+        "taskLabel": "작업 · 담당: Theo",
+        "taskTitle": "Q3 사용량 데이터 추출",
+        "title": "#q3-report",
+        "typing": "입력 중"
       },
       "download": {
         "heading": "데스크톱 앱 받기",
@@ -40411,28 +40760,63 @@ export const resources = {
       "features": {
         "artifacts": {
           "body": "에이전트가 문서, 페이지, 인터랙티브 결과물을 대화 속으로 바로 전달합니다. 다른 곳으로 가는 링크가 아니라요.",
-          "title": "아티팩트 & 캔버스"
+          "title": "아티팩트 & 캔버스",
+          "vDocMeta": "#q3-report에 전달됨",
+          "vDocTitle": "Q3 리포트"
         },
         "channels": {
-          "body": "그룹 대화, DM, 접속 상태, 입력 중 표시까지 WebSocket으로 실시간 동기화됩니다. 에이전트도 물론이고요.",
-          "title": "실시간 채널"
+          "body": "그룹 대화, DM, 접속 상태, 입력 중 표시까지 WebSocket으로 실시간 동기화됩니다. 에이전트도 물론이고요. 에이전트는 별도의 콘솔 뒤가 아니라 같은 방 안에 있습니다.",
+          "point1": "에이전트가 구성원으로 참여하는 그룹 채팅, DM, 스레드",
+          "point2": "사람이든 에이전트든 모든 참여자의 접속 상태와 입력 중 표시",
+          "point3": "Phoenix WebSocket 기반, 실시간을 위한 설계",
+          "title": "실시간 채널",
+          "vMeta": "구성원 5명 · 3명 온라인",
+          "vMsg1": "목업 리뷰 준비 끝났어요",
+          "vMsg2": "좋아요 — 카피 지금 반영할게요",
+          "vTitle": "#design",
+          "vTyping": "Ari 님이 입력 중…"
         },
         "heading": "사람과 에이전트로 이루어진 팀에 필요한 모든 것",
         "memory": {
           "body": "에이전트는 워크스페이스별로 맥락을 기억하고, 필요할 때 자신의 지난 작업을 떠올립니다.",
-          "title": "남아 있는 기억"
+          "title": "남아 있는 기억",
+          "vLabel": "워크스페이스 기억",
+          "vMem1": "출시일 → 9월 12일",
+          "vMem2": "리포트는 매주 금요일 발송"
         },
         "tasks": {
-          "body": "일을 맡기고 진행 상황을 실시간으로 지켜보세요. 에이전트가 하위 작업을 나누고 배분해 끝까지 완수합니다.",
-          "title": "작업 오케스트레이션"
+          "body": "대화를 떠나지 않고 일을 맡기세요. 에이전트가 범위를 정하고, 하위 작업으로 나누고, 서로에게 배분한 뒤 끝나면 보고합니다. 당신은 실시간으로 지켜보기만 하면 됩니다.",
+          "point1": "대화 안에서 바로 업무 지정 — 별도 도구 불필요",
+          "point2": "큰 일은 에이전트가 하위 작업으로 나눠 배분",
+          "point3": "대기부터 완료까지, 스레드 안에서 실시간 상태",
+          "title": "작업 오케스트레이션",
+          "vDone": "완료",
+          "vQueued": "대기 중",
+          "vRunning": "진행 중",
+          "vTask1": "리포트 범위 정하기",
+          "vTask2": "사용량 데이터 추출",
+          "vTask3": "요약 초안 작성"
         },
         "workspace": {
-          "body": "에이전트가 받은편지함을 읽고, 이메일을 보내고, 캘린더를 관리합니다. 사용자별 OAuth는 내가 직접 통제합니다.",
-          "title": "Google Workspace 내장"
+          "body": "에이전트가 Gmail과 Google 캘린더에 바로 연결됩니다. 받은편지함을 읽고, 이메일을 작성해 보내고, 일정을 관리합니다 — 사용자별 OAuth는 내가 부여하고 내가 회수합니다.",
+          "point1": "에이전트가 나 대신 이메일을 읽고, 쓰고, 보냅니다",
+          "point2": "캘린더 일정을 채팅 안에서 생성하고 관리",
+          "point3": "사용자별 OAuth — 부여도 회수도 내 손으로",
+          "title": "Google Workspace 내장",
+          "vCalLabel": "일정 생성됨",
+          "vCalTime": "목 10:00",
+          "vCalTitle": "디자인 리뷰",
+          "vEmailLabel": "이메일 발송됨",
+          "vEmailSubject": "Q3 사용량 리포트",
+          "vEmailTo": "받는 사람: 리더십"
         },
         "workspaces": {
           "body": "팀이나 프로젝트별로 에이전트와 대화를 정리하세요. 각자 고유한 범위와 구성원을 가집니다.",
-          "title": "워크스페이스"
+          "title": "워크스페이스",
+          "vWs1": "Acme Inc",
+          "vWs1Meta": "에이전트 6 · 사람 4",
+          "vWs2": "개인",
+          "vWs2Meta": "에이전트 2"
         }
       },
       "footer": {
@@ -45506,11 +45890,24 @@ export const resources = {
         "heading": "Inizia a chattare con i tuoi agenti"
       },
       "demo": {
-        "agentName": "Mila · agente",
-        "agentReply": "Ci penso io. Ho trovato 3 opzioni e prenotato lo slot delle 10:00 — l'invito è nel tuo calendario.",
-        "agentStatus": "online",
-        "humanMessage": "Puoi organizzare la revisione di design per giovedì?",
-        "humanName": "Tu"
+        "agentTag": "agente",
+        "joined": "Mila ha aggiunto Theo alla conversazione",
+        "members": "Tu, Mila e Theo",
+        "msgHuman": "Buongiorno — riusciamo a far uscire oggi il report sull'utilizzo del Q3?",
+        "msgMilaDone": "Report redatto — è nella tua casella di posta.",
+        "msgMilaMention": "Ci penso io. Chiamo @Theo per i dati.",
+        "msgTheoDone": "Fatto. Utilizzo su del 34% — tabella allegata.",
+        "msgTheoStart": "Ci sono — lancio la query.",
+        "nameA": "Mila",
+        "nameB": "Theo",
+        "nameHuman": "Tu",
+        "online": "online",
+        "taskDone": "Completata",
+        "taskInProgress": "In corso",
+        "taskLabel": "Attività · assegnata a Theo",
+        "taskTitle": "Estrarre i numeri di utilizzo del Q3",
+        "title": "#q3-report",
+        "typing": "sta scrivendo"
       },
       "download": {
         "heading": "Scarica l'app desktop",
@@ -45523,28 +45920,63 @@ export const resources = {
       "features": {
         "artifacts": {
           "body": "Gli agenti consegnano documenti, pagine e contenuti interattivi direttamente nella conversazione — non link verso altrove.",
-          "title": "Artefatti e canvas"
+          "title": "Artefatti e canvas",
+          "vDocMeta": "Consegnato in #q3-report",
+          "vDocTitle": "Report Q3"
         },
         "channels": {
-          "body": "Conversazioni di gruppo, messaggi diretti, presenza e indicatori di digitazione via WebSocket — agenti compresi.",
-          "title": "Canali in tempo reale"
+          "body": "Conversazioni di gruppo, messaggi diretti, presenza e indicatori di digitazione via WebSocket — agenti compresi. I tuoi agenti non stanno dietro una console a parte; sono nella stanza.",
+          "point1": "Chat di gruppo, messaggi diretti e thread con agenti come membri",
+          "point2": "Presenza e indicatore di digitazione per ogni partecipante — umano o agente",
+          "point3": "Costruito sui WebSocket di Phoenix, fatto per il tempo reale",
+          "title": "Canali in tempo reale",
+          "vMeta": "5 membri · 3 online",
+          "vMsg1": "I mockup sono pronti per la revisione",
+          "vMsg2": "Ottimo — consegno subito i testi",
+          "vTitle": "#design",
+          "vTyping": "Ari sta scrivendo…"
         },
         "heading": "Tutto ciò che serve a una squadra di umani e agenti",
         "memory": {
           "body": "Gli agenti ricordano il contesto per ogni workspace e ritrovano il proprio lavoro passato quando conta.",
-          "title": "Memoria che resta"
+          "title": "Memoria che resta",
+          "vLabel": "Memoria del workspace",
+          "vMem1": "Data di lancio → 12 set",
+          "vMem2": "I report escono il venerdì"
         },
         "tasks": {
-          "body": "Affida il lavoro, segui i progressi in diretta e lascia che gli agenti dividano e smistino i sotto-compiti fino alla fine.",
-          "title": "Orchestrazione dei task"
+          "body": "Affida il lavoro senza uscire dalla conversazione. Gli agenti delimitano l'incarico, lo dividono in sotto-attività, si smistano i pezzi tra loro e riferiscono alla fine — tu guardi tutto in diretta.",
+          "point1": "Assegna il lavoro in conversazione — nessuno strumento a parte",
+          "point2": "Gli agenti dividono gli incarichi grandi in sotto-attività e le smistano",
+          "point3": "Stato in diretta, da in coda a completata, dentro il thread",
+          "title": "Orchestrazione dei task",
+          "vDone": "Completata",
+          "vQueued": "In coda",
+          "vRunning": "In corso",
+          "vTask1": "Delimitare il report",
+          "vTask2": "Estrarre i dati di utilizzo",
+          "vTask3": "Redigere la sintesi"
         },
         "workspace": {
-          "body": "Gli agenti leggono la tua casella di posta, inviano email e gestiscono il tuo calendario con OAuth per utente sotto il tuo controllo.",
-          "title": "Google Workspace integrato"
+          "body": "I tuoi agenti si collegano direttamente a Gmail e Google Calendar. Leggono la tua casella, scrivono e inviano email e gestiscono gli eventi — con OAuth per utente che concedi e revochi tu.",
+          "point1": "Gli agenti leggono, scrivono e inviano email a tuo nome",
+          "point2": "Eventi di calendario creati e gestiti in chat",
+          "point3": "OAuth per utente — lo concedi tu, lo revochi tu",
+          "title": "Google Workspace integrato",
+          "vCalLabel": "Evento creato",
+          "vCalTime": "Gio 10:00",
+          "vCalTitle": "Revisione di design",
+          "vEmailLabel": "Email inviata",
+          "vEmailSubject": "Report sull'utilizzo del Q3",
+          "vEmailTo": "A: direzione"
         },
         "workspaces": {
           "body": "Organizza agenti e conversazioni per team o progetto, ognuno con il proprio ambito e la propria squadra.",
-          "title": "Workspace"
+          "title": "Workspace",
+          "vWs1": "Acme Inc",
+          "vWs1Meta": "6 agenti · 4 umani",
+          "vWs2": "Personale",
+          "vWs2Meta": "2 agenti"
         }
       },
       "footer": {
@@ -50618,11 +51050,24 @@ export const resources = {
         "heading": "अपने एजेंटों से चैट शुरू करें"
       },
       "demo": {
-        "agentName": "Mila · एजेंट",
-        "agentReply": "कर रही हूँ। मुझे 3 विकल्प मिले और 10:00 का स्लॉट बुक कर दिया — निमंत्रण आपके कैलेंडर में है।",
-        "agentStatus": "ऑनलाइन",
-        "humanMessage": "क्या तुम गुरुवार के लिए डिज़ाइन रिव्यू सेट कर सकती हो?",
-        "humanName": "आप"
+        "agentTag": "एजेंट",
+        "joined": "Mila ने Theo को बातचीत में जोड़ा",
+        "members": "आप, Mila और Theo",
+        "msgHuman": "सुप्रभात — क्या Q3 उपयोग रिपोर्ट आज निकल सकती है?",
+        "msgMilaDone": "रिपोर्ट का मसौदा तैयार है — आपके इनबॉक्स में है।",
+        "msgMilaMention": "कर रही हूँ। डेटा के लिए @Theo को बुला रही हूँ।",
+        "msgTheoDone": "हो गया। उपयोग 34% बढ़ा — तालिका संलग्न है।",
+        "msgTheoStart": "ठीक — क्वेरी चला रहा हूँ।",
+        "nameA": "Mila",
+        "nameB": "Theo",
+        "nameHuman": "आप",
+        "online": "ऑनलाइन",
+        "taskDone": "पूर्ण",
+        "taskInProgress": "जारी",
+        "taskLabel": "कार्य · Theo को सौंपा गया",
+        "taskTitle": "Q3 उपयोग के आँकड़े निकालना",
+        "title": "#q3-report",
+        "typing": "लिख रहे हैं"
       },
       "download": {
         "heading": "डेस्कटॉप ऐप पाएँ",
@@ -50635,28 +51080,63 @@ export const resources = {
       "features": {
         "artifacts": {
           "body": "एजेंट दस्तावेज़, पेज और इंटरैक्टिव नतीजे सीधे बातचीत में पहुँचाते हैं — कहीं और के लिंक नहीं।",
-          "title": "आर्टिफ़ैक्ट और कैनवास"
+          "title": "आर्टिफ़ैक्ट और कैनवास",
+          "vDocMeta": "#q3-report में डिलीवर हुआ",
+          "vDocTitle": "Q3 रिपोर्ट"
         },
         "channels": {
-          "body": "समूह बातचीत, DM, उपस्थिति और टाइपिंग संकेतक — WebSockets पर, एजेंट भी शामिल।",
-          "title": "रीयल-टाइम चैनल"
+          "body": "समूह बातचीत, DM, उपस्थिति और टाइपिंग संकेतक — WebSockets पर, एजेंट भी शामिल। आपके एजेंट किसी अलग कंसोल के पीछे नहीं हैं; वे कमरे में मौजूद हैं।",
+          "point1": "समूह चैट, DM और थ्रेड — एजेंट बतौर सदस्य",
+          "point2": "हर प्रतिभागी की उपस्थिति और टाइपिंग संकेतक — इंसान हो या एजेंट",
+          "point3": "Phoenix WebSockets पर निर्मित, रीयल-टाइम के लिए बना",
+          "title": "रीयल-टाइम चैनल",
+          "vMeta": "5 सदस्य · 3 ऑनलाइन",
+          "vMsg1": "मॉकअप रिव्यू के लिए तैयार हैं",
+          "vMsg2": "बढ़िया — कॉपी अभी भेज रहा हूँ",
+          "vTitle": "#design",
+          "vTyping": "Ari लिख रहे हैं…"
         },
         "heading": "इंसानों और एजेंटों की टीम को जो कुछ चाहिए, सब यहाँ",
         "memory": {
           "body": "एजेंट हर वर्कस्पेस का संदर्भ याद रखते हैं और ज़रूरत पड़ने पर अपना पिछला काम याद करते हैं।",
-          "title": "टिकने वाली याददाश्त"
+          "title": "टिकने वाली याददाश्त",
+          "vLabel": "वर्कस्पेस मेमोरी",
+          "vMem1": "लॉन्च तिथि → 12 सितंबर",
+          "vMem2": "रिपोर्ट हर शुक्रवार को जाती हैं"
         },
         "tasks": {
-          "body": "काम सौंपें, प्रगति लाइव देखें, और एजेंटों को उप-कार्य बाँटने और आगे बढ़ाने दें — काम पूरा होने तक।",
-          "title": "टास्क ऑर्केस्ट्रेशन"
+          "body": "बातचीत छोड़े बिना काम सौंपें। एजेंट काम का दायरा तय करते हैं, उसे उप-कार्यों में बाँटते हैं, आपस में बाँटकर आगे बढ़ाते हैं और पूरा होने पर रिपोर्ट करते हैं — आप सब लाइव देखते हैं।",
+          "point1": "बातचीत में ही काम सौंपें — कोई अलग टूल नहीं",
+          "point2": "बड़े काम एजेंट उप-कार्यों में बाँटकर आगे बढ़ाते हैं",
+          "point3": "कतार से पूर्ण तक लाइव स्थिति, थ्रेड के भीतर ही",
+          "title": "टास्क ऑर्केस्ट्रेशन",
+          "vDone": "पूर्ण",
+          "vQueued": "कतार में",
+          "vRunning": "जारी",
+          "vTask1": "रिपोर्ट का दायरा तय करना",
+          "vTask2": "उपयोग डेटा निकालना",
+          "vTask3": "सारांश का मसौदा"
         },
         "workspace": {
-          "body": "एजेंट आपका इनबॉक्स पढ़ते हैं, ईमेल भेजते हैं और आपका कैलेंडर सँभालते हैं — प्रति-उपयोगकर्ता OAuth के साथ, जो आपके नियंत्रण में है।",
-          "title": "Google Workspace अंतर्निर्मित"
+          "body": "आपके एजेंट सीधे Gmail और Google Calendar से जुड़ते हैं। वे आपका इनबॉक्स पढ़ते हैं, ईमेल लिखकर भेजते हैं और इवेंट सँभालते हैं — प्रति-उपयोगकर्ता OAuth के साथ, जिसे आप देते हैं और आप ही वापस लेते हैं।",
+          "point1": "एजेंट आपकी ओर से ईमेल पढ़ते, लिखते और भेजते हैं",
+          "point2": "कैलेंडर इवेंट चैट में ही बनते और सँभाले जाते हैं",
+          "point3": "प्रति-उपयोगकर्ता OAuth — देना भी आपके हाथ, वापस लेना भी",
+          "title": "Google Workspace अंतर्निर्मित",
+          "vCalLabel": "इवेंट बना",
+          "vCalTime": "गुरु 10:00",
+          "vCalTitle": "डिज़ाइन रिव्यू",
+          "vEmailLabel": "ईमेल भेजा गया",
+          "vEmailSubject": "Q3 उपयोग रिपोर्ट",
+          "vEmailTo": "प्रति: नेतृत्व"
         },
         "workspaces": {
           "body": "एजेंटों और बातचीत को टीम या प्रोजेक्ट के हिसाब से व्यवस्थित करें — हर एक का अपना दायरा और अपनी टोली।",
-          "title": "वर्कस्पेस"
+          "title": "वर्कस्पेस",
+          "vWs1": "Acme Inc",
+          "vWs1Meta": "6 एजेंट · 4 इंसान",
+          "vWs2": "व्यक्तिगत",
+          "vWs2Meta": "2 एजेंट"
         }
       },
       "footer": {
