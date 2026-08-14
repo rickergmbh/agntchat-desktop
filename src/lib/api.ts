@@ -2267,6 +2267,57 @@ export async function getProviderStatus(provider: string): Promise<{
   return request(`/api/integrations/${provider}/status`);
 }
 
+// --- Organization credentials: LLM shared seat AND workspace-scoped
+// integration connections (Google, GitHub, ...) on one table. Every agent
+// pinned to the workspace resolves an oauth2 row here ahead of its owner's
+// personal connection — see backend `Agentchat.Organizations.Credentials`.
+
+export interface OrganizationCredential {
+  id: string;
+  organizationId: string;
+  provider: string;
+  credentialType: "oauth2" | "api_token";
+  isDefault: boolean;
+  status: "active" | "expired" | "revoked" | "refresh_failed";
+  label?: string;
+  metadata?: Record<string, unknown>;
+  createdByHumanId?: string;
+  scopes?: string[];
+  providerUid?: string;
+  tokenExpiresAt?: string;
+  lastRefreshedAt?: string;
+  lastUsedAt?: string;
+  lastValidatedAt?: string;
+  insertedAt?: string;
+  updatedAt?: string;
+}
+
+export async function listOrganizationCredentials(
+  orgId: string
+): Promise<OrganizationCredential[]> {
+  const res = await request<{ credentials: OrganizationCredential[] }>(
+    `/api/organizations/${orgId}/credentials`
+  );
+  return res.credentials;
+}
+
+/** Begin the workspace OAuth2 connect flow for a provider (Google, GitHub, ...). */
+export async function authorizeOrganizationCredential(
+  orgId: string,
+  provider: string
+): Promise<{ authorizeUrl: string }> {
+  return request(`/api/organizations/${orgId}/credentials/${provider}/authorize`);
+}
+
+export async function deleteOrganizationCredential(
+  orgId: string,
+  credentialId: string
+): Promise<void> {
+  await request(`/api/organizations/${orgId}/credentials/${credentialId}`, {
+    method: "DELETE",
+  });
+}
+
 // --- Payments: Stripe Link "wallet for agents" (OAuth device flow) ---
 
 export async function paymentConnectStart(): Promise<{

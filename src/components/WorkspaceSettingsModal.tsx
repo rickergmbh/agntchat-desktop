@@ -10,8 +10,9 @@ import { useWorkspaceStore, useWorkspaces } from "../stores/workspaceStore";
 import type { WorkspaceMembership, OrganizationMembership, OrganizationInvite } from "../lib/api";
 import { HostsManagement } from "./HostsManagement";
 import { ProvidersManagement } from "./ProvidersManagement";
+import { ConnectionsManagement } from "./ConnectionsManagement";
 
-type Tab = "general" | "members" | "hosts" | "models" | "invites";
+type Tab = "general" | "members" | "hosts" | "models" | "connections" | "invites";
 
 interface Props {
   workspaceId: string;
@@ -95,6 +96,11 @@ export function WorkspaceSettingsModal({ workspaceId, onClose, initialTab }: Pro
             </TabButton>
           )}
           {isAdminOrOwner && (
+            <TabButton active={tab === "connections"} onClick={() => setTab("connections")}>
+              {t("workspace.tabs.connections")}
+            </TabButton>
+          )}
+          {isAdminOrOwner && (
             <TabButton active={tab === "invites"} onClick={() => setTab("invites")}>
               {t("workspace.tabs.invites")}
             </TabButton>
@@ -124,6 +130,9 @@ export function WorkspaceSettingsModal({ workspaceId, onClose, initialTab }: Pro
               orgId={workspace.id}
               subtitle={t("workspace.modelsSubtitle")}
             />
+          )}
+          {tab === "connections" && isAdminOrOwner && (
+            <ConnectionsManagement orgId={workspace.id} />
           )}
           {tab === "invites" && isAdminOrOwner && <InvitesTab workspace={workspace} />}
         </div>

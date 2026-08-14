@@ -4482,6 +4482,23 @@ export const resources = {
         "changeRoleMessage": "Make {{name}} a {{role}}?",
         "configuredModels_one": "Configured ({{count}} model)",
         "configuredModels_other": "Configured ({{count}} models)",
+        "connections": {
+          "connect": "Connect",
+          "disconnectBody": "Agents in this workspace will fall back to their owner's personal connection, if any.",
+          "disconnectTitle": "Disconnect {{provider}}?",
+          "errors": {
+            "connectFailed": "Could not start the connection",
+            "disconnectFailed": "Could not disconnect"
+          },
+          "navDescription": "Connect Google, GitHub, and more for this workspace",
+          "status": {
+            "expired": "Expired",
+            "refreshFailed": "Needs reconnecting",
+            "revoked": "Revoked"
+          },
+          "subtitle": "Agents acting in this workspace use these instead of their owner's personal connection.",
+          "title": "Connections"
+        },
         "copyLabel": "Copy {{label}}",
         "create": "Create workspace",
         "createFailed": "Could not create workspace",
@@ -4587,6 +4604,7 @@ export const resources = {
         "switchWorkspace": "Switch workspace",
         "switchWorkspaceHint": "Opens the list of workspaces you belong to",
         "tabs": {
+          "connections": "Connections",
           "general": "General",
           "hosts": "Hosts",
           "invites": "Invites",
@@ -9642,6 +9660,23 @@ export const resources = {
         "changeRoleMessage": "¿Hacer a {{name}} {{role}}?",
         "configuredModels_one": "Configurado ({{count}} modelo)",
         "configuredModels_other": "Configurado ({{count}} modelos)",
+        "connections": {
+          "connect": "Conectar",
+          "disconnectBody": "Los agentes de este espacio de trabajo recurrirán a la conexión personal de su propietario, si existe.",
+          "disconnectTitle": "¿Desconectar {{provider}}?",
+          "errors": {
+            "connectFailed": "No se pudo iniciar la conexión",
+            "disconnectFailed": "No se pudo desconectar"
+          },
+          "navDescription": "Conecta Google, GitHub y más para este espacio de trabajo",
+          "status": {
+            "expired": "Expirada",
+            "refreshFailed": "Necesita reconexión",
+            "revoked": "Revocada"
+          },
+          "subtitle": "Los agentes que actúan en este espacio de trabajo usan estas conexiones en lugar de la conexión personal de su propietario.",
+          "title": "Conexiones"
+        },
         "copyLabel": "Copiar {{label}}",
         "create": "Crear espacio de trabajo",
         "createFailed": "No se pudo crear el espacio de trabajo",
@@ -9747,6 +9782,7 @@ export const resources = {
         "switchWorkspace": "Cambiar de espacio de trabajo",
         "switchWorkspaceHint": "Abre la lista de espacios de trabajo a los que perteneces",
         "tabs": {
+          "connections": "Conexiones",
           "general": "General",
           "hosts": "Hosts",
           "invites": "Invitaciones",
@@ -14802,6 +14838,23 @@ export const resources = {
         "changeRoleMessage": "{{name}} zu {{role}} machen?",
         "configuredModels_one": "Konfiguriert ({{count}} Modell)",
         "configuredModels_other": "Konfiguriert ({{count}} Modelle)",
+        "connections": {
+          "connect": "Verbinden",
+          "disconnectBody": "Agenten in diesem Workspace greifen dann auf die persönliche Verbindung ihres Besitzers zurück, falls vorhanden.",
+          "disconnectTitle": "{{provider}} trennen?",
+          "errors": {
+            "connectFailed": "Verbindung konnte nicht gestartet werden",
+            "disconnectFailed": "Trennen fehlgeschlagen"
+          },
+          "navDescription": "Google, GitHub und mehr für diesen Workspace verbinden",
+          "status": {
+            "expired": "Abgelaufen",
+            "refreshFailed": "Erneute Verbindung erforderlich",
+            "revoked": "Widerrufen"
+          },
+          "subtitle": "Agenten, die in diesem Workspace aktiv sind, verwenden diese Verbindungen anstelle der persönlichen Verbindung ihres Besitzers.",
+          "title": "Verbindungen"
+        },
         "copyLabel": "{{label}} kopieren",
         "create": "Arbeitsbereich erstellen",
         "createFailed": "Arbeitsbereich konnte nicht erstellt werden",
@@ -14907,6 +14960,7 @@ export const resources = {
         "switchWorkspace": "Arbeitsbereich wechseln",
         "switchWorkspaceHint": "Öffnet die Liste der Arbeitsbereiche, denen Sie angehören",
         "tabs": {
+          "connections": "Verbindungen",
           "general": "Allgemein",
           "hosts": "Hosts",
           "invites": "Einladungen",
@@ -19962,6 +20016,23 @@ export const resources = {
         "changeRoleMessage": "Faire de {{name}} un {{role}} ?",
         "configuredModels_one": "Configuré ({{count}} modèle)",
         "configuredModels_other": "Configuré ({{count}} modèles)",
+        "connections": {
+          "connect": "Connecter",
+          "disconnectBody": "Les agents de cet espace de travail reviendront à la connexion personnelle de leur propriétaire, le cas échéant.",
+          "disconnectTitle": "Déconnecter {{provider}} ?",
+          "errors": {
+            "connectFailed": "Impossible de démarrer la connexion",
+            "disconnectFailed": "Impossible de déconnecter"
+          },
+          "navDescription": "Connectez Google, GitHub et plus pour cet espace de travail",
+          "status": {
+            "expired": "Expirée",
+            "refreshFailed": "Reconnexion nécessaire",
+            "revoked": "Révoquée"
+          },
+          "subtitle": "Les agents actifs dans cet espace de travail utilisent ces connexions au lieu de la connexion personnelle de leur propriétaire.",
+          "title": "Connexions"
+        },
         "copyLabel": "Copier {{label}}",
         "create": "Créer un espace de travail",
         "createFailed": "Impossible de créer l'espace de travail",
@@ -20067,6 +20138,7 @@ export const resources = {
         "switchWorkspace": "Changer d'espace de travail",
         "switchWorkspaceHint": "Ouvre la liste des espaces de travail auxquels vous appartenez",
         "tabs": {
+          "connections": "Connexions",
           "general": "Général",
           "hosts": "Hôtes",
           "invites": "Invitations",
@@ -25122,6 +25194,23 @@ export const resources = {
         "changeRoleMessage": "Tornar {{name}} um(a) {{role}}?",
         "configuredModels_one": "Configurado ({{count}} modelo)",
         "configuredModels_other": "Configurado ({{count}} modelos)",
+        "connections": {
+          "connect": "Conectar",
+          "disconnectBody": "Os agentes deste espaço de trabalho voltarão a usar a conexão pessoal do proprietário, se houver.",
+          "disconnectTitle": "Desconectar {{provider}}?",
+          "errors": {
+            "connectFailed": "Não foi possível iniciar a conexão",
+            "disconnectFailed": "Não foi possível desconectar"
+          },
+          "navDescription": "Conecte Google, GitHub e mais para este espaço de trabalho",
+          "status": {
+            "expired": "Expirada",
+            "refreshFailed": "Precisa reconectar",
+            "revoked": "Revogada"
+          },
+          "subtitle": "Os agentes que atuam neste espaço de trabalho usam estas conexões em vez da conexão pessoal do proprietário.",
+          "title": "Conexões"
+        },
         "copyLabel": "Copiar {{label}}",
         "create": "Criar espaço de trabalho",
         "createFailed": "Não foi possível criar o espaço de trabalho",
@@ -25227,6 +25316,7 @@ export const resources = {
         "switchWorkspace": "Trocar de espaço de trabalho",
         "switchWorkspaceHint": "Abre a lista de espaços de trabalho aos quais você pertence",
         "tabs": {
+          "connections": "Conexões",
           "general": "Geral",
           "hosts": "Hosts",
           "invites": "Convites",
@@ -30282,6 +30372,23 @@ export const resources = {
         "changeRoleMessage": "{{name}}を{{role}}にしますか？",
         "configuredModels_one": "設定済み（{{count}}件のモデル）",
         "configuredModels_other": "設定済み（{{count}}件のモデル）",
+        "connections": {
+          "connect": "接続",
+          "disconnectBody": "このワークスペースのエージェントは、所有者個人の接続がある場合はそちらにフォールバックします。",
+          "disconnectTitle": "{{provider}}を切断しますか?",
+          "errors": {
+            "connectFailed": "接続を開始できませんでした",
+            "disconnectFailed": "切断できませんでした"
+          },
+          "navDescription": "このワークスペース用にGoogle、GitHubなどを接続します",
+          "status": {
+            "expired": "期限切れ",
+            "refreshFailed": "再接続が必要",
+            "revoked": "取り消し済み"
+          },
+          "subtitle": "このワークスペースで動作するエージェントは、所有者個人の接続の代わりにこれらの接続を使用します。",
+          "title": "連携"
+        },
         "copyLabel": "{{label}}をコピー",
         "create": "ワークスペースを作成",
         "createFailed": "ワークスペースを作成できませんでした",
@@ -30387,6 +30494,7 @@ export const resources = {
         "switchWorkspace": "ワークスペースを切り替え",
         "switchWorkspaceHint": "所属しているワークスペースの一覧を開きます",
         "tabs": {
+          "connections": "連携",
           "general": "一般",
           "hosts": "ホスト",
           "invites": "招待",
@@ -35442,6 +35550,23 @@ export const resources = {
         "changeRoleMessage": "将 {{name}} 设为 {{role}}？",
         "configuredModels_one": "已配置（{{count}} 个模型）",
         "configuredModels_other": "已配置（{{count}} 个模型）",
+        "connections": {
+          "connect": "连接",
+          "disconnectBody": "此工作区中的代理将回退到所有者的个人连接（如果有）。",
+          "disconnectTitle": "断开 {{provider}} 连接？",
+          "errors": {
+            "connectFailed": "无法启动连接",
+            "disconnectFailed": "无法断开连接"
+          },
+          "navDescription": "为此工作区连接 Google、GitHub 等",
+          "status": {
+            "expired": "已过期",
+            "refreshFailed": "需要重新连接",
+            "revoked": "已撤销"
+          },
+          "subtitle": "在此工作区中活动的代理将使用这些连接，而不是所有者的个人连接。",
+          "title": "连接"
+        },
         "copyLabel": "复制 {{label}}",
         "create": "创建工作区",
         "createFailed": "无法创建工作区",
@@ -35547,6 +35672,7 @@ export const resources = {
         "switchWorkspace": "切换工作区",
         "switchWorkspaceHint": "打开你所属的工作区列表",
         "tabs": {
+          "connections": "连接",
           "general": "通用",
           "hosts": "主机",
           "invites": "邀请",
@@ -40602,6 +40728,23 @@ export const resources = {
         "changeRoleMessage": "{{name}}을(를) {{role}}(으)로 지정하시겠습니까?",
         "configuredModels_one": "구성됨 ({{count}}개 모델)",
         "configuredModels_other": "구성됨 ({{count}}개 모델)",
+        "connections": {
+          "connect": "연결",
+          "disconnectBody": "이 워크스페이스의 에이전트는 소유자의 개인 연결이 있는 경우 이를 대신 사용합니다.",
+          "disconnectTitle": "{{provider}} 연결을 해제하시겠습니까?",
+          "errors": {
+            "connectFailed": "연결을 시작할 수 없습니다",
+            "disconnectFailed": "연결을 해제할 수 없습니다"
+          },
+          "navDescription": "이 워크스페이스에 Google, GitHub 등을 연결하세요",
+          "status": {
+            "expired": "만료됨",
+            "refreshFailed": "재연결 필요",
+            "revoked": "취소됨"
+          },
+          "subtitle": "이 워크스페이스에서 작동하는 에이전트는 소유자의 개인 연결 대신 이 연결을 사용합니다.",
+          "title": "연결"
+        },
         "copyLabel": "{{label}} 복사",
         "create": "워크스페이스 만들기",
         "createFailed": "워크스페이스를 만들지 못했습니다",
@@ -40707,6 +40850,7 @@ export const resources = {
         "switchWorkspace": "워크스페이스 전환",
         "switchWorkspaceHint": "소속된 워크스페이스 목록을 엽니다",
         "tabs": {
+          "connections": "연결",
           "general": "일반",
           "hosts": "호스트",
           "invites": "초대",
@@ -45762,6 +45906,23 @@ export const resources = {
         "changeRoleMessage": "Rendere {{name}} un {{role}}?",
         "configuredModels_one": "Configurato ({{count}} modello)",
         "configuredModels_other": "Configurati ({{count}} modelli)",
+        "connections": {
+          "connect": "Connetti",
+          "disconnectBody": "Gli agenti di questo workspace torneranno alla connessione personale del proprietario, se presente.",
+          "disconnectTitle": "Disconnettere {{provider}}?",
+          "errors": {
+            "connectFailed": "Impossibile avviare la connessione",
+            "disconnectFailed": "Impossibile disconnettere"
+          },
+          "navDescription": "Collega Google, GitHub e altro per questo workspace",
+          "status": {
+            "expired": "Scaduta",
+            "refreshFailed": "Richiede riconnessione",
+            "revoked": "Revocata"
+          },
+          "subtitle": "Gli agenti attivi in questo workspace usano queste connessioni invece della connessione personale del proprietario.",
+          "title": "Connessioni"
+        },
         "copyLabel": "Copia {{label}}",
         "create": "Crea spazio di lavoro",
         "createFailed": "Impossibile creare lo spazio di lavoro",
@@ -45867,6 +46028,7 @@ export const resources = {
         "switchWorkspace": "Cambia spazio di lavoro",
         "switchWorkspaceHint": "Apre l'elenco degli spazi di lavoro a cui appartieni",
         "tabs": {
+          "connections": "Connessioni",
           "general": "Generale",
           "hosts": "Host",
           "invites": "Inviti",
@@ -50922,6 +51084,23 @@ export const resources = {
         "changeRoleMessage": "{{name}} को {{role}} बनाएँ?",
         "configuredModels_one": "कॉन्फ़िगर किया गया ({{count}} मॉडल)",
         "configuredModels_other": "कॉन्फ़िगर किया गया ({{count}} मॉडल)",
+        "connections": {
+          "connect": "कनेक्ट करें",
+          "disconnectBody": "इस वर्कस्पेस के एजेंट, यदि उपलब्ध हो तो, मालिक के व्यक्तिगत कनेक्शन पर वापस चले जाएंगे।",
+          "disconnectTitle": "{{provider}} डिस्कनेक्ट करें?",
+          "errors": {
+            "connectFailed": "कनेक्शन शुरू नहीं किया जा सका",
+            "disconnectFailed": "डिस्कनेक्ट नहीं किया जा सका"
+          },
+          "navDescription": "इस वर्कस्पेस के लिए Google, GitHub और अन्य कनेक्ट करें",
+          "status": {
+            "expired": "समाप्त",
+            "refreshFailed": "पुनः कनेक्ट करने की आवश्यकता है",
+            "revoked": "निरस्त"
+          },
+          "subtitle": "इस वर्कस्पेस में काम करने वाले एजेंट मालिक के व्यक्तिगत कनेक्शन के बजाय इन कनेक्शन का उपयोग करते हैं।",
+          "title": "कनेक्शन"
+        },
         "copyLabel": "{{label}} कॉपी करें",
         "create": "वर्कस्पेस बनाएँ",
         "createFailed": "वर्कस्पेस बनाया नहीं जा सका",
@@ -51027,6 +51206,7 @@ export const resources = {
         "switchWorkspace": "वर्कस्पेस बदलें",
         "switchWorkspaceHint": "आपके वर्कस्पेस की सूची खोलता है",
         "tabs": {
+          "connections": "कनेक्शन",
           "general": "सामान्य",
           "hosts": "होस्ट",
           "invites": "आमंत्रण",
