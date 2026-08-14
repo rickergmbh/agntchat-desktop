@@ -123,12 +123,10 @@ function resolveEffectiveType(
     case "failed":
     case "declined":
       return "task_failed";
-    // The Task schema has no separate "failed" state — fail_task_atomic
-    // maps a failure (timeout, crash) onto "cancelled". When effectiveStatus
-    // is the raw API task status ("cancelled"), honor an explicit task_failed
-    // card so the failure renders as FailureCard, not the user-cancellation
-    // CancelledCard. (When the task_failed card is in the loaded window,
-    // effectiveStatus is hydrated to "failed" and the case above handles it.)
+    // "failed" is a first-class task status (handled by the case above when
+    // hydrated). When effectiveStatus is a raw "cancelled", still honor an
+    // explicit task_failed card so the failure renders as FailureCard, not
+    // the user-cancellation CancelledCard.
     case "cancelled":
       return fallback === "task_failed" ? "task_failed" : "task_cancelled";
     default:

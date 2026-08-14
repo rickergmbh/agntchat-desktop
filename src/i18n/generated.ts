@@ -2283,6 +2283,9 @@ export const resources = {
       "charCount_one": "{{count}} char",
       "charCount_other": "{{count}} chars",
       "chatting": "Chatting",
+      "clarification": {
+        "answer": "Answer"
+      },
       "clearChat": "Clear Chat",
       "compaction": {
         "summarizedNoCount": "Earlier messages summarized",
@@ -2366,6 +2369,10 @@ export const resources = {
         "selectParticipant": "Select at least one participant",
         "sendTimeout": "Message send timed out",
         "startFailed": "Failed to start conversation."
+      },
+      "experience": {
+        "customCanvas": "Custom Canvas",
+        "noContent": "No content"
       },
       "goToConversation": "Go to conversation",
       "group": "Group",
@@ -2536,6 +2543,7 @@ export const resources = {
         "denied": "Denied",
         "deny": "Deny",
         "expired": "Request expired",
+        "resolveFailed": "Couldn't submit your decision. Try again.",
         "subtitle": "{{agent}} wants to run an action",
         "title": "Permission needed"
       },
@@ -2555,6 +2563,7 @@ export const resources = {
         "defaultAction": "Default: {{action}}",
         "expiresIn": "Expires in {{time}}"
       },
+      "reactionFailed": "Couldn't update reaction",
       "reactions": {
         "add": "Add reaction",
         "reactWith": "React with {{emoji}}"
@@ -2940,6 +2949,7 @@ export const resources = {
       "share": "Share",
       "showLess": "Show less",
       "showMore": "Show more",
+      "skip": "Skip",
       "skipForNow": "Skip for now",
       "someone": "Someone",
       "start": "Start",
@@ -4697,6 +4707,7 @@ export const resources = {
       "criteria": "Criteria",
       "deadline": "Deadline",
       "decision": {
+        "accepted": "Task Accepted",
         "estimate": "Est: {{minutes}}m",
         "noReason": "No reason given",
         "rejected": "Task Rejected",
@@ -7288,6 +7299,9 @@ export const resources = {
       "charCount_one": "{{count}} carácter",
       "charCount_other": "{{count}} caracteres",
       "chatting": "Chateando",
+      "clarification": {
+        "answer": "Respuesta"
+      },
       "clearChat": "Vaciar chat",
       "compaction": {
         "summarizedNoCount": "Mensajes anteriores resumidos",
@@ -7371,6 +7385,10 @@ export const resources = {
         "selectParticipant": "Selecciona al menos un participante",
         "sendTimeout": "Se agotó el tiempo al enviar el mensaje",
         "startFailed": "No se pudo iniciar la conversación."
+      },
+      "experience": {
+        "customCanvas": "Lienzo personalizado",
+        "noContent": "Sin contenido"
       },
       "goToConversation": "Ir a la conversación",
       "group": "Grupo",
@@ -7541,6 +7559,7 @@ export const resources = {
         "denied": "Denegado",
         "deny": "Denegar",
         "expired": "Solicitud caducada",
+        "resolveFailed": "No se pudo enviar tu decisión. Inténtalo de nuevo.",
         "subtitle": "{{agent}} quiere ejecutar una acción",
         "title": "Se necesita permiso"
       },
@@ -7560,6 +7579,7 @@ export const resources = {
         "defaultAction": "Por defecto: {{action}}",
         "expiresIn": "Caduca en {{time}}"
       },
+      "reactionFailed": "No se pudo actualizar la reacción",
       "reactions": {
         "add": "Añadir reacción",
         "reactWith": "Reaccionar con {{emoji}}"
@@ -7945,6 +7965,7 @@ export const resources = {
       "share": "Compartir",
       "showLess": "Mostrar menos",
       "showMore": "Mostrar más",
+      "skip": "Omitir",
       "skipForNow": "Omitir por ahora",
       "someone": "Alguien",
       "start": "Empezar",
@@ -9702,6 +9723,7 @@ export const resources = {
       "criteria": "Criterios",
       "deadline": "Fecha límite",
       "decision": {
+        "accepted": "Tarea aceptada",
         "estimate": "Est.: {{minutes}} min",
         "noReason": "No se indicó un motivo",
         "rejected": "Tarea rechazada",
@@ -12293,6 +12315,9 @@ export const resources = {
       "charCount_one": "{{count}} Zeichen",
       "charCount_other": "{{count}} Zeichen",
       "chatting": "Chattet",
+      "clarification": {
+        "answer": "Antwort"
+      },
       "clearChat": "Chat leeren",
       "compaction": {
         "summarizedNoCount": "Frühere Nachrichten zusammengefasst",
@@ -12376,6 +12401,10 @@ export const resources = {
         "selectParticipant": "Wählen Sie mindestens einen Teilnehmer aus",
         "sendTimeout": "Zeitüberschreitung beim Senden der Nachricht",
         "startFailed": "Starten der Unterhaltung fehlgeschlagen."
+      },
+      "experience": {
+        "customCanvas": "Eigenes Canvas",
+        "noContent": "Kein Inhalt"
       },
       "goToConversation": "Zur Unterhaltung gehen",
       "group": "Gruppe",
@@ -12546,6 +12575,7 @@ export const resources = {
         "denied": "Abgelehnt",
         "deny": "Ablehnen",
         "expired": "Anfrage abgelaufen",
+        "resolveFailed": "Deine Entscheidung konnte nicht übermittelt werden. Versuch es erneut.",
         "subtitle": "{{agent}} möchte eine Aktion ausführen",
         "title": "Erlaubnis erforderlich"
       },
@@ -12565,6 +12595,7 @@ export const resources = {
         "defaultAction": "Standard: {{action}}",
         "expiresIn": "Läuft ab in {{time}}"
       },
+      "reactionFailed": "Reaktion konnte nicht aktualisiert werden",
       "reactions": {
         "add": "Reaktion hinzufügen",
         "reactWith": "Mit {{emoji}} reagieren"
@@ -12950,6 +12981,7 @@ export const resources = {
       "share": "Teilen",
       "showLess": "Weniger anzeigen",
       "showMore": "Mehr anzeigen",
+      "skip": "Überspringen",
       "skipForNow": "Vorerst überspringen",
       "someone": "Jemand",
       "start": "Start",
@@ -14707,6 +14739,7 @@ export const resources = {
       "criteria": "Kriterien",
       "deadline": "Frist",
       "decision": {
+        "accepted": "Aufgabe angenommen",
         "estimate": "Gesch.: {{minutes}} Min.",
         "noReason": "Kein Grund angegeben",
         "rejected": "Aufgabe abgelehnt",
@@ -17298,6 +17331,9 @@ export const resources = {
       "charCount_one": "{{count}} caractère",
       "charCount_other": "{{count}} caractères",
       "chatting": "En conversation",
+      "clarification": {
+        "answer": "Réponse"
+      },
       "clearChat": "Effacer la conversation",
       "compaction": {
         "summarizedNoCount": "Messages précédents résumés",
@@ -17381,6 +17417,10 @@ export const resources = {
         "selectParticipant": "Sélectionnez au moins un participant",
         "sendTimeout": "Délai d'attente dépassé pour l'envoi du message",
         "startFailed": "Échec du démarrage de la conversation."
+      },
+      "experience": {
+        "customCanvas": "Canevas personnalisé",
+        "noContent": "Aucun contenu"
       },
       "goToConversation": "Aller à la conversation",
       "group": "Groupe",
@@ -17551,6 +17591,7 @@ export const resources = {
         "denied": "Refusé",
         "deny": "Refuser",
         "expired": "Demande expirée",
+        "resolveFailed": "Impossible d'envoyer votre décision. Réessayez.",
         "subtitle": "{{agent}} veut exécuter une action",
         "title": "Autorisation requise"
       },
@@ -17570,6 +17611,7 @@ export const resources = {
         "defaultAction": "Par défaut : {{action}}",
         "expiresIn": "Expire dans {{time}}"
       },
+      "reactionFailed": "Impossible de mettre à jour la réaction",
       "reactions": {
         "add": "Ajouter une réaction",
         "reactWith": "Réagir avec {{emoji}}"
@@ -17955,6 +17997,7 @@ export const resources = {
       "share": "Partager",
       "showLess": "Afficher moins",
       "showMore": "Afficher plus",
+      "skip": "Passer",
       "skipForNow": "Ignorer pour l'instant",
       "someone": "Quelqu'un",
       "start": "Démarrer",
@@ -19712,6 +19755,7 @@ export const resources = {
       "criteria": "Critères",
       "deadline": "Échéance",
       "decision": {
+        "accepted": "Tâche acceptée",
         "estimate": "Est. : {{minutes}}m",
         "noReason": "Aucune raison donnée",
         "rejected": "Tâche rejetée",
@@ -22303,6 +22347,9 @@ export const resources = {
       "charCount_one": "{{count}} caractere",
       "charCount_other": "{{count}} caracteres",
       "chatting": "Conversando",
+      "clarification": {
+        "answer": "Resposta"
+      },
       "clearChat": "Limpar conversa",
       "compaction": {
         "summarizedNoCount": "Mensagens anteriores resumidas",
@@ -22386,6 +22433,10 @@ export const resources = {
         "selectParticipant": "Selecione pelo menos um participante",
         "sendTimeout": "Tempo esgotado ao enviar mensagem",
         "startFailed": "Falha ao iniciar conversa."
+      },
+      "experience": {
+        "customCanvas": "Canvas Personalizado",
+        "noContent": "Sem conteúdo"
       },
       "goToConversation": "Ir para a conversa",
       "group": "Grupo",
@@ -22556,6 +22607,7 @@ export const resources = {
         "denied": "Negado",
         "deny": "Negar",
         "expired": "Pedido expirado",
+        "resolveFailed": "Não foi possível enviar sua decisão. Tente novamente.",
         "subtitle": "{{agent}} quer executar uma ação",
         "title": "Permissão necessária"
       },
@@ -22575,6 +22627,7 @@ export const resources = {
         "defaultAction": "Padrão: {{action}}",
         "expiresIn": "Expira em {{time}}"
       },
+      "reactionFailed": "Não foi possível atualizar a reação",
       "reactions": {
         "add": "Adicionar reação",
         "reactWith": "Reagir com {{emoji}}"
@@ -22960,6 +23013,7 @@ export const resources = {
       "share": "Compartilhar",
       "showLess": "Mostrar menos",
       "showMore": "Mostrar mais",
+      "skip": "Pular",
       "skipForNow": "Pular por agora",
       "someone": "Alguém",
       "start": "Iniciar",
@@ -24717,6 +24771,7 @@ export const resources = {
       "criteria": "Critérios",
       "deadline": "Prazo",
       "decision": {
+        "accepted": "Tarefa Aceita",
         "estimate": "Est: {{minutes}}min",
         "noReason": "Nenhum motivo informado",
         "rejected": "Tarefa Rejeitada",
@@ -27308,6 +27363,9 @@ export const resources = {
       "charCount_one": "{{count}}文字",
       "charCount_other": "{{count}}文字",
       "chatting": "チャット中",
+      "clarification": {
+        "answer": "回答"
+      },
       "clearChat": "チャットを消去",
       "compaction": {
         "summarizedNoCount": "以前のメッセージが要約されました",
@@ -27391,6 +27449,10 @@ export const resources = {
         "selectParticipant": "参加者を1人以上選択してください",
         "sendTimeout": "メッセージの送信がタイムアウトしました",
         "startFailed": "会話の開始に失敗しました。"
+      },
+      "experience": {
+        "customCanvas": "カスタムキャンバス",
+        "noContent": "コンテンツがありません"
       },
       "goToConversation": "会話に移動",
       "group": "グループ",
@@ -27561,6 +27623,7 @@ export const resources = {
         "denied": "拒否済み",
         "deny": "拒否",
         "expired": "リクエストの有効期限が切れました",
+        "resolveFailed": "決定を送信できませんでした。もう一度お試しください。",
         "subtitle": "{{agent}} がアクションを実行しようとしています",
         "title": "許可が必要です"
       },
@@ -27580,6 +27643,7 @@ export const resources = {
         "defaultAction": "デフォルト: {{action}}",
         "expiresIn": "{{time}}後に期限切れ"
       },
+      "reactionFailed": "リアクションを更新できませんでした",
       "reactions": {
         "add": "リアクションを追加",
         "reactWith": "{{emoji}}でリアクション"
@@ -27965,6 +28029,7 @@ export const resources = {
       "share": "共有",
       "showLess": "表示を減らす",
       "showMore": "もっと表示",
+      "skip": "スキップ",
       "skipForNow": "今はスキップ",
       "someone": "誰か",
       "start": "開始",
@@ -29722,6 +29787,7 @@ export const resources = {
       "criteria": "基準",
       "deadline": "期限",
       "decision": {
+        "accepted": "タスクが承認されました",
         "estimate": "見積り: {{minutes}}分",
         "noReason": "理由なし",
         "rejected": "タスクが却下されました",
@@ -32313,6 +32379,9 @@ export const resources = {
       "charCount_one": "{{count}} 个字符",
       "charCount_other": "{{count}} 个字符",
       "chatting": "聊天中",
+      "clarification": {
+        "answer": "回答"
+      },
       "clearChat": "清空聊天记录",
       "compaction": {
         "summarizedNoCount": "较早的消息已汇总",
@@ -32396,6 +32465,10 @@ export const resources = {
         "selectParticipant": "请至少选择一位参与者",
         "sendTimeout": "发送消息超时",
         "startFailed": "创建对话失败。"
+      },
+      "experience": {
+        "customCanvas": "自定义画布",
+        "noContent": "无内容"
       },
       "goToConversation": "前往对话",
       "group": "群组",
@@ -32566,6 +32639,7 @@ export const resources = {
         "denied": "已拒绝",
         "deny": "拒绝",
         "expired": "请求已过期",
+        "resolveFailed": "无法提交你的决定，请重试。",
         "subtitle": "{{agent}} 想要执行一个操作",
         "title": "需要授权"
       },
@@ -32585,6 +32659,7 @@ export const resources = {
         "defaultAction": "默认：{{action}}",
         "expiresIn": "将在 {{time}} 后过期"
       },
+      "reactionFailed": "无法更新回应",
       "reactions": {
         "add": "添加回应",
         "reactWith": "用 {{emoji}} 回应"
@@ -32970,6 +33045,7 @@ export const resources = {
       "share": "分享",
       "showLess": "收起",
       "showMore": "展开更多",
+      "skip": "跳过",
       "skipForNow": "暂时跳过",
       "someone": "某人",
       "start": "开始",
@@ -34727,6 +34803,7 @@ export const resources = {
       "criteria": "标准",
       "deadline": "截止时间",
       "decision": {
+        "accepted": "任务已接受",
         "estimate": "预计：{{minutes}} 分钟",
         "noReason": "未给出原因",
         "rejected": "任务已拒绝",
@@ -37318,6 +37395,9 @@ export const resources = {
       "charCount_one": "{{count}}자",
       "charCount_other": "{{count}}자",
       "chatting": "채팅 중",
+      "clarification": {
+        "answer": "답변"
+      },
       "clearChat": "채팅 지우기",
       "compaction": {
         "summarizedNoCount": "이전 메시지가 요약되었습니다",
@@ -37401,6 +37481,10 @@ export const resources = {
         "selectParticipant": "참가자를 한 명 이상 선택하세요",
         "sendTimeout": "메시지 전송 시간 초과",
         "startFailed": "대화 시작 실패"
+      },
+      "experience": {
+        "customCanvas": "커스텀 캔버스",
+        "noContent": "내용 없음"
       },
       "goToConversation": "대화로 이동",
       "group": "그룹",
@@ -37571,6 +37655,7 @@ export const resources = {
         "denied": "거부됨",
         "deny": "거부",
         "expired": "요청이 만료되었습니다",
+        "resolveFailed": "결정을 제출하지 못했습니다. 다시 시도해 주세요.",
         "subtitle": "{{agent}}이(가) 작업을 실행하려고 합니다",
         "title": "권한이 필요합니다"
       },
@@ -37590,6 +37675,7 @@ export const resources = {
         "defaultAction": "기본값: {{action}}",
         "expiresIn": "{{time}} 후 만료"
       },
+      "reactionFailed": "리액션을 업데이트하지 못했습니다",
       "reactions": {
         "add": "반응 추가",
         "reactWith": "{{emoji}}(으)로 반응하기"
@@ -37975,6 +38061,7 @@ export const resources = {
       "share": "공유",
       "showLess": "간략히 보기",
       "showMore": "더 보기",
+      "skip": "건너뛰기",
       "skipForNow": "나중에 하기",
       "someone": "누군가",
       "start": "시작",
@@ -39732,6 +39819,7 @@ export const resources = {
       "criteria": "기준",
       "deadline": "마감일",
       "decision": {
+        "accepted": "작업 수락됨",
         "estimate": "예상: {{minutes}}분",
         "noReason": "사유 없음",
         "rejected": "작업 거부됨",
@@ -42323,6 +42411,9 @@ export const resources = {
       "charCount_one": "{{count}} carattere",
       "charCount_other": "{{count}} caratteri",
       "chatting": "In chat",
+      "clarification": {
+        "answer": "Risposta"
+      },
       "clearChat": "Cancella chat",
       "compaction": {
         "summarizedNoCount": "Messaggi precedenti riassunti",
@@ -42406,6 +42497,10 @@ export const resources = {
         "selectParticipant": "Seleziona almeno un partecipante",
         "sendTimeout": "Invio del messaggio scaduto",
         "startFailed": "Impossibile avviare la conversazione."
+      },
+      "experience": {
+        "customCanvas": "Canvas personalizzato",
+        "noContent": "Nessun contenuto"
       },
       "goToConversation": "Vai alla conversazione",
       "group": "Gruppo",
@@ -42576,6 +42671,7 @@ export const resources = {
         "denied": "Negato",
         "deny": "Nega",
         "expired": "Richiesta scaduta",
+        "resolveFailed": "Impossibile inviare la tua decisione. Riprova.",
         "subtitle": "{{agent}} vuole eseguire un'azione",
         "title": "Autorizzazione necessaria"
       },
@@ -42595,6 +42691,7 @@ export const resources = {
         "defaultAction": "Predefinita: {{action}}",
         "expiresIn": "Scade tra {{time}}"
       },
+      "reactionFailed": "Impossibile aggiornare la reazione",
       "reactions": {
         "add": "Aggiungi reazione",
         "reactWith": "Reagisci con {{emoji}}"
@@ -42980,6 +43077,7 @@ export const resources = {
       "share": "Condividi",
       "showLess": "Mostra meno",
       "showMore": "Mostra altro",
+      "skip": "Salta",
       "skipForNow": "Salta per ora",
       "someone": "Qualcuno",
       "start": "Avvia",
@@ -44737,6 +44835,7 @@ export const resources = {
       "criteria": "Criteri",
       "deadline": "Scadenza",
       "decision": {
+        "accepted": "Attività accettata",
         "estimate": "Stima: {{minutes}}m",
         "noReason": "Nessun motivo fornito",
         "rejected": "Attività rifiutata",
@@ -47328,6 +47427,9 @@ export const resources = {
       "charCount_one": "{{count}} अक्षर",
       "charCount_other": "{{count}} अक्षर",
       "chatting": "चैट हो रही है",
+      "clarification": {
+        "answer": "उत्तर"
+      },
       "clearChat": "चैट साफ़ करें",
       "compaction": {
         "summarizedNoCount": "पहले के संदेशों का सारांश बनाया गया",
@@ -47411,6 +47513,10 @@ export const resources = {
         "selectParticipant": "कम से कम एक प्रतिभागी चुनें",
         "sendTimeout": "संदेश भेजने का समय समाप्त",
         "startFailed": "बातचीत शुरू करना विफल।"
+      },
+      "experience": {
+        "customCanvas": "कस्टम कैनवास",
+        "noContent": "कोई सामग्री नहीं"
       },
       "goToConversation": "बातचीत पर जाएँ",
       "group": "समूह",
@@ -47581,6 +47687,7 @@ export const resources = {
         "denied": "अस्वीकृत",
         "deny": "अस्वीकार करें",
         "expired": "अनुरोध समाप्त हो गया",
+        "resolveFailed": "आपका निर्णय सबमिट नहीं हो सका। फिर से कोशिश करें।",
         "subtitle": "{{agent}} एक क्रिया चलाना चाहता है",
         "title": "अनुमति आवश्यक है"
       },
@@ -47600,6 +47707,7 @@ export const resources = {
         "defaultAction": "डिफ़ॉल्ट: {{action}}",
         "expiresIn": "{{time}} में समाप्त होगा"
       },
+      "reactionFailed": "रिएक्शन अपडेट नहीं हो सका",
       "reactions": {
         "add": "प्रतिक्रिया जोड़ें",
         "reactWith": "{{emoji}} के साथ प्रतिक्रिया दें"
@@ -47985,6 +48093,7 @@ export const resources = {
       "share": "साझा करें",
       "showLess": "कम दिखाएँ",
       "showMore": "अधिक दिखाएँ",
+      "skip": "छोड़ें",
       "skipForNow": "अभी के लिए छोड़ें",
       "someone": "कोई",
       "start": "शुरू करें",
@@ -49742,6 +49851,7 @@ export const resources = {
       "criteria": "मानदंड",
       "deadline": "समय सीमा",
       "decision": {
+        "accepted": "कार्य स्वीकृत",
         "estimate": "अनुमानित: {{minutes}} मि",
         "noReason": "कोई कारण नहीं दिया गया",
         "rejected": "कार्य अस्वीकृत",
