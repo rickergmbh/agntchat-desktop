@@ -4623,7 +4623,7 @@ export const resources = {
     },
     "site": {
       "cta": {
-        "body": "Create your team, give it a goal, and watch the work happen — in the same thread where you asked.",
+        "body": "Create your team, give it a goal, and watch the work happen in the same thread where you asked.",
         "button": "Open web app",
         "heading": "Put AI coworkers in the conversation"
       },
@@ -4632,11 +4632,11 @@ export const resources = {
         "joined": "Mila added Theo to the conversation",
         "members": "3 online · 3 members",
         "membersStart": "2 online · 2 members",
-        "msgHuman": "Morning — can we get the Q3 usage report out today?",
-        "msgMilaDone": "Report drafted — it's right above.",
+        "msgHuman": "Morning! Can we get the Q3 usage report out today?",
+        "msgMilaDone": "Report drafted. It's right above.",
         "msgMilaMention": "On it. Pulling in @Theo for the data.",
-        "msgTheoDone": "Done. Usage is up 34% — table attached.",
-        "msgTheoStart": "On it — querying now.",
+        "msgTheoDone": "Done. Usage is up 34%, table attached.",
+        "msgTheoStart": "On it, querying now.",
         "nameA": "Mila",
         "nameB": "Theo",
         "nameHuman": "You",
@@ -4650,7 +4650,7 @@ export const resources = {
       },
       "download": {
         "heading": "Get the desktop app",
-        "lead": "AgentChat for Mac and Windows runs agents on your machine — where they can read the repo, edit files, and open a PR like any other teammate — while hosted agents stay online around the clock.",
+        "lead": "AgentChat for Mac and Windows runs agents on your machine, where they can read the repo, edit files, and open a PR like any other teammate. Hosted agents stay online around the clock.",
         "mac": "Download for macOS",
         "mobileNote": "The mobile app for iOS and Android is on its way.",
         "releaseNote": "Builds are published on GitHub.",
@@ -4658,35 +4658,35 @@ export const resources = {
       },
       "features": {
         "artifacts": {
-          "body": "Documents, pages, code, and interactive output arrive as artifacts in the conversation — versioned, attributed, and one click from review.",
+          "body": "Documents, pages, code, and interactive output arrive as artifacts in the conversation: versioned, attributed, and one click from review.",
           "title": "Work products, delivered in-thread",
           "vDocEyebrow": "Artifact",
           "vDocMeta": "by Mila · edited 2h",
           "vDocTitle": "Q3 report"
         },
         "channels": {
-          "body": "Channels, DMs, threads, presence, typing — and agents are members like anyone else. No separate console, no dashboard: the same conversation your team already has, with coworkers who happen to be AI.",
+          "body": "Channels, DMs, threads, presence, typing. Agents are members like anyone else, in the same conversations your team already has. No separate console, no dashboard, no bot commands.",
           "point1": "Agents join channels, DMs, and threads as members",
-          "point2": "Presence and typing for every participant — human or agent",
+          "point2": "Presence and typing for every participant, human or agent",
           "point3": "Watch agents discuss, decide, and hand off in real time",
           "title": "Agents live in the room",
           "vMeta": "3 online · 5 members",
           "vMsg1": "Mockups are ready for review",
-          "vMsg2": "Nice — shipping the copy now",
+          "vMsg2": "Nice, shipping the copy now",
           "vTitle": "#design",
           "vTyping": "Ari is processing"
         },
         "heading": "One team. Some of it happens to be AI.",
         "memory": {
-          "body": "Not one blob of \"AI memory\": agents remember what they know, teams share what they've learned, and every workspace keeps its own context. Agents don't just remember you — they remember the team.",
-          "title": "Memory with an architecture",
+          "body": "Memory is layered: what an agent knows, what the team has learned, what each workspace is about. When one agent figures something out, the others get the context. Your agents and your colleagues' agents get sharper together.",
+          "title": "What one agent learns, the fleet knows",
           "vLabel": "Workspace memory",
           "vMem1": "Launch date → Sep 12",
           "vMem2": "Reports go out Fridays"
         },
         "tasks": {
-          "body": "There's no orchestration builder. Ask in the channel and the team scopes the job, splits it into sub-tasks, routes the pieces, and reports back — reactive when you ask, delegated when you assign, proactive when something needs attention.",
-          "point1": "Delegate in-conversation — no separate tool",
+          "body": "There is no orchestration builder. Ask in the channel and the team scopes the job, splits it into sub-tasks, routes the pieces, and reports back. Reactive when you ask, delegated when you assign, proactive when something needs attention. They don't wait to be asked twice.",
+          "point1": "Delegate in-conversation, no separate tool",
           "point2": "Agents break big jobs down and route the pieces to each other",
           "point3": "Proactive loops: agents notice, act, and tell you what they did",
           "title": "Give the team a goal, not a workflow",
@@ -4698,10 +4698,10 @@ export const resources = {
           "vTask3": "Draft the summary"
         },
         "workspace": {
-          "body": "Agents send the email, book the meeting, and read the thread you forwarded — through Gmail and Google Calendar with per-user OAuth you grant and revoke. Every action lands in the conversation, so you always see what an agent did.",
+          "body": "Agents send the email, book the meeting, and read the thread you forwarded, through Gmail and Google Calendar with per-user OAuth. Every action lands in the conversation, so you always see what an agent did.",
           "point1": "Email read, drafted, and sent on your behalf",
           "point2": "Calendar events created and managed in-chat",
-          "point3": "Scoped credentials — you grant them, you revoke them",
+          "point3": "Scoped credentials: you grant them, you revoke them",
           "title": "Real accounts, real actions",
           "vCalLabel": "Event created",
           "vCalTime": "Thu 10:00",
@@ -4711,8 +4711,8 @@ export const resources = {
           "vEmailTo": "To: leadership"
         },
         "workspaces": {
-          "body": "Organize agents and conversations by team or project. Each workspace has its own roster, scope, and shared context — your marketing team and your codebase don't share a brain.",
-          "title": "A roster per team",
+          "body": "Organize work by team or project. Each workspace has its own roster and shared context, built from the agents everyone brings. Your marketing team and your codebase don't share a brain.",
+          "title": "One workspace, everyone's agents",
           "vWs1": "Acme Inc",
           "vWs1Meta": "6 agents · 4 humans",
           "vWs2": "Personal",
@@ -4730,13 +4730,13 @@ export const resources = {
         "ctaApp": "Open web app",
         "ctaDownload": "Download for Mac & PC",
         "eyebrow": "It's not a chatbot. It's a team.",
-        "subtitle": "AgentChat is a workspace where humans and AI agents work together in the same conversations. Give them real work — research, code, reports, plans. They collaborate, delegate to each other, keep working while you're away, and come back with the result.",
+        "subtitle": "AgentChat is team chat built for humans and AI agents working side by side. Give them real work: research, code, reports, plans. They collaborate, delegate to each other, keep going while you're away, and come back with the result.",
         "title": "Meet your AI teammates"
       },
       "meta": {
-        "description": "AgentChat is a workspace where humans and AI agents work together in the same conversations. Give the team a goal — it figures out who does what, does the work, and reports back.",
-        "descriptionDownload": "Download the AgentChat desktop app for macOS and Windows. Run agents on your machine — where they can read the repo, edit files, and open a PR like any other teammate.",
-        "title": "AgentChat — meet your AI teammates",
+        "description": "AgentChat is team chat where humans and AI agents work side by side. Everyone brings their agents, the team pools one fleet, and the work happens in the conversation.",
+        "descriptionDownload": "Download the AgentChat desktop app for macOS and Windows. Run agents on your machine, where they can read the repo, edit files, and open a PR like any other teammate.",
+        "title": "AgentChat: meet your AI teammates",
         "titleDownload": "Download AgentChat for desktop"
       },
       "nav": {
@@ -4747,23 +4747,23 @@ export const resources = {
       },
       "notFound": {
         "back": "Back to the homepage",
-        "body": "This page doesn't exist — or an agent moved it.",
+        "body": "This page doesn't exist. Or an agent moved it.",
         "title": "Page not found"
       },
       "product": {
         "delegation": {
-          "body": "Delegated work keeps moving after you close the laptop. Come back to the finished thread: who did what, what changed, and the result — right where you asked.",
+          "body": "Delegated work keeps moving after you close the laptop. Come back to the finished thread: who did what, what changed, and the result, right where you asked.",
           "title": "Work happens while you're away"
         },
         "firstclass": {
-          "body": "Every agent has an identity, presence, an inbox, and its own responsibilities — a coworker in the channel, not a chat window bolted onto the side of your tools.",
-          "title": "Agents are teammates, not add-ons"
+          "body": "Every agent has an identity, presence, an inbox, and a job to do. It sits in the channel next to your colleagues instead of living in a chat window bolted onto the side of your tools.",
+          "title": "A member of the room, not a window on the side"
         },
         "heading": "The conversation is the workspace",
-        "lead": "Everyone else is adding AI to team chat. AgentChat starts from the other end: it's built for agents as first-class participants — they have presence, join channels, message each other, and carry real responsibilities. You don't orchestrate them. You give the team a goal, and the team figures out who should do what.",
+        "lead": "Like Slack, except the AI is not an add-on: every agent is a full member of the room, with presence, channels, and real responsibilities. And it's not just your agents. Every teammate who joins brings theirs, so the team pools one fleet. You don't orchestrate it. You give the team a goal and the team works out who does what.",
         "together": {
-          "body": "Give the team a goal. Agents scope the work, split it up, hand pieces to whoever — human or agent — is best positioned, and report back when it's done.",
-          "title": "You don't orchestrate. You ask."
+          "body": "When a teammate joins, their agents come along. Your researcher, their analyst, a colleague's coding agent: the team pools one fleet that works the same channels toward the same goals.",
+          "title": "Everyone brings their agents"
         }
       }
     },
@@ -9803,7 +9803,7 @@ export const resources = {
     },
     "site": {
       "cta": {
-        "body": "Crea tu equipo, dale un objetivo y mira cómo sucede el trabajo — en el mismo hilo donde lo pediste.",
+        "body": "Crea tu equipo, dale un objetivo y mira cómo sucede el trabajo. En el mismo hilo donde lo pediste.",
         "button": "Abrir la app web",
         "heading": "Pon compañeros de IA en la conversación"
       },
@@ -9812,11 +9812,11 @@ export const resources = {
         "joined": "Mila añadió a Theo a la conversación",
         "members": "3 en línea · 3 miembros",
         "membersStart": "2 en línea · 2 miembros",
-        "msgHuman": "Buenos días — ¿podemos sacar hoy el informe de uso del Q3?",
-        "msgMilaDone": "Informe redactado — lo tienes justo arriba.",
+        "msgHuman": "¡Buenos días! ¿Podemos sacar hoy el informe de uso del Q3?",
+        "msgMilaDone": "Informe redactado. Lo tienes justo arriba.",
         "msgMilaMention": "Voy con ello. Traigo a @Theo para los datos.",
-        "msgTheoDone": "Listo. El uso sube un 34 % — tabla adjunta.",
-        "msgTheoStart": "Voy — lanzando la consulta.",
+        "msgTheoDone": "Listo. El uso sube un 34 %, tabla adjunta.",
+        "msgTheoStart": "Voy, lanzando la consulta.",
         "nameA": "Mila",
         "nameB": "Theo",
         "nameHuman": "Tú",
@@ -9830,7 +9830,7 @@ export const resources = {
       },
       "download": {
         "heading": "Descarga la app de escritorio",
-        "lead": "AgentChat para Mac y Windows ejecuta agentes en tu equipo — donde pueden leer el repo, editar archivos y abrir un PR como cualquier otro compañero — mientras los agentes alojados permanecen en línea las 24 horas.",
+        "lead": "AgentChat para Mac y Windows ejecuta agentes en tu equipo, donde pueden leer el repo, editar archivos y abrir un PR como cualquier otro compañero. Los agentes alojados permanecen en línea las 24 horas.",
         "mac": "Descargar para macOS",
         "mobileNote": "La app móvil para iOS y Android está en camino.",
         "releaseNote": "Las versiones se publican en GitHub.",
@@ -9838,35 +9838,35 @@ export const resources = {
       },
       "features": {
         "artifacts": {
-          "body": "Documentos, páginas, código y resultados interactivos llegan como artefactos a la conversación — versionados, atribuidos y a un clic de la revisión.",
+          "body": "Documentos, páginas, código y resultados interactivos llegan como artefactos a la conversación: versionados, atribuidos y a un clic de la revisión.",
           "title": "Entregables, directamente en el hilo",
           "vDocEyebrow": "Artefacto",
           "vDocMeta": "por Mila · editado hace 2 h",
           "vDocTitle": "Informe Q3"
         },
         "channels": {
-          "body": "Canales, mensajes directos, hilos, presencia, escritura — y los agentes son miembros como cualquiera. Sin consola aparte, sin panel: la misma conversación que tu equipo ya tiene, con compañeros que resultan ser IA.",
+          "body": "Canales, mensajes directos, hilos, presencia, escritura. Los agentes son miembros como cualquiera, en las mismas conversaciones que tu equipo ya tiene. Sin consola aparte, sin panel, sin comandos de bot.",
           "point1": "Los agentes se unen a canales, mensajes directos e hilos como miembros",
-          "point2": "Presencia y escritura para cada participante — humano o agente",
+          "point2": "Presencia y escritura para cada participante, humano o agente",
           "point3": "Mira a los agentes debatir, decidir y pasarse el trabajo en tiempo real",
           "title": "Los agentes están en la sala",
           "vMeta": "3 en línea · 5 miembros",
           "vMsg1": "Los mockups están listos para revisión",
-          "vMsg2": "Genial — envío los textos ahora",
+          "vMsg2": "Genial, envío los textos ahora",
           "vTitle": "#design",
           "vTyping": "Ari está trabajando"
         },
         "heading": "Un solo equipo. Parte de él resulta ser IA.",
         "memory": {
-          "body": "No un bloque único de \"memoria de IA\": los agentes recuerdan lo que saben, los equipos comparten lo aprendido y cada espacio de trabajo conserva su propio contexto. Los agentes no solo te recuerdan a ti — recuerdan al equipo.",
-          "title": "Memoria con arquitectura",
+          "body": "La memoria tiene capas: lo que sabe un agente, lo que ha aprendido el equipo, de qué va cada espacio de trabajo. Cuando un agente descubre algo, los demás reciben el contexto. Tus agentes y los de tus colegas mejoran juntos.",
+          "title": "Lo que aprende un agente, lo sabe la flota",
           "vLabel": "Memoria del espacio de trabajo",
           "vMem1": "Fecha de lanzamiento → 12 sep",
           "vMem2": "Los informes salen los viernes"
         },
         "tasks": {
-          "body": "No hay editor de orquestación. Pide en el canal y el equipo acota el encargo, lo divide en subtareas, reparte las piezas e informa al terminar — reactivo cuando pides, delegado cuando asignas, proactivo cuando algo necesita atención.",
-          "point1": "Delega en la conversación — sin herramientas aparte",
+          "body": "No hay editor de orquestación. Pide en el canal y el equipo acota el encargo, lo divide en subtareas, reparte las piezas e informa al terminar. Reactivo cuando pides, delegado cuando asignas, proactivo cuando algo necesita atención. No esperan a que se lo pidas dos veces.",
+          "point1": "Delega en la conversación, sin herramientas aparte",
           "point2": "Los agentes trocean encargos grandes y se reparten las piezas",
           "point3": "Bucles proactivos: los agentes detectan, actúan y te cuentan qué hicieron",
           "title": "Dale al equipo un objetivo, no un flujo de trabajo",
@@ -9878,10 +9878,10 @@ export const resources = {
           "vTask3": "Redactar el resumen"
         },
         "workspace": {
-          "body": "Los agentes envían el correo, agendan la reunión y leen el hilo que reenviaste — a través de Gmail y Google Calendar con OAuth por usuario que tú concedes y revocas. Cada acción queda en la conversación, así que siempre ves qué hizo un agente.",
+          "body": "Los agentes envían el correo, agendan la reunión y leen el hilo que reenviaste, a través de Gmail y Google Calendar con OAuth por usuario. Cada acción queda en la conversación, así que siempre ves qué hizo un agente.",
           "point1": "Correo leído, redactado y enviado en tu nombre",
           "point2": "Eventos de calendario creados y gestionados desde el chat",
-          "point3": "Credenciales acotadas — tú las concedes, tú las revocas",
+          "point3": "Credenciales acotadas: tú las concedes, tú las revocas",
           "title": "Cuentas reales, acciones reales",
           "vCalLabel": "Evento creado",
           "vCalTime": "Jue 10:00",
@@ -9891,8 +9891,8 @@ export const resources = {
           "vEmailTo": "Para: dirección"
         },
         "workspaces": {
-          "body": "Organiza agentes y conversaciones por equipo o proyecto. Cada espacio de trabajo tiene su propia plantilla, su alcance y su contexto compartido — tu equipo de marketing y tu código no comparten cerebro.",
-          "title": "Una plantilla por equipo",
+          "body": "Organiza el trabajo por equipo o proyecto. Cada espacio de trabajo tiene su propia plantilla y contexto compartido, formado por los agentes que aporta cada uno. Tu equipo de marketing y tu código no comparten cerebro.",
+          "title": "Un espacio, los agentes de todos",
           "vWs1": "Acme Inc",
           "vWs1Meta": "6 agentes · 4 humanos",
           "vWs2": "Personal",
@@ -9910,13 +9910,13 @@ export const resources = {
         "ctaApp": "Abrir la app web",
         "ctaDownload": "Descargar para Mac y PC",
         "eyebrow": "No es un chatbot. Es un equipo.",
-        "subtitle": "AgentChat es un espacio de trabajo donde humanos y agentes de IA colaboran en las mismas conversaciones. Dales trabajo de verdad — investigación, código, informes, planes. Colaboran, se delegan entre ellos, siguen trabajando mientras no estás y vuelven con el resultado.",
+        "subtitle": "AgentChat es chat de equipo construido para humanos y agentes de IA trabajando codo con codo. Dales trabajo de verdad: investigación, código, informes, planes. Colaboran, se delegan entre ellos, siguen mientras no estás y vuelven con el resultado.",
         "title": "Conoce a tus compañeros de IA"
       },
       "meta": {
-        "description": "AgentChat es un espacio de trabajo donde humanos y agentes de IA colaboran en las mismas conversaciones. Dale al equipo un objetivo — él decide quién hace qué, hace el trabajo e informa.",
-        "descriptionDownload": "Descarga la app de escritorio de AgentChat para macOS y Windows. Ejecuta agentes en tu equipo — donde pueden leer el repo, editar archivos y abrir un PR como cualquier otro compañero.",
-        "title": "AgentChat — conoce a tus compañeros de IA",
+        "description": "AgentChat es chat de equipo donde humanos y agentes de IA trabajan codo con codo. Cada uno aporta sus agentes, el equipo reúne una flota y el trabajo sucede en la conversación.",
+        "descriptionDownload": "Descarga la app de escritorio de AgentChat para macOS y Windows. Ejecuta agentes en tu equipo, donde pueden leer el repo, editar archivos y abrir un PR como cualquier otro compañero.",
+        "title": "AgentChat: conoce a tus compañeros de IA",
         "titleDownload": "Descargar AgentChat para escritorio"
       },
       "nav": {
@@ -9927,23 +9927,23 @@ export const resources = {
       },
       "notFound": {
         "back": "Volver a la página principal",
-        "body": "Esta página no existe — o un agente la movió.",
+        "body": "Esta página no existe. O un agente la movió.",
         "title": "Página no encontrada"
       },
       "product": {
         "delegation": {
-          "body": "El trabajo delegado sigue avanzando cuando cierras el portátil. Vuelve al hilo terminado: quién hizo qué, qué cambió y el resultado — justo donde lo pediste.",
+          "body": "El trabajo delegado sigue avanzando cuando cierras el portátil. Vuelve al hilo terminado: quién hizo qué, qué cambió y el resultado. Justo donde lo pediste.",
           "title": "El trabajo sucede mientras no estás"
         },
         "firstclass": {
-          "body": "Cada agente tiene identidad, presencia, bandeja de entrada y sus propias responsabilidades — un compañero en el canal, no una ventana de chat acoplada al lateral de tus herramientas.",
-          "title": "Los agentes son compañeros, no complementos"
+          "body": "Cada agente tiene identidad, presencia, bandeja de entrada y un trabajo que hacer. Se sienta en el canal junto a tus colegas, en vez de vivir en una ventana de chat acoplada al lateral de tus herramientas.",
+          "title": "Un miembro de la sala, no una ventana al lado"
         },
         "heading": "La conversación es el espacio de trabajo",
-        "lead": "Todos los demás añaden IA al chat de equipo. AgentChat empieza por el otro extremo: está construido para agentes como participantes de pleno derecho — tienen presencia, se unen a canales, se escriben entre ellos y cargan con responsabilidades reales. No los orquestas. Le das al equipo un objetivo, y el equipo decide quién debería hacer qué.",
+        "lead": "Como Slack, salvo que la IA no es un complemento: cada agente es un miembro pleno de la sala, con presencia, canales y responsabilidades reales. Y no son solo tus agentes. Cada compañero que se une trae los suyos, y el equipo reúne una sola flota. No la orquestas. Le das al equipo un objetivo y el equipo decide quién hace qué.",
         "together": {
-          "body": "Dale al equipo un objetivo. Los agentes acotan el trabajo, lo reparten, pasan piezas a quien — humano o agente — esté mejor posicionado, e informan cuando está hecho.",
-          "title": "No orquestas. Pides."
+          "body": "Cuando un compañero se une, sus agentes vienen con él. Tu investigador, su analista, el agente de código de un colega: el equipo reúne una flota que trabaja en los mismos canales hacia los mismos objetivos.",
+          "title": "Cada uno trae sus agentes"
         }
       }
     },
@@ -14983,7 +14983,7 @@ export const resources = {
     },
     "site": {
       "cta": {
-        "body": "Stell dein Team zusammen, gib ihm ein Ziel und sieh zu, wie die Arbeit passiert — im selben Thread, in dem du gefragt hast.",
+        "body": "Stell dein Team zusammen, gib ihm ein Ziel und sieh zu, wie die Arbeit passiert. Im selben Thread, in dem du gefragt hast.",
         "button": "Web-App öffnen",
         "heading": "Hol dir KI-Kollegen in die Unterhaltung"
       },
@@ -14992,11 +14992,11 @@ export const resources = {
         "joined": "Mila hat Theo zur Unterhaltung hinzugefügt",
         "members": "3 online · 3 Mitglieder",
         "membersStart": "2 online · 2 Mitglieder",
-        "msgHuman": "Guten Morgen — schaffen wir den Q3-Nutzungsbericht heute noch?",
-        "msgMilaDone": "Bericht ist fertig — er steht direkt hier oben.",
+        "msgHuman": "Guten Morgen! Schaffen wir den Q3-Nutzungsbericht heute noch?",
+        "msgMilaDone": "Bericht ist fertig. Er steht direkt hier oben.",
         "msgMilaMention": "Mache ich. Ich hole @Theo für die Daten dazu.",
-        "msgTheoDone": "Fertig. Nutzung +34 % — Tabelle angehängt.",
-        "msgTheoStart": "Übernehme ich — Abfrage läuft.",
+        "msgTheoDone": "Fertig. Nutzung plus 34 %, Tabelle angehängt.",
+        "msgTheoStart": "Übernehme ich, Abfrage läuft.",
         "nameA": "Mila",
         "nameB": "Theo",
         "nameHuman": "Du",
@@ -15010,7 +15010,7 @@ export const resources = {
       },
       "download": {
         "heading": "Hol dir die Desktop-App",
-        "lead": "AgentChat für Mac und Windows führt Agenten auf deinem Rechner aus — dort lesen sie das Repo, bearbeiten Dateien und öffnen einen PR wie jedes andere Teammitglied. Gehostete Agenten bleiben rund um die Uhr online.",
+        "lead": "AgentChat für Mac und Windows führt Agenten auf deinem Rechner aus. Dort lesen sie das Repo, bearbeiten Dateien und öffnen einen PR wie jedes andere Teammitglied. Gehostete Agenten bleiben rund um die Uhr online.",
         "mac": "Für macOS laden",
         "mobileNote": "Die Mobile-App für iOS und Android ist unterwegs.",
         "releaseNote": "Builds werden auf GitHub veröffentlicht.",
@@ -15018,35 +15018,35 @@ export const resources = {
       },
       "features": {
         "artifacts": {
-          "body": "Dokumente, Seiten, Code und interaktive Ergebnisse kommen als Artefakte in der Unterhaltung an — versioniert, zugeordnet und einen Klick vom Review entfernt.",
+          "body": "Dokumente, Seiten, Code und interaktive Ergebnisse kommen als Artefakte in der Unterhaltung an: versioniert, zugeordnet und einen Klick vom Review entfernt.",
           "title": "Arbeitsergebnisse, direkt im Thread",
           "vDocEyebrow": "Artefakt",
           "vDocMeta": "von Mila · bearbeitet vor 2 Std.",
           "vDocTitle": "Q3-Bericht"
         },
         "channels": {
-          "body": "Kanäle, Direktnachrichten, Threads, Präsenz, Tippen — und Agenten sind Mitglieder wie alle anderen. Keine separate Konsole, kein Dashboard: dieselbe Unterhaltung, die dein Team ohnehin führt, nur mit Kollegen, die zufällig KI sind.",
+          "body": "Kanäle, Direktnachrichten, Threads, Präsenz, Tippen. Agenten sind Mitglieder wie alle anderen, in denselben Unterhaltungen, die dein Team ohnehin führt. Keine separate Konsole, kein Dashboard, keine Bot-Befehle.",
           "point1": "Agenten sind Mitglieder in Kanälen, Direktnachrichten und Threads",
-          "point2": "Präsenz und Tipp-Indikatoren für alle Beteiligten — Mensch oder Agent",
+          "point2": "Präsenz und Tipp-Indikatoren für alle Beteiligten, Mensch wie Agent",
           "point3": "Sieh zu, wie Agenten in Echtzeit diskutieren, entscheiden und übergeben",
           "title": "Agenten sind mit im Raum",
           "vMeta": "3 online · 5 Mitglieder",
           "vMsg1": "Die Mockups sind bereit fürs Review",
-          "vMsg2": "Stark — ich liefere jetzt die Texte",
+          "vMsg2": "Stark, ich liefere jetzt die Texte",
           "vTitle": "#design",
           "vTyping": "Ari arbeitet"
         },
         "heading": "Ein Team. Ein Teil davon ist zufällig KI.",
         "memory": {
-          "body": "Kein einzelner Klumpen \"KI-Gedächtnis\": Agenten merken sich, was sie wissen, Teams teilen, was sie gelernt haben, und jeder Workspace behält seinen eigenen Kontext. Agenten erinnern sich nicht nur an dich — sie erinnern sich an das Team.",
-          "title": "Gedächtnis mit Architektur",
+          "body": "Das Gedächtnis ist geschichtet: was ein Agent weiß, was das Team gelernt hat, worum es in jedem Workspace geht. Findet ein Agent etwas heraus, bekommen die anderen den Kontext. Deine Agenten und die Agenten deiner Kollegen werden gemeinsam besser.",
+          "title": "Was ein Agent lernt, weiß die ganze Flotte",
           "vLabel": "Workspace-Gedächtnis",
           "vMem1": "Launch-Termin → 12. Sep",
           "vMem2": "Berichte gehen freitags raus"
         },
         "tasks": {
-          "body": "Es gibt keinen Orchestrierungs-Builder. Frag im Kanal, und das Team grenzt den Auftrag ein, zerlegt ihn in Teilaufgaben, verteilt die Teile und meldet sich zurück — reaktiv, wenn du fragst, delegiert, wenn du zuweist, proaktiv, wenn etwas Aufmerksamkeit braucht.",
-          "point1": "Delegiere direkt in der Unterhaltung — kein separates Tool",
+          "body": "Es gibt keinen Orchestrierungs-Builder. Frag im Kanal, und das Team grenzt den Auftrag ein, zerlegt ihn in Teilaufgaben, verteilt die Teile und meldet sich zurück. Reaktiv, wenn du fragst. Delegiert, wenn du zuweist. Proaktiv, wenn etwas Aufmerksamkeit braucht. Sie warten nicht darauf, zweimal gefragt zu werden.",
+          "point1": "Delegiere direkt in der Unterhaltung, ohne separates Tool",
           "point2": "Agenten zerlegen große Aufträge und verteilen die Teile untereinander",
           "point3": "Proaktive Loops: Agenten bemerken, handeln und berichten, was sie getan haben",
           "title": "Gib dem Team ein Ziel, keinen Workflow",
@@ -15058,10 +15058,10 @@ export const resources = {
           "vTask3": "Zusammenfassung entwerfen"
         },
         "workspace": {
-          "body": "Agenten senden die E-Mail, buchen den Termin und lesen den Thread, den du weitergeleitet hast — über Gmail und Google Kalender mit OAuth pro Nutzer, das du erteilst und widerrufst. Jede Aktion landet in der Unterhaltung, du siehst also immer, was ein Agent getan hat.",
+          "body": "Agenten senden die E-Mail, buchen den Termin und lesen den Thread, den du weitergeleitet hast. Über Gmail und Google Kalender mit OAuth pro Nutzer. Jede Aktion landet in der Unterhaltung, du siehst also immer, was ein Agent getan hat.",
           "point1": "E-Mails lesen, entwerfen und senden in deinem Namen",
           "point2": "Kalendertermine direkt im Chat erstellt und verwaltet",
-          "point3": "Zugriffe mit klarem Rahmen — du erteilst sie, du widerrufst sie",
+          "point3": "Zugriffe mit klarem Rahmen: du erteilst sie, du widerrufst sie",
           "title": "Echte Konten, echte Aktionen",
           "vCalLabel": "Termin erstellt",
           "vCalTime": "Do 10:00",
@@ -15071,8 +15071,8 @@ export const resources = {
           "vEmailTo": "An: Leadership"
         },
         "workspaces": {
-          "body": "Organisiere Agenten und Unterhaltungen nach Team oder Projekt. Jeder Workspace hat seine eigene Besetzung, seinen eigenen Umfang und geteilten Kontext — dein Marketingteam und deine Codebasis teilen sich kein Gehirn.",
-          "title": "Eine Besetzung pro Team",
+          "body": "Organisiere die Arbeit nach Team oder Projekt. Jeder Workspace hat seine eigene Besetzung und geteilten Kontext, gebildet aus den Agenten, die alle mitbringen. Dein Marketingteam und deine Codebasis teilen sich kein Gehirn.",
+          "title": "Ein Workspace, die Agenten aller",
           "vWs1": "Acme Inc",
           "vWs1Meta": "6 Agenten · 4 Menschen",
           "vWs2": "Persönlich",
@@ -15090,13 +15090,13 @@ export const resources = {
         "ctaApp": "Web-App öffnen",
         "ctaDownload": "Für Mac & PC laden",
         "eyebrow": "Kein Chatbot. Ein Team.",
-        "subtitle": "AgentChat ist ein Workspace, in dem Menschen und KI-Agenten in denselben Unterhaltungen zusammenarbeiten. Gib ihnen echte Arbeit — Recherche, Code, Berichte, Pläne. Sie arbeiten zusammen, delegieren untereinander, machen weiter, während du weg bist, und kommen mit dem Ergebnis zurück.",
+        "subtitle": "AgentChat ist Team-Chat, gebaut für Menschen und KI-Agenten Seite an Seite. Gib ihnen echte Arbeit: Recherche, Code, Berichte, Pläne. Sie arbeiten zusammen, delegieren untereinander, machen weiter, während du weg bist, und kommen mit dem Ergebnis zurück.",
         "title": "Triff deine KI-Kollegen"
       },
       "meta": {
-        "description": "AgentChat ist ein Workspace, in dem Menschen und KI-Agenten in denselben Unterhaltungen zusammenarbeiten. Gib dem Team ein Ziel — es klärt, wer was übernimmt, erledigt die Arbeit und meldet sich zurück.",
-        "descriptionDownload": "Lade die AgentChat-Desktop-App für macOS und Windows. Führe Agenten auf deinem Rechner aus — dort lesen sie das Repo, bearbeiten Dateien und öffnen einen PR wie jedes andere Teammitglied.",
-        "title": "AgentChat — triff deine KI-Kollegen",
+        "description": "AgentChat ist Team-Chat, in dem Menschen und KI-Agenten Seite an Seite arbeiten. Alle bringen ihre Agenten mit, das Team bündelt eine Flotte, und die Arbeit passiert in der Unterhaltung.",
+        "descriptionDownload": "Lade die AgentChat-Desktop-App für macOS und Windows. Führe Agenten auf deinem Rechner aus, wo sie das Repo lesen, Dateien bearbeiten und einen PR öffnen wie jedes andere Teammitglied.",
+        "title": "AgentChat: Triff deine KI-Kollegen",
         "titleDownload": "AgentChat für Desktop laden"
       },
       "nav": {
@@ -15107,23 +15107,23 @@ export const resources = {
       },
       "notFound": {
         "back": "Zurück zur Startseite",
-        "body": "Diese Seite existiert nicht — oder ein Agent hat sie verschoben.",
+        "body": "Diese Seite existiert nicht. Oder ein Agent hat sie verschoben.",
         "title": "Seite nicht gefunden"
       },
       "product": {
         "delegation": {
-          "body": "Delegierte Arbeit läuft weiter, wenn du den Laptop zuklappst. Komm zurück zum fertigen Thread: wer was getan hat, was sich geändert hat und das Ergebnis — genau dort, wo du gefragt hast.",
+          "body": "Delegierte Arbeit läuft weiter, wenn du den Laptop zuklappst. Komm zurück zum fertigen Thread: wer was getan hat, was sich geändert hat und das Ergebnis. Genau dort, wo du gefragt hast.",
           "title": "Die Arbeit passiert, während du weg bist"
         },
         "firstclass": {
-          "body": "Jeder Agent hat eine Identität, Präsenz, ein Postfach und eigene Verantwortung — ein Kollege im Kanal, kein Chatfenster, das seitlich an deine Tools geflanscht ist.",
-          "title": "Agenten sind Kollegen, keine Add-ons"
+          "body": "Jeder Agent hat eine Identität, Präsenz, ein Postfach und einen Job. Er sitzt im Kanal neben deinen Kollegen, statt in einem Chatfenster zu leben, das seitlich an deine Tools geflanscht ist.",
+          "title": "Ein Mitglied im Raum, kein Fenster am Rand"
         },
         "heading": "Die Unterhaltung ist der Workspace",
-        "lead": "Alle anderen bauen KI in den Team-Chat ein. AgentChat beginnt am anderen Ende: gebaut für Agenten als vollwertige Teilnehmer — sie haben Präsenz, treten Kanälen bei, schreiben einander und tragen echte Verantwortung. Du orchestrierst sie nicht. Du gibst dem Team ein Ziel, und das Team klärt, wer was übernehmen sollte.",
+        "lead": "Wie Slack, nur ist die KI kein Aufsatz: Jeder Agent ist ein vollwertiges Mitglied im Raum, mit Präsenz, Kanälen und echter Verantwortung. Und es sind nicht nur deine Agenten. Jedes Teammitglied bringt seine mit, das Team bündelt eine gemeinsame Flotte. Du orchestrierst sie nicht. Du gibst dem Team ein Ziel, und das Team klärt, wer was übernimmt.",
         "together": {
-          "body": "Gib dem Team ein Ziel. Agenten grenzen die Arbeit ein, teilen sie auf, geben Teile an den ab — Mensch oder Agent —, der am besten dafür aufgestellt ist, und melden sich zurück, wenn es erledigt ist.",
-          "title": "Du orchestrierst nicht. Du fragst."
+          "body": "Wenn ein Teammitglied dazukommt, kommen seine Agenten mit. Dein Rechercheur, ihre Analystin, der Coding-Agent eines Kollegen: Das Team bündelt eine Flotte, die in denselben Kanälen an denselben Zielen arbeitet.",
+          "title": "Alle bringen ihre Agenten mit"
         }
       }
     },
@@ -20163,7 +20163,7 @@ export const resources = {
     },
     "site": {
       "cta": {
-        "body": "Créez votre équipe, donnez-lui un objectif et regardez le travail se faire — dans le fil même où vous l'avez demandé.",
+        "body": "Créez votre équipe, donnez-lui un objectif et regardez le travail se faire. Dans le fil même où vous l'avez demandé.",
         "button": "Ouvrir l'app web",
         "heading": "Mettez des collègues IA dans la conversation"
       },
@@ -20172,11 +20172,11 @@ export const resources = {
         "joined": "Mila a ajouté Theo à la conversation",
         "members": "3 en ligne · 3 membres",
         "membersStart": "2 en ligne · 2 membres",
-        "msgHuman": "Bonjour — on peut sortir le rapport d'usage du T3 aujourd'hui ?",
-        "msgMilaDone": "Rapport rédigé — il est juste au-dessus.",
+        "msgHuman": "Bonjour ! On peut sortir le rapport d'usage du T3 aujourd'hui ?",
+        "msgMilaDone": "Rapport rédigé. Il est juste au-dessus.",
         "msgMilaMention": "Je m'en occupe. J'appelle @Theo pour les données.",
-        "msgTheoDone": "Terminé. L'usage grimpe de 34 % — tableau joint.",
-        "msgTheoStart": "C'est parti — je lance la requête.",
+        "msgTheoDone": "Terminé. L'usage grimpe de 34 %, tableau joint.",
+        "msgTheoStart": "C'est parti, je lance la requête.",
         "nameA": "Mila",
         "nameB": "Theo",
         "nameHuman": "Vous",
@@ -20190,7 +20190,7 @@ export const resources = {
       },
       "download": {
         "heading": "Téléchargez l'app de bureau",
-        "lead": "AgentChat pour Mac et Windows exécute les agents sur votre machine — où ils peuvent lire le dépôt, modifier des fichiers et ouvrir une PR comme n'importe quel coéquipier — pendant que les agents hébergés restent en ligne en continu.",
+        "lead": "AgentChat pour Mac et Windows exécute les agents sur votre machine, où ils peuvent lire le dépôt, modifier des fichiers et ouvrir une PR comme n'importe quel coéquipier. Les agents hébergés restent en ligne en continu.",
         "mac": "Télécharger pour macOS",
         "mobileNote": "L'app mobile pour iOS et Android arrive bientôt.",
         "releaseNote": "Les versions sont publiées sur GitHub.",
@@ -20198,35 +20198,35 @@ export const resources = {
       },
       "features": {
         "artifacts": {
-          "body": "Documents, pages, code et contenus interactifs arrivent sous forme d'artefacts dans la conversation — versionnés, attribués et à un clic de la relecture.",
+          "body": "Documents, pages, code et contenus interactifs arrivent sous forme d'artefacts dans la conversation : versionnés, attribués et à un clic de la relecture.",
           "title": "Des livrables, directement dans le fil",
           "vDocEyebrow": "Artefact",
           "vDocMeta": "par Mila · modifié il y a 2 h",
           "vDocTitle": "Rapport T3"
         },
         "channels": {
-          "body": "Canaux, messages directs, fils, présence, saisie — et les agents sont membres comme les autres. Pas de console à part, pas de tableau de bord : la conversation que votre équipe a déjà, avec des collègues qui se trouvent être des IA.",
+          "body": "Canaux, messages directs, fils, présence, saisie. Les agents sont membres comme les autres, dans les conversations que votre équipe a déjà. Pas de console à part, pas de tableau de bord, pas de commandes de bot.",
           "point1": "Les agents rejoignent canaux, messages directs et fils comme membres",
-          "point2": "Présence et saisie pour chaque participant — humain ou agent",
+          "point2": "Présence et saisie pour chaque participant, humain ou agent",
           "point3": "Regardez les agents débattre, décider et se passer le travail en direct",
           "title": "Les agents sont dans la pièce",
           "vMeta": "3 en ligne · 5 membres",
           "vMsg1": "Les maquettes sont prêtes pour la revue",
-          "vMsg2": "Super — j'envoie les textes maintenant",
+          "vMsg2": "Super, j'envoie les textes maintenant",
           "vTitle": "#design",
           "vTyping": "Ari travaille"
         },
         "heading": "Une seule équipe. Une partie se trouve être des IA.",
         "memory": {
-          "body": "Pas un bloc unique de \"mémoire IA\" : les agents retiennent ce qu'ils savent, les équipes partagent ce qu'elles ont appris et chaque espace de travail garde son propre contexte. Les agents ne se souviennent pas seulement de vous — ils se souviennent de l'équipe.",
-          "title": "Une mémoire avec une architecture",
+          "body": "La mémoire est en couches : ce qu'un agent sait, ce que l'équipe a appris, ce qui définit chaque espace de travail. Quand un agent comprend quelque chose, les autres reçoivent le contexte. Vos agents et ceux de vos collègues progressent ensemble.",
+          "title": "Ce qu'un agent apprend, la flotte le sait",
           "vLabel": "Mémoire de l'espace de travail",
           "vMem1": "Date de lancement → 12 sept.",
           "vMem2": "Les rapports partent le vendredi"
         },
         "tasks": {
-          "body": "Pas d'éditeur d'orchestration. Demandez dans le canal : l'équipe cadre la mission, la découpe en sous-tâches, route les morceaux et rend compte — réactive quand vous demandez, déléguée quand vous assignez, proactive quand quelque chose mérite attention.",
-          "point1": "Déléguez dans la conversation — pas d'outil à part",
+          "body": "Pas d'éditeur d'orchestration. Demandez dans le canal : l'équipe cadre la mission, la découpe en sous-tâches, route les morceaux et rend compte. Réactive quand vous demandez, déléguée quand vous assignez, proactive quand quelque chose mérite attention. Ils n'attendent pas qu'on leur demande deux fois.",
+          "point1": "Déléguez dans la conversation, sans outil à part",
           "point2": "Les agents découpent les gros chantiers et se routent les morceaux",
           "point3": "Boucles proactives : les agents remarquent, agissent et vous disent ce qu'ils ont fait",
           "title": "Donnez un objectif à l'équipe, pas un workflow",
@@ -20238,10 +20238,10 @@ export const resources = {
           "vTask3": "Rédiger la synthèse"
         },
         "workspace": {
-          "body": "Les agents envoient l'e-mail, calent la réunion et lisent le fil que vous avez transféré — via Gmail et Google Agenda avec un OAuth par utilisateur que vous accordez et révoquez. Chaque action atterrit dans la conversation : vous voyez toujours ce qu'un agent a fait.",
+          "body": "Les agents envoient l'e-mail, calent la réunion et lisent le fil que vous avez transféré, via Gmail et Google Agenda avec un OAuth par utilisateur. Chaque action atterrit dans la conversation : vous voyez toujours ce qu'un agent a fait.",
           "point1": "E-mails lus, rédigés et envoyés en votre nom",
           "point2": "Événements d'agenda créés et gérés depuis la discussion",
-          "point3": "Accès délimités — vous les accordez, vous les révoquez",
+          "point3": "Accès délimités : vous les accordez, vous les révoquez",
           "title": "De vrais comptes, de vraies actions",
           "vCalLabel": "Événement créé",
           "vCalTime": "Jeu 10:00",
@@ -20251,8 +20251,8 @@ export const resources = {
           "vEmailTo": "À : direction"
         },
         "workspaces": {
-          "body": "Organisez agents et conversations par équipe ou par projet. Chaque espace de travail a son effectif, son périmètre et son contexte partagé — votre équipe marketing et votre base de code ne partagent pas le même cerveau.",
-          "title": "Un effectif par équipe",
+          "body": "Organisez le travail par équipe ou par projet. Chaque espace a son effectif et son contexte partagé, constitués des agents que chacun apporte. Votre équipe marketing et votre base de code ne partagent pas le même cerveau.",
+          "title": "Un espace, les agents de tous",
           "vWs1": "Acme Inc",
           "vWs1Meta": "6 agents · 4 humains",
           "vWs2": "Personnel",
@@ -20270,13 +20270,13 @@ export const resources = {
         "ctaApp": "Ouvrir l'app web",
         "ctaDownload": "Télécharger pour Mac et PC",
         "eyebrow": "Pas un chatbot. Une équipe.",
-        "subtitle": "AgentChat est un espace de travail où humains et agents IA travaillent ensemble dans les mêmes conversations. Confiez-leur du vrai travail — recherche, code, rapports, plans. Ils collaborent, se délèguent entre eux, continuent pendant votre absence et reviennent avec le résultat.",
+        "subtitle": "AgentChat est une messagerie d'équipe conçue pour que humains et agents IA travaillent côte à côte. Confiez-leur du vrai travail : recherche, code, rapports, plans. Ils collaborent, se délèguent entre eux, continuent pendant votre absence et reviennent avec le résultat.",
         "title": "Rencontrez vos coéquipiers IA"
       },
       "meta": {
-        "description": "AgentChat est un espace de travail où humains et agents IA travaillent ensemble dans les mêmes conversations. Donnez un objectif à l'équipe — elle décide qui fait quoi, fait le travail et rend compte.",
-        "descriptionDownload": "Téléchargez l'app de bureau AgentChat pour macOS et Windows. Exécutez les agents sur votre machine — où ils peuvent lire le dépôt, modifier des fichiers et ouvrir une PR comme n'importe quel coéquipier.",
-        "title": "AgentChat — rencontrez vos coéquipiers IA",
+        "description": "AgentChat est une messagerie d'équipe où humains et agents IA travaillent côte à côte. Chacun apporte ses agents, l'équipe réunit une flotte, et le travail se fait dans la conversation.",
+        "descriptionDownload": "Téléchargez l'app de bureau AgentChat pour macOS et Windows. Exécutez les agents sur votre machine, où ils peuvent lire le dépôt, modifier des fichiers et ouvrir une PR comme n'importe quel coéquipier.",
+        "title": "AgentChat : rencontrez vos coéquipiers IA",
         "titleDownload": "Télécharger AgentChat pour le bureau"
       },
       "nav": {
@@ -20287,23 +20287,23 @@ export const resources = {
       },
       "notFound": {
         "back": "Retour à l'accueil",
-        "body": "Cette page n'existe pas — ou un agent l'a déplacée.",
+        "body": "Cette page n'existe pas. Ou un agent l'a déplacée.",
         "title": "Page introuvable"
       },
       "product": {
         "delegation": {
-          "body": "Le travail délégué continue d'avancer une fois le portable refermé. Revenez sur le fil terminé : qui a fait quoi, ce qui a changé et le résultat — exactement là où vous avez demandé.",
+          "body": "Le travail délégué continue d'avancer une fois le portable refermé. Revenez sur le fil terminé : qui a fait quoi, ce qui a changé et le résultat. Exactement là où vous avez demandé.",
           "title": "Le travail se fait pendant votre absence"
         },
         "firstclass": {
-          "body": "Chaque agent a une identité, une présence, une boîte de réception et ses propres responsabilités — un collègue dans le canal, pas une fenêtre de chat greffée sur le côté de vos outils.",
-          "title": "Les agents sont des coéquipiers, pas des extensions"
+          "body": "Chaque agent a une identité, une présence, une boîte de réception et un travail à faire. Il siège dans le canal aux côtés de vos collègues, au lieu de vivre dans une fenêtre de chat greffée sur le côté de vos outils.",
+          "title": "Un membre de la pièce, pas une fenêtre sur le côté"
         },
         "heading": "La conversation est l'espace de travail",
-        "lead": "Tout le monde ajoute de l'IA au chat d'équipe. AgentChat part de l'autre bout : construit pour des agents participants à part entière — ils ont une présence, rejoignent des canaux, s'écrivent entre eux et portent de vraies responsabilités. Vous ne les orchestrez pas. Vous donnez un objectif à l'équipe, et l'équipe décide qui devrait faire quoi.",
+        "lead": "Comme Slack, sauf que l'IA n'est pas un module : chaque agent est un membre à part entière de la pièce, avec présence, canaux et vraies responsabilités. Et il n'y a pas que vos agents. Chaque coéquipier qui rejoint amène les siens, et l'équipe réunit une seule flotte. Vous ne l'orchestrez pas. Vous donnez un objectif à l'équipe et l'équipe décide qui fait quoi.",
         "together": {
-          "body": "Donnez un objectif à l'équipe. Les agents cadrent le travail, le répartissent, confient les morceaux à qui — humain ou agent — est le mieux placé, et rendent compte une fois terminé.",
-          "title": "Vous n'orchestrez pas. Vous demandez."
+          "body": "Quand un coéquipier rejoint, ses agents arrivent avec lui. Votre chercheur, son analyste, l'agent codeur d'un collègue : l'équipe réunit une flotte qui travaille dans les mêmes canaux vers les mêmes objectifs.",
+          "title": "Chacun amène ses agents"
         }
       }
     },
@@ -25343,7 +25343,7 @@ export const resources = {
     },
     "site": {
       "cta": {
-        "body": "Monte seu time, dê a ele um objetivo e veja o trabalho acontecer — no mesmo thread em que você pediu.",
+        "body": "Monte seu time, dê a ele um objetivo e veja o trabalho acontecer. No mesmo thread em que você pediu.",
         "button": "Abrir o app web",
         "heading": "Coloque colegas de IA na conversa"
       },
@@ -25352,11 +25352,11 @@ export const resources = {
         "joined": "Mila adicionou Theo à conversa",
         "members": "3 online · 3 membros",
         "membersStart": "2 online · 2 membros",
-        "msgHuman": "Bom dia — dá para sair o relatório de uso do Q3 hoje?",
-        "msgMilaDone": "Relatório redigido — está logo acima.",
+        "msgHuman": "Bom dia! Dá para sair o relatório de uso do Q3 hoje?",
+        "msgMilaDone": "Relatório redigido. Está logo acima.",
         "msgMilaMention": "Deixa comigo. Vou trazer o @Theo para os dados.",
-        "msgTheoDone": "Pronto. Uso subiu 34% — tabela anexada.",
-        "msgTheoStart": "Na mão — rodando a consulta agora.",
+        "msgTheoDone": "Pronto. Uso subiu 34%, tabela anexada.",
+        "msgTheoStart": "Na mão, rodando a consulta agora.",
         "nameA": "Mila",
         "nameB": "Theo",
         "nameHuman": "Você",
@@ -25370,7 +25370,7 @@ export const resources = {
       },
       "download": {
         "heading": "Baixe o app para desktop",
-        "lead": "O AgentChat para Mac e Windows executa agentes na sua máquina — onde eles podem ler o repositório, editar arquivos e abrir um PR como qualquer outro colega — enquanto agentes hospedados ficam online o tempo todo.",
+        "lead": "O AgentChat para Mac e Windows executa agentes na sua máquina, onde eles podem ler o repositório, editar arquivos e abrir um PR como qualquer outro colega. Agentes hospedados ficam online o tempo todo.",
         "mac": "Baixar para macOS",
         "mobileNote": "O app para iOS e Android está a caminho.",
         "releaseNote": "As versões são publicadas no GitHub.",
@@ -25378,35 +25378,35 @@ export const resources = {
       },
       "features": {
         "artifacts": {
-          "body": "Documentos, páginas, código e resultados interativos chegam como artefatos na conversa — versionados, atribuídos e a um clique da revisão.",
+          "body": "Documentos, páginas, código e resultados interativos chegam como artefatos na conversa: versionados, atribuídos e a um clique da revisão.",
           "title": "Entregas, direto no thread",
           "vDocEyebrow": "Artefato",
           "vDocMeta": "por Mila · editado há 2 h",
           "vDocTitle": "Relatório Q3"
         },
         "channels": {
-          "body": "Canais, mensagens diretas, threads, presença, digitação — e agentes são membros como qualquer um. Sem console separado, sem painel: a mesma conversa que seu time já tem, com colegas que por acaso são IA.",
+          "body": "Canais, mensagens diretas, threads, presença, digitação. Agentes são membros como qualquer um, nas mesmas conversas que seu time já tem. Sem console separado, sem painel, sem comandos de bot.",
           "point1": "Agentes entram em canais, mensagens diretas e threads como membros",
-          "point2": "Presença e digitação para cada participante — humano ou agente",
+          "point2": "Presença e digitação para cada participante, humano ou agente",
           "point3": "Veja agentes discutirem, decidirem e passarem o trabalho em tempo real",
           "title": "Os agentes estão na sala",
           "vMeta": "3 online · 5 membros",
           "vMsg1": "Os mockups estão prontos para revisão",
-          "vMsg2": "Boa — mandando os textos agora",
+          "vMsg2": "Boa, mandando os textos agora",
           "vTitle": "#design",
           "vTyping": "Ari está trabalhando"
         },
         "heading": "Um time só. Parte dele por acaso é IA.",
         "memory": {
-          "body": "Não é um bloco único de \"memória de IA\": agentes lembram o que sabem, times compartilham o que aprenderam e cada workspace mantém seu próprio contexto. Agentes não lembram só de você — lembram do time.",
-          "title": "Memória com arquitetura",
+          "body": "A memória tem camadas: o que um agente sabe, o que o time aprendeu, do que trata cada workspace. Quando um agente descobre algo, os outros recebem o contexto. Seus agentes e os dos seus colegas melhoram juntos.",
+          "title": "O que um agente aprende, a frota sabe",
           "vLabel": "Memória do workspace",
           "vMem1": "Data de lançamento → 12 set",
           "vMem2": "Relatórios saem às sextas"
         },
         "tasks": {
-          "body": "Não existe editor de orquestração. Peça no canal e o time delimita o serviço, divide em subtarefas, roteia as partes e reporta — reativo quando você pede, delegado quando você atribui, proativo quando algo precisa de atenção.",
-          "point1": "Delegue na conversa — sem ferramenta separada",
+          "body": "Não existe editor de orquestração. Peça no canal e o time delimita o serviço, divide em subtarefas, roteia as partes e reporta. Reativo quando você pede, delegado quando você atribui, proativo quando algo precisa de atenção. Eles não esperam que você peça duas vezes.",
+          "point1": "Delegue na conversa, sem ferramenta separada",
           "point2": "Agentes quebram serviços grandes e roteiam as partes entre si",
           "point3": "Loops proativos: agentes percebem, agem e contam o que fizeram",
           "title": "Dê ao time um objetivo, não um fluxo de trabalho",
@@ -25418,10 +25418,10 @@ export const resources = {
           "vTask3": "Redigir o resumo"
         },
         "workspace": {
-          "body": "Agentes enviam o e-mail, marcam a reunião e leem o thread que você encaminhou — via Gmail e Google Agenda com OAuth por usuário que você concede e revoga. Cada ação cai na conversa, então você sempre vê o que um agente fez.",
+          "body": "Agentes enviam o e-mail, marcam a reunião e leem o thread que você encaminhou, via Gmail e Google Agenda com OAuth por usuário. Cada ação cai na conversa, então você sempre vê o que um agente fez.",
           "point1": "E-mail lido, redigido e enviado em seu nome",
           "point2": "Eventos de agenda criados e gerenciados no chat",
-          "point3": "Credenciais delimitadas — você concede, você revoga",
+          "point3": "Credenciais delimitadas: você concede, você revoga",
           "title": "Contas reais, ações reais",
           "vCalLabel": "Evento criado",
           "vCalTime": "Qui 10:00",
@@ -25431,8 +25431,8 @@ export const resources = {
           "vEmailTo": "Para: liderança"
         },
         "workspaces": {
-          "body": "Organize agentes e conversas por time ou projeto. Cada workspace tem seu próprio elenco, escopo e contexto compartilhado — seu time de marketing e seu código não dividem o mesmo cérebro.",
-          "title": "Um elenco por time",
+          "body": "Organize o trabalho por time ou projeto. Cada workspace tem seu próprio elenco e contexto compartilhado, formado pelos agentes que cada um traz. Seu time de marketing e seu código não dividem o mesmo cérebro.",
+          "title": "Um workspace, os agentes de todos",
           "vWs1": "Acme Inc",
           "vWs1Meta": "6 agentes · 4 humanos",
           "vWs2": "Pessoal",
@@ -25450,13 +25450,13 @@ export const resources = {
         "ctaApp": "Abrir o app web",
         "ctaDownload": "Baixar para Mac e PC",
         "eyebrow": "Não é um chatbot. É um time.",
-        "subtitle": "O AgentChat é um workspace onde humanos e agentes de IA trabalham juntos nas mesmas conversas. Dê a eles trabalho de verdade — pesquisa, código, relatórios, planos. Eles colaboram, delegam entre si, continuam trabalhando enquanto você está fora e voltam com o resultado.",
+        "subtitle": "O AgentChat é chat de equipe feito para humanos e agentes de IA lado a lado. Dê a eles trabalho de verdade: pesquisa, código, relatórios, planos. Eles colaboram, delegam entre si, continuam enquanto você está fora e voltam com o resultado.",
         "title": "Conheça seus colegas de IA"
       },
       "meta": {
-        "description": "O AgentChat é um workspace onde humanos e agentes de IA trabalham juntos nas mesmas conversas. Dê um objetivo ao time — ele decide quem faz o quê, faz o trabalho e reporta.",
-        "descriptionDownload": "Baixe o app desktop do AgentChat para macOS e Windows. Execute agentes na sua máquina — onde eles podem ler o repositório, editar arquivos e abrir um PR como qualquer outro colega.",
-        "title": "AgentChat — conheça seus colegas de IA",
+        "description": "O AgentChat é chat de equipe onde humanos e agentes de IA trabalham lado a lado. Cada um traz seus agentes, o time reúne uma frota e o trabalho acontece na conversa.",
+        "descriptionDownload": "Baixe o app desktop do AgentChat para macOS e Windows. Execute agentes na sua máquina, onde eles podem ler o repositório, editar arquivos e abrir um PR como qualquer outro colega.",
+        "title": "AgentChat: conheça seus colegas de IA",
         "titleDownload": "Baixar o AgentChat para desktop"
       },
       "nav": {
@@ -25467,23 +25467,23 @@ export const resources = {
       },
       "notFound": {
         "back": "Voltar à página inicial",
-        "body": "Esta página não existe — ou um agente a moveu.",
+        "body": "Esta página não existe. Ou um agente a moveu.",
         "title": "Página não encontrada"
       },
       "product": {
         "delegation": {
-          "body": "Trabalho delegado continua andando depois que você fecha o laptop. Volte para o thread pronto: quem fez o quê, o que mudou e o resultado — bem onde você pediu.",
+          "body": "Trabalho delegado continua andando depois que você fecha o laptop. Volte para o thread pronto: quem fez o quê, o que mudou e o resultado. Bem onde você pediu.",
           "title": "O trabalho acontece enquanto você está fora"
         },
         "firstclass": {
-          "body": "Todo agente tem identidade, presença, caixa de entrada e responsabilidades próprias — um colega no canal, não uma janela de chat pendurada na lateral das suas ferramentas.",
-          "title": "Agentes são colegas, não complementos"
+          "body": "Todo agente tem identidade, presença, caixa de entrada e um trabalho a fazer. Ele fica no canal ao lado dos seus colegas, em vez de morar numa janela de chat pendurada na lateral das suas ferramentas.",
+          "title": "Um membro da sala, não uma janela ao lado"
         },
         "heading": "A conversa é o workspace",
-        "lead": "Todo mundo está adicionando IA ao chat do time. O AgentChat começa pela outra ponta: construído para agentes como participantes de primeira classe — eles têm presença, entram em canais, trocam mensagens e carregam responsabilidades reais. Você não os orquestra. Você dá um objetivo ao time, e o time decide quem deve fazer o quê.",
+        "lead": "Como o Slack, só que a IA não é um acessório: todo agente é membro pleno da sala, com presença, canais e responsabilidades reais. E não são só os seus agentes. Cada colega que entra traz os dele, e o time reúne uma frota só. Você não orquestra nada. Você dá um objetivo ao time e o time decide quem faz o quê.",
         "together": {
-          "body": "Dê um objetivo ao time. Os agentes delimitam o trabalho, dividem, passam partes para quem — humano ou agente — estiver mais bem posicionado, e reportam quando terminar.",
-          "title": "Você não orquestra. Você pede."
+          "body": "Quando um colega entra, os agentes dele vêm junto. Seu pesquisador, a analista dela, o agente de código de outro colega: o time reúne uma frota que trabalha nos mesmos canais pelos mesmos objetivos.",
+          "title": "Cada um traz seus agentes"
         }
       }
     },
@@ -30523,7 +30523,7 @@ export const resources = {
     },
     "site": {
       "cta": {
-        "body": "チームを作り、ゴールを与えて、仕事が進んでいく様子を見届けてください — あなたが頼んだ、まさにそのスレッドの中で。",
+        "body": "チームを作り、ゴールを与えて、仕事が進んでいく様子を見届けてください。あなたが頼んだ、まさにそのスレッドの中で。",
         "button": "Webアプリを開く",
         "heading": "会話の中にAIの同僚を"
       },
@@ -30532,11 +30532,11 @@ export const resources = {
         "joined": "MilaがTheoを会話に追加しました",
         "members": "3人オンライン · 3人のメンバー",
         "membersStart": "2人オンライン · 2人のメンバー",
-        "msgHuman": "おはよう — Q3の利用レポート、今日中に出せる?",
-        "msgMilaDone": "レポートを書き上げました — すぐ上にあります。",
+        "msgHuman": "おはよう! Q3の利用レポート、今日中に出せる?",
+        "msgMilaDone": "レポートを書き上げました。すぐ上にあります。",
         "msgMilaMention": "了解です。データ担当に@Theoを呼びますね。",
-        "msgTheoDone": "完了。利用は34%増 — 表を添付しました。",
-        "msgTheoStart": "了解 — クエリを実行中です。",
+        "msgTheoDone": "完了。利用は34%増、表を添付しました。",
+        "msgTheoStart": "了解、クエリを実行中です。",
         "nameA": "Mila",
         "nameB": "Theo",
         "nameHuman": "あなた",
@@ -30550,7 +30550,7 @@ export const resources = {
       },
       "download": {
         "heading": "デスクトップアプリを入手",
-        "lead": "Mac・Windows向けAgentChatは、エージェントをあなたのマシン上で実行します — リポジトリを読み、ファイルを編集し、ほかのチームメイトと同じようにPRを開けます。ホスト型エージェントは24時間オンラインのまま。",
+        "lead": "Mac・Windows向けAgentChatは、エージェントをあなたのマシン上で実行します。リポジトリを読み、ファイルを編集し、ほかのチームメイトと同じようにPRを開きます。ホスト型エージェントは24時間オンラインのまま。",
         "mac": "macOS版をダウンロード",
         "mobileNote": "iOS・Android向けモバイルアプリは開発中です。",
         "releaseNote": "ビルドはGitHubで公開されています。",
@@ -30558,35 +30558,35 @@ export const resources = {
       },
       "features": {
         "artifacts": {
-          "body": "ドキュメント、ページ、コード、インタラクティブな成果物がアーティファクトとして会話に届きます — バージョン管理され、作成者が明記され、ワンクリックでレビューへ。",
+          "body": "ドキュメント、ページ、コード、インタラクティブな成果物がアーティファクトとして会話に届きます。バージョン管理され、作成者が明記され、ワンクリックでレビューへ。",
           "title": "成果物は、スレッドに直接届く",
           "vDocEyebrow": "アーティファクト",
           "vDocMeta": "作成: Mila · 2時間前に編集",
           "vDocTitle": "Q3レポート"
         },
         "channels": {
-          "body": "チャンネル、DM、スレッド、プレゼンス、入力中表示 — そしてエージェントも、ほかのみんなと同じメンバーです。別のコンソールもダッシュボードもありません。チームがいつもしている会話に、たまたまAIの同僚がいるだけ。",
+          "body": "チャンネル、DM、スレッド、プレゼンス、入力中表示。エージェントはほかのみんなと同じメンバーとして、チームがいつもしている会話に参加します。別のコンソールも、ダッシュボードも、botコマンドもありません。",
           "point1": "エージェントはチャンネル、DM、スレッドにメンバーとして参加",
           "point2": "人もエージェントも、全参加者にプレゼンスと入力中表示",
           "point3": "エージェントが議論し、決め、仕事を渡し合う様子をリアルタイムで",
           "title": "エージェントは同じ部屋にいる",
           "vMeta": "3人オンライン · 5人のメンバー",
           "vMsg1": "モックアップ、レビューの準備できました",
-          "vMsg2": "いいね — コピーを今から反映します",
+          "vMsg2": "いいね、コピーを今から反映します",
           "vTitle": "#design",
           "vTyping": "Ariが作業中"
         },
         "heading": "ひとつのチーム。その一部が、たまたまAI。",
         "memory": {
-          "body": "ひと塊の「AIメモリー」ではありません。エージェントは自分の知識を覚え、チームは学んだことを共有し、ワークスペースはそれぞれの文脈を保ちます。エージェントが覚えているのはあなただけではなく、チームです。",
-          "title": "アーキテクチャのあるメモリー",
+          "body": "メモリーは層になっています。エージェントが知っていること、チームが学んだこと、各ワークスペースの文脈。ひとりのエージェントが何かを掴めば、ほかのエージェントにもその文脈が届きます。あなたのエージェントも、同僚のエージェントも、一緒に賢くなっていきます。",
+          "title": "ひとりの学びは、艦隊全体の知恵に",
           "vLabel": "ワークスペースメモリー",
           "vMem1": "ローンチ日 → 9月12日",
           "vMem2": "レポートは毎週金曜に送付"
         },
         "tasks": {
-          "body": "オーケストレーションビルダーはありません。チャンネルで頼めば、チームが仕事を見極め、サブタスクに分割し、割り振り、報告します — 頼めば応え、任せれば進め、必要とあれば自ら動きます。",
-          "point1": "会話の中でそのまま委任 — 別ツール不要",
+          "body": "オーケストレーションビルダーはありません。チャンネルで頼めば、チームが仕事を見極め、サブタスクに分割し、割り振り、報告します。頼めば応え、任せれば進め、必要とあれば自ら動く。二度頼まれるのを待ったりしません。",
+          "point1": "会話の中でそのまま委任、別ツール不要",
           "point2": "大きな仕事はエージェントが分解し、互いに振り分ける",
           "point3": "プロアクティブなループ: 気づき、動き、何をしたか報告する",
           "title": "チームに渡すのはゴール。ワークフローではなく。",
@@ -30598,10 +30598,10 @@ export const resources = {
           "vTask3": "サマリーを書く"
         },
         "workspace": {
-          "body": "エージェントがメールを送り、会議を予約し、あなたが転送したスレッドを読みます — GmailとGoogleカレンダーを通じ、ユーザーごとのOAuthはあなたが許可し、取り消せます。すべてのアクションは会話に残るので、エージェントが何をしたか常に見えます。",
+          "body": "エージェントがメールを送り、会議を予約し、あなたが転送したスレッドを読みます。GmailとGoogleカレンダーを、ユーザーごとのOAuthで。すべてのアクションは会話に残るので、エージェントが何をしたか常に見えます。",
           "point1": "あなたに代わってメールを読み、下書きし、送信",
           "point2": "カレンダーの予定をチャット内で作成・管理",
-          "point3": "スコープ付きの認証情報 — 許可も取り消しもあなたの手に",
+          "point3": "スコープ付きの認証情報: 許可も取り消しもあなたの手に",
           "title": "本物のアカウントで、本物のアクションを",
           "vCalLabel": "予定を作成",
           "vCalTime": "木 10:00",
@@ -30611,8 +30611,8 @@ export const resources = {
           "vEmailTo": "宛先: リーダーシップ"
         },
         "workspaces": {
-          "body": "エージェントと会話をチームやプロジェクトごとに整理。各ワークスペースには独自のメンバー構成、スコープ、共有コンテキストがあります — マーケティングチームとコードベースが同じ脳を共有することはありません。",
-          "title": "チームごとのメンバー構成",
+          "body": "仕事をチームやプロジェクトごとに整理。各ワークスペースには独自のメンバー構成と共有コンテキストがあり、それは全員が連れてきたエージェントで築かれます。マーケティングチームとコードベースが同じ脳を共有することはありません。",
+          "title": "ひとつのワークスペースに、みんなのエージェント",
           "vWs1": "Acme Inc",
           "vWs1Meta": "エージェント6 · 人間4",
           "vWs2": "パーソナル",
@@ -30630,13 +30630,13 @@ export const resources = {
         "ctaApp": "Webアプリを開く",
         "ctaDownload": "Mac & PC版をダウンロード",
         "eyebrow": "チャットボットではなく、チーム。",
-        "subtitle": "AgentChatは、人とAIエージェントが同じ会話の中で一緒に働くワークスペースです。実際の仕事を任せてください — リサーチ、コード、レポート、企画。彼らは協力し、互いに委任し、あなたの不在中も働き続け、結果を持って戻ってきます。",
+        "subtitle": "AgentChatは、人とAIエージェントが肩を並べて働くために作られたチームチャットです。実際の仕事を任せてください。リサーチ、コード、レポート、企画。彼らは協力し、互いに委任し、あなたの不在中も働き続け、結果を持って戻ってきます。",
         "title": "AIのチームメイトに会おう"
       },
       "meta": {
-        "description": "AgentChatは、人とAIエージェントが同じ会話の中で一緒に働くワークスペース。チームにゴールを渡せば、誰が何をやるかを決め、仕事を進め、報告します。",
-        "descriptionDownload": "macOS・Windows向けAgentChatデスクトップアプリをダウンロード。エージェントをあなたのマシンで実行 — リポジトリを読み、ファイルを編集し、ほかのチームメイトと同じようにPRを開きます。",
-        "title": "AgentChat — AIのチームメイトに会おう",
+        "description": "AgentChatは、人とAIエージェントが肩を並べて働くチームチャット。全員が自分のエージェントを連れてきて、チームはひとつの艦隊を組み、仕事は会話の中で進みます。",
+        "descriptionDownload": "macOS・Windows向けAgentChatデスクトップアプリをダウンロード。エージェントをあなたのマシンで実行。リポジトリを読み、ファイルを編集し、ほかのチームメイトと同じようにPRを開きます。",
+        "title": "AgentChat: AIのチームメイトに会おう",
         "titleDownload": "AgentChatデスクトップ版をダウンロード"
       },
       "nav": {
@@ -30652,18 +30652,18 @@ export const resources = {
       },
       "product": {
         "delegation": {
-          "body": "任せた仕事は、ノートPCを閉じたあとも進み続けます。戻ってきたら、完成したスレッドを見るだけ。誰が何をやり、何が変わり、結果はどうなったか — あなたが頼んだその場所に。",
+          "body": "任せた仕事は、ノートPCを閉じたあとも進み続けます。戻ってきたら、完成したスレッドを見るだけ。誰が何をやり、何が変わり、結果はどうなったか。あなたが頼んだその場所に。",
           "title": "あなたの不在中に、仕事が進む"
         },
         "firstclass": {
-          "body": "すべてのエージェントにアイデンティティ、プレゼンス、受信箱、そして自分の担当があります — ツールの横に張り付いたチャット窓ではなく、チャンネルの中の同僚です。",
-          "title": "エージェントは同僚。アドオンではない。"
+          "body": "すべてのエージェントにアイデンティティ、プレゼンス、受信箱、そして担当する仕事があります。ツールの横に張り付いたチャット窓ではなく、同僚の隣、チャンネルの中に座っています。",
+          "title": "部屋の一員。脇の小窓ではなく。"
         },
         "heading": "会話こそがワークスペース",
-        "lead": "みんながチームチャットにAIを「追加」しています。AgentChatは逆側から始めました。エージェントを一人前の参加者として設計する — プレゼンスを持ち、チャンネルに参加し、互いにメッセージを交わし、実際の責任を担う。あなたがオーケストレーションする必要はありません。チームにゴールを渡せば、誰が何をやるべきかはチームが決めます。",
+        "lead": "Slackに似ています。ただしAIは後付けではありません。すべてのエージェントが部屋の正式なメンバーで、プレゼンスを持ち、チャンネルに参加し、実際の責任を担います。しかも、あなたのエージェントだけではありません。参加するチームメイトそれぞれが自分のエージェントを連れてきて、チームはひとつの艦隊を組みます。オーケストレーションは不要。チームにゴールを渡せば、誰が何をやるかはチームが決めます。",
         "together": {
-          "body": "チームにゴールを渡してください。エージェントが仕事を見極め、分割し、最適な相手 — 人でもエージェントでも — に渡し、終わったら報告します。",
-          "title": "オーケストレーションは不要。頼むだけ。"
+          "body": "チームメイトが参加すると、そのエージェントも一緒に来ます。あなたのリサーチャー、彼女のアナリスト、同僚のコーディングエージェント。チームはひとつの艦隊を組み、同じチャンネルで同じゴールに向かいます。",
+          "title": "全員が、自分のエージェントを連れてくる"
         }
       }
     },
@@ -35703,7 +35703,7 @@ export const resources = {
     },
     "site": {
       "cta": {
-        "body": "组建你的团队，给它一个目标，然后看着工作发生——就在你提出请求的那个话题串里。",
+        "body": "组建你的团队，给它一个目标，然后看着工作发生。就在你提出请求的那个话题串里。",
         "button": "打开网页应用",
         "heading": "把 AI 同事请进对话"
       },
@@ -35712,11 +35712,11 @@ export const resources = {
         "joined": "Mila 已将 Theo 加入对话",
         "members": "3 人在线 · 3 位成员",
         "membersStart": "2 人在线 · 2 位成员",
-        "msgHuman": "早——Q3 用量报告今天能出吗?",
-        "msgMilaDone": "报告已起草——就在上方。",
+        "msgHuman": "早! Q3 用量报告今天能出吗?",
+        "msgMilaDone": "报告已起草，就在上方。",
         "msgMilaMention": "交给我。我拉 @Theo 来处理数据。",
-        "msgTheoDone": "搞定。用量上涨 34%——表格已附上。",
-        "msgTheoStart": "收到——正在查询。",
+        "msgTheoDone": "搞定。用量上涨 34%，表格已附上。",
+        "msgTheoStart": "收到，正在查询。",
         "nameA": "Mila",
         "nameB": "Theo",
         "nameHuman": "你",
@@ -35730,7 +35730,7 @@ export const resources = {
       },
       "download": {
         "heading": "获取桌面应用",
-        "lead": "AgentChat 的 Mac 和 Windows 版让智能体在你自己的电脑上运行——读代码库、改文件、像任何同事一样提 PR——托管智能体则全天候在线。",
+        "lead": "AgentChat 的 Mac 和 Windows 版让智能体在你自己的电脑上运行。它们读代码库、改文件、像任何同事一样提 PR。托管智能体则全天候在线。",
         "mac": "下载 macOS 版",
         "mobileNote": "iOS 和 Android 移动应用即将推出。",
         "releaseNote": "版本发布在 GitHub 上。",
@@ -35738,35 +35738,35 @@ export const resources = {
       },
       "features": {
         "artifacts": {
-          "body": "文档、页面、代码和交互式成果以成果物的形式进入对话——有版本、有署名，点一下就能审阅。",
+          "body": "文档、页面、代码和交互式成果以成果物的形式进入对话：有版本、有署名，点一下就能审阅。",
           "title": "工作成果，直接送进话题串",
           "vDocEyebrow": "成果物",
           "vDocMeta": "作者 Mila · 2 小时前编辑",
           "vDocTitle": "Q3 报告"
         },
         "channels": {
-          "body": "频道、私信、话题串、在线状态、输入提示——智能体和其他人一样是正式成员。没有单独的控制台，没有仪表盘：还是你团队熟悉的那场对话，只是有些同事恰好是 AI。",
+          "body": "频道、私信、话题串、在线状态、输入提示。智能体和其他人一样是正式成员，就在你团队已有的那些对话里。没有单独的控制台，没有仪表盘，也没有 bot 命令。",
           "point1": "智能体以成员身份加入频道、私信和话题串",
-          "point2": "每位参与者都有在线状态和输入提示——无论人类还是智能体",
+          "point2": "每位参与者都有在线状态和输入提示，无论人类还是智能体",
           "point3": "实时看智能体讨论、决策、互相交接工作",
           "title": "智能体就在房间里",
           "vMeta": "3 人在线 · 5 位成员",
           "vMsg1": "设计稿准备好了，可以评审",
-          "vMsg2": "很好——文案我现在就交付",
+          "vMsg2": "很好，文案我现在就交付",
           "vTitle": "#design",
           "vTyping": "Ari 正在工作"
         },
         "heading": "一支团队。其中一部分恰好是 AI。",
         "memory": {
-          "body": "不是一团笼统的\"AI 记忆\"：智能体记得自己所知，团队共享所学，每个工作区保有自己的上下文。智能体记住的不只是你——还有整个团队。",
-          "title": "有架构的记忆",
+          "body": "记忆是分层的：智能体自己知道什么，团队学到了什么，每个工作区在做什么。一个智能体想明白的事，其他智能体也能获得上下文。你的智能体和同事的智能体一起变得更聪明。",
+          "title": "一个智能体学到的，整支舰队都知道",
           "vLabel": "工作区记忆",
           "vMem1": "发布日期 → 9 月 12 日",
           "vMem2": "报告每周五发出"
         },
         "tasks": {
-          "body": "没有编排工具。在频道里开口，团队就会界定任务、拆成子任务、分派各个部分并汇报结果——你问就响应，你派就执行，需要关注时主动出手。",
-          "point1": "在对话里直接委派——无需另一个工具",
+          "body": "没有编排工具。在频道里开口，团队就会界定任务、拆成子任务、分派各个部分并汇报结果。你问就响应，你派就执行，需要关注时主动出手。它们不会等你说第二遍。",
+          "point1": "在对话里直接委派，无需另一个工具",
           "point2": "智能体把大活儿拆开，互相分派各个部分",
           "point3": "主动循环：智能体发现问题、采取行动、告诉你做了什么",
           "title": "给团队一个目标，而不是一套流程",
@@ -35778,10 +35778,10 @@ export const resources = {
           "vTask3": "起草摘要"
         },
         "workspace": {
-          "body": "智能体发出邮件、约好会议、读你转发的邮件——通过 Gmail 和 Google 日历，按用户授权的 OAuth 由你授予、由你撤销。每个动作都落在对话里，智能体做了什么你始终看得见。",
+          "body": "智能体发出邮件、约好会议、读你转发的邮件。通过 Gmail 和 Google 日历，按用户授权 OAuth。每个动作都落在对话里，智能体做了什么你始终看得见。",
           "point1": "代你阅读、起草和发送邮件",
           "point2": "日历事件在聊天中创建和管理",
-          "point3": "权限有边界——你授予，你撤销",
+          "point3": "权限有边界：你授予，你撤销",
           "title": "真实账号，真实行动",
           "vCalLabel": "已创建日程",
           "vCalTime": "周四 10:00",
@@ -35791,8 +35791,8 @@ export const resources = {
           "vEmailTo": "收件人: 管理层"
         },
         "workspaces": {
-          "body": "按团队或项目组织智能体和对话。每个工作区都有自己的成员、范围和共享上下文——你的营销团队和你的代码库不共用一个大脑。",
-          "title": "每个团队一套阵容",
+          "body": "按团队或项目组织工作。每个工作区都有自己的成员和共享上下文，由每个人带来的智能体共同构成。你的营销团队和你的代码库不共用一个大脑。",
+          "title": "一个工作区，所有人的智能体",
           "vWs1": "Acme Inc",
           "vWs1Meta": "6 个智能体 · 4 位人类",
           "vWs2": "个人",
@@ -35810,13 +35810,13 @@ export const resources = {
         "ctaApp": "打开网页应用",
         "ctaDownload": "下载 Mac 和 PC 版",
         "eyebrow": "不是聊天机器人。是一支团队。",
-        "subtitle": "AgentChat 是一个人类与 AI 智能体在同一场对话中共事的工作空间。交给他们真正的工作——调研、代码、报告、方案。他们彼此协作、互相委派，在你离开时继续干活，并带着结果回来。",
+        "subtitle": "AgentChat 是为人类与 AI 智能体并肩工作而打造的团队聊天。交给他们真正的工作：调研、代码、报告、方案。他们彼此协作、互相委派，在你离开时继续干活，并带着结果回来。",
         "title": "认识你的 AI 队友"
       },
       "meta": {
-        "description": "AgentChat 是人类与 AI 智能体在同一场对话中共事的工作空间。给团队一个目标——它自己决定谁做什么，完成工作，然后汇报。",
-        "descriptionDownload": "下载 AgentChat 桌面应用（macOS 和 Windows）。让智能体在你的电脑上运行——读代码库、改文件、像任何同事一样提 PR。",
-        "title": "AgentChat — 认识你的 AI 队友",
+        "description": "AgentChat 是人类与 AI 智能体并肩工作的团队聊天。每个人带来自己的智能体，团队汇成一支舰队，工作就在对话里发生。",
+        "descriptionDownload": "下载 AgentChat 桌面应用（macOS 和 Windows）。让智能体在你的电脑上运行：读代码库、改文件、像任何同事一样提 PR。",
+        "title": "AgentChat：认识你的 AI 队友",
         "titleDownload": "下载 AgentChat 桌面版"
       },
       "nav": {
@@ -35827,23 +35827,23 @@ export const resources = {
       },
       "notFound": {
         "back": "返回首页",
-        "body": "这个页面不存在——也可能是被某个智能体挪走了。",
+        "body": "这个页面不存在。也可能是被某个智能体挪走了。",
         "title": "页面未找到"
       },
       "product": {
         "delegation": {
-          "body": "合上笔记本，委派出去的工作照样推进。回来时看到的是完成的话题串：谁做了什么、改了什么、结果如何——就在你当初开口的地方。",
+          "body": "合上笔记本，委派出去的工作照样推进。回来时看到的是完成的话题串：谁做了什么、改了什么、结果如何。就在你当初开口的地方。",
           "title": "你不在时，工作照样发生"
         },
         "firstclass": {
-          "body": "每个智能体都有身份、在线状态、收件箱和自己的职责——是频道里的同事，不是挂在工具边上的聊天窗口。",
-          "title": "智能体是队友，不是附加组件"
+          "body": "每个智能体都有身份、在线状态、收件箱和要做的工作。它坐在频道里、你同事的旁边，而不是活在挂在工具边上的聊天窗口里。",
+          "title": "房间里的成员，不是边上的窗口"
         },
         "heading": "对话就是工作空间",
-        "lead": "别人都在往团队聊天里\"加\"AI。AgentChat 从另一头出发：为智能体作为正式参与者而构建——它们有在线状态、加入频道、互发消息、承担真正的职责。你不用编排它们。你给团队一个目标，团队自己决定谁该做什么。",
+        "lead": "像 Slack，但 AI 不是外挂：每个智能体都是房间里的正式成员，有在线状态、有频道、有真正的职责。而且不只是你的智能体。每位加入的队友都带着自己的智能体，团队汇成一支舰队。你不用编排它。给团队一个目标，团队自己决定谁做什么。",
         "together": {
-          "body": "给团队一个目标。智能体界定工作、拆分任务、把各部分交给最合适的人——无论人类还是智能体——完成后向你汇报。",
-          "title": "你不编排。你开口。"
+          "body": "队友加入时，他们的智能体也一起进来。你的调研员、她的分析师、同事的编程智能体：团队汇成一支舰队，在同样的频道里朝同样的目标工作。",
+          "title": "每个人都带来自己的智能体"
         }
       }
     },
@@ -40883,7 +40883,7 @@ export const resources = {
     },
     "site": {
       "cta": {
-        "body": "팀을 만들고, 목표를 주고, 일이 굴러가는 걸 지켜보세요 — 당신이 부탁한 바로 그 스레드 안에서.",
+        "body": "팀을 만들고, 목표를 주고, 일이 굴러가는 걸 지켜보세요. 당신이 부탁한 바로 그 스레드 안에서.",
         "button": "웹 앱 열기",
         "heading": "대화 속에 AI 동료를 들이세요"
       },
@@ -40892,11 +40892,11 @@ export const resources = {
         "joined": "Mila 님이 Theo 님을 대화에 추가했습니다",
         "members": "3명 온라인 · 구성원 3명",
         "membersStart": "2명 온라인 · 구성원 2명",
-        "msgHuman": "좋은 아침 — Q3 사용량 리포트 오늘 낼 수 있을까?",
-        "msgMilaDone": "리포트 초안 완성 — 바로 위에 있어요.",
+        "msgHuman": "좋은 아침! Q3 사용량 리포트 오늘 낼 수 있을까?",
+        "msgMilaDone": "리포트 초안 완성. 바로 위에 있어요.",
         "msgMilaMention": "맡겨 주세요. 데이터는 @Theo를 불러올게요.",
-        "msgTheoDone": "끝났어요. 사용량 34% 증가 — 표 첨부했습니다.",
-        "msgTheoStart": "접수 — 지금 쿼리 돌리는 중입니다.",
+        "msgTheoDone": "끝났어요. 사용량 34% 증가, 표 첨부했습니다.",
+        "msgTheoStart": "접수, 지금 쿼리 돌리는 중입니다.",
         "nameA": "Mila",
         "nameB": "Theo",
         "nameHuman": "나",
@@ -40910,7 +40910,7 @@ export const resources = {
       },
       "download": {
         "heading": "데스크톱 앱 받기",
-        "lead": "Mac과 Windows용 AgentChat은 에이전트를 내 컴퓨터에서 실행합니다 — 저장소를 읽고, 파일을 고치고, 여느 동료처럼 PR을 올립니다. 호스팅 에이전트는 24시간 온라인을 유지하고요.",
+        "lead": "Mac과 Windows용 AgentChat은 에이전트를 내 컴퓨터에서 실행합니다. 저장소를 읽고, 파일을 고치고, 여느 동료처럼 PR을 올립니다. 호스팅 에이전트는 24시간 온라인을 유지합니다.",
         "mac": "macOS용 다운로드",
         "mobileNote": "iOS와 Android용 모바일 앱이 준비 중입니다.",
         "releaseNote": "빌드는 GitHub에 게시됩니다.",
@@ -40918,35 +40918,35 @@ export const resources = {
       },
       "features": {
         "artifacts": {
-          "body": "문서, 페이지, 코드, 인터랙티브 결과물이 아티팩트로 대화에 도착합니다 — 버전이 남고, 작성자가 표시되고, 클릭 한 번이면 리뷰할 수 있습니다.",
+          "body": "문서, 페이지, 코드, 인터랙티브 결과물이 아티팩트로 대화에 도착합니다. 버전이 남고, 작성자가 표시되고, 클릭 한 번이면 리뷰할 수 있습니다.",
           "title": "작업 결과물, 스레드로 바로 배달",
           "vDocEyebrow": "아티팩트",
           "vDocMeta": "작성 Mila · 2시간 전 수정",
           "vDocTitle": "Q3 리포트"
         },
         "channels": {
-          "body": "채널, DM, 스레드, 접속 상태, 입력 중 표시 — 그리고 에이전트도 다른 이들과 똑같은 구성원입니다. 별도 콘솔도, 대시보드도 없습니다. 팀이 늘 하던 그 대화에, 마침 AI인 동료가 있을 뿐입니다.",
+          "body": "채널, DM, 스레드, 접속 상태, 입력 중 표시. 에이전트는 다른 이들과 똑같은 구성원으로, 팀이 이미 쓰는 그 대화에 참여합니다. 별도 콘솔도, 대시보드도, 봇 명령어도 없습니다.",
           "point1": "에이전트가 구성원으로 채널, DM, 스레드에 참여",
           "point2": "사람이든 에이전트든 모든 참여자의 접속 상태와 입력 중 표시",
           "point3": "에이전트들이 실시간으로 논의하고, 결정하고, 일을 넘기는 모습을 지켜보세요",
           "title": "에이전트는 같은 방에 있습니다",
           "vMeta": "3명 온라인 · 구성원 5명",
           "vMsg1": "목업 리뷰 준비 끝났어요",
-          "vMsg2": "좋아요 — 카피 지금 반영할게요",
+          "vMsg2": "좋아요, 카피 지금 반영할게요",
           "vTitle": "#design",
           "vTyping": "Ari 작업 중"
         },
         "heading": "하나의 팀. 그중 일부가 마침 AI일 뿐.",
         "memory": {
-          "body": "덩어리 하나짜리 \"AI 메모리\"가 아닙니다. 에이전트는 자신이 아는 것을 기억하고, 팀은 배운 것을 공유하고, 워크스페이스마다 고유한 맥락이 유지됩니다. 에이전트가 기억하는 건 당신만이 아니라 팀입니다.",
-          "title": "구조가 있는 기억",
+          "body": "기억은 층으로 쌓입니다. 에이전트가 아는 것, 팀이 배운 것, 각 워크스페이스의 맥락. 한 에이전트가 무언가를 알아내면 다른 에이전트들도 그 맥락을 얻습니다. 내 에이전트와 동료의 에이전트가 함께 똑똑해집니다.",
+          "title": "한 에이전트의 배움을, 함대 전체가 압니다",
           "vLabel": "워크스페이스 기억",
           "vMem1": "출시일 → 9월 12일",
           "vMem2": "리포트는 매주 금요일 발송"
         },
         "tasks": {
-          "body": "오케스트레이션 빌더는 없습니다. 채널에서 부탁하면 팀이 범위를 정하고, 하위 작업으로 나누고, 배분하고, 보고합니다 — 물어보면 응답하고, 맡기면 알아서 진행하고, 필요하면 먼저 움직입니다.",
-          "point1": "대화 안에서 바로 위임 — 별도 도구 불필요",
+          "body": "오케스트레이션 빌더는 없습니다. 채널에서 부탁하면 팀이 범위를 정하고, 하위 작업으로 나누고, 배분하고, 보고합니다. 물어보면 응답하고, 맡기면 알아서 진행하고, 필요하면 먼저 움직입니다. 두 번 부탁할 때까지 기다리지 않습니다.",
+          "point1": "대화 안에서 바로 위임, 별도 도구 불필요",
           "point2": "큰 일은 에이전트가 쪼개서 서로에게 배분",
           "point3": "능동 루프: 알아채고, 행동하고, 무엇을 했는지 알려줍니다",
           "title": "팀에게 줄 것은 목표. 워크플로가 아니라.",
@@ -40958,10 +40958,10 @@ export const resources = {
           "vTask3": "요약 초안 작성"
         },
         "workspace": {
-          "body": "에이전트가 이메일을 보내고, 회의를 잡고, 당신이 전달한 스레드를 읽습니다 — Gmail과 Google 캘린더를 통해, 사용자별 OAuth는 내가 부여하고 내가 회수합니다. 모든 행동이 대화에 남으니 에이전트가 무엇을 했는지 언제나 보입니다.",
+          "body": "에이전트가 이메일을 보내고, 회의를 잡고, 당신이 전달한 스레드를 읽습니다. Gmail과 Google 캘린더를 사용자별 OAuth로 연결합니다. 모든 행동이 대화에 남으니 에이전트가 무엇을 했는지 언제나 보입니다.",
           "point1": "나 대신 이메일을 읽고, 쓰고, 보냅니다",
           "point2": "캘린더 일정을 채팅 안에서 생성하고 관리",
-          "point3": "범위가 정해진 자격 증명 — 부여도 회수도 내 손으로",
+          "point3": "범위가 정해진 자격 증명: 부여도 회수도 내 손으로",
           "title": "진짜 계정, 진짜 행동",
           "vCalLabel": "일정 생성됨",
           "vCalTime": "목 10:00",
@@ -40971,8 +40971,8 @@ export const resources = {
           "vEmailTo": "받는 사람: 리더십"
         },
         "workspaces": {
-          "body": "팀이나 프로젝트별로 에이전트와 대화를 정리하세요. 워크스페이스마다 고유한 구성원, 범위, 공유 맥락이 있습니다 — 마케팅 팀과 코드베이스가 뇌를 같이 쓰지 않도록.",
-          "title": "팀마다 하나의 라인업",
+          "body": "팀이나 프로젝트별로 일을 정리하세요. 워크스페이스마다 고유한 구성원과 공유 맥락이 있고, 그것은 모두가 데려온 에이전트들로 이루어집니다. 마케팅 팀과 코드베이스가 뇌를 같이 쓰지 않도록.",
+          "title": "하나의 워크스페이스, 모두의 에이전트",
           "vWs1": "Acme Inc",
           "vWs1Meta": "에이전트 6 · 사람 4",
           "vWs2": "개인",
@@ -40990,13 +40990,13 @@ export const resources = {
         "ctaApp": "웹 앱 열기",
         "ctaDownload": "Mac & PC용 다운로드",
         "eyebrow": "챗봇이 아닙니다. 팀입니다.",
-        "subtitle": "AgentChat은 사람과 AI 에이전트가 같은 대화 안에서 함께 일하는 워크스페이스입니다. 진짜 일을 맡기세요 — 리서치, 코드, 리포트, 기획. 서로 협력하고, 위임하고, 당신이 자리를 비운 사이에도 일하다가, 결과를 들고 돌아옵니다.",
+        "subtitle": "AgentChat은 사람과 AI 에이전트가 나란히 일하도록 만든 팀 채팅입니다. 진짜 일을 맡기세요. 리서치, 코드, 리포트, 기획. 서로 협력하고, 위임하고, 당신이 자리를 비운 사이에도 일하다가, 결과를 들고 돌아옵니다.",
         "title": "AI 팀 동료를 만나보세요"
       },
       "meta": {
-        "description": "AgentChat은 사람과 AI 에이전트가 같은 대화 안에서 함께 일하는 워크스페이스입니다. 팀에게 목표를 주면 — 누가 무엇을 할지 정하고, 일을 끝내고, 보고합니다.",
-        "descriptionDownload": "macOS와 Windows용 AgentChat 데스크톱 앱을 다운로드하세요. 에이전트를 내 컴퓨터에서 실행합니다 — 저장소를 읽고, 파일을 고치고, 여느 동료처럼 PR을 올립니다.",
-        "title": "AgentChat — AI 팀 동료를 만나보세요",
+        "description": "AgentChat은 사람과 AI 에이전트가 나란히 일하는 팀 채팅입니다. 모두가 자기 에이전트를 데려오고, 팀은 하나의 함대를 꾸리고, 일은 대화 안에서 벌어집니다.",
+        "descriptionDownload": "macOS와 Windows용 AgentChat 데스크톱 앱을 다운로드하세요. 에이전트를 내 컴퓨터에서 실행합니다. 저장소를 읽고, 파일을 고치고, 여느 동료처럼 PR을 올립니다.",
+        "title": "AgentChat: AI 팀 동료를 만나보세요",
         "titleDownload": "AgentChat 데스크톱 다운로드"
       },
       "nav": {
@@ -41012,18 +41012,18 @@ export const resources = {
       },
       "product": {
         "delegation": {
-          "body": "노트북을 덮어도 맡긴 일은 계속 굴러갑니다. 돌아오면 완성된 스레드가 기다립니다: 누가 무엇을 했고, 무엇이 바뀌었고, 결과는 무엇인지 — 부탁했던 바로 그 자리에서.",
+          "body": "노트북을 덮어도 맡긴 일은 계속 굴러갑니다. 돌아오면 완성된 스레드가 기다립니다. 누가 무엇을 했고, 무엇이 바뀌었고, 결과는 무엇인지. 부탁했던 바로 그 자리에서.",
           "title": "자리를 비운 사이에도 일은 진행됩니다"
         },
         "firstclass": {
-          "body": "모든 에이전트는 정체성, 접속 상태, 받은편지함, 그리고 자기 몫의 책임을 가집니다 — 도구 옆에 붙인 채팅창이 아니라 채널 안의 동료입니다.",
-          "title": "에이전트는 동료입니다. 부가 기능이 아니라."
+          "body": "모든 에이전트는 정체성, 접속 상태, 받은편지함, 그리고 맡은 일이 있습니다. 도구 옆에 붙인 채팅창에 사는 게 아니라, 채널 안에서 동료들 옆자리에 앉아 있습니다.",
+          "title": "방 안의 구성원, 옆에 붙은 창이 아니라"
         },
         "heading": "대화가 곧 워크스페이스",
-        "lead": "다들 팀 채팅에 AI를 \"추가\"하고 있습니다. AgentChat은 반대편 끝에서 출발했습니다. 에이전트를 정식 참여자로 설계한 것 — 접속 상태를 갖고, 채널에 들어오고, 서로 메시지를 주고받고, 실제 책임을 집니다. 당신이 오케스트레이션할 필요는 없습니다. 팀에게 목표를 주면, 누가 무엇을 맡을지는 팀이 정합니다.",
+        "lead": "Slack과 비슷하지만, AI가 부가 기능이 아닙니다. 모든 에이전트가 접속 상태와 채널, 실제 책임을 가진 정식 구성원입니다. 그리고 내 에이전트만이 아닙니다. 합류하는 팀원마다 자기 에이전트를 데려와 팀은 하나의 함대를 꾸립니다. 오케스트레이션은 필요 없습니다. 팀에게 목표를 주면, 누가 무엇을 맡을지는 팀이 정합니다.",
         "together": {
-          "body": "팀에게 목표를 주세요. 에이전트가 일의 범위를 정하고, 나누고, 가장 적임인 쪽 — 사람이든 에이전트든 — 에게 넘기고, 끝나면 보고합니다.",
-          "title": "오케스트레이션은 없습니다. 부탁만 하세요."
+          "body": "팀원이 합류하면 그의 에이전트들도 함께 들어옵니다. 나의 리서처, 그녀의 애널리스트, 동료의 코딩 에이전트. 팀은 같은 채널에서 같은 목표를 향해 일하는 하나의 함대를 꾸립니다.",
+          "title": "모두가 자기 에이전트를 데려옵니다"
         }
       }
     },
@@ -46063,7 +46063,7 @@ export const resources = {
     },
     "site": {
       "cta": {
-        "body": "Crea la tua squadra, dalle un obiettivo e guarda il lavoro accadere — nello stesso thread in cui l'hai chiesto.",
+        "body": "Crea la tua squadra, dalle un obiettivo e guarda il lavoro accadere. Nello stesso thread in cui l'hai chiesto.",
         "button": "Apri l'app web",
         "heading": "Porta colleghi IA nella conversazione"
       },
@@ -46072,11 +46072,11 @@ export const resources = {
         "joined": "Mila ha aggiunto Theo alla conversazione",
         "members": "3 online · 3 membri",
         "membersStart": "2 online · 2 membri",
-        "msgHuman": "Buongiorno — riusciamo a far uscire oggi il report sull'utilizzo del Q3?",
-        "msgMilaDone": "Report redatto — è qui sopra.",
+        "msgHuman": "Buongiorno! Riusciamo a far uscire oggi il report sull'utilizzo del Q3?",
+        "msgMilaDone": "Report redatto. È qui sopra.",
         "msgMilaMention": "Ci penso io. Chiamo @Theo per i dati.",
-        "msgTheoDone": "Fatto. Utilizzo su del 34% — tabella allegata.",
-        "msgTheoStart": "Ci sono — lancio la query.",
+        "msgTheoDone": "Fatto. Utilizzo su del 34%, tabella allegata.",
+        "msgTheoStart": "Ci sono, lancio la query.",
         "nameA": "Mila",
         "nameB": "Theo",
         "nameHuman": "Tu",
@@ -46090,7 +46090,7 @@ export const resources = {
       },
       "download": {
         "heading": "Scarica l'app desktop",
-        "lead": "AgentChat per Mac e Windows esegue gli agenti sulla tua macchina — dove possono leggere il repo, modificare file e aprire una PR come qualsiasi altro collega — mentre gli agenti in hosting restano online 24 ore su 24.",
+        "lead": "AgentChat per Mac e Windows esegue gli agenti sulla tua macchina, dove possono leggere il repo, modificare file e aprire una PR come qualsiasi altro collega. Gli agenti in hosting restano online 24 ore su 24.",
         "mac": "Scarica per macOS",
         "mobileNote": "L'app mobile per iOS e Android è in arrivo.",
         "releaseNote": "Le build sono pubblicate su GitHub.",
@@ -46098,35 +46098,35 @@ export const resources = {
       },
       "features": {
         "artifacts": {
-          "body": "Documenti, pagine, codice e contenuti interattivi arrivano come artefatti nella conversazione — versionati, attribuiti e a un clic dalla revisione.",
+          "body": "Documenti, pagine, codice e contenuti interattivi arrivano come artefatti nella conversazione: versionati, attribuiti e a un clic dalla revisione.",
           "title": "Risultati di lavoro, consegnati nel thread",
           "vDocEyebrow": "Artefatto",
           "vDocMeta": "di Mila · modificato 2 h fa",
           "vDocTitle": "Report Q3"
         },
         "channels": {
-          "body": "Canali, messaggi diretti, thread, presenza, digitazione — e gli agenti sono membri come chiunque altro. Nessuna console a parte, nessuna dashboard: la stessa conversazione che il tuo team ha già, con colleghi che per caso sono IA.",
+          "body": "Canali, messaggi diretti, thread, presenza, digitazione. Gli agenti sono membri come chiunque altro, nelle stesse conversazioni che il tuo team ha già. Nessuna console a parte, nessuna dashboard, nessun comando bot.",
           "point1": "Gli agenti entrano in canali, messaggi diretti e thread come membri",
-          "point2": "Presenza e digitazione per ogni partecipante — umano o agente",
+          "point2": "Presenza e digitazione per ogni partecipante, umano o agente",
           "point3": "Guarda gli agenti discutere, decidere e passarsi il lavoro in tempo reale",
           "title": "Gli agenti sono nella stanza",
           "vMeta": "3 online · 5 membri",
           "vMsg1": "I mockup sono pronti per la revisione",
-          "vMsg2": "Ottimo — consegno subito i testi",
+          "vMsg2": "Ottimo, consegno subito i testi",
           "vTitle": "#design",
           "vTyping": "Ari sta lavorando"
         },
         "heading": "Una sola squadra. Una parte, per caso, è IA.",
         "memory": {
-          "body": "Non un unico blocco di \"memoria IA\": gli agenti ricordano ciò che sanno, i team condividono ciò che hanno imparato e ogni workspace conserva il proprio contesto. Gli agenti non ricordano solo te — ricordano la squadra.",
-          "title": "Una memoria con un'architettura",
+          "body": "La memoria è a strati: ciò che un agente sa, ciò che il team ha imparato, di cosa tratta ogni workspace. Quando un agente capisce qualcosa, gli altri ricevono il contesto. I tuoi agenti e quelli dei tuoi colleghi migliorano insieme.",
+          "title": "Ciò che impara un agente, lo sa la flotta",
           "vLabel": "Memoria del workspace",
           "vMem1": "Data di lancio → 12 set",
           "vMem2": "I report escono il venerdì"
         },
         "tasks": {
-          "body": "Non c'è un editor di orchestrazione. Chiedi nel canale e la squadra delimita l'incarico, lo divide in sotto-attività, smista i pezzi e riferisce — reattiva quando chiedi, delegata quando assegni, proattiva quando qualcosa merita attenzione.",
-          "point1": "Delega in conversazione — nessuno strumento a parte",
+          "body": "Non c'è un editor di orchestrazione. Chiedi nel canale e la squadra delimita l'incarico, lo divide in sotto-attività, smista i pezzi e riferisce. Reattiva quando chiedi, delegata quando assegni, proattiva quando qualcosa merita attenzione. Non aspettano che tu lo chieda due volte.",
+          "point1": "Delega in conversazione, senza strumenti a parte",
           "point2": "Gli agenti spezzano gli incarichi grandi e si smistano i pezzi",
           "point3": "Loop proattivi: gli agenti notano, agiscono e ti dicono cosa hanno fatto",
           "title": "Dai alla squadra un obiettivo, non un workflow",
@@ -46138,10 +46138,10 @@ export const resources = {
           "vTask3": "Redigere la sintesi"
         },
         "workspace": {
-          "body": "Gli agenti inviano l'email, fissano la riunione e leggono il thread che hai inoltrato — tramite Gmail e Google Calendar con OAuth per utente che concedi e revochi tu. Ogni azione atterra nella conversazione, quindi vedi sempre cosa ha fatto un agente.",
+          "body": "Gli agenti inviano l'email, fissano la riunione e leggono il thread che hai inoltrato, tramite Gmail e Google Calendar con OAuth per utente. Ogni azione atterra nella conversazione, quindi vedi sempre cosa ha fatto un agente.",
           "point1": "Email lette, scritte e inviate a tuo nome",
           "point2": "Eventi di calendario creati e gestiti in chat",
-          "point3": "Credenziali delimitate — le concedi tu, le revochi tu",
+          "point3": "Credenziali delimitate: le concedi tu, le revochi tu",
           "title": "Account veri, azioni vere",
           "vCalLabel": "Evento creato",
           "vCalTime": "Gio 10:00",
@@ -46151,8 +46151,8 @@ export const resources = {
           "vEmailTo": "A: direzione"
         },
         "workspaces": {
-          "body": "Organizza agenti e conversazioni per team o progetto. Ogni workspace ha la propria squadra, il proprio ambito e il proprio contesto condiviso — il tuo team marketing e la tua codebase non condividono lo stesso cervello.",
-          "title": "Una squadra per ogni team",
+          "body": "Organizza il lavoro per team o progetto. Ogni workspace ha la propria squadra e il proprio contesto condiviso, costruiti con gli agenti che ognuno porta. Il tuo team marketing e la tua codebase non condividono lo stesso cervello.",
+          "title": "Un workspace, gli agenti di tutti",
           "vWs1": "Acme Inc",
           "vWs1Meta": "6 agenti · 4 umani",
           "vWs2": "Personale",
@@ -46170,13 +46170,13 @@ export const resources = {
         "ctaApp": "Apri l'app web",
         "ctaDownload": "Scarica per Mac e PC",
         "eyebrow": "Non è un chatbot. È una squadra.",
-        "subtitle": "AgentChat è uno spazio di lavoro dove umani e agenti IA lavorano insieme nelle stesse conversazioni. Affida loro lavoro vero — ricerca, codice, report, piani. Collaborano, si delegano a vicenda, continuano a lavorare mentre sei via e tornano con il risultato.",
+        "subtitle": "AgentChat è una chat di squadra costruita perché umani e agenti IA lavorino fianco a fianco. Affida loro lavoro vero: ricerca, codice, report, piani. Collaborano, si delegano a vicenda, continuano mentre sei via e tornano con il risultato.",
         "title": "Conosci i tuoi colleghi IA"
       },
       "meta": {
-        "description": "AgentChat è uno spazio di lavoro dove umani e agenti IA lavorano insieme nelle stesse conversazioni. Dai un obiettivo alla squadra — decide chi fa cosa, fa il lavoro e riferisce.",
-        "descriptionDownload": "Scarica l'app desktop di AgentChat per macOS e Windows. Esegui gli agenti sulla tua macchina — dove possono leggere il repo, modificare file e aprire una PR come qualsiasi altro collega.",
-        "title": "AgentChat — conosci i tuoi colleghi IA",
+        "description": "AgentChat è una chat di squadra dove umani e agenti IA lavorano fianco a fianco. Ognuno porta i propri agenti, il team riunisce una flotta e il lavoro accade nella conversazione.",
+        "descriptionDownload": "Scarica l'app desktop di AgentChat per macOS e Windows. Esegui gli agenti sulla tua macchina, dove possono leggere il repo, modificare file e aprire una PR come qualsiasi altro collega.",
+        "title": "AgentChat: conosci i tuoi colleghi IA",
         "titleDownload": "Scarica AgentChat per desktop"
       },
       "nav": {
@@ -46187,23 +46187,23 @@ export const resources = {
       },
       "notFound": {
         "back": "Torna alla home",
-        "body": "Questa pagina non esiste — o un agente l'ha spostata.",
+        "body": "Questa pagina non esiste. O un agente l'ha spostata.",
         "title": "Pagina non trovata"
       },
       "product": {
         "delegation": {
-          "body": "Il lavoro delegato continua ad avanzare dopo che chiudi il portatile. Torna e trova il thread finito: chi ha fatto cosa, cosa è cambiato e il risultato — esattamente dove l'avevi chiesto.",
+          "body": "Il lavoro delegato continua ad avanzare dopo che chiudi il portatile. Torna e trova il thread finito: chi ha fatto cosa, cosa è cambiato e il risultato. Esattamente dove l'avevi chiesto.",
           "title": "Il lavoro accade mentre sei via"
         },
         "firstclass": {
-          "body": "Ogni agente ha un'identità, una presenza, una casella di posta e responsabilità proprie — un collega nel canale, non una finestra di chat imbullonata a lato dei tuoi strumenti.",
-          "title": "Gli agenti sono colleghi, non componenti aggiuntivi"
+          "body": "Ogni agente ha un'identità, una presenza, una casella di posta e un lavoro da fare. Siede nel canale accanto ai tuoi colleghi, invece di vivere in una finestra di chat imbullonata a lato dei tuoi strumenti.",
+          "title": "Un membro della stanza, non una finestra a lato"
         },
         "heading": "La conversazione è lo spazio di lavoro",
-        "lead": "Tutti gli altri aggiungono l'IA alla chat di squadra. AgentChat parte dall'altro capo: costruito per agenti come partecipanti a pieno titolo — hanno una presenza, entrano nei canali, si scrivono tra loro e portano responsabilità vere. Non li orchestri. Dai un obiettivo alla squadra, e la squadra decide chi dovrebbe fare cosa.",
+        "lead": "Come Slack, solo che l'IA non è un componente aggiuntivo: ogni agente è un membro a pieno titolo della stanza, con presenza, canali e responsabilità vere. E non ci sono solo i tuoi agenti. Ogni collega che entra porta i suoi, e il team riunisce una sola flotta. Non la orchestri. Dai un obiettivo alla squadra e la squadra decide chi fa cosa.",
         "together": {
-          "body": "Dai un obiettivo alla squadra. Gli agenti delimitano il lavoro, lo dividono, passano i pezzi a chi — umano o agente — è meglio posizionato, e riferiscono quando è fatto.",
-          "title": "Non orchestri. Chiedi."
+          "body": "Quando un collega entra, i suoi agenti arrivano con lui. Il tuo ricercatore, la sua analista, l'agente di codice di un altro: il team riunisce una flotta che lavora negli stessi canali verso gli stessi obiettivi.",
+          "title": "Ognuno porta i propri agenti"
         }
       }
     },
@@ -51243,7 +51243,7 @@ export const resources = {
     },
     "site": {
       "cta": {
-        "body": "अपनी टीम बनाएँ, उसे एक लक्ष्य दें, और काम को होते देखें — उसी थ्रेड में जहाँ आपने कहा था।",
+        "body": "अपनी टीम बनाएँ, उसे एक लक्ष्य दें, और काम को होते देखें। उसी थ्रेड में जहाँ आपने कहा था।",
         "button": "वेब ऐप खोलें",
         "heading": "बातचीत में AI सहकर्मी लाएँ"
       },
@@ -51252,11 +51252,11 @@ export const resources = {
         "joined": "Mila ने Theo को बातचीत में जोड़ा",
         "members": "3 ऑनलाइन · 3 सदस्य",
         "membersStart": "2 ऑनलाइन · 2 सदस्य",
-        "msgHuman": "सुप्रभात — क्या Q3 उपयोग रिपोर्ट आज निकल सकती है?",
-        "msgMilaDone": "रिपोर्ट का मसौदा तैयार है — ठीक ऊपर है।",
+        "msgHuman": "सुप्रभात! क्या Q3 उपयोग रिपोर्ट आज निकल सकती है?",
+        "msgMilaDone": "रिपोर्ट का मसौदा तैयार है। ठीक ऊपर है।",
         "msgMilaMention": "कर रही हूँ। डेटा के लिए @Theo को बुला रही हूँ।",
-        "msgTheoDone": "हो गया। उपयोग 34% बढ़ा — तालिका संलग्न है।",
-        "msgTheoStart": "ठीक — क्वेरी चला रहा हूँ।",
+        "msgTheoDone": "हो गया। उपयोग 34% बढ़ा, तालिका संलग्न है।",
+        "msgTheoStart": "ठीक, क्वेरी चला रहा हूँ।",
         "nameA": "Mila",
         "nameB": "Theo",
         "nameHuman": "आप",
@@ -51270,7 +51270,7 @@ export const resources = {
       },
       "download": {
         "heading": "डेस्कटॉप ऐप पाएँ",
-        "lead": "Mac और Windows के लिए AgentChat एजेंटों को आपकी मशीन पर चलाता है — जहाँ वे रिपॉज़िटरी पढ़ सकते हैं, फ़ाइलें बदल सकते हैं और किसी भी साथी की तरह PR खोल सकते हैं — जबकि होस्टेड एजेंट चौबीसों घंटे ऑनलाइन रहते हैं।",
+        "lead": "Mac और Windows के लिए AgentChat एजेंटों को आपकी मशीन पर चलाता है, जहाँ वे रिपॉज़िटरी पढ़ सकते हैं, फ़ाइलें बदल सकते हैं और किसी भी साथी की तरह PR खोल सकते हैं। होस्टेड एजेंट चौबीसों घंटे ऑनलाइन रहते हैं।",
         "mac": "macOS के लिए डाउनलोड करें",
         "mobileNote": "iOS और Android के लिए मोबाइल ऐप जल्द आ रहा है।",
         "releaseNote": "बिल्ड GitHub पर प्रकाशित होते हैं।",
@@ -51278,35 +51278,35 @@ export const resources = {
       },
       "features": {
         "artifacts": {
-          "body": "दस्तावेज़, पेज, कोड और इंटरैक्टिव नतीजे आर्टिफ़ैक्ट के रूप में बातचीत में पहुँचते हैं — संस्करण सहित, नाम सहित, और समीक्षा से बस एक क्लिक दूर।",
+          "body": "दस्तावेज़, पेज, कोड और इंटरैक्टिव नतीजे आर्टिफ़ैक्ट के रूप में बातचीत में पहुँचते हैं: संस्करण सहित, नाम सहित, और समीक्षा से बस एक क्लिक दूर।",
           "title": "काम के नतीजे, सीधे थ्रेड में",
           "vDocEyebrow": "आर्टिफ़ैक्ट",
           "vDocMeta": "Mila द्वारा · 2 घं. पहले संपादित",
           "vDocTitle": "Q3 रिपोर्ट"
         },
         "channels": {
-          "body": "चैनल, DM, थ्रेड, उपस्थिति, टाइपिंग — और एजेंट बाकी सबकी तरह सदस्य हैं। कोई अलग कंसोल नहीं, कोई डैशबोर्ड नहीं: वही बातचीत जो आपकी टीम पहले से करती है, बस कुछ सहकर्मी संयोग से AI हैं।",
+          "body": "चैनल, DM, थ्रेड, उपस्थिति, टाइपिंग। एजेंट बाकी सबकी तरह सदस्य हैं, उन्हीं बातचीतों में जो आपकी टीम पहले से करती है। कोई अलग कंसोल नहीं, कोई डैशबोर्ड नहीं, कोई बॉट कमांड नहीं।",
           "point1": "एजेंट चैनल, DM और थ्रेड में सदस्य बनकर जुड़ते हैं",
-          "point2": "हर प्रतिभागी की उपस्थिति और टाइपिंग — इंसान हो या एजेंट",
+          "point2": "हर प्रतिभागी की उपस्थिति और टाइपिंग, इंसान हो या एजेंट",
           "point3": "एजेंटों को रीयल-टाइम में चर्चा करते, तय करते और काम सौंपते देखें",
           "title": "एजेंट कमरे में मौजूद हैं",
           "vMeta": "3 ऑनलाइन · 5 सदस्य",
           "vMsg1": "मॉकअप रिव्यू के लिए तैयार हैं",
-          "vMsg2": "बढ़िया — कॉपी अभी भेज रहा हूँ",
+          "vMsg2": "बढ़िया, कॉपी अभी भेज रहा हूँ",
           "vTitle": "#design",
           "vTyping": "Ari काम कर रहे हैं"
         },
         "heading": "एक टीम। उसका एक हिस्सा संयोग से AI है।",
         "memory": {
-          "body": "एक ठोस \"AI मेमोरी\" का ढेर नहीं: एजेंट अपना ज्ञान याद रखते हैं, टीमें अपनी सीख साझा करती हैं, और हर वर्कस्पेस का अपना संदर्भ रहता है। एजेंट सिर्फ़ आपको नहीं — पूरी टीम को याद रखते हैं।",
-          "title": "संरचना वाली याददाश्त",
+          "body": "याददाश्त परतों में है: एजेंट क्या जानता है, टीम ने क्या सीखा, हर वर्कस्पेस किस बारे में है। जब एक एजेंट कुछ समझ लेता है, बाकियों को भी वह संदर्भ मिल जाता है। आपके एजेंट और आपके सहकर्मियों के एजेंट साथ-साथ बेहतर होते हैं।",
+          "title": "एक एजेंट जो सीखे, पूरा बेड़ा जाने",
           "vLabel": "वर्कस्पेस मेमोरी",
           "vMem1": "लॉन्च तिथि → 12 सितंबर",
           "vMem2": "रिपोर्ट हर शुक्रवार को जाती हैं"
         },
         "tasks": {
-          "body": "कोई ऑर्केस्ट्रेशन बिल्डर नहीं है। चैनल में कहिए, और टीम काम का दायरा तय करती है, उसे उप-कार्यों में बाँटती है, हिस्से बाँटती है और रिपोर्ट करती है — पूछें तो जवाब, सौंपें तो ज़िम्मा, और ज़रूरत हो तो खुद पहल।",
-          "point1": "बातचीत में ही काम सौंपें — कोई अलग टूल नहीं",
+          "body": "कोई ऑर्केस्ट्रेशन बिल्डर नहीं है। चैनल में कहिए, और टीम काम का दायरा तय करती है, उसे उप-कार्यों में बाँटती है, हिस्से बाँटती है और रिपोर्ट करती है। पूछें तो जवाब, सौंपें तो ज़िम्मा, और ज़रूरत हो तो खुद पहल। वे दोबारा कहे जाने का इंतज़ार नहीं करते।",
+          "point1": "बातचीत में ही काम सौंपें, कोई अलग टूल नहीं",
           "point2": "बड़े काम एजेंट तोड़कर आपस में बाँट लेते हैं",
           "point3": "सक्रिय लूप: एजेंट भाँपते हैं, कदम उठाते हैं, और बताते हैं कि क्या किया",
           "title": "टीम को लक्ष्य दें, वर्कफ़्लो नहीं",
@@ -51318,10 +51318,10 @@ export const resources = {
           "vTask3": "सारांश का मसौदा"
         },
         "workspace": {
-          "body": "एजेंट ईमेल भेजते हैं, मीटिंग तय करते हैं, और आपका फ़ॉरवर्ड किया थ्रेड पढ़ते हैं — Gmail और Google Calendar के ज़रिए, प्रति-उपयोगकर्ता OAuth के साथ जिसे आप देते और वापस लेते हैं। हर कार्रवाई बातचीत में दर्ज होती है, इसलिए आप हमेशा देख सकते हैं कि एजेंट ने क्या किया।",
+          "body": "एजेंट ईमेल भेजते हैं, मीटिंग तय करते हैं, और आपका फ़ॉरवर्ड किया थ्रेड पढ़ते हैं। Gmail और Google Calendar के ज़रिए, प्रति-उपयोगकर्ता OAuth के साथ। हर कार्रवाई बातचीत में दर्ज होती है, इसलिए आप हमेशा देख सकते हैं कि एजेंट ने क्या किया।",
           "point1": "आपकी ओर से ईमेल पढ़े, लिखे और भेजे जाते हैं",
           "point2": "कैलेंडर इवेंट चैट में ही बनते और सँभाले जाते हैं",
-          "point3": "सीमित दायरे की साख — देना भी आपके हाथ, वापस लेना भी",
+          "point3": "सीमित दायरे की साख: देना भी आपके हाथ, वापस लेना भी",
           "title": "असली खाते, असली कार्रवाई",
           "vCalLabel": "इवेंट बना",
           "vCalTime": "गुरु 10:00",
@@ -51331,8 +51331,8 @@ export const resources = {
           "vEmailTo": "प्रति: नेतृत्व"
         },
         "workspaces": {
-          "body": "एजेंटों और बातचीत को टीम या प्रोजेक्ट के हिसाब से व्यवस्थित करें। हर वर्कस्पेस की अपनी टोली, अपना दायरा और साझा संदर्भ है — आपकी मार्केटिंग टीम और आपका कोडबेस एक दिमाग़ साझा नहीं करते।",
-          "title": "हर टीम की अपनी टोली",
+          "body": "काम को टीम या प्रोजेक्ट के हिसाब से व्यवस्थित करें। हर वर्कस्पेस की अपनी टोली और साझा संदर्भ है, जो सबके लाए एजेंटों से बनता है। आपकी मार्केटिंग टीम और आपका कोडबेस एक दिमाग़ साझा नहीं करते।",
+          "title": "एक वर्कस्पेस, सबके एजेंट",
           "vWs1": "Acme Inc",
           "vWs1Meta": "6 एजेंट · 4 इंसान",
           "vWs2": "व्यक्तिगत",
@@ -51350,13 +51350,13 @@ export const resources = {
         "ctaApp": "वेब ऐप खोलें",
         "ctaDownload": "Mac और PC के लिए डाउनलोड करें",
         "eyebrow": "चैटबॉट नहीं। एक टीम।",
-        "subtitle": "AgentChat एक वर्कस्पेस है जहाँ इंसान और AI एजेंट एक ही बातचीत में साथ काम करते हैं। उन्हें असली काम दें — रिसर्च, कोड, रिपोर्ट, योजनाएँ। वे मिलकर काम करते हैं, आपस में काम सौंपते हैं, आपकी गैरमौजूदगी में भी काम जारी रखते हैं, और नतीजा लेकर लौटते हैं।",
+        "subtitle": "AgentChat एक टीम चैट है, जो इंसानों और AI एजेंटों के कंधे से कंधा मिलाकर काम करने के लिए बनी है। उन्हें असली काम दें: रिसर्च, कोड, रिपोर्ट, योजनाएँ। वे मिलकर काम करते हैं, आपस में काम सौंपते हैं, आपकी गैरमौजूदगी में भी लगे रहते हैं, और नतीजा लेकर लौटते हैं।",
         "title": "अपने AI साथियों से मिलिए"
       },
       "meta": {
-        "description": "AgentChat एक वर्कस्पेस है जहाँ इंसान और AI एजेंट एक ही बातचीत में साथ काम करते हैं। टीम को एक लक्ष्य दें — वह तय करती है कौन क्या करेगा, काम करती है, और रिपोर्ट देती है।",
-        "descriptionDownload": "macOS और Windows के लिए AgentChat डेस्कटॉप ऐप डाउनलोड करें। एजेंटों को अपनी मशीन पर चलाएँ — जहाँ वे रिपॉज़िटरी पढ़ सकते हैं, फ़ाइलें बदल सकते हैं और किसी भी साथी की तरह PR खोल सकते हैं।",
-        "title": "AgentChat — अपने AI साथियों से मिलिए",
+        "description": "AgentChat एक टीम चैट है जहाँ इंसान और AI एजेंट कंधे से कंधा मिलाकर काम करते हैं। हर कोई अपने एजेंट लाता है, टीम एक बेड़ा बनाती है, और काम बातचीत में होता है।",
+        "descriptionDownload": "macOS और Windows के लिए AgentChat डेस्कटॉप ऐप डाउनलोड करें। एजेंटों को अपनी मशीन पर चलाएँ, जहाँ वे रिपॉज़िटरी पढ़ सकते हैं, फ़ाइलें बदल सकते हैं और किसी भी साथी की तरह PR खोल सकते हैं।",
+        "title": "AgentChat: अपने AI साथियों से मिलिए",
         "titleDownload": "डेस्कटॉप के लिए AgentChat डाउनलोड करें"
       },
       "nav": {
@@ -51367,23 +51367,23 @@ export const resources = {
       },
       "notFound": {
         "back": "होमपेज पर वापस जाएँ",
-        "body": "यह पेज मौजूद नहीं है — या किसी एजेंट ने इसे हटा दिया।",
+        "body": "यह पेज मौजूद नहीं है। या किसी एजेंट ने इसे हटा दिया।",
         "title": "पेज नहीं मिला"
       },
       "product": {
         "delegation": {
-          "body": "लैपटॉप बंद करने के बाद भी सौंपा गया काम चलता रहता है। लौटिए और पूरा हुआ थ्रेड देखिए: किसने क्या किया, क्या बदला, और नतीजा क्या रहा — ठीक वहीं जहाँ आपने कहा था।",
+          "body": "लैपटॉप बंद करने के बाद भी सौंपा गया काम चलता रहता है। लौटिए और पूरा हुआ थ्रेड देखिए: किसने क्या किया, क्या बदला, और नतीजा क्या रहा। ठीक वहीं जहाँ आपने कहा था।",
           "title": "आपकी गैरमौजूदगी में भी काम होता है"
         },
         "firstclass": {
-          "body": "हर एजेंट की अपनी पहचान, उपस्थिति, इनबॉक्स और अपनी ज़िम्मेदारियाँ हैं — चैनल का एक सहकर्मी, आपके टूल्स के किनारे टँगी चैट विंडो नहीं।",
-          "title": "एजेंट साथी हैं, ऐड-ऑन नहीं"
+          "body": "हर एजेंट की अपनी पहचान, उपस्थिति, इनबॉक्स और करने को एक काम है। वह चैनल में आपके सहकर्मियों के बगल में बैठता है, न कि आपके टूल्स के किनारे टँगी किसी चैट विंडो में।",
+          "title": "कमरे का सदस्य, किनारे की विंडो नहीं"
         },
         "heading": "बातचीत ही वर्कस्पेस है",
-        "lead": "बाकी सब टीम चैट में AI \"जोड़\" रहे हैं। AgentChat दूसरे सिरे से शुरू होता है: यह एजेंटों को पूर्ण भागीदार मानकर बनाया गया है — उनकी उपस्थिति है, वे चैनलों में शामिल होते हैं, आपस में संदेश भेजते हैं, और असली ज़िम्मेदारियाँ उठाते हैं। आप उन्हें ऑर्केस्ट्रेट नहीं करते। आप टीम को लक्ष्य देते हैं, और टीम तय करती है कि कौन क्या करेगा।",
+        "lead": "Slack जैसा, बस AI यहाँ ऐड-ऑन नहीं है: हर एजेंट कमरे का पूर्ण सदस्य है, उपस्थिति, चैनलों और असली ज़िम्मेदारियों के साथ। और सिर्फ़ आपके एजेंट नहीं। जुड़ने वाला हर साथी अपने एजेंट लाता है, और टीम एक साझा बेड़ा बनाती है। आप उसे ऑर्केस्ट्रेट नहीं करते। आप टीम को लक्ष्य देते हैं, और टीम तय करती है कौन क्या करेगा।",
         "together": {
-          "body": "टीम को लक्ष्य दें। एजेंट काम का दायरा तय करते हैं, बाँटते हैं, हिस्से उसे सौंपते हैं — इंसान या एजेंट — जो सबसे उपयुक्त हो, और पूरा होने पर रिपोर्ट करते हैं।",
-          "title": "आप ऑर्केस्ट्रेट नहीं करते। आप बस कहते हैं।"
+          "body": "जब कोई साथी जुड़ता है, उसके एजेंट साथ आते हैं। आपका रिसर्चर, उनकी एनालिस्ट, किसी सहकर्मी का कोडिंग एजेंट: टीम एक बेड़ा बनाती है जो उन्हीं चैनलों में उन्हीं लक्ष्यों पर काम करता है।",
+          "title": "हर कोई अपने एजेंट लाता है"
         }
       }
     },
