@@ -4624,7 +4624,7 @@ export const resources = {
     "site": {
       "cta": {
         "body": "Create your team, give it a goal, and watch the work happen — in the same thread where you asked.",
-        "button": "Open the app",
+        "button": "Open web app",
         "heading": "Put AI coworkers in the conversation"
       },
       "demo": {
@@ -4727,8 +4727,8 @@ export const resources = {
         "terms": "Terms"
       },
       "hero": {
-        "ctaApp": "Open the app",
-        "ctaDownload": "Download for desktop",
+        "ctaApp": "Open web app",
+        "ctaDownload": "Download for Mac & PC",
         "eyebrow": "It's not a chatbot. It's a team.",
         "subtitle": "AgentChat is a workspace where humans and AI agents work together in the same conversations. Give them real work — research, code, reports, plans. They collaborate, delegate to each other, keep working while you're away, and come back with the result.",
         "title": "Meet your AI teammates"
@@ -9804,7 +9804,7 @@ export const resources = {
     "site": {
       "cta": {
         "body": "Crea tu equipo, dale un objetivo y mira cómo sucede el trabajo — en el mismo hilo donde lo pediste.",
-        "button": "Abrir la app",
+        "button": "Abrir la app web",
         "heading": "Pon compañeros de IA en la conversación"
       },
       "demo": {
@@ -9907,8 +9907,8 @@ export const resources = {
         "terms": "Términos"
       },
       "hero": {
-        "ctaApp": "Abrir la app",
-        "ctaDownload": "Descargar para escritorio",
+        "ctaApp": "Abrir la app web",
+        "ctaDownload": "Descargar para Mac y PC",
         "eyebrow": "No es un chatbot. Es un equipo.",
         "subtitle": "AgentChat es un espacio de trabajo donde humanos y agentes de IA colaboran en las mismas conversaciones. Dales trabajo de verdad — investigación, código, informes, planes. Colaboran, se delegan entre ellos, siguen trabajando mientras no estás y vuelven con el resultado.",
         "title": "Conoce a tus compañeros de IA"
@@ -14984,7 +14984,7 @@ export const resources = {
     "site": {
       "cta": {
         "body": "Stell dein Team zusammen, gib ihm ein Ziel und sieh zu, wie die Arbeit passiert — im selben Thread, in dem du gefragt hast.",
-        "button": "App öffnen",
+        "button": "Web-App öffnen",
         "heading": "Hol dir KI-Kollegen in die Unterhaltung"
       },
       "demo": {
@@ -15087,8 +15087,8 @@ export const resources = {
         "terms": "AGB"
       },
       "hero": {
-        "ctaApp": "App öffnen",
-        "ctaDownload": "Für Desktop laden",
+        "ctaApp": "Web-App öffnen",
+        "ctaDownload": "Für Mac & PC laden",
         "eyebrow": "Kein Chatbot. Ein Team.",
         "subtitle": "AgentChat ist ein Workspace, in dem Menschen und KI-Agenten in denselben Unterhaltungen zusammenarbeiten. Gib ihnen echte Arbeit — Recherche, Code, Berichte, Pläne. Sie arbeiten zusammen, delegieren untereinander, machen weiter, während du weg bist, und kommen mit dem Ergebnis zurück.",
         "title": "Triff deine KI-Kollegen"
@@ -20164,7 +20164,7 @@ export const resources = {
     "site": {
       "cta": {
         "body": "Créez votre équipe, donnez-lui un objectif et regardez le travail se faire — dans le fil même où vous l'avez demandé.",
-        "button": "Ouvrir l'app",
+        "button": "Ouvrir l'app web",
         "heading": "Mettez des collègues IA dans la conversation"
       },
       "demo": {
@@ -20267,8 +20267,8 @@ export const resources = {
         "terms": "Conditions"
       },
       "hero": {
-        "ctaApp": "Ouvrir l'app",
-        "ctaDownload": "Télécharger pour le bureau",
+        "ctaApp": "Ouvrir l'app web",
+        "ctaDownload": "Télécharger pour Mac et PC",
         "eyebrow": "Pas un chatbot. Une équipe.",
         "subtitle": "AgentChat est un espace de travail où humains et agents IA travaillent ensemble dans les mêmes conversations. Confiez-leur du vrai travail — recherche, code, rapports, plans. Ils collaborent, se délèguent entre eux, continuent pendant votre absence et reviennent avec le résultat.",
         "title": "Rencontrez vos coéquipiers IA"
@@ -25344,7 +25344,7 @@ export const resources = {
     "site": {
       "cta": {
         "body": "Monte seu time, dê a ele um objetivo e veja o trabalho acontecer — no mesmo thread em que você pediu.",
-        "button": "Abrir o app",
+        "button": "Abrir o app web",
         "heading": "Coloque colegas de IA na conversa"
       },
       "demo": {
@@ -25447,8 +25447,8 @@ export const resources = {
         "terms": "Termos"
       },
       "hero": {
-        "ctaApp": "Abrir o app",
-        "ctaDownload": "Baixar para desktop",
+        "ctaApp": "Abrir o app web",
+        "ctaDownload": "Baixar para Mac e PC",
         "eyebrow": "Não é um chatbot. É um time.",
         "subtitle": "O AgentChat é um workspace onde humanos e agentes de IA trabalham juntos nas mesmas conversas. Dê a eles trabalho de verdade — pesquisa, código, relatórios, planos. Eles colaboram, delegam entre si, continuam trabalhando enquanto você está fora e voltam com o resultado.",
         "title": "Conheça seus colegas de IA"
@@ -30524,7 +30524,7 @@ export const resources = {
     "site": {
       "cta": {
         "body": "チームを作り、ゴールを与えて、仕事が進んでいく様子を見届けてください — あなたが頼んだ、まさにそのスレッドの中で。",
-        "button": "アプリを開く",
+        "button": "Webアプリを開く",
         "heading": "会話の中にAIの同僚を"
       },
       "demo": {
@@ -30627,8 +30627,8 @@ export const resources = {
         "terms": "利用規約"
       },
       "hero": {
-        "ctaApp": "アプリを開く",
-        "ctaDownload": "デスクトップ版をダウンロード",
+        "ctaApp": "Webアプリを開く",
+        "ctaDownload": "Mac & PC版をダウンロード",
         "eyebrow": "チャットボットではなく、チーム。",
         "subtitle": "AgentChatは、人とAIエージェントが同じ会話の中で一緒に働くワークスペースです。実際の仕事を任せてください — リサーチ、コード、レポート、企画。彼らは協力し、互いに委任し、あなたの不在中も働き続け、結果を持って戻ってきます。",
         "title": "AIのチームメイトに会おう"
@@ -35704,7 +35704,7 @@ export const resources = {
     "site": {
       "cta": {
         "body": "组建你的团队，给它一个目标，然后看着工作发生——就在你提出请求的那个话题串里。",
-        "button": "打开应用",
+        "button": "打开网页应用",
         "heading": "把 AI 同事请进对话"
       },
       "demo": {
@@ -35807,8 +35807,8 @@ export const resources = {
         "terms": "服务条款"
       },
       "hero": {
-        "ctaApp": "打开应用",
-        "ctaDownload": "下载桌面版",
+        "ctaApp": "打开网页应用",
+        "ctaDownload": "下载 Mac 和 PC 版",
         "eyebrow": "不是聊天机器人。是一支团队。",
         "subtitle": "AgentChat 是一个人类与 AI 智能体在同一场对话中共事的工作空间。交给他们真正的工作——调研、代码、报告、方案。他们彼此协作、互相委派，在你离开时继续干活，并带着结果回来。",
         "title": "认识你的 AI 队友"
@@ -40884,7 +40884,7 @@ export const resources = {
     "site": {
       "cta": {
         "body": "팀을 만들고, 목표를 주고, 일이 굴러가는 걸 지켜보세요 — 당신이 부탁한 바로 그 스레드 안에서.",
-        "button": "앱 열기",
+        "button": "웹 앱 열기",
         "heading": "대화 속에 AI 동료를 들이세요"
       },
       "demo": {
@@ -40987,8 +40987,8 @@ export const resources = {
         "terms": "이용약관"
       },
       "hero": {
-        "ctaApp": "앱 열기",
-        "ctaDownload": "데스크톱용 다운로드",
+        "ctaApp": "웹 앱 열기",
+        "ctaDownload": "Mac & PC용 다운로드",
         "eyebrow": "챗봇이 아닙니다. 팀입니다.",
         "subtitle": "AgentChat은 사람과 AI 에이전트가 같은 대화 안에서 함께 일하는 워크스페이스입니다. 진짜 일을 맡기세요 — 리서치, 코드, 리포트, 기획. 서로 협력하고, 위임하고, 당신이 자리를 비운 사이에도 일하다가, 결과를 들고 돌아옵니다.",
         "title": "AI 팀 동료를 만나보세요"
@@ -46064,7 +46064,7 @@ export const resources = {
     "site": {
       "cta": {
         "body": "Crea la tua squadra, dalle un obiettivo e guarda il lavoro accadere — nello stesso thread in cui l'hai chiesto.",
-        "button": "Apri l'app",
+        "button": "Apri l'app web",
         "heading": "Porta colleghi IA nella conversazione"
       },
       "demo": {
@@ -46167,8 +46167,8 @@ export const resources = {
         "terms": "Termini"
       },
       "hero": {
-        "ctaApp": "Apri l'app",
-        "ctaDownload": "Scarica per desktop",
+        "ctaApp": "Apri l'app web",
+        "ctaDownload": "Scarica per Mac e PC",
         "eyebrow": "Non è un chatbot. È una squadra.",
         "subtitle": "AgentChat è uno spazio di lavoro dove umani e agenti IA lavorano insieme nelle stesse conversazioni. Affida loro lavoro vero — ricerca, codice, report, piani. Collaborano, si delegano a vicenda, continuano a lavorare mentre sei via e tornano con il risultato.",
         "title": "Conosci i tuoi colleghi IA"
@@ -51244,7 +51244,7 @@ export const resources = {
     "site": {
       "cta": {
         "body": "अपनी टीम बनाएँ, उसे एक लक्ष्य दें, और काम को होते देखें — उसी थ्रेड में जहाँ आपने कहा था।",
-        "button": "ऐप खोलें",
+        "button": "वेब ऐप खोलें",
         "heading": "बातचीत में AI सहकर्मी लाएँ"
       },
       "demo": {
@@ -51347,8 +51347,8 @@ export const resources = {
         "terms": "शर्तें"
       },
       "hero": {
-        "ctaApp": "ऐप खोलें",
-        "ctaDownload": "डेस्कटॉप के लिए डाउनलोड करें",
+        "ctaApp": "वेब ऐप खोलें",
+        "ctaDownload": "Mac और PC के लिए डाउनलोड करें",
         "eyebrow": "चैटबॉट नहीं। एक टीम।",
         "subtitle": "AgentChat एक वर्कस्पेस है जहाँ इंसान और AI एजेंट एक ही बातचीत में साथ काम करते हैं। उन्हें असली काम दें — रिसर्च, कोड, रिपोर्ट, योजनाएँ। वे मिलकर काम करते हैं, आपस में काम सौंपते हैं, आपकी गैरमौजूदगी में भी काम जारी रखते हैं, और नतीजा लेकर लौटते हैं।",
         "title": "अपने AI साथियों से मिलिए"
