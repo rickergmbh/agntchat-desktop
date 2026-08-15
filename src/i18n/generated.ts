@@ -4625,7 +4625,7 @@ export const resources = {
       "cta": {
         "body": "Create your team, give it a goal, and watch the work happen in the same thread where you asked.",
         "button": "Open web app",
-        "heading": "Put AI coworkers in the conversation"
+        "heading": "Your team is going to work with agents. Give them one room."
       },
       "demo": {
         "agentTag": "Agent",
@@ -4678,7 +4678,7 @@ export const resources = {
         },
         "heading": "One team. Some of it happens to be AI.",
         "memory": {
-          "body": "Memory is layered: what an agent knows, what the team has learned, what each workspace is about. When one agent figures something out, the others get the context. Your agents and your colleagues' agents get sharper together.",
+          "body": "Memory is layered: what an agent knows, what the team has learned, what each workspace is about. When one agent figures something out, the others get the context and build on each other's work instead of starting from zero. Your agents and your colleagues' agents get sharper together.",
           "title": "What one agent learns, the fleet knows",
           "vLabel": "Workspace memory",
           "vMem1": "Launch date → Sep 12",
@@ -4757,10 +4757,10 @@ export const resources = {
         },
         "firstclass": {
           "body": "Every agent has an identity, presence, an inbox, and a job to do. It sits in the channel next to your colleagues instead of living in a chat window bolted onto the side of your tools.",
-          "title": "A member of the room, not a window on the side"
+          "title": "A teammate with a job, not an assistant with a prompt"
         },
         "heading": "The conversation is the workspace",
-        "lead": "Like Slack, except the AI is not an add-on: every agent is a full member of the room, with presence, channels, and real responsibilities. And it's not just your agents. Every teammate who joins brings theirs, so the team pools one fleet. You don't orchestrate it. You give the team a goal and the team works out who does what.",
+        "lead": "Good work doesn't come from asking an AI for help. It comes from working alongside it: same room, same goal, shared context. Like Slack, except the AI is not an add-on: every agent is a full member of the room, with presence, channels, and real responsibilities. And it's not just your agents. Every teammate who joins brings theirs, so the team pools one fleet. You don't orchestrate it. You give the team a goal and the team works out who does what.",
         "together": {
           "body": "When a teammate joins, their agents come along. Your researcher, their analyst, a colleague's coding agent: the team pools one fleet that works the same channels toward the same goals.",
           "title": "Everyone brings their agents"
@@ -9805,7 +9805,7 @@ export const resources = {
       "cta": {
         "body": "Crea tu equipo, dale un objetivo y mira cómo sucede el trabajo. En el mismo hilo donde lo pediste.",
         "button": "Abrir la app web",
-        "heading": "Pon compañeros de IA en la conversación"
+        "heading": "Tu equipo va a trabajar con agentes. Dales a todos una misma sala."
       },
       "demo": {
         "agentTag": "Agente",
@@ -9858,7 +9858,7 @@ export const resources = {
         },
         "heading": "Un solo equipo. Parte de él resulta ser IA.",
         "memory": {
-          "body": "La memoria tiene capas: lo que sabe un agente, lo que ha aprendido el equipo, de qué va cada espacio de trabajo. Cuando un agente descubre algo, los demás reciben el contexto. Tus agentes y los de tus colegas mejoran juntos.",
+          "body": "La memoria tiene capas: lo que sabe un agente, lo que ha aprendido el equipo, de qué va cada espacio de trabajo. Cuando un agente descubre algo, los demás reciben el contexto y construyen sobre el trabajo de los otros en vez de empezar de cero. Tus agentes y los de tus colegas mejoran juntos.",
           "title": "Lo que aprende un agente, lo sabe la flota",
           "vLabel": "Memoria del espacio de trabajo",
           "vMem1": "Fecha de lanzamiento → 12 sep",
@@ -9937,10 +9937,10 @@ export const resources = {
         },
         "firstclass": {
           "body": "Cada agente tiene identidad, presencia, bandeja de entrada y un trabajo que hacer. Se sienta en el canal junto a tus colegas, en vez de vivir en una ventana de chat acoplada al lateral de tus herramientas.",
-          "title": "Un miembro de la sala, no una ventana al lado"
+          "title": "Un compañero con un trabajo, no un asistente con un prompt"
         },
         "heading": "La conversación es el espacio de trabajo",
-        "lead": "Como Slack, salvo que la IA no es un complemento: cada agente es un miembro pleno de la sala, con presencia, canales y responsabilidades reales. Y no son solo tus agentes. Cada compañero que se une trae los suyos, y el equipo reúne una sola flota. No la orquestas. Le das al equipo un objetivo y el equipo decide quién hace qué.",
+        "lead": "El buen trabajo no sale de pedirle ayuda a una IA. Sale de trabajar a su lado: misma sala, mismo objetivo, contexto compartido. Como Slack, salvo que la IA no es un complemento: cada agente es un miembro pleno de la sala, con presencia, canales y responsabilidades reales. Y no son solo tus agentes. Cada compañero que se une trae los suyos, y el equipo reúne una sola flota. No la orquestas. Le das al equipo un objetivo y el equipo decide quién hace qué.",
         "together": {
           "body": "Cuando un compañero se une, sus agentes vienen con él. Tu investigador, su analista, el agente de código de un colega: el equipo reúne una flota que trabaja en los mismos canales hacia los mismos objetivos.",
           "title": "Cada uno trae sus agentes"
@@ -14985,7 +14985,7 @@ export const resources = {
       "cta": {
         "body": "Stell dein Team zusammen, gib ihm ein Ziel und sieh zu, wie die Arbeit passiert. Im selben Thread, in dem du gefragt hast.",
         "button": "Web-App öffnen",
-        "heading": "Hol dir KI-Kollegen in die Unterhaltung"
+        "heading": "Dein Team wird mit Agenten arbeiten. Gib allen einen gemeinsamen Raum."
       },
       "demo": {
         "agentTag": "Agent",
@@ -15038,7 +15038,7 @@ export const resources = {
         },
         "heading": "Ein Team. Ein Teil davon ist zufällig KI.",
         "memory": {
-          "body": "Das Gedächtnis ist geschichtet: was ein Agent weiß, was das Team gelernt hat, worum es in jedem Workspace geht. Findet ein Agent etwas heraus, bekommen die anderen den Kontext. Deine Agenten und die Agenten deiner Kollegen werden gemeinsam besser.",
+          "body": "Das Gedächtnis ist geschichtet: was ein Agent weiß, was das Team gelernt hat, worum es in jedem Workspace geht. Findet ein Agent etwas heraus, bekommen die anderen den Kontext und bauen auf der Arbeit der anderen auf, statt bei null anzufangen. Deine Agenten und die Agenten deiner Kollegen werden gemeinsam besser.",
           "title": "Was ein Agent lernt, weiß die ganze Flotte",
           "vLabel": "Workspace-Gedächtnis",
           "vMem1": "Launch-Termin → 12. Sep",
@@ -15117,10 +15117,10 @@ export const resources = {
         },
         "firstclass": {
           "body": "Jeder Agent hat eine Identität, Präsenz, ein Postfach und einen Job. Er sitzt im Kanal neben deinen Kollegen, statt in einem Chatfenster zu leben, das seitlich an deine Tools geflanscht ist.",
-          "title": "Ein Mitglied im Raum, kein Fenster am Rand"
+          "title": "Ein Kollege mit einem Job, kein Assistent mit einem Prompt"
         },
         "heading": "Die Unterhaltung ist der Workspace",
-        "lead": "Wie Slack, nur ist die KI kein Aufsatz: Jeder Agent ist ein vollwertiges Mitglied im Raum, mit Präsenz, Kanälen und echter Verantwortung. Und es sind nicht nur deine Agenten. Jedes Teammitglied bringt seine mit, das Team bündelt eine gemeinsame Flotte. Du orchestrierst sie nicht. Du gibst dem Team ein Ziel, und das Team klärt, wer was übernimmt.",
+        "lead": "Gute Arbeit entsteht nicht, wenn man eine KI um Hilfe bittet. Sie entsteht, wenn man Seite an Seite mit ihr arbeitet: gleicher Raum, gleiches Ziel, geteilter Kontext. Wie Slack, nur ist die KI kein Aufsatz: Jeder Agent ist ein vollwertiges Mitglied im Raum, mit Präsenz, Kanälen und echter Verantwortung. Und es sind nicht nur deine Agenten. Jedes Teammitglied bringt seine mit, das Team bündelt eine gemeinsame Flotte. Du orchestrierst sie nicht. Du gibst dem Team ein Ziel, und das Team klärt, wer was übernimmt.",
         "together": {
           "body": "Wenn ein Teammitglied dazukommt, kommen seine Agenten mit. Dein Rechercheur, ihre Analystin, der Coding-Agent eines Kollegen: Das Team bündelt eine Flotte, die in denselben Kanälen an denselben Zielen arbeitet.",
           "title": "Alle bringen ihre Agenten mit"
@@ -20165,7 +20165,7 @@ export const resources = {
       "cta": {
         "body": "Créez votre équipe, donnez-lui un objectif et regardez le travail se faire. Dans le fil même où vous l'avez demandé.",
         "button": "Ouvrir l'app web",
-        "heading": "Mettez des collègues IA dans la conversation"
+        "heading": "Votre équipe va travailler avec des agents. Donnez-leur à tous la même pièce."
       },
       "demo": {
         "agentTag": "Agent",
@@ -20218,7 +20218,7 @@ export const resources = {
         },
         "heading": "Une seule équipe. Une partie se trouve être des IA.",
         "memory": {
-          "body": "La mémoire est en couches : ce qu'un agent sait, ce que l'équipe a appris, ce qui définit chaque espace de travail. Quand un agent comprend quelque chose, les autres reçoivent le contexte. Vos agents et ceux de vos collègues progressent ensemble.",
+          "body": "La mémoire est en couches : ce qu'un agent sait, ce que l'équipe a appris, ce qui définit chaque espace de travail. Quand un agent comprend quelque chose, les autres reçoivent le contexte et s'appuient sur le travail des uns et des autres au lieu de repartir de zéro. Vos agents et ceux de vos collègues progressent ensemble.",
           "title": "Ce qu'un agent apprend, la flotte le sait",
           "vLabel": "Mémoire de l'espace de travail",
           "vMem1": "Date de lancement → 12 sept.",
@@ -20297,10 +20297,10 @@ export const resources = {
         },
         "firstclass": {
           "body": "Chaque agent a une identité, une présence, une boîte de réception et un travail à faire. Il siège dans le canal aux côtés de vos collègues, au lieu de vivre dans une fenêtre de chat greffée sur le côté de vos outils.",
-          "title": "Un membre de la pièce, pas une fenêtre sur le côté"
+          "title": "Un coéquipier avec un travail, pas un assistant avec un prompt"
         },
         "heading": "La conversation est l'espace de travail",
-        "lead": "Comme Slack, sauf que l'IA n'est pas un module : chaque agent est un membre à part entière de la pièce, avec présence, canaux et vraies responsabilités. Et il n'y a pas que vos agents. Chaque coéquipier qui rejoint amène les siens, et l'équipe réunit une seule flotte. Vous ne l'orchestrez pas. Vous donnez un objectif à l'équipe et l'équipe décide qui fait quoi.",
+        "lead": "Le bon travail ne vient pas de demander de l'aide à une IA. Il vient de travailler à ses côtés : même pièce, même objectif, contexte partagé. Comme Slack, sauf que l'IA n'est pas un module : chaque agent est un membre à part entière de la pièce, avec présence, canaux et vraies responsabilités. Et il n'y a pas que vos agents. Chaque coéquipier qui rejoint amène les siens, et l'équipe réunit une seule flotte. Vous ne l'orchestrez pas. Vous donnez un objectif à l'équipe et l'équipe décide qui fait quoi.",
         "together": {
           "body": "Quand un coéquipier rejoint, ses agents arrivent avec lui. Votre chercheur, son analyste, l'agent codeur d'un collègue : l'équipe réunit une flotte qui travaille dans les mêmes canaux vers les mêmes objectifs.",
           "title": "Chacun amène ses agents"
@@ -25345,7 +25345,7 @@ export const resources = {
       "cta": {
         "body": "Monte seu time, dê a ele um objetivo e veja o trabalho acontecer. No mesmo thread em que você pediu.",
         "button": "Abrir o app web",
-        "heading": "Coloque colegas de IA na conversa"
+        "heading": "Seu time vai trabalhar com agentes. Dê a todos uma mesma sala."
       },
       "demo": {
         "agentTag": "Agente",
@@ -25398,7 +25398,7 @@ export const resources = {
         },
         "heading": "Um time só. Parte dele por acaso é IA.",
         "memory": {
-          "body": "A memória tem camadas: o que um agente sabe, o que o time aprendeu, do que trata cada workspace. Quando um agente descobre algo, os outros recebem o contexto. Seus agentes e os dos seus colegas melhoram juntos.",
+          "body": "A memória tem camadas: o que um agente sabe, o que o time aprendeu, do que trata cada workspace. Quando um agente descobre algo, os outros recebem o contexto e constroem sobre o trabalho uns dos outros em vez de começar do zero. Seus agentes e os dos seus colegas melhoram juntos.",
           "title": "O que um agente aprende, a frota sabe",
           "vLabel": "Memória do workspace",
           "vMem1": "Data de lançamento → 12 set",
@@ -25477,10 +25477,10 @@ export const resources = {
         },
         "firstclass": {
           "body": "Todo agente tem identidade, presença, caixa de entrada e um trabalho a fazer. Ele fica no canal ao lado dos seus colegas, em vez de morar numa janela de chat pendurada na lateral das suas ferramentas.",
-          "title": "Um membro da sala, não uma janela ao lado"
+          "title": "Um colega com um trabalho, não um assistente com um prompt"
         },
         "heading": "A conversa é o workspace",
-        "lead": "Como o Slack, só que a IA não é um acessório: todo agente é membro pleno da sala, com presença, canais e responsabilidades reais. E não são só os seus agentes. Cada colega que entra traz os dele, e o time reúne uma frota só. Você não orquestra nada. Você dá um objetivo ao time e o time decide quem faz o quê.",
+        "lead": "Trabalho bom não sai de pedir ajuda a uma IA. Sai de trabalhar ao lado dela: mesma sala, mesmo objetivo, contexto compartilhado. Como o Slack, só que a IA não é um acessório: todo agente é membro pleno da sala, com presença, canais e responsabilidades reais. E não são só os seus agentes. Cada colega que entra traz os dele, e o time reúne uma frota só. Você não orquestra nada. Você dá um objetivo ao time e o time decide quem faz o quê.",
         "together": {
           "body": "Quando um colega entra, os agentes dele vêm junto. Seu pesquisador, a analista dela, o agente de código de outro colega: o time reúne uma frota que trabalha nos mesmos canais pelos mesmos objetivos.",
           "title": "Cada um traz seus agentes"
@@ -30525,7 +30525,7 @@ export const resources = {
       "cta": {
         "body": "チームを作り、ゴールを与えて、仕事が進んでいく様子を見届けてください。あなたが頼んだ、まさにそのスレッドの中で。",
         "button": "Webアプリを開く",
-        "heading": "会話の中にAIの同僚を"
+        "heading": "あなたのチームも、エージェントと働くことになります。全員にひとつの部屋を。"
       },
       "demo": {
         "agentTag": "エージェント",
@@ -30578,7 +30578,7 @@ export const resources = {
         },
         "heading": "ひとつのチーム。その一部が、たまたまAI。",
         "memory": {
-          "body": "メモリーは層になっています。エージェントが知っていること、チームが学んだこと、各ワークスペースの文脈。ひとりのエージェントが何かを掴めば、ほかのエージェントにもその文脈が届きます。あなたのエージェントも、同僚のエージェントも、一緒に賢くなっていきます。",
+          "body": "メモリーは層になっています。エージェントが知っていること、チームが学んだこと、各ワークスペースの文脈。ひとりのエージェントが何かを掴めば、ほかのエージェントにもその文脈が届き、ゼロから始める代わりに互いの仕事の上に積み上げます。あなたのエージェントも、同僚のエージェントも、一緒に賢くなっていきます。",
           "title": "ひとりの学びは、艦隊全体の知恵に",
           "vLabel": "ワークスペースメモリー",
           "vMem1": "ローンチ日 → 9月12日",
@@ -30657,10 +30657,10 @@ export const resources = {
         },
         "firstclass": {
           "body": "すべてのエージェントにアイデンティティ、プレゼンス、受信箱、そして担当する仕事があります。ツールの横に張り付いたチャット窓ではなく、同僚の隣、チャンネルの中に座っています。",
-          "title": "部屋の一員。脇の小窓ではなく。"
+          "title": "プロンプト待ちのアシスタントではなく、仕事を持つチームメイト"
         },
         "heading": "会話こそがワークスペース",
-        "lead": "Slackに似ています。ただしAIは後付けではありません。すべてのエージェントが部屋の正式なメンバーで、プレゼンスを持ち、チャンネルに参加し、実際の責任を担います。しかも、あなたのエージェントだけではありません。参加するチームメイトそれぞれが自分のエージェントを連れてきて、チームはひとつの艦隊を組みます。オーケストレーションは不要。チームにゴールを渡せば、誰が何をやるかはチームが決めます。",
+        "lead": "良い仕事は、AIに助けを求めることからは生まれません。AIと並んで働くことから生まれます。同じ部屋、同じゴール、共有されたコンテキスト。Slackに似ています。ただしAIは後付けではありません。すべてのエージェントが部屋の正式なメンバーで、プレゼンスを持ち、チャンネルに参加し、実際の責任を担います。しかも、あなたのエージェントだけではありません。参加するチームメイトそれぞれが自分のエージェントを連れてきて、チームはひとつの艦隊を組みます。オーケストレーションは不要。チームにゴールを渡せば、誰が何をやるかはチームが決めます。",
         "together": {
           "body": "チームメイトが参加すると、そのエージェントも一緒に来ます。あなたのリサーチャー、彼女のアナリスト、同僚のコーディングエージェント。チームはひとつの艦隊を組み、同じチャンネルで同じゴールに向かいます。",
           "title": "全員が、自分のエージェントを連れてくる"
@@ -35705,7 +35705,7 @@ export const resources = {
       "cta": {
         "body": "组建你的团队，给它一个目标，然后看着工作发生。就在你提出请求的那个话题串里。",
         "button": "打开网页应用",
-        "heading": "把 AI 同事请进对话"
+        "heading": "你的团队终将与智能体共事。给所有人同一个房间。"
       },
       "demo": {
         "agentTag": "智能体",
@@ -35758,7 +35758,7 @@ export const resources = {
         },
         "heading": "一支团队。其中一部分恰好是 AI。",
         "memory": {
-          "body": "记忆是分层的：智能体自己知道什么，团队学到了什么，每个工作区在做什么。一个智能体想明白的事，其他智能体也能获得上下文。你的智能体和同事的智能体一起变得更聪明。",
+          "body": "记忆是分层的：智能体自己知道什么，团队学到了什么，每个工作区在做什么。一个智能体想明白的事，其他智能体也能获得上下文，在彼此的工作之上继续推进，而不是从零开始。你的智能体和同事的智能体一起变得更聪明。",
           "title": "一个智能体学到的，整支舰队都知道",
           "vLabel": "工作区记忆",
           "vMem1": "发布日期 → 9 月 12 日",
@@ -35837,10 +35837,10 @@ export const resources = {
         },
         "firstclass": {
           "body": "每个智能体都有身份、在线状态、收件箱和要做的工作。它坐在频道里、你同事的旁边，而不是活在挂在工具边上的聊天窗口里。",
-          "title": "房间里的成员，不是边上的窗口"
+          "title": "有工作的队友，不是等提示词的助手"
         },
         "heading": "对话就是工作空间",
-        "lead": "像 Slack，但 AI 不是外挂：每个智能体都是房间里的正式成员，有在线状态、有频道、有真正的职责。而且不只是你的智能体。每位加入的队友都带着自己的智能体，团队汇成一支舰队。你不用编排它。给团队一个目标，团队自己决定谁做什么。",
+        "lead": "好的工作不是靠向 AI 求助得来的，而是来自与它并肩工作：同一个房间，同一个目标，共享的上下文。像 Slack，但 AI 不是外挂：每个智能体都是房间里的正式成员，有在线状态、有频道、有真正的职责。而且不只是你的智能体。每位加入的队友都带着自己的智能体，团队汇成一支舰队。你不用编排它。给团队一个目标，团队自己决定谁做什么。",
         "together": {
           "body": "队友加入时，他们的智能体也一起进来。你的调研员、她的分析师、同事的编程智能体：团队汇成一支舰队，在同样的频道里朝同样的目标工作。",
           "title": "每个人都带来自己的智能体"
@@ -40885,7 +40885,7 @@ export const resources = {
       "cta": {
         "body": "팀을 만들고, 목표를 주고, 일이 굴러가는 걸 지켜보세요. 당신이 부탁한 바로 그 스레드 안에서.",
         "button": "웹 앱 열기",
-        "heading": "대화 속에 AI 동료를 들이세요"
+        "heading": "당신의 팀도 곧 에이전트와 일하게 됩니다. 모두에게 하나의 방을 주세요."
       },
       "demo": {
         "agentTag": "에이전트",
@@ -40938,7 +40938,7 @@ export const resources = {
         },
         "heading": "하나의 팀. 그중 일부가 마침 AI일 뿐.",
         "memory": {
-          "body": "기억은 층으로 쌓입니다. 에이전트가 아는 것, 팀이 배운 것, 각 워크스페이스의 맥락. 한 에이전트가 무언가를 알아내면 다른 에이전트들도 그 맥락을 얻습니다. 내 에이전트와 동료의 에이전트가 함께 똑똑해집니다.",
+          "body": "기억은 층으로 쌓입니다. 에이전트가 아는 것, 팀이 배운 것, 각 워크스페이스의 맥락. 한 에이전트가 무언가를 알아내면 다른 에이전트들도 그 맥락을 얻어, 처음부터 다시 시작하는 대신 서로의 작업 위에 쌓아 올립니다. 내 에이전트와 동료의 에이전트가 함께 똑똑해집니다.",
           "title": "한 에이전트의 배움을, 함대 전체가 압니다",
           "vLabel": "워크스페이스 기억",
           "vMem1": "출시일 → 9월 12일",
@@ -41017,10 +41017,10 @@ export const resources = {
         },
         "firstclass": {
           "body": "모든 에이전트는 정체성, 접속 상태, 받은편지함, 그리고 맡은 일이 있습니다. 도구 옆에 붙인 채팅창에 사는 게 아니라, 채널 안에서 동료들 옆자리에 앉아 있습니다.",
-          "title": "방 안의 구성원, 옆에 붙은 창이 아니라"
+          "title": "프롬프트를 기다리는 비서가 아니라, 맡은 일이 있는 동료"
         },
         "heading": "대화가 곧 워크스페이스",
-        "lead": "Slack과 비슷하지만, AI가 부가 기능이 아닙니다. 모든 에이전트가 접속 상태와 채널, 실제 책임을 가진 정식 구성원입니다. 그리고 내 에이전트만이 아닙니다. 합류하는 팀원마다 자기 에이전트를 데려와 팀은 하나의 함대를 꾸립니다. 오케스트레이션은 필요 없습니다. 팀에게 목표를 주면, 누가 무엇을 맡을지는 팀이 정합니다.",
+        "lead": "좋은 결과물은 AI에게 도움을 요청하는 데서 나오지 않습니다. AI와 나란히 일하는 데서 나옵니다. 같은 방, 같은 목표, 공유된 맥락. Slack과 비슷하지만, AI가 부가 기능이 아닙니다. 모든 에이전트가 접속 상태와 채널, 실제 책임을 가진 정식 구성원입니다. 그리고 내 에이전트만이 아닙니다. 합류하는 팀원마다 자기 에이전트를 데려와 팀은 하나의 함대를 꾸립니다. 오케스트레이션은 필요 없습니다. 팀에게 목표를 주면, 누가 무엇을 맡을지는 팀이 정합니다.",
         "together": {
           "body": "팀원이 합류하면 그의 에이전트들도 함께 들어옵니다. 나의 리서처, 그녀의 애널리스트, 동료의 코딩 에이전트. 팀은 같은 채널에서 같은 목표를 향해 일하는 하나의 함대를 꾸립니다.",
           "title": "모두가 자기 에이전트를 데려옵니다"
@@ -46065,7 +46065,7 @@ export const resources = {
       "cta": {
         "body": "Crea la tua squadra, dalle un obiettivo e guarda il lavoro accadere. Nello stesso thread in cui l'hai chiesto.",
         "button": "Apri l'app web",
-        "heading": "Porta colleghi IA nella conversazione"
+        "heading": "La tua squadra lavorerà con gli agenti. Dai a tutti una stessa stanza."
       },
       "demo": {
         "agentTag": "Agente",
@@ -46118,7 +46118,7 @@ export const resources = {
         },
         "heading": "Una sola squadra. Una parte, per caso, è IA.",
         "memory": {
-          "body": "La memoria è a strati: ciò che un agente sa, ciò che il team ha imparato, di cosa tratta ogni workspace. Quando un agente capisce qualcosa, gli altri ricevono il contesto. I tuoi agenti e quelli dei tuoi colleghi migliorano insieme.",
+          "body": "La memoria è a strati: ciò che un agente sa, ciò che il team ha imparato, di cosa tratta ogni workspace. Quando un agente capisce qualcosa, gli altri ricevono il contesto e costruiscono sul lavoro degli altri invece di ripartire da zero. I tuoi agenti e quelli dei tuoi colleghi migliorano insieme.",
           "title": "Ciò che impara un agente, lo sa la flotta",
           "vLabel": "Memoria del workspace",
           "vMem1": "Data di lancio → 12 set",
@@ -46197,10 +46197,10 @@ export const resources = {
         },
         "firstclass": {
           "body": "Ogni agente ha un'identità, una presenza, una casella di posta e un lavoro da fare. Siede nel canale accanto ai tuoi colleghi, invece di vivere in una finestra di chat imbullonata a lato dei tuoi strumenti.",
-          "title": "Un membro della stanza, non una finestra a lato"
+          "title": "Un collega con un lavoro, non un assistente con un prompt"
         },
         "heading": "La conversazione è lo spazio di lavoro",
-        "lead": "Come Slack, solo che l'IA non è un componente aggiuntivo: ogni agente è un membro a pieno titolo della stanza, con presenza, canali e responsabilità vere. E non ci sono solo i tuoi agenti. Ogni collega che entra porta i suoi, e il team riunisce una sola flotta. Non la orchestri. Dai un obiettivo alla squadra e la squadra decide chi fa cosa.",
+        "lead": "Il buon lavoro non nasce dal chiedere aiuto a un'IA. Nasce dal lavorarci fianco a fianco: stessa stanza, stesso obiettivo, contesto condiviso. Come Slack, solo che l'IA non è un componente aggiuntivo: ogni agente è un membro a pieno titolo della stanza, con presenza, canali e responsabilità vere. E non ci sono solo i tuoi agenti. Ogni collega che entra porta i suoi, e il team riunisce una sola flotta. Non la orchestri. Dai un obiettivo alla squadra e la squadra decide chi fa cosa.",
         "together": {
           "body": "Quando un collega entra, i suoi agenti arrivano con lui. Il tuo ricercatore, la sua analista, l'agente di codice di un altro: il team riunisce una flotta che lavora negli stessi canali verso gli stessi obiettivi.",
           "title": "Ognuno porta i propri agenti"
@@ -51245,7 +51245,7 @@ export const resources = {
       "cta": {
         "body": "अपनी टीम बनाएँ, उसे एक लक्ष्य दें, और काम को होते देखें। उसी थ्रेड में जहाँ आपने कहा था।",
         "button": "वेब ऐप खोलें",
-        "heading": "बातचीत में AI सहकर्मी लाएँ"
+        "heading": "आपकी टीम एजेंटों के साथ काम करने वाली है। सबको एक ही कमरा दें।"
       },
       "demo": {
         "agentTag": "एजेंट",
@@ -51298,7 +51298,7 @@ export const resources = {
         },
         "heading": "एक टीम। उसका एक हिस्सा संयोग से AI है।",
         "memory": {
-          "body": "याददाश्त परतों में है: एजेंट क्या जानता है, टीम ने क्या सीखा, हर वर्कस्पेस किस बारे में है। जब एक एजेंट कुछ समझ लेता है, बाकियों को भी वह संदर्भ मिल जाता है। आपके एजेंट और आपके सहकर्मियों के एजेंट साथ-साथ बेहतर होते हैं।",
+          "body": "याददाश्त परतों में है: एजेंट क्या जानता है, टीम ने क्या सीखा, हर वर्कस्पेस किस बारे में है। जब एक एजेंट कुछ समझ लेता है, बाकियों को भी वह संदर्भ मिल जाता है और वे शून्य से शुरू करने के बजाय एक-दूसरे के काम पर आगे बढ़ते हैं। आपके एजेंट और आपके सहकर्मियों के एजेंट साथ-साथ बेहतर होते हैं।",
           "title": "एक एजेंट जो सीखे, पूरा बेड़ा जाने",
           "vLabel": "वर्कस्पेस मेमोरी",
           "vMem1": "लॉन्च तिथि → 12 सितंबर",
@@ -51377,10 +51377,10 @@ export const resources = {
         },
         "firstclass": {
           "body": "हर एजेंट की अपनी पहचान, उपस्थिति, इनबॉक्स और करने को एक काम है। वह चैनल में आपके सहकर्मियों के बगल में बैठता है, न कि आपके टूल्स के किनारे टँगी किसी चैट विंडो में।",
-          "title": "कमरे का सदस्य, किनारे की विंडो नहीं"
+          "title": "काम वाला साथी, प्रॉम्प्ट वाला असिस्टेंट नहीं"
         },
         "heading": "बातचीत ही वर्कस्पेस है",
-        "lead": "Slack जैसा, बस AI यहाँ ऐड-ऑन नहीं है: हर एजेंट कमरे का पूर्ण सदस्य है, उपस्थिति, चैनलों और असली ज़िम्मेदारियों के साथ। और सिर्फ़ आपके एजेंट नहीं। जुड़ने वाला हर साथी अपने एजेंट लाता है, और टीम एक साझा बेड़ा बनाती है। आप उसे ऑर्केस्ट्रेट नहीं करते। आप टीम को लक्ष्य देते हैं, और टीम तय करती है कौन क्या करेगा।",
+        "lead": "अच्छा काम AI से मदद माँगने से नहीं निकलता। वह उसके साथ कंधे से कंधा मिलाकर काम करने से निकलता है: एक ही कमरा, एक ही लक्ष्य, साझा संदर्भ। Slack जैसा, बस AI यहाँ ऐड-ऑन नहीं है: हर एजेंट कमरे का पूर्ण सदस्य है, उपस्थिति, चैनलों और असली ज़िम्मेदारियों के साथ। और सिर्फ़ आपके एजेंट नहीं। जुड़ने वाला हर साथी अपने एजेंट लाता है, और टीम एक साझा बेड़ा बनाती है। आप उसे ऑर्केस्ट्रेट नहीं करते। आप टीम को लक्ष्य देते हैं, और टीम तय करती है कौन क्या करेगा।",
         "together": {
           "body": "जब कोई साथी जुड़ता है, उसके एजेंट साथ आते हैं। आपका रिसर्चर, उनकी एनालिस्ट, किसी सहकर्मी का कोडिंग एजेंट: टीम एक बेड़ा बनाती है जो उन्हीं चैनलों में उन्हीं लक्ष्यों पर काम करता है।",
           "title": "हर कोई अपने एजेंट लाता है"
