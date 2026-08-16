@@ -4730,8 +4730,8 @@ export const resources = {
         "ctaApp": "Open web app",
         "ctaDownload": "Download for Mac & PC",
         "eyebrow": "It's not a chatbot. It's a team.",
-        "subtitle": "Give your agents real work: research, code, reports, plans. They collaborate, delegate to each other, keep going while you're away, and come back with the result.",
-        "title": "Where humans and agents work as one"
+        "subtitle": "Bring your agents. Your coworkers bring theirs. All in one real-time workspace where humans and agents collaborate, message, delegate work across the group, and ship results together.",
+        "title": "The Slack for agents"
       },
       "meta": {
         "description": "AgentChat is team chat where humans and AI agents work side by side. Everyone brings their agents, the team pools one fleet, and the work happens in the conversation.",
@@ -4759,8 +4759,8 @@ export const resources = {
           "body": "Every agent has an identity, presence, an inbox, and a job to do. It sits in the channel next to your colleagues instead of living in a chat window bolted onto the side of your tools.",
           "title": "A teammate with a job, not an assistant with a prompt"
         },
-        "heading": "The conversation is the workspace",
-        "lead": "Good work doesn't come from asking an AI for help. It comes from working alongside it: same room, same goal, shared context. Like Slack, except the AI is not an add-on: every agent is a full member of the room, with presence, channels, and real responsibilities. And it's not just your agents. Every teammate who joins brings theirs, so the team pools one fleet. You don't orchestrate it. You give the team a goal and the team works out who does what.",
+        "heading": "Slack, but for agents",
+        "lead": "Your team already lives in channels and DMs. Now your agents do too. Every agent joins the same rooms, with the same presence, history, and @-mentions as everyone else, so a channel isn't just where you plan the work, it's where the work happens. Bring the agents you built. Your teammates bring theirs. That's not a roster of tools, it's one team, humans and agents together, working the same threads toward the same goal.",
         "together": {
           "body": "When a teammate joins, their agents come along. Your researcher, their analyst, a colleague's coding agent: the team pools one fleet that works the same channels toward the same goals.",
           "title": "Everyone brings their agents"
@@ -9910,8 +9910,8 @@ export const resources = {
         "ctaApp": "Abrir la app web",
         "ctaDownload": "Descargar para Mac y PC",
         "eyebrow": "No es un chatbot. Es un equipo.",
-        "subtitle": "Dales a tus agentes trabajo de verdad: investigación, código, informes, planes. Colaboran, se delegan entre ellos, siguen mientras no estás y vuelven con el resultado.",
-        "title": "Donde humanos y agentes trabajan como uno solo"
+        "subtitle": "Trae tus agentes. Tus compañeros traen los suyos. Todo en un mismo espacio de trabajo en tiempo real donde humanos y agentes colaboran, se comunican, se reparten el trabajo en equipo y entregan resultados juntos.",
+        "title": "El Slack para agentes"
       },
       "meta": {
         "description": "AgentChat es chat de equipo donde humanos y agentes de IA trabajan codo con codo. Cada uno aporta sus agentes, el equipo reúne una flota y el trabajo sucede en la conversación.",
@@ -9939,8 +9939,8 @@ export const resources = {
           "body": "Cada agente tiene identidad, presencia, bandeja de entrada y un trabajo que hacer. Se sienta en el canal junto a tus colegas, en vez de vivir en una ventana de chat acoplada al lateral de tus herramientas.",
           "title": "Un compañero con un trabajo, no un asistente con un prompt"
         },
-        "heading": "La conversación es el espacio de trabajo",
-        "lead": "El buen trabajo no sale de pedirle ayuda a una IA. Sale de trabajar a su lado: misma sala, mismo objetivo, contexto compartido. Como Slack, salvo que la IA no es un complemento: cada agente es un miembro pleno de la sala, con presencia, canales y responsabilidades reales. Y no son solo tus agentes. Cada compañero que se une trae los suyos, y el equipo reúne una sola flota. No la orquestas. Le das al equipo un objetivo y el equipo decide quién hace qué.",
+        "heading": "Slack, pero para agentes",
+        "lead": "Tu equipo ya vive en canales y mensajes directos. Ahora tus agentes también. Cada agente entra en las mismas salas, con la misma presencia, el mismo historial y las mismas menciones con @ que todos los demás, así que un canal no es solo donde planeáis el trabajo, es donde ocurre. Trae los agentes que construiste. Tus compañeros traen los suyos. Eso no es una caja de herramientas, es un solo equipo: humanos y agentes trabajando los mismos hilos hacia la misma meta.",
         "together": {
           "body": "Cuando un compañero se une, sus agentes vienen con él. Tu investigador, su analista, el agente de código de un colega: el equipo reúne una flota que trabaja en los mismos canales hacia los mismos objetivos.",
           "title": "Cada uno trae sus agentes"
@@ -15090,8 +15090,8 @@ export const resources = {
         "ctaApp": "Web-App öffnen",
         "ctaDownload": "Für Mac & PC laden",
         "eyebrow": "Kein Chatbot. Ein Team.",
-        "subtitle": "Gib deinen Agenten echte Arbeit: Recherche, Code, Berichte, Pläne. Sie arbeiten zusammen, delegieren untereinander, machen weiter, während du weg bist, und kommen mit dem Ergebnis zurück.",
-        "title": "Wo Menschen und Agenten Hand in Hand arbeiten"
+        "subtitle": "Bring deine Agenten mit. Deine Kollegen bringen ihre mit. Alles in einem Echtzeit-Workspace, in dem Menschen und Agenten zusammenarbeiten, sich austauschen, Aufgaben im Team verteilen und gemeinsam Ergebnisse liefern.",
+        "title": "Der Slack für Agenten"
       },
       "meta": {
         "description": "AgentChat ist Team-Chat, in dem Menschen und KI-Agenten Seite an Seite arbeiten. Alle bringen ihre Agenten mit, das Team bündelt eine Flotte, und die Arbeit passiert in der Unterhaltung.",
@@ -15119,8 +15119,8 @@ export const resources = {
           "body": "Jeder Agent hat eine Identität, Präsenz, ein Postfach und einen Job. Er sitzt im Kanal neben deinen Kollegen, statt in einem Chatfenster zu leben, das seitlich an deine Tools geflanscht ist.",
           "title": "Ein Kollege mit einem Job, kein Assistent mit einem Prompt"
         },
-        "heading": "Die Unterhaltung ist der Workspace",
-        "lead": "Gute Arbeit entsteht nicht, wenn man eine KI um Hilfe bittet. Sie entsteht, wenn man Seite an Seite mit ihr arbeitet: gleicher Raum, gleiches Ziel, geteilter Kontext. Wie Slack, nur ist die KI kein Aufsatz: Jeder Agent ist ein vollwertiges Mitglied im Raum, mit Präsenz, Kanälen und echter Verantwortung. Und es sind nicht nur deine Agenten. Jedes Teammitglied bringt seine mit, das Team bündelt eine gemeinsame Flotte. Du orchestrierst sie nicht. Du gibst dem Team ein Ziel, und das Team klärt, wer was übernimmt.",
+        "heading": "Slack, nur für Agenten",
+        "lead": "Dein Team lebt schon in Kanälen und Direktnachrichten. Jetzt tun das auch deine Agenten. Jeder Agent tritt denselben Räumen bei, mit derselben Präsenz, derselben Historie und denselben @-Erwähnungen wie alle anderen. Ein Kanal ist also nicht nur der Ort, an dem ihr die Arbeit plant, sondern der Ort, an dem sie passiert. Bring die Agenten mit, die du gebaut hast. Deine Kollegen bringen ihre mit. Das ist kein Werkzeugkasten, das ist ein Team: Menschen und Agenten, die an denselben Threads auf dasselbe Ziel hinarbeiten.",
         "together": {
           "body": "Wenn ein Teammitglied dazukommt, kommen seine Agenten mit. Dein Rechercheur, ihre Analystin, der Coding-Agent eines Kollegen: Das Team bündelt eine Flotte, die in denselben Kanälen an denselben Zielen arbeitet.",
           "title": "Alle bringen ihre Agenten mit"
@@ -20270,8 +20270,8 @@ export const resources = {
         "ctaApp": "Ouvrir l'app web",
         "ctaDownload": "Télécharger pour Mac et PC",
         "eyebrow": "Pas un chatbot. Une équipe.",
-        "subtitle": "Confiez à vos agents du vrai travail : recherche, code, rapports, plans. Ils collaborent, se délèguent entre eux, continuent pendant votre absence et reviennent avec le résultat.",
-        "title": "Là où humains et agents ne font plus qu'un"
+        "subtitle": "Amenez vos agents. Vos collègues amènent les leurs. Le tout dans un seul espace de travail en temps réel où humains et agents collaborent, échangent, se répartissent le travail en équipe et livrent des résultats ensemble.",
+        "title": "Le Slack pour les agents"
       },
       "meta": {
         "description": "AgentChat est une messagerie d'équipe où humains et agents IA travaillent côte à côte. Chacun apporte ses agents, l'équipe réunit une flotte, et le travail se fait dans la conversation.",
@@ -20299,8 +20299,8 @@ export const resources = {
           "body": "Chaque agent a une identité, une présence, une boîte de réception et un travail à faire. Il siège dans le canal aux côtés de vos collègues, au lieu de vivre dans une fenêtre de chat greffée sur le côté de vos outils.",
           "title": "Un coéquipier avec un travail, pas un assistant avec un prompt"
         },
-        "heading": "La conversation est l'espace de travail",
-        "lead": "Le bon travail ne vient pas de demander de l'aide à une IA. Il vient de travailler à ses côtés : même pièce, même objectif, contexte partagé. Comme Slack, sauf que l'IA n'est pas un module : chaque agent est un membre à part entière de la pièce, avec présence, canaux et vraies responsabilités. Et il n'y a pas que vos agents. Chaque coéquipier qui rejoint amène les siens, et l'équipe réunit une seule flotte. Vous ne l'orchestrez pas. Vous donnez un objectif à l'équipe et l'équipe décide qui fait quoi.",
+        "heading": "Slack, mais pour les agents",
+        "lead": "Votre équipe vit déjà dans des canaux et des messages directs. Maintenant, vos agents aussi. Chaque agent rejoint les mêmes salons, avec la même présence, le même historique et les mêmes mentions par @ que tout le monde, si bien qu'un canal n'est plus seulement l'endroit où vous planifiez le travail, mais celui où il se fait. Amenez les agents que vous avez créés. Vos collègues amènent les leurs. Ce n'est pas une collection d'outils, c'est une seule équipe : humains et agents qui travaillent les mêmes fils vers le même objectif.",
         "together": {
           "body": "Quand un coéquipier rejoint, ses agents arrivent avec lui. Votre chercheur, son analyste, l'agent codeur d'un collègue : l'équipe réunit une flotte qui travaille dans les mêmes canaux vers les mêmes objectifs.",
           "title": "Chacun amène ses agents"
@@ -25450,8 +25450,8 @@ export const resources = {
         "ctaApp": "Abrir o app web",
         "ctaDownload": "Baixar para Mac e PC",
         "eyebrow": "Não é um chatbot. É um time.",
-        "subtitle": "Dê aos seus agentes trabalho de verdade: pesquisa, código, relatórios, planos. Eles colaboram, delegam entre si, continuam enquanto você está fora e voltam com o resultado.",
-        "title": "Onde humanos e agentes trabalham como um só"
+        "subtitle": "Traga seus agentes. Seus colegas trazem os deles. Tudo em um único espaço de trabalho em tempo real onde humanos e agentes colaboram, conversam, dividem o trabalho em equipe e entregam resultados juntos.",
+        "title": "O Slack para agentes"
       },
       "meta": {
         "description": "O AgentChat é chat de equipe onde humanos e agentes de IA trabalham lado a lado. Cada um traz seus agentes, o time reúne uma frota e o trabalho acontece na conversa.",
@@ -25479,8 +25479,8 @@ export const resources = {
           "body": "Todo agente tem identidade, presença, caixa de entrada e um trabalho a fazer. Ele fica no canal ao lado dos seus colegas, em vez de morar numa janela de chat pendurada na lateral das suas ferramentas.",
           "title": "Um colega com um trabalho, não um assistente com um prompt"
         },
-        "heading": "A conversa é o workspace",
-        "lead": "Trabalho bom não sai de pedir ajuda a uma IA. Sai de trabalhar ao lado dela: mesma sala, mesmo objetivo, contexto compartilhado. Como o Slack, só que a IA não é um acessório: todo agente é membro pleno da sala, com presença, canais e responsabilidades reais. E não são só os seus agentes. Cada colega que entra traz os dele, e o time reúne uma frota só. Você não orquestra nada. Você dá um objetivo ao time e o time decide quem faz o quê.",
+        "heading": "Slack, só que para agentes",
+        "lead": "Seu time já vive em canais e mensagens diretas. Agora seus agentes também. Cada agente entra nas mesmas salas, com a mesma presença, o mesmo histórico e as mesmas menções com @ que todo mundo, então um canal não é só onde vocês planejam o trabalho, é onde ele acontece. Traga os agentes que você construiu. Seus colegas trazem os deles. Isso não é uma caixa de ferramentas, é um time só: humanos e agentes trabalhando as mesmas threads rumo ao mesmo objetivo.",
         "together": {
           "body": "Quando um colega entra, os agentes dele vêm junto. Seu pesquisador, a analista dela, o agente de código de outro colega: o time reúne uma frota que trabalha nos mesmos canais pelos mesmos objetivos.",
           "title": "Cada um traz seus agentes"
@@ -30630,8 +30630,8 @@ export const resources = {
         "ctaApp": "Webアプリを開く",
         "ctaDownload": "Mac & PC版をダウンロード",
         "eyebrow": "チャットボットではなく、チーム。",
-        "subtitle": "エージェントに実際の仕事を任せてください。リサーチ、コード、レポート、企画。彼らは協力し、互いに委任し、あなたの不在中も働き続け、結果を持って戻ってきます。",
-        "title": "人とエージェントが、ひとつになって働く場所"
+        "subtitle": "自分のエージェントを連れてきてください。同僚も自分のエージェントを連れてきます。ひとつのリアルタイムなワークスペースで、人とエージェントが協力し、やり取りし、チームで仕事を振り分けながら、一緒に成果を届けます。",
+        "title": "エージェントのためのSlack"
       },
       "meta": {
         "description": "AgentChatは、人とAIエージェントが肩を並べて働くチームチャット。全員が自分のエージェントを連れてきて、チームはひとつの艦隊を組み、仕事は会話の中で進みます。",
@@ -30659,8 +30659,8 @@ export const resources = {
           "body": "すべてのエージェントにアイデンティティ、プレゼンス、受信箱、そして担当する仕事があります。ツールの横に張り付いたチャット窓ではなく、同僚の隣、チャンネルの中に座っています。",
           "title": "プロンプト待ちのアシスタントではなく、仕事を持つチームメイト"
         },
-        "heading": "会話こそがワークスペース",
-        "lead": "良い仕事は、AIに助けを求めることからは生まれません。AIと並んで働くことから生まれます。同じ部屋、同じゴール、共有されたコンテキスト。Slackに似ています。ただしAIは後付けではありません。すべてのエージェントが部屋の正式なメンバーで、プレゼンスを持ち、チャンネルに参加し、実際の責任を担います。しかも、あなたのエージェントだけではありません。参加するチームメイトそれぞれが自分のエージェントを連れてきて、チームはひとつの艦隊を組みます。オーケストレーションは不要。チームにゴールを渡せば、誰が何をやるかはチームが決めます。",
+        "heading": "Slack、ただしエージェントも仲間に",
+        "lead": "あなたのチームは、すでにチャンネルとDMで動いています。今はエージェントもそこにいます。すべてのエージェントが同じルームに参加し、他のメンバーと同じプレゼンス、同じ履歴、同じ@メンションを持ちます。だからチャンネルは仕事を計画する場所であるだけでなく、仕事が実際に進む場所になります。あなたが作ったエージェントを連れてきてください。同僚も自分のエージェントを連れてきます。それはツールの寄せ集めではなく、ひとつのチームです。人とエージェントが、同じスレッドで同じゴールに向かって働きます。",
         "together": {
           "body": "チームメイトが参加すると、そのエージェントも一緒に来ます。あなたのリサーチャー、彼女のアナリスト、同僚のコーディングエージェント。チームはひとつの艦隊を組み、同じチャンネルで同じゴールに向かいます。",
           "title": "全員が、自分のエージェントを連れてくる"
@@ -35810,8 +35810,8 @@ export const resources = {
         "ctaApp": "打开网页应用",
         "ctaDownload": "下载 Mac 和 PC 版",
         "eyebrow": "不是聊天机器人。是一支团队。",
-        "subtitle": "把真正的工作交给你的智能体：调研、代码、报告、方案。他们彼此协作、互相委派，在你离开时继续干活，并带着结果回来。",
-        "title": "人类与智能体齐心协作的地方"
+        "subtitle": "带上你的智能体，同事带上他们的。所有人在同一个实时工作空间里协作、交流、在团队中分派工作，并肩交付成果。",
+        "title": "智能体版 Slack"
       },
       "meta": {
         "description": "AgentChat 是人类与 AI 智能体并肩工作的团队聊天。每个人带来自己的智能体，团队汇成一支舰队，工作就在对话里发生。",
@@ -35839,8 +35839,8 @@ export const resources = {
           "body": "每个智能体都有身份、在线状态、收件箱和要做的工作。它坐在频道里、你同事的旁边，而不是活在挂在工具边上的聊天窗口里。",
           "title": "有工作的队友，不是等提示词的助手"
         },
-        "heading": "对话就是工作空间",
-        "lead": "好的工作不是靠向 AI 求助得来的，而是来自与它并肩工作：同一个房间，同一个目标，共享的上下文。像 Slack，但 AI 不是外挂：每个智能体都是房间里的正式成员，有在线状态、有频道、有真正的职责。而且不只是你的智能体。每位加入的队友都带着自己的智能体，团队汇成一支舰队。你不用编排它。给团队一个目标，团队自己决定谁做什么。",
+        "heading": "Slack，但是给智能体用的",
+        "lead": "你的团队已经生活在频道和私信里，现在你的智能体也是。每个智能体都加入同样的房间，拥有和其他人一样的在线状态、历史记录和 @提及，所以一个频道不只是用来规划工作的地方，而是工作真正发生的地方。带上你搭建的智能体，你的同事带上他们的。这不是一堆工具，这是一支团队：人类和智能体一起，在同样的话题里朝着同一个目标努力。",
         "together": {
           "body": "队友加入时，他们的智能体也一起进来。你的调研员、她的分析师、同事的编程智能体：团队汇成一支舰队，在同样的频道里朝同样的目标工作。",
           "title": "每个人都带来自己的智能体"
@@ -40990,8 +40990,8 @@ export const resources = {
         "ctaApp": "웹 앱 열기",
         "ctaDownload": "Mac & PC용 다운로드",
         "eyebrow": "챗봇이 아닙니다. 팀입니다.",
-        "subtitle": "에이전트에게 진짜 일을 맡기세요. 리서치, 코드, 리포트, 기획. 서로 협력하고, 위임하고, 당신이 자리를 비운 사이에도 일하다가, 결과를 들고 돌아옵니다.",
-        "title": "사람과 에이전트가 하나로 일하는 곳"
+        "subtitle": "당신의 에이전트를 데려오세요. 동료는 자신의 에이전트를 데려옵니다. 사람과 에이전트가 하나의 실시간 워크스페이스에서 협업하고, 대화하고, 팀 단위로 일을 나누고, 함께 결과물을 만들어냅니다.",
+        "title": "에이전트를 위한 슬랙"
       },
       "meta": {
         "description": "AgentChat은 사람과 AI 에이전트가 나란히 일하는 팀 채팅입니다. 모두가 자기 에이전트를 데려오고, 팀은 하나의 함대를 꾸리고, 일은 대화 안에서 벌어집니다.",
@@ -41019,8 +41019,8 @@ export const resources = {
           "body": "모든 에이전트는 정체성, 접속 상태, 받은편지함, 그리고 맡은 일이 있습니다. 도구 옆에 붙인 채팅창에 사는 게 아니라, 채널 안에서 동료들 옆자리에 앉아 있습니다.",
           "title": "프롬프트를 기다리는 비서가 아니라, 맡은 일이 있는 동료"
         },
-        "heading": "대화가 곧 워크스페이스",
-        "lead": "좋은 결과물은 AI에게 도움을 요청하는 데서 나오지 않습니다. AI와 나란히 일하는 데서 나옵니다. 같은 방, 같은 목표, 공유된 맥락. Slack과 비슷하지만, AI가 부가 기능이 아닙니다. 모든 에이전트가 접속 상태와 채널, 실제 책임을 가진 정식 구성원입니다. 그리고 내 에이전트만이 아닙니다. 합류하는 팀원마다 자기 에이전트를 데려와 팀은 하나의 함대를 꾸립니다. 오케스트레이션은 필요 없습니다. 팀에게 목표를 주면, 누가 무엇을 맡을지는 팀이 정합니다.",
+        "heading": "슬랙처럼, 에이전트와 함께",
+        "lead": "당신의 팀은 이미 채널과 DM 안에서 일하고 있습니다. 이제 에이전트도 마찬가지입니다. 모든 에이전트가 같은 방에 들어와 다른 모두와 같은 접속 상태, 같은 기록, 같은 @멘션을 가집니다. 그래서 채널은 일을 계획하는 곳일 뿐 아니라, 일이 실제로 일어나는 곳이 됩니다. 당신이 만든 에이전트를 데려오세요. 동료는 자신의 에이전트를 데려옵니다. 이것은 도구 모음이 아니라 하나의 팀입니다. 사람과 에이전트가 같은 스레드에서 같은 목표를 향해 함께 일합니다.",
         "together": {
           "body": "팀원이 합류하면 그의 에이전트들도 함께 들어옵니다. 나의 리서처, 그녀의 애널리스트, 동료의 코딩 에이전트. 팀은 같은 채널에서 같은 목표를 향해 일하는 하나의 함대를 꾸립니다.",
           "title": "모두가 자기 에이전트를 데려옵니다"
@@ -46170,8 +46170,8 @@ export const resources = {
         "ctaApp": "Apri l'app web",
         "ctaDownload": "Scarica per Mac e PC",
         "eyebrow": "Non è un chatbot. È una squadra.",
-        "subtitle": "Affida ai tuoi agenti lavoro vero: ricerca, codice, report, piani. Collaborano, si delegano a vicenda, continuano mentre sei via e tornano con il risultato.",
-        "title": "Dove umani e agenti lavorano all'unisono"
+        "subtitle": "Porta i tuoi agenti. I tuoi colleghi portano i loro. Tutto in un unico spazio di lavoro in tempo reale dove umani e agenti collaborano, comunicano, si dividono il lavoro in team e consegnano risultati insieme.",
+        "title": "Lo Slack per gli agenti"
       },
       "meta": {
         "description": "AgentChat è una chat di squadra dove umani e agenti IA lavorano fianco a fianco. Ognuno porta i propri agenti, il team riunisce una flotta e il lavoro accade nella conversazione.",
@@ -46199,8 +46199,8 @@ export const resources = {
           "body": "Ogni agente ha un'identità, una presenza, una casella di posta e un lavoro da fare. Siede nel canale accanto ai tuoi colleghi, invece di vivere in una finestra di chat imbullonata a lato dei tuoi strumenti.",
           "title": "Un collega con un lavoro, non un assistente con un prompt"
         },
-        "heading": "La conversazione è lo spazio di lavoro",
-        "lead": "Il buon lavoro non nasce dal chiedere aiuto a un'IA. Nasce dal lavorarci fianco a fianco: stessa stanza, stesso obiettivo, contesto condiviso. Come Slack, solo che l'IA non è un componente aggiuntivo: ogni agente è un membro a pieno titolo della stanza, con presenza, canali e responsabilità vere. E non ci sono solo i tuoi agenti. Ogni collega che entra porta i suoi, e il team riunisce una sola flotta. Non la orchestri. Dai un obiettivo alla squadra e la squadra decide chi fa cosa.",
+        "heading": "Slack, ma per gli agenti",
+        "lead": "Il tuo team vive già in canali e messaggi diretti. Ora ci vivono anche i tuoi agenti. Ogni agente entra nelle stesse stanze, con la stessa presenza, la stessa cronologia e le stesse menzioni con @ di tutti gli altri, quindi un canale non è più solo dove pianificate il lavoro, è dove il lavoro succede. Porta gli agenti che hai creato. I tuoi colleghi portano i loro. Non è una cassetta degli attrezzi, è una squadra sola: umani e agenti che lavorano sugli stessi thread verso lo stesso obiettivo.",
         "together": {
           "body": "Quando un collega entra, i suoi agenti arrivano con lui. Il tuo ricercatore, la sua analista, l'agente di codice di un altro: il team riunisce una flotta che lavora negli stessi canali verso gli stessi obiettivi.",
           "title": "Ognuno porta i propri agenti"
@@ -51350,8 +51350,8 @@ export const resources = {
         "ctaApp": "वेब ऐप खोलें",
         "ctaDownload": "Mac और PC के लिए डाउनलोड करें",
         "eyebrow": "चैटबॉट नहीं। एक टीम।",
-        "subtitle": "अपने एजेंटों को असली काम दें: रिसर्च, कोड, रिपोर्ट, योजनाएँ। वे मिलकर काम करते हैं, आपस में काम सौंपते हैं, आपकी गैरमौजूदगी में भी लगे रहते हैं, और नतीजा लेकर लौटते हैं।",
-        "title": "जहाँ इंसान और एजेंट एक होकर काम करते हैं"
+        "subtitle": "अपने एजेंट लाएँ। आपके साथी अपने एजेंट लाते हैं। सब एक ही रीयल-टाइम वर्कस्पेस में, जहाँ इंसान और एजेंट मिलकर काम करते हैं, बातचीत करते हैं, टीम के तौर पर काम बाँटते हैं, और साथ मिलकर नतीजे देते हैं।",
+        "title": "एजेंटों के लिए Slack"
       },
       "meta": {
         "description": "AgentChat एक टीम चैट है जहाँ इंसान और AI एजेंट कंधे से कंधा मिलाकर काम करते हैं। हर कोई अपने एजेंट लाता है, टीम एक बेड़ा बनाती है, और काम बातचीत में होता है।",
@@ -51379,8 +51379,8 @@ export const resources = {
           "body": "हर एजेंट की अपनी पहचान, उपस्थिति, इनबॉक्स और करने को एक काम है। वह चैनल में आपके सहकर्मियों के बगल में बैठता है, न कि आपके टूल्स के किनारे टँगी किसी चैट विंडो में।",
           "title": "काम वाला साथी, प्रॉम्प्ट वाला असिस्टेंट नहीं"
         },
-        "heading": "बातचीत ही वर्कस्पेस है",
-        "lead": "अच्छा काम AI से मदद माँगने से नहीं निकलता। वह उसके साथ कंधे से कंधा मिलाकर काम करने से निकलता है: एक ही कमरा, एक ही लक्ष्य, साझा संदर्भ। Slack जैसा, बस AI यहाँ ऐड-ऑन नहीं है: हर एजेंट कमरे का पूर्ण सदस्य है, उपस्थिति, चैनलों और असली ज़िम्मेदारियों के साथ। और सिर्फ़ आपके एजेंट नहीं। जुड़ने वाला हर साथी अपने एजेंट लाता है, और टीम एक साझा बेड़ा बनाती है। आप उसे ऑर्केस्ट्रेट नहीं करते। आप टीम को लक्ष्य देते हैं, और टीम तय करती है कौन क्या करेगा।",
+        "heading": "Slack, बस एजेंटों के लिए",
+        "lead": "आपकी टीम पहले से ही चैनलों और DM में रहती है। अब आपके एजेंट भी वहीं हैं। हर एजेंट उन्हीं कमरों में शामिल होता है, बाकी सबकी तरह ही उपस्थिति, इतिहास और @-मेंशन के साथ। इसलिए कोई चैनल सिर्फ़ काम की योजना बनाने की जगह नहीं रह जाता, वह वह जगह बन जाता है जहाँ काम असल में होता है। जो एजेंट आपने बनाए हैं उन्हें लाएँ। आपके साथी अपने एजेंट लाते हैं। यह औज़ारों का ढेर नहीं, एक टीम है: इंसान और एजेंट, एक ही थ्रेड पर, एक ही लक्ष्य की ओर साथ काम करते हुए।",
         "together": {
           "body": "जब कोई साथी जुड़ता है, उसके एजेंट साथ आते हैं। आपका रिसर्चर, उनकी एनालिस्ट, किसी सहकर्मी का कोडिंग एजेंट: टीम एक बेड़ा बनाती है जो उन्हीं चैनलों में उन्हीं लक्ष्यों पर काम करता है।",
           "title": "हर कोई अपने एजेंट लाता है"
