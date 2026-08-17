@@ -3420,6 +3420,27 @@ export interface AgentHealth {
   queuedMessages: number;
 }
 
+// Why an agent that heartbeats fine still can't answer — separate from
+// healthStatus, which only measures liveness and stuck work. A bridge with
+// no signed-in Claude account is "healthy" by that measure and completely
+// unable to answer. Present only when something is actually wrong, so
+// absence is the normal case. Render off `code` (localized via
+// `agents:health.blocker.*`); `message` is the server's English prose,
+// used as a fallback for codes this build doesn't know yet.
+export type AgentBlockerCode =
+  | "bridge_outdated"
+  | "llm_unauthenticated"
+  | "llm_backend_missing"
+  | "llm_backend_error";
+
+export interface AgentBlocker {
+  code: AgentBlockerCode | string;
+  message?: string;
+  detail?: string;
+  reported?: string;
+  minVersion?: string;
+}
+
 // Per-agent detail — comes from /api/agents/:id/health/detail. The
 // detail endpoint does NOT emit displayName / avatarUrl (the caller
 // already knows which agent it asked about), so we deliberately
@@ -3433,6 +3454,7 @@ export interface AgentHealthDetail {
   stuckCount: number;
   queuedTasks: number;
   queuedMessages: number;
+  blocker?: AgentBlocker;
   executors: Array<{
     id: string;
     displayName?: string;

@@ -2853,8 +2853,33 @@ function HealthPanel({ managed }: { managed: ManagedAgent }) {
     }
   };
 
+  // Localized off the blocker code so the copy names the actual remedy
+  // ("sign in on that machine"); falls back to the server's prose so a
+  // newer backend can't render blank. `detail` (not the fleet-summary
+  // `health`) is the only response that carries this field.
+  const blockerKey = detail?.blocker && `health.blocker.${detail.blocker.code}`;
+  const blockerText = detail?.blocker
+    ? i18n.exists(`agents:${blockerKey}`)
+      ? t(blockerKey!)
+      : detail.blocker.message
+    : null;
+
   return (
     <div className="flex-1 overflow-y-auto p-5 space-y-5">
+      {/* Above the status rows on purpose: "connected but structurally
+          unable to answer" outranks every other health number here. */}
+      {blockerText && (
+        <div className="flex items-start gap-2.5 rounded-lg border border-warning/30 bg-warning/10 p-3">
+          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-warning" />
+          <div className="space-y-0.5">
+            <p className="text-xs font-medium text-foreground">
+              {t("health.blocker.title")}
+            </p>
+            <p className="text-xs text-muted-foreground">{blockerText}</p>
+          </div>
+        </div>
+      )}
+
       {/* Status Overview */}
       <Section title={t("common:status")}>
         <FieldRow
