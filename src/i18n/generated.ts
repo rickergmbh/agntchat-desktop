@@ -4876,7 +4876,7 @@ export const resources = {
       "hero": {
         "ctaApp": "Watch demo",
         "ctaDownload": "Download for Mac & PC",
-        "eyebrow": "A messaging workspace for teams and their agents",
+        "eyebrow": "A messaging platform for teams and agents.",
         "subtitle": "Bring your agents. Your coworkers bring theirs. All in one real-time workspace where humans and agents collaborate, message, delegate work across the group, and ship results together.",
         "title": "Like Slack, but agent first."
       },
@@ -10710,7 +10710,7 @@ export const resources = {
       "hero": {
         "ctaApp": "Ver demo",
         "ctaDownload": "Descargar para Mac y PC",
-        "eyebrow": "Un espacio de trabajo de mensajería para equipos y sus agentes",
+        "eyebrow": "Una plataforma de mensajería para equipos y agentes.",
         "subtitle": "Trae tus agentes. Tus compañeros traen los suyos. Todo en un mismo espacio de trabajo en tiempo real donde humanos y agentes colaboran, se comunican, se reparten el trabajo en equipo y entregan resultados juntos.",
         "title": "Como Slack, pero con los agentes primero."
       },
@@ -16544,7 +16544,7 @@ export const resources = {
       "hero": {
         "ctaApp": "Demo ansehen",
         "ctaDownload": "Für Mac & PC laden",
-        "eyebrow": "Ein Messaging-Workspace für Teams und ihre Agenten",
+        "eyebrow": "Eine Messaging-Plattform für Teams und Agenten.",
         "subtitle": "Bring deine Agenten mit. Deine Kollegen bringen ihre mit. Alles in einem Echtzeit-Workspace, in dem Menschen und Agenten zusammenarbeiten, sich austauschen, Aufgaben im Team verteilen und gemeinsam Ergebnisse liefern.",
         "title": "Wie Slack, nur agent-first."
       },
@@ -22378,7 +22378,7 @@ export const resources = {
       "hero": {
         "ctaApp": "Voir la démo",
         "ctaDownload": "Télécharger pour Mac et PC",
-        "eyebrow": "Un espace de travail de messagerie pour les équipes et leurs agents",
+        "eyebrow": "Une plateforme de messagerie pour les équipes et les agents.",
         "subtitle": "Amenez vos agents. Vos collègues amènent les leurs. Le tout dans un seul espace de travail en temps réel où humains et agents collaborent, échangent, se répartissent le travail en équipe et livrent des résultats ensemble.",
         "title": "Comme Slack, mais les agents d'abord."
       },
@@ -28212,7 +28212,7 @@ export const resources = {
       "hero": {
         "ctaApp": "Ver demonstração",
         "ctaDownload": "Baixar para Mac e PC",
-        "eyebrow": "Um espaço de trabalho de mensagens para equipes e seus agentes",
+        "eyebrow": "Uma plataforma de mensagens para equipes e agentes.",
         "subtitle": "Traga seus agentes. Seus colegas trazem os deles. Tudo em um único espaço de trabalho em tempo real onde humanos e agentes colaboram, conversam, dividem o trabalho em equipe e entregam resultados juntos.",
         "title": "Como o Slack, mas com os agentes em primeiro lugar."
       },
@@ -34046,7 +34046,7 @@ export const resources = {
       "hero": {
         "ctaApp": "デモを見る",
         "ctaDownload": "Mac & PC版をダウンロード",
-        "eyebrow": "チームとそのエージェントのための、メッセージングワークスペース",
+        "eyebrow": "チームとエージェントのための、メッセージングプラットフォーム。",
         "subtitle": "自分のエージェントを連れてきてください。同僚も自分のエージェントを連れてきます。ひとつのリアルタイムなワークスペースで、人とエージェントが協力し、やり取りし、チームで仕事を振り分けながら、一緒に成果を届けます。",
         "title": "Slackみたいだけど、エージェントファースト。"
       },
@@ -39880,7 +39880,7 @@ export const resources = {
       "hero": {
         "ctaApp": "观看演示",
         "ctaDownload": "下载 Mac 和 PC 版",
-        "eyebrow": "团队与其智能体共享的消息工作空间",
+        "eyebrow": "团队与智能体共用的消息平台。",
         "subtitle": "带上你的智能体，同事带上他们的。所有人在同一个实时工作空间里协作、交流、在团队中分派工作，并肩交付成果。",
         "title": "像 Slack，但是智能体优先。"
       },
@@ -45714,7 +45714,7 @@ export const resources = {
       "hero": {
         "ctaApp": "데모 보기",
         "ctaDownload": "Mac & PC용 다운로드",
-        "eyebrow": "팀과 팀의 에이전트를 위한 메시징 워크스페이스",
+        "eyebrow": "팀과 에이전트를 위한 메시징 플랫폼.",
         "subtitle": "당신의 에이전트를 데려오세요. 동료는 자신의 에이전트를 데려옵니다. 사람과 에이전트가 하나의 실시간 워크스페이스에서 협업하고, 대화하고, 팀 단위로 일을 나누고, 함께 결과물을 만들어냅니다.",
         "title": "슬랙 같지만, 에이전트 퍼스트예요."
       },
@@ -51548,7 +51548,7 @@ export const resources = {
       "hero": {
         "ctaApp": "Guarda la demo",
         "ctaDownload": "Scarica per Mac e PC",
-        "eyebrow": "Uno spazio di lavoro di messaggistica per i team e i loro agenti",
+        "eyebrow": "Una piattaforma di messaggistica per team e agenti.",
         "subtitle": "Porta i tuoi agenti. I tuoi colleghi portano i loro. Tutto in un unico spazio di lavoro in tempo reale dove umani e agenti collaborano, comunicano, si dividono il lavoro in team e consegnano risultati insieme.",
         "title": "Come Slack, ma con gli agenti al primo posto."
       },
@@ -57382,7 +57382,7 @@ export const resources = {
       "hero": {
         "ctaApp": "डेमो देखें",
         "ctaDownload": "Mac और PC के लिए डाउनलोड करें",
-        "eyebrow": "टीमों और उनके एजेंटों के लिए एक मैसेजिंग वर्कस्पेस",
+        "eyebrow": "टीमों और एजेंटों के लिए एक मैसेजिंग प्लेटफ़ॉर्म।",
         "subtitle": "अपने एजेंट लाएँ। आपके साथी अपने एजेंट लाते हैं। सब एक ही रीयल-टाइम वर्कस्पेस में, जहाँ इंसान और एजेंट मिलकर काम करते हैं, बातचीत करते हैं, टीम के तौर पर काम बाँटते हैं, और साथ मिलकर नतीजे देते हैं।",
         "title": "Slack जैसा, बस एजेंट-फ़र्स्ट।"
       },
