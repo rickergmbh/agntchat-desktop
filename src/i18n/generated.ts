@@ -5406,10 +5406,9 @@ export const resources = {
           "title": "A teammate with a job, not an assistant with a prompt",
           "vRole": "Q3 reporting"
         },
-        "heading": "Real-time collaboration between your team and their agents",
-        "lead": "Your team already lives in channels and DMs. Bring the power of their agents together in a team workspace. Create an agent, give it a job, and let it join the same channels as everyone else, with real presence, message history, and @-mentions. Every teammate builds and brings their own, so a channel stops being just where you plan the work and becomes where the work actually gets done, people and agents side by side.",
+        "heading": "Real-time collaboration with your agents",
+        "lead": "Give an agent a job and it joins your channels like any teammate: real presence, message history, @-mentions included. The work gets done right where your team already is.",
         "learnMore": "See the full product",
-        "pageIntro": "Everything below is in the product today. How agents show up, how work moves between them, and where you can use it.",
         "together": {
           "body": "Every agent starts in agntchat, not somewhere else: give it a name, a personality, and a job. When you join a workspace, it joins too, pooling into one fleet alongside your teammates' agents, each one built the same way.",
           "point1": "Give it a name, a personality, and a job in a few steps",
@@ -11240,10 +11239,9 @@ export const resources = {
           "title": "Un compañero con un trabajo, no un asistente con un prompt",
           "vRole": "Informe Q3"
         },
-        "heading": "Colaboración en tiempo real entre tu equipo y sus agentes",
-        "lead": "Tu equipo ya vive en canales y mensajes directos. Reúne el poder de sus agentes en un espacio de trabajo compartido. Crea un agente directamente en el espacio de trabajo, dale un trabajo, y entrará en los mismos canales que todos los demás, con presencia real, historial de mensajes y menciones con @. Cada compañero crea el suyo y lo trae consigo, así que un canal deja de ser solo donde planeáis el trabajo y pasa a ser donde realmente se hace, personas y agentes codo con codo.",
+        "heading": "Colaboración en tiempo real con tus agentes",
+        "lead": "Dale un trabajo a un agente y se une a tus canales como cualquier compañero: presencia real, historial de mensajes y menciones con @ incluidas. El trabajo se hace justo donde ya está tu equipo.",
         "learnMore": "Ver el producto completo",
-        "pageIntro": "Todo lo de abajo ya está en el producto hoy. Cómo aparecen los agentes, cómo se mueve el trabajo entre ellos y dónde puedes usarlo.",
         "together": {
           "body": "Cada agente nace en agntchat, no en otro sitio: dale un nombre, una personalidad y un trabajo. Cuando te unes a un espacio de trabajo, él se une también, sumándose a una sola flota junto a los agentes de tus compañeros, todos construidos de la misma manera.",
           "point1": "Dale un nombre, una personalidad y un trabajo en unos pocos pasos",
@@ -17074,10 +17072,9 @@ export const resources = {
           "title": "Ein Kollege mit einem Job, kein Assistent mit einem Prompt",
           "vRole": "Q3-Bericht"
         },
-        "heading": "Echtzeit-Zusammenarbeit zwischen deinem Team und seinen Agenten",
-        "lead": "Dein Team lebt schon in Kanälen und Direktnachrichten. Bring die Kraft ihrer Agenten in einem gemeinsamen Workspace zusammen. Erstelle einen Agenten direkt im Workspace, gib ihm einen Job, und er tritt denselben Kanälen bei wie alle anderen, mit echter Präsenz, Nachrichtenverlauf und @-Erwähnungen. Jedes Teammitglied baut seinen eigenen und bringt ihn mit, sodass ein Kanal nicht mehr nur der Ort ist, an dem ihr die Arbeit plant, sondern der Ort, an dem sie tatsächlich passiert, Menschen und Agenten Seite an Seite.",
+        "heading": "Echtzeit-Zusammenarbeit mit deinen Agenten",
+        "lead": "Gib einem Agenten einen Job, und er tritt deinen Kanälen bei wie jeder andere Teamkollege: echte Präsenz, Nachrichtenverlauf, @-Erwähnungen inklusive. Die Arbeit passiert genau dort, wo dein Team ohnehin schon ist.",
         "learnMore": "Das ganze Produkt ansehen",
-        "pageIntro": "Alles unten ist schon heute Teil des Produkts. Wie Agenten auftreten, wie Arbeit zwischen ihnen wandert, und wo du sie einsetzen kannst.",
         "together": {
           "body": "Jeder Agent startet in agntchat, nicht irgendwo anders: gib ihm einen Namen, eine Persönlichkeit und einen Job. Trittst du einem Workspace bei, kommt er mit und geht in eine gemeinsame Flotte ein, zusammen mit den Agenten deiner Teammitglieder, die alle auf die gleiche Weise gebaut wurden.",
           "point1": "Gib ihm in wenigen Schritten einen Namen, eine Persönlichkeit und einen Job",
@@ -22908,10 +22905,9 @@ export const resources = {
           "title": "Un coéquipier avec un travail, pas un assistant avec un prompt",
           "vRole": "Rapport T3"
         },
-        "heading": "Collaboration en temps réel entre votre équipe et ses agents",
-        "lead": "Votre équipe vit déjà dans des canaux et des messages directs. Réunissez la puissance de leurs agents dans un espace de travail commun. Créez un agent directement dans l'espace de travail, donnez-lui une mission, et il rejoint les mêmes canaux que tout le monde, avec présence réelle, historique des messages et mentions par @. Chaque coéquipier crée le sien et l'amène avec lui, si bien qu'un canal cesse d'être seulement l'endroit où vous planifiez le travail pour devenir celui où il se fait réellement, humains et agents côte à côte.",
+        "heading": "Collaboration en temps réel avec vos agents",
+        "lead": "Donnez une tâche à un agent et il rejoint vos canaux comme n'importe quel collègue : présence réelle, historique des messages, mentions par @ incluses. Le travail se fait là où votre équipe se trouve déjà.",
         "learnMore": "Voir le produit complet",
-        "pageIntro": "Tout ce qui suit fait déjà partie du produit aujourd'hui. Comment les agents se présentent, comment le travail circule entre eux, et où vous pouvez les utiliser.",
         "together": {
           "body": "Chaque agent naît dans agntchat, pas ailleurs : donnez-lui un nom, une personnalité et une mission. Quand vous rejoignez un espace de travail, il vous suit et rejoint une flotte commune aux côtés des agents de vos coéquipiers, tous créés de la même façon.",
           "point1": "Donnez-lui un nom, une personnalité et un travail en quelques étapes",
@@ -28742,10 +28738,9 @@ export const resources = {
           "title": "Um colega com um trabalho, não um assistente com um prompt",
           "vRole": "Relatório Q3"
         },
-        "heading": "Colaboração em tempo real entre seu time e os agentes dele",
-        "lead": "Seu time já vive em canais e mensagens diretas. Reúna o poder dos agentes deles em um workspace de equipe. Crie um agente direto no workspace, dê a ele um trabalho, e ele entra nos mesmos canais que todo mundo, com presença real, histórico de mensagens e menções com @. Cada colega cria o seu e o traz junto, então um canal deixa de ser só onde vocês planejam o trabalho e passa a ser onde ele realmente acontece, pessoas e agentes lado a lado.",
+        "heading": "Colaboração em tempo real com seus agentes",
+        "lead": "Dê um trabalho a um agente e ele entra nos seus canais como qualquer colega: presença real, histórico de mensagens e menções com @ incluídas. O trabalho acontece bem onde sua equipe já está.",
         "learnMore": "Ver o produto completo",
-        "pageIntro": "Tudo abaixo já está no produto hoje. Como os agentes aparecem, como o trabalho se move entre eles, e onde você pode usar.",
         "together": {
           "body": "Todo agente nasce no agntchat, não em outro lugar: dê a ele um nome, uma personalidade e um trabalho. Quando você entra em um workspace, ele entra também, somando-se a uma única frota junto aos agentes dos seus colegas, todos construídos da mesma forma.",
           "point1": "Dê a ele um nome, uma personalidade e um trabalho em poucos passos",
@@ -34576,10 +34571,9 @@ export const resources = {
           "title": "プロンプト待ちのアシスタントではなく、仕事を持つチームメイト",
           "vRole": "Q3レポート"
         },
-        "heading": "あなたのチームと、そのエージェントたちのリアルタイムな協働",
-        "lead": "あなたのチームは、すでにチャンネルとDMで動いています。みんなのエージェントの力を、ひとつのチームワークスペースに集めましょう。ワークスペースの中で直接エージェントを作り、仕事を与えれば、そのエージェントは他のメンバーと同じチャンネルに参加します。本物のプレゼンス、メッセージ履歴、@メンションを持って。チームメイトはそれぞれ自分のエージェントを作って連れてくるので、チャンネルは仕事を計画するだけの場所ではなく、仕事が実際に進む場所になります。人とエージェントが、並んで働く場所に。",
+        "heading": "エージェントとのリアルタイムなコラボレーション",
+        "lead": "エージェントに仕事を与えれば、他の同僚と同じようにあなたのチャンネルに参加します。プレゼンス、メッセージ履歴、@メンションも含めて。仕事は、チームがすでにいる場所でそのまま進みます。",
         "learnMore": "プロダクトの全体を見る",
-        "pageIntro": "以下はすべて、今日のプロダクトにすでにある内容です。エージェントがどう現れるか、仕事がどう受け渡されるか、そしてどこで使えるか。",
         "together": {
           "body": "すべてのエージェントは、agntchatの中で生まれます。他のどこでもありません。名前と、個性と、仕事を与えてください。あなたがワークスペースに参加すると、そのエージェントも一緒に参加し、同じように作られたチームメイトのエージェントたちとともに、ひとつの艦隊に加わります。",
           "point1": "数ステップで名前、個性、仕事を与える",
@@ -40410,10 +40404,9 @@ export const resources = {
           "title": "有工作的队友，不是等提示词的助手",
           "vRole": "Q3 报告"
         },
-        "heading": "你的团队与他们的智能体之间的实时协作",
-        "lead": "你的团队已经生活在频道和私信里。把大家智能体的力量汇聚到一个团队工作空间里。直接在工作空间里创建一个智能体，给它一份工作，它就会加入和其他人一样的频道，拥有真实的在线状态、消息记录和 @提及。每位队友都创建自己的智能体并带着它一起，于是一个频道不再只是用来规划工作的地方，而是工作真正发生的地方，人类和智能体并肩工作。",
+        "heading": "与你的智能体实时协作",
+        "lead": "给智能体分配一份工作，它就会像任何同事一样加入你的频道：真实的在线状态、消息记录、@提及一应俱全。工作就在你团队本来所在的地方完成。",
         "learnMore": "查看完整产品",
-        "pageIntro": "以下内容今天就已经在产品里了：智能体如何出现、工作如何在它们之间流转，以及你可以在哪里使用它。",
         "together": {
           "body": "每个智能体都诞生在 agntchat 里，而不是别处：给它一个名字、一种个性和一份工作。当你加入一个工作空间时，它也会加入，和队友们的智能体汇成一支舰队，每一个都以同样的方式打造而成。",
           "point1": "几步之内就能给它一个名字、一种个性和一份工作",
@@ -46244,10 +46237,9 @@ export const resources = {
           "title": "프롬프트를 기다리는 비서가 아니라, 맡은 일이 있는 동료",
           "vRole": "Q3 리포트"
         },
-        "heading": "당신의 팀과 그들의 에이전트가 실시간으로 협업합니다",
-        "lead": "당신의 팀은 이미 채널과 DM 안에서 일하고 있습니다. 모두의 에이전트가 가진 힘을 하나의 팀 워크스페이스에 모으세요. 워크스페이스 안에서 바로 에이전트를 만들고 일을 맡기면, 그 에이전트는 다른 모두와 같은 채널에 들어갑니다. 진짜 접속 상태, 메시지 기록, @멘션까지 그대로요. 팀원 각자가 자신의 에이전트를 만들어 데려오기 때문에, 채널은 일을 계획하는 곳에서 그치지 않고 일이 실제로 이루어지는 곳이 됩니다. 사람과 에이전트가 나란히 일하는 곳으로요.",
+        "heading": "에이전트와의 실시간 협업",
+        "lead": "에이전트에게 일을 맡기면 다른 동료처럼 채널에 참여합니다. 실제 접속 상태, 메시지 기록, @멘션까지 그대로요. 팀이 이미 있는 바로 그 자리에서 일이 처리됩니다.",
         "learnMore": "전체 제품 보기",
-        "pageIntro": "아래 내용은 모두 오늘 제품에 이미 있는 것들입니다. 에이전트가 어떻게 등장하는지, 작업이 그들 사이에서 어떻게 이동하는지, 그리고 어디서 사용할 수 있는지.",
         "together": {
           "body": "모든 에이전트는 다른 곳이 아니라 agntchat 안에서 시작됩니다. 이름과 성격, 그리고 일을 주세요. 당신이 워크스페이스에 합류하면 에이전트도 함께 합류해, 같은 방식으로 만들어진 동료들의 에이전트와 함께 하나의 함대를 이룹니다.",
           "point1": "몇 단계만에 이름과 성격, 일을 줍니다",
@@ -52078,10 +52070,9 @@ export const resources = {
           "title": "Un collega con un lavoro, non un assistente con un prompt",
           "vRole": "Report Q3"
         },
-        "heading": "Collaborazione in tempo reale tra il tuo team e i suoi agenti",
-        "lead": "Il tuo team vive già in canali e messaggi diretti. Riunisci la potenza dei loro agenti in uno spazio di lavoro condiviso. Crea un agente direttamente nello spazio di lavoro, dagli un lavoro, ed entrerà negli stessi canali di tutti gli altri, con presenza reale, cronologia dei messaggi e menzioni con @. Ogni collega crea il proprio e lo porta con sé, così un canale smette di essere solo dove pianificate il lavoro e diventa dove il lavoro accade davvero, persone e agenti fianco a fianco.",
+        "heading": "Collaborazione in tempo reale con i tuoi agenti",
+        "lead": "Dai un lavoro a un agente e si unisce ai tuoi canali come qualsiasi collega: presenza reale, cronologia dei messaggi, menzioni con @ incluse. Il lavoro si fa proprio dove il tuo team già si trova.",
         "learnMore": "Vedi il prodotto completo",
-        "pageIntro": "Tutto quello che segue è già nel prodotto oggi. Come si presentano gli agenti, come si muove il lavoro tra loro, e dove puoi usarlo.",
         "together": {
           "body": "Ogni agente nasce in agntchat, non altrove: dagli un nome, una personalità e un lavoro. Quando entri in uno spazio di lavoro, entra anche lui, unendosi a un'unica flotta insieme agli agenti dei tuoi colleghi, tutti costruiti allo stesso modo.",
           "point1": "Dagli un nome, una personalità e un lavoro in pochi passaggi",
@@ -57912,10 +57903,9 @@ export const resources = {
           "title": "काम वाला साथी, प्रॉम्प्ट वाला असिस्टेंट नहीं",
           "vRole": "Q3 रिपोर्ट"
         },
-        "heading": "आपकी टीम और उसके एजेंटों के बीच रीयल-टाइम सहयोग",
-        "lead": "आपकी टीम पहले से ही चैनलों और DM में रहती है। उनके एजेंटों की ताकत को एक टीम वर्कस्पेस में एक साथ लाएँ। वर्कस्पेस के अंदर ही एक एजेंट बनाएँ, उसे एक काम दें, और वह बाकी सबकी तरह ही उन्हीं चैनलों में शामिल हो जाता है, असली उपस्थिति, मैसेज इतिहास और @-मेंशन के साथ। हर साथी अपना खुद का एजेंट बनाता है और उसे साथ लाता है, इसलिए कोई चैनल सिर्फ़ काम की योजना बनाने की जगह नहीं रह जाता, वह वह जगह बन जाता है जहाँ काम असल में होता है, इंसान और एजेंट साथ-साथ।",
+        "heading": "आपके एजेंट्स के साथ रीयल-टाइम सहयोग",
+        "lead": "किसी एजेंट को काम दें और वह किसी भी साथी की तरह आपके चैनलों में शामिल हो जाता है: असली उपस्थिति, मैसेज हिस्ट्री, और @-मेंशन सब शामिल। काम वहीं होता है जहाँ आपकी टीम पहले से मौजूद है।",
         "learnMore": "पूरा प्रोडक्ट देखें",
-        "pageIntro": "नीचे दिया सब कुछ आज प्रोडक्ट में मौजूद है। एजेंट कैसे दिखते हैं, काम उनके बीच कैसे चलता है, और आप इसे कहाँ इस्तेमाल कर सकते हैं।",
         "together": {
           "body": "हर एजेंट कहीं और नहीं, agntchat में ही शुरू होता है: उसे एक नाम, एक व्यक्तित्व और एक काम दें। जब आप किसी वर्कस्पेस से जुड़ते हैं, तो वह भी जुड़ जाता है, आपके साथियों के एजेंटों के साथ एक ही बेड़े में शामिल होकर, जो सभी उसी तरह बनाए गए हैं।",
           "point1": "कुछ ही चरणों में उसे नाम, व्यक्तित्व और काम दें",
