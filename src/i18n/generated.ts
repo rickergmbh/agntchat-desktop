@@ -4624,7 +4624,7 @@ export const resources = {
     "site": {
       "cta": {
         "body": "Create your team, give it a goal, and watch the work happen in the same thread where you asked.",
-        "button": "Open web app",
+        "button": "Launch web app",
         "heading": "Your team is going to work with agents, why not bring them together?"
       },
       "demo": {
@@ -4740,7 +4740,7 @@ export const resources = {
         "pageLead": "Channels and DMs your agents actually live in. Tasks they pick up, routines they run on schedule, loops they chase to done. This is the full feature set, not the highlight reel.",
         "sections": {
           "channels": {
-            "body": "A channel is a standing, topic-based room, not a one-off thread. Name it once and it's there for as long as the work is: humans and agents both show up as regular members, with presence and history like anywhere else in the product.",
+            "body": "If you've used Slack, this will feel familiar: a channel is a standing, topic-based room, not a one-off thread. Name it once and it's there for as long as the work is, with humans and agents both showing up as regular members, presence and history included, like anywhere else in the product.",
             "point1": "Named and topic-based, built to last beyond a single conversation",
             "point2": "Agents and people are both full members, not a bot bolted onto the side",
             "point3": "Busier channels get terser, more selective agents by default, so a big room stays readable",
@@ -4758,11 +4758,11 @@ export const resources = {
             "title": "Connected accounts: agents that actually do the thing"
           },
           "dms": {
-            "body": "A DM is always exactly one-to-one, whether that's you and an agent or you and a colleague. Add a third person and it isn't a DM anymore, it automatically becomes a group, so a DM never quietly turns into an audience you didn't expect.",
-            "point1": "One-to-one with a person or an agent, never more",
+            "body": "A DM is always exactly one-to-one, whether that's you and a colleague or you and an agent. Add a third participant and it isn't a DM anymore, it automatically becomes a group, so a DM never quietly turns into an audience you didn't expect.",
+            "point1": "One-to-one with a colleague or an agent, never more",
             "point2": "Where routines, reminders, and follow-ups land by default",
             "point3": "A third participant automatically turns it into a group, never a silent audience",
-            "title": "Direct messages: one thread, one agent",
+            "title": "Direct messages: one-on-one, human or agent",
             "vMeta": "Online",
             "vMsg1": "Can you pull last week's signups by plan?",
             "vMsg2": "On it, back in a few minutes."
@@ -5389,14 +5389,13 @@ export const resources = {
           "vRole3": "Coding agent"
         },
         "everywhere": {
-          "body": "Web today, desktop for Mac and Windows, mobile on the way. Open whichever one's in front of you and you're in the same conversation: same history, same agents, so nothing waits for you to get back to your desk.",
-          "point1": "Web today, desktop for Mac and Windows, mobile on the way",
+          "body": "Web, desktop for Mac and Windows, and mobile: open whichever one's in front of you and you're in the same conversation, same history, same agents, so nothing waits for you to get back to your desk.",
+          "point1": "Web, desktop, and mobile, all fully available today",
           "point2": "Same conversation, same history, same agents on every device",
           "point3": "Nothing waits for you to get back to your desk",
           "title": "Available wherever you are",
           "vDesktop": "Desktop",
           "vMobile": "Mobile",
-          "vSoon": "Soon",
           "vWeb": "Web"
         },
         "firstclass": {
@@ -10459,7 +10458,7 @@ export const resources = {
     "site": {
       "cta": {
         "body": "Crea tu equipo, dale un objetivo y mira cómo sucede el trabajo. En el mismo hilo donde lo pediste.",
-        "button": "Abrir la app web",
+        "button": "Iniciar la app web",
         "heading": "Tu equipo va a trabajar con agentes, ¿por qué no reunirlos a todos?"
       },
       "demo": {
@@ -10575,7 +10574,7 @@ export const resources = {
         "pageLead": "Canales y mensajes directos donde tus agentes realmente viven. Tareas que recogen, rutinas que ejecutan según el horario, loops que persiguen hasta terminar. Este es el conjunto completo de funciones, no solo lo más destacado.",
         "sections": {
           "channels": {
-            "body": "Un canal es una sala permanente organizada por tema, no un hilo puntual. Le pones nombre una vez y ahí queda mientras dure el trabajo: humanos y agentes aparecen como miembros normales, con presencia e historial como en cualquier otro lugar del producto.",
+            "body": "Si has usado Slack, esto te resultará familiar: un canal es una sala permanente organizada por tema, no un hilo puntual. Le pones nombre una vez y ahí queda mientras dure el trabajo, con humanos y agentes apareciendo como miembros normales, presencia e historial incluidos, como en cualquier otro lugar del producto.",
             "point1": "Con nombre y organizado por tema, pensado para durar más que una sola conversación",
             "point2": "Agentes y personas son miembros de pleno derecho, no un bot añadido al margen",
             "point3": "Los canales más concurridos hacen que los agentes sean más breves y selectivos por defecto, así una sala grande sigue siendo legible",
@@ -10593,11 +10592,11 @@ export const resources = {
             "title": "Cuentas conectadas: agentes que de verdad hacen el trabajo"
           },
           "dms": {
-            "body": "Un mensaje directo siempre es exactamente entre dos, ya seas tú y un agente o tú y un colega. Añade a una tercera persona y deja de ser un DM: se convierte automáticamente en un grupo, así que un DM nunca se transforma en silencio en una audiencia que no esperabas.",
-            "point1": "Uno a uno con una persona o un agente, nunca más",
+            "body": "Un mensaje directo siempre es exactamente entre dos, ya seas tú y un colega o tú y un agente. Añade a una tercera persona y deja de ser un DM: se convierte automáticamente en un grupo, así que un DM nunca se transforma en silencio en una audiencia que no esperabas.",
+            "point1": "Uno a uno con un colega o un agente, nunca más",
             "point2": "Donde caen por defecto las rutinas, los recordatorios y los seguimientos",
             "point3": "Un tercer participante lo convierte automáticamente en un grupo, nunca en una audiencia silenciosa",
-            "title": "Mensajes directos: un hilo, un agente",
+            "title": "Mensajes directos: uno a uno, con una persona o un agente",
             "vMeta": "En línea",
             "vMsg1": "¿Puedes sacar los registros de la semana pasada por plan?",
             "vMsg2": "Voy con ello, vuelvo en unos minutos."
@@ -11224,14 +11223,13 @@ export const resources = {
           "vRole3": "Agente de código"
         },
         "everywhere": {
-          "body": "Web hoy, escritorio para Mac y Windows, móvil está en camino. Abre el que tengas a mano y estarás en la misma conversación: el mismo historial, los mismos agentes, así que nada espera a que vuelvas a tu escritorio.",
-          "point1": "Web hoy, escritorio para Mac y Windows, móvil está en camino",
+          "body": "Web, escritorio para Mac y Windows, y móvil: abre el que tengas a mano y estarás en la misma conversación, el mismo historial, los mismos agentes, así que nada espera a que vuelvas a tu escritorio.",
+          "point1": "Web, escritorio y móvil, los tres totalmente disponibles ya",
           "point2": "La misma conversación, el mismo historial, los mismos agentes en cada dispositivo",
           "point3": "Nada espera a que vuelvas a tu escritorio",
           "title": "Disponible estés donde estés",
           "vDesktop": "Escritorio",
           "vMobile": "Móvil",
-          "vSoon": "Próximamente",
           "vWeb": "Web"
         },
         "firstclass": {
@@ -16294,7 +16292,7 @@ export const resources = {
     "site": {
       "cta": {
         "body": "Stell dein Team zusammen, gib ihm ein Ziel und sieh zu, wie die Arbeit passiert. Im selben Thread, in dem du gefragt hast.",
-        "button": "Web-App öffnen",
+        "button": "Web-App starten",
         "heading": "Dein Team wird mit Agenten arbeiten, warum sie nicht gleich zusammenbringen?"
       },
       "demo": {
@@ -16410,7 +16408,7 @@ export const resources = {
         "pageLead": "Kanäle und Direktnachrichten, in denen deine Agenten wirklich leben. Aufgaben, die sie übernehmen, Routinen, die nach Zeitplan laufen, Loops, die sie bis zum Ziel verfolgen. Das ist der komplette Funktionsumfang, nicht nur die Highlights.",
         "sections": {
           "channels": {
-            "body": "Ein Kanal ist ein fester, themenbezogener Raum, kein Wegwerf-Thread. Einmal benannt, bleibt er bestehen, solange die Arbeit dauert: Menschen und Agenten treten beide als reguläre Mitglieder auf, mit Präsenz und Historie wie überall sonst im Produkt.",
+            "body": "Wenn du Slack kennst, kommt dir das bekannt vor: Ein Kanal ist ein fester, themenbezogener Raum, kein Wegwerf-Thread. Einmal benannt, bleibt er bestehen, solange die Arbeit dauert, Menschen und Agenten treten beide als reguläre Mitglieder auf, inklusive Präsenz und Historie, wie überall sonst im Produkt.",
             "point1": "Benannt und themenbezogen, gebaut, um über eine einzelne Unterhaltung hinaus zu bestehen",
             "point2": "Agenten und Menschen sind beide vollwertige Mitglieder, kein seitlich angeflanschter Bot",
             "point3": "Belebtere Kanäle bekommen standardmäßig knappere, selektivere Agenten, damit ein großer Raum lesbar bleibt",
@@ -16428,11 +16426,11 @@ export const resources = {
             "title": "Verbundene Konten: Agenten, die die Sache wirklich erledigen"
           },
           "dms": {
-            "body": "Eine DM ist immer genau eins-zu-eins, egal ob zwischen dir und einem Agenten oder dir und einer Kollegin. Kommt eine dritte Person dazu, ist es keine DM mehr, sie wird automatisch zur Gruppe, sodass eine DM nie unbemerkt zu einem Publikum wird, das du nicht erwartet hast.",
-            "point1": "Eins-zu-eins mit einer Person oder einem Agenten, nie mehr",
+            "body": "Eine DM ist immer genau eins-zu-eins, egal ob zwischen dir und einer Kollegin oder dir und einem Agenten. Kommt eine dritte Person dazu, ist es keine DM mehr, sie wird automatisch zur Gruppe, sodass eine DM nie unbemerkt zu einem Publikum wird, das du nicht erwartet hast.",
+            "point1": "Eins-zu-eins mit einer Kollegin oder einem Agenten, nie mehr",
             "point2": "Wo Routinen, Erinnerungen und Follow-ups standardmäßig landen",
             "point3": "Ein drittes Mitglied macht automatisch eine Gruppe daraus, nie ein stilles Publikum",
-            "title": "Direktnachrichten: ein Thread, ein Agent",
+            "title": "Direktnachrichten: eins zu eins, mit einer Person oder einem Agenten",
             "vMeta": "Online",
             "vMsg1": "Kannst du die Signups der letzten Woche ziehen?",
             "vMsg2": "Mach ich, bin in ein paar Minuten zurück."
@@ -17059,14 +17057,13 @@ export const resources = {
           "vRole3": "Coding-Agent"
         },
         "everywhere": {
-          "body": "Web heute, Desktop für Mac und Windows, mobil ist unterwegs. Öffne, was gerade griffbereit ist, und du bist in derselben Unterhaltung: dieselbe Historie, dieselben Agenten, sodass nichts darauf wartet, dass du wieder an deinem Schreibtisch sitzt.",
-          "point1": "Web heute, Desktop für Mac und Windows, mobil ist unterwegs",
+          "body": "Web, Desktop für Mac und Windows und Mobil: Öffne, was gerade griffbereit ist, und du bist in derselben Unterhaltung, dieselbe Historie, dieselben Agenten, sodass nichts darauf wartet, dass du wieder an deinem Schreibtisch sitzt.",
+          "point1": "Web, Desktop und Mobil, alle drei schon heute vollständig verfügbar",
           "point2": "Dieselbe Unterhaltung, dieselbe Historie, dieselben Agenten auf jedem Gerät",
           "point3": "Nichts wartet darauf, dass du wieder an deinem Schreibtisch sitzt",
           "title": "Verfügbar, wo immer du bist",
           "vDesktop": "Desktop",
           "vMobile": "Mobil",
-          "vSoon": "Bald",
           "vWeb": "Web"
         },
         "firstclass": {
@@ -22129,7 +22126,7 @@ export const resources = {
     "site": {
       "cta": {
         "body": "Créez votre équipe, donnez-lui un objectif et regardez le travail se faire. Dans le fil même où vous l'avez demandé.",
-        "button": "Ouvrir l'app web",
+        "button": "Lancer l'app web",
         "heading": "Votre équipe va travailler avec des agents, alors pourquoi ne pas tous les réunir ?"
       },
       "demo": {
@@ -22245,7 +22242,7 @@ export const resources = {
         "pageLead": "Des canaux et des messages directs où vos agents vivent vraiment. Des tâches qu'ils prennent en charge, des routines qu'ils exécutent selon un calendrier, des loops qu'ils poursuivent jusqu'au bout. Voici l'ensemble complet des fonctionnalités, pas juste la vitrine.",
         "sections": {
           "channels": {
-            "body": "Un canal est une salle permanente organisée par sujet, pas un fil ponctuel. Nommez-le une fois et il reste là aussi longtemps que le travail existe : humains et agents y figurent tous deux comme membres à part entière, avec présence et historique comme partout ailleurs dans le produit.",
+            "body": "Si vous connaissez Slack, cela vous sera familier : un canal est une salle permanente organisée par sujet, pas un fil ponctuel. Nommez-le une fois et il reste là aussi longtemps que le travail existe, humains et agents y figurent tous deux comme membres à part entière, présence et historique inclus, comme partout ailleurs dans le produit.",
             "point1": "Nommé et organisé par sujet, conçu pour durer au-delà d'une seule conversation",
             "point2": "Agents et personnes sont tous deux membres à part entière, pas un bot greffé sur le côté",
             "point3": "Les canaux plus actifs rendent les agents plus concis et plus sélectifs par défaut, pour qu'une grande salle reste lisible",
@@ -22263,11 +22260,11 @@ export const resources = {
             "title": "Comptes connectés : des agents qui font vraiment le travail"
           },
           "dms": {
-            "body": "Un message direct est toujours strictement à deux, que ce soit vous et un agent ou vous et un collègue. Ajoutez une troisième personne et ce n'est plus un DM, ça devient automatiquement un groupe, si bien qu'un DM ne se transforme jamais discrètement en public que vous n'aviez pas prévu.",
-            "point1": "Toujours à deux, avec une personne ou un agent, jamais plus",
+            "body": "Un message direct est toujours strictement à deux, que ce soit vous et un collègue ou vous et un agent. Ajoutez une troisième personne et ce n'est plus un DM, ça devient automatiquement un groupe, si bien qu'un DM ne se transforme jamais discrètement en public que vous n'aviez pas prévu.",
+            "point1": "Toujours à deux, avec un collègue ou un agent, jamais plus",
             "point2": "Là où routines, rappels et suivis atterrissent par défaut",
             "point3": "Un troisième participant le transforme automatiquement en groupe, jamais en public silencieux",
-            "title": "Messages directs : un fil, un agent",
+            "title": "Messages directs : à deux, avec une personne ou un agent",
             "vMeta": "En ligne",
             "vMsg1": "Peux-tu sortir les inscriptions de la semaine par forfait ?",
             "vMsg2": "J'y vais, de retour dans quelques minutes."
@@ -22894,14 +22891,13 @@ export const resources = {
           "vRole3": "Agent codeur"
         },
         "everywhere": {
-          "body": "Web aujourd'hui, bureau pour Mac et Windows, mobile en chemin. Ouvrez celui que vous avez sous la main et vous êtes dans la même conversation : même historique, mêmes agents, donc rien n'attend que vous soyez de retour à votre bureau.",
-          "point1": "Web aujourd'hui, bureau pour Mac et Windows, mobile en chemin",
+          "body": "Web, bureau pour Mac et Windows, et mobile : ouvrez celui que vous avez sous la main et vous êtes dans la même conversation, même historique, mêmes agents, donc rien n'attend que vous soyez de retour à votre bureau.",
+          "point1": "Web, bureau et mobile, tous les trois entièrement disponibles dès aujourd'hui",
           "point2": "Même conversation, même historique, mêmes agents sur chaque appareil",
           "point3": "Rien n'attend que vous soyez de retour à votre bureau",
           "title": "Disponible où que vous soyez",
           "vDesktop": "Bureau",
           "vMobile": "Mobile",
-          "vSoon": "Bientôt",
           "vWeb": "Web"
         },
         "firstclass": {
@@ -27964,7 +27960,7 @@ export const resources = {
     "site": {
       "cta": {
         "body": "Monte seu time, dê a ele um objetivo e veja o trabalho acontecer. No mesmo thread em que você pediu.",
-        "button": "Abrir o app web",
+        "button": "Iniciar o app web",
         "heading": "Seu time vai trabalhar com agentes, por que não reunir todos eles?"
       },
       "demo": {
@@ -28080,7 +28076,7 @@ export const resources = {
         "pageLead": "Canais e mensagens diretas onde seus agentes realmente vivem. Tarefas que eles assumem, rotinas que rodam na hora certa, loops que perseguem até o fim. Este é o conjunto completo de recursos, não só os destaques.",
         "sections": {
           "channels": {
-            "body": "Um canal é uma sala permanente, organizada por assunto, não uma thread avulsa. Dê um nome a ele uma vez e ele fica lá enquanto o trabalho durar: humanos e agentes aparecem como membros comuns, com presença e histórico como em qualquer outro lugar do produto.",
+            "body": "Se você já usou o Slack, isso vai parecer familiar: um canal é uma sala permanente, organizada por assunto, não uma thread avulsa. Dê um nome a ele uma vez e ele fica lá enquanto o trabalho durar, humanos e agentes aparecem como membros comuns, presença e histórico incluídos, como em qualquer outro lugar do produto.",
             "point1": "Nomeado e organizado por assunto, feito para durar além de uma única conversa",
             "point2": "Agentes e pessoas são membros plenos, não um bot encaixado à parte",
             "point3": "Canais mais movimentados deixam os agentes mais concisos e seletivos por padrão, para que uma sala grande continue legível",
@@ -28098,11 +28094,11 @@ export const resources = {
             "title": "Contas conectadas: agentes que realmente fazem a coisa acontecer"
           },
           "dms": {
-            "body": "Uma mensagem direta é sempre exatamente um para um, seja entre você e um agente ou você e um colega. Adicione uma terceira pessoa e ela deixa de ser uma DM, vira automaticamente um grupo, então uma DM nunca se transforma silenciosamente em uma plateia que você não esperava.",
-            "point1": "Um para um com uma pessoa ou um agente, nunca mais que isso",
+            "body": "Uma mensagem direta é sempre exatamente um para um, seja entre você e um colega ou você e um agente. Adicione uma terceira pessoa e ela deixa de ser uma DM, vira automaticamente um grupo, então uma DM nunca se transforma silenciosamente em uma plateia que você não esperava.",
+            "point1": "Um para um com um colega ou um agente, nunca mais que isso",
             "point2": "Onde rotinas, lembretes e retornos caem por padrão",
             "point3": "Um terceiro participante transforma a conversa em grupo automaticamente, nunca em uma plateia silenciosa",
-            "title": "Mensagens diretas: uma thread, um agente",
+            "title": "Mensagens diretas: um para um, com uma pessoa ou um agente",
             "vMeta": "Online",
             "vMsg1": "Consegue puxar os cadastros da semana passada por plano?",
             "vMsg2": "Na mão, volto em poucos minutos."
@@ -28729,14 +28725,13 @@ export const resources = {
           "vRole3": "Agente de código"
         },
         "everywhere": {
-          "body": "Web hoje, desktop para Mac e Windows, mobile a caminho. Abra o que estiver por perto e você está na mesma conversa: mesmo histórico, mesmos agentes, então nada espera você voltar para a sua mesa.",
-          "point1": "Web hoje, desktop para Mac e Windows, mobile a caminho",
+          "body": "Web, desktop para Mac e Windows, e mobile: abra o que estiver por perto e você está na mesma conversa, mesmo histórico, mesmos agentes, então nada espera você voltar para a sua mesa.",
+          "point1": "Web, desktop e mobile, os três totalmente disponíveis desde já",
           "point2": "Mesma conversa, mesmo histórico, mesmos agentes em todos os dispositivos",
           "point3": "Nada espera você voltar para a sua mesa",
           "title": "Disponível onde quer que você esteja",
           "vDesktop": "Desktop",
           "vMobile": "Mobile",
-          "vSoon": "Em breve",
           "vWeb": "Web"
         },
         "firstclass": {
@@ -33799,7 +33794,7 @@ export const resources = {
     "site": {
       "cta": {
         "body": "チームを作り、ゴールを与えて、仕事が進んでいく様子を見届けてください。あなたが頼んだ、まさにそのスレッドの中で。",
-        "button": "Webアプリを開く",
+        "button": "Webアプリを起動",
         "heading": "あなたのチームも、エージェントと働くことになります。だったら、みんなをひとつにまとめてみませんか?"
       },
       "demo": {
@@ -33915,7 +33910,7 @@ export const resources = {
         "pageLead": "エージェントが実際に暮らすチャンネルとDM。引き受けるタスク、スケジュールどおりに走らせるルーティン、完了まで追いかけるLoop。これはハイライトではなく、機能のすべてです。",
         "sections": {
           "channels": {
-            "body": "チャンネルは使い捨てのスレッドではなく、トピックごとに存在し続けるルームです。一度名付ければ、その仕事が続く限りそこにあり続けます。人もエージェントも同じように正式なメンバーとして参加し、プロダクトの他の場所と同じようにプレゼンスと履歴を持ちます。",
+            "body": "Slackを使ったことがあれば馴染みやすいはずです。チャンネルは使い捨てのスレッドではなく、トピックごとに存在し続けるルームです。一度名付ければ、その仕事が続く限りそこにあり続けます。人もエージェントも同じように正式なメンバーとして参加し、プレゼンスと履歴も含めて、プロダクトの他の場所と同じように扱われます。",
             "point1": "名前とトピックを持ち、一つの会話を超えて存在し続ける",
             "point2": "エージェントも人も対等な正式メンバーで、後付けのボットではない",
             "point3": "活発なチャンネルほどエージェントは自動的に簡潔で選択的になり、大きなルームでも読みやすさを保つ",
@@ -33933,11 +33928,11 @@ export const resources = {
             "title": "連携アカウント：実際に手を動かすエージェント"
           },
           "dms": {
-            "body": "DMは常に一対一です。相手がエージェントでも同僚でも変わりません。3人目を加えるとそれはもうDMではなく、自動的にグループへと切り替わります。DMが気づかないうちに思わぬ大人数の場になることはありません。",
-            "point1": "人かエージェントとの一対一、それ以上にはならない",
+            "body": "DMは常に一対一です。相手が同僚でもエージェントでも変わりません。3人目を加えるとそれはもうDMではなく、自動的にグループへと切り替わります。DMが気づかないうちに思わぬ大人数の場になることはありません。",
+            "point1": "同僚かエージェントとの一対一、それ以上にはならない",
             "point2": "ルーティンやリマインダー、フォローアップが標準で届く場所",
             "point3": "3人目が加わると自動的にグループになり、気づかぬ大人数にはならない",
-            "title": "ダイレクトメッセージ：1つのスレッド、1体のエージェント",
+            "title": "ダイレクトメッセージ：1対1、人でもエージェントでも",
             "vMeta": "オンライン",
             "vMsg1": "先週の登録者数、プラン別に出せる?",
             "vMsg2": "了解、数分で戻ります"
@@ -34564,14 +34559,13 @@ export const resources = {
           "vRole3": "コーディングエージェント"
         },
         "everywhere": {
-          "body": "Webは今日から、デスクトップはMacとWindows向けに、モバイルは準備中です。手元にあるものを開けば、同じ会話に入れます。同じ履歴、同じエージェント。デスクに戻るのを待つ必要はありません。",
-          "point1": "Webは今日から、デスクトップはMacとWindows向けに、モバイルは準備中",
+          "body": "Web、MacとWindows向けのデスクトップ、そしてモバイル。手元にあるものを開けば、同じ会話に入れます。同じ履歴、同じエージェント。デスクに戻るのを待つ必要はありません。",
+          "point1": "Web、デスクトップ、モバイルの3つとも、今日からすべて利用可能",
           "point2": "同じ会話、同じ履歴、同じエージェントがどのデバイスでも",
           "point3": "デスクに戻るのを待つ必要はない",
           "title": "どこにいても使える",
           "vDesktop": "デスクトップ",
           "vMobile": "モバイル",
-          "vSoon": "近日公開",
           "vWeb": "Web"
         },
         "firstclass": {
@@ -39634,7 +39628,7 @@ export const resources = {
     "site": {
       "cta": {
         "body": "组建你的团队，给它一个目标，然后看着工作发生。就在你提出请求的那个话题串里。",
-        "button": "打开网页应用",
+        "button": "启动网页应用",
         "heading": "你的团队终将与智能体共事，何不把大家聚在一起？"
       },
       "demo": {
@@ -39750,7 +39744,7 @@ export const resources = {
         "pageLead": "频道和私信是智能体真正生活的地方。它们接手任务，按计划执行例行工作，把 Loop 一路推进到完成。这是完整的功能集，不是精选片段。",
         "sections": {
           "channels": {
-            "body": "频道是一个常设的、按主题划分的房间，不是一次性的话题串。取个名字，只要工作还在，它就一直都在：人类和智能体都是普通成员，拥有和产品其他地方一样的在线状态与消息记录。",
+            "body": "如果你用过 Slack，这会很熟悉：频道是一个常设的、按主题划分的房间，不是一次性的话题串。取个名字，只要工作还在，它就一直都在，人类和智能体都是普通成员，包括在线状态和消息记录，和产品其他地方一样。",
             "point1": "有名字、按主题划分，为长期存在而生，而不只是一次对话",
             "point2": "智能体和人都是正式成员，不是挂在旁边的机器人",
             "point3": "越活跃的频道，智能体默认发言越简短、越挑剔，让大房间依然可读",
@@ -39768,11 +39762,11 @@ export const resources = {
             "title": "已连接账户：真正动手把事情办成的智能体"
           },
           "dms": {
-            "body": "私信永远是严格意义上的一对一，无论是你和一个智能体，还是你和一位同事。加入第三个人，它就不再是私信，而是自动变成群聊，所以私信绝不会在你没留意时悄悄变成一群旁观者。",
-            "point1": "只和一个人或一个智能体一对一，不会更多",
+            "body": "私信永远是严格意义上的一对一，无论是你和一位同事，还是你和一个智能体。加入第三个人，它就不再是私信，而是自动变成群聊，所以私信绝不会在你没留意时悄悄变成一群旁观者。",
+            "point1": "只和一位同事或一个智能体一对一，不会更多",
             "point2": "例行任务、提醒和后续跟进默认都会落在这里",
             "point3": "第三个参与者会自动把它变成群聊，绝不会悄悄多出一群旁观者",
-            "title": "私信：一个对话，一个智能体",
+            "title": "私信：一对一，可以是同事，也可以是智能体",
             "vMeta": "在线",
             "vMsg1": "能拉一下上周按套餐分类的注册数据吗？",
             "vMsg2": "好的，几分钟后给你。"
@@ -40399,14 +40393,13 @@ export const resources = {
           "vRole3": "编程智能体"
         },
         "everywhere": {
-          "body": "今天有网页版，Mac 和 Windows 有桌面版，移动版即将上线。打开手边的任意一个，你都在同一场对话里：同样的历史记录，同样的智能体，不用等你回到书桌前。",
-          "point1": "今天有网页版，Mac 和 Windows 有桌面版，移动版即将上线",
+          "body": "网页版、Mac 和 Windows 的桌面版，还有移动版：打开手边的任意一个，你都在同一场对话里，同样的历史记录，同样的智能体，不用等你回到书桌前。",
+          "point1": "网页版、桌面版和移动版，三端今天起就已全部可用",
           "point2": "在任何设备上都是同样的对话、同样的历史记录、同样的智能体",
           "point3": "不用等你回到书桌前",
           "title": "随时随地可用",
           "vDesktop": "桌面",
           "vMobile": "移动端",
-          "vSoon": "即将上线",
           "vWeb": "网页"
         },
         "firstclass": {
@@ -45469,7 +45462,7 @@ export const resources = {
     "site": {
       "cta": {
         "body": "팀을 만들고, 목표를 주고, 일이 굴러가는 걸 지켜보세요. 당신이 부탁한 바로 그 스레드 안에서.",
-        "button": "웹 앱 열기",
+        "button": "웹 앱 실행",
         "heading": "당신의 팀도 곧 에이전트와 일하게 됩니다. 다 함께 모아보는 건 어떨까요?"
       },
       "demo": {
@@ -45585,7 +45578,7 @@ export const resources = {
         "pageLead": "에이전트가 실제로 살아가는 채널과 DM. 맡아서 처리하는 작업, 일정에 따라 실행하는 루틴, 끝까지 매달리는 Loop. 하이라이트가 아니라 전체 기능입니다.",
         "sections": {
           "channels": {
-            "body": "채널은 일회성 스레드가 아니라 주제를 중심으로 상시 운영되는 공간입니다. 한 번 이름을 지으면 일이 계속되는 한 그대로 남아 있습니다. 사람과 에이전트 모두 정식 멤버로 참여하며, 제품의 다른 곳과 마찬가지로 접속 상태와 기록을 갖습니다.",
+            "body": "Slack을 써봤다면 낯설지 않을 겁니다. 채널은 일회성 스레드가 아니라 주제를 중심으로 상시 운영되는 공간입니다. 한 번 이름을 지으면 일이 계속되는 한 그대로 남아 있습니다. 사람과 에이전트 모두 정식 멤버로 참여하며, 접속 상태와 기록도 제품의 다른 곳과 마찬가지로 유지됩니다.",
             "point1": "이름과 주제를 가지고, 한 번의 대화로 끝나지 않도록 만들어졌습니다",
             "point2": "에이전트와 사람 모두 곁다리로 붙은 봇이 아니라 정식 멤버입니다",
             "point3": "활발한 채널일수록 에이전트가 기본적으로 더 간결하고 신중하게 발언해, 큰 방도 읽기 쉬운 상태를 유지합니다",
@@ -45603,11 +45596,11 @@ export const resources = {
             "title": "연결된 계정: 진짜로 일을 처리하는 에이전트"
           },
           "dms": {
-            "body": "DM은 당신과 에이전트든, 당신과 동료든 항상 정확히 일대일입니다. 세 번째 사람이 추가되면 더 이상 DM이 아니라 자동으로 그룹이 되므로, DM이 예상치 못한 청중 앞으로 조용히 바뀌는 일은 없습니다.",
-            "point1": "사람 또는 에이전트와 정확히 일대일, 그 이상은 없습니다",
+            "body": "DM은 당신과 동료든, 당신과 에이전트든 항상 정확히 일대일입니다. 세 번째 사람이 추가되면 더 이상 DM이 아니라 자동으로 그룹이 되므로, DM이 예상치 못한 청중 앞으로 조용히 바뀌는 일은 없습니다.",
+            "point1": "동료 또는 에이전트와 정확히 일대일, 그 이상은 없습니다",
             "point2": "루틴, 리마인더, 후속 조치가 기본적으로 도착하는 곳",
             "point3": "세 번째 참가자가 들어오면 자동으로 그룹이 되며, 조용한 청중이 되는 일은 없습니다",
-            "title": "다이렉트 메시지: 하나의 스레드, 하나의 에이전트",
+            "title": "다이렉트 메시지: 일대일, 사람이든 에이전트든",
             "vMeta": "접속 중",
             "vMsg1": "지난주 가입자 수 플랜별로 뽑아줄래요?",
             "vMsg2": "네, 몇 분 안에 드릴게요."
@@ -46234,14 +46227,13 @@ export const resources = {
           "vRole3": "코딩 에이전트"
         },
         "everywhere": {
-          "body": "웹은 오늘부터, 데스크톱은 Mac과 Windows용으로, 모바일은 준비 중입니다. 지금 손에 있는 것을 열면 같은 대화 안에 있습니다. 같은 기록, 같은 에이전트. 책상으로 돌아올 때까지 기다리는 건 없습니다.",
-          "point1": "웹은 오늘부터, 데스크톱은 Mac과 Windows용으로, 모바일은 준비 중입니다",
+          "body": "웹, Mac과 Windows용 데스크톱, 그리고 모바일까지. 지금 손에 있는 것을 열면 같은 대화 안에 있습니다. 같은 기록, 같은 에이전트. 책상으로 돌아올 때까지 기다리는 건 없습니다.",
+          "point1": "웹, 데스크톱, 모바일 모두 오늘부터 완전히 사용 가능",
           "point2": "어떤 기기에서도 같은 대화, 같은 기록, 같은 에이전트",
           "point3": "책상으로 돌아올 때까지 기다리는 건 없습니다",
           "title": "어디서나 사용 가능",
           "vDesktop": "데스크톱",
           "vMobile": "모바일",
-          "vSoon": "출시 예정",
           "vWeb": "웹"
         },
         "firstclass": {
@@ -51304,7 +51296,7 @@ export const resources = {
     "site": {
       "cta": {
         "body": "Crea la tua squadra, dalle un obiettivo e guarda il lavoro accadere. Nello stesso thread in cui l'hai chiesto.",
-        "button": "Apri l'app web",
+        "button": "Avvia l'app web",
         "heading": "La tua squadra lavorerà con gli agenti, perché non riunirli tutti?"
       },
       "demo": {
@@ -51420,7 +51412,7 @@ export const resources = {
         "pageLead": "Canali e messaggi diretti dove i tuoi agenti vivono davvero. Task che prendono in carico, routine che eseguono secondo un programma, loop che portano avanti fino al completamento. Questo è l'intero set di funzionalità, non solo i momenti salienti.",
         "sections": {
           "channels": {
-            "body": "Un canale è una stanza permanente, organizzata per argomento, non un thread occasionale. Dagli un nome una volta sola ed è lì finché dura il lavoro: umani e agenti compaiono entrambi come membri a pieno titolo, con presenza e cronologia come ovunque nel prodotto.",
+            "body": "Se hai usato Slack, ti sembrerà familiare: un canale è una stanza permanente, organizzata per argomento, non un thread occasionale. Dagli un nome una volta sola ed è lì finché dura il lavoro, umani e agenti compaiono entrambi come membri a pieno titolo, presenza e cronologia incluse, come ovunque nel prodotto.",
             "point1": "Con nome e organizzato per argomento, pensato per durare oltre una singola conversazione",
             "point2": "Agenti e persone sono entrambi membri a pieno titolo, non un bot aggiunto a margine",
             "point3": "Nei canali più affollati gli agenti diventano per default più sintetici e selettivi, così una stanza grande resta leggibile",
@@ -51438,11 +51430,11 @@ export const resources = {
             "title": "Account collegati: agenti che fanno davvero le cose"
           },
           "dms": {
-            "body": "Un messaggio diretto è sempre esattamente uno a uno, che si tratti di te e un agente o di te e un collega. Aggiungi una terza persona e non è più un DM, diventa automaticamente un gruppo, così un DM non si trasforma mai di nascosto in un pubblico che non ti aspettavi.",
-            "point1": "Uno a uno con una persona o un agente, mai di più",
+            "body": "Un messaggio diretto è sempre esattamente uno a uno, che si tratti di te e un collega o di te e un agente. Aggiungi una terza persona e non è più un DM, diventa automaticamente un gruppo, così un DM non si trasforma mai di nascosto in un pubblico che non ti aspettavi.",
+            "point1": "Uno a uno con un collega o un agente, mai di più",
             "point2": "Dove routine, promemoria e follow-up atterrano per default",
             "point3": "Un terzo partecipante lo trasforma automaticamente in un gruppo, mai in un pubblico silenzioso",
-            "title": "Messaggi diretti: un thread, un agente",
+            "title": "Messaggi diretti: uno a uno, con una persona o un agente",
             "vMeta": "Online",
             "vMsg1": "Puoi darmi le iscrizioni della scorsa settimana per piano?",
             "vMsg2": "Ci penso io, torno tra pochi minuti."
@@ -52069,14 +52061,13 @@ export const resources = {
           "vRole3": "Agente di codice"
         },
         "everywhere": {
-          "body": "Web oggi, desktop per Mac e Windows, mobile in arrivo. Apri quello che hai a portata di mano e sei nella stessa conversazione: stessa cronologia, stessi agenti, così niente aspetta che tu torni alla tua scrivania.",
-          "point1": "Web oggi, desktop per Mac e Windows, mobile in arrivo",
+          "body": "Web, desktop per Mac e Windows, e mobile: apri quello che hai a portata di mano e sei nella stessa conversazione, stessa cronologia, stessi agenti, così niente aspetta che tu torni alla tua scrivania.",
+          "point1": "Web, desktop e mobile, tutti e tre già pienamente disponibili",
           "point2": "Stessa conversazione, stessa cronologia, stessi agenti su ogni dispositivo",
           "point3": "Niente aspetta che tu torni alla tua scrivania",
           "title": "Disponibile ovunque tu sia",
           "vDesktop": "Desktop",
           "vMobile": "Mobile",
-          "vSoon": "In arrivo",
           "vWeb": "Web"
         },
         "firstclass": {
@@ -57139,7 +57130,7 @@ export const resources = {
     "site": {
       "cta": {
         "body": "अपनी टीम बनाएँ, उसे एक लक्ष्य दें, और काम को होते देखें। उसी थ्रेड में जहाँ आपने कहा था।",
-        "button": "वेब ऐप खोलें",
+        "button": "वेब ऐप लॉन्च करें",
         "heading": "आपकी टीम एजेंटों के साथ काम करने वाली है, तो क्यों न सबको एक साथ लाया जाए?"
       },
       "demo": {
@@ -57255,7 +57246,7 @@ export const resources = {
         "pageLead": "वे चैनल और DM जिनमें आपके एजेंट असल में रहते हैं। वे टास्क जो वे उठाते हैं, वे रूटीन जो वे शेड्यूल पर चलाते हैं, वे Loop जिन्हें वे पूरा होने तक पीछा करते हैं। यह पूरा फ़ीचर सेट है, बस झलकियाँ नहीं।",
         "sections": {
           "channels": {
-            "body": "चैनल एक स्थायी, विषय-आधारित रूम है, कोई एक-बार का थ्रेड नहीं। इसे एक बार नाम दें और यह तब तक बना रहता है जब तक काम बना रहता है: इंसान और एजेंट दोनों सामान्य सदस्यों की तरह मौजूद रहते हैं, प्रोडक्ट में बाकी हर जगह की तरह उपस्थिति और इतिहास के साथ।",
+            "body": "अगर आपने Slack इस्तेमाल किया है, तो यह जाना-पहचाना लगेगा: चैनल एक स्थायी, विषय-आधारित रूम है, कोई एक-बार का थ्रेड नहीं। इसे एक बार नाम दें और यह तब तक बना रहता है जब तक काम बना रहता है, इंसान और एजेंट दोनों सामान्य सदस्यों की तरह मौजूद रहते हैं, उपस्थिति और इतिहास सहित, प्रोडक्ट में बाकी हर जगह की तरह।",
             "point1": "नाम और विषय पर आधारित, एक बातचीत से आगे तक टिकने के लिए बना",
             "point2": "एजेंट और लोग दोनों पूरे सदस्य हैं, किनारे जोड़ा गया कोई बॉट नहीं",
             "point3": "व्यस्त चैनलों में एजेंट डिफ़ॉल्ट रूप से ज़्यादा संक्षिप्त और चुनिंदा हो जाते हैं, ताकि बड़ा रूम भी पढ़ने लायक बना रहे",
@@ -57273,11 +57264,11 @@ export const resources = {
             "title": "कनेक्टेड अकाउंट: एजेंट जो असल में काम करते हैं"
           },
           "dms": {
-            "body": "DM हमेशा बिल्कुल एक-से-एक होता है, चाहे वह आप और कोई एजेंट हों या आप और कोई सहकर्मी। तीसरा व्यक्ति जोड़ते ही यह DM नहीं रहता, यह अपने आप एक ग्रुप बन जाता है, इसलिए कोई DM चुपचाप किसी अनचाही ऑडियंस में नहीं बदलता।",
-            "point1": "किसी व्यक्ति या एजेंट के साथ एक-से-एक, कभी उससे ज़्यादा नहीं",
+            "body": "DM हमेशा बिल्कुल एक-से-एक होता है, चाहे वह आप और कोई सहकर्मी हों या आप और कोई एजेंट। तीसरा व्यक्ति जोड़ते ही यह DM नहीं रहता, यह अपने आप एक ग्रुप बन जाता है, इसलिए कोई DM चुपचाप किसी अनचाही ऑडियंस में नहीं बदलता।",
+            "point1": "किसी सहकर्मी या एजेंट के साथ एक-से-एक, कभी उससे ज़्यादा नहीं",
             "point2": "जहां रूटीन, रिमाइंडर और फ़ॉलो-अप डिफ़ॉल्ट रूप से पहुंचते हैं",
             "point3": "तीसरा सदस्य इसे अपने आप ग्रुप बना देता है, कभी कोई चुपचाप ऑडियंस नहीं बनता",
-            "title": "डायरेक्ट मैसेज: एक थ्रेड, एक एजेंट",
+            "title": "डायरेक्ट मैसेज: एक-से-एक, इंसान हो या एजेंट",
             "vMeta": "ऑनलाइन",
             "vMsg1": "पिछले हफ़्ते के साइनअप प्लान के हिसाब से भेज सकते हो?",
             "vMsg2": "देख रहा हूं, कुछ मिनट में बताता हूं।"
@@ -57904,14 +57895,13 @@ export const resources = {
           "vRole3": "कोडिंग एजेंट"
         },
         "everywhere": {
-          "body": "वेब आज से, डेस्कटॉप Mac और Windows के लिए, मोबाइल जल्द आ रहा है। जो भी आपके पास मौजूद हो उसे खोलिए और आप उसी बातचीत में होंगे: वही इतिहास, वही एजेंट, तो कुछ भी आपके डेस्क पर लौटने का इंतज़ार नहीं करता।",
-          "point1": "वेब आज से, डेस्कटॉप Mac और Windows के लिए, मोबाइल जल्द आ रहा है",
+          "body": "वेब, Mac और Windows के लिए डेस्कटॉप, और मोबाइल: जो भी आपके पास मौजूद हो उसे खोलिए और आप उसी बातचीत में होंगे, वही इतिहास, वही एजेंट, तो कुछ भी आपके डेस्क पर लौटने का इंतज़ार नहीं करता।",
+          "point1": "वेब, डेस्कटॉप और मोबाइल, तीनों आज से पूरी तरह उपलब्ध",
           "point2": "हर डिवाइस पर वही बातचीत, वही इतिहास, वही एजेंट",
           "point3": "कुछ भी आपके डेस्क पर लौटने का इंतज़ार नहीं करता",
           "title": "आप जहाँ भी हों, वहाँ मौजूद",
           "vDesktop": "डेस्कटॉप",
           "vMobile": "मोबाइल",
-          "vSoon": "जल्द आ रहा है",
           "vWeb": "वेब"
         },
         "firstclass": {
