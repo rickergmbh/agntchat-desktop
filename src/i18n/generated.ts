@@ -4874,6 +4874,7 @@ export const resources = {
         "terms": "Terms"
       },
       "hero": {
+        "byoNote": "Bring your own Claude or OpenAI subscription or API key, agntchat doesn't run the models or bill for usage.",
         "ctaApp": "Watch demo",
         "ctaDownload": "Download for Mac & PC",
         "eyebrow": "A messaging platform for teams and agents.",
@@ -5296,11 +5297,11 @@ export const resources = {
             "title": "One message, start to finish"
           },
           "model-backend": {
-            "caption": "One agent config resolves to one of four backends behind a shared interface; nothing upstream needs to know which.",
-            "p1": "Every agent carries its own model configuration: which backend to use, which model, and how to authenticate. Nothing about the messaging, delegation, or memory systems cares which one is picked, they all just see an agent producing a turn. In practice that means an agent runs on a subscription or plan you already have, not a new one agntchat sells you.",
+            "caption": "One agent config resolves to one of four backends behind a shared interface, always your own subscription or key, nothing upstream needs to know which.",
+            "p1": "agntchat doesn't run the underlying models or bill for their usage, there's no agntchat-billed Claude or OpenAI plan. Every agent instead carries its own model configuration, which backend to use, which model, and how to authenticate, and runs on a subscription or API key you already have. Nothing about the messaging, delegation, or memory systems cares which one is picked, they all just see an agent producing a turn.",
             "p2": "Four backend kinds are supported: a direct Anthropic API key, a direct OpenAI API key, or one of two CLI-based backends, Claude Code's CLI and Codex's CLI, that authenticate through your existing coding-tool subscription instead of a raw API key. That CLI path is actually the default, since it's what lets an agent run on a plan you already pay for without anyone having to provision a separate model API key. All four still call that provider's own hosted API; none of them run model weights locally on the machine.",
             "p3": "At the moment an agent's turn starts, its connected app reads that model configuration and instantiates the matching backend behind one shared interface, so everything upstream, delegation, memory, directives, is written once and works the same regardless of which model actually generates the response.",
-            "title": "Any model, one interface"
+            "title": "Bring your own model: any backend, one interface"
           },
           "personality": {
             "caption": "A full-document rewrite is checked for a suspicious size drop before it's applied.",
@@ -10708,6 +10709,7 @@ export const resources = {
         "terms": "Términos"
       },
       "hero": {
+        "byoNote": "Trae tu propia suscripción o clave de API de Claude u OpenAI, agntchat no ejecuta los modelos ni cobra por su uso.",
         "ctaApp": "Ver demo",
         "ctaDownload": "Descargar para Mac y PC",
         "eyebrow": "Una plataforma de mensajería para equipos y agentes.",
@@ -11130,11 +11132,11 @@ export const resources = {
             "title": "Un mensaje, de principio a fin"
           },
           "model-backend": {
-            "caption": "La configuración de un agente se resuelve a uno de cuatro backends detrás de una interfaz compartida; nada más arriba necesita saber cuál.",
-            "p1": "Cada agente lleva su propia configuración de modelo: qué backend usar, qué modelo, y cómo autenticarse. A los sistemas de mensajería, delegación o memoria no les importa cuál se eligió, todos solo ven a un agente produciendo un turno. En la práctica eso significa que un agente se ejecuta sobre una suscripción o plan que ya tienes, no uno nuevo que agntchat te venda.",
+            "caption": "La configuración de un agente se resuelve a uno de cuatro backends detrás de una interfaz compartida, siempre con tu propia suscripción o clave, nada más arriba necesita saber cuál.",
+            "p1": "agntchat no ejecuta los modelos subyacentes ni cobra por su uso, no existe un plan de Claude u OpenAI facturado por agntchat. Cada agente lleva en cambio su propia configuración de modelo: qué backend usar, qué modelo, y cómo autenticarse, y se ejecuta sobre una suscripción o clave de API que ya tienes. A los sistemas de mensajería, delegación o memoria no les importa cuál se eligió, todos solo ven a un agente produciendo un turno.",
             "p2": "Se admiten cuatro tipos de backend: una clave de API directa de Anthropic, una clave de API directa de OpenAI, o uno de dos backends basados en CLI, la CLI de Claude Code y la CLI de Codex, que se autentican mediante tu suscripción existente a la herramienta de codificación en lugar de una clave de API pura. Ese camino de CLI es de hecho el predeterminado, ya que es lo que permite que un agente se ejecute sobre un plan que ya pagas sin que nadie tenga que aprovisionarle una clave de API de modelo separada. Los cuatro siguen llamando a la API alojada propia de ese proveedor; ninguno ejecuta los pesos del modelo localmente en la máquina.",
             "p3": "En el momento en que empieza el turno de un agente, su app conectada lee esa configuración de modelo e instancia el backend correspondiente detrás de una interfaz compartida, de modo que todo lo anterior en la cadena, delegación, memoria, directivas, se escribe una sola vez y funciona igual sin importar qué modelo genere realmente la respuesta.",
-            "title": "Cualquier modelo, una interfaz"
+            "title": "Trae tu propio modelo: cualquier backend, una interfaz"
           },
           "personality": {
             "caption": "Una reescritura completa del documento se verifica en busca de una caída de tamaño sospechosa antes de aplicarse.",
@@ -16542,6 +16544,7 @@ export const resources = {
         "terms": "AGB"
       },
       "hero": {
+        "byoNote": "Bring dein eigenes Claude- oder OpenAI-Abonnement oder einen API-Schlüssel mit, agntchat betreibt die Modelle nicht und rechnet die Nutzung nicht ab.",
         "ctaApp": "Demo ansehen",
         "ctaDownload": "Für Mac & PC laden",
         "eyebrow": "Eine Messaging-Plattform für Teams und Agenten.",
@@ -16964,11 +16967,11 @@ export const resources = {
             "title": "Eine Nachricht, von Anfang bis Ende"
           },
           "model-backend": {
-            "caption": "Eine Agentenkonfiguration löst sich zu einem von vier Backends hinter einer gemeinsamen Schnittstelle auf; nichts Vorgelagertes muss wissen, welches.",
-            "p1": "Jeder Agent trägt seine eigene Modellkonfiguration: welches Backend zu verwenden ist, welches Modell, und wie authentifiziert wird. Für die Messaging-, Delegations- oder Gedächtnissysteme spielt es keine Rolle, welches gewählt wurde, sie sehen alle nur einen Agenten, der einen Zug produziert. In der Praxis bedeutet das, dass ein Agent auf einem Abonnement oder Plan läuft, den man bereits hat, nicht auf einem neuen, das agntchat verkauft.",
+            "caption": "Eine Agentenkonfiguration löst sich zu einem von vier Backends hinter einer gemeinsamen Schnittstelle auf, immer mit deinem eigenen Abonnement oder Schlüssel, nichts Vorgelagertes muss wissen, welches.",
+            "p1": "agntchat betreibt die zugrunde liegenden Modelle nicht selbst und rechnet ihre Nutzung nicht ab, es gibt keinen von agntchat abgerechneten Claude- oder OpenAI-Plan. Stattdessen trägt jeder Agent seine eigene Modellkonfiguration: welches Backend zu verwenden ist, welches Modell, und wie authentifiziert wird, und läuft auf einem Abonnement oder API-Schlüssel, den du bereits hast. Für die Messaging-, Delegations- oder Gedächtnissysteme spielt es keine Rolle, welches gewählt wurde, sie sehen alle nur einen Agenten, der einen Zug produziert.",
             "p2": "Vier Backend-Arten werden unterstützt: ein direkter Anthropic-API-Schlüssel, ein direkter OpenAI-API-Schlüssel, oder eines von zwei CLI-basierten Backends, die CLI von Claude Code und die CLI von Codex, die sich über das vorhandene Coding-Tool-Abonnement statt über einen rohen API-Schlüssel authentifizieren. Dieser CLI-Weg ist tatsächlich die Standardeinstellung, da er es einem Agenten ermöglicht, auf einem bereits bezahlten Plan zu laufen, ohne dass jemand einen separaten Modell-API-Schlüssel bereitstellen muss. Alle vier rufen weiterhin die eigene gehostete API des jeweiligen Anbieters auf; keines von ihnen führt Modellgewichte lokal auf der Maschine aus.",
             "p3": "In dem Moment, in dem der Zug eines Agenten beginnt, liest die verbundene App diese Modellkonfiguration und instanziiert das passende Backend hinter einer gemeinsamen Schnittstelle, sodass alles Vorgelagerte, Delegation, Gedächtnis, Direktiven, nur einmal geschrieben wird und unabhängig davon funktioniert, welches Modell die Antwort tatsächlich erzeugt.",
-            "title": "Jedes Modell, eine Schnittstelle"
+            "title": "Bring dein eigenes Modell: jedes Backend, eine Schnittstelle"
           },
           "personality": {
             "caption": "Ein vollständiges Umschreiben des Dokuments wird vor der Anwendung auf einen verdächtigen Größenrückgang geprüft.",
@@ -22376,6 +22379,7 @@ export const resources = {
         "terms": "Conditions"
       },
       "hero": {
+        "byoNote": "Apportez votre propre abonnement ou clé API Claude ou OpenAI, agntchat n'exécute pas les modèles et ne facture pas leur utilisation.",
         "ctaApp": "Voir la démo",
         "ctaDownload": "Télécharger pour Mac et PC",
         "eyebrow": "Une plateforme de messagerie pour les équipes et les agents.",
@@ -22798,11 +22802,11 @@ export const resources = {
             "title": "Un message, du début à la fin"
           },
           "model-backend": {
-            "caption": "La configuration d'un agent se résout vers l'un des quatre backends derrière une interface partagée ; rien en amont n'a besoin de savoir lequel.",
-            "p1": "Chaque agent porte sa propre configuration de modèle : quel backend utiliser, quel modèle, et comment s'authentifier. Les systèmes de messagerie, de délégation ou de mémoire n'ont pas à se soucier de celui qui est choisi, ils voient tous simplement un agent produire un tour. En pratique, cela signifie qu'un agent fonctionne sur un abonnement ou un plan que vous avez déjà, pas un nouveau vendu par agntchat.",
+            "caption": "La configuration d'un agent se résout vers l'un des quatre backends derrière une interface partagée, toujours avec votre propre abonnement ou clé, rien en amont n'a besoin de savoir lequel.",
+            "p1": "agntchat n'exécute pas les modèles sous-jacents et ne facture pas leur utilisation, il n'existe aucun forfait Claude ou OpenAI facturé par agntchat. Chaque agent porte plutôt sa propre configuration de modèle : quel backend utiliser, quel modèle, et comment s'authentifier, et fonctionne sur un abonnement ou une clé API que vous avez déjà. Les systèmes de messagerie, de délégation ou de mémoire n'ont pas à se soucier de celui qui est choisi, ils voient tous simplement un agent produire un tour.",
             "p2": "Quatre types de backend sont pris en charge : une clé API Anthropic directe, une clé API OpenAI directe, ou l'un des deux backends basés sur CLI, la CLI de Claude Code et celle de Codex, qui s'authentifient via votre abonnement existant à l'outil de codage plutôt qu'une clé API brute. Cette voie CLI est en fait celle par défaut, puisque c'est elle qui permet à un agent de fonctionner sur un plan que vous payez déjà sans que personne n'ait à lui provisionner une clé API de modèle distincte. Les quatre appellent toujours l'API hébergée propre de ce fournisseur ; aucun n'exécute les poids du modèle localement sur la machine.",
             "p3": "Au moment où le tour d'un agent démarre, son application connectée lit cette configuration de modèle et instancie le backend correspondant derrière une interface partagée, si bien que tout ce qui est en amont, délégation, mémoire, directives, est écrit une seule fois et fonctionne de la même façon quel que soit le modèle qui génère réellement la réponse.",
-            "title": "N'importe quel modèle, une seule interface"
+            "title": "Apportez votre propre modèle : n'importe quel backend, une seule interface"
           },
           "personality": {
             "caption": "Une réécriture complète du document est vérifiée pour une chute de taille suspecte avant d'être appliquée.",
@@ -28210,6 +28214,7 @@ export const resources = {
         "terms": "Termos"
       },
       "hero": {
+        "byoNote": "Traga sua própria assinatura ou chave de API da Claude ou OpenAI, o agntchat não executa os modelos nem cobra pelo uso.",
         "ctaApp": "Ver demonstração",
         "ctaDownload": "Baixar para Mac e PC",
         "eyebrow": "Uma plataforma de mensagens para equipes e agentes.",
@@ -28632,11 +28637,11 @@ export const resources = {
             "title": "Uma mensagem, do início ao fim"
           },
           "model-backend": {
-            "caption": "A configuração de um agente se resolve para um dos quatro backends por trás de uma interface compartilhada; nada a montante precisa saber qual.",
-            "p1": "Todo agente carrega sua própria configuração de modelo: qual backend usar, qual modelo, e como se autenticar. Nada nos sistemas de mensagens, delegação ou memória se importa com qual foi escolhido, todos eles só veem um agente produzindo um turno. Na prática isso significa que um agente roda em uma assinatura ou plano que você já tem, não um novo que o agntchat vende.",
+            "caption": "A configuração de um agente se resolve para um dos quatro backends por trás de uma interface compartilhada, sempre com sua própria assinatura ou chave, nada a montante precisa saber qual.",
+            "p1": "O agntchat não executa os modelos subjacentes nem cobra pelo uso deles, não existe um plano de Claude ou OpenAI faturado pelo agntchat. Cada agente carrega, em vez disso, sua própria configuração de modelo: qual backend usar, qual modelo, e como se autenticar, e roda em uma assinatura ou chave de API que você já tem. Nada nos sistemas de mensagens, delegação ou memória se importa com qual foi escolhido, todos eles só veem um agente produzindo um turno.",
             "p2": "Quatro tipos de backend são suportados: uma chave de API direta da Anthropic, uma chave de API direta da OpenAI, ou um dos dois backends baseados em CLI, o CLI do Claude Code e o do Codex, que se autenticam através da sua assinatura existente da ferramenta de codificação em vez de uma chave de API pura. Esse caminho de CLI é na verdade o padrão, já que é o que permite que um agente rode em um plano que você já paga sem que ninguém precise provisionar uma chave de API de modelo separada. Todos os quatro ainda chamam a própria API hospedada daquele provedor; nenhum deles roda pesos do modelo localmente na máquina.",
             "p3": "No momento em que o turno de um agente começa, seu app conectado lê essa configuração de modelo e instancia o backend correspondente por trás de uma interface compartilhada, então tudo a montante, delegação, memória, diretivas, é escrito uma única vez e funciona da mesma forma independentemente de qual modelo realmente gera a resposta.",
-            "title": "Qualquer modelo, uma interface"
+            "title": "Traga seu próprio modelo: qualquer backend, uma interface"
           },
           "personality": {
             "caption": "Uma reescrita completa do documento é verificada quanto a uma queda de tamanho suspeita antes de ser aplicada.",
@@ -34044,6 +34049,7 @@ export const resources = {
         "terms": "利用規約"
       },
       "hero": {
+        "byoNote": "自分のClaudeまたはOpenAIのサブスクリプションかAPIキーを持ち込んでください。agntchatはモデルを動かすことも、その利用料を請求することもありません。",
         "ctaApp": "デモを見る",
         "ctaDownload": "Mac & PC版をダウンロード",
         "eyebrow": "チームとエージェントのための、メッセージングプラットフォーム。",
@@ -34466,11 +34472,11 @@ export const resources = {
             "title": "1つのメッセージ、最初から最後まで"
           },
           "model-backend": {
-            "caption": "エージェントの設定は共有インターフェースの背後にある4つのバックエンドのいずれかに解決される。上流の何もどれかを知る必要はない。",
-            "p1": "各エージェントは自分自身のモデル設定、どのバックエンドを使うか、どのモデルか、どう認証するかを持ちます。メッセージング、委任、メモリの各システムはどれが選ばれたか気にせず、すべてはエージェントがターンを生成しているとだけ見なします。実際には、これはエージェントがagntchatが販売する新しいものではなく、あなたが既に持っているサブスクリプションやプラン上で動くことを意味します。",
+            "caption": "エージェントの設定は共有インターフェースの背後にある4つのバックエンドのいずれかに解決され、常に自分自身のサブスクリプションやキーが使われる。上流の何もどれかを知る必要はない。",
+            "p1": "agntchatは基盤となるモデルを自ら動かすことも、その利用料を請求することもありません。agntchatが請求するClaudeやOpenAIのプランは存在しません。各エージェントは代わりに自分自身のモデル設定、どのバックエンドを使うか、どのモデルか、どう認証するかを持ち、あなたがすでに持っているサブスクリプションやAPIキー上で動作します。メッセージング、委任、メモリの各システムはどれが選ばれたか気にせず、すべてはエージェントがターンを生成しているとだけ見なします。",
             "p2": "4種類のバックエンドがサポートされています。直接のAnthropic APIキー、直接のOpenAI APIキー、そして生のAPIキーの代わりに既存のコーディングツールのサブスクリプションを通じて認証する、Claude CodeのCLIとCodexのCLIという2つのCLIベースのバックエンドです。このCLI経路が実際にデフォルトです。誰かが別途モデルAPIキーをプロビジョニングする必要なく、既に支払っているプラン上でエージェントを動かせるのがこの経路だからです。4つとも依然としてそのプロバイダー自身のホスト型APIを呼び出しており、どれもマシン上でモデルの重みをローカルに実行しているわけではありません。",
             "p3": "エージェントのターンが始まる瞬間、接続されたアプリはそのモデル設定を読み取り、共有インターフェースの背後で対応するバックエンドをインスタンス化します。そのため、委任、メモリ、ディレクティブといった上流のすべてが一度だけ書かれ、実際にどのモデルが応答を生成しているかに関わらず同じように動作します。",
-            "title": "どのモデルでも、1つのインターフェース"
+            "title": "自分のモデルを持ち込む：どのバックエンドでも、1つのインターフェース"
           },
           "personality": {
             "caption": "ドキュメント全体の書き換えは、適用される前に不審なサイズの低下がないか確認される。",
@@ -39878,6 +39884,7 @@ export const resources = {
         "terms": "服务条款"
       },
       "hero": {
+        "byoNote": "带上你自己的 Claude 或 OpenAI 订阅或 API 密钥，agntchat 不运行模型，也不为其使用计费。",
         "ctaApp": "观看演示",
         "ctaDownload": "下载 Mac 和 PC 版",
         "eyebrow": "团队与智能体共用的消息平台。",
@@ -40300,11 +40307,11 @@ export const resources = {
             "title": "一条消息，从头到尾"
           },
           "model-backend": {
-            "caption": "智能体的配置会解析为共享接口背后四种后端中的一种；上游的任何环节都无需知道具体是哪一种。",
-            "p1": "每个智能体都携带自己的模型配置：使用哪种后端、哪个模型，以及如何认证。消息、委派或记忆系统都不关心选的是哪一种，它们看到的都只是一个正在产出一轮对话的智能体。实际上，这意味着智能体运行在你已经拥有的订阅或套餐之上，而不是 agntchat 卖给你的新订阅。",
+            "caption": "智能体的配置会解析为共享接口背后四种后端中的一种，始终使用你自己的订阅或密钥，上游的任何环节都无需知道具体是哪一种。",
+            "p1": "agntchat 不会自己运行底层模型，也不会为其使用计费，不存在由 agntchat 计费的 Claude 或 OpenAI 套餐。每个智能体都携带自己的模型配置：使用哪种后端、哪个模型，以及如何认证，并运行在你已经拥有的订阅或 API 密钥之上。消息、委派或记忆系统都不关心选的是哪一种，它们看到的都只是一个正在产出一轮对话的智能体。",
             "p2": "系统支持四种后端：直接使用 Anthropic API 密钥、直接使用 OpenAI API 密钥，或者两种基于 CLI 的后端之一，Claude Code 的 CLI 和 Codex 的 CLI，它们通过你现有的编码工具订阅进行认证，而不是使用原始 API 密钥。这条 CLI 路径实际上是默认选项，因为它让智能体可以运行在你已经付费的套餐之上，而无需任何人再单独为它配置一个模型 API 密钥。这四种方式最终仍然会调用对应服务商自己托管的 API；没有一种是在本机上本地运行模型权重。",
             "p3": "在智能体开始一轮对话的那一刻，与之相连的应用会读取该模型配置，并在一个共享接口背后实例化对应的后端，因此上游的一切，委派、记忆、指令，都只需编写一次，无论实际生成回复的是哪个模型，效果都一样。",
-            "title": "任意模型，一套接口"
+            "title": "带上你自己的模型：任意后端，一套接口"
           },
           "personality": {
             "caption": "在整份文档被整体改写应用之前，系统会检查是否出现了可疑的体量骤减。",
@@ -45712,6 +45719,7 @@ export const resources = {
         "terms": "이용약관"
       },
       "hero": {
+        "byoNote": "직접 가지고 있는 Claude 또는 OpenAI 구독이나 API 키를 사용하세요. agntchat은 모델을 실행하거나 그 사용량에 대해 요금을 청구하지 않습니다.",
         "ctaApp": "데모 보기",
         "ctaDownload": "Mac & PC용 다운로드",
         "eyebrow": "팀과 에이전트를 위한 메시징 플랫폼.",
@@ -46134,11 +46142,11 @@ export const resources = {
             "title": "메시지 하나가 처음부터 끝까지 가는 길"
           },
           "model-backend": {
-            "caption": "에이전트의 설정은 공유 인터페이스 뒤에 있는 네 가지 백엔드 중 하나로 해석되며, 상류의 그 무엇도 어느 것인지 알 필요가 없다.",
-            "p1": "모든 에이전트는 자신만의 모델 설정, 즉 어떤 백엔드를 쓸지, 어떤 모델을 쓸지, 어떻게 인증할지를 가지고 있습니다. 메시징, 위임, 메모리 시스템은 어떤 것이 선택됐는지 신경 쓰지 않으며, 그저 에이전트가 한 턴을 만들어내는 것만을 봅니다. 실제로 이는 에이전트가 agntchat이 파는 새 구독이 아니라 당신이 이미 가지고 있는 구독이나 요금제 위에서 실행된다는 뜻입니다.",
+            "caption": "에이전트의 설정은 공유 인터페이스 뒤에 있는 네 가지 백엔드 중 하나로 해석되며, 항상 당신 자신의 구독이나 키를 사용하고, 상류의 그 무엇도 어느 것인지 알 필요가 없다.",
+            "p1": "agntchat은 기반 모델을 직접 실행하지도, 그 사용량에 대해 요금을 청구하지도 않습니다. agntchat이 청구하는 Claude나 OpenAI 요금제는 존재하지 않습니다. 대신 모든 에이전트는 자신만의 모델 설정, 즉 어떤 백엔드를 쓸지, 어떤 모델을 쓸지, 어떻게 인증할지를 가지고 있으며, 당신이 이미 가지고 있는 구독이나 API 키 위에서 실행됩니다. 메시징, 위임, 메모리 시스템은 어떤 것이 선택됐는지 신경 쓰지 않으며, 그저 에이전트가 한 턴을 만들어내는 것만을 봅니다.",
             "p2": "네 가지 종류의 백엔드가 지원됩니다. 직접적인 Anthropic API 키, 직접적인 OpenAI API 키, 혹은 순수 API 키 대신 기존 코딩 도구 구독을 통해 인증하는 두 가지 CLI 기반 백엔드인 Claude Code의 CLI와 Codex의 CLI 중 하나입니다. 이 CLI 경로가 실제로 기본값인데, 누군가 별도의 모델 API 키를 프로비저닝할 필요 없이 이미 지불하고 있는 요금제 위에서 에이전트를 실행할 수 있게 해주는 것이 바로 이 경로이기 때문입니다. 네 가지 모두 여전히 해당 공급자 자체의 호스팅 API를 호출하며, 어느 것도 모델 가중치를 머신에서 로컬로 실행하지 않습니다.",
             "p3": "에이전트의 턴이 시작되는 순간, 연결된 앱은 그 모델 설정을 읽고 공유 인터페이스 뒤에서 해당하는 백엔드를 인스턴스화합니다. 그래서 위임, 메모리, 지시사항 등 상류에 있는 모든 것은 한 번만 작성되며, 실제로 어떤 모델이 응답을 생성하는지와 무관하게 똑같이 작동합니다.",
-            "title": "어떤 모델이든, 인터페이스는 하나"
+            "title": "직접 가져오는 모델: 어떤 백엔드든, 인터페이스는 하나"
           },
           "personality": {
             "caption": "문서 전체를 다시 쓰는 것은 적용되기 전에 의심스러운 크기 감소가 있는지 확인된다.",
@@ -51546,6 +51554,7 @@ export const resources = {
         "terms": "Termini"
       },
       "hero": {
+        "byoNote": "Porta il tuo abbonamento o la tua chiave API Claude o OpenAI, agntchat non esegue i modelli né addebita il loro utilizzo.",
         "ctaApp": "Guarda la demo",
         "ctaDownload": "Scarica per Mac e PC",
         "eyebrow": "Una piattaforma di messaggistica per team e agenti.",
@@ -51968,11 +51977,11 @@ export const resources = {
             "title": "Un messaggio, dall'inizio alla fine"
           },
           "model-backend": {
-            "caption": "La configurazione di un agente si risolve in uno di quattro backend dietro un'interfaccia condivisa; nulla a monte deve sapere quale.",
-            "p1": "Ogni agente porta con sé la propria configurazione del modello: quale backend usare, quale modello, e come autenticarsi. Ai sistemi di messaggistica, delega o memoria non importa quale sia stato scelto, vedono tutti semplicemente un agente che produce un turno. In pratica questo significa che un agente gira su un abbonamento o piano che hai già, non uno nuovo venduto da agntchat.",
+            "caption": "La configurazione di un agente si risolve in uno di quattro backend dietro un'interfaccia condivisa, sempre con il tuo abbonamento o la tua chiave, nulla a monte deve sapere quale.",
+            "p1": "agntchat non esegue i modelli sottostanti né addebita il loro utilizzo, non esiste un piano Claude o OpenAI fatturato da agntchat. Ogni agente porta invece con sé la propria configurazione del modello: quale backend usare, quale modello, e come autenticarsi, e gira su un abbonamento o una chiave API che hai già. Ai sistemi di messaggistica, delega o memoria non importa quale sia stato scelto, vedono tutti semplicemente un agente che produce un turno.",
             "p2": "Sono supportati quattro tipi di backend: una chiave API Anthropic diretta, una chiave API OpenAI diretta, oppure uno dei due backend basati su CLI, la CLI di Claude Code e quella di Codex, che si autenticano tramite il tuo abbonamento esistente allo strumento di coding invece di una chiave API grezza. Quel percorso CLI è in realtà quello predefinito, poiché è ciò che permette a un agente di girare su un piano che già paghi senza che nessuno debba fornirgli una chiave API del modello separata. Tutti e quattro chiamano comunque l'API ospitata propria di quel provider; nessuno di essi esegue i pesi del modello localmente sulla macchina.",
             "p3": "Nel momento in cui inizia il turno di un agente, la sua app connessa legge quella configurazione del modello e istanzia il backend corrispondente dietro un'interfaccia condivisa, così tutto ciò che sta a monte, delega, memoria, direttive, viene scritto una sola volta e funziona allo stesso modo indipendentemente da quale modello generi effettivamente la risposta.",
-            "title": "Qualsiasi modello, un'unica interfaccia"
+            "title": "Porta il tuo modello: qualsiasi backend, un'unica interfaccia"
           },
           "personality": {
             "caption": "Una riscrittura completa del documento viene controllata per un calo di dimensioni sospetto prima di essere applicata.",
@@ -57380,6 +57389,7 @@ export const resources = {
         "terms": "शर्तें"
       },
       "hero": {
+        "byoNote": "अपनी ख़ुद की Claude या OpenAI सब्सक्रिप्शन या API की लाएं, agntchat मॉडल नहीं चलाता और न ही इस्तेमाल का बिल भेजता है।",
         "ctaApp": "डेमो देखें",
         "ctaDownload": "Mac और PC के लिए डाउनलोड करें",
         "eyebrow": "टीमों और एजेंटों के लिए एक मैसेजिंग प्लेटफ़ॉर्म।",
@@ -57802,11 +57812,11 @@ export const resources = {
             "title": "एक मैसेज, शुरू से आख़िर तक"
           },
           "model-backend": {
-            "caption": "एजेंट का कॉन्फ़िगरेशन एक साझा इंटरफ़ेस के पीछे चार बैकएंड में से एक तक पहुंचता है; ऊपर की किसी भी चीज़ को यह जानने की ज़रूरत नहीं कि कौन-सा है।",
-            "p1": "हर एजेंट अपना ख़ुद का मॉडल कॉन्फ़िगरेशन रखता है: कौन-सा बैकएंड इस्तेमाल करना है, कौन-सा मॉडल, और कैसे प्रमाणित होना है। मैसेजिंग, डेलिगेशन, या मेमोरी सिस्टम को इससे कोई फ़र्क़ नहीं पड़ता कि कौन-सा चुना गया, वे सभी सिर्फ़ एक एजेंट को एक बारी बनाते हुए देखते हैं। असल में इसका मतलब है कि कोई एजेंट उस सब्सक्रिप्शन या प्लान पर चलता है जो आपके पास पहले से है, न कि किसी नए पर जो agntchat आपको बेचे।",
+            "caption": "एजेंट का कॉन्फ़िगरेशन एक साझा इंटरफ़ेस के पीछे चार बैकएंड में से एक तक पहुंचता है, हमेशा आपकी अपनी सब्सक्रिप्शन या की के साथ, ऊपर की किसी भी चीज़ को यह जानने की ज़रूरत नहीं कि कौन-सा है।",
+            "p1": "agntchat खुद अंतर्निहित मॉडल नहीं चलाता और न ही उनके इस्तेमाल का बिल भेजता है, कोई agntchat-बिल्ड Claude या OpenAI प्लान मौजूद नहीं है। इसके बजाय हर एजेंट अपना ख़ुद का मॉडल कॉन्फ़िगरेशन रखता है: कौन-सा बैकएंड इस्तेमाल करना है, कौन-सा मॉडल, और कैसे प्रमाणित होना है, और उस सब्सक्रिप्शन या API की पर चलता है जो आपके पास पहले से है। मैसेजिंग, डेलिगेशन, या मेमोरी सिस्टम को इससे कोई फ़र्क़ नहीं पड़ता कि कौन-सा चुना गया, वे सभी सिर्फ़ एक एजेंट को एक बारी बनाते हुए देखते हैं।",
             "p2": "चार तरह के बैकएंड सपोर्ट किए जाते हैं: सीधी Anthropic API की, सीधी OpenAI API की, या दो CLI-आधारित बैकएंड में से एक, Claude Code की CLI और Codex की CLI, जो कच्ची API की के बजाय आपकी मौजूदा कोडिंग-टूल सब्सक्रिप्शन के ज़रिए प्रमाणित होते हैं। यह CLI रास्ता असल में डिफ़ॉल्ट है, क्योंकि यही एजेंट को आपके पहले से भुगतान किए गए प्लान पर चलने देता है, बिना इसके कि किसी को अलग से मॉडल API की उपलब्ध करानी पड़े। सभी चार अभी भी उस प्रोवाइडर की अपनी होस्टेड API को कॉल करते हैं; इनमें से कोई भी मशीन पर मॉडल के वज़न लोकल तौर पर नहीं चलाता।",
             "p3": "जिस पल किसी एजेंट की बारी शुरू होती है, उसका जुड़ा हुआ ऐप वह मॉडल कॉन्फ़िगरेशन पढ़ता है और एक साझा इंटरफ़ेस के पीछे मेल खाता बैकएंड इंस्टैंशिएट करता है, इसलिए ऊपर की हर चीज़, डेलिगेशन, मेमोरी, डायरेक्टिव्स, सिर्फ़ एक बार लिखी जाती है और असल में जवाब बनाने वाला मॉडल चाहे जो भी हो, वैसे ही काम करती है।",
-            "title": "कोई भी मॉडल, एक इंटरफ़ेस"
+            "title": "अपना मॉडल लाएं: कोई भी बैकएंड, एक इंटरफ़ेस"
           },
           "personality": {
             "caption": "पूरे दस्तावेज़ को फिर से लिखे जाने की जांच, इसे लागू करने से पहले किसी संदिग्ध आकार-गिरावट के लिए की जाती है।",
