@@ -2287,6 +2287,11 @@ export const resources = {
         "answer": "Answer"
       },
       "clearChat": "Clear Chat",
+      "clearedDivider": {
+        "hide": "Hide cleared",
+        "show_one": "Chat cleared · {{count}} message · {{time}}",
+        "show_other": "Chat cleared · {{count}} messages · {{time}}"
+      },
       "compaction": {
         "summarizedNoCount": "Earlier messages summarized",
         "summarized_one": "{{count}} earlier message summarized",
@@ -8124,6 +8129,11 @@ export const resources = {
         "answer": "Respuesta"
       },
       "clearChat": "Vaciar chat",
+      "clearedDivider": {
+        "hide": "Ocultar lo borrado",
+        "show_one": "Chat vaciado · {{count}} mensaje · {{time}}",
+        "show_other": "Chat vaciado · {{count}} mensajes · {{time}}"
+      },
       "compaction": {
         "summarizedNoCount": "Mensajes anteriores resumidos",
         "summarized_one": "{{count}} mensaje anterior resumido",
@@ -13961,6 +13971,11 @@ export const resources = {
         "answer": "Antwort"
       },
       "clearChat": "Chat leeren",
+      "clearedDivider": {
+        "hide": "Verlauf ausblenden",
+        "show_one": "Chat geleert · {{count}} Nachricht · {{time}}",
+        "show_other": "Chat geleert · {{count}} Nachrichten · {{time}}"
+      },
       "compaction": {
         "summarizedNoCount": "Frühere Nachrichten zusammengefasst",
         "summarized_one": "{{count}} frühere Nachricht zusammengefasst",
@@ -19798,6 +19813,11 @@ export const resources = {
         "answer": "Réponse"
       },
       "clearChat": "Effacer la conversation",
+      "clearedDivider": {
+        "hide": "Masquer les messages effacés",
+        "show_one": "Conversation effacée · {{count}} message · {{time}}",
+        "show_other": "Conversation effacée · {{count}} messages · {{time}}"
+      },
       "compaction": {
         "summarizedNoCount": "Messages précédents résumés",
         "summarized_one": "{{count}} message précédent résumé",
@@ -25635,6 +25655,11 @@ export const resources = {
         "answer": "Resposta"
       },
       "clearChat": "Limpar conversa",
+      "clearedDivider": {
+        "hide": "Ocultar apagadas",
+        "show_one": "Conversa limpa · {{count}} mensagem · {{time}}",
+        "show_other": "Conversa limpa · {{count}} mensagens · {{time}}"
+      },
       "compaction": {
         "summarizedNoCount": "Mensagens anteriores resumidas",
         "summarized_one": "{{count}} mensagem anterior resumida",
@@ -31472,6 +31497,11 @@ export const resources = {
         "answer": "回答"
       },
       "clearChat": "チャットを消去",
+      "clearedDivider": {
+        "hide": "消去分を隠す",
+        "show_one": "チャットを消去 · {{count}}件のメッセージ · {{time}}",
+        "show_other": "チャットを消去 · {{count}}件のメッセージ · {{time}}"
+      },
       "compaction": {
         "summarizedNoCount": "以前のメッセージが要約されました",
         "summarized_one": "以前のメッセージ{{count}}件が要約されました",
@@ -37309,6 +37339,11 @@ export const resources = {
         "answer": "回答"
       },
       "clearChat": "清空聊天记录",
+      "clearedDivider": {
+        "hide": "隐藏已清空内容",
+        "show_one": "聊天记录已清空 · {{count}} 条消息 · {{time}}",
+        "show_other": "聊天记录已清空 · {{count}} 条消息 · {{time}}"
+      },
       "compaction": {
         "summarizedNoCount": "较早的消息已汇总",
         "summarized_one": "{{count}} 条较早的消息已汇总",
@@ -43146,6 +43181,11 @@ export const resources = {
         "answer": "답변"
       },
       "clearChat": "채팅 지우기",
+      "clearedDivider": {
+        "hide": "지운 메시지 숨기기",
+        "show_one": "채팅 지움 · 메시지 {{count}}개 · {{time}}",
+        "show_other": "채팅 지움 · 메시지 {{count}}개 · {{time}}"
+      },
       "compaction": {
         "summarizedNoCount": "이전 메시지가 요약되었습니다",
         "summarized_one": "이전 메시지 {{count}}개가 요약되었습니다",
@@ -48983,6 +49023,11 @@ export const resources = {
         "answer": "Risposta"
       },
       "clearChat": "Cancella chat",
+      "clearedDivider": {
+        "hide": "Nascondi cancellati",
+        "show_one": "Chat cancellata · {{count}} messaggio · {{time}}",
+        "show_other": "Chat cancellata · {{count}} messaggi · {{time}}"
+      },
       "compaction": {
         "summarizedNoCount": "Messaggi precedenti riassunti",
         "summarized_one": "{{count}} messaggio precedente riassunto",
@@ -54820,6 +54865,11 @@ export const resources = {
         "answer": "उत्तर"
       },
       "clearChat": "चैट साफ़ करें",
+      "clearedDivider": {
+        "hide": "साफ़ किए गए छिपाएँ",
+        "show_one": "चैट साफ़ की गई · {{count}} संदेश · {{time}}",
+        "show_other": "चैट साफ़ की गई · {{count}} संदेश · {{time}}"
+      },
       "compaction": {
         "summarizedNoCount": "पहले के संदेशों का सारांश बनाया गया",
         "summarized_one": "{{count}} पहले का संदेश सारांशित",

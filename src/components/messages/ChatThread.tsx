@@ -1,6 +1,6 @@
 import { Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ArrowDown, Loader2 } from "lucide-react";
+import { ArrowDown, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import { useChatStore } from "../../stores/chatStore";
 import { useAuthStore } from "../../stores/authStore";
 import { usePresenceStore } from "../../stores/presenceStore";
@@ -14,7 +14,7 @@ import { StreamingBubble } from "./StreamingBubble";
 import { AgentConversationCard } from "./AgentConversationCard";
 import { ArtifactCard } from "./ArtifactCard";
 import { Marker, MarkerContent } from "@/components/ui/marker";
-import { cn, dayKey, formatDayLabel } from "../../lib/utils";
+import { cn, dayKey, formatDayLabel, formatExactDateTime } from "../../lib/utils";
 import { buildTypingText } from "../../lib/typing-indicator";
 import { agentConversationSourceId } from "../../lib/thread-selectors";
 import type { Artifact, Conversation, Message } from "../../lib/api";
@@ -226,9 +226,73 @@ type ThreadItem =
       insertedAt: string;
       conversation: Conversation;
     }
-  | { kind: "artifact"; id: string; insertedAt: string; artifact: Artifact };
+  | { kind: "artifact"; id: string; insertedAt: string; artifact: Artifact }
+  | {
+      kind: "cleared_divider";
+      id: string;
+      insertedAt: string;
+      groupIndex: number;
+      clearedAt: string;
+      itemCount: number;
+    };
 
 const EMPTY_THREAD_ITEMS: ThreadItem[] = [];
+const EMPTY_CLEARED_AT: string[] = [];
+
+/**
+ * Groups everything at/before each "Clear chat (local)" boundary behind a
+ * collapsible divider — mirrors mobile's chatListItems grouping in
+ * lib/chat-kit/ChatKit.tsx. Applied on top of the already-merged
+ * message/thread/artifact timeline so thread pills and artifacts collapse
+ * along with the messages they're interleaved with, not just the messages.
+ */
+function applyClearedGrouping(
+  items: ThreadItem[],
+  clearedTimestamps: string[],
+  expandedGroups: Set<number>
+): ThreadItem[] {
+  if (clearedTimestamps.length === 0) return items;
+
+  const result: ThreadItem[] = [];
+  let idx = 0;
+
+  for (let gi = 0; gi < clearedTimestamps.length; gi++) {
+    const boundary = clearedTimestamps[gi]!;
+    const boundaryTime = new Date(boundary).getTime();
+    const groupItems: ThreadItem[] = [];
+
+    // Epoch-millis comparison, not raw ISO strings — the backend emits
+    // microsecond-precision timestamps while `boundary` is JS's
+    // millisecond `toISOString()`, so a lexicographic `<=` could bucket an
+    // item on the wrong side of the divider for anything cleared and sent
+    // within the same second.
+    while (idx < items.length && new Date(items[idx]!.insertedAt).getTime() <= boundaryTime) {
+      groupItems.push(items[idx]!);
+      idx++;
+    }
+
+    if (groupItems.length === 0) continue;
+
+    if (expandedGroups.has(gi)) {
+      result.push(...groupItems);
+    }
+    result.push({
+      kind: "cleared_divider",
+      id: `cleared-divider:${gi}`,
+      insertedAt: boundary,
+      groupIndex: gi,
+      clearedAt: boundary,
+      itemCount: groupItems.length,
+    });
+  }
+
+  while (idx < items.length) {
+    result.push(items[idx]!);
+    idx++;
+  }
+
+  return result;
+}
 
 function buildThreadItems(
   messages: Message[],
@@ -417,6 +481,13 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
   const deleteMessage = useChatStore((s) => s.deleteMessage);
   const stopAgents = useChatStore((s) => s.stopAgents);
   const firstUnreadId = useChatStore((s) => s.firstUnreadIds[conversationId]);
+  // "Clear chat (local)" boundaries — everything at/before the newest one
+  // renders collapsed behind an expandable divider (see applyClearedGrouping).
+  const clearedTimestamps =
+    useChatStore((s) => s.clearedAt[conversationId]) ?? EMPTY_CLEARED_AT;
+  const [expandedClearGroups, setExpandedClearGroups] = useState<Set<number>>(
+    () => new Set()
+  );
   // Deep-link target: when the Files view (or any caller) opens this
   // conversation at a specific message, scroll to and flash it once loaded.
   const scrollTargetMessageId = useChatStore((s) => s.scrollTargetMessageId);
@@ -493,13 +564,18 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
   // both already warm when the pane switches — so building against an empty
   // message array sends every one of them down buildThreadItems' "unanchored"
   // path and renders them alone, as if they were the whole conversation.
-  const threadItems = useMemo(
-    () =>
-      historyLoaded
-        ? buildThreadItems(messages, childAgentConversations, artifacts)
-        : EMPTY_THREAD_ITEMS,
-    [historyLoaded, messages, childAgentConversations, artifacts]
-  );
+  const threadItems = useMemo(() => {
+    if (!historyLoaded) return EMPTY_THREAD_ITEMS;
+    const merged = buildThreadItems(messages, childAgentConversations, artifacts);
+    return applyClearedGrouping(merged, clearedTimestamps, expandedClearGroups);
+  }, [
+    historyLoaded,
+    messages,
+    childAgentConversations,
+    artifacts,
+    clearedTimestamps,
+    expandedClearGroups,
+  ]);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const prevConvIdRef = useRef<string | null>(null);
@@ -676,6 +752,7 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
     turnAnchorIdRef.current = null;
     if (turnSpacerRef.current) turnSpacerRef.current.style.height = "0px";
     setShowNewPill(false);
+    setExpandedClearGroups(new Set());
   }, [conversationId]);
 
   // Position the unread divider near the top of the viewport once it renders.
@@ -1002,6 +1079,28 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
                 !prevItem ||
                 dayKey(prevItem.insertedAt) !== dayKey(item.insertedAt);
 
+              if (item.kind === "cleared_divider") {
+                const isExpanded = expandedClearGroups.has(item.groupIndex);
+                return (
+                  <Fragment key={item.id}>
+                    {dayChanged && <DaySeparator iso={item.insertedAt} />}
+                    <ClearedDivider
+                      clearedAt={item.clearedAt}
+                      itemCount={item.itemCount}
+                      isExpanded={isExpanded}
+                      onToggle={() =>
+                        setExpandedClearGroups((prev) => {
+                          const next = new Set(prev);
+                          if (isExpanded) next.delete(item.groupIndex);
+                          else next.add(item.groupIndex);
+                          return next;
+                        })
+                      }
+                    />
+                  </Fragment>
+                );
+              }
+
               if (item.kind === "artifact") {
                 return (
                   <Fragment key={item.id}>
@@ -1160,6 +1259,47 @@ function UnreadDivider() {
     >
       <MarkerContent className="px-1 text-[10px] font-semibold uppercase tracking-wider">
         {t("newMessages")}
+      </MarkerContent>
+    </Marker>
+  );
+}
+
+/** Collapsed boundary left by "Clear chat (local)". Click to reveal the
+ *  messages/threads/artifacts it collapsed (they render above this divider,
+ *  which then reads "Hide cleared" to collapse them back). */
+function ClearedDivider({
+  clearedAt,
+  itemCount,
+  isExpanded,
+  onToggle,
+}: {
+  clearedAt: string;
+  itemCount: number;
+  isExpanded: boolean;
+  onToggle: () => void;
+}) {
+  const { t } = useTranslation("chat");
+  const label = isExpanded
+    ? t("clearedDivider.hide")
+    : t("clearedDivider.show", {
+        count: itemCount,
+        time: formatExactDateTime(clearedAt),
+      });
+  return (
+    <Marker
+      variant="separator"
+      render={<button type="button" />}
+      onClick={onToggle}
+      aria-expanded={isExpanded}
+      className="px-4 py-2 cursor-pointer hover:text-foreground"
+    >
+      <MarkerContent className="px-1 flex items-center justify-center gap-1 text-[10px] font-semibold uppercase tracking-wider">
+        {isExpanded ? (
+          <ChevronDown className="h-3 w-3 shrink-0" />
+        ) : (
+          <ChevronUp className="h-3 w-3 shrink-0" />
+        )}
+        {label}
       </MarkerContent>
     </Marker>
   );

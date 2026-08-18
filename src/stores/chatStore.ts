@@ -33,6 +33,34 @@ function seedOnlineFromConversations(convos: Conversation[]) {
 
 const PENDING_PREFIX = "pending-";
 
+// Per-conversation "cleared" boundaries for the local-only "Clear chat"
+// action. Persisted so the collapse survives a reopen — `messages` itself is
+// never touched, since the next channel (re)join pushes the server's full
+// `recent_messages` snapshot right back in. Timeline building (ChatThread)
+// hides everything at/before the newest boundary behind an expandable
+// divider instead. Mirrors mobile's clearedAt file, using localStorage since
+// this is a small, infrequently-written map (unlike mobile's SecureStore
+// ceiling concern).
+const CLEARED_AT_STORAGE_KEY = "agentchat:clearedAt";
+
+function readClearedAtStorage(): Record<string, string[]> {
+  try {
+    const raw = localStorage.getItem(CLEARED_AT_STORAGE_KEY);
+    return raw ? (JSON.parse(raw) as Record<string, string[]>) : {};
+  } catch {
+    return {};
+  }
+}
+
+function writeClearedAtStorage(data: Record<string, string[]>) {
+  try {
+    localStorage.setItem(CLEARED_AT_STORAGE_KEY, JSON.stringify(data));
+  } catch {
+    // Best-effort local UI state — losing a write just means a stale
+    // collapse boundary, not data loss.
+  }
+}
+
 /**
  * Capture the first-unread message id for a conversation at open time so
  * ChatThread can render a one-shot "New messages" divider. Returns the next
@@ -246,7 +274,10 @@ interface ChatState {
   replyingTo: Record<string, Message>;
   setReplyingTo: (conversationId: string, message: Message | null) => void;
 
-  // Local-only chat clear (clears messages from the client; server history stays)
+  // Local-only chat clear: records a per-conversation collapse boundary
+  // (server history stays; messages at/before it render collapsed behind an
+  // expandable divider instead of being deleted from the client).
+  clearedAt: Record<string, string[]>;
   clearChatLocal: (conversationId: string) => void;
 
   /** First unread message id captured at the moment the conversation was
@@ -307,6 +338,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
   drafts: {},
   replyingTo: {},
   firstUnreadIds: {},
+  clearedAt: readClearedAtStorage(),
   activeConversationId: null,
   activeThreadId: null,
   unreadCounts: {},
@@ -530,20 +562,25 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
   deleteConversation: async (conversationId) => {
     await api.deleteConversationRest(conversationId);
+    let remainingCleared: Record<string, string[]> = {};
     set((s) => {
       const { [conversationId]: _m, ...remainingMessages } = s.messages;
       const { [conversationId]: _d, ...remainingDrafts } = s.drafts;
+      const { [conversationId]: _c, ...restCleared } = s.clearedAt;
+      remainingCleared = restCleared;
       return {
         conversations: s.conversations.filter((c) => c.id !== conversationId),
         agentConversations: s.agentConversations.filter((c) => c.id !== conversationId),
         messages: remainingMessages,
         drafts: remainingDrafts,
+        clearedAt: remainingCleared,
         activeConversationId:
           s.activeConversationId === conversationId ? null : s.activeConversationId,
         activeThreadId:
           s.activeThreadId === conversationId ? null : s.activeThreadId,
       };
     });
+    writeClearedAtStorage(remainingCleared);
     ws.leaveConversation(conversationId);
   },
 
@@ -952,22 +989,21 @@ export const useChatStore = create<ChatState>((set, get) => ({
   },
 
   clearChatLocal: (conversationId) => {
-    // Clears messages from the local store only — server history is
-    // untouched. Matches web's clearChat action; the DB is still the
-    // source of truth if you re-open the conversation on another device.
-    set((s) => {
-      const nextMessages = { ...s.messages };
-      delete nextMessages[conversationId];
-      const nextHasMore = { ...s.hasMore };
-      delete nextHasMore[conversationId];
-      const nextFirstUnread = { ...s.firstUnreadIds };
-      delete nextFirstUnread[conversationId];
-      return {
-        messages: nextMessages,
-        hasMore: nextHasMore,
-        firstUnreadIds: nextFirstUnread,
-      };
-    });
+    // Records a collapse boundary instead of deleting messages: server
+    // history is untouched, and unlike deleting from `messages`, the
+    // boundary survives the next channel (re)join — `recent_messages` would
+    // otherwise silently repopulate the deleted messages the moment the
+    // conversation is reopened. ChatThread hides everything at/before the
+    // newest boundary behind an expandable divider. Keep only the last 10
+    // boundaries per conversation to bound growth.
+    const existing = get().clearedAt[conversationId] ?? [];
+    const trimmed = existing.length >= 10 ? existing.slice(-9) : existing;
+    const updated = {
+      ...get().clearedAt,
+      [conversationId]: [...trimmed, new Date().toISOString()],
+    };
+    set({ clearedAt: updated });
+    writeClearedAtStorage(updated);
   },
 
   fetchUnreadCounts: async () => {
