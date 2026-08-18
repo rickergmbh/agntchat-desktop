@@ -4659,7 +4659,7 @@ export const resources = {
         "heading": "Get the desktop app",
         "lead": "agntchat for Mac and Windows runs agents on your machine, where they can read the repo, edit files, and open a PR like any other teammate. Hosted agents stay online around the clock.",
         "mac": "Download for macOS",
-        "mobileNote": "The mobile app for iOS and Android is on its way.",
+        "mobileNote": "The buttons below are for Mac and Windows. iOS and Android are on the way.",
         "releaseNote": "Builds are published on GitHub.",
         "windows": "Download for Windows"
       },
@@ -5370,6 +5370,7 @@ export const resources = {
         "features": "Features",
         "howItWorks": "How it works",
         "login": "Launch web app",
+        "menu": "Menu",
         "product": "Product"
       },
       "notFound": {
@@ -10492,7 +10493,7 @@ export const resources = {
         "heading": "Descarga la app de escritorio",
         "lead": "agntchat para Mac y Windows ejecuta agentes en tu equipo, donde pueden leer el repo, editar archivos y abrir un PR como cualquier otro compañero. Los agentes alojados permanecen en línea las 24 horas.",
         "mac": "Descargar para macOS",
-        "mobileNote": "La app móvil para iOS y Android está en camino.",
+        "mobileNote": "Los botones de abajo son para Mac y Windows. iOS y Android llegarán pronto.",
         "releaseNote": "Las versiones se publican en GitHub.",
         "windows": "Descargar para Windows"
       },
@@ -11203,6 +11204,7 @@ export const resources = {
         "features": "Funciones",
         "howItWorks": "Cómo funciona",
         "login": "Iniciar la app web",
+        "menu": "Menú",
         "product": "Producto"
       },
       "notFound": {
@@ -16325,7 +16327,7 @@ export const resources = {
         "heading": "Hol dir die Desktop-App",
         "lead": "agntchat für Mac und Windows führt Agenten auf deinem Rechner aus. Dort lesen sie das Repo, bearbeiten Dateien und öffnen einen PR wie jedes andere Teammitglied. Gehostete Agenten bleiben rund um die Uhr online.",
         "mac": "Für macOS laden",
-        "mobileNote": "Die Mobile-App für iOS und Android ist unterwegs.",
+        "mobileNote": "Die Buttons unten sind für Mac und Windows. iOS und Android folgen bald.",
         "releaseNote": "Builds werden auf GitHub veröffentlicht.",
         "windows": "Für Windows laden"
       },
@@ -17036,6 +17038,7 @@ export const resources = {
         "features": "Funktionen",
         "howItWorks": "So funktioniert's",
         "login": "Web-App starten",
+        "menu": "Menü",
         "product": "Produkt"
       },
       "notFound": {
@@ -22158,7 +22161,7 @@ export const resources = {
         "heading": "Téléchargez l'app de bureau",
         "lead": "agntchat pour Mac et Windows exécute les agents sur votre machine, où ils peuvent lire le dépôt, modifier des fichiers et ouvrir une PR comme n'importe quel coéquipier. Les agents hébergés restent en ligne en continu.",
         "mac": "Télécharger pour macOS",
-        "mobileNote": "L'app mobile pour iOS et Android arrive bientôt.",
+        "mobileNote": "Les boutons ci-dessous sont pour Mac et Windows. iOS et Android arrivent bientôt.",
         "releaseNote": "Les versions sont publiées sur GitHub.",
         "windows": "Télécharger pour Windows"
       },
@@ -22869,6 +22872,7 @@ export const resources = {
         "features": "Fonctionnalités",
         "howItWorks": "Comment ça marche",
         "login": "Lancer l'app web",
+        "menu": "Menu",
         "product": "Produit"
       },
       "notFound": {
@@ -27991,7 +27995,7 @@ export const resources = {
         "heading": "Baixe o app para desktop",
         "lead": "O agntchat para Mac e Windows executa agentes na sua máquina, onde eles podem ler o repositório, editar arquivos e abrir um PR como qualquer outro colega. Agentes hospedados ficam online o tempo todo.",
         "mac": "Baixar para macOS",
-        "mobileNote": "O app para iOS e Android está a caminho.",
+        "mobileNote": "Os botões abaixo são para Mac e Windows. iOS e Android estão a caminho.",
         "releaseNote": "As versões são publicadas no GitHub.",
         "windows": "Baixar para Windows"
       },
@@ -28702,6 +28706,7 @@ export const resources = {
         "features": "Recursos",
         "howItWorks": "Como funciona",
         "login": "Iniciar o app web",
+        "menu": "Menu",
         "product": "Produto"
       },
       "notFound": {
@@ -33824,7 +33829,7 @@ export const resources = {
         "heading": "デスクトップアプリを入手",
         "lead": "Mac・Windows向けagntchatは、エージェントをあなたのマシン上で実行します。リポジトリを読み、ファイルを編集し、ほかのチームメイトと同じようにPRを開きます。ホスト型エージェントは24時間オンラインのまま。",
         "mac": "macOS版をダウンロード",
-        "mobileNote": "iOS・Android向けモバイルアプリは開発中です。",
+        "mobileNote": "下のボタンはMacとWindows用です。iOSとAndroidは近日公開予定です。",
         "releaseNote": "ビルドはGitHubで公開されています。",
         "windows": "Windows版をダウンロード"
       },
@@ -34535,6 +34540,7 @@ export const resources = {
         "features": "機能",
         "howItWorks": "しくみ",
         "login": "Webアプリを起動",
+        "menu": "メニュー",
         "product": "プロダクト"
       },
       "notFound": {
@@ -39657,7 +39663,7 @@ export const resources = {
         "heading": "获取桌面应用",
         "lead": "agntchat 的 Mac 和 Windows 版让智能体在你自己的电脑上运行。它们读代码库、改文件、像任何同事一样提 PR。托管智能体则全天候在线。",
         "mac": "下载 macOS 版",
-        "mobileNote": "iOS 和 Android 移动应用即将推出。",
+        "mobileNote": "下方按钮适用于 Mac 和 Windows。iOS 和 Android 版本即将推出。",
         "releaseNote": "版本发布在 GitHub 上。",
         "windows": "下载 Windows 版"
       },
@@ -40368,6 +40374,7 @@ export const resources = {
         "features": "功能",
         "howItWorks": "工作原理",
         "login": "启动网页应用",
+        "menu": "菜单",
         "product": "产品"
       },
       "notFound": {
@@ -45490,7 +45497,7 @@ export const resources = {
         "heading": "데스크톱 앱 받기",
         "lead": "Mac과 Windows용 agntchat은 에이전트를 내 컴퓨터에서 실행합니다. 저장소를 읽고, 파일을 고치고, 여느 동료처럼 PR을 올립니다. 호스팅 에이전트는 24시간 온라인을 유지합니다.",
         "mac": "macOS용 다운로드",
-        "mobileNote": "iOS와 Android용 모바일 앱이 준비 중입니다.",
+        "mobileNote": "아래 버튼은 Mac과 Windows용입니다. iOS와 Android는 곧 출시됩니다.",
         "releaseNote": "빌드는 GitHub에 게시됩니다.",
         "windows": "Windows용 다운로드"
       },
@@ -46201,6 +46208,7 @@ export const resources = {
         "features": "기능",
         "howItWorks": "작동 방식",
         "login": "웹 앱 실행",
+        "menu": "메뉴",
         "product": "제품"
       },
       "notFound": {
@@ -51323,7 +51331,7 @@ export const resources = {
         "heading": "Scarica l'app desktop",
         "lead": "agntchat per Mac e Windows esegue gli agenti sulla tua macchina, dove possono leggere il repo, modificare file e aprire una PR come qualsiasi altro collega. Gli agenti in hosting restano online 24 ore su 24.",
         "mac": "Scarica per macOS",
-        "mobileNote": "L'app mobile per iOS e Android è in arrivo.",
+        "mobileNote": "I pulsanti qui sotto sono per Mac e Windows. iOS e Android arriveranno presto.",
         "releaseNote": "Le build sono pubblicate su GitHub.",
         "windows": "Scarica per Windows"
       },
@@ -52034,6 +52042,7 @@ export const resources = {
         "features": "Funzionalità",
         "howItWorks": "Come funziona",
         "login": "Avvia l'app web",
+        "menu": "Menu",
         "product": "Prodotto"
       },
       "notFound": {
@@ -57156,7 +57165,7 @@ export const resources = {
         "heading": "डेस्कटॉप ऐप पाएँ",
         "lead": "Mac और Windows के लिए agntchat एजेंटों को आपकी मशीन पर चलाता है, जहाँ वे रिपॉज़िटरी पढ़ सकते हैं, फ़ाइलें बदल सकते हैं और किसी भी साथी की तरह PR खोल सकते हैं। होस्टेड एजेंट चौबीसों घंटे ऑनलाइन रहते हैं।",
         "mac": "macOS के लिए डाउनलोड करें",
-        "mobileNote": "iOS और Android के लिए मोबाइल ऐप जल्द आ रहा है।",
+        "mobileNote": "नीचे दिए गए बटन Mac और Windows के लिए हैं। iOS और Android जल्द आ रहे हैं।",
         "releaseNote": "बिल्ड GitHub पर प्रकाशित होते हैं।",
         "windows": "Windows के लिए डाउनलोड करें"
       },
@@ -57867,6 +57876,7 @@ export const resources = {
         "features": "विशेषताएँ",
         "howItWorks": "यह कैसे काम करता है",
         "login": "वेब ऐप लॉन्च करें",
+        "menu": "मेनू",
         "product": "प्रोडक्ट"
       },
       "notFound": {
