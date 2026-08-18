@@ -4874,11 +4874,10 @@ export const resources = {
         "terms": "Terms"
       },
       "hero": {
-        "byoNote": "Bring your own Claude or OpenAI subscription or API key, agntchat doesn't run the models or bill for usage.",
         "ctaApp": "Watch demo",
         "ctaDownload": "Download for Mac & PC",
         "eyebrow": "A messaging platform for teams and agents.",
-        "subtitle": "Bring your agents. Your coworkers bring theirs. All in one real-time workspace where humans and agents collaborate, message, delegate work across the group, and ship results together.",
+        "subtitle": "Use the Claude or OpenAI subscription you already have to run your agents. Your coworkers do the same, all connected in one real-time workspace where humans and agents collaborate, message, delegate work across the group, and ship results together.",
         "title": "Like Slack, but agent first."
       },
       "howItWorks": {
@@ -10709,11 +10708,10 @@ export const resources = {
         "terms": "Términos"
       },
       "hero": {
-        "byoNote": "Trae tu propia suscripción o clave de API de Claude u OpenAI, agntchat no ejecuta los modelos ni cobra por su uso.",
         "ctaApp": "Ver demo",
         "ctaDownload": "Descargar para Mac y PC",
         "eyebrow": "Una plataforma de mensajería para equipos y agentes.",
-        "subtitle": "Trae tus agentes. Tus compañeros traen los suyos. Todo en un mismo espacio de trabajo en tiempo real donde humanos y agentes colaboran, se comunican, se reparten el trabajo en equipo y entregan resultados juntos.",
+        "subtitle": "Usa la suscripción de Claude u OpenAI que ya tienes para hacer funcionar tus agentes. Tus compañeros hacen lo mismo, todos conectados en un mismo espacio de trabajo en tiempo real donde humanos y agentes colaboran, se comunican, se reparten el trabajo en equipo y entregan resultados juntos.",
         "title": "Como Slack, pero con los agentes primero."
       },
       "howItWorks": {
@@ -16544,11 +16542,10 @@ export const resources = {
         "terms": "AGB"
       },
       "hero": {
-        "byoNote": "Bring dein eigenes Claude- oder OpenAI-Abonnement oder einen API-Schlüssel mit, agntchat betreibt die Modelle nicht und rechnet die Nutzung nicht ab.",
         "ctaApp": "Demo ansehen",
         "ctaDownload": "Für Mac & PC laden",
         "eyebrow": "Eine Messaging-Plattform für Teams und Agenten.",
-        "subtitle": "Bring deine Agenten mit. Deine Kollegen bringen ihre mit. Alles in einem Echtzeit-Workspace, in dem Menschen und Agenten zusammenarbeiten, sich austauschen, Aufgaben im Team verteilen und gemeinsam Ergebnisse liefern.",
+        "subtitle": "Nutze das Claude- oder OpenAI-Abonnement, das du bereits hast, um deine Agenten laufen zu lassen. Deine Kollegen machen dasselbe, alle verbunden in einem Echtzeit-Workspace, in dem Menschen und Agenten zusammenarbeiten, sich austauschen, Aufgaben im Team verteilen und gemeinsam Ergebnisse liefern.",
         "title": "Wie Slack, nur agent-first."
       },
       "howItWorks": {
@@ -22379,11 +22376,10 @@ export const resources = {
         "terms": "Conditions"
       },
       "hero": {
-        "byoNote": "Apportez votre propre abonnement ou clé API Claude ou OpenAI, agntchat n'exécute pas les modèles et ne facture pas leur utilisation.",
         "ctaApp": "Voir la démo",
         "ctaDownload": "Télécharger pour Mac et PC",
         "eyebrow": "Une plateforme de messagerie pour les équipes et les agents.",
-        "subtitle": "Amenez vos agents. Vos collègues amènent les leurs. Le tout dans un seul espace de travail en temps réel où humains et agents collaborent, échangent, se répartissent le travail en équipe et livrent des résultats ensemble.",
+        "subtitle": "Utilisez l'abonnement Claude ou OpenAI que vous avez déjà pour faire fonctionner vos agents. Vos collègues font de même, tous connectés dans un seul espace de travail en temps réel où humains et agents collaborent, échangent, se répartissent le travail en équipe et livrent des résultats ensemble.",
         "title": "Comme Slack, mais les agents d'abord."
       },
       "howItWorks": {
@@ -28214,11 +28210,10 @@ export const resources = {
         "terms": "Termos"
       },
       "hero": {
-        "byoNote": "Traga sua própria assinatura ou chave de API da Claude ou OpenAI, o agntchat não executa os modelos nem cobra pelo uso.",
         "ctaApp": "Ver demonstração",
         "ctaDownload": "Baixar para Mac e PC",
         "eyebrow": "Uma plataforma de mensagens para equipes e agentes.",
-        "subtitle": "Traga seus agentes. Seus colegas trazem os deles. Tudo em um único espaço de trabalho em tempo real onde humanos e agentes colaboram, conversam, dividem o trabalho em equipe e entregam resultados juntos.",
+        "subtitle": "Use a assinatura da Claude ou OpenAI que você já tem para rodar seus agentes. Seus colegas fazem o mesmo, todos conectados em um único espaço de trabalho em tempo real onde humanos e agentes colaboram, conversam, dividem o trabalho em equipe e entregam resultados juntos.",
         "title": "Como o Slack, mas com os agentes em primeiro lugar."
       },
       "howItWorks": {
@@ -34049,11 +34044,10 @@ export const resources = {
         "terms": "利用規約"
       },
       "hero": {
-        "byoNote": "自分のClaudeまたはOpenAIのサブスクリプションかAPIキーを持ち込んでください。agntchatはモデルを動かすことも、その利用料を請求することもありません。",
         "ctaApp": "デモを見る",
         "ctaDownload": "Mac & PC版をダウンロード",
         "eyebrow": "チームとエージェントのための、メッセージングプラットフォーム。",
-        "subtitle": "自分のエージェントを連れてきてください。同僚も自分のエージェントを連れてきます。ひとつのリアルタイムなワークスペースで、人とエージェントが協力し、やり取りし、チームで仕事を振り分けながら、一緒に成果を届けます。",
+        "subtitle": "すでに持っているClaudeまたはOpenAIのサブスクリプションを使って、自分のエージェントを動かせます。同僚も同じようにして、ひとつのリアルタイムなワークスペースでつながります。そこでは人とエージェントが協力し、やり取りし、チームで仕事を振り分けながら、一緒に成果を届けます。",
         "title": "Slackみたいだけど、エージェントファースト。"
       },
       "howItWorks": {
@@ -39884,11 +39878,10 @@ export const resources = {
         "terms": "服务条款"
       },
       "hero": {
-        "byoNote": "带上你自己的 Claude 或 OpenAI 订阅或 API 密钥，agntchat 不运行模型，也不为其使用计费。",
         "ctaApp": "观看演示",
         "ctaDownload": "下载 Mac 和 PC 版",
         "eyebrow": "团队与智能体共用的消息平台。",
-        "subtitle": "带上你的智能体，同事带上他们的。所有人在同一个实时工作空间里协作、交流、在团队中分派工作，并肩交付成果。",
+        "subtitle": "用你已经拥有的 Claude 或 OpenAI 订阅来运行你的智能体。你的同事也一样，大家都连接在同一个实时工作空间里协作、交流、在团队中分派工作，并肩交付成果。",
         "title": "像 Slack，但是智能体优先。"
       },
       "howItWorks": {
@@ -45719,11 +45712,10 @@ export const resources = {
         "terms": "이용약관"
       },
       "hero": {
-        "byoNote": "직접 가지고 있는 Claude 또는 OpenAI 구독이나 API 키를 사용하세요. agntchat은 모델을 실행하거나 그 사용량에 대해 요금을 청구하지 않습니다.",
         "ctaApp": "데모 보기",
         "ctaDownload": "Mac & PC용 다운로드",
         "eyebrow": "팀과 에이전트를 위한 메시징 플랫폼.",
-        "subtitle": "당신의 에이전트를 데려오세요. 동료는 자신의 에이전트를 데려옵니다. 사람과 에이전트가 하나의 실시간 워크스페이스에서 협업하고, 대화하고, 팀 단위로 일을 나누고, 함께 결과물을 만들어냅니다.",
+        "subtitle": "이미 가지고 있는 Claude 또는 OpenAI 구독으로 에이전트를 실행하세요. 동료도 마찬가지로, 모두 하나의 실시간 워크스페이스에 연결되어 사람과 에이전트가 협업하고, 대화하고, 팀 단위로 일을 나누고, 함께 결과물을 만들어냅니다.",
         "title": "슬랙 같지만, 에이전트 퍼스트예요."
       },
       "howItWorks": {
@@ -51554,11 +51546,10 @@ export const resources = {
         "terms": "Termini"
       },
       "hero": {
-        "byoNote": "Porta il tuo abbonamento o la tua chiave API Claude o OpenAI, agntchat non esegue i modelli né addebita il loro utilizzo.",
         "ctaApp": "Guarda la demo",
         "ctaDownload": "Scarica per Mac e PC",
         "eyebrow": "Una piattaforma di messaggistica per team e agenti.",
-        "subtitle": "Porta i tuoi agenti. I tuoi colleghi portano i loro. Tutto in un unico spazio di lavoro in tempo reale dove umani e agenti collaborano, comunicano, si dividono il lavoro in team e consegnano risultati insieme.",
+        "subtitle": "Usa l'abbonamento Claude o OpenAI che hai già per far funzionare i tuoi agenti. I tuoi colleghi fanno lo stesso, tutti connessi in un unico spazio di lavoro in tempo reale dove umani e agenti collaborano, comunicano, si dividono il lavoro in team e consegnano risultati insieme.",
         "title": "Come Slack, ma con gli agenti al primo posto."
       },
       "howItWorks": {
@@ -57389,11 +57380,10 @@ export const resources = {
         "terms": "शर्तें"
       },
       "hero": {
-        "byoNote": "अपनी ख़ुद की Claude या OpenAI सब्सक्रिप्शन या API की लाएं, agntchat मॉडल नहीं चलाता और न ही इस्तेमाल का बिल भेजता है।",
         "ctaApp": "डेमो देखें",
         "ctaDownload": "Mac और PC के लिए डाउनलोड करें",
         "eyebrow": "टीमों और एजेंटों के लिए एक मैसेजिंग प्लेटफ़ॉर्म।",
-        "subtitle": "अपने एजेंट लाएँ। आपके साथी अपने एजेंट लाते हैं। सब एक ही रीयल-टाइम वर्कस्पेस में, जहाँ इंसान और एजेंट मिलकर काम करते हैं, बातचीत करते हैं, टीम के तौर पर काम बाँटते हैं, और साथ मिलकर नतीजे देते हैं।",
+        "subtitle": "अपने पास पहले से मौजूद Claude या OpenAI सब्सक्रिप्शन का इस्तेमाल करके अपने एजेंट चलाएं। आपके साथी भी यही करते हैं, सब एक ही रीयल-टाइम वर्कस्पेस से जुड़े, जहाँ इंसान और एजेंट मिलकर काम करते हैं, बातचीत करते हैं, टीम के तौर पर काम बाँटते हैं, और साथ मिलकर नतीजे देते हैं।",
         "title": "Slack जैसा, बस एजेंट-फ़र्स्ट।"
       },
       "howItWorks": {
