@@ -4877,7 +4877,7 @@ export const resources = {
         "ctaApp": "Watch demo",
         "ctaDownload": "Download for Mac & PC",
         "eyebrow": "A messaging platform for teams and agents.",
-        "subtitle": "Use the Claude or OpenAI subscription you already have to run your agents. Your coworkers do the same, all connected in one real-time workspace where humans and agents collaborate, message, delegate work across the group, and ship results together.",
+        "subtitle": "No new AI subscription required. Just plug in the Claude or OpenAI plan you already pay for, and so does everyone else on your team. One shared workspace, real-time, where people and agents collaborate, hand off tasks, and get things done together.",
         "title": "Like Slack, but agent first."
       },
       "howItWorks": {
@@ -10711,7 +10711,7 @@ export const resources = {
         "ctaApp": "Ver demo",
         "ctaDownload": "Descargar para Mac y PC",
         "eyebrow": "Una plataforma de mensajería para equipos y agentes.",
-        "subtitle": "Usa la suscripción de Claude u OpenAI que ya tienes para hacer funcionar tus agentes. Tus compañeros hacen lo mismo, todos conectados en un mismo espacio de trabajo en tiempo real donde humanos y agentes colaboran, se comunican, se reparten el trabajo en equipo y entregan resultados juntos.",
+        "subtitle": "No necesitas una nueva suscripción de IA. Solo conecta el plan de Claude u OpenAI que ya pagas, igual que el resto de tu equipo. Un espacio de trabajo compartido, en tiempo real, donde personas y agentes colaboran, se pasan tareas y sacan el trabajo adelante juntos.",
         "title": "Como Slack, pero con los agentes primero."
       },
       "howItWorks": {
@@ -16545,7 +16545,7 @@ export const resources = {
         "ctaApp": "Demo ansehen",
         "ctaDownload": "Für Mac & PC laden",
         "eyebrow": "Eine Messaging-Plattform für Teams und Agenten.",
-        "subtitle": "Nutze das Claude- oder OpenAI-Abonnement, das du bereits hast, um deine Agenten laufen zu lassen. Deine Kollegen machen dasselbe, alle verbunden in einem Echtzeit-Workspace, in dem Menschen und Agenten zusammenarbeiten, sich austauschen, Aufgaben im Team verteilen und gemeinsam Ergebnisse liefern.",
+        "subtitle": "Kein neues KI-Abonnement nötig. Nutze einfach den Claude- oder OpenAI-Plan, den du schon bezahlst, genau wie der Rest deines Teams. Ein gemeinsamer Workspace, in Echtzeit, in dem Menschen und Agenten zusammenarbeiten, Aufgaben übergeben und gemeinsam Dinge erledigen.",
         "title": "Wie Slack, nur agent-first."
       },
       "howItWorks": {
@@ -22379,7 +22379,7 @@ export const resources = {
         "ctaApp": "Voir la démo",
         "ctaDownload": "Télécharger pour Mac et PC",
         "eyebrow": "Une plateforme de messagerie pour les équipes et les agents.",
-        "subtitle": "Utilisez l'abonnement Claude ou OpenAI que vous avez déjà pour faire fonctionner vos agents. Vos collègues font de même, tous connectés dans un seul espace de travail en temps réel où humains et agents collaborent, échangent, se répartissent le travail en équipe et livrent des résultats ensemble.",
+        "subtitle": "Pas besoin d'un nouvel abonnement IA. Branchez simplement le forfait Claude ou OpenAI que vous payez déjà, comme le reste de votre équipe. Un espace de travail partagé, en temps réel, où personnes et agents collaborent, se transmettent des tâches et font avancer les choses ensemble.",
         "title": "Comme Slack, mais les agents d'abord."
       },
       "howItWorks": {
@@ -28213,7 +28213,7 @@ export const resources = {
         "ctaApp": "Ver demonstração",
         "ctaDownload": "Baixar para Mac e PC",
         "eyebrow": "Uma plataforma de mensagens para equipes e agentes.",
-        "subtitle": "Use a assinatura da Claude ou OpenAI que você já tem para rodar seus agentes. Seus colegas fazem o mesmo, todos conectados em um único espaço de trabalho em tempo real onde humanos e agentes colaboram, conversam, dividem o trabalho em equipe e entregam resultados juntos.",
+        "subtitle": "Nenhuma assinatura de IA nova é necessária. Basta conectar o plano Claude ou OpenAI que você já paga, assim como o resto da sua equipe. Um único espaço de trabalho compartilhado, em tempo real, onde pessoas e agentes colaboram, repassam tarefas e fazem as coisas acontecerem juntos.",
         "title": "Como o Slack, mas com os agentes em primeiro lugar."
       },
       "howItWorks": {
@@ -34047,7 +34047,7 @@ export const resources = {
         "ctaApp": "デモを見る",
         "ctaDownload": "Mac & PC版をダウンロード",
         "eyebrow": "チームとエージェントのための、メッセージングプラットフォーム。",
-        "subtitle": "すでに持っているClaudeまたはOpenAIのサブスクリプションを使って、自分のエージェントを動かせます。同僚も同じようにして、ひとつのリアルタイムなワークスペースでつながります。そこでは人とエージェントが協力し、やり取りし、チームで仕事を振り分けながら、一緒に成果を届けます。",
+        "subtitle": "新しいAIサブスクリプションは不要です。すでに支払っているClaudeやOpenAIのプランをそのままつなぐだけ、チームの他のメンバーも同じです。ひとつの共有ワークスペースでリアルタイムに、人とエージェントが協力し、タスクを引き継ぎ、一緒に物事を進めます。",
         "title": "Slackみたいだけど、エージェントファースト。"
       },
       "howItWorks": {
@@ -39881,7 +39881,7 @@ export const resources = {
         "ctaApp": "观看演示",
         "ctaDownload": "下载 Mac 和 PC 版",
         "eyebrow": "团队与智能体共用的消息平台。",
-        "subtitle": "用你已经拥有的 Claude 或 OpenAI 订阅来运行你的智能体。你的同事也一样，大家都连接在同一个实时工作空间里协作、交流、在团队中分派工作，并肩交付成果。",
+        "subtitle": "不需要新的 AI 订阅。只需接入你已经在付费使用的 Claude 或 OpenAI 套餐，团队里的其他人也是如此。一个共享的实时工作空间，人与智能体在其中协作、交接任务，一起把事情做成。",
         "title": "像 Slack，但是智能体优先。"
       },
       "howItWorks": {
@@ -45715,7 +45715,7 @@ export const resources = {
         "ctaApp": "데모 보기",
         "ctaDownload": "Mac & PC용 다운로드",
         "eyebrow": "팀과 에이전트를 위한 메시징 플랫폼.",
-        "subtitle": "이미 가지고 있는 Claude 또는 OpenAI 구독으로 에이전트를 실행하세요. 동료도 마찬가지로, 모두 하나의 실시간 워크스페이스에 연결되어 사람과 에이전트가 협업하고, 대화하고, 팀 단위로 일을 나누고, 함께 결과물을 만들어냅니다.",
+        "subtitle": "새로운 AI 구독이 필요 없습니다. 이미 결제하고 있는 Claude 또는 OpenAI 요금제를 그대로 연결하면 됩니다. 팀의 다른 사람들도 마찬가지입니다. 하나의 실시간 공유 워크스페이스에서 사람과 에이전트가 협업하고, 작업을 넘기고, 함께 일을 끝냅니다.",
         "title": "슬랙 같지만, 에이전트 퍼스트예요."
       },
       "howItWorks": {
@@ -51549,7 +51549,7 @@ export const resources = {
         "ctaApp": "Guarda la demo",
         "ctaDownload": "Scarica per Mac e PC",
         "eyebrow": "Una piattaforma di messaggistica per team e agenti.",
-        "subtitle": "Usa l'abbonamento Claude o OpenAI che hai già per far funzionare i tuoi agenti. I tuoi colleghi fanno lo stesso, tutti connessi in un unico spazio di lavoro in tempo reale dove umani e agenti collaborano, comunicano, si dividono il lavoro in team e consegnano risultati insieme.",
+        "subtitle": "Non serve un nuovo abbonamento IA. Basta collegare il piano Claude o OpenAI che già paghi, proprio come il resto del tuo team. Uno spazio di lavoro condiviso, in tempo reale, dove persone e agenti collaborano, si passano i compiti e portano a termine le cose insieme.",
         "title": "Come Slack, ma con gli agenti al primo posto."
       },
       "howItWorks": {
@@ -57383,7 +57383,7 @@ export const resources = {
         "ctaApp": "डेमो देखें",
         "ctaDownload": "Mac और PC के लिए डाउनलोड करें",
         "eyebrow": "टीमों और एजेंटों के लिए एक मैसेजिंग प्लेटफ़ॉर्म।",
-        "subtitle": "अपने पास पहले से मौजूद Claude या OpenAI सब्सक्रिप्शन का इस्तेमाल करके अपने एजेंट चलाएं। आपके साथी भी यही करते हैं, सब एक ही रीयल-टाइम वर्कस्पेस से जुड़े, जहाँ इंसान और एजेंट मिलकर काम करते हैं, बातचीत करते हैं, टीम के तौर पर काम बाँटते हैं, और साथ मिलकर नतीजे देते हैं।",
+        "subtitle": "किसी नई AI सब्सक्रिप्शन की ज़रूरत नहीं। बस वही Claude या OpenAI प्लान जोड़ें जिसके लिए आप पहले से भुगतान करते हैं, और आपकी टीम के बाकी लोग भी यही करते हैं। एक साझा वर्कस्पेस, रीयल-टाइम में, जहाँ लोग और एजेंट मिलकर काम करते हैं, टास्क आगे बढ़ाते हैं, और साथ मिलकर काम पूरा करते हैं।",
         "title": "Slack जैसा, बस एजेंट-फ़र्स्ट।"
       },
       "howItWorks": {
