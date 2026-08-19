@@ -1,7 +1,9 @@
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
+import { invoke } from "@tauri-apps/api/core";
 import { useAuthStore } from "../../stores/authStore";
 import { useChatStore } from "../../stores/chatStore";
+import { useAgentStore } from "../../stores/agentStore";
 import { cn, formatClockTime } from "../../lib/utils";
 import { boldMentions } from "../../lib/mentions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -13,7 +15,8 @@ import {
   MessageFooter,
   MessageHeader,
 } from "@/components/ui/message";
-import { Bot, Reply as ReplyIcon } from "lucide-react";
+import { Bot, LogIn, Reply as ReplyIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useModelCatalog } from "../../stores/modelCatalogStore";
 import { MarkdownContent } from "./MarkdownContent";
 import { AddReactionButton, ReactionChips } from "./MessageReactions";
@@ -156,6 +159,24 @@ export const MessageBubble = memo(function MessageBubble({
   const catalogModelLabel = useModelCatalog((s) => s.modelLabel);
   const modelLabel = isAgent ? catalogModelLabel(rawModel, rawBackend) : null;
 
+  // One-click fix for the bridge's authFailure error bubble: when the
+  // sender is an agent THIS desktop manages on the local runtime, offer the
+  // same `claude login` terminal the health blockers use (Tauri command
+  // open_claude_login). Hosted agents' seats live on the org-host VM (fixed
+  // via the fleet's sign-in dialog) and agents managed on another machine
+  // can't be fixed from here — both render the plain copy only.
+  const senderManaged = useAgentStore((s) => s.agents[message.senderId]);
+  const showClaudeSignIn =
+    message.metadata?.errorKind === "auth_failure" &&
+    isAgent &&
+    senderManaged != null &&
+    senderManaged.agent.runtime !== "org_host";
+  const handleClaudeSignIn = () => {
+    void invoke("open_claude_login").catch((e: unknown) => {
+      console.error("open_claude_login failed:", e);
+    });
+  };
+
   // Find the message we're replying to so we can render the preview
   const conversationId = message.conversationId;
   const parent = useChatStore((s) => {
@@ -287,6 +308,18 @@ export const MessageBubble = memo(function MessageBubble({
           </BubbleContent>
           <AddReactionButton message={message} isOwn={isOwn} />
         </Bubble>
+
+        {showClaudeSignIn && (
+          <Button
+            size="sm"
+            variant="outline"
+            className="mt-1.5 self-start"
+            onClick={handleClaudeSignIn}
+          >
+            <LogIn className="h-3.5 w-3.5" />
+            {t("agents:health.blocker.signInCta")}
+          </Button>
+        )}
 
         <ReactionChips message={message} isOwn={isOwn} />
         <MessageFooter className="mt-0.5 px-1 text-[10px] font-normal">
