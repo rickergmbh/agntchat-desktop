@@ -361,9 +361,6 @@ export function FriendsView({ onNavigate }: { onNavigate?: () => void } = {}) {
       <header className="flex h-14 shrink-0 items-center justify-between gap-4 border-b border-border bg-card px-4">
         <div className="flex items-center gap-3 min-w-0">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center shrink-0">
-              <Users className="w-3.5 h-3.5 text-primary-foreground" />
-            </div>
             <div>
               <h1 className="text-sm font-semibold leading-tight">{t("nav:friends")}</h1>
               <p className="text-[11px] text-muted-foreground">
@@ -1474,9 +1471,6 @@ function MembersView({
       <header className="flex h-14 shrink-0 items-center justify-between gap-4 border-b border-border bg-card px-4">
         <div className="flex items-center gap-3 min-w-0">
           <div className="flex items-center gap-2 min-w-0">
-            <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center shrink-0">
-              <Users className="w-3.5 h-3.5 text-primary-foreground" />
-            </div>
             <div className="min-w-0">
               <h1 className="truncate text-sm font-semibold leading-tight">{t("nav:members")}</h1>
               <p className="text-[11px] text-muted-foreground">

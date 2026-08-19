@@ -284,8 +284,7 @@ export function FilesView({ onOpenConversation }: Props) {
       <div className="shrink-0 border-b border-border px-6 pt-5 pb-4">
         <div className="flex items-center justify-between gap-4">
           <div className="min-w-0">
-            <h1 className="flex items-center gap-2 text-lg font-semibold text-foreground">
-              <FolderOpen className="h-5 w-5 text-primary" />
+            <h1 className="text-lg font-semibold text-foreground">
               {t("nav:files")}
             </h1>
             <p className="mt-0.5 text-sm text-muted-foreground">

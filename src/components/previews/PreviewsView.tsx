@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Search, Shapes } from "lucide-react";
+import { Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { cn } from "../../lib/utils";
@@ -65,9 +65,6 @@ export function PreviewsView() {
           className="h-14 shrink-0 px-4 border-b border-border flex items-center gap-2"
           style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
         >
-          <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center shrink-0">
-            <Shapes className="w-3.5 h-3.5 text-primary-foreground" />
-          </div>
           <h2 className="text-sm font-semibold text-foreground">{t("title")}</h2>
         </div>
 

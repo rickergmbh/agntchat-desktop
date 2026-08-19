@@ -100,12 +100,7 @@ export function CanvasView() {
           className="h-14 shrink-0 px-4 border-b border-border flex items-center justify-between"
           style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
         >
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center shrink-0">
-              <LayoutDashboard className="w-3.5 h-3.5 text-primary-foreground" />
-            </div>
-            <h2 className="text-sm font-semibold text-foreground">{t("title")}</h2>
-          </div>
+          <h2 className="text-sm font-semibold text-foreground">{t("title")}</h2>
           <button
             type="button"
             onClick={() => selectCanvas("new")}

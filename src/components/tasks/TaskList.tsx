@@ -147,12 +147,7 @@ export function TaskList({
         className="h-14 shrink-0 px-4 border-b border-border flex items-center"
         style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
       >
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center shrink-0">
-            <Zap className="w-3.5 h-3.5 text-primary-foreground" />
-          </div>
-          <h2 className="text-sm font-semibold text-foreground">{t("nav:tasks")}</h2>
-        </div>
+        <h2 className="text-sm font-semibold text-foreground">{t("nav:tasks")}</h2>
       </div>
 
       <div

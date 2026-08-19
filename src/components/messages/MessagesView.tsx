@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { MessageSquare, MessageCircle, MessagesSquare, Info, SquarePen, RefreshCw, X, CheckCircle2, Radio } from "lucide-react";
+import { MessageSquare, MessagesSquare, Info, SquarePen, RefreshCw, X, CheckCircle2, Radio } from "lucide-react";
 import { wakeAgent } from "../../lib/api";
 import { useResizableWidth, useRightPaneWidth } from "../../hooks/useResizableWidth";
 import { ResizeHandle } from "../ResizeHandle";
@@ -137,12 +137,7 @@ export function MessagesView() {
           className="relative h-14 shrink-0 px-4 flex items-center justify-between gap-2 after:absolute after:bottom-0 after:left-4 after:right-4 after:h-px after:bg-border"
           style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
         >
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center shrink-0">
-              <MessageCircle className="w-3.5 h-3.5 text-primary-foreground" />
-            </div>
-            <h2 className="text-sm font-semibold text-foreground">{t("nav:chats")}</h2>
-          </div>
+          <h2 className="text-sm font-semibold text-foreground">{t("nav:chats")}</h2>
           <div className="flex items-center gap-1">
             {/* Refresh + new-conversation only make sense once the user has an
                 agent to talk to — hide both in the zero-agent onboarding state. */}
