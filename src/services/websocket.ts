@@ -58,7 +58,23 @@ class WebSocketService {
       this.userChannel.leave();
       this.userChannel = null;
     }
-    this.socket?.disconnect();
+    if (this.socket) {
+      if (this.socket.connectionState() === "connecting") {
+        // React StrictMode double-invokes useWebSocket's effect in dev:
+        // connect() → disconnect() → connect() fire back-to-back before the
+        // first socket ever finishes its handshake. Calling
+        // Socket.disconnect() mid-CONNECTING makes the browser log "WebSocket
+        // is closed before the connection is established" — harmless (the
+        // second connect() succeeds normally) but noisy on every dev mount.
+        // Defer the actual teardown to the handshake's own resolution so we
+        // never race the raw WebSocket's readyState.
+        const socket = this.socket;
+        socket.onOpen(() => socket.disconnect());
+        socket.onError(() => socket.disconnect());
+      } else {
+        this.socket.disconnect();
+      }
+    }
     this.socket = null;
   }
 

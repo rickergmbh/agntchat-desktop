@@ -4,6 +4,7 @@ declare module "phoenix" {
     connect(): void;
     disconnect(): void;
     isConnected(): boolean;
+    connectionState(): "connecting" | "open" | "closing" | "closed";
     channel(topic: string, chanParams?: Record<string, unknown>): Channel;
     onOpen(callback: () => void): void;
     onClose(callback: () => void): void;
