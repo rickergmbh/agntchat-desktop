@@ -967,6 +967,43 @@ pub fn check_computer_use_deps(app: tauri::AppHandle) -> bool {
     ok
 }
 
+/// Open a visible system terminal running `claude login`, so the user can
+/// fix a `llm_unauthenticated` blocker without leaving the app. On the
+/// local machine the CLI owns the whole flow — it opens the browser,
+/// catches the localhost OAuth callback, and stores the credential — the
+/// terminal exists so its prompts and errors stay visible. The command
+/// returns as soon as the terminal is spawned; completion is observed the
+/// normal way (the agent's next turn succeeds and health clears).
+#[tauri::command]
+pub fn open_claude_login() -> Result<(), String> {
+    #[cfg(target_os = "windows")]
+    {
+        // `start`'s first quoted argument is the window title.
+        std::process::Command::new("cmd")
+            .args(["/c", "start", "Claude sign-in", "cmd", "/k", "claude", "login"])
+            .spawn()
+            .map_err(|e| format!("could not open a terminal: {e}"))?;
+        Ok(())
+    }
+    #[cfg(target_os = "macos")]
+    {
+        std::process::Command::new("osascript")
+            .args([
+                "-e",
+                "tell application \"Terminal\" to activate",
+                "-e",
+                "tell application \"Terminal\" to do script \"claude login\"",
+            ])
+            .spawn()
+            .map_err(|e| format!("could not open Terminal: {e}"))?;
+        Ok(())
+    }
+    #[cfg(not(any(target_os = "windows", target_os = "macos")))]
+    {
+        Err("Claude sign-in from the app is only supported on Windows and macOS".to_string())
+    }
+}
+
 #[tauri::command]
 pub fn get_computer_use_deps_status() -> DepsStatus {
     deps_status()

@@ -24,6 +24,7 @@ pub fn run() {
             process_manager::check_computer_use_deps,
             process_manager::install_computer_use_deps,
             process_manager::get_computer_use_deps_status,
+            process_manager::open_claude_login,
         ])
         .on_window_event(|window, event| {
             if let tauri::WindowEvent::Destroyed = event {

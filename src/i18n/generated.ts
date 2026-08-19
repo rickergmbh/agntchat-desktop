@@ -795,6 +795,7 @@ export const resources = {
           "llm_backend_error": "This agent's model backend failed to start.",
           "llm_backend_missing": "The Claude CLI isn't installed on the machine running this agent.",
           "llm_unauthenticated": "No signed-in Claude account on the machine running this agent. Sign in there and it will pick up where it left off.",
+          "signInCta": "Sign in to Claude",
           "title": "This agent can't answer yet"
         },
         "claimedForDuration": "Claimed for {{duration}}",
@@ -6637,6 +6638,7 @@ export const resources = {
           "llm_backend_error": "El backend del modelo de este agente no pudo iniciarse.",
           "llm_backend_missing": "La CLI de Claude no está instalada en la máquina de este agente.",
           "llm_unauthenticated": "No hay ninguna cuenta de Claude conectada en la máquina de este agente. Inicia sesión allí y retomará donde lo dejó.",
+          "signInCta": "Iniciar sesión en Claude",
           "title": "Este agente aún no puede responder"
         },
         "claimedForDuration": "Reclamado durante {{duration}}",
@@ -12479,6 +12481,7 @@ export const resources = {
           "llm_backend_error": "Das Modell-Backend dieses Agenten konnte nicht gestartet werden.",
           "llm_backend_missing": "Die Claude CLI ist auf dem Gerät dieses Agenten nicht installiert.",
           "llm_unauthenticated": "Auf dem Gerät dieses Agenten ist kein Claude-Konto angemeldet. Melde dich dort an, und er macht dort weiter, wo er aufgehört hat.",
+          "signInCta": "Bei Claude anmelden",
           "title": "Dieser Agent kann noch nicht antworten"
         },
         "claimedForDuration": "Beansprucht seit {{duration}}",
@@ -18321,6 +18324,7 @@ export const resources = {
           "llm_backend_error": "Le backend de modèle de cet agent n'a pas pu démarrer.",
           "llm_backend_missing": "La CLI Claude n'est pas installée sur la machine de cet agent.",
           "llm_unauthenticated": "Aucun compte Claude connecté sur la machine de cet agent. Connectez-vous là-bas et il reprendra où il s'était arrêté.",
+          "signInCta": "Se connecter à Claude",
           "title": "Cet agent ne peut pas encore répondre"
         },
         "claimedForDuration": "Réclamé depuis {{duration}}",
@@ -24163,6 +24167,7 @@ export const resources = {
           "llm_backend_error": "O backend de modelo deste agente não conseguiu iniciar.",
           "llm_backend_missing": "A CLI do Claude não está instalada na máquina deste agente.",
           "llm_unauthenticated": "Nenhuma conta Claude conectada na máquina deste agente. Faça login lá e ele continuará de onde parou.",
+          "signInCta": "Entrar no Claude",
           "title": "Este agente ainda não pode responder"
         },
         "claimedForDuration": "Reivindicado há {{duration}}",
@@ -30005,6 +30010,7 @@ export const resources = {
           "llm_backend_error": "このエージェントのモデルバックエンドを起動できませんでした。",
           "llm_backend_missing": "このエージェントを実行しているマシンに Claude CLI がインストールされていません。",
           "llm_unauthenticated": "このエージェントを実行しているマシンに、サインイン済みの Claude アカウントがありません。そこでサインインすれば、続きから再開します。",
+          "signInCta": "Claude にサインイン",
           "title": "このエージェントはまだ応答できません"
         },
         "claimedForDuration": "{{duration}}の間確保済み",
@@ -35847,6 +35853,7 @@ export const resources = {
           "llm_backend_error": "该智能体的模型后端启动失败。",
           "llm_backend_missing": "运行该智能体的机器上未安装 Claude CLI。",
           "llm_unauthenticated": "运行该智能体的机器上没有登录的 Claude 账号。在那台机器上登录后，它会从中断处继续。",
+          "signInCta": "登录 Claude",
           "title": "该智能体暂时无法回复"
         },
         "claimedForDuration": "已认领 {{duration}}",
@@ -41689,6 +41696,7 @@ export const resources = {
           "llm_backend_error": "이 에이전트의 모델 백엔드를 시작하지 못했습니다.",
           "llm_backend_missing": "이 에이전트를 실행 중인 머신에 Claude CLI가 설치되어 있지 않습니다.",
           "llm_unauthenticated": "이 에이전트를 실행 중인 머신에 로그인된 Claude 계정이 없습니다. 해당 머신에서 로그인하면 중단된 지점부터 이어서 진행합니다.",
+          "signInCta": "Claude에 로그인",
           "title": "이 에이전트는 아직 응답할 수 없습니다"
         },
         "claimedForDuration": "{{duration}} 동안 점유됨",
@@ -47531,6 +47539,7 @@ export const resources = {
           "llm_backend_error": "Il backend del modello di questo agente non è riuscito ad avviarsi.",
           "llm_backend_missing": "La CLI di Claude non è installata sulla macchina di questo agente.",
           "llm_unauthenticated": "Nessun account Claude connesso sulla macchina di questo agente. Accedi lì e riprenderà da dove aveva lasciato.",
+          "signInCta": "Accedi a Claude",
           "title": "Questo agente non può ancora rispondere"
         },
         "claimedForDuration": "Rivendicato per {{duration}}",
@@ -53373,6 +53382,7 @@ export const resources = {
           "llm_backend_error": "इस एजेंट का मॉडल बैकएंड शुरू नहीं हो सका।",
           "llm_backend_missing": "इस एजेंट की मशीन पर Claude CLI इंस्टॉल नहीं है।",
           "llm_unauthenticated": "इस एजेंट की मशीन पर कोई Claude खाता साइन-इन नहीं है। वहाँ साइन इन करें और यह वहीं से जारी रखेगा।",
+          "signInCta": "Claude में साइन इन करें",
           "title": "यह एजेंट अभी जवाब नहीं दे सकता"
         },
         "claimedForDuration": "{{duration}} से दावा किया गया",

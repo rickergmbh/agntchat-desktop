@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
+import { invoke } from "@tauri-apps/api/core";
 import { useTranslation } from "react-i18next";
 import i18n from "../i18n";
 import { useAgentStore, type ManagedAgent } from "../stores/agentStore";
@@ -2871,11 +2872,31 @@ function HealthPanel({ managed }: { managed: ManagedAgent }) {
       {blockerText && (
         <div className="flex items-start gap-2.5 rounded-lg border border-warning/30 bg-warning/10 p-3">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-warning" />
-          <div className="space-y-0.5">
+          <div className="min-w-0 space-y-0.5">
             <p className="text-xs font-medium text-foreground">
               {t("health.blocker.title")}
             </p>
             <p className="text-xs text-muted-foreground">{blockerText}</p>
+            {/* Local runtime only: hosted agents fix their Claude seat via
+                the fleet's ClaudeLoginDialog, not a terminal on THIS
+                machine. The command opens a system terminal running
+                `claude login`; the CLI completes the browser OAuth itself
+                and the blocker clears on the agent's next successful turn. */}
+            {detail?.blocker?.code === "llm_unauthenticated" &&
+              managed.agent.runtime !== "org_host" && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="mt-1.5"
+                  onClick={() => {
+                    void invoke("open_claude_login").catch((e: unknown) => {
+                      setActionError(e instanceof Error ? e.message : String(e));
+                    });
+                  }}
+                >
+                  {t("health.blocker.signInCta")}
+                </Button>
+              )}
           </div>
         </div>
       )}

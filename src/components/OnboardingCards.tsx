@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { invoke } from "@tauri-apps/api/core";
 import { useTranslation } from "react-i18next";
 import i18n from "../i18n";
 import {
@@ -254,6 +255,15 @@ export function OnboardingCards({
     void selectAgent(agentId);
   };
 
+  // Opens a system terminal running `claude login` (Tauri command). Local
+  // runtime only — a hosted agent's Claude seat lives on the host VM and
+  // is fixed through the fleet's sign-in dialog instead.
+  const handleClaudeSignIn = () => {
+    void invoke("open_claude_login").catch((e: unknown) => {
+      setActionError(e instanceof Error ? e.message : String(e));
+    });
+  };
+
   const handleSayHello = async () => {
     if (!agentId) return;
     setActionError(null);
@@ -430,13 +440,21 @@ export function OnboardingCards({
                 {s === "greeting" && (
                   <>
                     {blocked ? (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={handleOpenSettings}
-                      >
-                        {t("cards.onlineOpenSettings")}
-                      </Button>
+                      <>
+                        {blocker?.code === "llm_unauthenticated" &&
+                          variant !== "hosted" && (
+                            <Button size="sm" onClick={handleClaudeSignIn}>
+                              {t("agents:health.blocker.signInCta")}
+                            </Button>
+                          )}
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={handleOpenSettings}
+                        >
+                          {t("cards.onlineOpenSettings")}
+                        </Button>
+                      </>
                     ) : (
                       <Loader2 className="w-3.5 h-3.5 animate-spin text-muted-foreground" />
                     )}
