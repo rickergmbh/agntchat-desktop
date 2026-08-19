@@ -553,7 +553,10 @@ export const useAgentStore = create<AgentState>((set, get) => ({
             prevH.queuedMessages !== health.queuedMessages ||
             prevH.stuckCount !== health.stuckCount ||
             prevH.onlineExecutorCount !== health.onlineExecutorCount ||
-            prevH.executorCount !== health.executorCount;
+            prevH.executorCount !== health.executorCount ||
+            // A blocker can flip (or clear) with every other count
+            // unchanged — e.g. the machine's Claude login expires mid-turn.
+            prevH.blocker?.code !== health.blocker?.code;
           const activityChanged =
             activityDetected && managed.lastActivityAt !== now;
 

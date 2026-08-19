@@ -3418,6 +3418,7 @@ export interface AgentHealth {
   stuckCount: number;
   queuedTasks: number;
   queuedMessages: number;
+  blocker?: AgentBlocker;
 }
 
 // Why an agent that heartbeats fine still can't answer — separate from

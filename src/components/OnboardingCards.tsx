@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import i18n from "../i18n";
 import {
+  AlertTriangle,
   Bot,
   Check,
   Cloud,
@@ -289,6 +291,23 @@ export function OnboardingCards({
         ? t("cards.onlineTitle", { name })
         : t("cards.greetingTitle", { name });
 
+  // The "greeting" step otherwise waits forever on a spinner: the backend
+  // seeds a hidden briefing DM the instant the agent's bridge registers,
+  // but that DM only becomes visible once the agent's own reply lands —
+  // which never happens if its machine has no signed-in Claude account.
+  // `firstAgent.health` already carries the same blocker the AgentConfig
+  // health panel shows, refreshed reactively on every presence change, so
+  // this needs no extra polling. Localized off `code` (same catalog as the
+  // health panel); `message` is the server's prose fallback for a code this
+  // build doesn't know yet.
+  const blocker = firstAgent?.health?.blocker;
+  const blockerKey = blocker && `agents:health.blocker.${blocker.code}`;
+  const blockerText = blocker
+    ? i18n.exists(blockerKey!)
+      ? t(blockerKey!)
+      : blocker.message
+    : null;
+
   return (
     <div className="flex-1 flex flex-col items-center justify-center px-8 overflow-y-auto">
       <div className="w-full max-w-md flex flex-col gap-2 py-6">
@@ -327,12 +346,25 @@ export function OnboardingCards({
             );
           }
 
+          const blocked = s === "greeting" && !!blockerText;
+
           return (
             <Card key={s} size="sm" className="w-full">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <span className="flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary ring-1 ring-primary/30">
-                    {stepIcon(s)}
+                  <span
+                    className={cn(
+                      "flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full ring-1",
+                      blocked
+                        ? "bg-warning/10 text-warning ring-warning/30"
+                        : "bg-primary/10 text-primary ring-primary/30"
+                    )}
+                  >
+                    {blocked ? (
+                      <AlertTriangle className="w-3.5 h-3.5" />
+                    ) : (
+                      stepIcon(s)
+                    )}
                   </span>
                   {stepTitle(s)}
                 </CardTitle>
@@ -343,7 +375,7 @@ export function OnboardingCards({
                       ? variant === "hosted"
                         ? t("cards.onlineHostedBody", { name })
                         : t("cards.onlineLocalBody", { name })
-                      : t("cards.greetingBody")}
+                      : (blockerText ?? t("cards.greetingBody"))}
                 </CardDescription>
                 {actionError && (
                   <p className="text-xs text-destructive">{actionError}</p>
@@ -397,7 +429,17 @@ export function OnboardingCards({
                 )}
                 {s === "greeting" && (
                   <>
-                    <Loader2 className="w-3.5 h-3.5 animate-spin text-muted-foreground" />
+                    {blocked ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={handleOpenSettings}
+                      >
+                        {t("cards.onlineOpenSettings")}
+                      </Button>
+                    ) : (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin text-muted-foreground" />
+                    )}
                     <Button
                       size="sm"
                       variant="ghost"
