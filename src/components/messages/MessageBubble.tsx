@@ -165,12 +165,22 @@ export const MessageBubble = memo(function MessageBubble({
   // open_claude_login). Hosted agents' seats live on the org-host VM (fixed
   // via the fleet's sign-in dialog) and agents managed on another machine
   // can't be fixed from here — both render the plain copy only.
+  //
+  // Also gated on cli_connection: bedrock/vertex agents authenticate through
+  // the cloud provider's own SSO/ADC chain, not `claude login` — offering
+  // this button for them is actively wrong (it fixes nothing and hides the
+  // real remedy, which is already spelled out in the message text itself
+  // for those connections; see bridge errorMessages.authFailureCloud).
+  // Missed on first ship: a bedrock agent's expired AWS SSO session got this
+  // button anyway (Jarvis, Aug 2026) because errorKind alone doesn't say
+  // *which* credential broke.
   const senderManaged = useAgentStore((s) => s.agents[message.senderId]);
   const showClaudeSignIn =
     message.metadata?.errorKind === "auth_failure" &&
     isAgent &&
     senderManaged != null &&
-    senderManaged.agent.runtime !== "org_host";
+    senderManaged.agent.runtime !== "org_host" &&
+    (senderManaged.config.cliConnection ?? "subscription") === "subscription";
   // open_claude_login just spawns a terminal — it returns as soon as the
   // window opens, not when `claude login` actually finishes, so there is no
   // signal to detect a completed (or abandoned) sign-in. Track only that the
