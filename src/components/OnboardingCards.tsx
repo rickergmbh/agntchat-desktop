@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { useTranslation } from "react-i18next";
 import i18n from "../i18n";
@@ -185,6 +185,33 @@ export function OnboardingCards({
     if (onOpenConversation) onOpenConversation(conversationId);
     else setActiveConversation(conversationId);
   };
+
+  // Auto-open the greeting DM the moment the agent's first message lands —
+  // the user just finished setup and shouldn't have to find and click their
+  // first conversation themselves. In-session only (`arrived` never survives
+  // a reload), and gated on the message actually existing: the DM row can be
+  // created ahead of the agent's reply, and opening an empty pane feels
+  // broken. If the message never lands, the "arrived" card below remains the
+  // manual fallback.
+  const greetingLanded = useChatStore(
+    (s) =>
+      !!agentDmId &&
+      !!s.conversations.find((c) => c.id === agentDmId)?.lastMessage
+  );
+  const autoOpenedRef = useRef(false);
+  useEffect(() => {
+    if (!arrived || !agentDmId || !greetingLanded) return;
+    if (autoOpenedRef.current) return;
+    autoOpenedRef.current = true;
+    if (onOpenConversation) onOpenConversation(agentDmId);
+    else setActiveConversation(agentDmId);
+  }, [
+    arrived,
+    agentDmId,
+    greetingLanded,
+    onOpenConversation,
+    setActiveConversation,
+  ]);
 
   if (!active) {
     // The flow just completed in this session: show the one-shot "it
