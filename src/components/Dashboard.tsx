@@ -389,7 +389,9 @@ export function Dashboard() {
   } = useAgentStore();
   const [showCreate, setShowCreate] = useState(false);
   const [search, setSearch] = useState("");
-  const [activeTab, setActiveTab] = useState<Tab>("agents");
+  // The Directory tab was dropped from the header (7beadbb); the state stays
+  // pinned to "agents" until the directory rendering paths are removed too.
+  const [activeTab] = useState<Tab>("agents");
   // First-run setup cards replace the zero-agents empty state.
   const onboarding = useOnboardingState();
   const setActiveConversation = useChatStore((s) => s.setActiveConversation);
@@ -788,23 +790,10 @@ export function Dashboard() {
             className="flex items-center gap-1.5 min-w-0"
             style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
           >
-            <button
-              onClick={() => {
-                setActiveTab("agents");
-                setSelectedListingId(null);
-              }}
-              className={cn(
-                "flex items-center gap-1.5 rounded-md px-2 py-1.5 text-sm font-medium transition-colors",
-                activeTab === "agents"
-                  ? "bg-accent text-accent-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              {t("nav:agents")}
-              <span className="rounded-full bg-muted px-1.5 py-0.5 text-[9px] text-muted-foreground">
-                {activeCount}
-              </span>
-            </button>
+            <h2 className="text-sm font-semibold text-foreground">{t("nav:agents")}</h2>
+            <span className="rounded-full bg-muted px-1.5 py-0.5 text-[9px] text-muted-foreground">
+              {activeCount}
+            </span>
           </div>
 
           {/* Hide the header add button until the user has their first agent —
