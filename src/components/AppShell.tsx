@@ -344,7 +344,7 @@ function LeftRail({
           textBadge={
             agentStats.total > 0 ? (
               <>
-                <span className="text-success">{agentStats.online}</span>
+                <span>{agentStats.online}</span>
                 <span className="opacity-50">/</span>
                 <span>{agentStats.total}</span>
               </>
@@ -501,7 +501,7 @@ function RailButton({
         "relative flex items-center justify-center w-10 h-10 rounded-lg transition-all",
         active
           ? "bg-rail-accent text-rail-accent-foreground shadow-sm"
-          : "text-rail-foreground hover:bg-rail-hover hover:text-rail-accent-foreground"
+          : "text-rail-foreground hover:bg-rail-hover hover:text-foreground"
       )}
     >
       <Icon className="w-5 h-5" />
@@ -529,12 +529,7 @@ function RailButton({
         )
       )}
       {badge === undefined && !badgeTier && textBadge && (
-        <span
-          className={cn(
-            "absolute bottom-0.5 left-1/2 -translate-x-1/2 px-1 rounded-full text-[8px] font-semibold tabular-nums leading-none flex items-center justify-center h-3 bg-rail-accent ring-1 ring-rail-border",
-            active ? "text-rail-accent-foreground" : "text-rail-foreground"
-          )}
-        >
+        <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 px-1 text-[8px] font-semibold tabular-nums leading-none flex items-center justify-center h-3">
           {textBadge}
         </span>
       )}

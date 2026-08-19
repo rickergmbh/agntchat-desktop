@@ -122,7 +122,12 @@ export function FleetView() {
             <RefreshCw className="h-3.5 w-3.5" />
             {t("common:refresh")}
           </Button>
-          <Button variant="outline" size="sm" onClick={() => setAnthropicOpen(true)}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setAnthropicOpen(true)}
+            title={t("hosts.connectAnthropicHint")}
+          >
             <ShieldCheck
               className={cn(
                 "h-3.5 w-3.5",
@@ -237,6 +242,7 @@ function HostCard({
   const [ops, setOps] = useState<api.HostOperation[]>([]);
   const [busy, setBusy] = useState<api.HostOpKind | "delete" | null>(null);
   const [keyOpen, setKeyOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
   const [pubKey, setPubKey] = useState<string | null>(null);
   const [editing, setEditing] = useState(false);
   const [nameInput, setNameInput] = useState(host.name);
@@ -505,6 +511,34 @@ function HostCard({
             )}
             {t("fleet.restart")}
           </Button>
+          {bootstrapped && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setLoginOpen(true)}
+              disabled={busy !== null || !host.sshHost}
+              title={t("hosts.anthropicHint")}
+            >
+              <ShieldCheck className="h-3.5 w-3.5" />
+              Anthropic
+            </Button>
+          )}
+          {bootstrapped && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => void op("set_token")}
+              disabled={busy !== null || !host.sshHost}
+              title={t("hosts.seatHint")}
+            >
+              {busy === "set_token" ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <RefreshCw className="h-3.5 w-3.5" />
+              )}
+              {t("hosts.seat")}
+            </Button>
+          )}
           <Button
             variant="ghost"
             size="sm"
@@ -588,6 +622,14 @@ function HostCard({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <ClaudeLoginDialog
+        orgId={orgId}
+        hostId={host.id}
+        hostName={host.name}
+        open={loginOpen}
+        onOpenChange={setLoginOpen}
+      />
     </li>
   );
 }

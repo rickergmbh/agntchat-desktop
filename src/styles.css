@@ -23,12 +23,12 @@
  * ------------------------------------------------------------------------- */
 :root {
   /* Light icon rail — a white pill on the gray desk. Inactive icons are muted
-   * gray; the active item is a subtle light-gray pressed pill with near-black
-   * icon for contrast. */
+   * gray; the active item is a solid brand-blue pill with a white icon for
+   * contrast. */
   --color-rail-background: #FFFFFF;
   --color-rail-foreground: #6E6E80;
-  --color-rail-accent: #EDEDF1;
-  --color-rail-accent-foreground: #0A0A0F;
+  --color-rail-accent: #007BFF;
+  --color-rail-accent-foreground: #FFFFFF;
   --color-rail-hover: #F1F1F4;
   --color-rail-border: #E4E4E9;
 
@@ -42,7 +42,7 @@
   /* Dark icon rail — high-contrast chrome slab. */
   --color-rail-background: #1A1A1F;
   --color-rail-foreground: #8E8E99;
-  --color-rail-accent: #2C2C33;
+  --color-rail-accent: #007BFF;
   --color-rail-accent-foreground: #FFFFFF;
   --color-rail-hover: #26262C;
   --color-rail-border: #26262C;
