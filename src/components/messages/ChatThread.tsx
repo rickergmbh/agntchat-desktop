@@ -1167,6 +1167,7 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
             {stream && (
               <StreamingBubble
                 stream={stream}
+                members={conversationMembers}
                 onStop={handleStopAgents}
                 stopping={stoppingAgents}
               />

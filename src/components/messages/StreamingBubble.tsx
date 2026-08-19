@@ -1,6 +1,6 @@
 import { Bot, Brain, Loader2, Square } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import type { ActiveStream } from "../../lib/api";
+import type { ActiveStream, ConversationMember } from "../../lib/api";
 import {
   PHASE_ICONS,
   PHASE_IS_ACTIVE,
@@ -8,6 +8,7 @@ import {
   STREAM_PHASE_LABEL_KEYS,
 } from "../../lib/status-contract.generated";
 import { cn } from "../../lib/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Bubble, BubbleContent } from "@/components/ui/bubble";
 import {
   Message as MessageRow,
@@ -18,10 +19,12 @@ import {
 
 export function StreamingBubble({
   stream,
+  members,
   onStop,
   stopping,
 }: {
   stream: ActiveStream;
+  members?: ConversationMember[];
   /** When set, renders a stop button beside the bubble. Stops ALL agents in
    *  the conversation (server semantics of /stop-agents), not just this one. */
   onStop?: () => void;
@@ -33,13 +36,19 @@ export function StreamingBubble({
     stream.phaseDetail ??
     t(STREAM_PHASE_LABEL_KEYS[stream.phase] ?? STREAM_PHASE_FALLBACK_LABEL_KEY);
   const animated = PHASE_IS_ACTIVE[stream.phase] ?? true;
+  const avatarUrl = members?.find((m) => m.participantId === stream.senderId)?.participant?.avatarUrl;
 
   return (
     <MessageRow className="mt-2 px-4">
       {/* self-start: the streaming bubble grows downward, so the avatar
           anchors to the top where the stream began. */}
       <MessageAvatar className="h-8 w-8 self-start bg-muted">
-        <Bot className="h-4 w-4 text-muted-foreground" />
+        <Avatar className="h-8 w-8">
+          {avatarUrl && <AvatarImage src={avatarUrl} alt={stream.senderName} />}
+          <AvatarFallback className="bg-muted">
+            <Bot className="h-4 w-4 text-muted-foreground" />
+          </AvatarFallback>
+        </Avatar>
       </MessageAvatar>
 
       <MessageContent className="w-fit max-w-[72%] gap-0">
