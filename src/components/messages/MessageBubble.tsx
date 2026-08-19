@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { invoke } from "@tauri-apps/api/core";
 import { useAuthStore } from "../../stores/authStore";
@@ -171,10 +171,24 @@ export const MessageBubble = memo(function MessageBubble({
     isAgent &&
     senderManaged != null &&
     senderManaged.agent.runtime !== "org_host";
+  // open_claude_login just spawns a terminal — it returns as soon as the
+  // window opens, not when `claude login` actually finishes, so there is no
+  // signal to detect a completed (or abandoned) sign-in. Track only that the
+  // click fired, and say so explicitly: without this, a user who closes the
+  // browser mid-flow sees the button do nothing and has no way to tell
+  // whether it's still in progress or needs retrying.
+  const [signInState, setSignInState] = useState<"idle" | "opened" | "error">(
+    "idle"
+  );
+  const [signInError, setSignInError] = useState<string | null>(null);
   const handleClaudeSignIn = () => {
-    void invoke("open_claude_login").catch((e: unknown) => {
-      console.error("open_claude_login failed:", e);
-    });
+    setSignInError(null);
+    invoke("open_claude_login")
+      .then(() => setSignInState("opened"))
+      .catch((e: unknown) => {
+        setSignInState("error");
+        setSignInError(e instanceof Error ? e.message : String(e));
+      });
   };
 
   // Find the message we're replying to so we can render the preview
@@ -309,7 +323,7 @@ export const MessageBubble = memo(function MessageBubble({
           <AddReactionButton message={message} isOwn={isOwn} />
         </Bubble>
 
-        {showClaudeSignIn && (
+        {showClaudeSignIn && signInState !== "opened" && (
           <Button
             size="sm"
             variant="outline"
@@ -319,6 +333,23 @@ export const MessageBubble = memo(function MessageBubble({
             <LogIn className="h-3.5 w-3.5" />
             {t("agents:health.blocker.signInCta")}
           </Button>
+        )}
+        {showClaudeSignIn && signInState === "opened" && (
+          <div className="mt-1.5 flex items-center gap-2 self-start text-xs text-muted-foreground">
+            <span>{t("agents:health.blocker.signInOpened")}</span>
+            <button
+              type="button"
+              className="underline underline-offset-2 hover:text-foreground"
+              onClick={handleClaudeSignIn}
+            >
+              {t("agents:health.blocker.signInCta")}
+            </button>
+          </div>
+        )}
+        {showClaudeSignIn && signInState === "error" && signInError && (
+          <p className="mt-1.5 self-start text-xs text-destructive">
+            {signInError}
+          </p>
         )}
 
         <ReactionChips message={message} isOwn={isOwn} />

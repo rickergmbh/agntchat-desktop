@@ -796,6 +796,7 @@ export const resources = {
           "llm_backend_missing": "The Claude CLI isn't installed on the machine running this agent.",
           "llm_unauthenticated": "No signed-in Claude account on the machine running this agent. Sign in there and it will pick up where it left off.",
           "signInCta": "Sign in to Claude",
+          "signInOpened": "Opened a sign-in window. Send me a message once you're signed in.",
           "title": "This agent can't answer yet"
         },
         "claimedForDuration": "Claimed for {{duration}}",
@@ -6639,6 +6640,7 @@ export const resources = {
           "llm_backend_missing": "La CLI de Claude no está instalada en la máquina de este agente.",
           "llm_unauthenticated": "No hay ninguna cuenta de Claude conectada en la máquina de este agente. Inicia sesión allí y retomará donde lo dejó.",
           "signInCta": "Iniciar sesión en Claude",
+          "signInOpened": "Se abrió una ventana de inicio de sesión. Envíame un mensaje cuando hayas iniciado sesión.",
           "title": "Este agente aún no puede responder"
         },
         "claimedForDuration": "Reclamado durante {{duration}}",
@@ -12482,6 +12484,7 @@ export const resources = {
           "llm_backend_missing": "Die Claude CLI ist auf dem Gerät dieses Agenten nicht installiert.",
           "llm_unauthenticated": "Auf dem Gerät dieses Agenten ist kein Claude-Konto angemeldet. Melde dich dort an, und er macht dort weiter, wo er aufgehört hat.",
           "signInCta": "Bei Claude anmelden",
+          "signInOpened": "Ein Anmeldefenster wurde geöffnet. Sende mir eine Nachricht, sobald du angemeldet bist.",
           "title": "Dieser Agent kann noch nicht antworten"
         },
         "claimedForDuration": "Beansprucht seit {{duration}}",
@@ -18325,6 +18328,7 @@ export const resources = {
           "llm_backend_missing": "La CLI Claude n'est pas installée sur la machine de cet agent.",
           "llm_unauthenticated": "Aucun compte Claude connecté sur la machine de cet agent. Connectez-vous là-bas et il reprendra où il s'était arrêté.",
           "signInCta": "Se connecter à Claude",
+          "signInOpened": "Une fenêtre de connexion s'est ouverte. Envoyez-moi un message une fois connecté(e).",
           "title": "Cet agent ne peut pas encore répondre"
         },
         "claimedForDuration": "Réclamé depuis {{duration}}",
@@ -24168,6 +24172,7 @@ export const resources = {
           "llm_backend_missing": "A CLI do Claude não está instalada na máquina deste agente.",
           "llm_unauthenticated": "Nenhuma conta Claude conectada na máquina deste agente. Faça login lá e ele continuará de onde parou.",
           "signInCta": "Entrar no Claude",
+          "signInOpened": "Uma janela de login foi aberta. Envie-me uma mensagem assim que fizer login.",
           "title": "Este agente ainda não pode responder"
         },
         "claimedForDuration": "Reivindicado há {{duration}}",
@@ -30011,6 +30016,7 @@ export const resources = {
           "llm_backend_missing": "このエージェントを実行しているマシンに Claude CLI がインストールされていません。",
           "llm_unauthenticated": "このエージェントを実行しているマシンに、サインイン済みの Claude アカウントがありません。そこでサインインすれば、続きから再開します。",
           "signInCta": "Claude にサインイン",
+          "signInOpened": "サインインウィンドウを開きました。サインインが完了したら、メッセージを送ってください。",
           "title": "このエージェントはまだ応答できません"
         },
         "claimedForDuration": "{{duration}}の間確保済み",
@@ -35854,6 +35860,7 @@ export const resources = {
           "llm_backend_missing": "运行该智能体的机器上未安装 Claude CLI。",
           "llm_unauthenticated": "运行该智能体的机器上没有登录的 Claude 账号。在那台机器上登录后，它会从中断处继续。",
           "signInCta": "登录 Claude",
+          "signInOpened": "已打开登录窗口。登录完成后，给我发条消息。",
           "title": "该智能体暂时无法回复"
         },
         "claimedForDuration": "已认领 {{duration}}",
@@ -41697,6 +41704,7 @@ export const resources = {
           "llm_backend_missing": "이 에이전트를 실행 중인 머신에 Claude CLI가 설치되어 있지 않습니다.",
           "llm_unauthenticated": "이 에이전트를 실행 중인 머신에 로그인된 Claude 계정이 없습니다. 해당 머신에서 로그인하면 중단된 지점부터 이어서 진행합니다.",
           "signInCta": "Claude에 로그인",
+          "signInOpened": "로그인 창이 열렸습니다. 로그인을 완료하면 메시지를 보내주세요.",
           "title": "이 에이전트는 아직 응답할 수 없습니다"
         },
         "claimedForDuration": "{{duration}} 동안 점유됨",
@@ -47540,6 +47548,7 @@ export const resources = {
           "llm_backend_missing": "La CLI di Claude non è installata sulla macchina di questo agente.",
           "llm_unauthenticated": "Nessun account Claude connesso sulla macchina di questo agente. Accedi lì e riprenderà da dove aveva lasciato.",
           "signInCta": "Accedi a Claude",
+          "signInOpened": "È stata aperta una finestra di accesso. Scrivimi un messaggio una volta effettuato l'accesso.",
           "title": "Questo agente non può ancora rispondere"
         },
         "claimedForDuration": "Rivendicato per {{duration}}",
@@ -53383,6 +53392,7 @@ export const resources = {
           "llm_backend_missing": "इस एजेंट की मशीन पर Claude CLI इंस्टॉल नहीं है।",
           "llm_unauthenticated": "इस एजेंट की मशीन पर कोई Claude खाता साइन-इन नहीं है। वहाँ साइन इन करें और यह वहीं से जारी रखेगा।",
           "signInCta": "Claude में साइन इन करें",
+          "signInOpened": "एक साइन-इन विंडो खोली गई। साइन इन करने के बाद मुझे एक संदेश भेजें।",
           "title": "यह एजेंट अभी जवाब नहीं दे सकता"
         },
         "claimedForDuration": "{{duration}} से दावा किया गया",
