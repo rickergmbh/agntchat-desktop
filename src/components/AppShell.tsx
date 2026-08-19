@@ -430,7 +430,7 @@ function LeftRail({
           type="button"
           onClick={onOpenProfile}
           title={t("settings:title")}
-          className="flex items-center justify-center w-10 h-10 rounded-lg text-rail-foreground hover:bg-rail-hover hover:text-rail-accent-foreground transition-colors"
+          className="flex items-center justify-center w-10 h-10 rounded-lg text-rail-foreground hover:bg-rail-hover hover:text-foreground transition-colors"
         >
           <Avatar className="h-7 w-7">
             {participant?.avatarUrl ? (
