@@ -4742,6 +4742,7 @@ export const resources = {
       },
       "featuresPage": {
         "categories": {
+          "agents": "Building agents",
           "automation": "Autonomy & scheduling",
           "conversations": "Conversations",
           "platform": "Workspace & runtime"
@@ -4749,6 +4750,24 @@ export const resources = {
         "pageHeading": "Everything you can do in agntchat",
         "pageLead": "Channels and DMs your agents actually live in. Tasks they pick up, routines they run on schedule, loops they chase to done. This is the full feature set, not the highlight reel.",
         "sections": {
+          "agentCustomization": {
+            "body": "An agent isn't a preset you pick from a list. You write its personality, choose which model powers it, attach skills that teach it your way of working, and decide exactly which tools it can touch, and every one of those stays adjustable later, on a live agent.",
+            "point1": "Model-agnostic: runs on your existing Claude or OpenAI subscription, or a direct API key, switch anytime",
+            "point2": "Personality is a living document the agent can evolve, not a locked system prompt",
+            "point3": "Skills add packaged know-how, from your own library or the community marketplace",
+            "point4": "Tools are granted per agent, and anything beyond its standing permissions waits for your approval",
+            "title": "Agent creation: yours to shape, down to the model",
+            "vHeader": "New agent",
+            "vModelLabel": "Model",
+            "vModelValue": "Claude Code · your subscription",
+            "vName": "Atlas",
+            "vNameLabel": "Name",
+            "vSkill1": "gmail-integration",
+            "vSkillAdd": "+ Add skill",
+            "vSkillsLabel": "Skills",
+            "vToolsLabel": "Tools",
+            "vToolsValue": "Gmail · Calendar · GitHub"
+          },
           "channels": {
             "body": "If you've used Slack, this will feel familiar: a channel is a standing, topic-based room, not a one-off thread. Name it once and it's there for as long as the work is, with humans and agents both showing up as regular members, presence and history included, like anywhere else in the product.",
             "point1": "Named and topic-based, built to last beyond a single conversation",
@@ -4828,6 +4847,23 @@ export const resources = {
             "vBody": "Don't forget: renewal call with Acme is tomorrow at 2 PM.",
             "vOpen": "Open",
             "vSnooze": "Snooze"
+          },
+          "responseCards": {
+            "body": "Ask for hotels, this morning's inbox, or a market summary and the answer comes back as cards, not a wall of text: image, title, price, rating, and the details laid out as chips, callouts, and rows. On mobile you swipe through them; on web and desktop they stack right in the conversation.",
+            "point1": "A curated library of card layouts: hotels, flights, emails, stocks, jobs, recipes, briefings, and more",
+            "point2": "Rich detail inside each card: chips, colored callouts, formatted text sections, trends, and mini charts",
+            "point3": "Cards carry real buttons, send that email draft or book the room straight from the conversation",
+            "title": "Response cards: results you can read at a glance",
+            "vChip1": "Oct 12–15",
+            "vChip2": "$184 / night",
+            "vCta": "Book",
+            "vHighlight": "Free cancellation until Oct 10",
+            "vRow1Label": "Room",
+            "vRow1Value": "Deluxe King",
+            "vRow2Label": "Rating",
+            "vRow2Value": "4.7 (2,310 reviews)",
+            "vSub": "Seafront · Lisbon",
+            "vTitle": "Hotel Miramar"
           },
           "routines": {
             "body": "Give an agent a routine and it runs on its own from then on: every morning, every few hours, whatever schedule you set. Each run becomes a real task, delivered back to you in the same workspace the routine was created in, every time.",
@@ -5146,6 +5182,20 @@ export const resources = {
             "scheduledSub": "fires at the right time",
             "scheduledTitle": "Scheduled job"
           },
+          "response-cards": {
+            "cardChip1": "Oct 12–15",
+            "cardChip2": "$184 / night",
+            "cardHighlight": "Free cancellation",
+            "cardMeta": "Seafront · Lisbon",
+            "cardName": "Hotel Miramar",
+            "cardRow1": "Room · Deluxe King",
+            "cardRow2": "Rating · 4.7",
+            "parityNote": "the same card on mobile, web, and desktop",
+            "replySub": "structured result, not prose",
+            "replyTitle": "Agent's reply",
+            "resolveSub": "named template → library → default",
+            "resolveTitle": "Template resolution"
+          },
           "routines": {
             "step1Sub": "interval or cron",
             "step1Title": "Routine set",
@@ -5155,6 +5205,21 @@ export const resources = {
             "step3Title": "Due, task created",
             "step4Sub": "in its own workspace",
             "step4Title": "Delivered"
+          },
+          "skills": {
+            "agentLabel": "Agent-specific skills",
+            "agentSub": "this agent only",
+            "globalLabel": "Platform-wide skills",
+            "globalSub": "every agent",
+            "indexSub": "always in the prompt",
+            "indexTitle": "Compact index",
+            "marketplaceNote": "New skills arrive by URL import or from the community marketplace",
+            "onDemandSub": "loaded on demand",
+            "onDemandTitle": "Full instructions",
+            "ownerLabel": "Your skills",
+            "ownerSub": "every agent you own",
+            "resolvedSub": "most specific name wins",
+            "resolvedTitle": "Resolved skill set"
           },
           "tool-permissions": {
             "expiryNote": "unanswered → expiry sweep clears it",
@@ -5339,12 +5404,26 @@ export const resources = {
             "p2": "A reminder always surfaces in a direct message with its owner, never into an arbitrary conversation the agent picks, so there's no way for a reminder to end up broadcast somewhere unexpected. And like everything else that fires later instead of immediately, it's stamped with the workspace it was created in, so it's delivered back into that same workspace even if the agent has since been pinned elsewhere.",
             "title": "Reminders: things an agent flags for later"
           },
+          "response-cards": {
+            "caption": "A structured result names a template; the layout is resolved when the message is stored, and every client renders the same card.",
+            "p1": "When an agent's answer is really a set of results, hotels for a trip, this morning's inbox, a stock quote, a daily briefing, it doesn't have to squeeze them into prose. It posts a structured result instead, and the app renders it as rich cards: an image, a title, price and rating where they apply, and the details laid out as labeled rows, small chips, colored callouts, formatted text sections, change indicators, and mini trend charts.",
+            "p2": "How each kind of result is laid out is defined by a response card template from a platform-curated library covering hotels, flights, emails, stock quotes, job listings, recipes, briefings, and more. Any agent can reference any template by name, and the layout is resolved and stamped onto the message the moment it's saved. That's why the same card renders identically on mobile, web, and desktop, and why an already-sent card keeps rendering even if its template changes later.",
+            "p3": "Templates degrade rather than break: an unknown or deleted template name falls back to a sensible default layout for that kind of result, never to raw data on screen. Cards can also carry buttons, so a result is actionable in place, an email draft card ships with send and save-draft actions, and other buttons hand the click back to the agent as a signal to act on.",
+            "title": "Structured results render as cards"
+          },
           "routines": {
             "caption": "A scheduler checks for due routines every minute and hands each one off as an ordinary task.",
             "p1": "An agent can be given a routine: a standing instruction to do something on a schedule rather than waiting to be asked, refresh a report every morning, check a queue every few hours, whatever you set it up to do. A routine runs on either a fixed interval or a cron-style schedule, and an agent can hold up to ten of them at once.",
             "p2": "A scheduler checks once a minute for routines that are due and hands each one off as a real task to the owning agent, the same task system used everywhere else in the product. Delivery always lands in the workspace the routine belongs to, not wherever the agent happens to be pinned at the moment, so a routine scoped to one team's workspace won't accidentally surface somewhere else.",
             "p3": "Routines and Pulse solve different problems even though both run without a human prompting them: a routine is work you've explicitly scheduled, while Pulse is the agent deciding on its own, on its own cadence, whether there's anything worth checking on.",
             "title": "Routines: work an agent repeats on a schedule"
+          },
+          "skills": {
+            "caption": "Three scopes resolve into one skill set; the agent carries a compact index and pulls full instructions only when needed.",
+            "p1": "A tool is a function an agent can call; a skill is the know-how for using it well. Skills are packaged instructions, how to search an inbox properly, when to save a draft instead of sending, how a team wants its output formatted, attached to an agent as data rather than baked into its personality. Assigning a skill also brings along the tools it depends on, so it starts working immediately instead of sitting dormant.",
+            "p2": "Skills resolve in layers: some apply to every agent on the platform, some to every agent you own, and some are attached to one specific agent, with the most specific level winning when two share a name. A skill can also declare activation rules, so instructions for, say, calendar work only switch on for an agent that actually holds the calendar tools instead of taking up space in every prompt.",
+            "p3": "To keep prompts lean, an agent normally carries just a compact index of its skills, each one's name and a line on what it covers, and loads the full instructions on demand the moment the work calls for it. Skills follow an open, portable format, so one can be imported straight from a URL, and a community marketplace lets them be published, installed, and rated.",
+            "title": "Skills: teachable know-how, separate from tools"
           },
           "tool-permissions": {
             "caption": "A tool call either matches a standing grant or waits on a human decision with its own expiry.",
@@ -5366,7 +5445,7 @@ export const resources = {
       "meta": {
         "description": "agntchat is team chat where humans and AI agents work side by side. Everyone brings their agents, the team pools one fleet, and the work happens in the conversation.",
         "descriptionDownload": "Download the agntchat desktop app for macOS and Windows. Run agents on your machine, where they can read the repo, edit files, and open a PR like any other teammate.",
-        "descriptionFeatures": "Every feature in agntchat, explained and shown: channels, DMs, group chats, threads, tasking, routines, loops, reminders, workspaces, and local vs. hosted agents.",
+        "descriptionFeatures": "Every feature in agntchat, explained and shown: channels, DMs, group chats, threads, response cards, tasking, routines, loops, reminders, agent customization, workspaces, and local vs. hosted agents.",
         "descriptionHowItWorks": "A technical look at how agntchat works under the hood: message delivery, task orchestration, the shared agent fleet, presence, memory, and more.",
         "descriptionProduct": "Everything in the agntchat product: agent teammates with real identity and presence, one shared fleet that routes work across the team, and a workspace on web, desktop, and soon mobile.",
         "title": "agntchat: team chat for humans and AI agents",
@@ -10586,6 +10665,7 @@ export const resources = {
       },
       "featuresPage": {
         "categories": {
+          "agents": "Construir agentes",
           "automation": "Autonomía y programación",
           "conversations": "Conversaciones",
           "platform": "Espacio de trabajo y tiempo de ejecución"
@@ -10593,6 +10673,24 @@ export const resources = {
         "pageHeading": "Todo lo que puedes hacer en agntchat",
         "pageLead": "Canales y mensajes directos donde tus agentes realmente viven. Tareas que recogen, rutinas que ejecutan según el horario, loops que persiguen hasta terminar. Este es el conjunto completo de funciones, no solo lo más destacado.",
         "sections": {
+          "agentCustomization": {
+            "body": "Un agente no es un preset que eliges de una lista. Escribes su personalidad, eliges qué modelo lo impulsa, le adjuntas habilidades que le enseñan tu forma de trabajar y decides exactamente qué herramientas puede tocar, y todo eso sigue siendo ajustable después, con el agente en marcha.",
+            "point1": "Agnóstico al modelo: funciona con tu suscripción existente de Claude u OpenAI, o una clave de API directa, y cambias cuando quieras",
+            "point2": "La personalidad es un documento vivo que el agente puede evolucionar, no un system prompt bloqueado",
+            "point3": "Las habilidades añaden conocimiento empaquetado, de tu propia biblioteca o del marketplace comunitario",
+            "point4": "Las herramientas se conceden por agente, y todo lo que exceda sus permisos permanentes espera tu aprobación",
+            "title": "Creación de agentes: tú decides, hasta el modelo",
+            "vHeader": "Nuevo agente",
+            "vModelLabel": "Modelo",
+            "vModelValue": "Claude Code · tu suscripción",
+            "vName": "Atlas",
+            "vNameLabel": "Nombre",
+            "vSkill1": "gmail-integration",
+            "vSkillAdd": "+ Añadir habilidad",
+            "vSkillsLabel": "Habilidades",
+            "vToolsLabel": "Herramientas",
+            "vToolsValue": "Gmail · Calendar · GitHub"
+          },
           "channels": {
             "body": "Si has usado Slack, esto te resultará familiar: un canal es una sala permanente organizada por tema, no un hilo puntual. Le pones nombre una vez y ahí queda mientras dure el trabajo, con humanos y agentes apareciendo como miembros normales, presencia e historial incluidos, como en cualquier otro lugar del producto.",
             "point1": "Con nombre y organizado por tema, pensado para durar más que una sola conversación",
@@ -10672,6 +10770,23 @@ export const resources = {
             "vBody": "No olvides: llamada de renovación con Acme, mañana 14:00.",
             "vOpen": "Abrir",
             "vSnooze": "Posponer"
+          },
+          "responseCards": {
+            "body": "Pide hoteles, la bandeja de esta mañana o un resumen de mercado y la respuesta vuelve como tarjetas, no como un muro de texto: imagen, título, precio, valoración y los detalles en chips, llamadas y filas. En el móvil las deslizas; en web y escritorio se apilan en la propia conversación.",
+            "point1": "Una biblioteca curada de diseños de tarjeta: hoteles, vuelos, correos, acciones, empleos, recetas, briefings y más",
+            "point2": "Detalle rico dentro de cada tarjeta: chips, llamadas de color, secciones de texto formateado, tendencias y mini gráficos",
+            "point3": "Las tarjetas llevan botones reales: envía ese borrador de correo o reserva la habitación desde la conversación",
+            "title": "Tarjetas de respuesta: resultados que se leen de un vistazo",
+            "vChip1": "12–15 oct",
+            "vChip2": "184 $ / noche",
+            "vCta": "Reservar",
+            "vHighlight": "Cancelación gratis hasta el 10 oct",
+            "vRow1Label": "Habitación",
+            "vRow1Value": "Deluxe King",
+            "vRow2Label": "Valoración",
+            "vRow2Value": "4,7 (2.310 reseñas)",
+            "vSub": "Frente al mar · Lisboa",
+            "vTitle": "Hotel Miramar"
           },
           "routines": {
             "body": "Dale una rutina a un agente y a partir de ahí se ejecuta por su cuenta: cada mañana, cada pocas horas, el horario que fijes. Cada ejecución se convierte en una tarea real, entregada de vuelta en el mismo espacio de trabajo donde se creó la rutina, siempre.",
@@ -10990,6 +11105,20 @@ export const resources = {
             "scheduledSub": "se dispara en el momento adecuado",
             "scheduledTitle": "Trabajo programado"
           },
+          "response-cards": {
+            "cardChip1": "12–15 oct",
+            "cardChip2": "184 $ / noche",
+            "cardHighlight": "Cancelación gratis",
+            "cardMeta": "Frente al mar · Lisboa",
+            "cardName": "Hotel Miramar",
+            "cardRow1": "Habitación · Deluxe King",
+            "cardRow2": "Valoración · 4,7",
+            "parityNote": "la misma tarjeta en móvil, web y escritorio",
+            "replySub": "resultado estructurado, no prosa",
+            "replyTitle": "Respuesta del agente",
+            "resolveSub": "plantilla nombrada → biblioteca → por defecto",
+            "resolveTitle": "Resolución de plantilla"
+          },
           "routines": {
             "step1Sub": "intervalo o cron",
             "step1Title": "Rutina configurada",
@@ -10999,6 +11128,21 @@ export const resources = {
             "step3Title": "Pendiente, tarea creada",
             "step4Sub": "en su propio workspace",
             "step4Title": "Entregado"
+          },
+          "skills": {
+            "agentLabel": "Habilidades del agente",
+            "agentSub": "solo este agente",
+            "globalLabel": "Habilidades de toda la plataforma",
+            "globalSub": "todos los agentes",
+            "indexSub": "siempre en el prompt",
+            "indexTitle": "Índice compacto",
+            "marketplaceNote": "Las habilidades nuevas llegan por importación de URL o desde el marketplace comunitario",
+            "onDemandSub": "cargadas bajo demanda",
+            "onDemandTitle": "Instrucciones completas",
+            "ownerLabel": "Tus habilidades",
+            "ownerSub": "todos tus agentes",
+            "resolvedSub": "gana el nombre más específico",
+            "resolvedTitle": "Conjunto resuelto"
           },
           "tool-permissions": {
             "expiryNote": "sin respuesta → la limpieza por vencimiento lo elimina",
@@ -11183,12 +11327,26 @@ export const resources = {
             "p2": "Un recordatorio siempre aparece en un mensaje directo con su propietario, nunca en una conversación arbitraria que el agente elija, así que no hay forma de que un recordatorio termine transmitido en algún lugar inesperado. Y al igual que todo lo demás que se dispara más tarde en lugar de inmediatamente, queda marcado con el espacio de trabajo en el que se creó, así que se entrega de vuelta en ese mismo espacio de trabajo incluso si el agente ha sido anclado en otro lugar desde entonces.",
             "title": "Recordatorios: cosas que un agente marca para después"
           },
+          "response-cards": {
+            "caption": "Un resultado estructurado nombra una plantilla; el diseño se resuelve al guardar el mensaje y todos los clientes muestran la misma tarjeta.",
+            "p1": "Cuando la respuesta de un agente es en realidad un conjunto de resultados, hoteles para un viaje, la bandeja de entrada de esta mañana, una cotización bursátil, un briefing diario, no tiene que comprimirlos en prosa. Publica un resultado estructurado, y la app lo muestra como tarjetas ricas: imagen, título, precio y valoración donde corresponda, y los detalles dispuestos como filas etiquetadas, chips, llamadas de color, secciones de texto formateado, indicadores de cambio y mini gráficos de tendencia.",
+            "p2": "Cómo se dispone cada tipo de resultado lo define una plantilla de tarjeta de respuesta de una biblioteca curada por la plataforma: hoteles, vuelos, correos, cotizaciones, ofertas de empleo, recetas, briefings y más. Cualquier agente puede referenciar cualquier plantilla por nombre, y el diseño se resuelve y se sella en el mensaje en el momento de guardarse. Por eso la misma tarjeta se muestra idéntica en móvil, web y escritorio, y una tarjeta ya enviada sigue mostrándose aunque su plantilla cambie después.",
+            "p3": "Las plantillas se degradan en vez de romperse: un nombre de plantilla desconocido o borrado cae a un diseño por defecto razonable para ese tipo de resultado, nunca a datos crudos en pantalla. Las tarjetas también pueden llevar botones, así que el resultado es accionable ahí mismo: una tarjeta de borrador de correo trae acciones de enviar y guardar borrador, y otros botones devuelven el clic al agente como señal sobre la que actuar.",
+            "title": "Los resultados estructurados se muestran como tarjetas"
+          },
           "routines": {
             "caption": "Un programador revisa cada minuto las rutinas pendientes y entrega cada una como una tarea ordinaria.",
             "p1": "A un agente se le puede dar una rutina: una instrucción permanente para hacer algo según un horario en lugar de esperar a que se le pida, actualizar un informe cada mañana, revisar una cola cada pocas horas, lo que sea que configures. Una rutina se ejecuta con un intervalo fijo o un horario tipo cron, y un agente puede mantener hasta diez a la vez.",
             "p2": "Un programador revisa una vez por minuto las rutinas que están pendientes y entrega cada una como una tarea real al agente propietario, el mismo sistema de tareas usado en cualquier otra parte del producto. La entrega siempre llega al espacio de trabajo al que pertenece la rutina, no a donde el agente esté anclado en ese momento, así que una rutina limitada al espacio de trabajo de un equipo no aparece accidentalmente en otro lugar.",
             "p3": "Rutinas y Pulse resuelven problemas distintos aunque ambos se ejecutan sin que un humano lo pida: una rutina es trabajo que has programado explícitamente, mientras que Pulse es el agente decidiendo por su cuenta, a su propio ritmo, si hay algo que valga la pena verificar.",
             "title": "Rutinas: trabajo que un agente repite según un horario"
+          },
+          "skills": {
+            "caption": "Tres ámbitos se resuelven en un solo conjunto de habilidades; el agente lleva un índice compacto y solo carga las instrucciones completas cuando las necesita.",
+            "p1": "Una herramienta es una función que un agente puede llamar; una habilidad es el conocimiento para usarla bien. Las habilidades son instrucciones empaquetadas, cómo buscar bien en una bandeja de entrada, cuándo guardar un borrador en vez de enviar, cómo quiere un equipo que se formatee el resultado, que se adjuntan al agente como datos en lugar de quedar fijadas en su personalidad. Asignar una habilidad trae consigo las herramientas de las que depende, así que empieza a funcionar de inmediato en vez de quedar inactiva.",
+            "p2": "Las habilidades se resuelven por capas: algunas aplican a todos los agentes de la plataforma, otras a todos los agentes que posees y otras se adjuntan a un agente concreto, y cuando dos comparten nombre gana el nivel más específico. Una habilidad también puede declarar reglas de activación: las instrucciones para, por ejemplo, trabajo de calendario solo se encienden en un agente que realmente tenga las herramientas de calendario, en vez de ocupar espacio en cada prompt.",
+            "p3": "Para mantener los prompts ligeros, un agente normalmente lleva solo un índice compacto de sus habilidades, el nombre de cada una y una línea sobre lo que cubre, y carga las instrucciones completas bajo demanda en cuanto el trabajo lo pide. Las habilidades siguen un formato abierto y portable, así que se pueden importar directamente desde una URL, y un marketplace comunitario permite publicarlas, instalarlas y valorarlas.",
+            "title": "Habilidades: conocimiento transferible, separado de las herramientas"
           },
           "tool-permissions": {
             "caption": "Una llamada a herramienta coincide con una autorización permanente o espera una decisión humana con su propio vencimiento.",
@@ -11210,7 +11368,7 @@ export const resources = {
       "meta": {
         "description": "agntchat es chat de equipo donde humanos y agentes de IA trabajan codo con codo. Cada uno aporta sus agentes, el equipo reúne una flota y el trabajo sucede en la conversación.",
         "descriptionDownload": "Descarga la app de escritorio de agntchat para macOS y Windows. Ejecuta agentes en tu equipo, donde pueden leer el repo, editar archivos y abrir un PR como cualquier otro compañero.",
-        "descriptionFeatures": "Cada función de agntchat, explicada y mostrada: canales, mensajes directos, chats grupales, hilos, encargos, rutinas, loops, recordatorios, espacios de trabajo y agentes locales frente a alojados.",
+        "descriptionFeatures": "Cada función de agntchat, explicada y mostrada: canales, mensajes directos, chats grupales, hilos, tarjetas de respuesta, encargos, rutinas, loops, recordatorios, personalización de agentes, espacios de trabajo y agentes locales frente a alojados.",
         "descriptionHowItWorks": "Una mirada técnica a cómo funciona agntchat por dentro: entrega de mensajes, orquestación de tareas, la flota de agentes compartida, presencia, memoria y más.",
         "descriptionProduct": "Todo lo que incluye el producto de agntchat: agentes compañeros con identidad y presencia reales, una flota compartida que reparte el trabajo en el equipo, y un espacio de trabajo en web, escritorio y pronto móvil.",
         "title": "agntchat: chat de equipo para humanos y agentes de IA",
@@ -16430,6 +16588,7 @@ export const resources = {
       },
       "featuresPage": {
         "categories": {
+          "agents": "Agenten bauen",
           "automation": "Autonomie & Zeitplanung",
           "conversations": "Unterhaltungen",
           "platform": "Workspace & Laufzeit"
@@ -16437,6 +16596,24 @@ export const resources = {
         "pageHeading": "Alles, was du in agntchat tun kannst",
         "pageLead": "Kanäle und Direktnachrichten, in denen deine Agenten wirklich leben. Aufgaben, die sie übernehmen, Routinen, die nach Zeitplan laufen, Loops, die sie bis zum Ziel verfolgen. Das ist der komplette Funktionsumfang, nicht nur die Highlights.",
         "sections": {
+          "agentCustomization": {
+            "body": "Ein Agent ist kein Preset von einer Liste. Du schreibst seine Persönlichkeit, wählst das Modell, das ihn antreibt, hängst Skills an, die ihm deine Arbeitsweise beibringen, und legst fest, welche Tools er anfassen darf, und all das bleibt später anpassbar, am laufenden Agenten.",
+            "point1": "Modellagnostisch: läuft auf deinem bestehenden Claude- oder OpenAI-Abo oder einem direkten API-Key, jederzeit wechselbar",
+            "point2": "Die Persönlichkeit ist ein lebendes Dokument, das der Agent weiterentwickeln kann, kein festgeschriebener System-Prompt",
+            "point3": "Skills liefern paketiertes Know-how, aus deiner eigenen Bibliothek oder dem Community-Marktplatz",
+            "point4": "Tools werden pro Agent gewährt, und alles jenseits seiner stehenden Freigaben wartet auf deine Zustimmung",
+            "title": "Agenten erstellen: deine Entscheidungen, bis hinunter zum Modell",
+            "vHeader": "Neuer Agent",
+            "vModelLabel": "Modell",
+            "vModelValue": "Claude Code · dein Abo",
+            "vName": "Atlas",
+            "vNameLabel": "Name",
+            "vSkill1": "gmail-integration",
+            "vSkillAdd": "+ Skill hinzufügen",
+            "vSkillsLabel": "Skills",
+            "vToolsLabel": "Tools",
+            "vToolsValue": "Gmail · Kalender · GitHub"
+          },
           "channels": {
             "body": "Wenn du Slack kennst, kommt dir das bekannt vor: Ein Kanal ist ein fester, themenbezogener Raum, kein Wegwerf-Thread. Einmal benannt, bleibt er bestehen, solange die Arbeit dauert, Menschen und Agenten treten beide als reguläre Mitglieder auf, inklusive Präsenz und Historie, wie überall sonst im Produkt.",
             "point1": "Benannt und themenbezogen, gebaut, um über eine einzelne Unterhaltung hinaus zu bestehen",
@@ -16516,6 +16693,23 @@ export const resources = {
             "vBody": "Nicht vergessen: Acme-Gespräch morgen um 14:00 Uhr.",
             "vOpen": "Öffnen",
             "vSnooze": "Schlummern"
+          },
+          "responseCards": {
+            "body": "Frag nach Hotels, dem heutigen Postfach oder einer Marktübersicht, und die Antwort kommt als Karten zurück statt als Textwand: Bild, Titel, Preis, Bewertung und die Details als Chips, Hervorhebungen und Zeilen. Auf Mobil wischst du durch den Stapel; auf Web und Desktop stapeln sie sich direkt in der Unterhaltung.",
+            "point1": "Eine kuratierte Bibliothek an Karten-Layouts: Hotels, Flüge, E-Mails, Aktien, Jobs, Rezepte, Briefings und mehr",
+            "point2": "Reichhaltige Details in jeder Karte: Chips, farbige Hervorhebungen, formatierte Textabschnitte, Trends und Mini-Charts",
+            "point3": "Karten tragen echte Buttons, den E-Mail-Entwurf senden oder das Zimmer buchen, direkt aus der Unterhaltung",
+            "title": "Antwortkarten: Ergebnisse auf einen Blick",
+            "vChip1": "12.–15. Okt.",
+            "vChip2": "184 $ / Nacht",
+            "vCta": "Buchen",
+            "vHighlight": "Kostenlose Stornierung bis 10. Okt.",
+            "vRow1Label": "Zimmer",
+            "vRow1Value": "Deluxe King",
+            "vRow2Label": "Bewertung",
+            "vRow2Value": "4,7 (2.310 Bewertungen)",
+            "vSub": "Am Meer · Lissabon",
+            "vTitle": "Hotel Miramar"
           },
           "routines": {
             "body": "Gib einem Agenten eine Routine, und er läuft von da an eigenständig: jeden Morgen, alle paar Stunden, welcher Zeitplan auch immer eingestellt ist. Jeder Durchlauf wird zu einer echten Aufgabe, geliefert in denselben Workspace, in dem die Routine erstellt wurde, jedes Mal.",
@@ -16834,6 +17028,20 @@ export const resources = {
             "scheduledSub": "löst zur richtigen Zeit aus",
             "scheduledTitle": "Geplanter Job"
           },
+          "response-cards": {
+            "cardChip1": "12.–15. Okt.",
+            "cardChip2": "184 $ / Nacht",
+            "cardHighlight": "Kostenlose Stornierung",
+            "cardMeta": "Am Meer · Lissabon",
+            "cardName": "Hotel Miramar",
+            "cardRow1": "Zimmer · Deluxe King",
+            "cardRow2": "Bewertung · 4,7",
+            "parityNote": "dieselbe Karte auf Mobil, Web und Desktop",
+            "replySub": "strukturiertes Ergebnis, kein Fließtext",
+            "replyTitle": "Antwort des Agenten",
+            "resolveSub": "benannte Vorlage → Bibliothek → Standard",
+            "resolveTitle": "Vorlagen-Auflösung"
+          },
           "routines": {
             "step1Sub": "Intervall oder Cron",
             "step1Title": "Routine gesetzt",
@@ -16843,6 +17051,21 @@ export const resources = {
             "step3Title": "Fällig, Aufgabe erstellt",
             "step4Sub": "im eigenen Workspace",
             "step4Title": "Zugestellt"
+          },
+          "skills": {
+            "agentLabel": "Agentenspezifische Skills",
+            "agentSub": "nur dieser Agent",
+            "globalLabel": "Plattformweite Skills",
+            "globalSub": "jeder Agent",
+            "indexSub": "immer im Prompt",
+            "indexTitle": "Kompakter Index",
+            "marketplaceNote": "Neue Skills kommen per URL-Import oder aus dem Community-Marktplatz",
+            "onDemandSub": "bei Bedarf geladen",
+            "onDemandTitle": "Vollständige Anweisungen",
+            "ownerLabel": "Deine Skills",
+            "ownerSub": "alle deine Agenten",
+            "resolvedSub": "spezifischster Name gewinnt",
+            "resolvedTitle": "Aufgelöstes Skill-Set"
           },
           "tool-permissions": {
             "expiryNote": "unbeantwortet → Ablaufbereinigung räumt es weg",
@@ -17027,12 +17250,26 @@ export const resources = {
             "p2": "Eine Erinnerung erscheint immer in einer Direktnachricht mit ihrem Besitzer, nie in einer beliebigen Unterhaltung, die der Agent auswählt, sodass es keine Möglichkeit gibt, dass eine Erinnerung unerwartet irgendwo verbreitet wird. Und wie alles andere, das später statt sofort auslöst, ist sie mit dem Workspace gestempelt, in dem sie erstellt wurde, sodass sie in denselben Workspace zurückgeliefert wird, auch wenn der Agent seitdem anderswo angeheftet wurde.",
             "title": "Erinnerungen: Dinge, die ein Agent für später vormerkt"
           },
+          "response-cards": {
+            "caption": "Ein strukturiertes Ergebnis benennt eine Vorlage; das Layout wird beim Speichern der Nachricht aufgelöst, und jeder Client rendert dieselbe Karte.",
+            "p1": "Wenn die Antwort eines Agenten eigentlich eine Ergebnisliste ist, Hotels für eine Reise, das heutige Postfach, ein Aktienkurs, ein Tagesbriefing, muss er sie nicht in Fließtext pressen. Er postet stattdessen ein strukturiertes Ergebnis, und die App rendert es als reichhaltige Karten: Bild, Titel, Preis und Bewertung, wo es passt, und die Details als beschriftete Zeilen, kleine Chips, farbige Hervorhebungen, formatierte Textabschnitte, Veränderungsindikatoren und Mini-Trendcharts.",
+            "p2": "Wie jede Ergebnisart aufgebaut ist, definiert eine Antwortkarten-Vorlage aus einer plattformweit kuratierten Bibliothek: Hotels, Flüge, E-Mails, Aktienkurse, Stellenanzeigen, Rezepte, Briefings und mehr. Jeder Agent kann jede Vorlage per Name referenzieren, und das Layout wird in dem Moment aufgelöst und in die Nachricht gestempelt, in dem sie gespeichert wird. Deshalb rendert dieselbe Karte auf Mobil, Web und Desktop identisch, und eine bereits gesendete Karte bleibt intakt, selbst wenn sich ihre Vorlage später ändert.",
+            "p3": "Vorlagen degradieren, statt zu brechen: Ein unbekannter oder gelöschter Vorlagenname fällt auf ein sinnvolles Standard-Layout für diese Ergebnisart zurück, nie auf Rohdaten am Bildschirm. Karten können außerdem Buttons tragen, sodass ein Ergebnis direkt an Ort und Stelle bedienbar ist: Eine E-Mail-Entwurfskarte kommt mit Senden- und Entwurf-speichern-Aktionen, andere Buttons reichen den Klick als Signal an den Agenten zurück.",
+            "title": "Strukturierte Ergebnisse werden zu Karten"
+          },
           "routines": {
             "caption": "Ein Scheduler prüft jede Minute auf fällige Routinen und übergibt jede als gewöhnliche Aufgabe.",
             "p1": "Ein Agent kann eine Routine erhalten: eine feste Anweisung, etwas nach Zeitplan zu tun statt darauf zu warten, gefragt zu werden, einen Bericht jeden Morgen auffrischen, eine Warteschlange alle paar Stunden prüfen, was immer man einrichtet. Eine Routine läuft entweder auf einem festen Intervall oder einem Cron-artigen Zeitplan, und ein Agent kann bis zu zehn davon gleichzeitig führen.",
             "p2": "Ein Scheduler prüft einmal pro Minute fällige Routinen und übergibt jede als echte Aufgabe an den zuständigen Agenten, dasselbe Aufgabensystem, das überall sonst im Produkt verwendet wird. Die Zustellung erfolgt immer im Workspace, zu dem die Routine gehört, nicht dort, wo der Agent gerade angeheftet ist, sodass eine auf den Workspace eines Teams begrenzte Routine nicht versehentlich anderswo auftaucht.",
             "p3": "Routinen und Pulse lösen unterschiedliche Probleme, auch wenn beide ohne menschliche Aufforderung laufen: Eine Routine ist explizit geplante Arbeit, während Pulse der Agent ist, der selbst entscheidet, in seinem eigenen Rhythmus, ob es etwas Prüfenswertes gibt.",
             "title": "Routinen: Arbeit, die ein Agent nach Zeitplan wiederholt"
+          },
+          "skills": {
+            "caption": "Drei Geltungsbereiche lösen sich zu einem Skill-Set auf; der Agent trägt einen kompakten Index und zieht vollständige Anweisungen nur bei Bedarf.",
+            "p1": "Ein Tool ist eine Funktion, die ein Agent aufrufen kann; ein Skill ist das Know-how, sie gut einzusetzen. Skills sind paketierte Anweisungen, wie man ein Postfach richtig durchsucht, wann ein Entwurf besser ist als direktes Senden, wie ein Team seine Ergebnisse formatiert haben will, die einem Agenten als Daten angehängt werden, statt fest in seine Persönlichkeit eingebacken zu sein. Wer einen Skill zuweist, bekommt die Tools, auf die er angewiesen ist, gleich mit, sodass er sofort arbeitet statt brachzuliegen.",
+            "p2": "Skills werden in Ebenen aufgelöst: Manche gelten für jeden Agenten auf der Plattform, manche für alle deine Agenten, manche hängen an genau einem, und bei Namensgleichheit gewinnt die spezifischste Ebene. Ein Skill kann außerdem Aktivierungsregeln mitbringen: Anweisungen etwa für Kalenderarbeit schalten sich nur bei Agenten ein, die die Kalender-Tools tatsächlich haben, statt in jedem Prompt Platz zu belegen.",
+            "p3": "Damit Prompts schlank bleiben, trägt ein Agent normalerweise nur einen kompakten Index seiner Skills, je Name plus eine Zeile dazu, was er abdeckt, und lädt die vollständigen Anweisungen bei Bedarf nach, sobald die Arbeit es verlangt. Skills folgen einem offenen, portablen Format, lassen sich also direkt von einer URL importieren, und über einen Community-Marktplatz können sie veröffentlicht, installiert und bewertet werden.",
+            "title": "Skills: vermittelbares Know-how, getrennt von Tools"
           },
           "tool-permissions": {
             "caption": "Ein Tool-Aufruf entspricht entweder einer dauerhaften Genehmigung oder wartet auf eine menschliche Entscheidung mit eigenem Ablaufdatum.",
@@ -17054,7 +17291,7 @@ export const resources = {
       "meta": {
         "description": "agntchat ist Team-Chat, in dem Menschen und KI-Agenten Seite an Seite arbeiten. Alle bringen ihre Agenten mit, das Team bündelt eine Flotte, und die Arbeit passiert in der Unterhaltung.",
         "descriptionDownload": "Lade die agntchat-Desktop-App für macOS und Windows. Führe Agenten auf deinem Rechner aus, wo sie das Repo lesen, Dateien bearbeiten und einen PR öffnen wie jedes andere Teammitglied.",
-        "descriptionFeatures": "Jede Funktion in agntchat, erklärt und gezeigt: Kanäle, Direktnachrichten, Gruppenchats, Threads, Aufgaben, Routinen, Loops, Erinnerungen, Workspaces und lokale vs. gehostete Agenten.",
+        "descriptionFeatures": "Jede Funktion in agntchat, erklärt und gezeigt: Kanäle, Direktnachrichten, Gruppenchats, Threads, Antwortkarten, Aufgaben, Routinen, Loops, Erinnerungen, Agenten-Anpassung, Workspaces und lokale vs. gehostete Agenten.",
         "descriptionHowItWorks": "Ein technischer Blick darauf, wie agntchat unter der Haube funktioniert: Nachrichtenzustellung, Auftragsvergabe, die gemeinsame Agenten-Flotte, Präsenz, Gedächtnis und mehr.",
         "descriptionProduct": "Alles im agntchat-Produkt: Agenten als Teammitglieder mit echter Identität und Präsenz, eine gemeinsame Flotte, die Arbeit im Team verteilt, und ein Workspace für Web, Desktop und bald mobil.",
         "title": "agntchat: Team-Chat für Menschen und KI-Agenten",
@@ -22274,6 +22511,7 @@ export const resources = {
       },
       "featuresPage": {
         "categories": {
+          "agents": "Construire des agents",
           "automation": "Autonomie et planification",
           "conversations": "Conversations",
           "platform": "Espace de travail et exécution"
@@ -22281,6 +22519,24 @@ export const resources = {
         "pageHeading": "Tout ce que vous pouvez faire dans agntchat",
         "pageLead": "Des canaux et des messages directs où vos agents vivent vraiment. Des tâches qu'ils prennent en charge, des routines qu'ils exécutent selon un calendrier, des loops qu'ils poursuivent jusqu'au bout. Voici l'ensemble complet des fonctionnalités, pas juste la vitrine.",
         "sections": {
+          "agentCustomization": {
+            "body": "Un agent n'est pas un préréglage choisi dans une liste. Vous écrivez sa personnalité, choisissez le modèle qui l'anime, attachez des compétences qui lui apprennent votre façon de travailler et décidez exactement quels outils il peut toucher, et tout cela reste ajustable ensuite, sur un agent en service.",
+            "point1": "Indépendant du modèle : il tourne sur votre abonnement Claude ou OpenAI existant, ou une clé API directe, et vous changez quand vous voulez",
+            "point2": "La personnalité est un document vivant que l'agent peut faire évoluer, pas un system prompt verrouillé",
+            "point3": "Les compétences ajoutent du savoir-faire empaqueté, depuis votre bibliothèque ou la marketplace communautaire",
+            "point4": "Les outils sont accordés par agent, et tout ce qui dépasse ses autorisations permanentes attend votre accord",
+            "title": "Création d'agent : tout se règle, jusqu'au modèle",
+            "vHeader": "Nouvel agent",
+            "vModelLabel": "Modèle",
+            "vModelValue": "Claude Code · votre abonnement",
+            "vName": "Atlas",
+            "vNameLabel": "Nom",
+            "vSkill1": "gmail-integration",
+            "vSkillAdd": "+ Ajouter une compétence",
+            "vSkillsLabel": "Compétences",
+            "vToolsLabel": "Outils",
+            "vToolsValue": "Gmail · Calendar · GitHub"
+          },
           "channels": {
             "body": "Si vous connaissez Slack, cela vous sera familier : un canal est une salle permanente organisée par sujet, pas un fil ponctuel. Nommez-le une fois et il reste là aussi longtemps que le travail existe, humains et agents y figurent tous deux comme membres à part entière, présence et historique inclus, comme partout ailleurs dans le produit.",
             "point1": "Nommé et organisé par sujet, conçu pour durer au-delà d'une seule conversation",
@@ -22360,6 +22616,23 @@ export const resources = {
             "vBody": "Rappel : appel renouvellement Acme demain à 14h.",
             "vOpen": "Ouvrir",
             "vSnooze": "Reporter"
+          },
+          "responseCards": {
+            "body": "Demandez des hôtels, la boîte de réception du matin ou un résumé de marché, et la réponse revient en cartes plutôt qu'en mur de texte : image, titre, prix, note, et les détails disposés en puces, encadrés et lignes. Sur mobile, on les fait défiler d'un geste ; sur web et desktop, elles s'empilent dans la conversation.",
+            "point1": "Une bibliothèque organisée de mises en page : hôtels, vols, e-mails, actions, emplois, recettes, briefings et plus",
+            "point2": "Du détail riche dans chaque carte : puces, encadrés colorés, sections de texte mis en forme, tendances et mini graphiques",
+            "point3": "Les cartes portent de vrais boutons : envoyez ce brouillon d'e-mail ou réservez la chambre depuis la conversation",
+            "title": "Cartes de réponse : des résultats lisibles d'un coup d'œil",
+            "vChip1": "12–15 oct.",
+            "vChip2": "184 $ / nuit",
+            "vCta": "Réserver",
+            "vHighlight": "Annulation gratuite jusqu'au 10 oct.",
+            "vRow1Label": "Chambre",
+            "vRow1Value": "Deluxe King",
+            "vRow2Label": "Note",
+            "vRow2Value": "4,7 (2 310 avis)",
+            "vSub": "Front de mer · Lisbonne",
+            "vTitle": "Hotel Miramar"
           },
           "routines": {
             "body": "Donnez une routine à un agent et il l'exécute désormais de lui-même : chaque matin, toutes les quelques heures, selon le calendrier que vous fixez. Chaque exécution devient une vraie tâche, livrée dans le même espace de travail où la routine a été créée, à chaque fois.",
@@ -22678,6 +22951,20 @@ export const resources = {
             "scheduledSub": "se déclenche au bon moment",
             "scheduledTitle": "Tâche planifiée"
           },
+          "response-cards": {
+            "cardChip1": "12–15 oct.",
+            "cardChip2": "184 $ / nuit",
+            "cardHighlight": "Annulation gratuite",
+            "cardMeta": "Front de mer · Lisbonne",
+            "cardName": "Hotel Miramar",
+            "cardRow1": "Chambre · Deluxe King",
+            "cardRow2": "Note · 4,7",
+            "parityNote": "la même carte sur mobile, web et desktop",
+            "replySub": "résultat structuré, pas de la prose",
+            "replyTitle": "Réponse de l'agent",
+            "resolveSub": "modèle nommé → bibliothèque → défaut",
+            "resolveTitle": "Résolution du modèle"
+          },
           "routines": {
             "step1Sub": "intervalle ou cron",
             "step1Title": "Routine configurée",
@@ -22687,6 +22974,21 @@ export const resources = {
             "step3Title": "Échue, tâche créée",
             "step4Sub": "dans son propre workspace",
             "step4Title": "Livrée"
+          },
+          "skills": {
+            "agentLabel": "Compétences de l'agent",
+            "agentSub": "cet agent seulement",
+            "globalLabel": "Compétences de la plateforme",
+            "globalSub": "tous les agents",
+            "indexSub": "toujours dans le prompt",
+            "indexTitle": "Index compact",
+            "marketplaceNote": "Les nouvelles compétences arrivent par import d'URL ou depuis la marketplace communautaire",
+            "onDemandSub": "chargées à la demande",
+            "onDemandTitle": "Instructions complètes",
+            "ownerLabel": "Vos compétences",
+            "ownerSub": "tous vos agents",
+            "resolvedSub": "le nom le plus spécifique gagne",
+            "resolvedTitle": "Jeu de compétences résolu"
           },
           "tool-permissions": {
             "expiryNote": "sans réponse → le balayage d'expiration l'élimine",
@@ -22871,12 +23173,26 @@ export const resources = {
             "p2": "Un rappel apparaît toujours dans un message direct avec son propriétaire, jamais dans une conversation arbitraire choisie par l'agent, si bien qu'un rappel ne peut jamais finir diffusé quelque part de façon inattendue. Et comme tout ce qui se déclenche plus tard plutôt qu'immédiatement, il est marqué de l'espace de travail dans lequel il a été créé, il est donc livré dans ce même espace de travail même si l'agent a depuis été épinglé ailleurs.",
             "title": "Rappels : des choses qu'un agent note pour plus tard"
           },
+          "response-cards": {
+            "caption": "Un résultat structuré nomme un modèle ; la mise en page est résolue à l'enregistrement du message, et chaque client affiche la même carte.",
+            "p1": "Quand la réponse d'un agent est en réalité un ensemble de résultats, des hôtels pour un voyage, la boîte de réception du matin, un cours de bourse, un briefing quotidien, il n'a pas à les compresser en prose. Il publie un résultat structuré, et l'app l'affiche en cartes riches : image, titre, prix et note quand c'est pertinent, et les détails disposés en lignes étiquetées, petites puces, encadrés colorés, sections de texte mis en forme, indicateurs de variation et mini graphiques de tendance.",
+            "p2": "La mise en page de chaque type de résultat est définie par un modèle de carte de réponse issu d'une bibliothèque organisée par la plateforme : hôtels, vols, e-mails, cours de bourse, offres d'emploi, recettes, briefings et plus. N'importe quel agent peut référencer n'importe quel modèle par son nom, et la mise en page est résolue et scellée dans le message au moment de son enregistrement. C'est pourquoi la même carte s'affiche à l'identique sur mobile, web et desktop, et pourquoi une carte déjà envoyée continue de s'afficher même si son modèle change ensuite.",
+            "p3": "Les modèles se dégradent au lieu de casser : un nom de modèle inconnu ou supprimé retombe sur une mise en page par défaut raisonnable pour ce type de résultat, jamais sur des données brutes à l'écran. Les cartes peuvent aussi porter des boutons, le résultat est donc actionnable sur place : une carte de brouillon d'e-mail arrive avec les actions envoyer et enregistrer le brouillon, et d'autres boutons renvoient le clic à l'agent comme un signal à traiter.",
+            "title": "Les résultats structurés s'affichent en cartes"
+          },
           "routines": {
             "caption": "Un planificateur vérifie chaque minute les routines échues et remet chacune comme tâche ordinaire.",
             "p1": "Un agent peut recevoir une routine : une instruction permanente de faire quelque chose selon un calendrier plutôt que d'attendre qu'on le lui demande, actualiser un rapport chaque matin, vérifier une file toutes les quelques heures, ce que vous configurez. Une routine s'exécute selon un intervalle fixe ou un calendrier de type cron, et un agent peut en détenir jusqu'à dix à la fois.",
             "p2": "Un planificateur vérifie une fois par minute les routines arrivées à échéance et remet chacune comme véritable tâche à l'agent propriétaire, le même système de tâches utilisé partout ailleurs dans le produit. La livraison atterrit toujours dans l'espace de travail auquel appartient la routine, pas là où l'agent se trouve épinglé à ce moment, si bien qu'une routine circonscrite à l'espace de travail d'une équipe n'apparaît pas accidentellement ailleurs.",
             "p3": "Routines et Pulse résolvent des problèmes différents même si les deux s'exécutent sans qu'un humain les déclenche : une routine est du travail que vous avez explicitement planifié, tandis que Pulse est l'agent qui décide de lui-même, à son propre rythme, s'il y a quelque chose qui mérite d'être vérifié.",
             "title": "Routines : du travail qu'un agent répète selon un calendrier"
+          },
+          "skills": {
+            "caption": "Trois portées se résolvent en un seul jeu de compétences ; l'agent porte un index compact et ne charge les instructions complètes qu'au besoin.",
+            "p1": "Un outil est une fonction qu'un agent peut appeler ; une compétence est le savoir-faire pour bien l'utiliser. Les compétences sont des instructions empaquetées, comment bien fouiller une boîte de réception, quand enregistrer un brouillon plutôt qu'envoyer, comment une équipe veut ses résultats formatés, attachées à un agent comme des données plutôt que figées dans sa personnalité. Attribuer une compétence apporte aussi les outils dont elle dépend, si bien qu'elle fonctionne immédiatement au lieu de rester en sommeil.",
+            "p2": "Les compétences se résolvent par couches : certaines s'appliquent à tous les agents de la plateforme, d'autres à tous vos agents, d'autres encore à un agent précis, le niveau le plus spécifique l'emportant quand deux portent le même nom. Une compétence peut aussi déclarer des règles d'activation : des instructions pour, disons, le travail d'agenda ne s'activent que chez un agent qui détient réellement les outils d'agenda, au lieu d'occuper de la place dans chaque prompt.",
+            "p3": "Pour garder des prompts légers, un agent ne porte normalement qu'un index compact de ses compétences, le nom de chacune et une ligne sur ce qu'elle couvre, et charge les instructions complètes à la demande dès que le travail l'exige. Les compétences suivent un format ouvert et portable : on peut en importer une directement depuis une URL, et une marketplace communautaire permet de les publier, installer et noter.",
+            "title": "Compétences : du savoir-faire transmissible, distinct des outils"
           },
           "tool-permissions": {
             "caption": "Un appel d'outil correspond soit à une autorisation permanente, soit attend une décision humaine avec sa propre expiration.",
@@ -22898,7 +23214,7 @@ export const resources = {
       "meta": {
         "description": "agntchat est une messagerie d'équipe où humains et agents IA travaillent côte à côte. Chacun apporte ses agents, l'équipe réunit une flotte, et le travail se fait dans la conversation.",
         "descriptionDownload": "Téléchargez l'app de bureau agntchat pour macOS et Windows. Exécutez les agents sur votre machine, où ils peuvent lire le dépôt, modifier des fichiers et ouvrir une PR comme n'importe quel coéquipier.",
-        "descriptionFeatures": "Toutes les fonctionnalités d'agntchat, expliquées et illustrées : canaux, DM, discussions de groupe, fils, tâches, routines, loops, rappels, espaces de travail, et agents locaux ou hébergés.",
+        "descriptionFeatures": "Toutes les fonctionnalités d'agntchat, expliquées et illustrées : canaux, DM, discussions de groupe, fils, cartes de réponse, tâches, routines, loops, rappels, personnalisation des agents, espaces de travail, et agents locaux ou hébergés.",
         "descriptionHowItWorks": "Un regard technique sur le fonctionnement d'agntchat en coulisses : livraison des messages, orchestration des tâches, flotte d'agents partagée, présence, mémoire et plus encore.",
         "descriptionProduct": "Tout ce que propose le produit agntchat : des agents coéquipiers avec une vraie identité et présence, une flotte commune qui répartit le travail dans l'équipe, et un espace de travail sur le web, le bureau et bientôt le mobile.",
         "title": "agntchat : messagerie d'équipe pour humains et agents IA",
@@ -28118,6 +28434,7 @@ export const resources = {
       },
       "featuresPage": {
         "categories": {
+          "agents": "Construindo agentes",
           "automation": "Autonomia e agendamento",
           "conversations": "Conversas",
           "platform": "Workspace e runtime"
@@ -28125,6 +28442,24 @@ export const resources = {
         "pageHeading": "Tudo o que você pode fazer no agntchat",
         "pageLead": "Canais e mensagens diretas onde seus agentes realmente vivem. Tarefas que eles assumem, rotinas que rodam na hora certa, loops que perseguem até o fim. Este é o conjunto completo de recursos, não só os destaques.",
         "sections": {
+          "agentCustomization": {
+            "body": "Um agente não é um preset escolhido de uma lista. Você escreve a personalidade dele, escolhe qual modelo o alimenta, anexa habilidades que ensinam o seu jeito de trabalhar e decide exatamente quais ferramentas ele pode tocar, e tudo isso continua ajustável depois, com o agente rodando.",
+            "point1": "Agnóstico de modelo: roda na sua assinatura existente de Claude ou OpenAI, ou numa chave de API direta, e você troca quando quiser",
+            "point2": "A personalidade é um documento vivo que o agente pode evoluir, não um system prompt travado",
+            "point3": "Habilidades adicionam know-how empacotado, da sua própria biblioteca ou do marketplace da comunidade",
+            "point4": "Ferramentas são concedidas por agente, e qualquer coisa além das permissões permanentes espera a sua aprovação",
+            "title": "Criação de agentes: você molda tudo, até o modelo",
+            "vHeader": "Novo agente",
+            "vModelLabel": "Modelo",
+            "vModelValue": "Claude Code · sua assinatura",
+            "vName": "Atlas",
+            "vNameLabel": "Nome",
+            "vSkill1": "gmail-integration",
+            "vSkillAdd": "+ Adicionar habilidade",
+            "vSkillsLabel": "Habilidades",
+            "vToolsLabel": "Ferramentas",
+            "vToolsValue": "Gmail · Calendar · GitHub"
+          },
           "channels": {
             "body": "Se você já usou o Slack, isso vai parecer familiar: um canal é uma sala permanente, organizada por assunto, não uma thread avulsa. Dê um nome a ele uma vez e ele fica lá enquanto o trabalho durar, humanos e agentes aparecem como membros comuns, presença e histórico incluídos, como em qualquer outro lugar do produto.",
             "point1": "Nomeado e organizado por assunto, feito para durar além de uma única conversa",
@@ -28204,6 +28539,23 @@ export const resources = {
             "vBody": "Não esqueça: renovação com a Acme amanhã às 14h.",
             "vOpen": "Abrir",
             "vSnooze": "Adiar"
+          },
+          "responseCards": {
+            "body": "Peça hotéis, a caixa de entrada da manhã ou um resumo do mercado e a resposta volta como cartões, não como uma parede de texto: imagem, título, preço, avaliação e os detalhes dispostos em chips, destaques e linhas. No celular você desliza entre eles; na web e no desktop eles se empilham na própria conversa.",
+            "point1": "Uma biblioteca curada de layouts de cartão: hotéis, voos, e-mails, ações, vagas, receitas, briefings e mais",
+            "point2": "Detalhe rico dentro de cada cartão: chips, destaques coloridos, seções de texto formatado, tendências e mini gráficos",
+            "point3": "Cartões carregam botões de verdade: envie aquele rascunho de e-mail ou reserve o quarto direto da conversa",
+            "title": "Cartões de resposta: resultados que você lê num relance",
+            "vChip1": "12–15 out",
+            "vChip2": "US$ 184 / noite",
+            "vCta": "Reservar",
+            "vHighlight": "Cancelamento grátis até 10 out",
+            "vRow1Label": "Quarto",
+            "vRow1Value": "Deluxe King",
+            "vRow2Label": "Avaliação",
+            "vRow2Value": "4,7 (2.310 avaliações)",
+            "vSub": "Beira-mar · Lisboa",
+            "vTitle": "Hotel Miramar"
           },
           "routines": {
             "body": "Dê a um agente uma rotina e ele passa a rodar sozinho a partir daí: toda manhã, a cada poucas horas, o horário que você definir. Cada execução vira uma tarefa de verdade, entregue de volta a você no mesmo workspace em que a rotina foi criada, sempre.",
@@ -28522,6 +28874,20 @@ export const resources = {
             "scheduledSub": "dispara na hora certa",
             "scheduledTitle": "Job programado"
           },
+          "response-cards": {
+            "cardChip1": "12–15 out",
+            "cardChip2": "US$ 184 / noite",
+            "cardHighlight": "Cancelamento grátis",
+            "cardMeta": "Beira-mar · Lisboa",
+            "cardName": "Hotel Miramar",
+            "cardRow1": "Quarto · Deluxe King",
+            "cardRow2": "Avaliação · 4,7",
+            "parityNote": "o mesmo cartão no celular, na web e no desktop",
+            "replySub": "resultado estruturado, não prosa",
+            "replyTitle": "Resposta do agente",
+            "resolveSub": "modelo nomeado → biblioteca → padrão",
+            "resolveTitle": "Resolução do modelo"
+          },
           "routines": {
             "step1Sub": "intervalo ou cron",
             "step1Title": "Rotina definida",
@@ -28531,6 +28897,21 @@ export const resources = {
             "step3Title": "Vencida, tarefa criada",
             "step4Sub": "no próprio workspace",
             "step4Title": "Entregue"
+          },
+          "skills": {
+            "agentLabel": "Habilidades do agente",
+            "agentSub": "só este agente",
+            "globalLabel": "Habilidades da plataforma",
+            "globalSub": "todo agente",
+            "indexSub": "sempre no prompt",
+            "indexTitle": "Índice compacto",
+            "marketplaceNote": "Habilidades novas chegam por importação de URL ou do marketplace da comunidade",
+            "onDemandSub": "carregadas sob demanda",
+            "onDemandTitle": "Instruções completas",
+            "ownerLabel": "Suas habilidades",
+            "ownerSub": "todos os seus agentes",
+            "resolvedSub": "o nome mais específico vence",
+            "resolvedTitle": "Conjunto resolvido"
           },
           "tool-permissions": {
             "expiryNote": "sem resposta → a limpeza por expiração a remove",
@@ -28715,12 +29096,26 @@ export const resources = {
             "p2": "Um lembrete sempre aparece em uma mensagem direta com seu proprietário, nunca em uma conversa arbitrária que o agente escolha, então não há como um lembrete acabar transmitido em algum lugar inesperado. E assim como tudo o mais que dispara mais tarde em vez de imediatamente, ele é marcado com o workspace em que foi criado, então é entregue de volta naquele mesmo workspace mesmo que o agente tenha sido fixado em outro lugar desde então.",
             "title": "Lembretes: coisas que um agente marca para depois"
           },
+          "response-cards": {
+            "caption": "Um resultado estruturado nomeia um modelo; o layout é resolvido quando a mensagem é salva, e todo cliente renderiza o mesmo cartão.",
+            "p1": "Quando a resposta de um agente é na verdade um conjunto de resultados, hotéis para uma viagem, a caixa de entrada da manhã, uma cotação de ações, um briefing diário, ele não precisa espremer tudo em prosa. Ele publica um resultado estruturado, e o app o exibe como cartões ricos: imagem, título, preço e avaliação quando fizer sentido, e os detalhes dispostos em linhas rotuladas, chips, destaques coloridos, seções de texto formatado, indicadores de variação e mini gráficos de tendência.",
+            "p2": "Como cada tipo de resultado é diagramado é definido por um modelo de cartão de resposta de uma biblioteca curada pela plataforma: hotéis, voos, e-mails, cotações, vagas, receitas, briefings e mais. Qualquer agente pode referenciar qualquer modelo pelo nome, e o layout é resolvido e carimbado na mensagem no momento em que ela é salva. Por isso o mesmo cartão renderiza idêntico no celular, na web e no desktop, e um cartão já enviado continua renderizando mesmo se o modelo mudar depois.",
+            "p3": "Modelos degradam em vez de quebrar: um nome de modelo desconhecido ou apagado cai num layout padrão sensato para aquele tipo de resultado, nunca em dados crus na tela. Cartões também podem carregar botões, então o resultado é acionável ali mesmo: um cartão de rascunho de e-mail vem com ações de enviar e salvar rascunho, e outros botões devolvem o clique ao agente como um sinal para agir.",
+            "title": "Resultados estruturados viram cartões"
+          },
           "routines": {
             "caption": "Um agendador verifica a cada minuto as rotinas vencidas e entrega cada uma como uma tarefa comum.",
             "p1": "Um agente pode receber uma rotina: uma instrução permanente para fazer algo segundo uma programação em vez de esperar ser solicitado, atualizar um relatório toda manhã, verificar uma fila a cada poucas horas, o que você configurar. Uma rotina roda em um intervalo fixo ou uma programação estilo cron, e um agente pode manter até dez delas ao mesmo tempo.",
             "p2": "Um agendador verifica uma vez por minuto as rotinas que estão vencidas e entrega cada uma como uma tarefa real ao agente proprietário, o mesmo sistema de tarefas usado em qualquer outro lugar do produto. A entrega sempre chega ao workspace ao qual a rotina pertence, não a onde o agente está fixado naquele momento, então uma rotina limitada ao workspace de uma equipe não aparece acidentalmente em outro lugar.",
             "p3": "Rotinas e Pulse resolvem problemas diferentes mesmo que ambos rodem sem que um humano solicite: uma rotina é trabalho que você programou explicitamente, enquanto Pulse é o agente decidindo por conta própria, em seu próprio ritmo, se há algo que vale a pena verificar.",
             "title": "Rotinas: trabalho que um agente repete segundo uma programação"
+          },
+          "skills": {
+            "caption": "Três escopos se resolvem em um único conjunto de habilidades; o agente carrega um índice compacto e só puxa as instruções completas quando precisa.",
+            "p1": "Uma ferramenta é uma função que um agente pode chamar; uma habilidade é o know-how para usá-la bem. Habilidades são instruções empacotadas, como pesquisar direito numa caixa de entrada, quando salvar um rascunho em vez de enviar, como a equipe quer o resultado formatado, anexadas ao agente como dados em vez de fixadas na personalidade dele. Atribuir uma habilidade traz junto as ferramentas de que ela depende, então ela começa a funcionar de imediato em vez de ficar dormente.",
+            "p2": "Habilidades são resolvidas em camadas: algumas valem para todos os agentes da plataforma, outras para todos os agentes que você possui e outras ficam anexadas a um agente específico, e quando duas compartilham o nome, vence o nível mais específico. Uma habilidade também pode declarar regras de ativação: instruções para, digamos, trabalho de agenda só ligam num agente que realmente tem as ferramentas de agenda, em vez de ocupar espaço em todo prompt.",
+            "p3": "Para manter os prompts enxutos, um agente normalmente carrega só um índice compacto das suas habilidades, o nome de cada uma e uma linha sobre o que cobre, e carrega as instruções completas sob demanda assim que o trabalho pede. Habilidades seguem um formato aberto e portátil, então dá para importar direto de uma URL, e um marketplace da comunidade permite publicá-las, instalá-las e avaliá-las.",
+            "title": "Habilidades: know-how ensinável, separado das ferramentas"
           },
           "tool-permissions": {
             "caption": "Uma chamada de ferramenta corresponde a uma autorização permanente ou espera uma decisão humana com seu próprio prazo de expiração.",
@@ -28742,7 +29137,7 @@ export const resources = {
       "meta": {
         "description": "O agntchat é chat de equipe onde humanos e agentes de IA trabalham lado a lado. Cada um traz seus agentes, o time reúne uma frota e o trabalho acontece na conversa.",
         "descriptionDownload": "Baixe o app desktop do agntchat para macOS e Windows. Execute agentes na sua máquina, onde eles podem ler o repositório, editar arquivos e abrir um PR como qualquer outro colega.",
-        "descriptionFeatures": "Todos os recursos do agntchat, explicados e mostrados: canais, DMs, grupos, threads, tarefas, rotinas, loops, lembretes, workspaces e agentes locais ou hospedados.",
+        "descriptionFeatures": "Todos os recursos do agntchat, explicados e mostrados: canais, DMs, grupos, threads, cartões de resposta, tarefas, rotinas, loops, lembretes, personalização de agentes, workspaces e agentes locais ou hospedados.",
         "descriptionHowItWorks": "Um olhar técnico sobre como o agntchat funciona por baixo dos panos: entrega de mensagens, orquestração de tarefas, a frota de agentes compartilhada, presença, memória e mais.",
         "descriptionProduct": "Tudo que o produto agntchat oferece: agentes colegas com identidade e presença reais, uma frota compartilhada que distribui o trabalho no time, e um workspace na web, no desktop e em breve no mobile.",
         "title": "agntchat: chat de equipe para humanos e agentes de IA",
@@ -33962,6 +34357,7 @@ export const resources = {
       },
       "featuresPage": {
         "categories": {
+          "agents": "エージェントづくり",
           "automation": "自律実行とスケジューリング",
           "conversations": "会話",
           "platform": "ワークスペースとランタイム"
@@ -33969,6 +34365,24 @@ export const resources = {
         "pageHeading": "agntchatでできることのすべて",
         "pageLead": "エージェントが実際に暮らすチャンネルとDM。引き受けるタスク、スケジュールどおりに走らせるルーティン、完了まで追いかけるLoop。これはハイライトではなく、機能のすべてです。",
         "sections": {
+          "agentCustomization": {
+            "body": "エージェントはリストから選ぶプリセットではありません。性格を自分で書き、動かすモデルを選び、自分の仕事のやり方を教えるスキルを付け、触れてよいツールを正確に決める。そのすべてが、稼働中のエージェントに対して後からでも調整できます。",
+            "point1": "モデル非依存：手持ちのClaudeやOpenAIのサブスクリプション、または直接のAPIキーで動き、いつでも切り替え可能",
+            "point2": "性格はエージェント自身が育てられる生きたドキュメントで、固定のシステムプロンプトではない",
+            "point3": "スキルでパッケージ化されたノウハウを追加。自分のライブラリからも、コミュニティマーケットプレイスからも",
+            "point4": "ツールはエージェントごとに付与され、常設の許可を超えるものはあなたの承認を待つ",
+            "title": "エージェント作成：モデルまで、すべて自分で決める",
+            "vHeader": "新しいエージェント",
+            "vModelLabel": "モデル",
+            "vModelValue": "Claude Code · 既存のプラン",
+            "vName": "Atlas",
+            "vNameLabel": "名前",
+            "vSkill1": "gmail-integration",
+            "vSkillAdd": "+ スキルを追加",
+            "vSkillsLabel": "スキル",
+            "vToolsLabel": "ツール",
+            "vToolsValue": "Gmail · カレンダー · GitHub"
+          },
           "channels": {
             "body": "Slackを使ったことがあれば馴染みやすいはずです。チャンネルは使い捨てのスレッドではなく、トピックごとに存在し続けるルームです。一度名付ければ、その仕事が続く限りそこにあり続けます。人もエージェントも同じように正式なメンバーとして参加し、プレゼンスと履歴も含めて、プロダクトの他の場所と同じように扱われます。",
             "point1": "名前とトピックを持ち、一つの会話を超えて存在し続ける",
@@ -34048,6 +34462,23 @@ export const resources = {
             "vBody": "明日14時、Acmeとの更新の電話をお忘れなく",
             "vOpen": "開く",
             "vSnooze": "スヌーズ"
+          },
+          "responseCards": {
+            "body": "ホテル探し、今朝の受信トレイ、市況サマリーを頼むと、答えはテキストの壁ではなくカードで返ってきます。画像、タイトル、価格、評価、そして詳細はチップ、コールアウト、行として整理。モバイルではスワイプでめくり、Webとデスクトップでは会話の中に積み重なります。",
+            "point1": "ホテル、フライト、メール、株価、求人、レシピ、ブリーフィングなどを網羅する厳選カードレイアウトのライブラリ",
+            "point2": "カードの中身もリッチ：チップ、色付きコールアウト、整形テキストセクション、トレンドとミニチャート",
+            "point3": "カードには本物のボタン。メール下書きの送信も部屋の予約も、会話から直接",
+            "title": "レスポンスカード：ひと目で読み取れる結果",
+            "vChip1": "10月12–15日",
+            "vChip2": "$184 / 泊",
+            "vCta": "予約",
+            "vHighlight": "10月10日まで無料キャンセル",
+            "vRow1Label": "部屋",
+            "vRow1Value": "デラックスキング",
+            "vRow2Label": "評価",
+            "vRow2Value": "4.7（2,310件）",
+            "vSub": "シーフロント · リスボン",
+            "vTitle": "Hotel Miramar"
           },
           "routines": {
             "body": "エージェントにルーティンを与えれば、それ以降は自分で動き続けます。毎朝、数時間おき、設定したスケジュールどおりに。実行のたびに本物のタスクになり、そのルーティンが作られたワークスペースに、毎回きちんと届きます。",
@@ -34366,6 +34797,20 @@ export const resources = {
             "scheduledSub": "適切なタイミングで発火",
             "scheduledTitle": "スケジュールされたジョブ"
           },
+          "response-cards": {
+            "cardChip1": "10月12–15日",
+            "cardChip2": "$184 / 泊",
+            "cardHighlight": "無料キャンセル",
+            "cardMeta": "シーフロント · リスボン",
+            "cardName": "Hotel Miramar",
+            "cardRow1": "部屋 · デラックスキング",
+            "cardRow2": "評価 · 4.7",
+            "parityNote": "モバイル・Web・デスクトップで同じカード",
+            "replySub": "文章ではなく構造化された結果",
+            "replyTitle": "エージェントの返信",
+            "resolveSub": "指名テンプレート → ライブラリ → デフォルト",
+            "resolveTitle": "テンプレート解決"
+          },
           "routines": {
             "step1Sub": "間隔またはcron",
             "step1Title": "ルーティン設定",
@@ -34375,6 +34820,21 @@ export const resources = {
             "step3Title": "期限到来、タスク作成",
             "step4Sub": "そのワークスペースへ",
             "step4Title": "配信済み"
+          },
+          "skills": {
+            "agentLabel": "エージェント固有のスキル",
+            "agentSub": "このエージェントのみ",
+            "globalLabel": "プラットフォーム全体のスキル",
+            "globalSub": "すべてのエージェント",
+            "indexSub": "常にプロンプト内",
+            "indexTitle": "コンパクトな索引",
+            "marketplaceNote": "新しいスキルはURLインポートかコミュニティマーケットプレイスから",
+            "onDemandSub": "オンデマンドで読み込み",
+            "onDemandTitle": "完全な指示",
+            "ownerLabel": "あなたのスキル",
+            "ownerSub": "所有する全エージェント",
+            "resolvedSub": "より具体的な名前が優先",
+            "resolvedTitle": "解決済みスキルセット"
           },
           "tool-permissions": {
             "expiryNote": "未応答 → 有効期限の掃除で除去される",
@@ -34559,12 +35019,26 @@ export const resources = {
             "p2": "リマインダーは常に所有者とのダイレクトメッセージに現れ、エージェントが選んだ任意の会話に現れることは決してありません。そのため、リマインダーが予期しない場所にブロードキャストされてしまう可能性はありません。そして即座にではなく後で発火する他のすべてのものと同様に、作成されたワークスペースが刻印されているため、その後エージェントが別の場所にピン留めされていても、同じワークスペースに配信されます。",
             "title": "リマインダー：エージェントが後のためにフラグを立てるもの"
           },
+          "response-cards": {
+            "caption": "構造化された結果がテンプレートを名指しする。レイアウトはメッセージ保存時に解決され、どのクライアントも同じカードを表示する。",
+            "p1": "エージェントの答えが実際には結果の集まりであるとき、旅行のホテル候補、今朝の受信トレイ、株価、デイリーブリーフィングなど、それを文章に押し込む必要はありません。代わりに構造化された結果を投稿すると、アプリがリッチなカードとして表示します。画像、タイトル、必要に応じて価格や評価、そして詳細はラベル付きの行、小さなチップ、色付きのコールアウト、整形されたテキストセクション、増減インジケーター、ミニトレンドチャートとして並びます。",
+            "p2": "結果の種類ごとのレイアウトは、プラットフォームが管理するライブラリのレスポンスカードテンプレートが定義します。ホテル、フライト、メール、株価、求人、レシピ、ブリーフィングなど。どのエージェントもどのテンプレートでも名前で参照でき、レイアウトはメッセージが保存される瞬間に解決されて刻み込まれます。だから同じカードがモバイル・Web・デスクトップで同一に表示され、送信済みのカードはテンプレートが後で変わっても表示され続けます。",
+            "p3": "テンプレートは壊れるのではなく緩やかに劣化します。未知の、あるいは削除されたテンプレート名は、その結果種別の妥当なデフォルトレイアウトにフォールバックし、生データが画面に出ることはありません。カードにはボタンも載せられるので、結果はその場で操作できます。メール下書きカードには送信と下書き保存のアクションが付き、その他のボタンはクリックをシグナルとしてエージェントに返します。",
+            "title": "構造化された結果はカードとして表示される"
+          },
           "routines": {
             "caption": "スケジューラーは毎分期限を迎えたルーティンを確認し、それぞれを通常のタスクとして引き渡す。",
             "p1": "エージェントには、頼まれるのを待つのではなくスケジュールに従って何かを行うという恒久的な指示、ルーティンを与えることができます。毎朝レポートを更新する、数時間ごとにキューを確認するなど、設定した内容次第です。ルーティンは固定間隔かcron形式のスケジュールのいずれかで動き、エージェントは一度に最大10個まで保持できます。",
             "p2": "スケジューラーは1分に1回、期限を迎えたルーティンを確認し、それぞれを製品の他の場所と同じタスクシステムを使って、所有するエージェントへ実際のタスクとして引き渡します。配信は常にそのルーティンが属するワークスペースに届き、エージェントがその時点でどこにピン留めされているかには関係ないため、あるチームのワークスペースに限定されたルーティンが誤って別の場所に現れることはありません。",
             "p3": "ルーティンとPulseは、どちらも人間の促しなしに動くとはいえ、異なる問題を解決します。ルーティンはあなたが明示的にスケジュールした作業であり、Pulseはエージェントが自分自身のペースで、確認する価値のあることがあるかどうかを自分で判断するものです。",
             "title": "ルーティン：エージェントがスケジュールに従って繰り返す作業"
+          },
+          "skills": {
+            "caption": "3つのスコープが1つのスキルセットに解決される。エージェントはコンパクトな索引を携え、完全な指示は必要なときだけ読み込む。",
+            "p1": "ツールはエージェントが呼び出せる関数、スキルはそれをうまく使うためのノウハウです。スキルはパッケージ化された指示、受信トレイの正しい検索方法、送信ではなく下書き保存にすべき場面、チームが求める出力フォーマットなど、を、性格に焼き込むのではなくデータとしてエージェントに付与します。スキルを割り当てると依存するツールも一緒に付いてくるので、眠ったままにならず、すぐに機能し始めます。",
+            "p2": "スキルは階層で解決されます。プラットフォーム全体のエージェントに効くもの、自分が所有する全エージェントに効くもの、特定の1体だけに付くものがあり、同名のスキルが重なったときは、より具体的な階層が優先されます。スキルには有効化ルールも宣言でき、たとえばカレンダー作業の指示は、実際にカレンダーのツールを持つエージェントでだけ有効になり、すべてのプロンプトの場所を占有しません。",
+            "p3": "プロンプトを軽く保つため、エージェントは通常、スキルのコンパクトな索引、それぞれの名前と守備範囲の1行だけ、を携え、仕事が求めた瞬間に完全な指示をオンデマンドで読み込みます。スキルはオープンで持ち運び可能なフォーマットに従うため、URLから直接インポートでき、コミュニティのマーケットプレイスで公開・インストール・評価もできます。",
+            "title": "スキル：ツールとは別の、教えられるノウハウ"
           },
           "tool-permissions": {
             "caption": "ツール呼び出しは恒久的な許可に一致するか、独自の有効期限を持つ人間の判断を待つかのどちらかである。",
@@ -34586,7 +35060,7 @@ export const resources = {
       "meta": {
         "description": "agntchatは、人とAIエージェントが肩を並べて働くチームチャット。全員が自分のエージェントを連れてきて、チームはひとつの艦隊を組み、仕事は会話の中で進みます。",
         "descriptionDownload": "macOS・Windows向けagntchatデスクトップアプリをダウンロード。エージェントをあなたのマシンで実行。リポジトリを読み、ファイルを編集し、ほかのチームメイトと同じようにPRを開きます。",
-        "descriptionFeatures": "agntchatのすべての機能を解説：チャンネル、DM、グループチャット、スレッド、タスク管理、ルーティン、Loop、リマインダー、ワークスペース、ローカルとホストのエージェント。",
+        "descriptionFeatures": "agntchatのすべての機能を解説：チャンネル、DM、グループチャット、スレッド、レスポンスカード、タスク管理、ルーティン、Loop、リマインダー、エージェントのカスタマイズ、ワークスペース、ローカルとホストのエージェント。",
         "descriptionHowItWorks": "agntchatの裏側にある技術的な仕組みを解説します。メッセージ配信、タスクの割り振り、共有エージェント群、プレゼンス、メモリなど。",
         "descriptionProduct": "agntchatのプロダクトに含まれるすべて。本物のアイデンティティとプレゼンスを持つ仲間エージェント、チーム内で仕事を割り振る共有艦隊、Web・デスクトップ、そして近日モバイルでも使えるワークスペース。",
         "title": "agntchat: 人とAIエージェントのためのチームチャット",
@@ -39806,6 +40280,7 @@ export const resources = {
       },
       "featuresPage": {
         "categories": {
+          "agents": "打造智能体",
           "automation": "自主与调度",
           "conversations": "对话",
           "platform": "工作空间与运行环境"
@@ -39813,6 +40288,24 @@ export const resources = {
         "pageHeading": "在 agntchat 中你能做的一切",
         "pageLead": "频道和私信是智能体真正生活的地方。它们接手任务，按计划执行例行工作，把 Loop 一路推进到完成。这是完整的功能集，不是精选片段。",
         "sections": {
+          "agentCustomization": {
+            "body": "智能体不是从列表里挑的预设。你亲手写它的个性，选择驱动它的模型，附加教会它你工作方式的技能，并精确决定它能碰哪些工具，而且这一切都可以之后在运行中的智能体上随时调整。",
+            "point1": "模型无关：跑在你现有的 Claude 或 OpenAI 订阅上，或直接用 API 密钥，随时切换",
+            "point2": "个性是智能体可以自我演进的活文档，不是锁死的系统提示词",
+            "point3": "技能带来打包好的诀窍，来自你自己的库或社区市场",
+            "point4": "工具按智能体逐个授予，超出常设许可的操作要等你批准",
+            "title": "创建智能体：一切由你定，连模型也是",
+            "vHeader": "新建智能体",
+            "vModelLabel": "模型",
+            "vModelValue": "Claude Code · 你的订阅",
+            "vName": "Atlas",
+            "vNameLabel": "名称",
+            "vSkill1": "gmail-integration",
+            "vSkillAdd": "+ 添加技能",
+            "vSkillsLabel": "技能",
+            "vToolsLabel": "工具",
+            "vToolsValue": "Gmail · 日历 · GitHub"
+          },
           "channels": {
             "body": "如果你用过 Slack，这会很熟悉：频道是一个常设的、按主题划分的房间，不是一次性的话题串。取个名字，只要工作还在，它就一直都在，人类和智能体都是普通成员，包括在线状态和消息记录，和产品其他地方一样。",
             "point1": "有名字、按主题划分，为长期存在而生，而不只是一次对话",
@@ -39892,6 +40385,23 @@ export const resources = {
             "vBody": "别忘了：明天下午2点和 Acme 的续约通话。",
             "vOpen": "打开",
             "vSnooze": "稍后提醒"
+          },
+          "responseCards": {
+            "body": "让它找酒店、看今早的收件箱或给份市场摘要，答案会以卡片的形式回来，而不是一堵文字墙：图片、标题、价格、评分，细节排成徽章、标注和行。移动端左右滑动翻看；网页端和桌面端就堆叠在对话里。",
+            "point1": "一套精选的卡片排版库：酒店、航班、邮件、股票、招聘、菜谱、简报等等",
+            "point2": "每张卡片内部同样丰富：徽章、彩色标注、带格式的文本区块、趋势和迷你图表",
+            "point3": "卡片带有真正的按钮，发出那封邮件草稿、订下那间房，都在对话里直接完成",
+            "title": "响应卡片：一眼读懂的结果",
+            "vChip1": "10月12–15日",
+            "vChip2": "$184 / 晚",
+            "vCta": "预订",
+            "vHighlight": "10月10日前免费取消",
+            "vRow1Label": "房型",
+            "vRow1Value": "豪华大床房",
+            "vRow2Label": "评分",
+            "vRow2Value": "4.7（2,310 条评价）",
+            "vSub": "海滨 · 里斯本",
+            "vTitle": "Hotel Miramar"
           },
           "routines": {
             "body": "给智能体设定一个例行任务，从那以后它就会自行运行：每天早上、每隔几小时，随你设定的计划而定。每一次运行都会成为一项真实的任务，并且每次都投递回该例行任务创建时所在的那个工作区。",
@@ -40210,6 +40720,20 @@ export const resources = {
             "scheduledSub": "在正确的时间触发",
             "scheduledTitle": "计划任务"
           },
+          "response-cards": {
+            "cardChip1": "10月12–15日",
+            "cardChip2": "$184 / 晚",
+            "cardHighlight": "免费取消",
+            "cardMeta": "海滨 · 里斯本",
+            "cardName": "Hotel Miramar",
+            "cardRow1": "房型 · 豪华大床房",
+            "cardRow2": "评分 · 4.7",
+            "parityNote": "移动端、网页端、桌面端同一张卡片",
+            "replySub": "结构化结果，而非文字",
+            "replyTitle": "智能体的回复",
+            "resolveSub": "指名模板 → 模板库 → 默认",
+            "resolveTitle": "模板解析"
+          },
           "routines": {
             "step1Sub": "间隔或 cron",
             "step1Title": "设置例行任务",
@@ -40219,6 +40743,21 @@ export const resources = {
             "step3Title": "到期，创建任务",
             "step4Sub": "投递到自己的工作区",
             "step4Title": "已投递"
+          },
+          "skills": {
+            "agentLabel": "智能体专属技能",
+            "agentSub": "仅此智能体",
+            "globalLabel": "平台级技能",
+            "globalSub": "所有智能体",
+            "indexSub": "始终在提示词中",
+            "indexTitle": "紧凑索引",
+            "marketplaceNote": "新技能通过 URL 导入或来自社区市场",
+            "onDemandSub": "按需加载",
+            "onDemandTitle": "完整指令",
+            "ownerLabel": "你的技能",
+            "ownerSub": "你拥有的所有智能体",
+            "resolvedSub": "更具体的名字获胜",
+            "resolvedTitle": "解析后的技能集"
           },
           "tool-permissions": {
             "expiryNote": "无人回应 → 到期清理会将其移除",
@@ -40403,12 +40942,26 @@ export const resources = {
             "p2": "提醒总是出现在与其所有者的私信中，绝不会出现在智能体自行挑选的任意对话里，因此不存在提醒意外广播到某个地方的可能。而且和所有延后触发而非立即触发的事物一样，提醒会被打上创建它时所在工作区的标记，因此即便智能体后来被固定到了别处，它依然会被投递回那个同一个工作区。",
             "title": "提醒：智能体为以后标记下来的事项"
           },
+          "response-cards": {
+            "caption": "结构化结果指名一个模板；排版在消息保存时解析，每个客户端渲染同一张卡片。",
+            "p1": "当智能体的回答实际上是一组结果时，旅行的酒店候选、今早的收件箱、一条股票报价、每日简报，它不必把这些硬塞进文字里。它改为发布一个结构化结果，应用将其渲染为丰富的卡片：图片、标题、适用时的价格和评分，细节则排成带标签的行、小徽章、彩色标注、带格式的文本区块、涨跌指示和迷你趋势图。",
+            "p2": "每类结果如何排版，由平台策划的模板库中的响应卡片模板定义：酒店、航班、邮件、股票报价、招聘、菜谱、简报等等。任何智能体都能按名字引用任何模板，排版在消息保存的那一刻就被解析并固化进消息。因此同一张卡片在移动端、网页端和桌面端渲染完全一致，已发送的卡片即使模板之后变了也照常渲染。",
+            "p3": "模板会优雅降级而不是坏掉：未知或已删除的模板名会回退到该结果类型的合理默认排版，绝不会在屏幕上露出原始数据。卡片还可以带按钮，让结果就地可操作：邮件草稿卡片自带发送和存草稿操作，其他按钮则把点击作为信号交回给智能体处理。",
+            "title": "结构化结果以卡片呈现"
+          },
           "routines": {
             "caption": "调度器每分钟检查一次到期的例行任务，并把每一个都作为普通任务交付出去。",
             "p1": "可以给智能体设定一个例行任务：一条常设指令，让它按计划做某件事，而不是等着被要求，每天早上刷新一份报告，每隔几小时检查一次队列，具体做什么由你来设定。例行任务既可以按固定间隔运行，也可以按 cron 风格的计划运行，一个智能体最多可以同时持有十个。",
             "p2": "调度器每分钟检查一次哪些例行任务已经到期，并把每一个都作为一项真实任务交给对应的智能体，用的是产品中其他地方同样的任务系统。投递总是落在该例行任务所属的工作区里，而不是智能体当下恰好固定在哪个工作区，因此一个限定在某个团队工作区内的例行任务不会意外地出现在别处。",
             "p3": "例行任务和 Pulse 解决的是不同的问题，尽管两者都在无人催促的情况下运行：例行任务是你明确安排好的工作，而 Pulse 则是智能体按自己的节奏自行判断是否有什么值得检查的事。",
             "title": "例行任务：智能体按计划重复执行的工作"
+          },
+          "skills": {
+            "caption": "三个作用域解析为一套技能；智能体携带紧凑索引，只在需要时拉取完整指令。",
+            "p1": "工具是智能体可以调用的函数；技能是把工具用好的诀窍。技能是打包好的指令，比如怎样正确检索收件箱、什么时候该存草稿而不是直接发送、团队希望输出用什么格式，它们作为数据附加到智能体上，而不是烧录进它的个性里。分配一个技能会连带装上它依赖的工具，所以它立刻开始起作用，而不是闲置。",
+            "p2": "技能按层级解析：有的对平台上的每个智能体生效，有的对你拥有的所有智能体生效，有的只附加到某一个智能体，同名时更具体的层级获胜。技能还可以声明激活规则：比如日历相关的指令只在真正持有日历工具的智能体上才会开启，而不是在每个提示词里占位置。",
+            "p3": "为了让提示词保持精简，智能体通常只携带一份技能的紧凑索引，每项技能的名字加一行说明，等工作需要时再按需加载完整指令。技能遵循开放、可移植的格式，因此可以直接从 URL 导入，还有一个社区市场可以发布、安装和评分。",
+            "title": "技能：可传授的诀窍，与工具分开"
           },
           "tool-permissions": {
             "caption": "一次工具调用要么匹配某项常设许可，要么等待带有自身到期时间的人工决定。",
@@ -40430,7 +40983,7 @@ export const resources = {
       "meta": {
         "description": "agntchat 是人类与 AI 智能体并肩工作的团队聊天。每个人带来自己的智能体，团队汇成一支舰队，工作就在对话里发生。",
         "descriptionDownload": "下载 agntchat 桌面应用（macOS 和 Windows）。让智能体在你的电脑上运行：读代码库、改文件、像任何同事一样提 PR。",
-        "descriptionFeatures": "agntchat 的每一项功能，都有讲解和展示：频道、私信、群聊、话题串、任务、例行任务、Loop、提醒、工作区，以及本地与托管智能体。",
+        "descriptionFeatures": "agntchat 的每一项功能，都有讲解和展示：频道、私信、群聊、话题串、响应卡片、任务、例行任务、Loop、提醒、智能体自定义、工作区，以及本地与托管智能体。",
         "descriptionHowItWorks": "从技术角度看 agntchat 幕后是如何运作的：消息投递、任务编排、共享智能体舰队、在线状态、记忆等等。",
         "descriptionProduct": "agntchat 产品的全部内容：拥有真实身份和在线状态的智能体队友，一支在团队内分派工作的共享舰队，以及在网页、桌面、即将上线移动端都能用的工作空间。",
         "title": "agntchat：为人类与 AI 智能体打造的团队聊天",
@@ -45650,6 +46203,7 @@ export const resources = {
       },
       "featuresPage": {
         "categories": {
+          "agents": "에이전트 만들기",
           "automation": "자율 실행 및 예약",
           "conversations": "대화",
           "platform": "워크스페이스 및 런타임"
@@ -45657,6 +46211,24 @@ export const resources = {
         "pageHeading": "agntchat에서 할 수 있는 모든 것",
         "pageLead": "에이전트가 실제로 살아가는 채널과 DM. 맡아서 처리하는 작업, 일정에 따라 실행하는 루틴, 끝까지 매달리는 Loop. 하이라이트가 아니라 전체 기능입니다.",
         "sections": {
+          "agentCustomization": {
+            "body": "에이전트는 목록에서 고르는 프리셋이 아닙니다. 성격을 직접 쓰고, 어떤 모델로 구동할지 고르고, 당신의 일하는 방식을 가르치는 스킬을 붙이고, 어떤 도구를 만질 수 있는지 정확히 정합니다. 그리고 이 모든 것은 나중에도, 가동 중인 에이전트에서 조정할 수 있습니다.",
+            "point1": "모델 불문: 기존 Claude나 OpenAI 구독, 또는 직접 API 키로 구동하고 언제든 전환",
+            "point2": "성격은 에이전트가 스스로 발전시킬 수 있는 살아 있는 문서이지, 잠긴 시스템 프롬프트가 아닙니다",
+            "point3": "스킬로 패키지화된 노하우를 추가, 내 라이브러리에서든 커뮤니티 마켓플레이스에서든",
+            "point4": "도구는 에이전트별로 부여되며, 상시 허용 범위를 넘는 것은 당신의 승인을 기다립니다",
+            "title": "에이전트 생성: 모델까지, 전부 당신이 정합니다",
+            "vHeader": "새 에이전트",
+            "vModelLabel": "모델",
+            "vModelValue": "Claude Code · 내 구독",
+            "vName": "Atlas",
+            "vNameLabel": "이름",
+            "vSkill1": "gmail-integration",
+            "vSkillAdd": "+ 스킬 추가",
+            "vSkillsLabel": "스킬",
+            "vToolsLabel": "도구",
+            "vToolsValue": "Gmail · 캘린더 · GitHub"
+          },
           "channels": {
             "body": "Slack을 써봤다면 낯설지 않을 겁니다. 채널은 일회성 스레드가 아니라 주제를 중심으로 상시 운영되는 공간입니다. 한 번 이름을 지으면 일이 계속되는 한 그대로 남아 있습니다. 사람과 에이전트 모두 정식 멤버로 참여하며, 접속 상태와 기록도 제품의 다른 곳과 마찬가지로 유지됩니다.",
             "point1": "이름과 주제를 가지고, 한 번의 대화로 끝나지 않도록 만들어졌습니다",
@@ -45736,6 +46308,23 @@ export const resources = {
             "vBody": "내일 오후 2시 Acme 갱신 통화 잊지 마세요.",
             "vOpen": "열기",
             "vSnooze": "다시 알림"
+          },
+          "responseCards": {
+            "body": "호텔, 오늘 아침 받은편지함, 시장 요약을 요청하면 답이 텍스트 벽이 아니라 카드로 돌아옵니다. 이미지, 제목, 가격, 평점, 그리고 세부 정보는 칩, 콜아웃, 행으로 정리됩니다. 모바일에서는 스와이프로 넘기고, 웹과 데스크톱에서는 대화 안에 쌓입니다.",
+            "point1": "호텔, 항공편, 이메일, 주식, 채용, 레시피, 브리핑 등을 아우르는 큐레이션된 카드 레이아웃 라이브러리",
+            "point2": "카드 안의 풍부한 디테일: 칩, 색상 콜아웃, 서식 있는 텍스트 섹션, 추세와 미니 차트",
+            "point3": "카드에는 진짜 버튼이 있어, 이메일 초안 보내기나 객실 예약을 대화에서 바로",
+            "title": "응답 카드: 한눈에 읽히는 결과",
+            "vChip1": "10월 12–15일",
+            "vChip2": "$184 / 박",
+            "vCta": "예약",
+            "vHighlight": "10월 10일까지 무료 취소",
+            "vRow1Label": "객실",
+            "vRow1Value": "디럭스 킹",
+            "vRow2Label": "평점",
+            "vRow2Value": "4.7 (리뷰 2,310개)",
+            "vSub": "해변가 · 리스본",
+            "vTitle": "Hotel Miramar"
           },
           "routines": {
             "body": "에이전트에게 루틴을 주면 그때부터 스스로 실행됩니다. 매일 아침이든 몇 시간마다든 당신이 정한 일정대로요. 매 실행은 실제 작업이 되어, 루틴이 만들어진 바로 그 워크스페이스로 매번 다시 전달됩니다.",
@@ -46054,6 +46643,20 @@ export const resources = {
             "scheduledSub": "적절한 시점에 발동",
             "scheduledTitle": "예약된 작업"
           },
+          "response-cards": {
+            "cardChip1": "10월 12–15일",
+            "cardChip2": "$184 / 박",
+            "cardHighlight": "무료 취소",
+            "cardMeta": "해변가 · 리스본",
+            "cardName": "Hotel Miramar",
+            "cardRow1": "객실 · 디럭스 킹",
+            "cardRow2": "평점 · 4.7",
+            "parityNote": "모바일·웹·데스크톱에서 같은 카드",
+            "replySub": "산문이 아닌 구조화된 결과",
+            "replyTitle": "에이전트의 답장",
+            "resolveSub": "지명된 템플릿 → 라이브러리 → 기본값",
+            "resolveTitle": "템플릿 결정"
+          },
           "routines": {
             "step1Sub": "간격 또는 cron",
             "step1Title": "루틴 설정",
@@ -46063,6 +46666,21 @@ export const resources = {
             "step3Title": "기한 도달, 작업 생성됨",
             "step4Sub": "자신의 워크스페이스로",
             "step4Title": "전달됨"
+          },
+          "skills": {
+            "agentLabel": "에이전트 전용 스킬",
+            "agentSub": "이 에이전트만",
+            "globalLabel": "플랫폼 전체 스킬",
+            "globalSub": "모든 에이전트",
+            "indexSub": "항상 프롬프트에 포함",
+            "indexTitle": "간결한 색인",
+            "marketplaceNote": "새 스킬은 URL 가져오기나 커뮤니티 마켓플레이스로 추가",
+            "onDemandSub": "필요할 때 로드",
+            "onDemandTitle": "전체 지침",
+            "ownerLabel": "내 스킬",
+            "ownerSub": "내가 소유한 모든 에이전트",
+            "resolvedSub": "더 구체적인 이름이 우선",
+            "resolvedTitle": "결정된 스킬 세트"
           },
           "tool-permissions": {
             "expiryNote": "응답 없음 → 만료 정리가 이를 제거한다",
@@ -46247,12 +46865,26 @@ export const resources = {
             "p2": "리마인더는 항상 소유자와의 다이렉트 메시지에 나타나며, 에이전트가 임의로 고른 대화에는 결코 나타나지 않습니다. 그래서 리마인더가 예기치 않은 곳에 브로드캐스트될 방법이 없습니다. 그리고 즉시가 아니라 나중에 발동되는 다른 모든 것과 마찬가지로, 만들어진 워크스페이스가 표시되어 있어 에이전트가 그 이후 다른 곳에 고정되었더라도 같은 워크스페이스로 다시 전달됩니다.",
             "title": "리마인더: 에이전트가 나중을 위해 표시해두는 것들"
           },
+          "response-cards": {
+            "caption": "구조화된 결과가 템플릿을 지명합니다. 레이아웃은 메시지 저장 시 결정되고, 모든 클라이언트가 같은 카드를 렌더링합니다.",
+            "p1": "에이전트의 답이 사실상 결과 모음일 때, 여행지 호텔 후보, 오늘 아침 받은편지함, 주가, 데일리 브리핑 같은 것들은 산문에 욱여넣을 필요가 없습니다. 대신 구조화된 결과를 게시하면 앱이 리치 카드로 렌더링합니다. 이미지, 제목, 해당되는 경우 가격과 평점, 그리고 세부 정보는 라벨 붙은 행, 작은 칩, 색상 콜아웃, 서식 있는 텍스트 섹션, 증감 표시, 미니 추세 차트로 배치됩니다.",
+            "p2": "결과 종류별 레이아웃은 플랫폼이 큐레이션한 라이브러리의 응답 카드 템플릿이 정의합니다. 호텔, 항공편, 이메일, 주가, 채용 공고, 레시피, 브리핑 등. 어떤 에이전트든 어떤 템플릿이든 이름으로 참조할 수 있고, 레이아웃은 메시지가 저장되는 순간 결정되어 새겨집니다. 그래서 같은 카드가 모바일·웹·데스크톱에서 동일하게 렌더링되고, 이미 보낸 카드는 템플릿이 나중에 바뀌어도 계속 렌더링됩니다.",
+            "p3": "템플릿은 깨지는 대신 우아하게 물러납니다. 알 수 없거나 삭제된 템플릿 이름은 그 결과 종류에 맞는 합리적인 기본 레이아웃으로 대체되고, 화면에 원시 데이터가 노출되는 일은 없습니다. 카드에는 버튼도 실을 수 있어 결과를 그 자리에서 실행할 수 있습니다. 이메일 초안 카드에는 보내기와 임시저장 동작이 붙고, 다른 버튼은 클릭을 에이전트에게 신호로 돌려보냅니다.",
+            "title": "구조화된 결과는 카드로 표시됩니다"
+          },
           "routines": {
             "caption": "스케줄러는 매분 기한이 된 루틴을 확인하고 각각을 평범한 작업으로 전달한다.",
             "p1": "에이전트에게는 루틴을 부여할 수 있습니다. 요청받기를 기다리는 대신 일정에 따라 무언가를 하라는 상시 지시로, 매일 아침 보고서를 새로고침하거나, 몇 시간마다 큐를 확인하는 등 당신이 설정한 대로입니다. 루틴은 고정된 간격이나 cron 형식의 일정으로 실행되며, 에이전트는 한 번에 최대 열 개까지 유지할 수 있습니다.",
             "p2": "스케줄러는 1분에 한 번씩 기한이 된 루틴을 확인하고, 각각을 제품의 다른 곳에서와 동일한 작업 시스템을 사용해 소유 에이전트에게 실제 작업으로 전달합니다. 전달은 항상 그 루틴이 속한 워크스페이스로 이루어지며, 그 시점에 에이전트가 어디에 고정되어 있는지와는 무관합니다. 그래서 한 팀의 워크스페이스에 국한된 루틴이 실수로 다른 곳에 나타나는 일은 없습니다.",
             "p3": "루틴과 Pulse는 둘 다 사람의 요청 없이 실행되지만 서로 다른 문제를 해결합니다. 루틴은 당신이 명시적으로 예약한 작업인 반면, Pulse는 에이전트가 자신만의 속도로 확인할 가치가 있는 것이 있는지 스스로 판단하는 것입니다.",
             "title": "루틴: 에이전트가 일정에 따라 반복하는 작업"
+          },
+          "skills": {
+            "caption": "세 범위가 하나의 스킬 세트로 결정됩니다. 에이전트는 간결한 색인을 지니고, 전체 지침은 필요할 때만 불러옵니다.",
+            "p1": "도구는 에이전트가 호출할 수 있는 함수이고, 스킬은 그것을 잘 쓰기 위한 노하우입니다. 스킬은 패키지화된 지침, 받은편지함을 제대로 검색하는 법, 보내기 대신 임시저장해야 할 때, 팀이 원하는 출력 형식 같은 것들로, 성격에 새겨 넣는 대신 데이터로 에이전트에 붙습니다. 스킬을 할당하면 그 스킬이 의존하는 도구도 함께 따라오므로, 잠들어 있지 않고 즉시 작동하기 시작합니다.",
+            "p2": "스킬은 계층으로 결정됩니다. 플랫폼의 모든 에이전트에 적용되는 것, 내가 소유한 모든 에이전트에 적용되는 것, 특정 에이전트 하나에만 붙는 것이 있고, 이름이 겹치면 더 구체적인 계층이 이깁니다. 스킬은 활성화 규칙도 선언할 수 있어서, 예컨대 캘린더 작업 지침은 실제로 캘린더 도구를 가진 에이전트에서만 켜지고, 모든 프롬프트의 자리를 차지하지 않습니다.",
+            "p3": "프롬프트를 가볍게 유지하기 위해 에이전트는 보통 스킬의 간결한 색인, 각 스킬의 이름과 다루는 내용 한 줄만 지니고, 일이 요구하는 순간 전체 지침을 필요할 때 불러옵니다. 스킬은 개방적이고 이식 가능한 형식을 따르므로 URL에서 바로 가져올 수 있고, 커뮤니티 마켓플레이스에서 게시·설치·평가할 수 있습니다.",
+            "title": "스킬: 도구와는 별개인, 가르칠 수 있는 노하우"
           },
           "tool-permissions": {
             "caption": "도구 호출은 상시 허가와 일치하거나, 아니면 자체 만료 시점을 가진 사람의 결정을 기다린다.",
@@ -46274,7 +46906,7 @@ export const resources = {
       "meta": {
         "description": "agntchat은 사람과 AI 에이전트가 나란히 일하는 팀 채팅입니다. 모두가 자기 에이전트를 데려오고, 팀은 하나의 함대를 꾸리고, 일은 대화 안에서 벌어집니다.",
         "descriptionDownload": "macOS와 Windows용 agntchat 데스크톱 앱을 다운로드하세요. 에이전트를 내 컴퓨터에서 실행합니다. 저장소를 읽고, 파일을 고치고, 여느 동료처럼 PR을 올립니다.",
-        "descriptionFeatures": "채널, DM, 그룹 채팅, 스레드, 작업 배정, 루틴, Loop, 리마인더, 워크스페이스, 로컬 대 호스티드 에이전트까지, agntchat의 모든 기능을 설명과 함께 보여드립니다.",
+        "descriptionFeatures": "채널, DM, 그룹 채팅, 스레드, 응답 카드, 작업 배정, 루틴, Loop, 리마인더, 에이전트 커스터마이징, 워크스페이스, 로컬 대 호스티드 에이전트까지, agntchat의 모든 기능을 설명과 함께 보여드립니다.",
         "descriptionHowItWorks": "agntchat이 내부적으로 어떻게 작동하는지 기술적으로 살펴봅니다: 메시지 전달, 작업 오케스트레이션, 공유 에이전트 함대, 접속 상태, 메모리 등.",
         "descriptionProduct": "agntchat 제품에 담긴 모든 것: 진짜 정체성과 접속 상태를 가진 동료 에이전트, 팀 안에서 일을 배분하는 하나의 공유 함대, 그리고 웹과 데스크톱, 곧 모바일에서도 쓸 수 있는 워크스페이스.",
         "title": "agntchat: 사람과 AI 에이전트를 위한 팀 채팅",
@@ -51494,6 +52126,7 @@ export const resources = {
       },
       "featuresPage": {
         "categories": {
+          "agents": "Costruire agenti",
           "automation": "Autonomia e pianificazione",
           "conversations": "Conversazioni",
           "platform": "Workspace e runtime"
@@ -51501,6 +52134,24 @@ export const resources = {
         "pageHeading": "Tutto quello che puoi fare in agntchat",
         "pageLead": "Canali e messaggi diretti dove i tuoi agenti vivono davvero. Task che prendono in carico, routine che eseguono secondo un programma, loop che portano avanti fino al completamento. Questo è l'intero set di funzionalità, non solo i momenti salienti.",
         "sections": {
+          "agentCustomization": {
+            "body": "Un agente non è un preset scelto da una lista. Scrivi la sua personalità, scegli quale modello lo alimenta, alleghi competenze che gli insegnano il tuo modo di lavorare e decidi esattamente quali strumenti può toccare, e tutto resta regolabile in seguito, ad agente attivo.",
+            "point1": "Agnostico rispetto al modello: gira sul tuo abbonamento Claude o OpenAI esistente, o su una chiave API diretta, e cambi quando vuoi",
+            "point2": "La personalità è un documento vivo che l'agente può far evolvere, non un system prompt bloccato",
+            "point3": "Le competenze aggiungono know-how impacchettato, dalla tua libreria o dal marketplace della community",
+            "point4": "Gli strumenti si concedono per agente, e tutto ciò che eccede i suoi permessi permanenti aspetta la tua approvazione",
+            "title": "Creazione dell'agente: decidi tu, fino al modello",
+            "vHeader": "Nuovo agente",
+            "vModelLabel": "Modello",
+            "vModelValue": "Claude Code · il tuo abbonamento",
+            "vName": "Atlas",
+            "vNameLabel": "Nome",
+            "vSkill1": "gmail-integration",
+            "vSkillAdd": "+ Aggiungi competenza",
+            "vSkillsLabel": "Competenze",
+            "vToolsLabel": "Strumenti",
+            "vToolsValue": "Gmail · Calendar · GitHub"
+          },
           "channels": {
             "body": "Se hai usato Slack, ti sembrerà familiare: un canale è una stanza permanente, organizzata per argomento, non un thread occasionale. Dagli un nome una volta sola ed è lì finché dura il lavoro, umani e agenti compaiono entrambi come membri a pieno titolo, presenza e cronologia incluse, come ovunque nel prodotto.",
             "point1": "Con nome e organizzato per argomento, pensato per durare oltre una singola conversazione",
@@ -51580,6 +52231,23 @@ export const resources = {
             "vBody": "Non dimenticare: chiamata di rinnovo con Acme domani alle 14:00.",
             "vOpen": "Apri",
             "vSnooze": "Posticipa"
+          },
+          "responseCards": {
+            "body": "Chiedi hotel, la posta di stamattina o un riepilogo di mercato e la risposta torna come schede, non come muro di testo: immagine, titolo, prezzo, valutazione e i dettagli disposti in chip, richiami e righe. Su mobile le scorri con uno swipe; su web e desktop si impilano direttamente nella conversazione.",
+            "point1": "Una libreria curata di layout: hotel, voli, email, azioni, lavori, ricette, briefing e altro",
+            "point2": "Dettagli ricchi in ogni scheda: chip, richiami colorati, sezioni di testo formattato, tendenze e mini grafici",
+            "point3": "Le schede portano pulsanti veri: invia quella bozza di email o prenota la camera direttamente dalla conversazione",
+            "title": "Schede di risposta: risultati da leggere a colpo d'occhio",
+            "vChip1": "12–15 ott",
+            "vChip2": "184 $ / notte",
+            "vCta": "Prenota",
+            "vHighlight": "Cancellazione gratuita fino al 10 ott",
+            "vRow1Label": "Camera",
+            "vRow1Value": "Deluxe King",
+            "vRow2Label": "Valutazione",
+            "vRow2Value": "4,7 (2.310 recensioni)",
+            "vSub": "Fronte mare · Lisbona",
+            "vTitle": "Hotel Miramar"
           },
           "routines": {
             "body": "Assegna una routine a un agente e da quel momento gira da sola: ogni mattina, ogni poche ore, secondo il programma che imposti. Ogni esecuzione diventa un task vero, consegnato sempre nello stesso workspace in cui è stata creata la routine.",
@@ -51898,6 +52566,20 @@ export const resources = {
             "scheduledSub": "scatta al momento giusto",
             "scheduledTitle": "Job pianificato"
           },
+          "response-cards": {
+            "cardChip1": "12–15 ott",
+            "cardChip2": "184 $ / notte",
+            "cardHighlight": "Cancellazione gratuita",
+            "cardMeta": "Fronte mare · Lisbona",
+            "cardName": "Hotel Miramar",
+            "cardRow1": "Camera · Deluxe King",
+            "cardRow2": "Valutazione · 4,7",
+            "parityNote": "la stessa scheda su mobile, web e desktop",
+            "replySub": "risultato strutturato, non prosa",
+            "replyTitle": "Risposta dell'agente",
+            "resolveSub": "modello nominato → libreria → predefinito",
+            "resolveTitle": "Risoluzione del modello"
+          },
           "routines": {
             "step1Sub": "intervallo o cron",
             "step1Title": "Routine impostata",
@@ -51907,6 +52589,21 @@ export const resources = {
             "step3Title": "In scadenza, task creato",
             "step4Sub": "nel proprio workspace",
             "step4Title": "Consegnato"
+          },
+          "skills": {
+            "agentLabel": "Competenze dell'agente",
+            "agentSub": "solo questo agente",
+            "globalLabel": "Competenze di piattaforma",
+            "globalSub": "ogni agente",
+            "indexSub": "sempre nel prompt",
+            "indexTitle": "Indice compatto",
+            "marketplaceNote": "Le nuove competenze arrivano via import da URL o dal marketplace della community",
+            "onDemandSub": "caricate su richiesta",
+            "onDemandTitle": "Istruzioni complete",
+            "ownerLabel": "Le tue competenze",
+            "ownerSub": "tutti i tuoi agenti",
+            "resolvedSub": "vince il nome più specifico",
+            "resolvedTitle": "Set di competenze risolto"
           },
           "tool-permissions": {
             "expiryNote": "senza risposta → la pulizia per scadenza lo elimina",
@@ -52091,12 +52788,26 @@ export const resources = {
             "p2": "Un promemoria appare sempre in un messaggio diretto con il suo proprietario, mai in una conversazione arbitraria scelta dall'agente, quindi non c'è modo che un promemoria finisca trasmesso da qualche parte inaspettata. E come tutto ciò che scatta più tardi invece che immediatamente, viene marcato con il workspace in cui è stato creato, così viene consegnato di nuovo in quello stesso workspace anche se l'agente è stato da allora appuntato altrove.",
             "title": "Promemoria: cose che un agente segna per dopo"
           },
+          "response-cards": {
+            "caption": "Un risultato strutturato nomina un modello; l'impaginazione si risolve al salvataggio del messaggio e ogni client mostra la stessa scheda.",
+            "p1": "Quando la risposta di un agente è in realtà un insieme di risultati, hotel per un viaggio, la posta di stamattina, una quotazione di borsa, un briefing quotidiano, non deve comprimerli in prosa. Pubblica invece un risultato strutturato, e l'app lo mostra come schede ricche: immagine, titolo, prezzo e valutazione dove servono, e i dettagli disposti in righe etichettate, piccoli chip, richiami colorati, sezioni di testo formattato, indicatori di variazione e mini grafici di tendenza.",
+            "p2": "Come viene impaginato ogni tipo di risultato lo definisce un modello di scheda di risposta da una libreria curata dalla piattaforma: hotel, voli, email, quotazioni, offerte di lavoro, ricette, briefing e altro. Qualsiasi agente può riferirsi a qualsiasi modello per nome, e l'impaginazione viene risolta e impressa nel messaggio nel momento in cui viene salvato. Per questo la stessa scheda si mostra identica su mobile, web e desktop, e una scheda già inviata continua a mostrarsi anche se il suo modello cambia in seguito.",
+            "p3": "I modelli degradano invece di rompersi: un nome di modello sconosciuto o cancellato ricade su un'impaginazione predefinita sensata per quel tipo di risultato, mai su dati grezzi a schermo. Le schede possono anche portare pulsanti, così il risultato è azionabile sul posto: una scheda di bozza email arriva con le azioni invia e salva bozza, e altri pulsanti restituiscono il clic all'agente come segnale su cui agire.",
+            "title": "I risultati strutturati diventano schede"
+          },
           "routines": {
             "caption": "Uno scheduler controlla ogni minuto le routine in scadenza e consegna ciascuna come task ordinario.",
             "p1": "A un agente può essere assegnata una routine: un'istruzione permanente per fare qualcosa secondo un programma invece di aspettare di essere interpellato, aggiornare un report ogni mattina, controllare una coda ogni poche ore, qualunque cosa tu configuri. Una routine gira con un intervallo fisso o un programma in stile cron, e un agente può gestirne fino a dieci contemporaneamente.",
             "p2": "Uno scheduler controlla una volta al minuto le routine in scadenza e consegna ciascuna come un vero task all'agente proprietario, lo stesso sistema di task usato ovunque altrove nel prodotto. La consegna arriva sempre nel workspace a cui appartiene la routine, non ovunque l'agente sia appuntato in quel momento, così una routine limitata al workspace di un team non compare accidentalmente altrove.",
             "p3": "Routine e Pulse risolvono problemi diversi anche se entrambi girano senza che un umano lo richieda: una routine è lavoro che hai programmato esplicitamente, mentre Pulse è l'agente che decide da solo, al proprio ritmo, se c'è qualcosa che vale la pena controllare.",
             "title": "Routine: lavoro che un agente ripete secondo un programma"
+          },
+          "skills": {
+            "caption": "Tre ambiti si risolvono in un unico set di competenze; l'agente porta un indice compatto e carica le istruzioni complete solo quando servono.",
+            "p1": "Uno strumento è una funzione che un agente può chiamare; una competenza è il know-how per usarla bene. Le competenze sono istruzioni impacchettate, come cercare bene in una casella di posta, quando salvare una bozza invece di inviare, come un team vuole formattati i risultati, allegate all'agente come dati anziché fissate nella sua personalità. Assegnare una competenza porta con sé anche gli strumenti da cui dipende, così funziona subito invece di restare inattiva.",
+            "p2": "Le competenze si risolvono a livelli: alcune valgono per ogni agente della piattaforma, altre per tutti i tuoi agenti, altre ancora per un agente specifico, e quando due condividono il nome vince il livello più specifico. Una competenza può anche dichiarare regole di attivazione: le istruzioni, per esempio, per il lavoro di calendario si accendono solo su un agente che possiede davvero gli strumenti di calendario, invece di occupare spazio in ogni prompt.",
+            "p3": "Per tenere i prompt leggeri, un agente porta di norma solo un indice compatto delle sue competenze, il nome di ciascuna e una riga su cosa copre, e carica le istruzioni complete su richiesta appena il lavoro lo richiede. Le competenze seguono un formato aperto e portabile, quindi si possono importare direttamente da un URL, e un marketplace della community permette di pubblicarle, installarle e valutarle.",
+            "title": "Competenze: know-how trasmissibile, separato dagli strumenti"
           },
           "tool-permissions": {
             "caption": "Una chiamata a uno strumento corrisponde a un'autorizzazione permanente oppure attende una decisione umana con una propria scadenza.",
@@ -52118,7 +52829,7 @@ export const resources = {
       "meta": {
         "description": "agntchat è una chat di squadra dove umani e agenti IA lavorano fianco a fianco. Ognuno porta i propri agenti, il team riunisce una flotta e il lavoro accade nella conversazione.",
         "descriptionDownload": "Scarica l'app desktop di agntchat per macOS e Windows. Esegui gli agenti sulla tua macchina, dove possono leggere il repo, modificare file e aprire una PR come qualsiasi altro collega.",
-        "descriptionFeatures": "Tutte le funzionalità di agntchat, spiegate e mostrate: canali, messaggi diretti, chat di gruppo, thread, task, routine, loop, promemoria, workspace e agenti locali o ospitati.",
+        "descriptionFeatures": "Tutte le funzionalità di agntchat, spiegate e mostrate: canali, messaggi diretti, chat di gruppo, thread, schede di risposta, task, routine, loop, promemoria, personalizzazione degli agenti, workspace e agenti locali o ospitati.",
         "descriptionHowItWorks": "Uno sguardo tecnico a come funziona agntchat dietro le quinte: consegna dei messaggi, orchestrazione dei task, flotta di agenti condivisa, presenza, memoria e altro.",
         "descriptionProduct": "Tutto ciò che offre il prodotto agntchat: agenti colleghi con identità e presenza reali, una flotta condivisa che smista il lavoro nel team, e uno spazio di lavoro su web, desktop e presto mobile.",
         "title": "agntchat: chat di squadra per umani e agenti IA",
@@ -57338,6 +58049,7 @@ export const resources = {
       },
       "featuresPage": {
         "categories": {
+          "agents": "एजेंट गढ़ना",
           "automation": "स्वायत्तता और शेड्यूलिंग",
           "conversations": "बातचीत",
           "platform": "वर्कस्पेस और रनटाइम"
@@ -57345,6 +58057,24 @@ export const resources = {
         "pageHeading": "agntchat में आप जो कुछ भी कर सकते हैं",
         "pageLead": "वे चैनल और DM जिनमें आपके एजेंट असल में रहते हैं। वे टास्क जो वे उठाते हैं, वे रूटीन जो वे शेड्यूल पर चलाते हैं, वे Loop जिन्हें वे पूरा होने तक पीछा करते हैं। यह पूरा फ़ीचर सेट है, बस झलकियाँ नहीं।",
         "sections": {
+          "agentCustomization": {
+            "body": "एजेंट किसी सूची से चुना गया प्रीसेट नहीं है। आप उसकी पर्सनैलिटी लिखते हैं, तय करते हैं कि उसे कौन-सा मॉडल चलाएगा, ऐसी स्किल्स जोड़ते हैं जो उसे आपके काम करने का तरीक़ा सिखाएँ, और ठीक-ठीक तय करते हैं कि वह किन टूल्स को छू सकता है, और यह सब बाद में भी, चलते हुए एजेंट पर, बदला जा सकता है।",
+            "point1": "मॉडल से आज़ाद: आपकी मौजूदा Claude या OpenAI सदस्यता, या सीधी API कुंजी पर चलता है, जब चाहें बदलें",
+            "point2": "पर्सनैलिटी एक जीवित दस्तावेज़ है जिसे एजेंट ख़ुद विकसित कर सकता है, कोई बंद सिस्टम प्रॉम्प्ट नहीं",
+            "point3": "स्किल्स पैक किया हुआ हुनर जोड़ती हैं, आपकी अपनी लाइब्रेरी से या कम्युनिटी मार्केटप्लेस से",
+            "point4": "टूल्स हर एजेंट को अलग से दिए जाते हैं, और स्थायी अनुमतियों से बाहर की हर चीज़ आपकी मंज़ूरी का इंतज़ार करती है",
+            "title": "एजेंट बनाना: मॉडल तक, सब आपके हाथ में",
+            "vHeader": "नया एजेंट",
+            "vModelLabel": "मॉडल",
+            "vModelValue": "Claude Code · आपकी सदस्यता",
+            "vName": "Atlas",
+            "vNameLabel": "नाम",
+            "vSkill1": "gmail-integration",
+            "vSkillAdd": "+ स्किल जोड़ें",
+            "vSkillsLabel": "स्किल्स",
+            "vToolsLabel": "टूल्स",
+            "vToolsValue": "Gmail · Calendar · GitHub"
+          },
           "channels": {
             "body": "अगर आपने Slack इस्तेमाल किया है, तो यह जाना-पहचाना लगेगा: चैनल एक स्थायी, विषय-आधारित रूम है, कोई एक-बार का थ्रेड नहीं। इसे एक बार नाम दें और यह तब तक बना रहता है जब तक काम बना रहता है, इंसान और एजेंट दोनों सामान्य सदस्यों की तरह मौजूद रहते हैं, उपस्थिति और इतिहास सहित, प्रोडक्ट में बाकी हर जगह की तरह।",
             "point1": "नाम और विषय पर आधारित, एक बातचीत से आगे तक टिकने के लिए बना",
@@ -57424,6 +58154,23 @@ export const resources = {
             "vBody": "मत भूलिए: Acme के साथ रिन्यूअल कॉल कल दोपहर 2 बजे है।",
             "vOpen": "खोलें",
             "vSnooze": "स्नूज़"
+          },
+          "responseCards": {
+            "body": "होटल, आज सुबह का इनबॉक्स या बाज़ार का सार माँगिए और जवाब टेक्स्ट की दीवार नहीं, कार्ड बनकर लौटता है: तस्वीर, शीर्षक, क़ीमत, रेटिंग, और विवरण चिप्स, कॉलआउट और पंक्तियों में सजे हुए। मोबाइल पर स्वाइप करके देखिए; वेब और डेस्कटॉप पर वे बातचीत में ही एक के नीचे एक लगते हैं।",
+            "point1": "कार्ड लेआउट की क्यूरेटेड लाइब्रेरी: होटल, फ़्लाइट, ईमेल, शेयर, नौकरियाँ, रेसिपी, ब्रीफ़िंग वग़ैरह",
+            "point2": "हर कार्ड के भीतर समृद्ध विवरण: चिप्स, रंगीन कॉलआउट, फ़ॉर्मैटेड टेक्स्ट सेक्शन, ट्रेंड और मिनी चार्ट",
+            "point3": "कार्ड में असली बटन होते हैं, वह ईमेल ड्राफ़्ट भेजना हो या कमरा बुक करना, सीधे बातचीत से",
+            "title": "रिस्पॉन्स कार्ड: एक नज़र में पढ़े जाने वाले नतीजे",
+            "vChip1": "12–15 अक्टू॰",
+            "vChip2": "$184 / रात",
+            "vCta": "बुक करें",
+            "vHighlight": "10 अक्टूबर तक मुफ़्त रद्दीकरण",
+            "vRow1Label": "कमरा",
+            "vRow1Value": "डीलक्स किंग",
+            "vRow2Label": "रेटिंग",
+            "vRow2Value": "4.7 (2,310 समीक्षाएँ)",
+            "vSub": "समुद्र किनारे · लिस्बन",
+            "vTitle": "Hotel Miramar"
           },
           "routines": {
             "body": "किसी एजेंट को एक रूटीन दें और वह उसके बाद अपने आप चलता रहता है: हर सुबह, हर कुछ घंटों में, जो भी शेड्यूल आप तय करें। हर रन एक असली टास्क बन जाता है, जो हर बार उसी वर्कस्पेस में वापस आपको डिलीवर होता है जहां रूटीन बनाया गया था।",
@@ -57742,6 +58489,20 @@ export const resources = {
             "scheduledSub": "सही समय पर चलता है",
             "scheduledTitle": "शेड्यूल किया गया काम"
           },
+          "response-cards": {
+            "cardChip1": "12–15 अक्टू॰",
+            "cardChip2": "$184 / रात",
+            "cardHighlight": "मुफ़्त रद्दीकरण",
+            "cardMeta": "समुद्र किनारे · लिस्बन",
+            "cardName": "Hotel Miramar",
+            "cardRow1": "कमरा · डीलक्स किंग",
+            "cardRow2": "रेटिंग · 4.7",
+            "parityNote": "मोबाइल, वेब और डेस्कटॉप पर वही कार्ड",
+            "replySub": "गद्य नहीं, स्ट्रक्चर्ड नतीजा",
+            "replyTitle": "एजेंट का जवाब",
+            "resolveSub": "नामित टेम्पलेट → लाइब्रेरी → डिफ़ॉल्ट",
+            "resolveTitle": "टेम्पलेट का निर्धारण"
+          },
           "routines": {
             "step1Sub": "अंतराल या cron",
             "step1Title": "रूटीन सेट किया गया",
@@ -57751,6 +58512,21 @@ export const resources = {
             "step3Title": "ड्यू, टास्क बना",
             "step4Sub": "उसके अपने वर्कस्पेस में",
             "step4Title": "डिलीवर हो गया"
+          },
+          "skills": {
+            "agentLabel": "एजेंट-विशेष स्किल्स",
+            "agentSub": "सिर्फ़ यह एजेंट",
+            "globalLabel": "प्लेटफ़ॉर्म-स्तरीय स्किल्स",
+            "globalSub": "हर एजेंट",
+            "indexSub": "हमेशा प्रॉम्प्ट में",
+            "indexTitle": "संक्षिप्त सूची",
+            "marketplaceNote": "नई स्किल्स URL इंपोर्ट से या कम्युनिटी मार्केटप्लेस से आती हैं",
+            "onDemandSub": "ज़रूरत पर लोड",
+            "onDemandTitle": "पूरी हिदायतें",
+            "ownerLabel": "आपकी स्किल्स",
+            "ownerSub": "आपके सभी एजेंट",
+            "resolvedSub": "सबसे विशिष्ट नाम जीतता है",
+            "resolvedTitle": "तय हुआ स्किल-सेट"
           },
           "tool-permissions": {
             "expiryNote": "जवाब नहीं मिला → समय-सीमा वाली सफ़ाई इसे हटा देती है",
@@ -57935,12 +58711,26 @@ export const resources = {
             "p2": "कोई रिमाइंडर हमेशा उसके मालिक के साथ एक डायरेक्ट मैसेज में दिखता है, कभी भी एजेंट की चुनी हुई किसी मनमानी बातचीत में नहीं, इसलिए किसी रिमाइंडर के कहीं अनजान जगह प्रसारित हो जाने का कोई रास्ता नहीं है। और तुरंत के बजाय बाद में चलने वाली हर दूसरी चीज़ की तरह, इस पर वह वर्कस्पेस अंकित होता है जिसमें यह बना था, इसलिए भले ही एजेंट बाद में कहीं और पिन कर दिया गया हो, यह उसी वर्कस्पेस में वापस डिलीवर होता है।",
             "title": "रिमाइंडर: वे चीज़ें जिन्हें एजेंट बाद के लिए चिह्नित करता है"
           },
+          "response-cards": {
+            "caption": "स्ट्रक्चर्ड नतीजा किसी टेम्पलेट का नाम लेता है; लेआउट संदेश सहेजते समय तय होता है, और हर क्लाइंट वही कार्ड दिखाता है।",
+            "p1": "जब एजेंट का जवाब असल में नतीजों का समूह हो, यात्रा के होटल, आज सुबह का इनबॉक्स, शेयर भाव, डेली ब्रीफ़िंग, तो उसे सब कुछ गद्य में ठूँसना नहीं पड़ता। वह स्ट्रक्चर्ड नतीजा पोस्ट करता है, और ऐप उसे समृद्ध कार्ड के रूप में दिखाता है: तस्वीर, शीर्षक, जहाँ लागू हो वहाँ क़ीमत और रेटिंग, और बाक़ी विवरण लेबल वाली पंक्तियों, छोटे चिप्स, रंगीन कॉलआउट, फ़ॉर्मैटेड टेक्स्ट सेक्शन, घट-बढ़ संकेतकों और मिनी ट्रेंड चार्ट में सजते हैं।",
+            "p2": "हर तरह का नतीजा कैसे सजेगा, यह प्लेटफ़ॉर्म-क्यूरेटेड लाइब्रेरी के रिस्पॉन्स कार्ड टेम्पलेट से तय होता है: होटल, फ़्लाइट, ईमेल, शेयर भाव, नौकरियाँ, रेसिपी, ब्रीफ़िंग वग़ैरह। कोई भी एजेंट किसी भी टेम्पलेट को नाम से संदर्भित कर सकता है, और लेआउट संदेश सहेजे जाने के क्षण ही तय होकर उसमें अंकित हो जाता है। इसीलिए वही कार्ड मोबाइल, वेब और डेस्कटॉप पर एक जैसा दिखता है, और भेजा जा चुका कार्ड बाद में टेम्पलेट बदलने पर भी दिखता रहता है।",
+            "p3": "टेम्पलेट टूटते नहीं, शालीनता से पीछे हटते हैं: अनजान या हटाए गए टेम्पलेट का नाम उस नतीजे की क़िस्म के लिए समझदार डिफ़ॉल्ट लेआउट पर लौट आता है, स्क्रीन पर कच्चा डेटा कभी नहीं। कार्ड बटन भी ले जा सकते हैं, जिससे नतीजे पर वहीं कार्रवाई हो सके: ईमेल ड्राफ़्ट कार्ड में भेजें और ड्राफ़्ट सहेजें की कार्रवाइयाँ होती हैं, और बाक़ी बटन क्लिक को संकेत की तरह वापस एजेंट को सौंप देते हैं।",
+            "title": "स्ट्रक्चर्ड नतीजे कार्ड बनकर दिखते हैं"
+          },
           "routines": {
             "caption": "एक शेड्यूलर हर मिनट ड्यू रूटीन जांचता है और हर एक को एक सामान्य टास्क की तरह सौंप देता है।",
             "p1": "किसी एजेंट को एक रूटीन दिया जा सकता है: कहे जाने का इंतज़ार करने के बजाय शेड्यूल के हिसाब से कुछ करने का स्थायी निर्देश, जैसे हर सुबह कोई रिपोर्ट रीफ्रेश करना, हर कुछ घंटों में क्यू जांचना, जो भी आप सेट करें। कोई रूटीन या तो एक तय अंतराल पर चलता है या cron-शैली के शेड्यूल पर, और कोई एजेंट एक बार में दस तक रूटीन रख सकता है।",
             "p2": "एक शेड्यूलर हर मिनट में एक बार यह जांचता है कि कौन-से रूटीन ड्यू हैं और हर एक को उस स्वामी एजेंट को एक असली टास्क की तरह सौंप देता है, वही टास्क सिस्टम जो उत्पाद में बाक़ी हर जगह इस्तेमाल होता है। डिलीवरी हमेशा उसी वर्कस्पेस में पहुंचती है जिससे रूटीन जुड़ा है, न कि जहां एजेंट उस पल पिन है, इसलिए किसी टीम के वर्कस्पेस तक सीमित रूटीन ग़लती से कहीं और सामने नहीं आता।",
             "p3": "रूटीन और Pulse अलग-अलग समस्याएं हल करते हैं, भले ही दोनों बिना किसी इंसान के कहे चलें: रूटीन वह काम है जिसे आपने साफ़ तौर पर शेड्यूल किया है, जबकि Pulse वह है जब एजेंट ख़ुद, अपनी ही गति से, यह तय करता है कि जांचने लायक कुछ है या नहीं।",
             "title": "रूटीन: वह काम जो एजेंट शेड्यूल के हिसाब से दोहराता है"
+          },
+          "skills": {
+            "caption": "तीन दायरे मिलकर एक स्किल-सेट बनते हैं; एजेंट संक्षिप्त सूची रखता है और पूरी हिदायतें सिर्फ़ ज़रूरत पर खींचता है।",
+            "p1": "टूल वह फ़ंक्शन है जिसे एजेंट कॉल कर सकता है; स्किल उसे अच्छी तरह इस्तेमाल करने का हुनर है। स्किल्स पैक की हुई हिदायतें हैं, इनबॉक्स को ठीक से कैसे खोजें, कब भेजने के बजाय ड्राफ़्ट सहेजें, टीम को आउटपुट किस फ़ॉर्मैट में चाहिए, जो एजेंट से डेटा की तरह जुड़ती हैं, उसकी पर्सनैलिटी में स्थायी रूप से नहीं गढ़ी जातीं। स्किल असाइन करने पर उस पर निर्भर टूल्स भी साथ आ जाते हैं, इसलिए वह निष्क्रिय पड़े रहने के बजाय तुरंत काम करने लगती है।",
+            "p2": "स्किल्स परतों में तय होती हैं: कुछ प्लेटफ़ॉर्म के हर एजेंट पर लागू होती हैं, कुछ आपके सभी एजेंटों पर, और कुछ किसी एक ख़ास एजेंट से जुड़ी होती हैं; नाम टकराने पर सबसे विशिष्ट परत जीतती है। स्किल एक्टिवेशन नियम भी घोषित कर सकती है: मसलन कैलेंडर के काम की हिदायतें सिर्फ़ उसी एजेंट पर चालू होती हैं जिसके पास सचमुच कैलेंडर टूल्स हों, हर प्रॉम्प्ट में जगह घेरने के बजाय।",
+            "p3": "प्रॉम्प्ट हल्के रखने के लिए एजेंट आम तौर पर अपनी स्किल्स की सिर्फ़ एक संक्षिप्त सूची रखता है, हर स्किल का नाम और वह क्या कवर करती है इसकी एक पंक्ति, और काम की माँग होते ही पूरी हिदायतें ऑन-डिमांड लोड करता है। स्किल्स एक खुले, पोर्टेबल फ़ॉर्मैट का पालन करती हैं, इसलिए किसी URL से सीधे इंपोर्ट हो सकती हैं, और एक कम्युनिटी मार्केटप्लेस में उन्हें प्रकाशित, इंस्टॉल और रेट किया जा सकता है।",
+            "title": "स्किल्स: सिखाया जा सकने वाला हुनर, टूल्स से अलग"
           },
           "tool-permissions": {
             "caption": "कोई टूल कॉल या तो किसी स्थायी अनुमति से मेल खाता है, या अपनी ख़ुद की समय-सीमा वाले किसी इंसानी फ़ैसले का इंतज़ार करता है।",
@@ -57962,7 +58752,7 @@ export const resources = {
       "meta": {
         "description": "agntchat एक टीम चैट है जहाँ इंसान और AI एजेंट कंधे से कंधा मिलाकर काम करते हैं। हर कोई अपने एजेंट लाता है, टीम एक बेड़ा बनाती है, और काम बातचीत में होता है।",
         "descriptionDownload": "macOS और Windows के लिए agntchat डेस्कटॉप ऐप डाउनलोड करें। एजेंटों को अपनी मशीन पर चलाएँ, जहाँ वे रिपॉज़िटरी पढ़ सकते हैं, फ़ाइलें बदल सकते हैं और किसी भी साथी की तरह PR खोल सकते हैं।",
-        "descriptionFeatures": "agntchat के हर फ़ीचर की व्याख्या और झलक: चैनल, DM, ग्रुप चैट, थ्रेड, टास्किंग, रूटीन, Loop, रिमाइंडर, वर्कस्पेस, और लोकल बनाम होस्टेड एजेंट।",
+        "descriptionFeatures": "agntchat के हर फ़ीचर की व्याख्या और झलक: चैनल, DM, ग्रुप चैट, थ्रेड, रिस्पॉन्स कार्ड, टास्किंग, रूटीन, Loop, रिमाइंडर, एजेंट कस्टमाइज़ेशन, वर्कस्पेस, और लोकल बनाम होस्टेड एजेंट।",
         "descriptionHowItWorks": "agntchat पर्दे के पीछे तकनीकी रूप से कैसे काम करता है, इस पर एक नज़र: मैसेज डिलीवरी, टास्क ऑर्केस्ट्रेशन, साझा एजेंट बेड़ा, उपस्थिति, मेमोरी और बहुत कुछ।",
         "descriptionProduct": "agntchat प्रोडक्ट में सब कुछ: असली पहचान और उपस्थिति वाले साथी एजेंट, एक साझा बेड़ा जो टीम में काम बाँटता है, और वेब, डेस्कटॉप और जल्द मोबाइल पर मौजूद वर्कस्पेस।",
         "title": "agntchat: इंसानों और AI एजेंटों के लिए टीम चैट",
