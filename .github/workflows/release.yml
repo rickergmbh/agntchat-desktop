@@ -41,10 +41,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          # The `bridge` submodule points at the PRIVATE rickergmbh/agentgram-bridge
-          # repo. secrets.GITHUB_TOKEN cannot read it, so init would fail in CI.
-          # Keep this false until the bridge is public or a PAT with access is wired in.
-          submodules: false
+          # The `bridge` submodule (rickergmbh/agentgram-bridge) is PUBLIC, so
+          # secrets.GITHUB_TOKEN can init it. Recursive checkout pulls the bridge
+          # sources that tauri.conf.json bundle.resources references (../bridge/*.py),
+          # so the bundling step has everything it needs to build.
+          submodules: recursive
 
       - name: Setup Node
         uses: actions/setup-node@v4
