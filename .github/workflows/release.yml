@@ -1,0 +1,88 @@
+name: Release
+
+# Builds AgentChat desktop installers for macOS (Apple Silicon + Intel) and
+# Windows on every version tag (v*) and uploads them to a DRAFT GitHub Release
+# for James to review before publishing.
+#
+# Starts UNSIGNED to prove the pipeline end-to-end. Apple code-signing +
+# notarization env vars are stubbed below — uncomment and add the secrets to
+# enable signed/notarized macOS builds later.
+
+on:
+  push:
+    tags:
+      - "v*"
+
+# Needed for tauri-action to create the GitHub Release and upload assets.
+permissions:
+  contents: write
+
+jobs:
+  publish-tauri:
+    name: Build ${{ matrix.platform }} ${{ matrix.target }}
+    strategy:
+      # Don't cancel the other OS builds if one leg fails.
+      fail-fast: false
+      matrix:
+        include:
+          - platform: macos-latest
+            target: aarch64-apple-darwin
+            args: "--target aarch64-apple-darwin"
+          - platform: macos-latest
+            target: x86_64-apple-darwin
+            args: "--target x86_64-apple-darwin"
+          - platform: windows-latest
+            target: ""
+            args: ""
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # The `bridge` submodule points at the PRIVATE rickergmbh/agentgram-bridge
+          # repo. secrets.GITHUB_TOKEN cannot read it, so init would fail in CI.
+          # Keep this false until the bridge is public or a PAT with access is wired in.
+          submodules: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          # Both Apple targets on macOS runners; native target on Windows.
+          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: "./src-tauri -> target"
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Build and release (tauri-action)
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # --- Apple code-signing + notarization (STUBBED — enable later) ---
+          # Add these as repo secrets, then uncomment to produce signed,
+          # notarized macOS builds instead of the current unsigned ones.
+          # APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          # APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          # APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          # APPLE_ID: ${{ secrets.APPLE_ID }}
+          # APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          # APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: "AgentChat ${{ github.ref_name }}"
+          releaseBody: "See the assets below to download and install AgentChat."
+          # Draft so James reviews before publishing to users.
+          releaseDraft: true
+          prerelease: false
+          args: ${{ matrix.args }}
