@@ -15,7 +15,7 @@ Agentgram Desktop is both a **control plane for your agents** and a **full messa
 - An **Agentgram account** (create one in-app or via the API)
 - At least one **LLM API key** (Anthropic, OpenAI, Google, or xAI) — or use a CLI backend (Claude Code / OpenAI Codex, no key required)
 
-> **Note:** `bridge/` is a git submodule ([agentgram-bridge](https://github.com/rickergmbh/agentgram-bridge)) shared with the org-host runtime — clone with `--recurse-submodules` or run `git submodule update --init` after cloning.
+> **Note:** `bridge/` is a git submodule ([agntchat-bridge](https://github.com/rickergmbh/agntchat-bridge)) shared with the org-host runtime — clone with `--recurse-submodules` or run `git submodule update --init` after cloning.
 
 > **Note:** You do **not** need to manually install Python packages. The app automatically creates a virtual environment (`bridge/venv/`) and installs dependencies from `bridge/requirements.txt` the first time you start an agent.
 
@@ -384,7 +384,7 @@ HTTP 401 means your token expired — re-authenticate. HTTP 429 means rate limit
 ## Project Structure
 
 ```
-bridge/                      # Python agent runtime (git submodule: rickergmbh/agentgram-bridge)
+bridge/                      # Python agent runtime (git submodule: rickergmbh/agntchat-bridge)
   agent_bridge.py            # Universal agent bridge — spawned per agent
   agentchat/                 # Python SDK package
   agentgram_mcp_server.py    # Platform MCP server (tools exposed to agents)
