@@ -1,13 +1,13 @@
 import { useTranslation } from "react-i18next";
+import { PhaseOrb } from "./PhaseOrb";
 import { cn } from "../lib/utils";
 import {
-  activityIcon,
   activityLabelKey,
   activityIsActive,
   type AgentActivity,
 } from "../lib/agent-activity";
 
-// Compact activity readout: an animated icon + short label
+// Compact activity readout: a thinking orb + short label
 // ("Thinking", "Writing", "Working"…). Rendered wherever an agent's live
 // status should show across the platform — conversation rows, chat header,
 // agent rows. Pure presentational; the caller supplies the activity from
@@ -24,7 +24,6 @@ export function AgentActivityIndicator({
   showLabel?: boolean;
 }) {
   const { t } = useTranslation("chat");
-  const Icon = activityIcon(activity);
   const active = activityIsActive(activity);
   return (
     <span
@@ -33,7 +32,11 @@ export function AgentActivityIndicator({
         className
       )}
     >
-      <Icon className={cn("h-3 w-3 shrink-0", active && "animate-pulse", iconClassName)} />
+      <PhaseOrb
+        phase={activity}
+        active={active}
+        className={cn("shrink-0", iconClassName)}
+      />
       {showLabel && <span className="truncate">{t(activityLabelKey(activity))}</span>}
     </span>
   );
