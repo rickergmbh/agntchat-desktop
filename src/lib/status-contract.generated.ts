@@ -45,6 +45,22 @@ export const PHASE_ICONS: Record<PhaseOrActivity, LucideIcon> = {
   "working": Activity,
 };
 
+// Thinking-orb animation per phase (mirrors the OrbState union of the
+// thinking-orbs library — web imports it from npm, mobile from the vendored
+// Skia port). Rendered via each client's PhaseOrb wrapper.
+export type PhaseOrbState =
+  "working" | "searching" | "solving" | "listening" | "connecting" | "weaving" | "composing" | "breathing" | "shaping";
+
+export const PHASE_ORBS: Record<PhaseOrActivity, PhaseOrbState> = {
+  "thinking": "solving",
+  "tool_call": "working",
+  "writing": "composing",
+  "analyzing": "searching",
+  "queued": "breathing",
+  "waiting": "connecting",
+  "working": "working",
+};
+
 // i18n KEYS (fully namespace-qualified), not resolved strings — resolve with
 // t() at render so language switches live.
 export const STREAM_PHASE_LABEL_KEYS: Record<StreamPhase, string> = {
