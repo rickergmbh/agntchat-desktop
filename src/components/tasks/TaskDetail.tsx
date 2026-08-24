@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { PhaseOrb } from "../PhaseOrb";
 import { useTranslation } from "react-i18next";
 import {
   CheckCircle2,
@@ -198,7 +199,7 @@ export function TaskDetail({
         {isActive && recentSteps.length > 0 && (
           <section className="rounded-xl border border-primary/20 border-l-4 border-l-primary bg-card p-4">
             <div className="flex items-center gap-2 mb-3 text-xs font-medium text-muted-foreground">
-              <Loader2 className="w-3.5 h-3.5 animate-spin text-primary" />
+              <PhaseOrb state="working" className="shrink-0" />
               <span>{t("liveActivity")}</span>
             </div>
             <div className="space-y-1.5">

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PhaseOrb } from "../PhaseOrb";
 import { useTranslation } from "react-i18next";
 import {
   AlertTriangle,
@@ -8,7 +9,6 @@ import {
   ChevronRight,
   CircleDashed,
   FileText,
-  Loader2,
   X,
 } from "lucide-react";
 import { cn } from "../../lib/utils";
@@ -70,9 +70,7 @@ export type TaskTone =
 export function StatusGlyph({ tone }: { tone: TaskTone }) {
   switch (tone) {
     case "working":
-      return (
-        <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin text-primary" />
-      );
+      return <PhaseOrb state="working" className="shrink-0" />;
     case "success":
       return (
         <Check className="h-3.5 w-3.5 shrink-0 text-success" strokeWidth={2.5} />

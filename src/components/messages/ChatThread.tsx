@@ -1,4 +1,5 @@
 import { Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { PhaseOrb } from "../PhaseOrb";
 import { useTranslation } from "react-i18next";
 import { ArrowDown, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import { useChatStore } from "../../stores/chatStore";
@@ -1195,7 +1196,7 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
       {typingLabel && (
         <div className="flex items-center gap-1.5 border-t border-border bg-card/80 px-4 py-1 text-xs text-muted-foreground backdrop-blur">
           {typingHasAgent && (
-            <span className="h-1 w-1 shrink-0 animate-pulse rounded-full bg-primary" />
+            <PhaseOrb state="composing" className="shrink-0" />
           )}
           {typingLabel}
         </div>

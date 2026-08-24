@@ -1,12 +1,12 @@
-import { Bot, Brain, Loader2, Square } from "lucide-react";
+import { Bot, Loader2, Square } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { ActiveStream, ConversationMember } from "../../lib/api";
 import {
-  PHASE_ICONS,
   PHASE_IS_ACTIVE,
   STREAM_PHASE_FALLBACK_LABEL_KEY,
   STREAM_PHASE_LABEL_KEYS,
 } from "../../lib/status-contract.generated";
+import { PhaseOrb } from "../PhaseOrb";
 import { cn } from "../../lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Bubble, BubbleContent } from "@/components/ui/bubble";
@@ -31,7 +31,6 @@ export function StreamingBubble({
   stopping?: boolean;
 }) {
   const { t } = useTranslation("chat");
-  const Icon = PHASE_ICONS[stream.phase] ?? Brain;
   const label =
     stream.phaseDetail ??
     t(STREAM_PHASE_LABEL_KEYS[stream.phase] ?? STREAM_PHASE_FALLBACK_LABEL_KEY);
@@ -75,7 +74,7 @@ export function StreamingBubble({
             )}
 
             <div className="mb-1 flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Icon className={cn("h-3 w-3", animated && "animate-pulse")} />
+              <PhaseOrb phase={stream.phase} active={animated} className="shrink-0" />
               <span>{label}</span>
             </div>
 

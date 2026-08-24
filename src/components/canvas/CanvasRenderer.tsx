@@ -1,4 +1,5 @@
 import { AlertCircle, Image as ImageIcon } from "lucide-react";
+import { PhaseOrb } from "../PhaseOrb";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "../../lib/utils";
@@ -455,10 +456,8 @@ export function PreviewWidget({ widget }: { widget: Record<string, unknown> }) {
 
     case "typing_indicator":
       return (
-        <div className="mx-3 my-1.5 inline-flex items-center gap-1 rounded-full bg-muted px-2 py-1">
-          <span className="h-1 w-1 animate-pulse rounded-full bg-muted-foreground" />
-          <span className="h-1 w-1 animate-pulse rounded-full bg-muted-foreground delay-75" />
-          <span className="h-1 w-1 animate-pulse rounded-full bg-muted-foreground delay-150" />
+        <div className="mx-3 my-1.5 inline-flex items-center rounded-full bg-muted px-2 py-1">
+          <PhaseOrb state="composing" />
         </div>
       );
 
