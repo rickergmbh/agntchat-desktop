@@ -226,7 +226,7 @@ export const resources = {
           "title": "Local runtime settings",
           "workingDirs": {
             "addButton": "Add Directory",
-            "description": "Directories this agent can access. Adding directories also enables CLI tools (Bash, Read, Edit, Web) alongside AgentGram tools.",
+            "description": "Directories this agent can access. Adding directories also enables CLI tools (Bash, Read, Edit, Web) alongside agntchat tools.",
             "label": "Working directories",
             "promptMessage": "Enter directory path:"
           }
@@ -254,7 +254,7 @@ export const resources = {
           "unsavedChanges": "Unsaved changes"
         },
         "publish": {
-          "discoverableExplain": "Make this agent discoverable to other Agentgram users.",
+          "discoverableExplain": "Make this agent discoverable to other agntchat users.",
           "listingNameRequired": "Listing Name *",
           "loadStatusFailed": "Failed to load listing status",
           "publishAction": "Publish",
@@ -441,7 +441,7 @@ export const resources = {
             "writing": "e.g. Drafts blog posts, emails, and marketing copy"
           }
         },
-        "desktopOnlyMessage": "{{backend}} agents need the Agentgram desktop app to launch. You can create them here, but you'll start them from desktop.",
+        "desktopOnlyMessage": "{{backend}} agents need the agntchat desktop app to launch. You can create them here, but you'll start them from desktop.",
         "desktopOnlyTitle": "Runs from the desktop app",
         "detailsHint": "Custom instructions and preferences.",
         "detailsTitle": "Any extra details?",
@@ -791,7 +791,7 @@ export const resources = {
         "actionFailed": "Failed to run {{label}}.",
         "activeCount": "{{count}} active",
         "blocker": {
-          "bridge_outdated": "The Agentgram app on the machine running this agent is out of date, so it can't receive messages. Update it on that machine.",
+          "bridge_outdated": "The agntchat app on the machine running this agent is out of date, so it can't receive messages. Update it on that machine.",
           "llm_backend_error": "This agent's model backend failed to start.",
           "llm_backend_missing": "The Claude CLI isn't installed on the machine running this agent.",
           "llm_unauthenticated": "No signed-in Claude account on the machine running this agent. Sign in there and it will pick up where it left off.",
@@ -1091,7 +1091,7 @@ export const resources = {
           "writing": "Writing"
         },
         "connection": "Connection",
-        "discoverableHint": "Make this agent discoverable to other Agentgram users.",
+        "discoverableHint": "Make this agent discoverable to other agntchat users.",
         "errors": {
           "nameRequired": "Listing name is required.",
           "noAgent": "No agent selected.",
@@ -1419,7 +1419,7 @@ export const resources = {
         "copyToShare": "Copy to Share",
         "description": "Send this agent's identifier to someone so they can connect with it through the directory.",
         "fallbackShareTitle": "Browser has no share sheet — falls back to copy",
-        "message": "Connect with {{name}} on Agentgram!\n\nAgent ID: {{id}}",
+        "message": "Connect with {{name}} on agntchat!\n\nAgent ID: {{id}}",
         "messageLabel": "Share Message",
         "nativeShareTitle": "Open native share sheet",
         "shareEllipsis": "Share…",
@@ -1742,7 +1742,7 @@ export const resources = {
           "worker": "What kind of work will this agent handle?"
         },
         "descriptionOptional": "Description (optional)",
-        "desktopOnlyBody": "{{product}} agents need the Agentgram desktop app to launch. You can create them here, but you'll start them from desktop.",
+        "desktopOnlyBody": "{{product}} agents need the agntchat desktop app to launch. You can create them here, but you'll start them from desktop.",
         "desktopOnlyTitle": "Runs from the desktop app",
         "effort": "Effort",
         "errors": {
@@ -1836,7 +1836,7 @@ export const resources = {
     },
     "auth": {
       "acceptInvitation": "Accept your invitation",
-      "ageTooYoung": "You must be at least 16 years old to use AgentGram.",
+      "ageTooYoung": "You must be at least 16 years old to use agntchat.",
       "alreadyHaveAccount": "Already have an account?",
       "backToSignIn": "Back to sign in",
       "birthDate": "Date of birth",
@@ -3498,7 +3498,7 @@ export const resources = {
       "appendKeyInstruction": "On the host, append this to {{path}} for the {{user}} user:",
       "authorizeBootstrap": "Authorize + bootstrap",
       "authorizeHost": "Authorize \"{{name}}\"",
-      "authorizeHostHint": "AgentGram connects to the VM over SSH using its own key. Add this public key to {{target}}, then bootstrap.",
+      "authorizeHostHint": "agntchat connects to the VM over SSH using its own key. Add this public key to {{target}}, then bootstrap.",
       "backend": "Backend",
       "bootstrap": "Bootstrap",
       "bootstrapHint": "Install the runtime over SSH",
@@ -4068,7 +4068,7 @@ export const resources = {
         "usedToday": "Used today"
       },
       "cloudHosts": {
-        "subtitle": "Run agents on a dedicated Linux VM so they stay online without your local machine. Setup currently requires access to the Agentgram private host repo — reach out to opt in."
+        "subtitle": "Run agents on a dedicated Linux VM so they stay online without your local machine. Setup currently requires access to the agntchat private host repo — reach out to opt in."
       },
       "connections": {
         "apiToken": "API Token",
@@ -4393,7 +4393,7 @@ export const resources = {
       },
       "profileTour": {
         "analyticsBody": "Share anonymous usage data so we can see what's working and fix what isn't. No message content is ever collected. On by default — flip it off if you'd rather not.",
-        "analyticsTitle": "Help improve Agentgram",
+        "analyticsTitle": "Help improve agntchat",
         "analyticsToggle": "Share usage analytics",
         "back": "Back",
         "done": "Done",
@@ -4545,7 +4545,7 @@ export const resources = {
         "fieldId": "ID",
         "hosts": "Hosts",
         "hostsDescription": "Run agents on a dedicated VM",
-        "hostsSubtitle": "Run agents on a dedicated Linux VM. Setup currently requires access to the Agentgram private host repo — reach out to opt in.",
+        "hostsSubtitle": "Run agents on a dedicated Linux VM. Setup currently requires access to the agntchat private host repo — reach out to opt in.",
         "idLabel": "ID",
         "identifiersHint": "Use these identifiers with the API and integrations.",
         "identifiersLabel": "Workspace identifiers",
@@ -6149,7 +6149,7 @@ export const resources = {
           "title": "Configuración de ejecución local",
           "workingDirs": {
             "addButton": "Añadir directorio",
-            "description": "Directorios a los que este agente puede acceder. Añadir directorios también habilita las herramientas de CLI (Bash, Read, Edit, Web) junto con las herramientas de AgentGram.",
+            "description": "Directorios a los que este agente puede acceder. Añadir directorios también habilita las herramientas de CLI (Bash, Read, Edit, Web) junto con las herramientas de agntchat.",
             "label": "Directorios de trabajo",
             "promptMessage": "Introduce la ruta del directorio:"
           }
@@ -6177,7 +6177,7 @@ export const resources = {
           "unsavedChanges": "Cambios sin guardar"
         },
         "publish": {
-          "discoverableExplain": "Haz que este agente sea visible para otros usuarios de Agentgram.",
+          "discoverableExplain": "Haz que este agente sea visible para otros usuarios de agntchat.",
           "listingNameRequired": "Nombre de la publicación *",
           "loadStatusFailed": "No se pudo cargar el estado de la publicación",
           "publishAction": "Publicar",
@@ -6364,7 +6364,7 @@ export const resources = {
             "writing": "p. ej. Redacta artículos de blog, correos y textos de marketing"
           }
         },
-        "desktopOnlyMessage": "Los agentes de {{backend}} necesitan la app de escritorio de Agentgram para arrancar. Puedes crearlos aquí, pero los iniciarás desde el escritorio.",
+        "desktopOnlyMessage": "Los agentes de {{backend}} necesitan la app de escritorio de agntchat para arrancar. Puedes crearlos aquí, pero los iniciarás desde el escritorio.",
         "desktopOnlyTitle": "Se ejecuta desde la app de escritorio",
         "detailsHint": "Instrucciones y preferencias personalizadas.",
         "detailsTitle": "¿Algún detalle más?",
@@ -6714,7 +6714,7 @@ export const resources = {
         "actionFailed": "Error al ejecutar {{label}}.",
         "activeCount": "{{count}} activo(s)",
         "blocker": {
-          "bridge_outdated": "La app de Agentgram en la máquina de este agente está desactualizada, así que no puede recibir mensajes. Actualízala en esa máquina.",
+          "bridge_outdated": "La app de agntchat en la máquina de este agente está desactualizada, así que no puede recibir mensajes. Actualízala en esa máquina.",
           "llm_backend_error": "El backend del modelo de este agente no pudo iniciarse.",
           "llm_backend_missing": "La CLI de Claude no está instalada en la máquina de este agente.",
           "llm_unauthenticated": "No hay ninguna cuenta de Claude conectada en la máquina de este agente. Inicia sesión allí y retomará donde lo dejó.",
@@ -7014,7 +7014,7 @@ export const resources = {
           "writing": "Escritura"
         },
         "connection": "Conexión",
-        "discoverableHint": "Haz que otros usuarios de Agentgram puedan descubrir este agente.",
+        "discoverableHint": "Haz que otros usuarios de agntchat puedan descubrir este agente.",
         "errors": {
           "nameRequired": "El nombre del anuncio es obligatorio.",
           "noAgent": "No se ha seleccionado ningún agente.",
@@ -7342,7 +7342,7 @@ export const resources = {
         "copyToShare": "Copiar para compartir",
         "description": "Envía el identificador de este agente a alguien para que pueda conectarse con él a través del directorio.",
         "fallbackShareTitle": "El navegador no tiene hoja de compartir; se copiará en su lugar",
-        "message": "¡Conéctate con {{name}} en Agentgram!\n\nID del agente: {{id}}",
+        "message": "¡Conéctate con {{name}} en agntchat!\n\nID del agente: {{id}}",
         "messageLabel": "Mensaje para compartir",
         "nativeShareTitle": "Abrir hoja de compartir nativa",
         "shareEllipsis": "Compartir…",
@@ -7665,7 +7665,7 @@ export const resources = {
           "worker": "¿Qué tipo de trabajo hará este agente?"
         },
         "descriptionOptional": "Descripción (opcional)",
-        "desktopOnlyBody": "Los agentes de {{product}} necesitan la aplicación de escritorio de Agentgram para iniciarse. Puedes crearlos aquí, pero los iniciarás desde el escritorio.",
+        "desktopOnlyBody": "Los agentes de {{product}} necesitan la aplicación de escritorio de agntchat para iniciarse. Puedes crearlos aquí, pero los iniciarás desde el escritorio.",
         "desktopOnlyTitle": "Se ejecuta desde la aplicación de escritorio",
         "effort": "Esfuerzo",
         "errors": {
@@ -7759,7 +7759,7 @@ export const resources = {
     },
     "auth": {
       "acceptInvitation": "Acepta tu invitación",
-      "ageTooYoung": "Debes tener al menos 16 años para usar AgentGram.",
+      "ageTooYoung": "Debes tener al menos 16 años para usar agntchat.",
       "alreadyHaveAccount": "¿Ya tienes una cuenta?",
       "backToSignIn": "Volver a iniciar sesión",
       "birthDate": "Fecha de nacimiento",
@@ -9421,7 +9421,7 @@ export const resources = {
       "appendKeyInstruction": "En el host, añade esto a {{path}} para el usuario {{user}}:",
       "authorizeBootstrap": "Autorizar e inicializar",
       "authorizeHost": "Autorizar \"{{name}}\"",
-      "authorizeHostHint": "AgentGram se conecta a la VM por SSH con su propia clave. Añade esta clave pública a {{target}} y luego inicializa.",
+      "authorizeHostHint": "agntchat se conecta a la VM por SSH con su propia clave. Añade esta clave pública a {{target}} y luego inicializa.",
       "backend": "Backend",
       "bootstrap": "Inicializar",
       "bootstrapHint": "Instala el runtime por SSH",
@@ -9991,7 +9991,7 @@ export const resources = {
         "usedToday": "Usado hoy"
       },
       "cloudHosts": {
-        "subtitle": "Ejecuta agentes en una VM Linux dedicada para que sigan en línea sin tu máquina local. La configuración requiere actualmente acceso al repositorio privado de hosts de Agentgram — contáctanos para participar."
+        "subtitle": "Ejecuta agentes en una VM Linux dedicada para que sigan en línea sin tu máquina local. La configuración requiere actualmente acceso al repositorio privado de hosts de agntchat — contáctanos para participar."
       },
       "connections": {
         "apiToken": "Token de API",
@@ -10316,7 +10316,7 @@ export const resources = {
       },
       "profileTour": {
         "analyticsBody": "Comparte datos de uso anónimos para que veamos qué funciona y arreglemos lo que no. Nunca se recopila el contenido de los mensajes. Activado por defecto: desactívalo si prefieres.",
-        "analyticsTitle": "Ayuda a mejorar Agentgram",
+        "analyticsTitle": "Ayuda a mejorar agntchat",
         "analyticsToggle": "Compartir análisis de uso",
         "back": "Atrás",
         "done": "Listo",
@@ -10468,7 +10468,7 @@ export const resources = {
         "fieldId": "ID",
         "hosts": "Hosts",
         "hostsDescription": "Ejecuta agentes en una VM dedicada",
-        "hostsSubtitle": "Ejecuta agentes en una VM Linux dedicada. La configuración actualmente requiere acceso al repositorio privado de hosts de Agentgram — contáctanos para participar.",
+        "hostsSubtitle": "Ejecuta agentes en una VM Linux dedicada. La configuración actualmente requiere acceso al repositorio privado de hosts de agntchat — contáctanos para participar.",
         "idLabel": "ID",
         "identifiersHint": "Usa estos identificadores con la API y las integraciones.",
         "identifiersLabel": "Identificadores del espacio de trabajo",
@@ -12072,7 +12072,7 @@ export const resources = {
           "title": "Lokale Laufzeiteinstellungen",
           "workingDirs": {
             "addButton": "Verzeichnis hinzufügen",
-            "description": "Verzeichnisse, auf die dieser Agent zugreifen kann. Das Hinzufügen von Verzeichnissen aktiviert zudem CLI-Tools (Bash, Read, Edit, Web) neben den AgentGram-Tools.",
+            "description": "Verzeichnisse, auf die dieser Agent zugreifen kann. Das Hinzufügen von Verzeichnissen aktiviert zudem CLI-Tools (Bash, Read, Edit, Web) neben den agntchat-Tools.",
             "label": "Arbeitsverzeichnisse",
             "promptMessage": "Verzeichnispfad eingeben:"
           }
@@ -12100,7 +12100,7 @@ export const resources = {
           "unsavedChanges": "Nicht gespeicherte Änderungen"
         },
         "publish": {
-          "discoverableExplain": "Diesen Agenten für andere Agentgram-Nutzer auffindbar machen.",
+          "discoverableExplain": "Diesen Agenten für andere agntchat-Nutzer auffindbar machen.",
           "listingNameRequired": "Eintragsname *",
           "loadStatusFailed": "Eintragsstatus konnte nicht geladen werden",
           "publishAction": "Veröffentlichen",
@@ -12287,7 +12287,7 @@ export const resources = {
             "writing": "z. B. Verfasst Blogbeiträge, E-Mails und Marketingtexte"
           }
         },
-        "desktopOnlyMessage": "{{backend}}-Agenten benötigen die Agentgram-Desktop-App zum Start. Sie können sie hier erstellen, aber vom Desktop aus starten.",
+        "desktopOnlyMessage": "{{backend}}-Agenten benötigen die agntchat-Desktop-App zum Start. Sie können sie hier erstellen, aber vom Desktop aus starten.",
         "desktopOnlyTitle": "Läuft über die Desktop-App",
         "detailsHint": "Benutzerdefinierte Anweisungen und Präferenzen.",
         "detailsTitle": "Noch weitere Details?",
@@ -12637,7 +12637,7 @@ export const resources = {
         "actionFailed": "{{label}} konnte nicht ausgeführt werden.",
         "activeCount": "{{count}} aktiv",
         "blocker": {
-          "bridge_outdated": "Die Agentgram-App auf dem Gerät dieses Agenten ist veraltet, daher kann er keine Nachrichten empfangen. Aktualisiere sie auf diesem Gerät.",
+          "bridge_outdated": "Die agntchat-App auf dem Gerät dieses Agenten ist veraltet, daher kann er keine Nachrichten empfangen. Aktualisiere sie auf diesem Gerät.",
           "llm_backend_error": "Das Modell-Backend dieses Agenten konnte nicht gestartet werden.",
           "llm_backend_missing": "Die Claude CLI ist auf dem Gerät dieses Agenten nicht installiert.",
           "llm_unauthenticated": "Auf dem Gerät dieses Agenten ist kein Claude-Konto angemeldet. Melde dich dort an, und er macht dort weiter, wo er aufgehört hat.",
@@ -12937,7 +12937,7 @@ export const resources = {
           "writing": "Schreiben"
         },
         "connection": "Verbindung",
-        "discoverableHint": "Machen Sie diesen Agenten für andere Agentgram-Nutzer auffindbar.",
+        "discoverableHint": "Machen Sie diesen Agenten für andere agntchat-Nutzer auffindbar.",
         "errors": {
           "nameRequired": "Eintragsname ist erforderlich.",
           "noAgent": "Kein Agent ausgewählt.",
@@ -13265,7 +13265,7 @@ export const resources = {
         "copyToShare": "Zum Teilen kopieren",
         "description": "Senden Sie die Kennung dieses Agenten an jemanden, damit er sich über das Verzeichnis mit ihm verbinden kann.",
         "fallbackShareTitle": "Browser hat kein Freigabemenü — Rückgriff auf Kopieren",
-        "message": "Verbinden Sie sich mit {{name}} auf Agentgram!\n\nAgent-ID: {{id}}",
+        "message": "Verbinden Sie sich mit {{name}} auf agntchat!\n\nAgent-ID: {{id}}",
         "messageLabel": "Freigabenachricht",
         "nativeShareTitle": "Natives Freigabemenü öffnen",
         "shareEllipsis": "Teilen …",
@@ -13588,7 +13588,7 @@ export const resources = {
           "worker": "Welche Art von Arbeit wird dieser Agent übernehmen?"
         },
         "descriptionOptional": "Beschreibung (optional)",
-        "desktopOnlyBody": "{{product}}-Agenten benötigen die Agentgram-Desktop-App zum Start. Sie können sie hier erstellen, aber vom Desktop aus starten.",
+        "desktopOnlyBody": "{{product}}-Agenten benötigen die agntchat-Desktop-App zum Start. Sie können sie hier erstellen, aber vom Desktop aus starten.",
         "desktopOnlyTitle": "Läuft über die Desktop-App",
         "effort": "Aufwand",
         "errors": {
@@ -13682,7 +13682,7 @@ export const resources = {
     },
     "auth": {
       "acceptInvitation": "Ihre Einladung annehmen",
-      "ageTooYoung": "Sie müssen mindestens 16 Jahre alt sein, um AgentGram zu nutzen.",
+      "ageTooYoung": "Sie müssen mindestens 16 Jahre alt sein, um agntchat zu nutzen.",
       "alreadyHaveAccount": "Sie haben bereits ein Konto?",
       "backToSignIn": "Zurück zur Anmeldung",
       "birthDate": "Geburtsdatum",
@@ -15344,7 +15344,7 @@ export const resources = {
       "appendKeyInstruction": "Fügen Sie dies auf dem Host für den Nutzer {{user}} an {{path}} an:",
       "authorizeBootstrap": "Autorisieren + bootstrappen",
       "authorizeHost": "„{{name}}“ autorisieren",
-      "authorizeHostHint": "AgentGram verbindet sich mit der VM per SSH über einen eigenen Schlüssel. Fügen Sie diesen öffentlichen Schlüssel zu {{target}} hinzu und bootstrappen Sie anschließend.",
+      "authorizeHostHint": "agntchat verbindet sich mit der VM per SSH über einen eigenen Schlüssel. Fügen Sie diesen öffentlichen Schlüssel zu {{target}} hinzu und bootstrappen Sie anschließend.",
       "backend": "Backend",
       "bootstrap": "Bootstrap",
       "bootstrapHint": "Runtime per SSH installieren",
@@ -15914,7 +15914,7 @@ export const resources = {
         "usedToday": "Heute verwendet"
       },
       "cloudHosts": {
-        "subtitle": "Führen Sie Agenten auf einer dedizierten Linux-VM aus, damit sie ohne Ihren lokalen Rechner online bleiben. Die Einrichtung erfordert derzeit Zugriff auf das private Agentgram-Host-Repository — melden Sie sich, um teilzunehmen."
+        "subtitle": "Führen Sie Agenten auf einer dedizierten Linux-VM aus, damit sie ohne Ihren lokalen Rechner online bleiben. Die Einrichtung erfordert derzeit Zugriff auf das private agntchat-Host-Repository — melden Sie sich, um teilzunehmen."
       },
       "connections": {
         "apiToken": "API-Token",
@@ -16239,7 +16239,7 @@ export const resources = {
       },
       "profileTour": {
         "analyticsBody": "Teile anonyme Nutzungsdaten, damit wir sehen, was funktioniert, und beheben, was nicht. Nachrichteninhalte werden nie erfasst. Standardmäßig an — schalte es aus, wenn du möchtest.",
-        "analyticsTitle": "Hilf, Agentgram zu verbessern",
+        "analyticsTitle": "Hilf, agntchat zu verbessern",
         "analyticsToggle": "Nutzungsanalyse teilen",
         "back": "Zurück",
         "done": "Fertig",
@@ -16391,7 +16391,7 @@ export const resources = {
         "fieldId": "ID",
         "hosts": "Hosts",
         "hostsDescription": "Agenten auf einer dedizierten VM ausführen",
-        "hostsSubtitle": "Führen Sie Agenten auf einer dedizierten Linux-VM aus. Die Einrichtung erfordert derzeit Zugriff auf das private Agentgram-Host-Repository — melden Sie sich, um teilzunehmen.",
+        "hostsSubtitle": "Führen Sie Agenten auf einer dedizierten Linux-VM aus. Die Einrichtung erfordert derzeit Zugriff auf das private agntchat-Host-Repository — melden Sie sich, um teilzunehmen.",
         "idLabel": "ID",
         "identifiersHint": "Verwenden Sie diese Kennungen mit der API und Integrationen.",
         "identifiersLabel": "Kennungen des Arbeitsbereichs",
@@ -17995,7 +17995,7 @@ export const resources = {
           "title": "Paramètres d'exécution locale",
           "workingDirs": {
             "addButton": "Ajouter un répertoire",
-            "description": "Répertoires auxquels cet agent peut accéder. L'ajout de répertoires active aussi les outils CLI (Bash, Read, Edit, Web) en plus des outils AgentGram.",
+            "description": "Répertoires auxquels cet agent peut accéder. L'ajout de répertoires active aussi les outils CLI (Bash, Read, Edit, Web) en plus des outils agntchat.",
             "label": "Répertoires de travail",
             "promptMessage": "Entrez le chemin du répertoire :"
           }
@@ -18023,7 +18023,7 @@ export const resources = {
           "unsavedChanges": "Modifications non enregistrées"
         },
         "publish": {
-          "discoverableExplain": "Rendre cet agent découvrable par les autres utilisateurs d'Agentgram.",
+          "discoverableExplain": "Rendre cet agent découvrable par les autres utilisateurs d'agntchat.",
           "listingNameRequired": "Nom de l'annonce *",
           "loadStatusFailed": "Échec du chargement du statut de l'annonce",
           "publishAction": "Publier",
@@ -18210,7 +18210,7 @@ export const resources = {
             "writing": "ex. Rédige des articles de blog, des e-mails et du contenu marketing"
           }
         },
-        "desktopOnlyMessage": "Les agents {{backend}} ont besoin de l'application de bureau Agentgram pour se lancer. Vous pouvez les créer ici, mais vous les démarrerez depuis le bureau.",
+        "desktopOnlyMessage": "Les agents {{backend}} ont besoin de l'application de bureau agntchat pour se lancer. Vous pouvez les créer ici, mais vous les démarrerez depuis le bureau.",
         "desktopOnlyTitle": "S'exécute depuis l'application de bureau",
         "detailsHint": "Instructions personnalisées et préférences.",
         "detailsTitle": "Des détails supplémentaires ?",
@@ -18560,7 +18560,7 @@ export const resources = {
         "actionFailed": "Échec de l'exécution de {{label}}.",
         "activeCount": "{{count}} actif(s)",
         "blocker": {
-          "bridge_outdated": "L'application Agentgram sur la machine de cet agent n'est pas à jour, donc il ne peut pas recevoir de messages. Mettez-la à jour sur cette machine.",
+          "bridge_outdated": "L'application agntchat sur la machine de cet agent n'est pas à jour, donc il ne peut pas recevoir de messages. Mettez-la à jour sur cette machine.",
           "llm_backend_error": "Le backend de modèle de cet agent n'a pas pu démarrer.",
           "llm_backend_missing": "La CLI Claude n'est pas installée sur la machine de cet agent.",
           "llm_unauthenticated": "Aucun compte Claude connecté sur la machine de cet agent. Connectez-vous là-bas et il reprendra où il s'était arrêté.",
@@ -18860,7 +18860,7 @@ export const resources = {
           "writing": "Rédaction"
         },
         "connection": "Connexion",
-        "discoverableHint": "Rendez cet agent découvrable par les autres utilisateurs d'Agentgram.",
+        "discoverableHint": "Rendez cet agent découvrable par les autres utilisateurs d'agntchat.",
         "errors": {
           "nameRequired": "Le nom de l'annonce est requis.",
           "noAgent": "Aucun agent sélectionné.",
@@ -19188,7 +19188,7 @@ export const resources = {
         "copyToShare": "Copier pour partager",
         "description": "Envoyez l'identifiant de cet agent à quelqu'un pour qu'il puisse s'y connecter via l'annuaire.",
         "fallbackShareTitle": "Le navigateur n'a pas de fenêtre de partage — repli sur la copie",
-        "message": "Connectez-vous avec {{name}} sur Agentgram !\n\nID de l'agent : {{id}}",
+        "message": "Connectez-vous avec {{name}} sur agntchat !\n\nID de l'agent : {{id}}",
         "messageLabel": "Message de partage",
         "nativeShareTitle": "Ouvrir la fenêtre de partage native",
         "shareEllipsis": "Partager…",
@@ -19511,7 +19511,7 @@ export const resources = {
           "worker": "Quel type de travail cet agent va-t-il gérer ?"
         },
         "descriptionOptional": "Description (facultatif)",
-        "desktopOnlyBody": "Les agents {{product}} ont besoin de l'application de bureau Agentgram pour se lancer. Vous pouvez les créer ici, mais vous les démarrerez depuis le bureau.",
+        "desktopOnlyBody": "Les agents {{product}} ont besoin de l'application de bureau agntchat pour se lancer. Vous pouvez les créer ici, mais vous les démarrerez depuis le bureau.",
         "desktopOnlyTitle": "S'exécute depuis l'application de bureau",
         "effort": "Effort",
         "errors": {
@@ -19605,7 +19605,7 @@ export const resources = {
     },
     "auth": {
       "acceptInvitation": "Accepter votre invitation",
-      "ageTooYoung": "Vous devez avoir au moins 16 ans pour utiliser AgentGram.",
+      "ageTooYoung": "Vous devez avoir au moins 16 ans pour utiliser agntchat.",
       "alreadyHaveAccount": "Vous avez déjà un compte ?",
       "backToSignIn": "Retour à la connexion",
       "birthDate": "Date de naissance",
@@ -21267,7 +21267,7 @@ export const resources = {
       "appendKeyInstruction": "Sur l'hôte, ajoutez ceci à {{path}} pour l'utilisateur {{user}} :",
       "authorizeBootstrap": "Autoriser + bootstrap",
       "authorizeHost": "Autoriser « {{name}} »",
-      "authorizeHostHint": "AgentGram se connecte à la VM via SSH avec sa propre clé. Ajoutez cette clé publique à {{target}}, puis lancez le bootstrap.",
+      "authorizeHostHint": "agntchat se connecte à la VM via SSH avec sa propre clé. Ajoutez cette clé publique à {{target}}, puis lancez le bootstrap.",
       "backend": "Backend",
       "bootstrap": "Bootstrap",
       "bootstrapHint": "Installer le runtime via SSH",
@@ -21837,7 +21837,7 @@ export const resources = {
         "usedToday": "Utilisé aujourd'hui"
       },
       "cloudHosts": {
-        "subtitle": "Exécutez des agents sur une VM Linux dédiée pour qu'ils restent en ligne sans votre machine locale. La configuration nécessite actuellement un accès au dépôt privé d'hôtes Agentgram — contactez-nous pour y participer."
+        "subtitle": "Exécutez des agents sur une VM Linux dédiée pour qu'ils restent en ligne sans votre machine locale. La configuration nécessite actuellement un accès au dépôt privé d'hôtes agntchat — contactez-nous pour y participer."
       },
       "connections": {
         "apiToken": "Jeton API",
@@ -22162,7 +22162,7 @@ export const resources = {
       },
       "profileTour": {
         "analyticsBody": "Partagez des données d'usage anonymes pour qu'on voie ce qui marche et corrige ce qui ne va pas. Aucun contenu de message n'est collecté. Activé par défaut — désactivez-le si vous préférez.",
-        "analyticsTitle": "Aidez à améliorer Agentgram",
+        "analyticsTitle": "Aidez à améliorer agntchat",
         "analyticsToggle": "Partager les statistiques d'usage",
         "back": "Retour",
         "done": "Terminé",
@@ -22314,7 +22314,7 @@ export const resources = {
         "fieldId": "ID",
         "hosts": "Hôtes",
         "hostsDescription": "Exécutez des agents sur une VM dédiée",
-        "hostsSubtitle": "Exécutez des agents sur une VM Linux dédiée. La configuration nécessite actuellement un accès au dépôt privé d'hôtes Agentgram — contactez-nous pour y participer.",
+        "hostsSubtitle": "Exécutez des agents sur une VM Linux dédiée. La configuration nécessite actuellement un accès au dépôt privé d'hôtes agntchat — contactez-nous pour y participer.",
         "idLabel": "ID",
         "identifiersHint": "Utilisez ces identifiants avec l'API et les intégrations.",
         "identifiersLabel": "Identifiants de l'espace de travail",
@@ -23918,7 +23918,7 @@ export const resources = {
           "title": "Configurações de execução local",
           "workingDirs": {
             "addButton": "Adicionar Diretório",
-            "description": "Diretórios que este agente pode acessar. Adicionar diretórios também ativa ferramentas de CLI (Bash, Read, Edit, Web) junto com as ferramentas do AgentGram.",
+            "description": "Diretórios que este agente pode acessar. Adicionar diretórios também ativa ferramentas de CLI (Bash, Read, Edit, Web) junto com as ferramentas do agntchat.",
             "label": "Diretórios de trabalho",
             "promptMessage": "Digite o caminho do diretório:"
           }
@@ -23946,7 +23946,7 @@ export const resources = {
           "unsavedChanges": "Alterações não salvas"
         },
         "publish": {
-          "discoverableExplain": "Tornar este agente detectável para outros usuários do Agentgram.",
+          "discoverableExplain": "Tornar este agente detectável para outros usuários do agntchat.",
           "listingNameRequired": "Nome da Listagem *",
           "loadStatusFailed": "Falha ao carregar o status da listagem",
           "publishAction": "Publicar",
@@ -24133,7 +24133,7 @@ export const resources = {
             "writing": "ex.: Redige posts de blog, e-mails e textos de marketing"
           }
         },
-        "desktopOnlyMessage": "Agentes {{backend}} precisam do app desktop do Agentgram para serem iniciados. Você pode criá-los aqui, mas vai iniciá-los pelo desktop.",
+        "desktopOnlyMessage": "Agentes {{backend}} precisam do app desktop do agntchat para serem iniciados. Você pode criá-los aqui, mas vai iniciá-los pelo desktop.",
         "desktopOnlyTitle": "Executa a partir do app desktop",
         "detailsHint": "Instruções personalizadas e preferências.",
         "detailsTitle": "Algum detalhe extra?",
@@ -24483,7 +24483,7 @@ export const resources = {
         "actionFailed": "Falha ao executar {{label}}.",
         "activeCount": "{{count}} ativo(s)",
         "blocker": {
-          "bridge_outdated": "O app Agentgram na máquina deste agente está desatualizado, então ele não consegue receber mensagens. Atualize-o nessa máquina.",
+          "bridge_outdated": "O app agntchat na máquina deste agente está desatualizado, então ele não consegue receber mensagens. Atualize-o nessa máquina.",
           "llm_backend_error": "O backend de modelo deste agente não conseguiu iniciar.",
           "llm_backend_missing": "A CLI do Claude não está instalada na máquina deste agente.",
           "llm_unauthenticated": "Nenhuma conta Claude conectada na máquina deste agente. Faça login lá e ele continuará de onde parou.",
@@ -24783,7 +24783,7 @@ export const resources = {
           "writing": "Redação"
         },
         "connection": "Conexão",
-        "discoverableHint": "Torne este agente descobrível para outros usuários do Agentgram.",
+        "discoverableHint": "Torne este agente descobrível para outros usuários do agntchat.",
         "errors": {
           "nameRequired": "O nome do anúncio é obrigatório.",
           "noAgent": "Nenhum agente selecionado.",
@@ -25111,7 +25111,7 @@ export const resources = {
         "copyToShare": "Copiar para Compartilhar",
         "description": "Envie o identificador deste agente para alguém para que possa se conectar a ele pelo diretório.",
         "fallbackShareTitle": "O navegador não tem folha de compartilhamento — recorre à cópia",
-        "message": "Conecte-se com {{name}} no Agentgram!\n\nID do Agente: {{id}}",
+        "message": "Conecte-se com {{name}} no agntchat!\n\nID do Agente: {{id}}",
         "messageLabel": "Mensagem de Compartilhamento",
         "nativeShareTitle": "Abrir folha de compartilhamento nativa",
         "shareEllipsis": "Compartilhar…",
@@ -25434,7 +25434,7 @@ export const resources = {
           "worker": "Que tipo de trabalho este agente vai realizar?"
         },
         "descriptionOptional": "Descrição (opcional)",
-        "desktopOnlyBody": "Agentes {{product}} precisam do app desktop do Agentgram para serem iniciados. Você pode criá-los aqui, mas vai iniciá-los pelo desktop.",
+        "desktopOnlyBody": "Agentes {{product}} precisam do app desktop do agntchat para serem iniciados. Você pode criá-los aqui, mas vai iniciá-los pelo desktop.",
         "desktopOnlyTitle": "Executa a partir do app desktop",
         "effort": "Esforço",
         "errors": {
@@ -25528,7 +25528,7 @@ export const resources = {
     },
     "auth": {
       "acceptInvitation": "Aceitar seu convite",
-      "ageTooYoung": "Você precisa ter pelo menos 16 anos para usar o AgentGram.",
+      "ageTooYoung": "Você precisa ter pelo menos 16 anos para usar o agntchat.",
       "alreadyHaveAccount": "Já tem uma conta?",
       "backToSignIn": "Voltar para o login",
       "birthDate": "Data de nascimento",
@@ -27190,7 +27190,7 @@ export const resources = {
       "appendKeyInstruction": "No host, anexe isto a {{path}} para o usuário {{user}}:",
       "authorizeBootstrap": "Autorizar + bootstrap",
       "authorizeHost": "Autorizar \"{{name}}\"",
-      "authorizeHostHint": "O AgentGram se conecta à VM via SSH usando sua própria chave. Adicione esta chave pública a {{target}} e depois faça o bootstrap.",
+      "authorizeHostHint": "O agntchat se conecta à VM via SSH usando sua própria chave. Adicione esta chave pública a {{target}} e depois faça o bootstrap.",
       "backend": "Backend",
       "bootstrap": "Bootstrap",
       "bootstrapHint": "Instalar o runtime via SSH",
@@ -27760,7 +27760,7 @@ export const resources = {
         "usedToday": "Usado hoje"
       },
       "cloudHosts": {
-        "subtitle": "Execute agentes em uma VM Linux dedicada para que fiquem online sem depender da sua máquina local. A configuração atualmente exige acesso ao repositório privado de hosts do Agentgram — entre em contato para participar."
+        "subtitle": "Execute agentes em uma VM Linux dedicada para que fiquem online sem depender da sua máquina local. A configuração atualmente exige acesso ao repositório privado de hosts do agntchat — entre em contato para participar."
       },
       "connections": {
         "apiToken": "Token de API",
@@ -28085,7 +28085,7 @@ export const resources = {
       },
       "profileTour": {
         "analyticsBody": "Compartilhe dados de uso anônimos para vermos o que funciona e corrigir o que não funciona. Nenhum conteúdo de mensagem é coletado. Ativado por padrão — desligue se preferir.",
-        "analyticsTitle": "Ajude a melhorar o Agentgram",
+        "analyticsTitle": "Ajude a melhorar o agntchat",
         "analyticsToggle": "Compartilhar análises de uso",
         "back": "Voltar",
         "done": "Concluir",
@@ -28237,7 +28237,7 @@ export const resources = {
         "fieldId": "ID",
         "hosts": "Hosts",
         "hostsDescription": "Execute agentes em uma VM dedicada",
-        "hostsSubtitle": "Execute agentes em uma VM Linux dedicada. A configuração atualmente exige acesso ao repositório privado de hosts do Agentgram — entre em contato para participar.",
+        "hostsSubtitle": "Execute agentes em uma VM Linux dedicada. A configuração atualmente exige acesso ao repositório privado de hosts do agntchat — entre em contato para participar.",
         "idLabel": "ID",
         "identifiersHint": "Use esses identificadores com a API e integrações.",
         "identifiersLabel": "Identificadores do espaço de trabalho",
@@ -29841,7 +29841,7 @@ export const resources = {
           "title": "ローカルランタイム設定",
           "workingDirs": {
             "addButton": "ディレクトリを追加",
-            "description": "このエージェントがアクセスできるディレクトリ。ディレクトリを追加すると、AgentGramツールに加えてCLIツール（Bash、Read、Edit、Web）も有効になります。",
+            "description": "このエージェントがアクセスできるディレクトリ。ディレクトリを追加すると、agntchatツールに加えてCLIツール（Bash、Read、Edit、Web）も有効になります。",
             "label": "作業ディレクトリ",
             "promptMessage": "ディレクトリパスを入力してください："
           }
@@ -29869,7 +29869,7 @@ export const resources = {
           "unsavedChanges": "未保存の変更"
         },
         "publish": {
-          "discoverableExplain": "このエージェントを他のAgentgramユーザーが発見できるようにします。",
+          "discoverableExplain": "このエージェントを他のagntchatユーザーが発見できるようにします。",
           "listingNameRequired": "リスト名 *",
           "loadStatusFailed": "掲載状況の読み込みに失敗しました",
           "publishAction": "公開",
@@ -30056,7 +30056,7 @@ export const resources = {
             "writing": "例：ブログ記事、メール、マーケティングコピーを作成する"
           }
         },
-        "desktopOnlyMessage": "{{backend}}エージェントの起動にはAgentgramデスクトップアプリが必要です。ここで作成できますが、起動はデスクトップから行います。",
+        "desktopOnlyMessage": "{{backend}}エージェントの起動にはagntchatデスクトップアプリが必要です。ここで作成できますが、起動はデスクトップから行います。",
         "desktopOnlyTitle": "デスクトップアプリから実行",
         "detailsHint": "カスタム指示と設定。",
         "detailsTitle": "他に詳細はありますか？",
@@ -30406,7 +30406,7 @@ export const resources = {
         "actionFailed": "{{label}}の実行に失敗しました。",
         "activeCount": "{{count}}件アクティブ",
         "blocker": {
-          "bridge_outdated": "このエージェントを実行しているマシンの Agentgram アプリが古いため、メッセージを受け取れません。そのマシンで更新してください。",
+          "bridge_outdated": "このエージェントを実行しているマシンの agntchat アプリが古いため、メッセージを受け取れません。そのマシンで更新してください。",
           "llm_backend_error": "このエージェントのモデルバックエンドを起動できませんでした。",
           "llm_backend_missing": "このエージェントを実行しているマシンに Claude CLI がインストールされていません。",
           "llm_unauthenticated": "このエージェントを実行しているマシンに、サインイン済みの Claude アカウントがありません。そこでサインインすれば、続きから再開します。",
@@ -30706,7 +30706,7 @@ export const resources = {
           "writing": "ライティング"
         },
         "connection": "接続",
-        "discoverableHint": "このエージェントを他のAgentgramユーザーが発見できるようにします。",
+        "discoverableHint": "このエージェントを他のagntchatユーザーが発見できるようにします。",
         "errors": {
           "nameRequired": "掲載名は必須です。",
           "noAgent": "エージェントが選択されていません。",
@@ -31034,7 +31034,7 @@ export const resources = {
         "copyToShare": "共有用にコピー",
         "description": "このエージェントの識別子を誰かに送り、ディレクトリを通じて接続できるようにします。",
         "fallbackShareTitle": "ブラウザに共有シートがありません — コピーにフォールバックします",
-        "message": "Agentgramで{{name}}と接続しましょう！\n\nエージェントID: {{id}}",
+        "message": "agntchatで{{name}}と接続しましょう！\n\nエージェントID: {{id}}",
         "messageLabel": "共有メッセージ",
         "nativeShareTitle": "ネイティブ共有シートを開く",
         "shareEllipsis": "共有…",
@@ -31357,7 +31357,7 @@ export const resources = {
           "worker": "どのような作業を担当しますか？"
         },
         "descriptionOptional": "説明（任意）",
-        "desktopOnlyBody": "{{product}}エージェントの起動にはAgentgramデスクトップアプリが必要です。ここで作成できますが、起動はデスクトップから行います。",
+        "desktopOnlyBody": "{{product}}エージェントの起動にはagntchatデスクトップアプリが必要です。ここで作成できますが、起動はデスクトップから行います。",
         "desktopOnlyTitle": "デスクトップアプリから実行",
         "effort": "処理量",
         "errors": {
@@ -31451,7 +31451,7 @@ export const resources = {
     },
     "auth": {
       "acceptInvitation": "招待を承認する",
-      "ageTooYoung": "AgentGramをご利用いただくには、16歳以上である必要があります。",
+      "ageTooYoung": "agntchatをご利用いただくには、16歳以上である必要があります。",
       "alreadyHaveAccount": "すでにアカウントをお持ちですか？",
       "backToSignIn": "ログインに戻る",
       "birthDate": "生年月日",
@@ -33113,7 +33113,7 @@ export const resources = {
       "appendKeyInstruction": "ホスト上で、{{user}}ユーザーの{{path}}にこれを追加してください：",
       "authorizeBootstrap": "認可してブートストラップ",
       "authorizeHost": "「{{name}}」を認可",
-      "authorizeHostHint": "AgentGramは専用の鍵を使ってVMにSSH接続します。この公開鍵を{{target}}に追加してから、ブートストラップしてください。",
+      "authorizeHostHint": "agntchatは専用の鍵を使ってVMにSSH接続します。この公開鍵を{{target}}に追加してから、ブートストラップしてください。",
       "backend": "バックエンド",
       "bootstrap": "ブートストラップ",
       "bootstrapHint": "SSH経由でランタイムをインストール",
@@ -33683,7 +33683,7 @@ export const resources = {
         "usedToday": "本日の使用量"
       },
       "cloudHosts": {
-        "subtitle": "専用のLinux VM上でエージェントを実行し、ローカルマシンがなくてもオンライン状態を維持できます。現在、セットアップにはAgentgramのプライベートホストリポジトリへのアクセスが必要です — 参加を希望する場合はご連絡ください。"
+        "subtitle": "専用のLinux VM上でエージェントを実行し、ローカルマシンがなくてもオンライン状態を維持できます。現在、セットアップにはagntchatのプライベートホストリポジトリへのアクセスが必要です — 参加を希望する場合はご連絡ください。"
       },
       "connections": {
         "apiToken": "APIトークン",
@@ -34008,7 +34008,7 @@ export const resources = {
       },
       "profileTour": {
         "analyticsBody": "匿名の利用データを共有していただくと、何がうまくいっているか、何を直すべきかがわかります。メッセージの内容は一切収集しません。既定でオン — 望まなければオフにできます。",
-        "analyticsTitle": "Agentgram の改善に協力",
+        "analyticsTitle": "agntchat の改善に協力",
         "analyticsToggle": "利用分析を共有",
         "back": "戻る",
         "done": "完了",
@@ -34160,7 +34160,7 @@ export const resources = {
         "fieldId": "ID",
         "hosts": "ホスト",
         "hostsDescription": "専用VM上でエージェントを実行します",
-        "hostsSubtitle": "専用のLinux VM上でエージェントを実行します。現在、セットアップにはAgentgramのプライベートホストリポジトリへのアクセスが必要です — 参加を希望する場合はご連絡ください。",
+        "hostsSubtitle": "専用のLinux VM上でエージェントを実行します。現在、セットアップにはagntchatのプライベートホストリポジトリへのアクセスが必要です — 参加を希望する場合はご連絡ください。",
         "idLabel": "ID",
         "identifiersHint": "これらの識別子はAPIや連携機能で使用してください。",
         "identifiersLabel": "ワークスペースの識別子",
@@ -35764,7 +35764,7 @@ export const resources = {
           "title": "本地运行时设置",
           "workingDirs": {
             "addButton": "添加目录",
-            "description": "此智能体可以访问的目录。添加目录还会在 AgentGram 工具之外启用命令行工具（Bash、Read、Edit、Web）。",
+            "description": "此智能体可以访问的目录。添加目录还会在 agntchat 工具之外启用命令行工具（Bash、Read、Edit、Web）。",
             "label": "工作目录",
             "promptMessage": "请输入目录路径："
           }
@@ -35792,7 +35792,7 @@ export const resources = {
           "unsavedChanges": "未保存的更改"
         },
         "publish": {
-          "discoverableExplain": "使其他 Agentgram 用户可以发现此智能体。",
+          "discoverableExplain": "使其他 agntchat 用户可以发现此智能体。",
           "listingNameRequired": "列表名称 *",
           "loadStatusFailed": "加载列表状态失败",
           "publishAction": "发布",
@@ -35979,7 +35979,7 @@ export const resources = {
             "writing": "例如：撰写博客文章、电子邮件和营销文案"
           }
         },
-        "desktopOnlyMessage": "{{backend}} 智能体需要 Agentgram 桌面应用才能启动。您可以在此处创建它们，但需要从桌面端启动。",
+        "desktopOnlyMessage": "{{backend}} 智能体需要 agntchat 桌面应用才能启动。您可以在此处创建它们，但需要从桌面端启动。",
         "desktopOnlyTitle": "从桌面应用运行",
         "detailsHint": "自定义说明和偏好设置。",
         "detailsTitle": "还有其他细节吗？",
@@ -36329,7 +36329,7 @@ export const resources = {
         "actionFailed": "运行 {{label}} 失败。",
         "activeCount": "{{count}} 个活跃",
         "blocker": {
-          "bridge_outdated": "运行该智能体的机器上的 Agentgram 应用版本过旧，无法接收消息。请在那台机器上更新。",
+          "bridge_outdated": "运行该智能体的机器上的 agntchat 应用版本过旧，无法接收消息。请在那台机器上更新。",
           "llm_backend_error": "该智能体的模型后端启动失败。",
           "llm_backend_missing": "运行该智能体的机器上未安装 Claude CLI。",
           "llm_unauthenticated": "运行该智能体的机器上没有登录的 Claude 账号。在那台机器上登录后，它会从中断处继续。",
@@ -36629,7 +36629,7 @@ export const resources = {
           "writing": "写作"
         },
         "connection": "连接",
-        "discoverableHint": "使此智能体可被其他 Agentgram 用户发现。",
+        "discoverableHint": "使此智能体可被其他 agntchat 用户发现。",
         "errors": {
           "nameRequired": "列表名称为必填项。",
           "noAgent": "未选择智能体。",
@@ -36957,7 +36957,7 @@ export const resources = {
         "copyToShare": "复制以分享",
         "description": "将此智能体的标识符发送给他人，以便他们通过目录与其连接。",
         "fallbackShareTitle": "浏览器没有分享面板——将改为复制",
-        "message": "在 Agentgram 上与 {{name}} 连接！\n\n智能体 ID：{{id}}",
+        "message": "在 agntchat 上与 {{name}} 连接！\n\n智能体 ID：{{id}}",
         "messageLabel": "分享消息",
         "nativeShareTitle": "打开原生分享面板",
         "shareEllipsis": "分享…",
@@ -37280,7 +37280,7 @@ export const resources = {
           "worker": "此智能体将处理哪类工作？"
         },
         "descriptionOptional": "描述（可选）",
-        "desktopOnlyBody": "{{product}} 智能体需要 Agentgram 桌面应用才能启动。您可以在此处创建它们，但需要从桌面端启动。",
+        "desktopOnlyBody": "{{product}} 智能体需要 agntchat 桌面应用才能启动。您可以在此处创建它们，但需要从桌面端启动。",
         "desktopOnlyTitle": "从桌面应用运行",
         "effort": "处理强度",
         "errors": {
@@ -37374,7 +37374,7 @@ export const resources = {
     },
     "auth": {
       "acceptInvitation": "接受邀请",
-      "ageTooYoung": "您必须年满 16 周岁才能使用 AgentGram。",
+      "ageTooYoung": "您必须年满 16 周岁才能使用 agntchat。",
       "alreadyHaveAccount": "已有账号？",
       "backToSignIn": "返回登录",
       "birthDate": "出生日期",
@@ -39036,7 +39036,7 @@ export const resources = {
       "appendKeyInstruction": "在主机上，将其追加到 {{user}} 用户的 {{path}} 中：",
       "authorizeBootstrap": "授权 + 引导",
       "authorizeHost": "授权 “{{name}}”",
-      "authorizeHostHint": "AgentGram 使用自己的密钥通过 SSH 连接到该 VM。请将此公钥添加到 {{target}}，然后引导。",
+      "authorizeHostHint": "agntchat 使用自己的密钥通过 SSH 连接到该 VM。请将此公钥添加到 {{target}}，然后引导。",
       "backend": "后端",
       "bootstrap": "Bootstrap",
       "bootstrapHint": "通过 SSH 安装运行时",
@@ -39606,7 +39606,7 @@ export const resources = {
         "usedToday": "今日已用"
       },
       "cloudHosts": {
-        "subtitle": "在专用的 Linux 虚拟机上运行智能体，使其无需本地设备也能保持在线。目前的设置需要访问 Agentgram 私有主机仓库的权限——请联系我们以申请开通。"
+        "subtitle": "在专用的 Linux 虚拟机上运行智能体，使其无需本地设备也能保持在线。目前的设置需要访问 agntchat 私有主机仓库的权限——请联系我们以申请开通。"
       },
       "connections": {
         "apiToken": "API 令牌",
@@ -39931,7 +39931,7 @@ export const resources = {
       },
       "profileTour": {
         "analyticsBody": "共享匿名使用数据，帮助我们了解哪些有效、修复哪些无效。绝不收集消息内容。默认开启——如不愿意可关闭。",
-        "analyticsTitle": "帮助改进 Agentgram",
+        "analyticsTitle": "帮助改进 agntchat",
         "analyticsToggle": "共享使用分析",
         "back": "上一步",
         "done": "完成",
@@ -40083,7 +40083,7 @@ export const resources = {
         "fieldId": "ID",
         "hosts": "主机",
         "hostsDescription": "在专用虚拟机上运行智能体",
-        "hostsSubtitle": "在专用的 Linux 虚拟机上运行智能体。目前的设置需要访问 Agentgram 私有主机仓库的权限——请联系我们以申请开通。",
+        "hostsSubtitle": "在专用的 Linux 虚拟机上运行智能体。目前的设置需要访问 agntchat 私有主机仓库的权限——请联系我们以申请开通。",
         "idLabel": "ID",
         "identifiersHint": "在 API 和集成中使用这些标识符。",
         "identifiersLabel": "工作区标识符",
@@ -41687,7 +41687,7 @@ export const resources = {
           "title": "로컬 런타임 설정",
           "workingDirs": {
             "addButton": "디렉터리 추가",
-            "description": "이 에이전트가 액세스할 수 있는 디렉터리입니다. 디렉터리를 추가하면 AgentGram 도구와 함께 CLI 도구(Bash, Read, Edit, Web)도 사용할 수 있습니다.",
+            "description": "이 에이전트가 액세스할 수 있는 디렉터리입니다. 디렉터리를 추가하면 agntchat 도구와 함께 CLI 도구(Bash, Read, Edit, Web)도 사용할 수 있습니다.",
             "label": "작업 디렉터리",
             "promptMessage": "디렉터리 경로를 입력하세요:"
           }
@@ -41715,7 +41715,7 @@ export const resources = {
           "unsavedChanges": "저장하지 않은 변경사항"
         },
         "publish": {
-          "discoverableExplain": "이 에이전트를 다른 Agentgram 사용자가 검색할 수 있도록 합니다.",
+          "discoverableExplain": "이 에이전트를 다른 agntchat 사용자가 검색할 수 있도록 합니다.",
           "listingNameRequired": "등록 이름 *",
           "loadStatusFailed": "등록 상태를 불러오지 못했습니다",
           "publishAction": "게시",
@@ -41902,7 +41902,7 @@ export const resources = {
             "writing": "예: 블로그 게시물, 이메일, 마케팅 카피를 작성합니다"
           }
         },
-        "desktopOnlyMessage": "{{backend}} 에이전트는 실행하려면 Agentgram 데스크톱 앱이 필요합니다. 여기서 만들 수는 있지만 데스크톱에서 시작해야 합니다.",
+        "desktopOnlyMessage": "{{backend}} 에이전트는 실행하려면 agntchat 데스크톱 앱이 필요합니다. 여기서 만들 수는 있지만 데스크톱에서 시작해야 합니다.",
         "desktopOnlyTitle": "데스크톱 앱에서 실행됩니다",
         "detailsHint": "사용자 지정 지침 및 환경 설정.",
         "detailsTitle": "추가로 알려줄 세부정보가 있나요?",
@@ -42252,7 +42252,7 @@ export const resources = {
         "actionFailed": "{{label}} 실행 실패.",
         "activeCount": "{{count}}개 활성",
         "blocker": {
-          "bridge_outdated": "이 에이전트를 실행 중인 머신의 Agentgram 앱이 오래되어 메시지를 받을 수 없습니다. 해당 머신에서 업데이트하세요.",
+          "bridge_outdated": "이 에이전트를 실행 중인 머신의 agntchat 앱이 오래되어 메시지를 받을 수 없습니다. 해당 머신에서 업데이트하세요.",
           "llm_backend_error": "이 에이전트의 모델 백엔드를 시작하지 못했습니다.",
           "llm_backend_missing": "이 에이전트를 실행 중인 머신에 Claude CLI가 설치되어 있지 않습니다.",
           "llm_unauthenticated": "이 에이전트를 실행 중인 머신에 로그인된 Claude 계정이 없습니다. 해당 머신에서 로그인하면 중단된 지점부터 이어서 진행합니다.",
@@ -42552,7 +42552,7 @@ export const resources = {
           "writing": "글쓰기"
         },
         "connection": "연결",
-        "discoverableHint": "다른 Agentgram 사용자가 이 에이전트를 찾을 수 있도록 합니다.",
+        "discoverableHint": "다른 agntchat 사용자가 이 에이전트를 찾을 수 있도록 합니다.",
         "errors": {
           "nameRequired": "리스팅 이름은 필수입니다.",
           "noAgent": "선택된 에이전트가 없습니다.",
@@ -42880,7 +42880,7 @@ export const resources = {
         "copyToShare": "복사하여 공유",
         "description": "이 에이전트의 식별자를 다른 사람에게 보내면 디렉토리를 통해 연결할 수 있습니다.",
         "fallbackShareTitle": "브라우저에 공유 시트가 없어 복사로 대체합니다",
-        "message": "Agentgram에서 {{name}}과(와) 연결하세요!\n\n에이전트 ID: {{id}}",
+        "message": "agntchat에서 {{name}}과(와) 연결하세요!\n\n에이전트 ID: {{id}}",
         "messageLabel": "공유 메시지",
         "nativeShareTitle": "기본 공유 시트 열기",
         "shareEllipsis": "공유…",
@@ -43203,7 +43203,7 @@ export const resources = {
           "worker": "이 에이전트는 어떤 종류의 작업을 처리하나요?"
         },
         "descriptionOptional": "설명(선택 사항)",
-        "desktopOnlyBody": "{{product}} 에이전트는 실행하려면 Agentgram 데스크톱 앱이 필요합니다. 여기서 만들 수는 있지만 데스크톱에서 시작해야 합니다.",
+        "desktopOnlyBody": "{{product}} 에이전트는 실행하려면 agntchat 데스크톱 앱이 필요합니다. 여기서 만들 수는 있지만 데스크톱에서 시작해야 합니다.",
         "desktopOnlyTitle": "데스크톱 앱에서 실행됩니다",
         "effort": "처리 강도",
         "errors": {
@@ -43297,7 +43297,7 @@ export const resources = {
     },
     "auth": {
       "acceptInvitation": "초대 수락하기",
-      "ageTooYoung": "AgentGram을 사용하려면 만 16세 이상이어야 합니다.",
+      "ageTooYoung": "agntchat을 사용하려면 만 16세 이상이어야 합니다.",
       "alreadyHaveAccount": "이미 계정이 있으신가요?",
       "backToSignIn": "로그인으로 돌아가기",
       "birthDate": "생년월일",
@@ -44959,7 +44959,7 @@ export const resources = {
       "appendKeyInstruction": "호스트에서 {{user}} 사용자의 {{path}}에 다음을 추가하세요:",
       "authorizeBootstrap": "인증 + 부트스트랩",
       "authorizeHost": "\"{{name}}\" 인증",
-      "authorizeHostHint": "AgentGram은 자체 키를 사용하여 SSH로 VM에 연결합니다. 이 공개 키를 {{target}}에 추가한 다음 부트스트랩하세요.",
+      "authorizeHostHint": "agntchat은 자체 키를 사용하여 SSH로 VM에 연결합니다. 이 공개 키를 {{target}}에 추가한 다음 부트스트랩하세요.",
       "backend": "백엔드",
       "bootstrap": "부트스트랩",
       "bootstrapHint": "SSH로 런타임 설치",
@@ -45529,7 +45529,7 @@ export const resources = {
         "usedToday": "오늘 사용량"
       },
       "cloudHosts": {
-        "subtitle": "전용 Linux VM에서 에이전트를 실행하여 로컬 기기 없이도 온라인 상태를 유지하세요. 설정에는 현재 Agentgram 비공개 호스트 저장소에 대한 액세스가 필요합니다 — 참여하려면 문의하세요."
+        "subtitle": "전용 Linux VM에서 에이전트를 실행하여 로컬 기기 없이도 온라인 상태를 유지하세요. 설정에는 현재 agntchat 비공개 호스트 저장소에 대한 액세스가 필요합니다 — 참여하려면 문의하세요."
       },
       "connections": {
         "apiToken": "API 토큰",
@@ -45854,7 +45854,7 @@ export const resources = {
       },
       "profileTour": {
         "analyticsBody": "익명 사용 데이터를 공유하면 무엇이 잘 작동하는지 파악하고 문제를 고칠 수 있어요. 메시지 내용은 절대 수집하지 않습니다. 기본값은 켜짐 — 원치 않으면 끄세요.",
-        "analyticsTitle": "Agentgram 개선에 도움 주기",
+        "analyticsTitle": "agntchat 개선에 도움 주기",
         "analyticsToggle": "사용 분석 공유",
         "back": "뒤로",
         "done": "완료",
@@ -46006,7 +46006,7 @@ export const resources = {
         "fieldId": "ID",
         "hosts": "호스트",
         "hostsDescription": "전용 VM에서 에이전트를 실행하세요",
-        "hostsSubtitle": "전용 Linux VM에서 에이전트를 실행하세요. 설정에는 현재 Agentgram 비공개 호스트 저장소에 대한 액세스가 필요합니다 — 참여하려면 문의하세요.",
+        "hostsSubtitle": "전용 Linux VM에서 에이전트를 실행하세요. 설정에는 현재 agntchat 비공개 호스트 저장소에 대한 액세스가 필요합니다 — 참여하려면 문의하세요.",
         "idLabel": "ID",
         "identifiersHint": "이 식별자를 API 및 통합에 사용하세요.",
         "identifiersLabel": "워크스페이스 식별자",
@@ -47610,7 +47610,7 @@ export const resources = {
           "title": "Impostazioni runtime locale",
           "workingDirs": {
             "addButton": "Aggiungi directory",
-            "description": "Directory a cui questo agente può accedere. Aggiungere directory abilita anche gli strumenti CLI (Bash, Read, Edit, Web) insieme agli strumenti AgentGram.",
+            "description": "Directory a cui questo agente può accedere. Aggiungere directory abilita anche gli strumenti CLI (Bash, Read, Edit, Web) insieme agli strumenti agntchat.",
             "label": "Directory di lavoro",
             "promptMessage": "Inserisci il percorso della directory:"
           }
@@ -47638,7 +47638,7 @@ export const resources = {
           "unsavedChanges": "Modifiche non salvate"
         },
         "publish": {
-          "discoverableExplain": "Rendi questo agente rilevabile da altri utenti Agentgram.",
+          "discoverableExplain": "Rendi questo agente rilevabile da altri utenti agntchat.",
           "listingNameRequired": "Nome dell'annuncio *",
           "loadStatusFailed": "Impossibile caricare lo stato dell'annuncio",
           "publishAction": "Pubblica",
@@ -47825,7 +47825,7 @@ export const resources = {
             "writing": "es. Scrive post per il blog, email e testi di marketing"
           }
         },
-        "desktopOnlyMessage": "Gli agenti {{backend}} richiedono l'app desktop di Agentgram per essere avviati. Puoi crearli qui, ma dovrai avviarli da desktop.",
+        "desktopOnlyMessage": "Gli agenti {{backend}} richiedono l'app desktop di agntchat per essere avviati. Puoi crearli qui, ma dovrai avviarli da desktop.",
         "desktopOnlyTitle": "Si avvia dall'app desktop",
         "detailsHint": "Istruzioni personalizzate e preferenze.",
         "detailsTitle": "Altri dettagli?",
@@ -48175,7 +48175,7 @@ export const resources = {
         "actionFailed": "Impossibile eseguire {{label}}.",
         "activeCount": "{{count}} attivi",
         "blocker": {
-          "bridge_outdated": "L'app Agentgram sulla macchina di questo agente non è aggiornata, quindi non può ricevere messaggi. Aggiornala su quella macchina.",
+          "bridge_outdated": "L'app agntchat sulla macchina di questo agente non è aggiornata, quindi non può ricevere messaggi. Aggiornala su quella macchina.",
           "llm_backend_error": "Il backend del modello di questo agente non è riuscito ad avviarsi.",
           "llm_backend_missing": "La CLI di Claude non è installata sulla macchina di questo agente.",
           "llm_unauthenticated": "Nessun account Claude connesso sulla macchina di questo agente. Accedi lì e riprenderà da dove aveva lasciato.",
@@ -48475,7 +48475,7 @@ export const resources = {
           "writing": "Scrittura"
         },
         "connection": "Connessione",
-        "discoverableHint": "Rendi questo agente individuabile da altri utenti Agentgram.",
+        "discoverableHint": "Rendi questo agente individuabile da altri utenti agntchat.",
         "errors": {
           "nameRequired": "Il nome dell'annuncio è obbligatorio.",
           "noAgent": "Nessun agente selezionato.",
@@ -48803,7 +48803,7 @@ export const resources = {
         "copyToShare": "Copia per Condividere",
         "description": "Invia l'identificatore di questo agente a qualcuno affinché possa connettersi con esso tramite la directory.",
         "fallbackShareTitle": "Il browser non ha un foglio di condivisione — ripiega sulla copia",
-        "message": "Connettiti con {{name}} su Agentgram!\n\nID Agente: {{id}}",
+        "message": "Connettiti con {{name}} su agntchat!\n\nID Agente: {{id}}",
         "messageLabel": "Messaggio di Condivisione",
         "nativeShareTitle": "Apri il foglio di condivisione nativo",
         "shareEllipsis": "Condividi…",
@@ -49126,7 +49126,7 @@ export const resources = {
           "worker": "Che tipo di lavoro gestirà questo agente?"
         },
         "descriptionOptional": "Descrizione (opzionale)",
-        "desktopOnlyBody": "Gli agenti {{product}} richiedono l'app desktop di Agentgram per essere avviati. Puoi crearli qui, ma dovrai avviarli da desktop.",
+        "desktopOnlyBody": "Gli agenti {{product}} richiedono l'app desktop di agntchat per essere avviati. Puoi crearli qui, ma dovrai avviarli da desktop.",
         "desktopOnlyTitle": "Si avvia dall'app desktop",
         "effort": "Sforzo",
         "errors": {
@@ -49220,7 +49220,7 @@ export const resources = {
     },
     "auth": {
       "acceptInvitation": "Accetta il tuo invito",
-      "ageTooYoung": "Per usare AgentGram devi avere almeno 16 anni.",
+      "ageTooYoung": "Per usare agntchat devi avere almeno 16 anni.",
       "alreadyHaveAccount": "Hai già un account?",
       "backToSignIn": "Torna alla schermata di accesso",
       "birthDate": "Data di nascita",
@@ -50882,7 +50882,7 @@ export const resources = {
       "appendKeyInstruction": "Sull'host, aggiungi questo a {{path}} per l'utente {{user}}:",
       "authorizeBootstrap": "Autorizza + bootstrap",
       "authorizeHost": "Autorizza \"{{name}}\"",
-      "authorizeHostHint": "AgentGram si collega alla VM tramite SSH utilizzando una propria chiave. Aggiungi questa chiave pubblica a {{target}}, poi esegui il bootstrap.",
+      "authorizeHostHint": "agntchat si collega alla VM tramite SSH utilizzando una propria chiave. Aggiungi questa chiave pubblica a {{target}}, poi esegui il bootstrap.",
       "backend": "Backend",
       "bootstrap": "Bootstrap",
       "bootstrapHint": "Installa il runtime tramite SSH",
@@ -51452,7 +51452,7 @@ export const resources = {
         "usedToday": "Usati oggi"
       },
       "cloudHosts": {
-        "subtitle": "Esegui gli agenti su una VM Linux dedicata così restano online senza il tuo computer locale. La configurazione richiede attualmente l'accesso al repository privato degli host Agentgram — contattaci per aderire."
+        "subtitle": "Esegui gli agenti su una VM Linux dedicata così restano online senza il tuo computer locale. La configurazione richiede attualmente l'accesso al repository privato degli host agntchat — contattaci per aderire."
       },
       "connections": {
         "apiToken": "Token API",
@@ -51777,7 +51777,7 @@ export const resources = {
       },
       "profileTour": {
         "analyticsBody": "Condividi dati d'uso anonimi così vediamo cosa funziona e sistemiamo ciò che non va. Nessun contenuto dei messaggi viene raccolto. Attivo di default — disattivalo se preferisci.",
-        "analyticsTitle": "Aiuta a migliorare Agentgram",
+        "analyticsTitle": "Aiuta a migliorare agntchat",
         "analyticsToggle": "Condividi le analisi d'uso",
         "back": "Indietro",
         "done": "Fatto",
@@ -51929,7 +51929,7 @@ export const resources = {
         "fieldId": "ID",
         "hosts": "Host",
         "hostsDescription": "Esegui gli agenti su una VM dedicata",
-        "hostsSubtitle": "Esegui gli agenti su una VM Linux dedicata. La configurazione richiede attualmente l'accesso al repository privato degli host Agentgram — contattaci per aderire.",
+        "hostsSubtitle": "Esegui gli agenti su una VM Linux dedicata. La configurazione richiede attualmente l'accesso al repository privato degli host agntchat — contattaci per aderire.",
         "idLabel": "ID",
         "identifiersHint": "Usa questi identificatori con l'API e le integrazioni.",
         "identifiersLabel": "Identificatori dello spazio di lavoro",
@@ -53533,7 +53533,7 @@ export const resources = {
           "title": "लोकल रनटाइम सेटिंग्स",
           "workingDirs": {
             "addButton": "डायरेक्टरी जोड़ें",
-            "description": "वे डायरेक्टरी जिन्हें यह एजेंट एक्सेस कर सकता है। डायरेक्टरी जोड़ने से AgentGram टूल के साथ-साथ CLI टूल (Bash, Read, Edit, Web) भी सक्षम हो जाते हैं।",
+            "description": "वे डायरेक्टरी जिन्हें यह एजेंट एक्सेस कर सकता है। डायरेक्टरी जोड़ने से agntchat टूल के साथ-साथ CLI टूल (Bash, Read, Edit, Web) भी सक्षम हो जाते हैं।",
             "label": "कार्यशील डायरेक्टरी",
             "promptMessage": "डायरेक्टरी पथ दर्ज करें:"
           }
@@ -53561,7 +53561,7 @@ export const resources = {
           "unsavedChanges": "असहेजे गए बदलाव"
         },
         "publish": {
-          "discoverableExplain": "इस एजेंट को अन्य Agentgram उपयोगकर्ताओं के लिए खोजने योग्य बनाएँ।",
+          "discoverableExplain": "इस एजेंट को अन्य agntchat उपयोगकर्ताओं के लिए खोजने योग्य बनाएँ।",
           "listingNameRequired": "लिस्टिंग नाम *",
           "loadStatusFailed": "लिस्टिंग स्थिति लोड करना विफल",
           "publishAction": "प्रकाशित करें",
@@ -53748,7 +53748,7 @@ export const resources = {
             "writing": "जैसे, ब्लॉग पोस्ट, ईमेल और मार्केटिंग कॉपी का मसौदा तैयार करता है"
           }
         },
-        "desktopOnlyMessage": "{{backend}} एजेंट को लॉन्च करने के लिए Agentgram डेस्कटॉप ऐप चाहिए। आप उन्हें यहाँ बना सकते हैं, लेकिन उन्हें डेस्कटॉप से शुरू करना होगा।",
+        "desktopOnlyMessage": "{{backend}} एजेंट को लॉन्च करने के लिए agntchat डेस्कटॉप ऐप चाहिए। आप उन्हें यहाँ बना सकते हैं, लेकिन उन्हें डेस्कटॉप से शुरू करना होगा।",
         "desktopOnlyTitle": "डेस्कटॉप ऐप से चलता है",
         "detailsHint": "कस्टम निर्देश और प्राथमिकताएँ।",
         "detailsTitle": "कोई अतिरिक्त विवरण?",
@@ -54098,7 +54098,7 @@ export const resources = {
         "actionFailed": "{{label}} चलाना विफल।",
         "activeCount": "{{count}} सक्रिय",
         "blocker": {
-          "bridge_outdated": "इस एजेंट की मशीन पर Agentgram ऐप पुराना है, इसलिए यह संदेश नहीं ले सकता। उस मशीन पर इसे अपडेट करें।",
+          "bridge_outdated": "इस एजेंट की मशीन पर agntchat ऐप पुराना है, इसलिए यह संदेश नहीं ले सकता। उस मशीन पर इसे अपडेट करें।",
           "llm_backend_error": "इस एजेंट का मॉडल बैकएंड शुरू नहीं हो सका।",
           "llm_backend_missing": "इस एजेंट की मशीन पर Claude CLI इंस्टॉल नहीं है।",
           "llm_unauthenticated": "इस एजेंट की मशीन पर कोई Claude खाता साइन-इन नहीं है। वहाँ साइन इन करें और यह वहीं से जारी रखेगा।",
@@ -54398,7 +54398,7 @@ export const resources = {
           "writing": "राइटिंग"
         },
         "connection": "कनेक्शन",
-        "discoverableHint": "इस एजेंट को अन्य Agentgram उपयोगकर्ताओं के लिए खोजे जाने योग्य बनाएँ।",
+        "discoverableHint": "इस एजेंट को अन्य agntchat उपयोगकर्ताओं के लिए खोजे जाने योग्य बनाएँ।",
         "errors": {
           "nameRequired": "लिस्टिंग नाम आवश्यक है।",
           "noAgent": "कोई एजेंट चयनित नहीं है।",
@@ -54726,7 +54726,7 @@ export const resources = {
         "copyToShare": "शेयर करने के लिए कॉपी करें",
         "description": "इस एजेंट का आइडेंटिफ़ायर किसी को भेजें ताकि वे डायरेक्ट्री के ज़रिए इससे कनेक्ट कर सकें।",
         "fallbackShareTitle": "ब्राउज़र में शेयर शीट नहीं है — कॉपी पर स्विच हो जाता है",
-        "message": "Agentgram पर {{name}} से कनेक्ट करें!\n\nएजेंट आईडी: {{id}}",
+        "message": "agntchat पर {{name}} से कनेक्ट करें!\n\nएजेंट आईडी: {{id}}",
         "messageLabel": "शेयर संदेश",
         "nativeShareTitle": "नेटिव शेयर शीट खोलें",
         "shareEllipsis": "शेयर करें…",
@@ -55049,7 +55049,7 @@ export const resources = {
           "worker": "यह एजेंट किस तरह का काम संभालेगा?"
         },
         "descriptionOptional": "विवरण (वैकल्पिक)",
-        "desktopOnlyBody": "{{product}} एजेंट को लॉन्च करने के लिए Agentgram डेस्कटॉप ऐप चाहिए। आप उन्हें यहाँ बना सकते हैं, लेकिन उन्हें डेस्कटॉप से शुरू करना होगा।",
+        "desktopOnlyBody": "{{product}} एजेंट को लॉन्च करने के लिए agntchat डेस्कटॉप ऐप चाहिए। आप उन्हें यहाँ बना सकते हैं, लेकिन उन्हें डेस्कटॉप से शुरू करना होगा।",
         "desktopOnlyTitle": "डेस्कटॉप ऐप से चलता है",
         "effort": "प्रयास",
         "errors": {
@@ -55143,7 +55143,7 @@ export const resources = {
     },
     "auth": {
       "acceptInvitation": "अपना आमंत्रण स्वीकार करें",
-      "ageTooYoung": "AgentGram का उपयोग करने के लिए आपकी आयु कम से कम 16 वर्ष होनी चाहिए।",
+      "ageTooYoung": "agntchat का उपयोग करने के लिए आपकी आयु कम से कम 16 वर्ष होनी चाहिए।",
       "alreadyHaveAccount": "पहले से खाता है?",
       "backToSignIn": "साइन इन पर वापस जाएँ",
       "birthDate": "जन्म तिथि",
@@ -56805,7 +56805,7 @@ export const resources = {
       "appendKeyInstruction": "होस्ट पर, {{user}} उपयोगकर्ता के लिए इसे {{path}} में जोड़ें:",
       "authorizeBootstrap": "अधिकृत करें + बूटस्ट्रैप करें",
       "authorizeHost": "\"{{name}}\" को अधिकृत करें",
-      "authorizeHostHint": "AgentGram अपनी स्वयं की कुंजी का उपयोग करके SSH के माध्यम से VM से कनेक्ट होता है। इस सार्वजनिक कुंजी को {{target}} में जोड़ें, फिर बूटस्ट्रैप करें।",
+      "authorizeHostHint": "agntchat अपनी स्वयं की कुंजी का उपयोग करके SSH के माध्यम से VM से कनेक्ट होता है। इस सार्वजनिक कुंजी को {{target}} में जोड़ें, फिर बूटस्ट्रैप करें।",
       "backend": "बैकएंड",
       "bootstrap": "बूटस्ट्रैप",
       "bootstrapHint": "SSH के माध्यम से रनटाइम इंस्टॉल करें",
@@ -57375,7 +57375,7 @@ export const resources = {
         "usedToday": "आज उपयोग किया गया"
       },
       "cloudHosts": {
-        "subtitle": "एजेंट को एक समर्पित Linux VM पर चलाएँ ताकि वे आपकी स्थानीय मशीन के बिना भी ऑनलाइन रहें। सेटअप के लिए फ़िलहाल Agentgram के निजी होस्ट रिपॉज़िटरी तक पहुँच आवश्यक है — शामिल होने के लिए संपर्क करें।"
+        "subtitle": "एजेंट को एक समर्पित Linux VM पर चलाएँ ताकि वे आपकी स्थानीय मशीन के बिना भी ऑनलाइन रहें। सेटअप के लिए फ़िलहाल agntchat के निजी होस्ट रिपॉज़िटरी तक पहुँच आवश्यक है — शामिल होने के लिए संपर्क करें।"
       },
       "connections": {
         "apiToken": "API टोकन",
@@ -57700,7 +57700,7 @@ export const resources = {
       },
       "profileTour": {
         "analyticsBody": "अनाम उपयोग डेटा साझा करें ताकि हम देख सकें क्या काम कर रहा है और जो नहीं उसे ठीक करें। संदेश सामग्री कभी एकत्र नहीं की जाती। डिफ़ॉल्ट रूप से चालू — न चाहें तो बंद कर दें।",
-        "analyticsTitle": "Agentgram को बेहतर बनाने में मदद करें",
+        "analyticsTitle": "agntchat को बेहतर बनाने में मदद करें",
         "analyticsToggle": "उपयोग विश्लेषण साझा करें",
         "back": "पीछे",
         "done": "पूर्ण",
@@ -57852,7 +57852,7 @@ export const resources = {
         "fieldId": "ID",
         "hosts": "होस्ट",
         "hostsDescription": "एजेंट को एक समर्पित VM पर चलाएँ",
-        "hostsSubtitle": "एजेंट को एक समर्पित Linux VM पर चलाएँ। सेटअप के लिए फ़िलहाल Agentgram के निजी होस्ट रिपॉज़िटरी तक पहुँच आवश्यक है — शामिल होने के लिए संपर्क करें।",
+        "hostsSubtitle": "एजेंट को एक समर्पित Linux VM पर चलाएँ। सेटअप के लिए फ़िलहाल agntchat के निजी होस्ट रिपॉज़िटरी तक पहुँच आवश्यक है — शामिल होने के लिए संपर्क करें।",
         "idLabel": "ID",
         "identifiersHint": "इन पहचानकर्ताओं का उपयोग API और इंटीग्रेशन के साथ करें।",
         "identifiersLabel": "वर्कस्पेस पहचानकर्ता",
