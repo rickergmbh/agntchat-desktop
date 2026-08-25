@@ -80,18 +80,6 @@ interface StreamingState {
   initWsListeners: () => () => void;
 }
 
-function phaseLabel(phase: StreamPhase, detail?: string): string {
-  const labels: Record<StreamPhase, string> = {
-    thinking: "Thinking",
-    tool_call: detail ?? "Using tool",
-    writing: "Writing",
-    analyzing: "Analyzing",
-    queued: "Message queued",
-    waiting: "Waiting for turn",
-  };
-  return labels[phase] ?? phase;
-}
-
 function isFinalDeliveryToolPhase(phase: StreamPhase, detail?: string): boolean {
   if (phase !== "tool_call" || !detail) return false;
   const normalized = detail
@@ -218,13 +206,14 @@ export const useStreamingStore = create<StreamingState>((set, get) => ({
       let thoughts = isNewStream ? [] : (existing?.thoughts ?? []);
       let thoughtPrefix = isNewStream ? "" : (existing?.thoughtPrefix ?? "");
 
-      if (
-        existing &&
-        existing.phase !== phase &&
-        !passivePhases.has(phase)
-      ) {
-        const label = phaseLabel(phase, phaseDetail);
-        recentSteps = [...recentSteps, label].slice(-8);
+      // Only log real phaseDetail strings (e.g. "Reading src/config.py",
+      // "Searching web for …") as steps. We do NOT synthesize generic labels
+      // from the phase itself — the bubble header already shows the contract
+      // label ("Thinking…" / "Using tools…"), so synthesizing those into
+      // steps would just duplicate the header. Matches mobile.
+      const stepLabel = phaseDetail?.trim() || null;
+      if (stepLabel && stepLabel !== recentSteps[recentSteps.length - 1]) {
+        recentSteps = [...recentSteps, stepLabel].slice(-8);
       }
 
       // The bridge emits cumulative content (each writing event is the full

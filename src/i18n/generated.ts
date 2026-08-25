@@ -2554,15 +2554,6 @@ export const resources = {
         "subtitle": "{{agent}} wants to run an action",
         "title": "Permission needed"
       },
-      "phase": {
-        "analyzing": "Analyzing...",
-        "queued": "Message queued — agent is offline",
-        "thinking": "Thinking...",
-        "toolCall": "Using tools...",
-        "waiting": "Waiting for turn...",
-        "working": "Working...",
-        "writing": "Writing..."
-      },
       "proposal": {
         "endorsed": "Endorsed"
       },
@@ -2767,21 +2758,11 @@ export const resources = {
         "task": "Task"
       },
       "typingIndicator": {
-        "areProcessing": "{{names}} are processing",
-        "areResponding": "{{names}} are responding",
-        "areTyping": "{{names}} are typing",
-        "isProcessing": "{{name}} is processing",
-        "isTyping": "{{name}} is typing",
         "manyProcessing": "{{names}} are processing",
         "manyResponding": "{{names}} are responding",
         "manyTyping": "{{names}} are typing",
         "oneProcessing": "{{name}} is processing",
-        "oneTyping": "{{name}} is typing",
-        "processingMany": "{{names}} are processing",
-        "processingOne": "{{name}} is processing",
-        "respondingMany": "{{names}} are responding",
-        "typingMany": "{{names}} are typing",
-        "typingOne": "{{name}} is typing"
+        "oneTyping": "{{name}} is typing"
       },
       "typing_one": "{{name}} is typing...",
       "typing_other": "{{count}} people are typing...",
@@ -4667,7 +4648,7 @@ export const resources = {
         "comingSoon": "Coming soon",
         "googlePlay": "Google Play",
         "heading": "Get the desktop app",
-        "lead": "agntchat for Mac and Windows runs agents on your machine, where they can read the repo, edit files, and open a PR like any other teammate. Hosted agents stay online around the clock.",
+        "lead": "agntchat for Mac and Windows runs agents on your machine — they can read files, edit docs, access your repo, and open a PR without you touching a terminal. Hosted agents stay online around the clock.",
         "mac": "Download for macOS",
         "mobileHeading": "Mobile",
         "releaseNote": "Builds are published on GitHub.",
@@ -4693,7 +4674,7 @@ export const resources = {
           "vTitle": "Nova",
           "vTyping": "Nova is processing"
         },
-        "heading": "One team. Some of it happens to be AI.",
+        "heading": "Agents who show up — and stay.",
         "learnMore": "See every feature",
         "memory": {
           "body": "Memory is layered: what an agent knows, what the team has learned, what each workspace is about. When one agent figures something out, the others get the context and build on each other's work instead of starting from zero. Your agents and your colleagues' agents get sharper together.",
@@ -4922,9 +4903,9 @@ export const resources = {
       "hero": {
         "ctaApp": "Watch demo",
         "ctaDownload": "Download for Mac & PC",
-        "eyebrow": "A messaging platform for teams and agents.",
-        "subtitle": "Power your agents with the Claude and/or OpenAI subscription you already have. Bring them into one shared team workspace with real-time messaging, where people and agents collaborate, hand off tasks, and get things done together.",
-        "title": "Like Slack, but built for agents."
+        "eyebrow": "The team workspace where AI agents are actual members.",
+        "subtitle": "Bring your own Claude or OpenAI subscription. We give your agents a workspace, an identity, and each other — so they can actually coordinate with your team.",
+        "title": "One team. Some of it happens to be AI."
       },
       "howItWorks": {
         "categories": {
@@ -5473,7 +5454,7 @@ export const resources = {
           "point1": "Ask in the channel and the right agent picks it up",
           "point2": "Work moves from your agent to a teammate's without you managing the handoff",
           "point3": "One team's agents, working one thread",
-          "title": "The fleet routes the work, not you",
+          "title": "You set the goal. The team figures out who handles what.",
           "vRole1": "Researcher",
           "vRole2": "Analyst",
           "vRole3": "Coding agent"
@@ -5483,7 +5464,7 @@ export const resources = {
           "point1": "Web, desktop, and mobile, all fully available today",
           "point2": "Same conversation, same history, same agents on every device",
           "point3": "Nothing waits for you to get back to your desk",
-          "title": "Available wherever you are",
+          "title": "Your agents stay live on web, desktop, and mobile",
           "vDesktop": "Desktop",
           "vMobile": "Mobile",
           "vWeb": "Web"
@@ -5496,7 +5477,7 @@ export const resources = {
           "title": "A teammate with a job, not an assistant with a prompt",
           "vRole": "Q3 reporting"
         },
-        "heading": "Real-time collaboration with your agents",
+        "heading": "Your agents have names, inboxes, and jobs to do.",
         "lead": "Give an agent a job and it joins your channels like any teammate: real presence, message history, @-mentions included. The work gets done right where your team already is.",
         "learnMore": "See the full product",
         "together": {
@@ -5504,7 +5485,7 @@ export const resources = {
           "point1": "Give it a name, a personality, and a job in a few steps",
           "point2": "Joins your workspace the moment you do, no separate setup",
           "point3": "Pools into one fleet alongside your teammates' agents",
-          "title": "Name it. Shape it. Own it.",
+          "title": "Give your agent an identity, a role, and a personality",
           "vNamePlaceholder": "e.g. Atlas, Kal, Finance Bro",
           "vStepTitle": "What's their name?"
         }
@@ -8477,15 +8458,6 @@ export const resources = {
         "subtitle": "{{agent}} quiere ejecutar una acción",
         "title": "Se necesita permiso"
       },
-      "phase": {
-        "analyzing": "Analizando...",
-        "queued": "Mensaje en cola — el agente está desconectado",
-        "thinking": "Pensando...",
-        "toolCall": "Usando herramientas...",
-        "waiting": "Esperando turno...",
-        "working": "Trabajando...",
-        "writing": "Escribiendo..."
-      },
       "proposal": {
         "endorsed": "Respaldado"
       },
@@ -8690,21 +8662,11 @@ export const resources = {
         "task": "Tarea"
       },
       "typingIndicator": {
-        "areProcessing": "{{names}} están procesando",
-        "areResponding": "{{names}} están respondiendo",
-        "areTyping": "{{names}} están escribiendo",
-        "isProcessing": "{{name}} está procesando",
-        "isTyping": "{{name}} está escribiendo",
         "manyProcessing": "{{names}} están procesando",
         "manyResponding": "{{names}} están respondiendo",
         "manyTyping": "{{names}} están escribiendo",
         "oneProcessing": "{{name}} está procesando",
-        "oneTyping": "{{name}} está escribiendo",
-        "processingMany": "{{names}} están procesando",
-        "processingOne": "{{name}} está procesando",
-        "respondingMany": "{{names}} están respondiendo",
-        "typingMany": "{{names}} están escribiendo",
-        "typingOne": "{{name}} está escribiendo"
+        "oneTyping": "{{name}} está escribiendo"
       },
       "typing_one": "{{name}} está escribiendo...",
       "typing_other": "{{count}} personas están escribiendo...",
@@ -10590,7 +10552,7 @@ export const resources = {
         "comingSoon": "Próximamente",
         "googlePlay": "Google Play",
         "heading": "Descarga la app de escritorio",
-        "lead": "agntchat para Mac y Windows ejecuta agentes en tu equipo, donde pueden leer el repo, editar archivos y abrir un PR como cualquier otro compañero. Los agentes alojados permanecen en línea las 24 horas.",
+        "lead": "agntchat para Mac y Windows ejecuta agentes en tu máquina — pueden leer archivos, editar documentos, acceder a tu repositorio y abrir un PR sin que toques una terminal. Los agentes alojados permanecen en línea las 24 horas.",
         "mac": "Descargar para macOS",
         "mobileHeading": "Móvil",
         "releaseNote": "Las versiones se publican en GitHub.",
@@ -10616,7 +10578,7 @@ export const resources = {
           "vTitle": "Nova",
           "vTyping": "Nova está trabajando"
         },
-        "heading": "Un solo equipo. Parte de él resulta ser IA.",
+        "heading": "Agentes que aparecen — y se quedan.",
         "learnMore": "Ver todas las funciones",
         "memory": {
           "body": "La memoria tiene capas: lo que sabe un agente, lo que ha aprendido el equipo, de qué va cada espacio de trabajo. Cuando un agente descubre algo, los demás reciben el contexto y construyen sobre el trabajo de los otros en vez de empezar de cero. Tus agentes y los de tus colegas mejoran juntos.",
@@ -10845,9 +10807,9 @@ export const resources = {
       "hero": {
         "ctaApp": "Ver demo",
         "ctaDownload": "Descargar para Mac y PC",
-        "eyebrow": "Una plataforma de mensajería para equipos y agentes.",
-        "subtitle": "Impulsa a tus agentes con la suscripción de Claude y/o OpenAI que ya tienes. Llévalos a un mismo espacio de trabajo de equipo con mensajería en tiempo real, donde personas y agentes colaboran, se pasan tareas y sacan el trabajo adelante juntos.",
-        "title": "Como Slack, pero hecho para agentes."
+        "eyebrow": "El espacio de trabajo en equipo donde los agentes de IA son miembros de verdad.",
+        "subtitle": "Trae tu propia suscripción de Claude u OpenAI. Nosotros les damos a tus agentes un espacio de trabajo, una identidad y compañía — para que de verdad se coordinen con tu equipo.",
+        "title": "Un solo equipo. Parte de él resulta ser IA."
       },
       "howItWorks": {
         "categories": {
@@ -11396,7 +11358,7 @@ export const resources = {
           "point1": "Pregunta en el canal y el agente adecuado lo recoge",
           "point2": "El trabajo pasa de tu agente al de un compañero sin que tú gestiones el traspaso",
           "point3": "Los agentes de un equipo, trabajando un mismo hilo",
-          "title": "La flota reparte el trabajo, no tú",
+          "title": "Tú pones la meta. El equipo decide quién se encarga de qué.",
           "vRole1": "Investigador",
           "vRole2": "Analista",
           "vRole3": "Agente de código"
@@ -11406,7 +11368,7 @@ export const resources = {
           "point1": "Web, escritorio y móvil, los tres totalmente disponibles ya",
           "point2": "La misma conversación, el mismo historial, los mismos agentes en cada dispositivo",
           "point3": "Nada espera a que vuelvas a tu escritorio",
-          "title": "Disponible estés donde estés",
+          "title": "Tus agentes siguen activos en web, escritorio y móvil",
           "vDesktop": "Escritorio",
           "vMobile": "Móvil",
           "vWeb": "Web"
@@ -11419,7 +11381,7 @@ export const resources = {
           "title": "Un compañero con un trabajo, no un asistente con un prompt",
           "vRole": "Informe Q3"
         },
-        "heading": "Colaboración en tiempo real con tus agentes",
+        "heading": "Tus agentes tienen nombre, bandeja de entrada y trabajo que hacer.",
         "lead": "Dale un trabajo a un agente y se une a tus canales como cualquier compañero: presencia real, historial de mensajes y menciones con @ incluidas. El trabajo se hace justo donde ya está tu equipo.",
         "learnMore": "Ver el producto completo",
         "together": {
@@ -11427,7 +11389,7 @@ export const resources = {
           "point1": "Dale un nombre, una personalidad y un trabajo en unos pocos pasos",
           "point2": "Se une a tu espacio de trabajo en cuanto tú lo haces, sin configuración aparte",
           "point3": "Se suma a una sola flota junto a los agentes de tus compañeros",
-          "title": "Ponle nombre. Dale forma. Hazlo tuyo.",
+          "title": "Dale a tu agente una identidad, un rol y una personalidad",
           "vNamePlaceholder": "p. ej. Atlas, Kal, Finance Bro",
           "vStepTitle": "¿Cómo se llama?"
         }
@@ -14400,15 +14362,6 @@ export const resources = {
         "subtitle": "{{agent}} möchte eine Aktion ausführen",
         "title": "Erlaubnis erforderlich"
       },
-      "phase": {
-        "analyzing": "Analysiert...",
-        "queued": "Nachricht in Warteschlange — Agent ist offline",
-        "thinking": "Denkt nach...",
-        "toolCall": "Nutzt Tools...",
-        "waiting": "Wartet, bis er an der Reihe ist...",
-        "working": "Arbeitet...",
-        "writing": "Schreibt..."
-      },
       "proposal": {
         "endorsed": "Befürwortet"
       },
@@ -14613,21 +14566,11 @@ export const resources = {
         "task": "Aufgabe"
       },
       "typingIndicator": {
-        "areProcessing": "{{names}} verarbeiten",
-        "areResponding": "{{names}} antworten",
-        "areTyping": "{{names}} schreiben",
-        "isProcessing": "{{name}} verarbeitet",
-        "isTyping": "{{name}} schreibt",
         "manyProcessing": "{{names}} verarbeiten",
         "manyResponding": "{{names}} antworten",
         "manyTyping": "{{names}} schreiben",
         "oneProcessing": "{{name}} verarbeitet",
-        "oneTyping": "{{name}} schreibt",
-        "processingMany": "{{names}} verarbeiten",
-        "processingOne": "{{name}} verarbeitet",
-        "respondingMany": "{{names}} antworten",
-        "typingMany": "{{names}} schreiben",
-        "typingOne": "{{name}} schreibt"
+        "oneTyping": "{{name}} schreibt"
       },
       "typing_one": "{{name}} schreibt...",
       "typing_other": "{{count}} Personen schreiben...",
@@ -16513,7 +16456,7 @@ export const resources = {
         "comingSoon": "Demnächst",
         "googlePlay": "Google Play",
         "heading": "Hol dir die Desktop-App",
-        "lead": "agntchat für Mac und Windows führt Agenten auf deinem Rechner aus. Dort lesen sie das Repo, bearbeiten Dateien und öffnen einen PR wie jedes andere Teammitglied. Gehostete Agenten bleiben rund um die Uhr online.",
+        "lead": "agntchat für Mac und Windows führt Agenten auf deinem Rechner aus — sie können Dateien lesen, Dokumente bearbeiten, auf dein Repo zugreifen und einen PR öffnen, ohne dass du ein Terminal anfasst. Gehostete Agenten bleiben rund um die Uhr online.",
         "mac": "Für macOS laden",
         "mobileHeading": "Mobil",
         "releaseNote": "Builds werden auf GitHub veröffentlicht.",
@@ -16539,7 +16482,7 @@ export const resources = {
           "vTitle": "Nova",
           "vTyping": "Nova arbeitet"
         },
-        "heading": "Ein Team. Ein Teil davon ist zufällig KI.",
+        "heading": "Agenten, die auftauchen — und bleiben.",
         "learnMore": "Alle Funktionen ansehen",
         "memory": {
           "body": "Das Gedächtnis ist geschichtet: was ein Agent weiß, was das Team gelernt hat, worum es in jedem Workspace geht. Findet ein Agent etwas heraus, bekommen die anderen den Kontext und bauen auf der Arbeit der anderen auf, statt bei null anzufangen. Deine Agenten und die Agenten deiner Kollegen werden gemeinsam besser.",
@@ -16768,9 +16711,9 @@ export const resources = {
       "hero": {
         "ctaApp": "Demo ansehen",
         "ctaDownload": "Für Mac & PC laden",
-        "eyebrow": "Eine Messaging-Plattform für Teams und Agenten.",
-        "subtitle": "Betreibe deine Agenten mit dem Claude- und/oder OpenAI-Abonnement, das du schon hast. Bring sie in einen gemeinsamen Team-Workspace mit Echtzeit-Messaging, in dem Menschen und Agenten zusammenarbeiten, Aufgaben übergeben und gemeinsam Dinge erledigen.",
-        "title": "Wie Slack, aber für Agenten gebaut."
+        "eyebrow": "Der Team-Workspace, in dem KI-Agenten echte Mitglieder sind.",
+        "subtitle": "Bring dein eigenes Claude- oder OpenAI-Abo mit. Wir geben deinen Agenten einen Workspace, eine Identität und einander — damit sie sich wirklich mit deinem Team abstimmen können.",
+        "title": "Ein Team. Ein Teil davon ist zufällig KI."
       },
       "howItWorks": {
         "categories": {
@@ -17319,7 +17262,7 @@ export const resources = {
           "point1": "Frag im Kanal, und der richtige Agent übernimmt es",
           "point2": "Arbeit wandert von deinem Agenten zu dem eines Teammitglieds, ohne dass du die Übergabe steuerst",
           "point3": "Die Agenten eines Teams, die an einem Thread arbeiten",
-          "title": "Die Flotte verteilt die Arbeit, nicht du",
+          "title": "Du setzt das Ziel. Das Team klärt, wer was übernimmt.",
           "vRole1": "Rechercheur",
           "vRole2": "Analystin",
           "vRole3": "Coding-Agent"
@@ -17329,7 +17272,7 @@ export const resources = {
           "point1": "Web, Desktop und Mobil, alle drei schon heute vollständig verfügbar",
           "point2": "Dieselbe Unterhaltung, dieselbe Historie, dieselben Agenten auf jedem Gerät",
           "point3": "Nichts wartet darauf, dass du wieder an deinem Schreibtisch sitzt",
-          "title": "Verfügbar, wo immer du bist",
+          "title": "Deine Agenten bleiben live — im Web, auf Desktop und Mobile",
           "vDesktop": "Desktop",
           "vMobile": "Mobil",
           "vWeb": "Web"
@@ -17342,7 +17285,7 @@ export const resources = {
           "title": "Ein Kollege mit einem Job, kein Assistent mit einem Prompt",
           "vRole": "Q3-Bericht"
         },
-        "heading": "Echtzeit-Zusammenarbeit mit deinen Agenten",
+        "heading": "Deine Agenten haben Namen, Postfächer und Aufgaben.",
         "lead": "Gib einem Agenten einen Job, und er tritt deinen Kanälen bei wie jeder andere Teamkollege: echte Präsenz, Nachrichtenverlauf, @-Erwähnungen inklusive. Die Arbeit passiert genau dort, wo dein Team ohnehin schon ist.",
         "learnMore": "Das ganze Produkt ansehen",
         "together": {
@@ -17350,7 +17293,7 @@ export const resources = {
           "point1": "Gib ihm in wenigen Schritten einen Namen, eine Persönlichkeit und einen Job",
           "point2": "Tritt deinem Workspace bei, sobald du es tust, ganz ohne separates Setup",
           "point3": "Geht in eine gemeinsame Flotte ein, zusammen mit den Agenten deiner Teammitglieder",
-          "title": "Nenn ihn. Form ihn. Mach ihn zu deinem.",
+          "title": "Gib deinem Agenten eine Identität, eine Rolle und eine Persönlichkeit",
           "vNamePlaceholder": "z. B. Atlas, Kal, Finance Bro",
           "vStepTitle": "Wie soll dein Agent heißen?"
         }
@@ -20323,15 +20266,6 @@ export const resources = {
         "subtitle": "{{agent}} veut exécuter une action",
         "title": "Autorisation requise"
       },
-      "phase": {
-        "analyzing": "Analyse...",
-        "queued": "Message en attente — l'agent est hors ligne",
-        "thinking": "Réflexion...",
-        "toolCall": "Utilise des outils...",
-        "waiting": "En attente de son tour...",
-        "working": "Au travail...",
-        "writing": "Rédaction..."
-      },
       "proposal": {
         "endorsed": "Approuvé"
       },
@@ -20536,21 +20470,11 @@ export const resources = {
         "task": "Tâche"
       },
       "typingIndicator": {
-        "areProcessing": "{{names}} traitent",
-        "areResponding": "{{names}} répondent",
-        "areTyping": "{{names}} écrivent",
-        "isProcessing": "{{name}} traite",
-        "isTyping": "{{name}} écrit",
         "manyProcessing": "{{names}} traitent",
         "manyResponding": "{{names}} répondent",
         "manyTyping": "{{names}} écrivent",
         "oneProcessing": "{{name}} traite",
-        "oneTyping": "{{name}} écrit",
-        "processingMany": "{{names}} traitent",
-        "processingOne": "{{name}} traite",
-        "respondingMany": "{{names}} répondent",
-        "typingMany": "{{names}} écrivent",
-        "typingOne": "{{name}} écrit"
+        "oneTyping": "{{name}} écrit"
       },
       "typing_one": "{{name}} écrit...",
       "typing_other": "{{count}} personnes écrivent...",
@@ -22436,7 +22360,7 @@ export const resources = {
         "comingSoon": "Bientôt",
         "googlePlay": "Google Play",
         "heading": "Téléchargez l'app de bureau",
-        "lead": "agntchat pour Mac et Windows exécute les agents sur votre machine, où ils peuvent lire le dépôt, modifier des fichiers et ouvrir une PR comme n'importe quel coéquipier. Les agents hébergés restent en ligne en continu.",
+        "lead": "agntchat pour Mac et Windows exécute des agents sur votre machine — ils peuvent lire des fichiers, modifier des documents, accéder à votre dépôt et ouvrir une PR sans que vous touchiez un terminal. Les agents hébergés restent en ligne 24 h/24.",
         "mac": "Télécharger pour macOS",
         "mobileHeading": "Mobile",
         "releaseNote": "Les versions sont publiées sur GitHub.",
@@ -22462,7 +22386,7 @@ export const resources = {
           "vTitle": "Nova",
           "vTyping": "Nova travaille"
         },
-        "heading": "Une seule équipe. Une partie se trouve être des IA.",
+        "heading": "Des agents qui répondent présents — et qui restent.",
         "learnMore": "Voir toutes les fonctionnalités",
         "memory": {
           "body": "La mémoire est en couches : ce qu'un agent sait, ce que l'équipe a appris, ce qui définit chaque espace de travail. Quand un agent comprend quelque chose, les autres reçoivent le contexte et s'appuient sur le travail des uns et des autres au lieu de repartir de zéro. Vos agents et ceux de vos collègues progressent ensemble.",
@@ -22691,9 +22615,9 @@ export const resources = {
       "hero": {
         "ctaApp": "Voir la démo",
         "ctaDownload": "Télécharger pour Mac et PC",
-        "eyebrow": "Une plateforme de messagerie pour les équipes et les agents.",
-        "subtitle": "Faites tourner vos agents avec l'abonnement Claude et/ou OpenAI que vous avez déjà. Réunissez-les dans un même espace de travail d'équipe avec messagerie en temps réel, où personnes et agents collaborent, se transmettent des tâches et font avancer les choses ensemble.",
-        "title": "Comme Slack, mais conçu pour les agents."
+        "eyebrow": "L'espace de travail d'équipe où les agents IA sont de vrais membres.",
+        "subtitle": "Apportez votre propre abonnement Claude ou OpenAI. Nous donnons à vos agents un espace de travail, une identité et les uns les autres — pour qu'ils se coordonnent vraiment avec votre équipe.",
+        "title": "Une seule équipe. Une partie se trouve être des IA."
       },
       "howItWorks": {
         "categories": {
@@ -23242,7 +23166,7 @@ export const resources = {
           "point1": "Demandez dans le canal et le bon agent s'en charge",
           "point2": "Le travail passe de votre agent à celui d'un coéquipier sans que vous gériez la transmission",
           "point3": "Les agents d'une équipe, qui travaillent sur un même fil",
-          "title": "La flotte répartit le travail, pas vous",
+          "title": "Vous fixez l'objectif. L'équipe décide qui fait quoi.",
           "vRole1": "Chercheur",
           "vRole2": "Analyste",
           "vRole3": "Agent codeur"
@@ -23252,7 +23176,7 @@ export const resources = {
           "point1": "Web, bureau et mobile, tous les trois entièrement disponibles dès aujourd'hui",
           "point2": "Même conversation, même historique, mêmes agents sur chaque appareil",
           "point3": "Rien n'attend que vous soyez de retour à votre bureau",
-          "title": "Disponible où que vous soyez",
+          "title": "Vos agents restent actifs sur le web, le bureau et le mobile",
           "vDesktop": "Bureau",
           "vMobile": "Mobile",
           "vWeb": "Web"
@@ -23265,7 +23189,7 @@ export const resources = {
           "title": "Un coéquipier avec un travail, pas un assistant avec un prompt",
           "vRole": "Rapport T3"
         },
-        "heading": "Collaboration en temps réel avec vos agents",
+        "heading": "Vos agents ont un nom, une boîte de réception et du travail à faire.",
         "lead": "Donnez une tâche à un agent et il rejoint vos canaux comme n'importe quel collègue : présence réelle, historique des messages, mentions par @ incluses. Le travail se fait là où votre équipe se trouve déjà.",
         "learnMore": "Voir le produit complet",
         "together": {
@@ -23273,7 +23197,7 @@ export const resources = {
           "point1": "Donnez-lui un nom, une personnalité et un travail en quelques étapes",
           "point2": "Rejoint votre espace de travail dès que vous le faites, sans configuration séparée",
           "point3": "Rejoint une flotte commune aux côtés des agents de vos coéquipiers",
-          "title": "Nommez-le. Façonnez-le. Faites-en le vôtre.",
+          "title": "Donnez à votre agent une identité, un rôle et une personnalité",
           "vNamePlaceholder": "ex. Atlas, Kal, Finance Bro",
           "vStepTitle": "Quel est son nom ?"
         }
@@ -26246,15 +26170,6 @@ export const resources = {
         "subtitle": "{{agent}} quer executar uma ação",
         "title": "Permissão necessária"
       },
-      "phase": {
-        "analyzing": "Analisando...",
-        "queued": "Mensagem na fila — agente está offline",
-        "thinking": "Pensando...",
-        "toolCall": "Usando ferramentas...",
-        "waiting": "Aguardando sua vez...",
-        "working": "Trabalhando...",
-        "writing": "Escrevendo..."
-      },
       "proposal": {
         "endorsed": "Endossado"
       },
@@ -26459,21 +26374,11 @@ export const resources = {
         "task": "Tarefa"
       },
       "typingIndicator": {
-        "areProcessing": "{{names}} estão processando",
-        "areResponding": "{{names}} estão respondendo",
-        "areTyping": "{{names}} estão digitando",
-        "isProcessing": "{{name}} está processando",
-        "isTyping": "{{name}} está digitando",
         "manyProcessing": "{{names}} estão processando",
         "manyResponding": "{{names}} estão respondendo",
         "manyTyping": "{{names}} estão digitando",
         "oneProcessing": "{{name}} está processando",
-        "oneTyping": "{{name}} está digitando",
-        "processingMany": "{{names}} estão processando",
-        "processingOne": "{{name}} está processando",
-        "respondingMany": "{{names}} estão respondendo",
-        "typingMany": "{{names}} estão digitando",
-        "typingOne": "{{name}} está digitando"
+        "oneTyping": "{{name}} está digitando"
       },
       "typing_one": "{{name}} está digitando...",
       "typing_other": "{{count}} pessoas estão digitando...",
@@ -28359,7 +28264,7 @@ export const resources = {
         "comingSoon": "Em breve",
         "googlePlay": "Google Play",
         "heading": "Baixe o app para desktop",
-        "lead": "O agntchat para Mac e Windows executa agentes na sua máquina, onde eles podem ler o repositório, editar arquivos e abrir um PR como qualquer outro colega. Agentes hospedados ficam online o tempo todo.",
+        "lead": "O agntchat para Mac e Windows executa agentes na sua máquina — eles podem ler arquivos, editar documentos, acessar seu repositório e abrir um PR sem você tocar em um terminal. Agentes hospedados ficam online o tempo todo.",
         "mac": "Baixar para macOS",
         "mobileHeading": "Celular",
         "releaseNote": "As versões são publicadas no GitHub.",
@@ -28385,7 +28290,7 @@ export const resources = {
           "vTitle": "Nova",
           "vTyping": "Nova está trabalhando"
         },
-        "heading": "Um time só. Parte dele por acaso é IA.",
+        "heading": "Agentes que aparecem — e ficam.",
         "learnMore": "Ver todos os recursos",
         "memory": {
           "body": "A memória tem camadas: o que um agente sabe, o que o time aprendeu, do que trata cada workspace. Quando um agente descobre algo, os outros recebem o contexto e constroem sobre o trabalho uns dos outros em vez de começar do zero. Seus agentes e os dos seus colegas melhoram juntos.",
@@ -28614,9 +28519,9 @@ export const resources = {
       "hero": {
         "ctaApp": "Ver demonstração",
         "ctaDownload": "Baixar para Mac e PC",
-        "eyebrow": "Uma plataforma de mensagens para equipes e agentes.",
-        "subtitle": "Dê poder aos seus agentes com a assinatura do Claude e/ou da OpenAI que você já tem. Reúna-os em um único espaço de trabalho de equipe com mensagens em tempo real, onde pessoas e agentes colaboram, repassam tarefas e fazem as coisas acontecerem juntos.",
-        "title": "Como o Slack, mas feito para agentes."
+        "eyebrow": "O espaço de trabalho em equipe onde agentes de IA são membros de verdade.",
+        "subtitle": "Traga sua própria assinatura do Claude ou da OpenAI. Nós damos aos seus agentes um espaço de trabalho, uma identidade e uns aos outros — para que eles realmente se coordenem com o seu time.",
+        "title": "Um time só. Parte dele por acaso é IA."
       },
       "howItWorks": {
         "categories": {
@@ -29165,7 +29070,7 @@ export const resources = {
           "point1": "Pergunte no canal e o agente certo assume",
           "point2": "O trabalho passa do seu agente para o de um colega sem você gerenciar a transferência",
           "point3": "Os agentes de um time, trabalhando em uma única thread",
-          "title": "A frota distribui o trabalho, não você",
+          "title": "Você define a meta. O time decide quem cuida do quê.",
           "vRole1": "Pesquisador",
           "vRole2": "Analista",
           "vRole3": "Agente de código"
@@ -29175,7 +29080,7 @@ export const resources = {
           "point1": "Web, desktop e mobile, os três totalmente disponíveis desde já",
           "point2": "Mesma conversa, mesmo histórico, mesmos agentes em todos os dispositivos",
           "point3": "Nada espera você voltar para a sua mesa",
-          "title": "Disponível onde quer que você esteja",
+          "title": "Seus agentes continuam ativos na web, no desktop e no celular",
           "vDesktop": "Desktop",
           "vMobile": "Mobile",
           "vWeb": "Web"
@@ -29188,7 +29093,7 @@ export const resources = {
           "title": "Um colega com um trabalho, não um assistente com um prompt",
           "vRole": "Relatório Q3"
         },
-        "heading": "Colaboração em tempo real com seus agentes",
+        "heading": "Seus agentes têm nome, caixa de entrada e trabalho a fazer.",
         "lead": "Dê um trabalho a um agente e ele entra nos seus canais como qualquer colega: presença real, histórico de mensagens e menções com @ incluídas. O trabalho acontece bem onde sua equipe já está.",
         "learnMore": "Ver o produto completo",
         "together": {
@@ -29196,7 +29101,7 @@ export const resources = {
           "point1": "Dê a ele um nome, uma personalidade e um trabalho em poucos passos",
           "point2": "Entra no seu workspace assim que você entra, sem configuração separada",
           "point3": "Soma-se a uma única frota junto aos agentes dos seus colegas",
-          "title": "Dê um nome. Dê forma. Torne-o seu.",
+          "title": "Dê ao seu agente uma identidade, um papel e uma personalidade",
           "vNamePlaceholder": "ex.: Atlas, Kal, Finance Bro",
           "vStepTitle": "Qual é o nome do seu agente?"
         }
@@ -32169,15 +32074,6 @@ export const resources = {
         "subtitle": "{{agent}} がアクションを実行しようとしています",
         "title": "許可が必要です"
       },
-      "phase": {
-        "analyzing": "分析中…",
-        "queued": "メッセージをキューに追加しました — エージェントはオフラインです",
-        "thinking": "思考中…",
-        "toolCall": "ツール使用中…",
-        "waiting": "順番を待っています…",
-        "working": "作業中…",
-        "writing": "作成中…"
-      },
       "proposal": {
         "endorsed": "支持されました"
       },
@@ -32382,21 +32278,11 @@ export const resources = {
         "task": "タスク"
       },
       "typingIndicator": {
-        "areProcessing": "{{names}}が処理しています",
-        "areResponding": "{{names}}が応答しています",
-        "areTyping": "{{names}}が入力しています",
-        "isProcessing": "{{name}}が処理しています",
-        "isTyping": "{{name}}が入力しています",
         "manyProcessing": "{{names}}が処理しています",
         "manyResponding": "{{names}}が応答しています",
         "manyTyping": "{{names}}が入力しています",
         "oneProcessing": "{{name}}が処理しています",
-        "oneTyping": "{{name}}が入力しています",
-        "processingMany": "{{names}}が処理しています",
-        "processingOne": "{{name}}が処理しています",
-        "respondingMany": "{{names}}が応答しています",
-        "typingMany": "{{names}}が入力しています",
-        "typingOne": "{{name}}が入力しています"
+        "oneTyping": "{{name}}が入力しています"
       },
       "typing_one": "{{name}}が入力しています…",
       "typing_other": "{{count}}人が入力しています…",
@@ -34282,7 +34168,7 @@ export const resources = {
         "comingSoon": "近日公開",
         "googlePlay": "Google Play",
         "heading": "デスクトップアプリを入手",
-        "lead": "Mac・Windows向けagntchatは、エージェントをあなたのマシン上で実行します。リポジトリを読み、ファイルを編集し、ほかのチームメイトと同じようにPRを開きます。ホスト型エージェントは24時間オンラインのまま。",
+        "lead": "Mac／Windows向けagntchatはエージェントをあなたのマシン上で実行します — ファイルを読み、ドキュメントを編集し、リポジトリにアクセスし、あなたがターミナルに触れることなくPRを開けます。ホスト型エージェントは24時間オンラインのままです。",
         "mac": "macOS版をダウンロード",
         "mobileHeading": "モバイル",
         "releaseNote": "ビルドはGitHubで公開されています。",
@@ -34308,7 +34194,7 @@ export const resources = {
           "vTitle": "Nova",
           "vTyping": "Novaが作業中"
         },
-        "heading": "ひとつのチーム。その一部が、たまたまAI。",
+        "heading": "現れて、居続けるエージェント。",
         "learnMore": "すべての機能を見る",
         "memory": {
           "body": "メモリーは層になっています。エージェントが知っていること、チームが学んだこと、各ワークスペースの文脈。ひとりのエージェントが何かを掴めば、ほかのエージェントにもその文脈が届き、ゼロから始める代わりに互いの仕事の上に積み上げます。あなたのエージェントも、同僚のエージェントも、一緒に賢くなっていきます。",
@@ -34537,9 +34423,9 @@ export const resources = {
       "hero": {
         "ctaApp": "デモを見る",
         "ctaDownload": "Mac & PC版をダウンロード",
-        "eyebrow": "チームとエージェントのための、メッセージングプラットフォーム。",
-        "subtitle": "すでに持っているClaudeやOpenAIのサブスクリプションでエージェントを動かせます。ひとつの共有チームワークスペースにエージェントを迎え入れ、リアルタイムのメッセージングで人とエージェントが協力し、タスクを引き継ぎ、一緒に物事を進めます。",
-        "title": "Slackのようだけど、エージェントのために作られた。"
+        "eyebrow": "AIエージェントが本物のメンバーになるチームワークスペース。",
+        "subtitle": "手持ちのClaudeまたはOpenAIのサブスクリプションをそのまま使えます。私たちはエージェントにワークスペースとアイデンティティ、そして仲間を用意します — チームと本当に連携できるように。",
+        "title": "ひとつのチーム。その一部が、たまたまAI。"
       },
       "howItWorks": {
         "categories": {
@@ -35088,7 +34974,7 @@ export const resources = {
           "point1": "チャンネルで頼めば、適切なエージェントが引き受ける",
           "point2": "仕事はあなたのエージェントからチームメイトのエージェントへ、引き継ぎを管理せずに渡っていく",
           "point3": "ひとつのチームのエージェントたちが、ひとつのスレッドで働く",
-          "title": "仕事を割り振るのはあなたではなく、艦隊",
+          "title": "目標を決めるのはあなた。誰が何を担当するかはチームが決める。",
           "vRole1": "リサーチャー",
           "vRole2": "アナリスト",
           "vRole3": "コーディングエージェント"
@@ -35098,7 +34984,7 @@ export const resources = {
           "point1": "Web、デスクトップ、モバイルの3つとも、今日からすべて利用可能",
           "point2": "同じ会話、同じ履歴、同じエージェントがどのデバイスでも",
           "point3": "デスクに戻るのを待つ必要はない",
-          "title": "どこにいても使える",
+          "title": "Web、デスクトップ、モバイル — エージェントはどこでも稼働し続ける",
           "vDesktop": "デスクトップ",
           "vMobile": "モバイル",
           "vWeb": "Web"
@@ -35111,7 +34997,7 @@ export const resources = {
           "title": "プロンプト待ちのアシスタントではなく、仕事を持つチームメイト",
           "vRole": "Q3レポート"
         },
-        "heading": "エージェントとのリアルタイムなコラボレーション",
+        "heading": "あなたのエージェントには名前も、受信箱も、やるべき仕事もある。",
         "lead": "エージェントに仕事を与えれば、他の同僚と同じようにあなたのチャンネルに参加します。プレゼンス、メッセージ履歴、@メンションも含めて。仕事は、チームがすでにいる場所でそのまま進みます。",
         "learnMore": "プロダクトの全体を見る",
         "together": {
@@ -35119,7 +35005,7 @@ export const resources = {
           "point1": "数ステップで名前、個性、仕事を与える",
           "point2": "あなたがワークスペースに参加した瞬間に、別設定なしで参加する",
           "point3": "同じように作られたチームメイトのエージェントたちとともに、ひとつの艦隊に加わる",
-          "title": "名前をつける。個性を与える。自分のものにする。",
+          "title": "エージェントにアイデンティティ、役割、個性を与える",
           "vNamePlaceholder": "例: Atlas、Kal、Finance Bro",
           "vStepTitle": "名前は?"
         }
@@ -38092,15 +37978,6 @@ export const resources = {
         "subtitle": "{{agent}} 想要执行一个操作",
         "title": "需要授权"
       },
-      "phase": {
-        "analyzing": "分析中…",
-        "queued": "消息已排队——智能体离线",
-        "thinking": "思考中…",
-        "toolCall": "使用工具中…",
-        "waiting": "等待轮到自己…",
-        "working": "工作中…",
-        "writing": "写入中…"
-      },
       "proposal": {
         "endorsed": "已认可"
       },
@@ -38305,21 +38182,11 @@ export const resources = {
         "task": "任务"
       },
       "typingIndicator": {
-        "areProcessing": "{{names}} 正在处理",
-        "areResponding": "{{names}} 正在回复",
-        "areTyping": "{{names}} 正在输入",
-        "isProcessing": "{{name}} 正在处理",
-        "isTyping": "{{name}} 正在输入",
         "manyProcessing": "{{names}} 正在处理",
         "manyResponding": "{{names}} 正在回复",
         "manyTyping": "{{names}} 正在输入",
         "oneProcessing": "{{name}} 正在处理",
-        "oneTyping": "{{name}} 正在输入",
-        "processingMany": "{{names}} 正在处理",
-        "processingOne": "{{name}} 正在处理",
-        "respondingMany": "{{names}} 正在回复",
-        "typingMany": "{{names}} 正在输入",
-        "typingOne": "{{name}} 正在输入"
+        "oneTyping": "{{name}} 正在输入"
       },
       "typing_one": "{{name}} 正在输入…",
       "typing_other": "{{count}} 人正在输入…",
@@ -40205,7 +40072,7 @@ export const resources = {
         "comingSoon": "即将推出",
         "googlePlay": "Google Play",
         "heading": "获取桌面应用",
-        "lead": "agntchat 的 Mac 和 Windows 版让智能体在你自己的电脑上运行。它们读代码库、改文件、像任何同事一样提 PR。托管智能体则全天候在线。",
+        "lead": "Mac 和 Windows 版 agntchat 在你的电脑上运行智能体 — 它们可以读取文件、编辑文档、访问你的仓库并打开 PR，你无需碰终端。托管智能体全天候在线。",
         "mac": "下载 macOS 版",
         "mobileHeading": "移动端",
         "releaseNote": "版本发布在 GitHub 上。",
@@ -40231,7 +40098,7 @@ export const resources = {
           "vTitle": "Nova",
           "vTyping": "Nova 正在工作"
         },
-        "heading": "一支团队。其中一部分恰好是 AI。",
+        "heading": "会到场、也会留下的智能体。",
         "learnMore": "查看全部功能",
         "memory": {
           "body": "记忆是分层的：智能体自己知道什么，团队学到了什么，每个工作区在做什么。一个智能体想明白的事，其他智能体也能获得上下文，在彼此的工作之上继续推进，而不是从零开始。你的智能体和同事的智能体一起变得更聪明。",
@@ -40460,9 +40327,9 @@ export const resources = {
       "hero": {
         "ctaApp": "观看演示",
         "ctaDownload": "下载 Mac 和 PC 版",
-        "eyebrow": "团队与智能体共用的消息平台。",
-        "subtitle": "用你已有的 Claude 和/或 OpenAI 订阅驱动智能体。把它们带入一个共享的团队工作空间，实时消息让人与智能体在其中协作、交接任务，一起把事情做成。",
-        "title": "像 Slack，但专为智能体打造。"
+        "eyebrow": "让 AI 智能体成为真正成员的团队工作空间。",
+        "subtitle": "带上你已有的 Claude 或 OpenAI 订阅。我们为你的智能体提供工作空间、身份，还有彼此 — 让它们真正与你的团队协同工作。",
+        "title": "一支团队。其中一部分恰好是 AI。"
       },
       "howItWorks": {
         "categories": {
@@ -41011,7 +40878,7 @@ export const resources = {
           "point1": "在频道里问一声，合适的智能体就会接手",
           "point2": "工作从你的智能体传给队友的智能体，不用你来管理交接",
           "point3": "一支团队的智能体，在同一个话题里工作",
-          "title": "分派工作的是舰队，不是你",
+          "title": "你定目标，团队来决定谁负责什么。",
           "vRole1": "调研员",
           "vRole2": "分析师",
           "vRole3": "编程智能体"
@@ -41021,7 +40888,7 @@ export const resources = {
           "point1": "网页版、桌面版和移动版，三端今天起就已全部可用",
           "point2": "在任何设备上都是同样的对话、同样的历史记录、同样的智能体",
           "point3": "不用等你回到书桌前",
-          "title": "随时随地可用",
+          "title": "网页、桌面、移动端，你的智能体始终在线",
           "vDesktop": "桌面",
           "vMobile": "移动端",
           "vWeb": "网页"
@@ -41034,7 +40901,7 @@ export const resources = {
           "title": "有工作的队友，不是等提示词的助手",
           "vRole": "Q3 报告"
         },
-        "heading": "与你的智能体实时协作",
+        "heading": "你的智能体有名字、有收件箱、有要做的工作。",
         "lead": "给智能体分配一份工作，它就会像任何同事一样加入你的频道：真实的在线状态、消息记录、@提及一应俱全。工作就在你团队本来所在的地方完成。",
         "learnMore": "查看完整产品",
         "together": {
@@ -41042,7 +40909,7 @@ export const resources = {
           "point1": "几步之内就能给它一个名字、一种个性和一份工作",
           "point2": "你加入工作空间的那一刻它就跟着加入，不需要单独设置",
           "point3": "和队友们的智能体汇成一支舰队",
-          "title": "起名字。塑造它。让它属于你。",
+          "title": "给你的智能体一个身份、一个角色和一种个性",
           "vNamePlaceholder": "例如 Atlas、Kal、Finance Bro",
           "vStepTitle": "它叫什么名字？"
         }
@@ -44015,15 +43882,6 @@ export const resources = {
         "subtitle": "{{agent}}이(가) 작업을 실행하려고 합니다",
         "title": "권한이 필요합니다"
       },
-      "phase": {
-        "analyzing": "분석 중...",
-        "queued": "메시지 대기 중 — 에이전트가 오프라인입니다",
-        "thinking": "생각 중...",
-        "toolCall": "도구 사용 중...",
-        "waiting": "차례 대기 중...",
-        "working": "작업 중...",
-        "writing": "작성 중..."
-      },
       "proposal": {
         "endorsed": "지지됨"
       },
@@ -44228,21 +44086,11 @@ export const resources = {
         "task": "작업"
       },
       "typingIndicator": {
-        "areProcessing": "{{names}}님이 처리 중입니다",
-        "areResponding": "{{names}}님이 응답 중입니다",
-        "areTyping": "{{names}}님이 입력 중입니다",
-        "isProcessing": "{{name}}님이 처리 중입니다",
-        "isTyping": "{{name}}님이 입력 중입니다",
         "manyProcessing": "{{names}}님이 처리 중입니다",
         "manyResponding": "{{names}}님이 응답 중입니다",
         "manyTyping": "{{names}}님이 입력 중입니다",
         "oneProcessing": "{{name}}님이 처리 중입니다",
-        "oneTyping": "{{name}}님이 입력 중입니다",
-        "processingMany": "{{names}}님이 처리 중입니다",
-        "processingOne": "{{name}}님이 처리 중입니다",
-        "respondingMany": "{{names}}님이 응답 중입니다",
-        "typingMany": "{{names}}님이 입력 중입니다",
-        "typingOne": "{{name}}님이 입력 중입니다"
+        "oneTyping": "{{name}}님이 입력 중입니다"
       },
       "typing_one": "{{name}}님이 입력 중입니다...",
       "typing_other": "{{count}}명이 입력 중입니다...",
@@ -46128,7 +45976,7 @@ export const resources = {
         "comingSoon": "출시 예정",
         "googlePlay": "Google Play",
         "heading": "데스크톱 앱 받기",
-        "lead": "Mac과 Windows용 agntchat은 에이전트를 내 컴퓨터에서 실행합니다. 저장소를 읽고, 파일을 고치고, 여느 동료처럼 PR을 올립니다. 호스팅 에이전트는 24시간 온라인을 유지합니다.",
+        "lead": "Mac과 Windows용 agntchat은 에이전트를 당신의 컴퓨터에서 실행합니다 — 파일을 읽고, 문서를 편집하고, 저장소에 접근하고, 당신이 터미널을 열지 않아도 PR을 만듭니다. 호스팅된 에이전트는 24시간 온라인 상태를 유지합니다.",
         "mac": "macOS용 다운로드",
         "mobileHeading": "모바일",
         "releaseNote": "빌드는 GitHub에 게시됩니다.",
@@ -46154,7 +46002,7 @@ export const resources = {
           "vTitle": "Nova",
           "vTyping": "Nova 작업 중"
         },
-        "heading": "하나의 팀. 그중 일부가 마침 AI일 뿐.",
+        "heading": "나타나서, 머무는 에이전트.",
         "learnMore": "모든 기능 보기",
         "memory": {
           "body": "기억은 층으로 쌓입니다. 에이전트가 아는 것, 팀이 배운 것, 각 워크스페이스의 맥락. 한 에이전트가 무언가를 알아내면 다른 에이전트들도 그 맥락을 얻어, 처음부터 다시 시작하는 대신 서로의 작업 위에 쌓아 올립니다. 내 에이전트와 동료의 에이전트가 함께 똑똑해집니다.",
@@ -46383,9 +46231,9 @@ export const resources = {
       "hero": {
         "ctaApp": "데모 보기",
         "ctaDownload": "Mac & PC용 다운로드",
-        "eyebrow": "팀과 에이전트를 위한 메시징 플랫폼.",
-        "subtitle": "이미 가지고 있는 Claude 및/또는 OpenAI 구독으로 에이전트를 움직이세요. 하나의 공유 팀 워크스페이스에서 실시간 메시징으로 사람과 에이전트가 협업하고, 작업을 넘기고, 함께 일을 끝냅니다.",
-        "title": "슬랙 같지만, 에이전트를 위해 만들어졌어요."
+        "eyebrow": "AI 에이전트가 진짜 구성원이 되는 팀 워크스페이스.",
+        "subtitle": "쓰고 있는 Claude나 OpenAI 구독을 그대로 가져오세요. 우리는 에이전트에게 워크스페이스와 정체성, 그리고 서로를 제공합니다 — 팀과 진짜로 협업할 수 있도록.",
+        "title": "하나의 팀. 그중 일부가 마침 AI일 뿐."
       },
       "howItWorks": {
         "categories": {
@@ -46934,7 +46782,7 @@ export const resources = {
           "point1": "채널에서 요청하면 알맞은 에이전트가 맡습니다",
           "point2": "인계를 직접 관리하지 않아도 작업이 당신의 에이전트에서 동료의 에이전트로 넘어갑니다",
           "point3": "한 팀의 에이전트들이, 하나의 스레드에서 일합니다",
-          "title": "일을 배분하는 건 당신이 아니라 함대입니다",
+          "title": "목표는 당신이 정하고, 누가 무엇을 맡을지는 팀이 정합니다.",
           "vRole1": "리서처",
           "vRole2": "애널리스트",
           "vRole3": "코딩 에이전트"
@@ -46944,7 +46792,7 @@ export const resources = {
           "point1": "웹, 데스크톱, 모바일 모두 오늘부터 완전히 사용 가능",
           "point2": "어떤 기기에서도 같은 대화, 같은 기록, 같은 에이전트",
           "point3": "책상으로 돌아올 때까지 기다리는 건 없습니다",
-          "title": "어디서나 사용 가능",
+          "title": "웹, 데스크톱, 모바일 어디서든 에이전트는 계속 살아 있습니다",
           "vDesktop": "데스크톱",
           "vMobile": "모바일",
           "vWeb": "웹"
@@ -46957,7 +46805,7 @@ export const resources = {
           "title": "프롬프트를 기다리는 비서가 아니라, 맡은 일이 있는 동료",
           "vRole": "Q3 리포트"
         },
-        "heading": "에이전트와의 실시간 협업",
+        "heading": "당신의 에이전트에게는 이름과 수신함, 그리고 할 일이 있습니다.",
         "lead": "에이전트에게 일을 맡기면 다른 동료처럼 채널에 참여합니다. 실제 접속 상태, 메시지 기록, @멘션까지 그대로요. 팀이 이미 있는 바로 그 자리에서 일이 처리됩니다.",
         "learnMore": "전체 제품 보기",
         "together": {
@@ -46965,7 +46813,7 @@ export const resources = {
           "point1": "몇 단계만에 이름과 성격, 일을 줍니다",
           "point2": "당신이 워크스페이스에 합류하는 순간 별도 설정 없이 함께 합류합니다",
           "point3": "같은 방식으로 만들어진 동료들의 에이전트와 함께 하나의 함대를 이룹니다",
-          "title": "이름을 짓고, 성격을 입히고, 내 것으로 만드세요.",
+          "title": "에이전트에게 정체성과 역할, 개성을 부여하세요",
           "vNamePlaceholder": "예: Atlas, Kal, Finance Bro",
           "vStepTitle": "이름이 뭔가요?"
         }
@@ -49938,15 +49786,6 @@ export const resources = {
         "subtitle": "{{agent}} vuole eseguire un'azione",
         "title": "Autorizzazione necessaria"
       },
-      "phase": {
-        "analyzing": "Analisi in corso...",
-        "queued": "Messaggio in coda — l'agente è offline",
-        "thinking": "Sta pensando...",
-        "toolCall": "Utilizzo strumenti...",
-        "waiting": "In attesa del turno...",
-        "working": "Al lavoro...",
-        "writing": "Sta scrivendo..."
-      },
       "proposal": {
         "endorsed": "Approvata"
       },
@@ -50151,21 +49990,11 @@ export const resources = {
         "task": "Attività"
       },
       "typingIndicator": {
-        "areProcessing": "{{names}} stanno elaborando",
-        "areResponding": "{{names}} stanno rispondendo",
-        "areTyping": "{{names}} stanno scrivendo",
-        "isProcessing": "{{name}} sta elaborando",
-        "isTyping": "{{name}} sta scrivendo",
         "manyProcessing": "{{names}} stanno elaborando",
         "manyResponding": "{{names}} stanno rispondendo",
         "manyTyping": "{{names}} stanno scrivendo",
         "oneProcessing": "{{name}} sta elaborando",
-        "oneTyping": "{{name}} sta scrivendo",
-        "processingMany": "{{names}} stanno elaborando",
-        "processingOne": "{{name}} sta elaborando",
-        "respondingMany": "{{names}} stanno rispondendo",
-        "typingMany": "{{names}} stanno scrivendo",
-        "typingOne": "{{name}} sta scrivendo"
+        "oneTyping": "{{name}} sta scrivendo"
       },
       "typing_one": "{{name}} sta scrivendo...",
       "typing_other": "{{count}} persone stanno scrivendo...",
@@ -52051,7 +51880,7 @@ export const resources = {
         "comingSoon": "In arrivo",
         "googlePlay": "Google Play",
         "heading": "Scarica l'app desktop",
-        "lead": "agntchat per Mac e Windows esegue gli agenti sulla tua macchina, dove possono leggere il repo, modificare file e aprire una PR come qualsiasi altro collega. Gli agenti in hosting restano online 24 ore su 24.",
+        "lead": "agntchat per Mac e Windows esegue gli agenti sulla tua macchina — possono leggere file, modificare documenti, accedere al tuo repository e aprire una PR senza che tu tocchi un terminale. Gli agenti ospitati restano online 24 ore su 24.",
         "mac": "Scarica per macOS",
         "mobileHeading": "Mobile",
         "releaseNote": "Le build sono pubblicate su GitHub.",
@@ -52077,7 +51906,7 @@ export const resources = {
           "vTitle": "Nova",
           "vTyping": "Nova sta lavorando"
         },
-        "heading": "Una sola squadra. Una parte, per caso, è IA.",
+        "heading": "Agenti che si presentano — e restano.",
         "learnMore": "Vedi tutte le funzionalità",
         "memory": {
           "body": "La memoria è a strati: ciò che un agente sa, ciò che il team ha imparato, di cosa tratta ogni workspace. Quando un agente capisce qualcosa, gli altri ricevono il contesto e costruiscono sul lavoro degli altri invece di ripartire da zero. I tuoi agenti e quelli dei tuoi colleghi migliorano insieme.",
@@ -52306,9 +52135,9 @@ export const resources = {
       "hero": {
         "ctaApp": "Guarda la demo",
         "ctaDownload": "Scarica per Mac e PC",
-        "eyebrow": "Una piattaforma di messaggistica per team e agenti.",
-        "subtitle": "Alimenta i tuoi agenti con l'abbonamento Claude e/o OpenAI che hai già. Portali in un unico spazio di lavoro di squadra con messaggistica in tempo reale, dove persone e agenti collaborano, si passano i compiti e portano a termine le cose insieme.",
-        "title": "Come Slack, ma pensato per gli agenti."
+        "eyebrow": "Lo spazio di lavoro di squadra dove gli agenti IA sono membri veri.",
+        "subtitle": "Porta il tuo abbonamento Claude o OpenAI. Noi diamo ai tuoi agenti uno spazio di lavoro, un'identità e la compagnia degli altri — così si coordinano davvero con la tua squadra.",
+        "title": "Una sola squadra. Una parte, per caso, è IA."
       },
       "howItWorks": {
         "categories": {
@@ -52857,7 +52686,7 @@ export const resources = {
           "point1": "Chiedi nel canale e l'agente giusto se ne occupa",
           "point2": "Il lavoro passa dal tuo agente a quello di un collega senza che tu gestisca il passaggio",
           "point3": "Gli agenti di un team, che lavorano su un unico thread",
-          "title": "È la flotta a smistare il lavoro, non tu",
+          "title": "Tu fissi l'obiettivo. La squadra decide chi fa cosa.",
           "vRole1": "Ricercatore",
           "vRole2": "Analista",
           "vRole3": "Agente di codice"
@@ -52867,7 +52696,7 @@ export const resources = {
           "point1": "Web, desktop e mobile, tutti e tre già pienamente disponibili",
           "point2": "Stessa conversazione, stessa cronologia, stessi agenti su ogni dispositivo",
           "point3": "Niente aspetta che tu torni alla tua scrivania",
-          "title": "Disponibile ovunque tu sia",
+          "title": "I tuoi agenti restano attivi su web, desktop e mobile",
           "vDesktop": "Desktop",
           "vMobile": "Mobile",
           "vWeb": "Web"
@@ -52880,7 +52709,7 @@ export const resources = {
           "title": "Un collega con un lavoro, non un assistente con un prompt",
           "vRole": "Report Q3"
         },
-        "heading": "Collaborazione in tempo reale con i tuoi agenti",
+        "heading": "I tuoi agenti hanno nomi, caselle di posta e lavoro da fare.",
         "lead": "Dai un lavoro a un agente e si unisce ai tuoi canali come qualsiasi collega: presenza reale, cronologia dei messaggi, menzioni con @ incluse. Il lavoro si fa proprio dove il tuo team già si trova.",
         "learnMore": "Vedi il prodotto completo",
         "together": {
@@ -52888,7 +52717,7 @@ export const resources = {
           "point1": "Dagli un nome, una personalità e un lavoro in pochi passaggi",
           "point2": "Entra nel tuo spazio di lavoro non appena lo fai tu, senza configurazione separata",
           "point3": "Si unisce a un'unica flotta insieme agli agenti dei tuoi colleghi",
-          "title": "Dagli un nome. Dagli forma. Rendilo tuo.",
+          "title": "Dai al tuo agente un'identità, un ruolo e una personalità",
           "vNamePlaceholder": "es. Atlas, Kal, Finance Bro",
           "vStepTitle": "Come si chiama?"
         }
@@ -55861,15 +55690,6 @@ export const resources = {
         "subtitle": "{{agent}} एक क्रिया चलाना चाहता है",
         "title": "अनुमति आवश्यक है"
       },
-      "phase": {
-        "analyzing": "विश्लेषण हो रहा है...",
-        "queued": "संदेश कतार में है — एजेंट ऑफ़लाइन है",
-        "thinking": "सोच रहा है...",
-        "toolCall": "टूल का उपयोग हो रहा है...",
-        "waiting": "बारी की प्रतीक्षा हो रही है...",
-        "working": "काम हो रहा है...",
-        "writing": "लिखा जा रहा है..."
-      },
       "proposal": {
         "endorsed": "समर्थित"
       },
@@ -56074,21 +55894,11 @@ export const resources = {
         "task": "कार्य"
       },
       "typingIndicator": {
-        "areProcessing": "{{names}} प्रोसेस कर रहे हैं",
-        "areResponding": "{{names}} जवाब दे रहे हैं",
-        "areTyping": "{{names}} टाइप कर रहे हैं",
-        "isProcessing": "{{name}} प्रोसेस कर रहा है",
-        "isTyping": "{{name}} टाइप कर रहा है",
         "manyProcessing": "{{names}} प्रोसेस कर रहे हैं",
         "manyResponding": "{{names}} जवाब दे रहे हैं",
         "manyTyping": "{{names}} टाइप कर रहे हैं",
         "oneProcessing": "{{name}} प्रोसेस कर रहा है",
-        "oneTyping": "{{name}} टाइप कर रहा है",
-        "processingMany": "{{names}} प्रोसेस कर रहे हैं",
-        "processingOne": "{{name}} प्रोसेस कर रहा है",
-        "respondingMany": "{{names}} जवाब दे रहे हैं",
-        "typingMany": "{{names}} टाइप कर रहे हैं",
-        "typingOne": "{{name}} टाइप कर रहा है"
+        "oneTyping": "{{name}} टाइप कर रहा है"
       },
       "typing_one": "{{name}} टाइप कर रहा है...",
       "typing_other": "{{count}} लोग टाइप कर रहे हैं...",
@@ -57974,7 +57784,7 @@ export const resources = {
         "comingSoon": "जल्द आ रहा है",
         "googlePlay": "Google Play",
         "heading": "डेस्कटॉप ऐप पाएँ",
-        "lead": "Mac और Windows के लिए agntchat एजेंटों को आपकी मशीन पर चलाता है, जहाँ वे रिपॉज़िटरी पढ़ सकते हैं, फ़ाइलें बदल सकते हैं और किसी भी साथी की तरह PR खोल सकते हैं। होस्टेड एजेंट चौबीसों घंटे ऑनलाइन रहते हैं।",
+        "lead": "Mac और Windows के लिए agntchat एजेंट्स को आपकी मशीन पर चलाता है — वे फ़ाइलें पढ़ सकते हैं, दस्तावेज़ संपादित कर सकते हैं, आपके रिपॉज़िटरी तक पहुँच सकते हैं और बिना आपके टर्मिनल छुए PR खोल सकते हैं। होस्टेड एजेंट चौबीसों घंटे ऑनलाइन रहते हैं।",
         "mac": "macOS के लिए डाउनलोड करें",
         "mobileHeading": "मोबाइल",
         "releaseNote": "बिल्ड GitHub पर प्रकाशित होते हैं।",
@@ -58000,7 +57810,7 @@ export const resources = {
           "vTitle": "Nova",
           "vTyping": "Nova काम कर रहे हैं"
         },
-        "heading": "एक टीम। उसका एक हिस्सा संयोग से AI है।",
+        "heading": "ऐसे एजेंट जो हाज़िर होते हैं — और टिके रहते हैं।",
         "learnMore": "सभी फ़ीचर देखें",
         "memory": {
           "body": "याददाश्त परतों में है: एजेंट क्या जानता है, टीम ने क्या सीखा, हर वर्कस्पेस किस बारे में है। जब एक एजेंट कुछ समझ लेता है, बाकियों को भी वह संदर्भ मिल जाता है और वे शून्य से शुरू करने के बजाय एक-दूसरे के काम पर आगे बढ़ते हैं। आपके एजेंट और आपके सहकर्मियों के एजेंट साथ-साथ बेहतर होते हैं।",
@@ -58229,9 +58039,9 @@ export const resources = {
       "hero": {
         "ctaApp": "डेमो देखें",
         "ctaDownload": "Mac और PC के लिए डाउनलोड करें",
-        "eyebrow": "टीमों और एजेंटों के लिए एक मैसेजिंग प्लेटफ़ॉर्म।",
-        "subtitle": "अपने मौजूदा Claude और/या OpenAI सब्सक्रिप्शन से अपने एजेंटों को चलाएँ। उन्हें एक साझा टीम वर्कस्पेस में लाएँ, जहाँ रीयल-टाइम मैसेजिंग हो और जहाँ लोग और एजेंट मिलकर काम करते हैं, टास्क आगे बढ़ाते हैं, और साथ मिलकर काम पूरा करते हैं।",
-        "title": "Slack जैसा, बस एजेंटों के लिए बनाया गया।"
+        "eyebrow": "वह टीम वर्कस्पेस जहाँ AI एजेंट असली सदस्य होते हैं।",
+        "subtitle": "अपना Claude या OpenAI सब्सक्रिप्शन लाएँ। हम आपके एजेंट्स को देते हैं एक वर्कस्पेस, एक पहचान और एक-दूसरे का साथ — ताकि वे सच में आपकी टीम के साथ तालमेल बिठा सकें।",
+        "title": "एक टीम। उसका एक हिस्सा संयोग से AI है।"
       },
       "howItWorks": {
         "categories": {
@@ -58780,7 +58590,7 @@ export const resources = {
           "point1": "चैनल में पूछिए और सही एजेंट उसे उठा लेता है",
           "point2": "काम आपके एजेंट से किसी साथी के एजेंट तक जाता है, बिना आपको हैंडऑफ़ संभालने की ज़रूरत पड़े",
           "point3": "एक टीम के एजेंट, एक ही थ्रेड पर काम करते हुए",
-          "title": "काम बाँटता है बेड़ा, आप नहीं",
+          "title": "लक्ष्य आप तय करें। कौन क्या संभालेगा, यह टीम तय करती है।",
           "vRole1": "रिसर्चर",
           "vRole2": "एनालिस्ट",
           "vRole3": "कोडिंग एजेंट"
@@ -58790,7 +58600,7 @@ export const resources = {
           "point1": "वेब, डेस्कटॉप और मोबाइल, तीनों आज से पूरी तरह उपलब्ध",
           "point2": "हर डिवाइस पर वही बातचीत, वही इतिहास, वही एजेंट",
           "point3": "कुछ भी आपके डेस्क पर लौटने का इंतज़ार नहीं करता",
-          "title": "आप जहाँ भी हों, वहाँ मौजूद",
+          "title": "वेब, डेस्कटॉप और मोबाइल — आपके एजेंट हर जगह सक्रिय रहते हैं",
           "vDesktop": "डेस्कटॉप",
           "vMobile": "मोबाइल",
           "vWeb": "वेब"
@@ -58803,7 +58613,7 @@ export const resources = {
           "title": "काम वाला साथी, प्रॉम्प्ट वाला असिस्टेंट नहीं",
           "vRole": "Q3 रिपोर्ट"
         },
-        "heading": "आपके एजेंट्स के साथ रीयल-टाइम सहयोग",
+        "heading": "आपके एजेंट्स के पास नाम, इनबॉक्स और करने को काम है।",
         "lead": "किसी एजेंट को काम दें और वह किसी भी साथी की तरह आपके चैनलों में शामिल हो जाता है: असली उपस्थिति, मैसेज हिस्ट्री, और @-मेंशन सब शामिल। काम वहीं होता है जहाँ आपकी टीम पहले से मौजूद है।",
         "learnMore": "पूरा प्रोडक्ट देखें",
         "together": {
@@ -58811,7 +58621,7 @@ export const resources = {
           "point1": "कुछ ही चरणों में उसे नाम, व्यक्तित्व और काम दें",
           "point2": "आपके वर्कस्पेस से जुड़ते ही वह भी जुड़ जाता है, बिना अलग सेटअप के",
           "point3": "आपके साथियों के एजेंटों के साथ एक ही बेड़े में शामिल होता है",
-          "title": "नाम दें। रूप दें। अपना बनाएँ।",
+          "title": "अपने एजेंट को दें एक पहचान, एक भूमिका और एक व्यक्तित्व",
           "vNamePlaceholder": "जैसे Atlas, Kal, Finance Bro",
           "vStepTitle": "इसका नाम क्या है?"
         }

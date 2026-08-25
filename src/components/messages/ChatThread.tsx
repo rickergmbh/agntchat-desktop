@@ -977,7 +977,7 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
   }, [typingIds, typingNames, typingTypes, stream, myId, t]);
 
   const typingHasAgent = typingEntries.some((e) => e.type === "agent");
-  const typingLabel = buildTypingText(typingEntries);
+  const typingLabel = buildTypingText(typingEntries, t);
 
   // useCallback so the memoized MessageBubble rows don't all re-render on
   // every thread render just because the handler identity changed.

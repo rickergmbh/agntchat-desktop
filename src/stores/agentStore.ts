@@ -37,7 +37,6 @@ interface AgentConfig {
 }
 
 export type ActivityType =
-  | "idle"
   | "thinking"
   | "streaming"
   | "tool"
@@ -45,8 +44,12 @@ export type ActivityType =
   | "error";
 
 export interface AgentActivity {
-  label: string;
   type: ActivityType;
+  /** Dynamic detail parsed from the log line (tool name, task title, or raw
+   *  error text). The static label comes from the shared status contract at
+   *  render time (AgentRow maps `type` to a stream phase) so it localizes
+   *  and reads identically to every other activity indicator. */
+  detail?: string;
 }
 
 /**
@@ -137,9 +140,10 @@ function parseServerModelConfig(
   return out;
 }
 
-// Parse bridge log tail into a human-readable activity label. Shared across
-// UI components via the agent store — each running agent is polled once per
-// tick, not once per component.
+// Parse bridge log tail into an activity type (+ optional dynamic detail).
+// Shared across UI components via the agent store — each running agent is
+// polled once per tick, not once per component. Rendering (orb + localized
+// label) happens in AgentRow via the shared status contract.
 function parseActivity(lines: string[]): AgentActivity | null {
   if (lines.length === 0) return null;
 
@@ -149,7 +153,7 @@ function parseActivity(lines: string[]): AgentActivity | null {
 
     if (line.includes("error") || line.includes("traceback")) {
       const clean = raw.replace(/^\[.*?\]\s*/, "").slice(0, 60);
-      return { label: clean, type: "error" };
+      return { type: "error", detail: clean };
     }
     if (
       line.includes("executing tool") ||
@@ -157,33 +161,29 @@ function parseActivity(lines: string[]): AgentActivity | null {
       line.includes("tool_call")
     ) {
       const match = raw.match(/(?:executing tool|tool_use|tool_call)[:\s]*(\w+)/i);
-      return {
-        label: match ? `Tool: ${match[1]}` : "Executing tool...",
-        type: "tool",
-      };
+      return { type: "tool", detail: match?.[1] };
     }
     if (
       line.includes("text_delta") ||
       line.includes("content_block") ||
       line.includes("streaming")
     ) {
-      return { label: "Streaming response...", type: "streaming" };
+      return { type: "streaming" };
     }
     if (line.includes("sending message") || line.includes("send_message")) {
-      return { label: "Sending message...", type: "sending" };
+      return { type: "sending" };
     }
     if (line.includes("claimed task")) {
       const match = raw.match(/claimed task.*?[:\s]+(.*)/i);
-      return {
-        label: match ? `Task: ${match[1].slice(0, 40)}` : "Processing task...",
-        type: "thinking",
-      };
+      return { type: "thinking", detail: match?.[1]?.slice(0, 40) };
     }
-    if (line.includes("new message") || line.includes("processing message")) {
-      return { label: "Reading message...", type: "thinking" };
-    }
-    if (line.includes("thinking") || line.includes("processing")) {
-      return { label: "Thinking...", type: "thinking" };
+    if (
+      line.includes("new message") ||
+      line.includes("processing message") ||
+      line.includes("thinking") ||
+      line.includes("processing")
+    ) {
+      return { type: "thinking" };
     }
   }
 
@@ -734,7 +734,7 @@ export const useAgentStore = create<AgentState>((set, get) => ({
         const b = next[id];
         if (!a || !b) {
           if (a !== b) { identical = false; break; }
-        } else if (a.label !== b.label || a.type !== b.type) {
+        } else if (a.detail !== b.detail || a.type !== b.type) {
           identical = false;
           break;
         }

@@ -1,8 +1,13 @@
 import { Fragment, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useAgentStore, type ManagedAgent } from "../stores/agentStore";
+import { useAgentStore, type ManagedAgent, type ActivityType } from "../stores/agentStore";
 import { usePresenceStore } from "../stores/presenceStore";
 import { AgentActivityIndicator } from "./AgentActivityIndicator";
+import { PhaseOrb } from "./PhaseOrb";
+import {
+  STREAM_PHASE_LABEL_KEYS,
+  type StreamPhase,
+} from "../lib/status-contract.generated";
 import { useModelCatalog } from "../stores/modelCatalogStore";
 import { formatBackendLabel } from "../lib/models";
 import { cn } from "../lib/utils";
@@ -34,22 +39,14 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-const ACTIVITY_COLORS = {
-  idle: "",
-  thinking: "text-warning",
-  streaming: "text-success",
-  tool: "text-violet-500",
-  sending: "text-cyan-500",
-  error: "text-destructive",
-};
-
-const ACTIVITY_DOT_COLORS = {
-  idle: "",
-  thinking: "bg-warning",
-  streaming: "bg-success",
-  tool: "bg-violet-500",
-  sending: "bg-cyan-500",
-  error: "bg-destructive",
+// Local bridge-log activity rendered through the shared status contract so
+// it looks identical to server-driven activity (orb + localized label).
+// "error" is not an activity — it keeps its own destructive styling below.
+const LOCAL_ACTIVITY_PHASE: Record<Exclude<ActivityType, "error">, StreamPhase> = {
+  thinking: "thinking",
+  streaming: "writing",
+  tool: "tool_call",
+  sending: "writing",
 };
 
 // Small overlay dot on the avatar that mirrors the conversation list
@@ -420,16 +417,25 @@ export function AgentRow({
             )}
           </div>
 
-          {/* Second line: live activity (local bridge first, else global). */}
+          {/* Second line: live activity (local bridge first, else global).
+              Both paths render orb + contract label so the row reads the
+              same as every other activity indicator; errors keep their own
+              destructive dot. */}
           {isRunning && activity ? (
-            <div className={cn("mt-0.5 flex items-center gap-1.5 text-[11px] font-medium min-w-0", ACTIVITY_COLORS[activity.type])}>
-              <span className={cn(
-                "w-1.5 h-1.5 rounded-full shrink-0",
-                activity.type !== "idle" && "animate-pulse",
-                ACTIVITY_DOT_COLORS[activity.type]
-              )} />
-              <span className="truncate">{activity.label}</span>
-            </div>
+            activity.type === "error" ? (
+              <div className="mt-0.5 flex items-center gap-1.5 text-[11px] font-medium min-w-0 text-destructive">
+                <span className="w-1.5 h-1.5 rounded-full shrink-0 animate-pulse bg-destructive" />
+                <span className="truncate">{activity.detail}</span>
+              </div>
+            ) : (
+              <div className="mt-0.5 flex items-center gap-1.5 text-[11px] font-medium min-w-0 text-primary">
+                <PhaseOrb phase={LOCAL_ACTIVITY_PHASE[activity.type]} className="shrink-0" />
+                <span className="truncate">
+                  {t(STREAM_PHASE_LABEL_KEYS[LOCAL_ACTIVITY_PHASE[activity.type]])}
+                  {activity.detail ? ` · ${activity.detail}` : ""}
+                </span>
+              </div>
+            )
           ) : globalActivity ? (
             <div className="mt-0.5"><AgentActivityIndicator activity={globalActivity} /></div>
           ) : null}

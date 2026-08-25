@@ -21,6 +21,14 @@ import {
 } from "lucide-react";
 import { GroupAvatar } from "./GroupAvatar";
 import { AgentActivityIndicator } from "../AgentActivityIndicator";
+import { PhaseOrb } from "../PhaseOrb";
+import { useStreamingStore } from "../../stores/streamingStore";
+import {
+  PHASE_IS_ACTIVE,
+  STREAM_PHASE_FALLBACK_LABEL_KEY,
+  STREAM_PHASE_LABEL_KEYS,
+  type StreamPhase,
+} from "../../lib/status-contract.generated";
 import type { AgentActivity } from "../../lib/agent-activity";
 import type { Conversation } from "../../lib/api";
 
@@ -34,6 +42,8 @@ export function ConversationList() {
   const online = usePresenceStore((s) => s.online);
   const agentActivity = usePresenceStore((s) => s.agentActivity);
   const agentActivityConvs = usePresenceStore((s) => s.agentActivityConvs);
+  const typing = usePresenceStore((s) => s.typing);
+  const streams = useStreamingStore((s) => s.streams);
   const currentUserId = useAuthStore((s) => s.participant?.id);
   // The "start one" hint points at the pencil (new-conversation) button, which
   // is hidden until the user has an agent. Without an agent, guide them to
@@ -107,6 +117,8 @@ export function ConversationList() {
             unreadCount={unreadCounts[conv.id] ?? 0}
             presence={presence}
             hasAgent={hasAgent}
+            isTyping={(typing[conv.id]?.size ?? 0) > 0}
+            streamPhase={streams[conv.id]?.phase}
             activity={activity}
             currentUserId={currentUserId}
             onClick={() => setActive(conv.id)}
@@ -123,6 +135,8 @@ const ConversationItem = memo(function ConversationItem({
   unreadCount,
   presence,
   hasAgent,
+  isTyping,
+  streamPhase,
   activity,
   currentUserId,
   onClick,
@@ -132,6 +146,12 @@ const ConversationItem = memo(function ConversationItem({
   unreadCount: number;
   presence: "online_local" | "offline";
   hasAgent: boolean;
+  // Someone (human or agent) is typing in this conversation.
+  isTyping?: boolean;
+  // Live stream phase in THIS conversation — highest-fidelity busy signal,
+  // wins over the coarser global activity (matches mobile's row rule:
+  // typing > stream > activity).
+  streamPhase?: StreamPhase;
   activity?: AgentActivity;
   currentUserId?: string;
   onClick: () => void;
@@ -229,8 +249,27 @@ const ConversationItem = memo(function ConversationItem({
           <span className="shrink-0 text-[10px] text-muted-foreground">{timeStr}</span>
         </div>
 
+        {/* Row 2: typing > live stream > agent activity > type badge —
+            same priority rule as mobile's conversation rows. */}
         <div className="flex items-center gap-1.5 mt-0.5">
-          {activity ? (
+          {isTyping ? (
+            <span className="flex gap-1 py-0.5">
+              <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground [animation-delay:0ms]" />
+              <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground [animation-delay:150ms]" />
+              <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground [animation-delay:300ms]" />
+            </span>
+          ) : streamPhase ? (
+            <span className="flex min-w-0 items-center gap-1 text-[11px] font-medium text-primary">
+              <PhaseOrb
+                phase={streamPhase}
+                active={PHASE_IS_ACTIVE[streamPhase] ?? true}
+                className="shrink-0"
+              />
+              <span className="truncate">
+                {t(STREAM_PHASE_LABEL_KEYS[streamPhase] ?? STREAM_PHASE_FALLBACK_LABEL_KEY)}
+              </span>
+            </span>
+          ) : activity ? (
             <AgentActivityIndicator activity={activity} />
           ) : (isChannel || isGroup) && (
             <>
