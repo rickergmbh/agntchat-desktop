@@ -5428,12 +5428,10 @@ export const resources = {
         "descriptionDownload": "Download the agntchat desktop app for macOS and Windows. Run agents on your machine, where they can read the repo, edit files, and open a PR like any other teammate.",
         "descriptionFeatures": "Every feature in agntchat, explained and shown: channels, DMs, group chats, threads, response cards, tasking, routines, loops, reminders, agent customization, workspaces, and local vs. hosted agents.",
         "descriptionHowItWorks": "A technical look at how agntchat works under the hood: message delivery, task orchestration, the shared agent fleet, presence, memory, and more.",
-        "descriptionProduct": "Everything in the agntchat product: agent teammates with real identity and presence, one shared fleet that routes work across the team, and a workspace on web, desktop, and soon mobile.",
         "title": "agntchat: team chat for humans and AI agents",
         "titleDownload": "Download agntchat for desktop",
         "titleFeatures": "agntchat features: channels, tasks, routines, loops, and more",
-        "titleHowItWorks": "How agntchat works: architecture deep dive",
-        "titleProduct": "agntchat product: agent teammates in your team chat"
+        "titleHowItWorks": "How agntchat works: architecture deep dive"
       },
       "nav": {
         "download": "Download",
@@ -5479,7 +5477,6 @@ export const resources = {
         },
         "heading": "Your agents have names, inboxes, and jobs to do.",
         "lead": "Give an agent a job and it joins your channels like any teammate: real presence, message history, @-mentions included. The work gets done right where your team already is.",
-        "learnMore": "See the full product",
         "together": {
           "body": "Every agent starts in agntchat, not somewhere else: give it a name, a personality, and a job. When you join a workspace, it joins too, pooling into one fleet alongside your teammates' agents, each one built the same way.",
           "point1": "Give it a name, a personality, and a job in a few steps",
@@ -11332,12 +11329,10 @@ export const resources = {
         "descriptionDownload": "Descarga la app de escritorio de agntchat para macOS y Windows. Ejecuta agentes en tu equipo, donde pueden leer el repo, editar archivos y abrir un PR como cualquier otro compañero.",
         "descriptionFeatures": "Cada función de agntchat, explicada y mostrada: canales, mensajes directos, chats grupales, hilos, tarjetas de respuesta, encargos, rutinas, loops, recordatorios, personalización de agentes, espacios de trabajo y agentes locales frente a alojados.",
         "descriptionHowItWorks": "Una mirada técnica a cómo funciona agntchat por dentro: entrega de mensajes, orquestación de tareas, la flota de agentes compartida, presencia, memoria y más.",
-        "descriptionProduct": "Todo lo que incluye el producto de agntchat: agentes compañeros con identidad y presencia reales, una flota compartida que reparte el trabajo en el equipo, y un espacio de trabajo en web, escritorio y pronto móvil.",
         "title": "agntchat: chat de equipo para humanos y agentes de IA",
         "titleDownload": "Descargar agntchat para escritorio",
         "titleFeatures": "Funciones de agntchat: canales, tareas, rutinas, loops y más",
-        "titleHowItWorks": "Cómo funciona agntchat: análisis técnico",
-        "titleProduct": "Producto de agntchat: agentes compañeros en tu chat de equipo"
+        "titleHowItWorks": "Cómo funciona agntchat: análisis técnico"
       },
       "nav": {
         "download": "Descargar",
@@ -11383,7 +11378,6 @@ export const resources = {
         },
         "heading": "Tus agentes tienen nombre, bandeja de entrada y trabajo que hacer.",
         "lead": "Dale un trabajo a un agente y se une a tus canales como cualquier compañero: presencia real, historial de mensajes y menciones con @ incluidas. El trabajo se hace justo donde ya está tu equipo.",
-        "learnMore": "Ver el producto completo",
         "together": {
           "body": "Cada agente nace en agntchat, no en otro sitio: dale un nombre, una personalidad y un trabajo. Cuando te unes a un espacio de trabajo, él se une también, sumándose a una sola flota junto a los agentes de tus compañeros, todos construidos de la misma manera.",
           "point1": "Dale un nombre, una personalidad y un trabajo en unos pocos pasos",
@@ -17236,12 +17230,10 @@ export const resources = {
         "descriptionDownload": "Lade die agntchat-Desktop-App für macOS und Windows. Führe Agenten auf deinem Rechner aus, wo sie das Repo lesen, Dateien bearbeiten und einen PR öffnen wie jedes andere Teammitglied.",
         "descriptionFeatures": "Jede Funktion in agntchat, erklärt und gezeigt: Kanäle, Direktnachrichten, Gruppenchats, Threads, Antwortkarten, Aufgaben, Routinen, Loops, Erinnerungen, Agenten-Anpassung, Workspaces und lokale vs. gehostete Agenten.",
         "descriptionHowItWorks": "Ein technischer Blick darauf, wie agntchat unter der Haube funktioniert: Nachrichtenzustellung, Auftragsvergabe, die gemeinsame Agenten-Flotte, Präsenz, Gedächtnis und mehr.",
-        "descriptionProduct": "Alles im agntchat-Produkt: Agenten als Teammitglieder mit echter Identität und Präsenz, eine gemeinsame Flotte, die Arbeit im Team verteilt, und ein Workspace für Web, Desktop und bald mobil.",
         "title": "agntchat: Team-Chat für Menschen und KI-Agenten",
         "titleDownload": "agntchat für Desktop laden",
         "titleFeatures": "agntchat Funktionen: Kanäle, Aufgaben, Routinen, Loops und mehr",
-        "titleHowItWorks": "Wie agntchat funktioniert: technischer Deep Dive",
-        "titleProduct": "agntchat Produkt: Agenten als Teammitglieder in deinem Team-Chat"
+        "titleHowItWorks": "Wie agntchat funktioniert: technischer Deep Dive"
       },
       "nav": {
         "download": "Download",
@@ -17287,7 +17279,6 @@ export const resources = {
         },
         "heading": "Deine Agenten haben Namen, Postfächer und Aufgaben.",
         "lead": "Gib einem Agenten einen Job, und er tritt deinen Kanälen bei wie jeder andere Teamkollege: echte Präsenz, Nachrichtenverlauf, @-Erwähnungen inklusive. Die Arbeit passiert genau dort, wo dein Team ohnehin schon ist.",
-        "learnMore": "Das ganze Produkt ansehen",
         "together": {
           "body": "Jeder Agent startet in agntchat, nicht irgendwo anders: gib ihm einen Namen, eine Persönlichkeit und einen Job. Trittst du einem Workspace bei, kommt er mit und geht in eine gemeinsame Flotte ein, zusammen mit den Agenten deiner Teammitglieder, die alle auf die gleiche Weise gebaut wurden.",
           "point1": "Gib ihm in wenigen Schritten einen Namen, eine Persönlichkeit und einen Job",
@@ -23140,12 +23131,10 @@ export const resources = {
         "descriptionDownload": "Téléchargez l'app de bureau agntchat pour macOS et Windows. Exécutez les agents sur votre machine, où ils peuvent lire le dépôt, modifier des fichiers et ouvrir une PR comme n'importe quel coéquipier.",
         "descriptionFeatures": "Toutes les fonctionnalités d'agntchat, expliquées et illustrées : canaux, DM, discussions de groupe, fils, cartes de réponse, tâches, routines, loops, rappels, personnalisation des agents, espaces de travail, et agents locaux ou hébergés.",
         "descriptionHowItWorks": "Un regard technique sur le fonctionnement d'agntchat en coulisses : livraison des messages, orchestration des tâches, flotte d'agents partagée, présence, mémoire et plus encore.",
-        "descriptionProduct": "Tout ce que propose le produit agntchat : des agents coéquipiers avec une vraie identité et présence, une flotte commune qui répartit le travail dans l'équipe, et un espace de travail sur le web, le bureau et bientôt le mobile.",
         "title": "agntchat : messagerie d'équipe pour humains et agents IA",
         "titleDownload": "Télécharger agntchat pour le bureau",
         "titleFeatures": "Fonctionnalités agntchat : canaux, tâches, routines, loops et plus",
-        "titleHowItWorks": "Comment fonctionne agntchat : analyse technique",
-        "titleProduct": "Produit agntchat : des agents coéquipiers dans votre messagerie d'équipe"
+        "titleHowItWorks": "Comment fonctionne agntchat : analyse technique"
       },
       "nav": {
         "download": "Télécharger",
@@ -23191,7 +23180,6 @@ export const resources = {
         },
         "heading": "Vos agents ont un nom, une boîte de réception et du travail à faire.",
         "lead": "Donnez une tâche à un agent et il rejoint vos canaux comme n'importe quel collègue : présence réelle, historique des messages, mentions par @ incluses. Le travail se fait là où votre équipe se trouve déjà.",
-        "learnMore": "Voir le produit complet",
         "together": {
           "body": "Chaque agent naît dans agntchat, pas ailleurs : donnez-lui un nom, une personnalité et une mission. Quand vous rejoignez un espace de travail, il vous suit et rejoint une flotte commune aux côtés des agents de vos coéquipiers, tous créés de la même façon.",
           "point1": "Donnez-lui un nom, une personnalité et un travail en quelques étapes",
@@ -29044,12 +29032,10 @@ export const resources = {
         "descriptionDownload": "Baixe o app desktop do agntchat para macOS e Windows. Execute agentes na sua máquina, onde eles podem ler o repositório, editar arquivos e abrir um PR como qualquer outro colega.",
         "descriptionFeatures": "Todos os recursos do agntchat, explicados e mostrados: canais, DMs, grupos, threads, cartões de resposta, tarefas, rotinas, loops, lembretes, personalização de agentes, workspaces e agentes locais ou hospedados.",
         "descriptionHowItWorks": "Um olhar técnico sobre como o agntchat funciona por baixo dos panos: entrega de mensagens, orquestração de tarefas, a frota de agentes compartilhada, presença, memória e mais.",
-        "descriptionProduct": "Tudo que o produto agntchat oferece: agentes colegas com identidade e presença reais, uma frota compartilhada que distribui o trabalho no time, e um workspace na web, no desktop e em breve no mobile.",
         "title": "agntchat: chat de equipe para humanos e agentes de IA",
         "titleDownload": "Baixar o agntchat para desktop",
         "titleFeatures": "Recursos do agntchat: canais, tarefas, rotinas, loops e muito mais",
-        "titleHowItWorks": "Como o agntchat funciona: análise técnica",
-        "titleProduct": "Produto agntchat: agentes colegas no seu chat de equipe"
+        "titleHowItWorks": "Como o agntchat funciona: análise técnica"
       },
       "nav": {
         "download": "Baixar",
@@ -29095,7 +29081,6 @@ export const resources = {
         },
         "heading": "Seus agentes têm nome, caixa de entrada e trabalho a fazer.",
         "lead": "Dê um trabalho a um agente e ele entra nos seus canais como qualquer colega: presença real, histórico de mensagens e menções com @ incluídas. O trabalho acontece bem onde sua equipe já está.",
-        "learnMore": "Ver o produto completo",
         "together": {
           "body": "Todo agente nasce no agntchat, não em outro lugar: dê a ele um nome, uma personalidade e um trabalho. Quando você entra em um workspace, ele entra também, somando-se a uma única frota junto aos agentes dos seus colegas, todos construídos da mesma forma.",
           "point1": "Dê a ele um nome, uma personalidade e um trabalho em poucos passos",
@@ -34948,12 +34933,10 @@ export const resources = {
         "descriptionDownload": "macOS・Windows向けagntchatデスクトップアプリをダウンロード。エージェントをあなたのマシンで実行。リポジトリを読み、ファイルを編集し、ほかのチームメイトと同じようにPRを開きます。",
         "descriptionFeatures": "agntchatのすべての機能を解説：チャンネル、DM、グループチャット、スレッド、レスポンスカード、タスク管理、ルーティン、Loop、リマインダー、エージェントのカスタマイズ、ワークスペース、ローカルとホストのエージェント。",
         "descriptionHowItWorks": "agntchatの裏側にある技術的な仕組みを解説します。メッセージ配信、タスクの割り振り、共有エージェント群、プレゼンス、メモリなど。",
-        "descriptionProduct": "agntchatのプロダクトに含まれるすべて。本物のアイデンティティとプレゼンスを持つ仲間エージェント、チーム内で仕事を割り振る共有艦隊、Web・デスクトップ、そして近日モバイルでも使えるワークスペース。",
         "title": "agntchat: 人とAIエージェントのためのチームチャット",
         "titleDownload": "agntchatデスクトップ版をダウンロード",
         "titleFeatures": "agntchatの機能：チャンネル、タスク、ルーティン、Loopほか",
-        "titleHowItWorks": "agntchatの仕組み: 技術解説",
-        "titleProduct": "agntchatプロダクト: チームチャットの中の仲間エージェント"
+        "titleHowItWorks": "agntchatの仕組み: 技術解説"
       },
       "nav": {
         "download": "ダウンロード",
@@ -34999,7 +34982,6 @@ export const resources = {
         },
         "heading": "あなたのエージェントには名前も、受信箱も、やるべき仕事もある。",
         "lead": "エージェントに仕事を与えれば、他の同僚と同じようにあなたのチャンネルに参加します。プレゼンス、メッセージ履歴、@メンションも含めて。仕事は、チームがすでにいる場所でそのまま進みます。",
-        "learnMore": "プロダクトの全体を見る",
         "together": {
           "body": "すべてのエージェントは、agntchatの中で生まれます。他のどこでもありません。名前と、個性と、仕事を与えてください。あなたがワークスペースに参加すると、そのエージェントも一緒に参加し、同じように作られたチームメイトのエージェントたちとともに、ひとつの艦隊に加わります。",
           "point1": "数ステップで名前、個性、仕事を与える",
@@ -40852,12 +40834,10 @@ export const resources = {
         "descriptionDownload": "下载 agntchat 桌面应用（macOS 和 Windows）。让智能体在你的电脑上运行：读代码库、改文件、像任何同事一样提 PR。",
         "descriptionFeatures": "agntchat 的每一项功能，都有讲解和展示：频道、私信、群聊、话题串、响应卡片、任务、例行任务、Loop、提醒、智能体自定义、工作区，以及本地与托管智能体。",
         "descriptionHowItWorks": "从技术角度看 agntchat 幕后是如何运作的：消息投递、任务编排、共享智能体舰队、在线状态、记忆等等。",
-        "descriptionProduct": "agntchat 产品的全部内容：拥有真实身份和在线状态的智能体队友，一支在团队内分派工作的共享舰队，以及在网页、桌面、即将上线移动端都能用的工作空间。",
         "title": "agntchat：为人类与 AI 智能体打造的团队聊天",
         "titleDownload": "下载 agntchat 桌面版",
         "titleFeatures": "agntchat 功能：频道、任务、例行任务、Loop 等",
-        "titleHowItWorks": "agntchat 的工作原理：技术深度解析",
-        "titleProduct": "agntchat 产品：团队聊天里的智能体队友"
+        "titleHowItWorks": "agntchat 的工作原理：技术深度解析"
       },
       "nav": {
         "download": "下载",
@@ -40903,7 +40883,6 @@ export const resources = {
         },
         "heading": "你的智能体有名字、有收件箱、有要做的工作。",
         "lead": "给智能体分配一份工作，它就会像任何同事一样加入你的频道：真实的在线状态、消息记录、@提及一应俱全。工作就在你团队本来所在的地方完成。",
-        "learnMore": "查看完整产品",
         "together": {
           "body": "每个智能体都诞生在 agntchat 里，而不是别处：给它一个名字、一种个性和一份工作。当你加入一个工作空间时，它也会加入，和队友们的智能体汇成一支舰队，每一个都以同样的方式打造而成。",
           "point1": "几步之内就能给它一个名字、一种个性和一份工作",
@@ -46756,12 +46735,10 @@ export const resources = {
         "descriptionDownload": "macOS와 Windows용 agntchat 데스크톱 앱을 다운로드하세요. 에이전트를 내 컴퓨터에서 실행합니다. 저장소를 읽고, 파일을 고치고, 여느 동료처럼 PR을 올립니다.",
         "descriptionFeatures": "채널, DM, 그룹 채팅, 스레드, 응답 카드, 작업 배정, 루틴, Loop, 리마인더, 에이전트 커스터마이징, 워크스페이스, 로컬 대 호스티드 에이전트까지, agntchat의 모든 기능을 설명과 함께 보여드립니다.",
         "descriptionHowItWorks": "agntchat이 내부적으로 어떻게 작동하는지 기술적으로 살펴봅니다: 메시지 전달, 작업 오케스트레이션, 공유 에이전트 함대, 접속 상태, 메모리 등.",
-        "descriptionProduct": "agntchat 제품에 담긴 모든 것: 진짜 정체성과 접속 상태를 가진 동료 에이전트, 팀 안에서 일을 배분하는 하나의 공유 함대, 그리고 웹과 데스크톱, 곧 모바일에서도 쓸 수 있는 워크스페이스.",
         "title": "agntchat: 사람과 AI 에이전트를 위한 팀 채팅",
         "titleDownload": "agntchat 데스크톱 다운로드",
         "titleFeatures": "agntchat 기능: 채널, 작업, 루틴, Loop 등",
-        "titleHowItWorks": "agntchat 작동 방식: 기술 심층 분석",
-        "titleProduct": "agntchat 제품: 팀 채팅 속 동료 에이전트"
+        "titleHowItWorks": "agntchat 작동 방식: 기술 심층 분석"
       },
       "nav": {
         "download": "다운로드",
@@ -46807,7 +46784,6 @@ export const resources = {
         },
         "heading": "당신의 에이전트에게는 이름과 수신함, 그리고 할 일이 있습니다.",
         "lead": "에이전트에게 일을 맡기면 다른 동료처럼 채널에 참여합니다. 실제 접속 상태, 메시지 기록, @멘션까지 그대로요. 팀이 이미 있는 바로 그 자리에서 일이 처리됩니다.",
-        "learnMore": "전체 제품 보기",
         "together": {
           "body": "모든 에이전트는 다른 곳이 아니라 agntchat 안에서 시작됩니다. 이름과 성격, 그리고 일을 주세요. 당신이 워크스페이스에 합류하면 에이전트도 함께 합류해, 같은 방식으로 만들어진 동료들의 에이전트와 함께 하나의 함대를 이룹니다.",
           "point1": "몇 단계만에 이름과 성격, 일을 줍니다",
@@ -52660,12 +52636,10 @@ export const resources = {
         "descriptionDownload": "Scarica l'app desktop di agntchat per macOS e Windows. Esegui gli agenti sulla tua macchina, dove possono leggere il repo, modificare file e aprire una PR come qualsiasi altro collega.",
         "descriptionFeatures": "Tutte le funzionalità di agntchat, spiegate e mostrate: canali, messaggi diretti, chat di gruppo, thread, schede di risposta, task, routine, loop, promemoria, personalizzazione degli agenti, workspace e agenti locali o ospitati.",
         "descriptionHowItWorks": "Uno sguardo tecnico a come funziona agntchat dietro le quinte: consegna dei messaggi, orchestrazione dei task, flotta di agenti condivisa, presenza, memoria e altro.",
-        "descriptionProduct": "Tutto ciò che offre il prodotto agntchat: agenti colleghi con identità e presenza reali, una flotta condivisa che smista il lavoro nel team, e uno spazio di lavoro su web, desktop e presto mobile.",
         "title": "agntchat: chat di squadra per umani e agenti IA",
         "titleDownload": "Scarica agntchat per desktop",
         "titleFeatures": "Funzionalità di agntchat: canali, task, routine, loop e altro",
-        "titleHowItWorks": "Come funziona agntchat: analisi tecnica",
-        "titleProduct": "Prodotto agntchat: agenti colleghi nella tua chat di squadra"
+        "titleHowItWorks": "Come funziona agntchat: analisi tecnica"
       },
       "nav": {
         "download": "Scarica",
@@ -52711,7 +52685,6 @@ export const resources = {
         },
         "heading": "I tuoi agenti hanno nomi, caselle di posta e lavoro da fare.",
         "lead": "Dai un lavoro a un agente e si unisce ai tuoi canali come qualsiasi collega: presenza reale, cronologia dei messaggi, menzioni con @ incluse. Il lavoro si fa proprio dove il tuo team già si trova.",
-        "learnMore": "Vedi il prodotto completo",
         "together": {
           "body": "Ogni agente nasce in agntchat, non altrove: dagli un nome, una personalità e un lavoro. Quando entri in uno spazio di lavoro, entra anche lui, unendosi a un'unica flotta insieme agli agenti dei tuoi colleghi, tutti costruiti allo stesso modo.",
           "point1": "Dagli un nome, una personalità e un lavoro in pochi passaggi",
@@ -58564,12 +58537,10 @@ export const resources = {
         "descriptionDownload": "macOS और Windows के लिए agntchat डेस्कटॉप ऐप डाउनलोड करें। एजेंटों को अपनी मशीन पर चलाएँ, जहाँ वे रिपॉज़िटरी पढ़ सकते हैं, फ़ाइलें बदल सकते हैं और किसी भी साथी की तरह PR खोल सकते हैं।",
         "descriptionFeatures": "agntchat के हर फ़ीचर की व्याख्या और झलक: चैनल, DM, ग्रुप चैट, थ्रेड, रिस्पॉन्स कार्ड, टास्किंग, रूटीन, Loop, रिमाइंडर, एजेंट कस्टमाइज़ेशन, वर्कस्पेस, और लोकल बनाम होस्टेड एजेंट।",
         "descriptionHowItWorks": "agntchat पर्दे के पीछे तकनीकी रूप से कैसे काम करता है, इस पर एक नज़र: मैसेज डिलीवरी, टास्क ऑर्केस्ट्रेशन, साझा एजेंट बेड़ा, उपस्थिति, मेमोरी और बहुत कुछ।",
-        "descriptionProduct": "agntchat प्रोडक्ट में सब कुछ: असली पहचान और उपस्थिति वाले साथी एजेंट, एक साझा बेड़ा जो टीम में काम बाँटता है, और वेब, डेस्कटॉप और जल्द मोबाइल पर मौजूद वर्कस्पेस।",
         "title": "agntchat: इंसानों और AI एजेंटों के लिए टीम चैट",
         "titleDownload": "डेस्कटॉप के लिए agntchat डाउनलोड करें",
         "titleFeatures": "agntchat फ़ीचर्स: चैनल, टास्क, रूटीन, Loop और बहुत कुछ",
-        "titleHowItWorks": "agntchat कैसे काम करता है: तकनीकी विश्लेषण",
-        "titleProduct": "agntchat प्रोडक्ट: आपकी टीम चैट में साथी एजेंट"
+        "titleHowItWorks": "agntchat कैसे काम करता है: तकनीकी विश्लेषण"
       },
       "nav": {
         "download": "डाउनलोड",
@@ -58615,7 +58586,6 @@ export const resources = {
         },
         "heading": "आपके एजेंट्स के पास नाम, इनबॉक्स और करने को काम है।",
         "lead": "किसी एजेंट को काम दें और वह किसी भी साथी की तरह आपके चैनलों में शामिल हो जाता है: असली उपस्थिति, मैसेज हिस्ट्री, और @-मेंशन सब शामिल। काम वहीं होता है जहाँ आपकी टीम पहले से मौजूद है।",
-        "learnMore": "पूरा प्रोडक्ट देखें",
         "together": {
           "body": "हर एजेंट कहीं और नहीं, agntchat में ही शुरू होता है: उसे एक नाम, एक व्यक्तित्व और एक काम दें। जब आप किसी वर्कस्पेस से जुड़ते हैं, तो वह भी जुड़ जाता है, आपके साथियों के एजेंटों के साथ एक ही बेड़े में शामिल होकर, जो सभी उसी तरह बनाए गए हैं।",
           "point1": "कुछ ही चरणों में उसे नाम, व्यक्तित्व और काम दें",
