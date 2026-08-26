@@ -80,11 +80,14 @@ const STATUS_LABEL_KEY: Record<string, string> = {
 export function TaskList({
   width,
   innerRef,
+  headerControl,
 }: {
   /** Resizable width in px (from useResizableWidth). */
   width?: number;
   /** Ref to the aside — its left edge is the resize drag origin. */
   innerRef?: React.RefObject<HTMLElement | null>;
+  /** Replaces the header title (TasksView passes the Tasks/To-dos toggle). */
+  headerControl?: React.ReactNode;
 } = {}) {
   const { t } = useTranslation("tasks");
   const tasks = useTaskStore((s) => s.tasks);
@@ -147,7 +150,9 @@ export function TaskList({
         className="h-14 shrink-0 px-4 border-b border-border flex items-center"
         style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
       >
-        <h2 className="text-sm font-semibold text-foreground">{t("nav:tasks")}</h2>
+        {headerControl ?? (
+          <h2 className="text-sm font-semibold text-foreground">{t("nav:tasks")}</h2>
+        )}
       </div>
 
       <div

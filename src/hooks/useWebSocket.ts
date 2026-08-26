@@ -4,6 +4,7 @@ import { useChatStore } from "../stores/chatStore";
 import { usePresenceStore } from "../stores/presenceStore";
 import { useStreamingStore } from "../stores/streamingStore";
 import { useTaskStore } from "../stores/taskStore";
+import { useTodoStore } from "../stores/todoStore";
 import { useAgentStore, getLocalDeviceName } from "../stores/agentStore";
 import { useMemoryStore } from "../stores/memoryStore";
 import { useFriendStore } from "../stores/friendStore";
@@ -35,6 +36,7 @@ export function useWebSocket() {
     const unsubPresence = usePresenceStore.getState().initWsListeners();
     const unsubStreaming = useStreamingStore.getState().initWsListeners();
     const unsubTasks = useTaskStore.getState().initWsListeners();
+    const unsubTodos = useTodoStore.getState().initWsListeners();
     const unsubAgents = useAgentStore.getState().initWsListeners();
     const unsubMemory = useMemoryStore.getState().initWsListeners();
     const unsubFriends = useFriendStore.getState().initWsListeners();
@@ -138,6 +140,7 @@ export function useWebSocket() {
       unsubPresence();
       unsubStreaming();
       unsubTasks();
+      unsubTodos();
       unsubAgents();
       unsubMemory();
       unsubFriends();

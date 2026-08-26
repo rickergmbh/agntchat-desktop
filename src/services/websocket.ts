@@ -129,6 +129,10 @@ class WebSocketService {
       "task_assigned",
       "task_completed",
       "task_progress",
+      // Shared family to-do list (todoStore listens).
+      "todo_created",
+      "todo_updated",
+      "todo_deleted",
       // Date reminders — platform-elevated notification, not a chat message.
       // ReminderToast listens and raises a native OS notification.
       "reminder_fired",

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ListTodo } from "lucide-react";
 import { useTaskStore } from "../../stores/taskStore";
@@ -6,6 +6,7 @@ import { useResizableWidth } from "../../hooks/useResizableWidth";
 import { ResizeHandle } from "../ResizeHandle";
 import { TaskList } from "./TaskList";
 import { TaskDetail, useOpenConversationFromTask } from "./TaskDetail";
+import { TasksModeToggle, TodoList } from "./TodoList";
 
 export function TasksView({
   onOpenConversation,
@@ -16,12 +17,19 @@ export function TasksView({
   const tasks = useTaskStore((s) => s.tasks);
   const selectedId = useTaskStore((s) => s.selectedTaskId);
   const fetchTasks = useTaskStore((s) => s.fetchTasks);
+  const [mode, setMode] = useState<"tasks" | "todos">("tasks");
 
   // Fetch tasks on mount. WS upserts keep the list live between fetches;
   // no auto-refetch on status change needed.
   useEffect(() => {
     fetchTasks();
   }, [fetchTasks]);
+
+  // A task selected externally (deep-link from a chat card) needs the
+  // tasks pane visible, whatever mode the toggle was left in.
+  useEffect(() => {
+    if (selectedId) setMode("tasks");
+  }, [selectedId]);
 
   const selected = tasks.find((t) => t.id === selectedId) ?? null;
 
@@ -33,11 +41,31 @@ export function TasksView({
       max: 480,
     });
 
+  if (mode === "todos") {
+    return (
+      <div className="relative flex-1 flex h-full overflow-hidden bg-canvas">
+        <section className="relative z-10 flex-1 flex flex-col bg-card overflow-hidden surface-panel rounded-l-2xl">
+          <div
+            className="h-14 shrink-0 px-4 flex items-center"
+            style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
+          >
+            <TasksModeToggle mode={mode} onChange={setMode} />
+          </div>
+          <TodoList />
+        </section>
+      </div>
+    );
+  }
+
   return (
     // Recessed canvas; the detail column floats over the list as a rounded
     // panel lapping left — same layered overlap as the chat view.
     <div className="relative flex-1 flex h-full overflow-hidden bg-canvas">
-      <TaskList width={width} innerRef={ref} />
+      <TaskList
+        width={width}
+        innerRef={ref}
+        headerControl={<TasksModeToggle mode={mode} onChange={setMode} />}
+      />
       <ResizeHandle
         left={width}
         resizing={resizing}

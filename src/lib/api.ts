@@ -2815,6 +2815,56 @@ export async function requestTaskRevisionRest(
   });
 }
 
+// --- Shared to-do list ---
+
+export type TodoStatus = "open" | "done";
+
+export interface TodoAuthor {
+  id: string;
+  displayName: string;
+  type: "human" | "agent";
+  avatarUrl?: string | null;
+}
+
+export interface TodoItem {
+  id: string;
+  title: string;
+  status: TodoStatus;
+  familyRootId: string;
+  /** Workspace the item belongs to; null = family-global (visible in
+   *  every workspace). Used to drop WS events whose payload doesn't
+   *  match the user's active workspace (same guard as tasks). */
+  organizationId: string | null;
+  createdBy: TodoAuthor;
+  completedBy?: TodoAuthor | null;
+  completedAt?: string | null;
+  insertedAt: string;
+  updatedAt: string;
+}
+
+export async function fetchTodosRest(): Promise<{ todos: TodoItem[] }> {
+  return request<{ todos: TodoItem[] }>("/api/todos?status=all");
+}
+
+export async function createTodoRest(title: string): Promise<{ todo: TodoItem }> {
+  return request("/api/todos", {
+    method: "POST",
+    body: JSON.stringify({ title }),
+  });
+}
+
+export async function completeTodoRest(todoId: string): Promise<{ todo: TodoItem }> {
+  return request(`/api/todos/${todoId}/complete`, { method: "POST" });
+}
+
+export async function reopenTodoRest(todoId: string): Promise<{ todo: TodoItem }> {
+  return request(`/api/todos/${todoId}/reopen`, { method: "POST" });
+}
+
+export async function deleteTodoRest(todoId: string): Promise<{ deleted: boolean }> {
+  return request(`/api/todos/${todoId}`, { method: "DELETE" });
+}
+
 // --- Streaming ---
 
 // Canonical streaming vocabulary lives in the shared status contract.
