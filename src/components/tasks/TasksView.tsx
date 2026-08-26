@@ -17,7 +17,7 @@ export function TasksView({
   const tasks = useTaskStore((s) => s.tasks);
   const selectedId = useTaskStore((s) => s.selectedTaskId);
   const fetchTasks = useTaskStore((s) => s.fetchTasks);
-  const [mode, setMode] = useState<"tasks" | "todos">("tasks");
+  const [mode, setMode] = useState<"tasks" | "todos">("todos");
 
   // Fetch tasks on mount. WS upserts keep the list live between fetches;
   // no auto-refetch on status change needed.
