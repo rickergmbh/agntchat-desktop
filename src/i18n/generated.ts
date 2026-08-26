@@ -3405,7 +3405,7 @@ export const resources = {
       "profile": "Profile",
       "settings": "Settings",
       "signOut": "Sign Out",
-      "tasks": "Tasks",
+      "tasks": "To-dos",
       "team": "Team",
       "templates": "Response Cards"
     },
@@ -5596,6 +5596,8 @@ export const resources = {
       "createdBy": "Created By",
       "criteria": "Criteria",
       "deadline": "Deadline",
+      "deadlineDue": "Due {{time}}",
+      "deadlineOverdue": "Overdue",
       "decision": {
         "accepted": "Task Accepted",
         "estimate": "Est: {{minutes}}m",
@@ -5682,6 +5684,18 @@ export const resources = {
       },
       "queuedPreview_one": "+{{count}} task queued",
       "queuedPreview_other": "+{{count}} tasks queued",
+      "reminder": {
+        "addFailed": "Couldn't set the reminder",
+        "addTitle": "New reminder",
+        "create": "Set reminder",
+        "deleteFailed": "Couldn't delete the reminder",
+        "loadFailed": "Couldn't load reminders",
+        "quickIn3Days": "In 3 days",
+        "quickInHour": "In 1 hour",
+        "quickTomorrowEvening": "Tomorrow evening",
+        "quickTomorrowMorning": "Tomorrow morning",
+        "titlePlaceholder": "What should I remind you about?"
+      },
       "request": {
         "acceptanceCriteria": "Acceptance Criteria",
         "newTask": "New Task",
@@ -5801,6 +5815,15 @@ export const resources = {
         "toggleFailed": "Couldn't update the to-do"
       },
       "unassigned": "Unassigned",
+      "unified": {
+        "actionBadge": "Action",
+        "empty": "Nothing here yet",
+        "emptyHint": "Actions and to-dos will show up here.",
+        "loadFailed": "Couldn't load your list. Check your connection and try again.",
+        "noMatching": "No matches",
+        "onDeck": "Upcoming",
+        "searchPlaceholder": "Search…"
+      },
       "untitled": "Untitled task",
       "untitledAction": "Untitled Action",
       "untitledTask": "Untitled task",
@@ -9326,7 +9349,7 @@ export const resources = {
       "profile": "Perfil",
       "settings": "Ajustes",
       "signOut": "Cerrar sesión",
-      "tasks": "Tareas",
+      "tasks": "Pendientes",
       "team": "Equipo",
       "templates": "Tarjetas de respuesta"
     },
@@ -11517,6 +11540,8 @@ export const resources = {
       "createdBy": "Creado por",
       "criteria": "Criterios",
       "deadline": "Fecha límite",
+      "deadlineDue": "Vence {{time}}",
+      "deadlineOverdue": "Atrasado",
       "decision": {
         "accepted": "Tarea aceptada",
         "estimate": "Est.: {{minutes}} min",
@@ -11603,6 +11628,18 @@ export const resources = {
       },
       "queuedPreview_one": "+{{count}} tarea en cola",
       "queuedPreview_other": "+{{count}} tareas en cola",
+      "reminder": {
+        "addFailed": "No se pudo crear el recordatorio",
+        "addTitle": "Nuevo recordatorio",
+        "create": "Crear recordatorio",
+        "deleteFailed": "No se pudo eliminar el recordatorio",
+        "loadFailed": "No se pudieron cargar los recordatorios",
+        "quickIn3Days": "En 3 días",
+        "quickInHour": "En 1 hora",
+        "quickTomorrowEvening": "Mañana por la noche",
+        "quickTomorrowMorning": "Mañana por la mañana",
+        "titlePlaceholder": "¿De qué quieres que te recuerde?"
+      },
       "request": {
         "acceptanceCriteria": "Criterios de aceptación",
         "newTask": "Nueva tarea",
@@ -11722,6 +11759,15 @@ export const resources = {
         "toggleFailed": "No se pudo actualizar el pendiente"
       },
       "unassigned": "Sin asignar",
+      "unified": {
+        "actionBadge": "Acción",
+        "empty": "Nada por aquí todavía",
+        "emptyHint": "Las acciones y los pendientes aparecerán aquí.",
+        "loadFailed": "No se pudo cargar tu lista. Comprueba tu conexión e inténtalo de nuevo.",
+        "noMatching": "Sin coincidencias",
+        "onDeck": "Próximas",
+        "searchPlaceholder": "Buscar…"
+      },
       "untitled": "Tarea sin título",
       "untitledAction": "Acción sin título",
       "untitledTask": "Tarea sin título",
@@ -15247,7 +15293,7 @@ export const resources = {
       "profile": "Profil",
       "settings": "Einstellungen",
       "signOut": "Abmelden",
-      "tasks": "Aufgaben",
+      "tasks": "To-dos",
       "team": "Team",
       "templates": "Antwortkarten"
     },
@@ -17438,6 +17484,8 @@ export const resources = {
       "createdBy": "Erstellt von",
       "criteria": "Kriterien",
       "deadline": "Frist",
+      "deadlineDue": "Fällig {{time}}",
+      "deadlineOverdue": "Überfällig",
       "decision": {
         "accepted": "Aufgabe angenommen",
         "estimate": "Gesch.: {{minutes}} Min.",
@@ -17524,6 +17572,18 @@ export const resources = {
       },
       "queuedPreview_one": "+{{count}} wartende Aufgabe",
       "queuedPreview_other": "+{{count}} wartende Aufgaben",
+      "reminder": {
+        "addFailed": "Erinnerung konnte nicht erstellt werden",
+        "addTitle": "Neue Erinnerung",
+        "create": "Erinnerung festlegen",
+        "deleteFailed": "Erinnerung konnte nicht gelöscht werden",
+        "loadFailed": "Erinnerungen konnten nicht geladen werden",
+        "quickIn3Days": "In 3 Tagen",
+        "quickInHour": "In 1 Stunde",
+        "quickTomorrowEvening": "Morgen Abend",
+        "quickTomorrowMorning": "Morgen früh",
+        "titlePlaceholder": "Woran soll ich dich erinnern?"
+      },
       "request": {
         "acceptanceCriteria": "Abnahmekriterien",
         "newTask": "Neue Aufgabe",
@@ -17643,6 +17703,15 @@ export const resources = {
         "toggleFailed": "To-do konnte nicht aktualisiert werden"
       },
       "unassigned": "Nicht zugewiesen",
+      "unified": {
+        "actionBadge": "Aktion",
+        "empty": "Noch nichts hier",
+        "emptyHint": "Aktionen und To-dos werden hier angezeigt.",
+        "loadFailed": "Liste konnte nicht geladen werden. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
+        "noMatching": "Keine Treffer",
+        "onDeck": "Bevorstehend",
+        "searchPlaceholder": "Suchen…"
+      },
       "untitled": "Unbenannte Aufgabe",
       "untitledAction": "Unbenannte Aktion",
       "untitledTask": "Unbenannte Aufgabe",
@@ -21168,7 +21237,7 @@ export const resources = {
       "profile": "Profil",
       "settings": "Paramètres",
       "signOut": "Se déconnecter",
-      "tasks": "Tâches",
+      "tasks": "À faire",
       "team": "Équipe",
       "templates": "Cartes de réponse"
     },
@@ -23359,6 +23428,8 @@ export const resources = {
       "createdBy": "Créée par",
       "criteria": "Critères",
       "deadline": "Échéance",
+      "deadlineDue": "Échéance {{time}}",
+      "deadlineOverdue": "En retard",
       "decision": {
         "accepted": "Tâche acceptée",
         "estimate": "Est. : {{minutes}}m",
@@ -23445,6 +23516,18 @@ export const resources = {
       },
       "queuedPreview_one": "+{{count}} tâche en attente",
       "queuedPreview_other": "+{{count}} tâches en attente",
+      "reminder": {
+        "addFailed": "Impossible de créer le rappel",
+        "addTitle": "Nouveau rappel",
+        "create": "Créer le rappel",
+        "deleteFailed": "Impossible de supprimer le rappel",
+        "loadFailed": "Impossible de charger les rappels",
+        "quickIn3Days": "Dans 3 jours",
+        "quickInHour": "Dans 1 heure",
+        "quickTomorrowEvening": "Demain soir",
+        "quickTomorrowMorning": "Demain matin",
+        "titlePlaceholder": "De quoi dois-je te rappeler ?"
+      },
       "request": {
         "acceptanceCriteria": "Critères d'acceptation",
         "newTask": "Nouvelle tâche",
@@ -23564,6 +23647,15 @@ export const resources = {
         "toggleFailed": "Impossible de mettre à jour l'élément"
       },
       "unassigned": "Non assignée",
+      "unified": {
+        "actionBadge": "Action",
+        "empty": "Rien ici pour le moment",
+        "emptyHint": "Les actions et les tâches apparaîtront ici.",
+        "loadFailed": "Impossible de charger votre liste. Vérifiez votre connexion et réessayez.",
+        "noMatching": "Aucun résultat",
+        "onDeck": "À venir",
+        "searchPlaceholder": "Rechercher…"
+      },
       "untitled": "Tâche sans titre",
       "untitledAction": "Action sans titre",
       "untitledTask": "Tâche sans titre",
@@ -27089,7 +27181,7 @@ export const resources = {
       "profile": "Perfil",
       "settings": "Configurações",
       "signOut": "Sair",
-      "tasks": "Tarefas",
+      "tasks": "Afazeres",
       "team": "Equipe",
       "templates": "Cartões de resposta"
     },
@@ -29280,6 +29372,8 @@ export const resources = {
       "createdBy": "Criada Por",
       "criteria": "Critérios",
       "deadline": "Prazo",
+      "deadlineDue": "Vence {{time}}",
+      "deadlineOverdue": "Atrasado",
       "decision": {
         "accepted": "Tarefa Aceita",
         "estimate": "Est: {{minutes}}min",
@@ -29366,6 +29460,18 @@ export const resources = {
       },
       "queuedPreview_one": "+{{count}} tarefa na fila",
       "queuedPreview_other": "+{{count}} tarefas na fila",
+      "reminder": {
+        "addFailed": "Não foi possível criar o lembrete",
+        "addTitle": "Novo lembrete",
+        "create": "Definir lembrete",
+        "deleteFailed": "Não foi possível excluir o lembrete",
+        "loadFailed": "Não foi possível carregar os lembretes",
+        "quickIn3Days": "Em 3 dias",
+        "quickInHour": "Em 1 hora",
+        "quickTomorrowEvening": "Amanhã à noite",
+        "quickTomorrowMorning": "Amanhã de manhã",
+        "titlePlaceholder": "Sobre o que devo te lembrar?"
+      },
       "request": {
         "acceptanceCriteria": "Critérios de Aceitação",
         "newTask": "Nova Tarefa",
@@ -29485,6 +29591,15 @@ export const resources = {
         "toggleFailed": "Não foi possível atualizar o afazer"
       },
       "unassigned": "Não atribuída",
+      "unified": {
+        "actionBadge": "Ação",
+        "empty": "Ainda não há nada aqui",
+        "emptyHint": "Ações e afazeres vão aparecer aqui.",
+        "loadFailed": "Não foi possível carregar sua lista. Verifique sua conexão e tente novamente.",
+        "noMatching": "Nenhum resultado",
+        "onDeck": "Próximas",
+        "searchPlaceholder": "Buscar…"
+      },
       "untitled": "Tarefa sem título",
       "untitledAction": "Ação sem título",
       "untitledTask": "Tarefa sem título",
@@ -33010,7 +33125,7 @@ export const resources = {
       "profile": "プロフィール",
       "settings": "設定",
       "signOut": "ログアウト",
-      "tasks": "タスク",
+      "tasks": "To-doリスト",
       "team": "チーム",
       "templates": "レスポンスカード"
     },
@@ -35201,6 +35316,8 @@ export const resources = {
       "createdBy": "作成者",
       "criteria": "基準",
       "deadline": "期限",
+      "deadlineDue": "期限 {{time}}",
+      "deadlineOverdue": "期限切れ",
       "decision": {
         "accepted": "タスクが承認されました",
         "estimate": "見積り: {{minutes}}分",
@@ -35287,6 +35404,18 @@ export const resources = {
       },
       "queuedPreview_one": "+{{count}}件のタスクが待機中",
       "queuedPreview_other": "+{{count}}件のタスクが待機中",
+      "reminder": {
+        "addFailed": "リマインダーを設定できませんでした",
+        "addTitle": "新しいリマインダー",
+        "create": "リマインダーを設定",
+        "deleteFailed": "リマインダーを削除できませんでした",
+        "loadFailed": "リマインダーを読み込めませんでした",
+        "quickIn3Days": "3日後",
+        "quickInHour": "1時間後",
+        "quickTomorrowEvening": "明日の夜",
+        "quickTomorrowMorning": "明日の朝",
+        "titlePlaceholder": "何についてリマインドしますか？"
+      },
       "request": {
         "acceptanceCriteria": "受け入れ基準",
         "newTask": "新規タスク",
@@ -35406,6 +35535,15 @@ export const resources = {
         "toggleFailed": "To-doを更新できませんでした"
       },
       "unassigned": "未割り当て",
+      "unified": {
+        "actionBadge": "アクション",
+        "empty": "ここにはまだ何もありません",
+        "emptyHint": "アクションとTo-doがここに表示されます。",
+        "loadFailed": "リストを読み込めませんでした。接続を確認して、もう一度お試しください。",
+        "noMatching": "一致する項目がありません",
+        "onDeck": "今後の予定",
+        "searchPlaceholder": "検索…"
+      },
       "untitled": "無題のタスク",
       "untitledAction": "無題のアクション",
       "untitledTask": "無題のタスク",
@@ -38931,7 +39069,7 @@ export const resources = {
       "profile": "个人资料",
       "settings": "设置",
       "signOut": "退出登录",
-      "tasks": "任务",
+      "tasks": "待办事项",
       "team": "团队",
       "templates": "响应卡片"
     },
@@ -41122,6 +41260,8 @@ export const resources = {
       "createdBy": "创建者",
       "criteria": "标准",
       "deadline": "截止时间",
+      "deadlineDue": "截止 {{time}}",
+      "deadlineOverdue": "已逾期",
       "decision": {
         "accepted": "任务已接受",
         "estimate": "预计：{{minutes}} 分钟",
@@ -41208,6 +41348,18 @@ export const resources = {
       },
       "queuedPreview_one": "+{{count}} 个任务排队中",
       "queuedPreview_other": "+{{count}} 个任务排队中",
+      "reminder": {
+        "addFailed": "无法设置提醒",
+        "addTitle": "新提醒",
+        "create": "设置提醒",
+        "deleteFailed": "无法删除提醒",
+        "loadFailed": "无法加载提醒",
+        "quickIn3Days": "3天后",
+        "quickInHour": "1小时后",
+        "quickTomorrowEvening": "明天晚上",
+        "quickTomorrowMorning": "明天早上",
+        "titlePlaceholder": "需要提醒你什么事情？"
+      },
       "request": {
         "acceptanceCriteria": "验收标准",
         "newTask": "新任务",
@@ -41327,6 +41479,15 @@ export const resources = {
         "toggleFailed": "无法更新待办事项"
       },
       "unassigned": "未分配",
+      "unified": {
+        "actionBadge": "操作",
+        "empty": "这里还没有内容",
+        "emptyHint": "操作和待办事项会显示在这里。",
+        "loadFailed": "无法加载您的列表。请检查网络连接后重试。",
+        "noMatching": "没有匹配项",
+        "onDeck": "即将进行",
+        "searchPlaceholder": "搜索…"
+      },
       "untitled": "未命名任务",
       "untitledAction": "未命名操作",
       "untitledTask": "未命名任务",
@@ -44852,7 +45013,7 @@ export const resources = {
       "profile": "프로필",
       "settings": "설정",
       "signOut": "로그아웃",
-      "tasks": "작업",
+      "tasks": "할 일",
       "team": "팀",
       "templates": "응답 카드"
     },
@@ -47043,6 +47204,8 @@ export const resources = {
       "createdBy": "생성자",
       "criteria": "기준",
       "deadline": "마감일",
+      "deadlineDue": "마감 {{time}}",
+      "deadlineOverdue": "기한 초과",
       "decision": {
         "accepted": "작업 수락됨",
         "estimate": "예상: {{minutes}}분",
@@ -47129,6 +47292,18 @@ export const resources = {
       },
       "queuedPreview_one": "+{{count}}개 작업 대기 중",
       "queuedPreview_other": "+{{count}}개 작업 대기 중",
+      "reminder": {
+        "addFailed": "리마인더를 설정하지 못했습니다",
+        "addTitle": "새 리마인더",
+        "create": "리마인더 설정",
+        "deleteFailed": "리마인더를 삭제하지 못했습니다",
+        "loadFailed": "리마인더를 불러오지 못했습니다",
+        "quickIn3Days": "3일 후",
+        "quickInHour": "1시간 후",
+        "quickTomorrowEvening": "내일 저녁",
+        "quickTomorrowMorning": "내일 아침",
+        "titlePlaceholder": "무엇을 알려드릴까요?"
+      },
       "request": {
         "acceptanceCriteria": "승인 기준",
         "newTask": "새 작업",
@@ -47248,6 +47423,15 @@ export const resources = {
         "toggleFailed": "할 일을 업데이트하지 못했습니다"
       },
       "unassigned": "미배정",
+      "unified": {
+        "actionBadge": "작업",
+        "empty": "아직 여기에 아무것도 없습니다",
+        "emptyHint": "작업과 할 일이 여기에 표시됩니다.",
+        "loadFailed": "목록을 불러오지 못했습니다. 연결을 확인하고 다시 시도해 주세요.",
+        "noMatching": "일치하는 항목이 없습니다",
+        "onDeck": "예정된 작업",
+        "searchPlaceholder": "검색…"
+      },
       "untitled": "제목 없는 작업",
       "untitledAction": "제목 없는 작업",
       "untitledTask": "제목 없는 작업",
@@ -50773,7 +50957,7 @@ export const resources = {
       "profile": "Profilo",
       "settings": "Impostazioni",
       "signOut": "Esci",
-      "tasks": "Attività",
+      "tasks": "Cose da fare",
       "team": "Team",
       "templates": "Schede di risposta"
     },
@@ -52964,6 +53148,8 @@ export const resources = {
       "createdBy": "Creato da",
       "criteria": "Criteri",
       "deadline": "Scadenza",
+      "deadlineDue": "Scade {{time}}",
+      "deadlineOverdue": "In ritardo",
       "decision": {
         "accepted": "Attività accettata",
         "estimate": "Stima: {{minutes}}m",
@@ -53050,6 +53236,18 @@ export const resources = {
       },
       "queuedPreview_one": "+{{count}} attività in coda",
       "queuedPreview_other": "+{{count}} attività in coda",
+      "reminder": {
+        "addFailed": "Impossibile impostare il promemoria",
+        "addTitle": "Nuovo promemoria",
+        "create": "Imposta promemoria",
+        "deleteFailed": "Impossibile eliminare il promemoria",
+        "loadFailed": "Impossibile caricare i promemoria",
+        "quickIn3Days": "Tra 3 giorni",
+        "quickInHour": "Tra 1 ora",
+        "quickTomorrowEvening": "Domani sera",
+        "quickTomorrowMorning": "Domani mattina",
+        "titlePlaceholder": "Di cosa devo ricordarti?"
+      },
       "request": {
         "acceptanceCriteria": "Criteri di accettazione",
         "newTask": "Nuova attività",
@@ -53169,6 +53367,15 @@ export const resources = {
         "toggleFailed": "Impossibile aggiornare l'elemento"
       },
       "unassigned": "Non assegnato",
+      "unified": {
+        "actionBadge": "Azione",
+        "empty": "Ancora nulla qui",
+        "emptyHint": "Azioni e cose da fare appariranno qui.",
+        "loadFailed": "Impossibile caricare la tua lista. Controlla la connessione e riprova.",
+        "noMatching": "Nessun risultato",
+        "onDeck": "Prossime",
+        "searchPlaceholder": "Cerca…"
+      },
       "untitled": "Attività senza titolo",
       "untitledAction": "Azione senza titolo",
       "untitledTask": "Attività senza titolo",
@@ -56694,7 +56901,7 @@ export const resources = {
       "profile": "प्रोफ़ाइल",
       "settings": "सेटिंग्स",
       "signOut": "साइन आउट",
-      "tasks": "कार्य",
+      "tasks": "टू-डू सूची",
       "team": "टीम",
       "templates": "रिस्पॉन्स कार्ड"
     },
@@ -58885,6 +59092,8 @@ export const resources = {
       "createdBy": "द्वारा बनाया गया",
       "criteria": "मानदंड",
       "deadline": "समय सीमा",
+      "deadlineDue": "समय सीमा {{time}}",
+      "deadlineOverdue": "समय सीमा बीत गई",
       "decision": {
         "accepted": "कार्य स्वीकृत",
         "estimate": "अनुमानित: {{minutes}} मि",
@@ -58971,6 +59180,18 @@ export const resources = {
       },
       "queuedPreview_one": "+{{count}} कार्य कतार में",
       "queuedPreview_other": "+{{count}} कार्य कतार में",
+      "reminder": {
+        "addFailed": "रिमाइंडर सेट नहीं हो सका",
+        "addTitle": "नया रिमाइंडर",
+        "create": "रिमाइंडर सेट करें",
+        "deleteFailed": "रिमाइंडर हटाया नहीं जा सका",
+        "loadFailed": "रिमाइंडर लोड नहीं हो सके",
+        "quickIn3Days": "3 दिनों में",
+        "quickInHour": "1 घंटे में",
+        "quickTomorrowEvening": "कल शाम",
+        "quickTomorrowMorning": "कल सुबह",
+        "titlePlaceholder": "मुझे आपको किस बारे में याद दिलाना चाहिए?"
+      },
       "request": {
         "acceptanceCriteria": "स्वीकृति मानदंड",
         "newTask": "नया कार्य",
@@ -59090,6 +59311,15 @@ export const resources = {
         "toggleFailed": "टू-डू अपडेट नहीं हो सका"
       },
       "unassigned": "सौंपा नहीं गया",
+      "unified": {
+        "actionBadge": "कार्रवाई",
+        "empty": "यहाँ अभी कुछ नहीं है",
+        "emptyHint": "कार्रवाइयाँ और टू-डू यहाँ दिखाई देंगे।",
+        "loadFailed": "आपकी सूची लोड नहीं हो सकी। अपना कनेक्शन जाँचें और फिर से प्रयास करें।",
+        "noMatching": "कोई मेल नहीं",
+        "onDeck": "आगामी",
+        "searchPlaceholder": "खोजें…"
+      },
       "untitled": "बिना शीर्षक वाला कार्य",
       "untitledAction": "बिना शीर्षक वाली कार्रवाई",
       "untitledTask": "बिना शीर्षक वाला कार्य",
