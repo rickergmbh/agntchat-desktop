@@ -3601,6 +3601,7 @@ export const resources = {
         "emptyHint": "Feature proposals from agents will appear here",
         "title": "Feature Proposals"
       },
+      "flagEarlyAccessAria": "{{key}} early access",
       "flagsIntro": "Toggle a capability platform-wide, or enable it for a select few while it stays off for everyone else. Changes take effect immediately — no redeploy.",
       "fleet": {
         "acrossOwners_one": "across {{count}} owner",
@@ -3826,6 +3827,8 @@ export const resources = {
       "notAuthorizedHint": "The platform console is restricted to operators.",
       "notBootstrapped": "not bootstrapped",
       "notRunning": "not running",
+      "onForCount_one": "On for {{count}} person",
+      "onForCount_other": "On for {{count}} people",
       "onForEveryone": "On for everyone",
       "opKind": {
         "bootstrap": "bootstrap",
@@ -3872,7 +3875,7 @@ export const resources = {
       "planStatus": {
         "active": "active (paying)",
         "canceled": "canceled",
-        "pastDue": "past due",
+        "pastDue": "past_due",
         "trialing": "trialing (paying)"
       },
       "priority": {
@@ -3909,6 +3912,7 @@ export const resources = {
       },
       "saveToken": "Save token",
       "searchUsersPlaceholder": "Search name or email…",
+      "searching": "Searching…",
       "seenAgo": "seen {{age}}",
       "selectAllShown": "Select all shown",
       "selectPlaceholder": "Select…",
@@ -3969,6 +3973,7 @@ export const resources = {
       "tokenStored": "Token stored. A `set_token` op was sent to each bootstrapped host; new bridge runs use it automatically.",
       "total": "Total",
       "tryChangingFilters": "Try changing the filters above",
+      "turnOffToScope": "Turn off to scope to specific users…",
       "unavailable": "unavailable",
       "unpricedCount": "{{count}} unpriced",
       "unpricedHint": "Run Release.backfill_subscription_amounts() to populate amounts from Stripe",
@@ -9501,6 +9506,7 @@ export const resources = {
         "emptyHint": "Las propuestas de funciones de los agentes aparecerán aquí",
         "title": "Propuestas de funciones"
       },
+      "flagEarlyAccessAria": "Acceso anticipado a {{key}}",
       "flagsIntro": "Activa o desactiva una capacidad en toda la plataforma, o habilítala para unos pocos mientras permanece desactivada para el resto. Los cambios surten efecto de inmediato — sin redespliegue.",
       "fleet": {
         "acrossOwners_one": "entre {{count}} propietario",
@@ -9726,6 +9732,8 @@ export const resources = {
       "notAuthorizedHint": "La consola de plataforma está restringida a operadores.",
       "notBootstrapped": "sin inicializar",
       "notRunning": "detenido",
+      "onForCount_one": "Activado para {{count}} persona",
+      "onForCount_other": "Activado para {{count}} personas",
       "onForEveryone": "Activado para todos",
       "opKind": {
         "bootstrap": "inicializar",
@@ -9770,10 +9778,10 @@ export const resources = {
       "planFor": "Plan — {{name}}",
       "planForHint": "Establece un plan manualmente (sin necesidad de Stripe). Cuando la facturación de Stripe esté activa, su webhook actualizará este mismo registro.",
       "planStatus": {
-        "active": "activo (de pago)",
-        "canceled": "cancelado",
-        "pastDue": "pago vencido",
-        "trialing": "en prueba (de pago)"
+        "active": "active (de pago)",
+        "canceled": "canceled",
+        "pastDue": "past_due",
+        "trialing": "trialing (de pago)"
       },
       "priority": {
         "critical": "Crítica",
@@ -9809,6 +9817,7 @@ export const resources = {
       },
       "saveToken": "Guardar token",
       "searchUsersPlaceholder": "Buscar por nombre o correo…",
+      "searching": "Buscando…",
       "seenAgo": "visto {{age}}",
       "selectAllShown": "Seleccionar todos los mostrados",
       "selectPlaceholder": "Seleccionar…",
@@ -9869,6 +9878,7 @@ export const resources = {
       "tokenStored": "Token guardado. Se envió una operación `set_token` a cada host inicializado; las nuevas ejecuciones del puente lo usan automáticamente.",
       "total": "Total",
       "tryChangingFilters": "Prueba a cambiar los filtros de arriba",
+      "turnOffToScope": "Desactívalo para limitarlo a usuarios concretos…",
       "unavailable": "no disponible",
       "unpricedCount": "{{count}} sin precio",
       "unpricedHint": "Ejecuta Release.backfill_subscription_amounts() para rellenar los importes desde Stripe",
@@ -15401,6 +15411,7 @@ export const resources = {
         "emptyHint": "Feature-Vorschläge von Agenten werden hier angezeigt",
         "title": "Feature-Vorschläge"
       },
+      "flagEarlyAccessAria": "{{key}} Early Access",
       "flagsIntro": "Schalten Sie eine Funktion plattformweit um oder aktivieren Sie sie für ausgewählte Nutzer, während sie für alle anderen deaktiviert bleibt. Änderungen wirken sofort — kein erneutes Deployment nötig.",
       "fleet": {
         "acrossOwners_one": "bei {{count}} Eigentümer",
@@ -15626,6 +15637,8 @@ export const resources = {
       "notAuthorizedHint": "Die Plattform-Konsole ist Operatoren vorbehalten.",
       "notBootstrapped": "nicht bootstrappt",
       "notRunning": "läuft nicht",
+      "onForCount_one": "Aktiv für {{count}} Person",
+      "onForCount_other": "Aktiv für {{count}} Personen",
       "onForEveryone": "Für alle aktiviert",
       "opKind": {
         "bootstrap": "Bootstrap",
@@ -15670,10 +15683,10 @@ export const resources = {
       "planFor": "Plan — {{name}}",
       "planForHint": "Legen Sie manuell einen Plan fest (kein Stripe erforderlich). Sobald Stripe Billing aktiv ist, aktualisiert dessen Webhook denselben Datensatz.",
       "planStatus": {
-        "active": "aktiv (zahlend)",
-        "canceled": "gekündigt",
-        "pastDue": "überfällig",
-        "trialing": "Testphase (zahlend)"
+        "active": "active (zahlend)",
+        "canceled": "canceled",
+        "pastDue": "past_due",
+        "trialing": "trialing (zahlend)"
       },
       "priority": {
         "critical": "Kritisch",
@@ -15709,6 +15722,7 @@ export const resources = {
       },
       "saveToken": "Token speichern",
       "searchUsersPlaceholder": "Name oder E-Mail suchen…",
+      "searching": "Suche…",
       "seenAgo": "gesehen vor {{age}}",
       "selectAllShown": "Alle angezeigten auswählen",
       "selectPlaceholder": "Auswählen…",
@@ -15769,6 +15783,7 @@ export const resources = {
       "tokenStored": "Token gespeichert. Ein `set_token`-Vorgang wurde an jeden bootstrappten Host gesendet; neue Bridge-Läufe verwenden es automatisch.",
       "total": "Gesamt",
       "tryChangingFilters": "Versuchen Sie, die Filter oben zu ändern",
+      "turnOffToScope": "Zum Einschränken auf einzelne Nutzer zuerst ausschalten…",
       "unavailable": "nicht verfügbar",
       "unpricedCount": "{{count}} ohne Preis",
       "unpricedHint": "Führen Sie Release.backfill_subscription_amounts() aus, um Beträge aus Stripe zu übernehmen",
@@ -21301,6 +21316,7 @@ export const resources = {
         "emptyHint": "Les propositions de fonctionnalités des agents apparaîtront ici",
         "title": "Propositions de fonctionnalités"
       },
+      "flagEarlyAccessAria": "Accès anticipé à {{key}}",
       "flagsIntro": "Activez une fonctionnalité pour toute la plateforme, ou activez-la pour un groupe restreint pendant qu'elle reste désactivée pour tous les autres. Les changements prennent effet immédiatement — aucun redéploiement nécessaire.",
       "fleet": {
         "acrossOwners_one": "chez {{count}} propriétaire",
@@ -21526,6 +21542,8 @@ export const resources = {
       "notAuthorizedHint": "La console de la plateforme est réservée aux opérateurs.",
       "notBootstrapped": "non bootstrapé",
       "notRunning": "à l'arrêt",
+      "onForCount_one": "Activé pour {{count}} personne",
+      "onForCount_other": "Activé pour {{count}} personnes",
       "onForEveryone": "Activé pour tous",
       "opKind": {
         "bootstrap": "bootstrap",
@@ -21570,10 +21588,10 @@ export const resources = {
       "planFor": "Plan — {{name}}",
       "planForHint": "Définissez manuellement un plan (Stripe non requis). Lorsque la facturation Stripe est active, son webhook met à jour ce même enregistrement.",
       "planStatus": {
-        "active": "actif (payant)",
-        "canceled": "annulé",
-        "pastDue": "en retard de paiement",
-        "trialing": "période d'essai (payant)"
+        "active": "active (payant)",
+        "canceled": "canceled",
+        "pastDue": "past_due",
+        "trialing": "trialing (payant)"
       },
       "priority": {
         "critical": "Critique",
@@ -21609,6 +21627,7 @@ export const resources = {
       },
       "saveToken": "Enregistrer le jeton",
       "searchUsersPlaceholder": "Rechercher par nom ou e-mail…",
+      "searching": "Recherche…",
       "seenAgo": "vu {{age}}",
       "selectAllShown": "Sélectionner tout ce qui est affiché",
       "selectPlaceholder": "Sélectionner…",
@@ -21669,6 +21688,7 @@ export const resources = {
       "tokenStored": "Jeton enregistré. Une opération `set_token` a été envoyée à chaque hôte bootstrapé ; les nouvelles exécutions du bridge l'utilisent automatiquement.",
       "total": "Total",
       "tryChangingFilters": "Essayez de modifier les filtres ci-dessus",
+      "turnOffToScope": "Désactivez pour limiter à certains utilisateurs…",
       "unavailable": "indisponible",
       "unpricedCount": "{{count}} sans tarif",
       "unpricedHint": "Exécutez Release.backfill_subscription_amounts() pour renseigner les montants depuis Stripe",
@@ -27201,6 +27221,7 @@ export const resources = {
         "emptyHint": "As propostas de recursos dos agentes aparecerão aqui",
         "title": "Propostas de Recursos"
       },
+      "flagEarlyAccessAria": "Acesso antecipado a {{key}}",
       "flagsIntro": "Ative um recurso para toda a plataforma, ou habilite-o para poucos selecionados enquanto permanece desativado para os demais. As alterações têm efeito imediato — sem necessidade de novo deploy.",
       "fleet": {
         "acrossOwners_one": "em {{count}} proprietário",
@@ -27426,6 +27447,8 @@ export const resources = {
       "notAuthorizedHint": "O console da plataforma é restrito a operadores.",
       "notBootstrapped": "sem bootstrap",
       "notRunning": "não em execução",
+      "onForCount_one": "Ativado para {{count}} pessoa",
+      "onForCount_other": "Ativado para {{count}} pessoas",
       "onForEveryone": "Ativado para todos",
       "opKind": {
         "bootstrap": "bootstrap",
@@ -27470,10 +27493,10 @@ export const resources = {
       "planFor": "Plano — {{name}}",
       "planForHint": "Defina um plano manualmente (sem necessidade do Stripe). Quando a cobrança via Stripe estiver ativa, o webhook dela atualiza este mesmo registro.",
       "planStatus": {
-        "active": "ativo (pagante)",
-        "canceled": "cancelado",
-        "pastDue": "em atraso",
-        "trialing": "em teste (pagante)"
+        "active": "active (pagante)",
+        "canceled": "canceled",
+        "pastDue": "past_due",
+        "trialing": "trialing (pagante)"
       },
       "priority": {
         "critical": "Crítica",
@@ -27509,6 +27532,7 @@ export const resources = {
       },
       "saveToken": "Salvar token",
       "searchUsersPlaceholder": "Buscar por nome ou e-mail…",
+      "searching": "Buscando…",
       "seenAgo": "visto {{age}}",
       "selectAllShown": "Selecionar todos os exibidos",
       "selectPlaceholder": "Selecionar…",
@@ -27569,6 +27593,7 @@ export const resources = {
       "tokenStored": "Token armazenado. Uma operação `set_token` foi enviada para cada host com bootstrap; novas execuções do bridge a utilizam automaticamente.",
       "total": "Total",
       "tryChangingFilters": "Tente alterar os filtros acima",
+      "turnOffToScope": "Desative para restringir a usuários específicos…",
       "unavailable": "indisponível",
       "unpricedCount": "{{count}} sem preço",
       "unpricedHint": "Execute Release.backfill_subscription_amounts() para preencher os valores a partir do Stripe",
@@ -33101,6 +33126,7 @@ export const resources = {
         "emptyHint": "エージェントからの機能提案がここに表示されます",
         "title": "機能提案"
       },
+      "flagEarlyAccessAria": "{{key}} の早期アクセス",
       "flagsIntro": "機能をプラットフォーム全体で切り替えるか、他の全員には無効のまま一部のユーザーにのみ有効にします。変更は再デプロイなしで即座に反映されます。",
       "fleet": {
         "acrossOwners_one": "{{count}} 人の所有者にまたがる",
@@ -33326,6 +33352,8 @@ export const resources = {
       "notAuthorizedHint": "プラットフォームコンソールはオペレーターに限定されています。",
       "notBootstrapped": "未ブートストラップ",
       "notRunning": "実行されていません",
+      "onForCount_one": "{{count}}人に有効",
+      "onForCount_other": "{{count}}人に有効",
       "onForEveryone": "全員に対して有効",
       "opKind": {
         "bootstrap": "ブートストラップ",
@@ -33370,10 +33398,10 @@ export const resources = {
       "planFor": "プラン — {{name}}",
       "planForHint": "プランを手動で設定します（Stripeは不要）。Stripe課金が有効になると、そのWebhookが同じレコードを更新します。",
       "planStatus": {
-        "active": "有効（有料）",
-        "canceled": "解約済み",
-        "pastDue": "支払い遅延",
-        "trialing": "試用中（有料）"
+        "active": "active（有料）",
+        "canceled": "canceled",
+        "pastDue": "past_due",
+        "trialing": "trialing（有料）"
       },
       "priority": {
         "critical": "重大",
@@ -33409,6 +33437,7 @@ export const resources = {
       },
       "saveToken": "トークンを保存",
       "searchUsersPlaceholder": "名前またはメールアドレスで検索…",
+      "searching": "検索中…",
       "seenAgo": "{{age}}前に確認",
       "selectAllShown": "表示中のすべてを選択",
       "selectPlaceholder": "選択…",
@@ -33469,6 +33498,7 @@ export const resources = {
       "tokenStored": "トークンを保存しました。各ブートストラップ済みホストに`set_token`操作が送信されました。新しいブリッジの実行では自動的に使用されます。",
       "total": "合計",
       "tryChangingFilters": "上のフィルターを変更してみてください",
+      "turnOffToScope": "特定のユーザーに限定するにはオフにしてください…",
       "unavailable": "利用不可",
       "unpricedCount": "{{count}} 件が価格未設定",
       "unpricedHint": "Release.backfill_subscription_amounts()を実行してStripeから金額を取得してください",
@@ -39001,6 +39031,7 @@ export const resources = {
         "emptyHint": "智能体提交的功能提案会显示在这里",
         "title": "功能提案"
       },
+      "flagEarlyAccessAria": "{{key}} 抢先体验",
       "flagsIntro": "可将某项能力面向全平台切换开启，或仅为部分用户启用，其余用户保持关闭。更改立即生效——无需重新部署。",
       "fleet": {
         "acrossOwners_one": "跨 {{count}} 个所有者",
@@ -39226,6 +39257,8 @@ export const resources = {
       "notAuthorizedHint": "平台控制台仅限运营人员访问。",
       "notBootstrapped": "未引导",
       "notRunning": "未运行",
+      "onForCount_one": "对 {{count}} 人开启",
+      "onForCount_other": "对 {{count}} 人开启",
       "onForEveryone": "对所有人开启",
       "opKind": {
         "bootstrap": "引导",
@@ -39270,10 +39303,10 @@ export const resources = {
       "planFor": "套餐 — {{name}}",
       "planForHint": "手动设置套餐（无需 Stripe）。当 Stripe 计费上线后，其 webhook 会更新同一条记录。",
       "planStatus": {
-        "active": "有效（付费中）",
-        "canceled": "已取消",
-        "pastDue": "逾期",
-        "trialing": "试用中（付费中）"
+        "active": "active（付费）",
+        "canceled": "canceled",
+        "pastDue": "past_due",
+        "trialing": "trialing（付费）"
       },
       "priority": {
         "critical": "严重",
@@ -39309,6 +39342,7 @@ export const resources = {
       },
       "saveToken": "保存令牌",
       "searchUsersPlaceholder": "按姓名或电子邮箱搜索……",
+      "searching": "搜索中…",
       "seenAgo": "{{age}}前活跃",
       "selectAllShown": "全选显示项",
       "selectPlaceholder": "请选择……",
@@ -39369,6 +39403,7 @@ export const resources = {
       "tokenStored": "令牌已存储。已向每台已引导的主机发送 `set_token` 操作；新的桥接运行将自动使用它。",
       "total": "总计",
       "tryChangingFilters": "尝试更改上方的筛选条件",
+      "turnOffToScope": "关闭后即可限定给特定用户…",
       "unavailable": "不可用",
       "unpricedCount": "{{count}} 个未定价",
       "unpricedHint": "运行 Release.backfill_subscription_amounts() 以从 Stripe 回填金额",
@@ -44901,6 +44936,7 @@ export const resources = {
         "emptyHint": "에이전트가 제안한 기능이 여기에 표시됩니다",
         "title": "기능 제안"
       },
+      "flagEarlyAccessAria": "{{key}} 얼리 액세스",
       "flagsIntro": "기능을 플랫폼 전체에서 켜거나, 다른 모든 사용자에게는 꺼진 상태로 두고 일부 사용자에게만 활성화할 수 있습니다. 변경 사항은 재배포 없이 즉시 적용됩니다.",
       "fleet": {
         "acrossOwners_one": "{{count}}명의 소유자에 걸쳐",
@@ -45126,6 +45162,8 @@ export const resources = {
       "notAuthorizedHint": "플랫폼 콘솔은 운영자만 이용할 수 있습니다.",
       "notBootstrapped": "부트스트랩되지 않음",
       "notRunning": "실행되지 않음",
+      "onForCount_one": "{{count}}명에게 활성화",
+      "onForCount_other": "{{count}}명에게 활성화",
       "onForEveryone": "전체 공개",
       "opKind": {
         "bootstrap": "부트스트랩",
@@ -45170,10 +45208,10 @@ export const resources = {
       "planFor": "플랜 — {{name}}",
       "planForHint": "플랜을 수동으로 설정합니다 (Stripe 불필요). Stripe 결제가 활성화되면 웹훅이 동일한 레코드를 업데이트합니다.",
       "planStatus": {
-        "active": "활성 (결제 중)",
-        "canceled": "취소됨",
-        "pastDue": "연체됨",
-        "trialing": "체험 중 (결제 중)"
+        "active": "active (유료)",
+        "canceled": "canceled",
+        "pastDue": "past_due",
+        "trialing": "trialing (유료)"
       },
       "priority": {
         "critical": "심각",
@@ -45209,6 +45247,7 @@ export const resources = {
       },
       "saveToken": "토큰 저장",
       "searchUsersPlaceholder": "이름 또는 이메일 검색…",
+      "searching": "검색 중…",
       "seenAgo": "{{age}} 전 확인됨",
       "selectAllShown": "표시된 항목 모두 선택",
       "selectPlaceholder": "선택…",
@@ -45269,6 +45308,7 @@ export const resources = {
       "tokenStored": "토큰이 저장되었습니다. 부트스트랩된 각 호스트에 `set_token` 작업이 전송되었으며, 새 브리지 실행 시 자동으로 사용됩니다.",
       "total": "합계",
       "tryChangingFilters": "위 필터를 변경해 보세요",
+      "turnOffToScope": "특정 사용자로 제한하려면 먼저 끄세요…",
       "unavailable": "사용 불가",
       "unpricedCount": "가격 미설정 {{count}}건",
       "unpricedHint": "Release.backfill_subscription_amounts()를 실행하여 Stripe에서 금액을 채우세요",
@@ -50801,6 +50841,7 @@ export const resources = {
         "emptyHint": "Le proposte di funzionalità degli agenti appariranno qui",
         "title": "Proposte di funzionalità"
       },
+      "flagEarlyAccessAria": "Accesso anticipato a {{key}}",
       "flagsIntro": "Attiva o disattiva una funzionalità a livello di piattaforma, oppure abilitala per un gruppo selezionato mantenendola disattivata per tutti gli altri. Le modifiche hanno effetto immediato — nessun redeploy necessario.",
       "fleet": {
         "acrossOwners_one": "in {{count}} proprietario",
@@ -51026,6 +51067,8 @@ export const resources = {
       "notAuthorizedHint": "La console della piattaforma è riservata agli operatori.",
       "notBootstrapped": "bootstrap non eseguito",
       "notRunning": "non in esecuzione",
+      "onForCount_one": "Attivo per {{count}} persona",
+      "onForCount_other": "Attivo per {{count}} persone",
       "onForEveryone": "Attivo per tutti",
       "opKind": {
         "bootstrap": "bootstrap",
@@ -51070,10 +51113,10 @@ export const resources = {
       "planFor": "Piano — {{name}}",
       "planForHint": "Imposta manualmente un piano (Stripe non è necessario). Quando la fatturazione Stripe è attiva, il suo webhook aggiorna questo stesso record.",
       "planStatus": {
-        "active": "attivo (a pagamento)",
-        "canceled": "annullato",
-        "pastDue": "scaduto",
-        "trialing": "in prova (a pagamento)"
+        "active": "active (a pagamento)",
+        "canceled": "canceled",
+        "pastDue": "past_due",
+        "trialing": "trialing (a pagamento)"
       },
       "priority": {
         "critical": "Critica",
@@ -51109,6 +51152,7 @@ export const resources = {
       },
       "saveToken": "Salva token",
       "searchUsersPlaceholder": "Cerca per nome o email…",
+      "searching": "Ricerca…",
       "seenAgo": "visto {{age}}",
       "selectAllShown": "Seleziona tutti quelli mostrati",
       "selectPlaceholder": "Seleziona…",
@@ -51169,6 +51213,7 @@ export const resources = {
       "tokenStored": "Token memorizzato. Un'operazione `set_token` è stata inviata a ogni host con bootstrap eseguito; le nuove esecuzioni del bridge lo utilizzano automaticamente.",
       "total": "Totale",
       "tryChangingFilters": "Prova a modificare i filtri qui sopra",
+      "turnOffToScope": "Disattiva per limitarlo a utenti specifici…",
       "unavailable": "non disponibile",
       "unpricedCount": "{{count}} senza prezzo",
       "unpricedHint": "Esegui Release.backfill_subscription_amounts() per popolare gli importi da Stripe",
@@ -56701,6 +56746,7 @@ export const resources = {
         "emptyHint": "एजेंट्स के फ़ीचर प्रस्ताव यहां दिखाई देंगे",
         "title": "फ़ीचर प्रस्ताव"
       },
+      "flagEarlyAccessAria": "{{key}} अर्ली एक्सेस",
       "flagsIntro": "किसी क्षमता को पूरे प्लेटफ़ॉर्म पर टॉगल करें, या इसे कुछ चुनिंदा लोगों के लिए सक्षम करें जबकि यह बाकी सभी के लिए बंद रहे। बदलाव तुरंत प्रभावी होते हैं — कोई पुनः डिप्लॉय नहीं।",
       "fleet": {
         "acrossOwners_one": "{{count}} मालिक में",
@@ -56926,6 +56972,8 @@ export const resources = {
       "notAuthorizedHint": "प्लेटफ़ॉर्म कंसोल केवल ऑपरेटरों तक सीमित है।",
       "notBootstrapped": "बूटस्ट्रैप नहीं हुआ",
       "notRunning": "नहीं चल रहा",
+      "onForCount_one": "{{count}} व्यक्ति के लिए चालू",
+      "onForCount_other": "{{count}} लोगों के लिए चालू",
       "onForEveryone": "सभी के लिए चालू",
       "opKind": {
         "bootstrap": "बूटस्ट्रैप",
@@ -56970,10 +57018,10 @@ export const resources = {
       "planFor": "प्लान — {{name}}",
       "planForHint": "मैन्युअल रूप से एक प्लान सेट करें (Stripe की आवश्यकता नहीं)। जब Stripe बिलिंग लाइव होगी, तो उसका वेबहुक इसी रिकॉर्ड को अपडेट करेगा।",
       "planStatus": {
-        "active": "सक्रिय (भुगतान कर रहे)",
-        "canceled": "रद्द किया गया",
-        "pastDue": "अतिदेय",
-        "trialing": "ट्रायल पर (भुगतान कर रहे)"
+        "active": "active (भुगतान कर रहे)",
+        "canceled": "canceled",
+        "pastDue": "past_due",
+        "trialing": "trialing (भुगतान कर रहे)"
       },
       "priority": {
         "critical": "गंभीर",
@@ -57009,6 +57057,7 @@ export const resources = {
       },
       "saveToken": "टोकन सहेजें",
       "searchUsersPlaceholder": "नाम या ईमेल खोजें…",
+      "searching": "खोज रहे हैं…",
       "seenAgo": "{{age}} पहले देखा गया",
       "selectAllShown": "सभी दिखाए गए चुनें",
       "selectPlaceholder": "चुनें…",
@@ -57069,6 +57118,7 @@ export const resources = {
       "tokenStored": "टोकन संग्रहीत। प्रत्येक बूटस्ट्रैप किए गए होस्ट को एक `set_token` ऑपरेशन भेजा गया; नए ब्रिज रन इसे स्वतः उपयोग करते हैं।",
       "total": "कुल",
       "tryChangingFilters": "ऊपर दिए गए फ़िल्टर बदलकर देखें",
+      "turnOffToScope": "कुछ ही उपयोगकर्ताओं तक सीमित करने के लिए पहले बंद करें…",
       "unavailable": "अनुपलब्ध",
       "unpricedCount": "{{count}} बिना कीमत के",
       "unpricedHint": "Stripe से राशि भरने के लिए Release.backfill_subscription_amounts() चलाएं",

@@ -4,7 +4,6 @@ import {
   AlertCircle,
   ArrowRightLeft,
   ChevronRight,
-  Cloud,
   Loader2,
   Plus,
   RefreshCw,
@@ -25,7 +24,8 @@ import { useModelCatalog, type CatalogProvider } from "../stores/modelCatalogSto
 import { useWorkspaces } from "../stores/workspaceStore";
 import { ConnectAnthropicDialog, ConnectHostDialog } from "./FleetView";
 import { HostRow, type HostRowDetailContext } from "./hosts/HostRow";
-import { HostOpLog } from "./hosts/HostOpLog";
+import { HostList } from "./hosts/HostList";
+import { HostPanels } from "./hosts/HostPanels";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -398,33 +398,6 @@ function HostsTab() {
     void refresh();
   }, [refresh]);
 
-  // Resolve which host (if any) backs a given VM. Prefer the explicit
-  // provider_vm_id link; fall back to matching the host's SSH IP to the VM's
-  // IPv4 — that covers hosts added manually by IP (no VM link stored), which
-  // would otherwise look orphaned even though they run on a known VM.
-  const hostForVm = useMemo(() => {
-    const byVmId = new Map<string, (typeof hosts)[number]>();
-    const byIp = new Map<string, (typeof hosts)[number]>();
-    for (const h of hosts) {
-      if (h.providerVmId) byVmId.set(h.providerVmId, h);
-      const ip = h.sshHost?.trim();
-      if (ip && !byIp.has(ip)) byIp.set(ip, h);
-    }
-    return (vm: api.ProviderVm) =>
-      byVmId.get(vm.id) ?? (vm.ipv4 ? byIp.get(vm.ipv4.trim()) : undefined);
-  }, [hosts]);
-
-  // Hosts not backed by any VM in the inventory (manually-added boxes, or a VM
-  // we couldn't list) — shown in their own group so they aren't lost.
-  const otherHosts = useMemo(() => {
-    const matchedHostIds = new Set<string>();
-    for (const vm of vms) {
-      const h = hostForVm(vm);
-      if (h) matchedHostIds.add(h.id);
-    }
-    return hosts.filter((h) => !matchedHostIds.has(h.id));
-  }, [hosts, vms, hostForVm]);
-
   const openAddHost = (vmId?: string) => {
     setConnectVmId(vmId);
     setConnectOpen(true);
@@ -469,55 +442,17 @@ function HostsTab() {
         </div>
       ) : (
         <>
-          {/* One entry per Hostinger VM. Managed VMs expand to their full host
-              controls; unmanaged VMs offer to add a host on them. */}
-          {vms.length > 0 && (
-            <ul className="space-y-2">
-              {vms.map((vm) => {
-                const host = hostForVm(vm);
-                return host ? (
-                  <AdminHostRow
-                    key={vm.id}
-                    host={host}
-                    allHosts={hosts}
-                    onChanged={refresh}
-                    vm={vm}
-                  />
-                ) : (
-                  <UnmanagedVmRow
-                    key={vm.id}
-                    vm={vm}
-                    canAdd={!!operatorOrgId}
-                    onAdd={() => openAddHost(vm.id)}
-                  />
-                );
-              })}
-            </ul>
-          )}
-
-          {vmsError && (
-            <p className="text-xs text-muted-foreground">
-              {t("hosts.vmInventoryError", { error: vmsError })}
-            </p>
-          )}
-
-          {/* Hosts with no Hostinger VM behind them (manually-added boxes). */}
-          {otherHosts.length > 0 && (
-            <div className="space-y-2 pt-2">
-              <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                {t("hosts.otherHosts")}
-              </div>
-              <ul className="space-y-2">
-                {otherHosts.map((h) => (
-                  <AdminHostRow key={h.id} host={h} allHosts={hosts} onChanged={refresh} />
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {vms.length === 0 && otherHosts.length === 0 && (
-            <p className="text-sm text-muted-foreground">{t("hosts.empty")}</p>
-          )}
+          <HostList
+            hosts={hosts}
+            vms={vms}
+            vmsError={vmsError}
+            canAdd={!!operatorOrgId}
+            onAdd={openAddHost}
+            renderHost={(host, vm) => (
+              <AdminHostRow host={host} allHosts={hosts} onChanged={refresh} vm={vm} />
+            )}
+            empty={<p className="text-sm text-muted-foreground">{t("hosts.empty")}</p>}
+          />
         </>
       )}
 
@@ -539,48 +474,6 @@ function HostsTab() {
         </>
       )}
     </div>
-  );
-}
-
-/**
- * A Hostinger VM that isn't (yet) registered as an AgentGram host. Compact row
- * showing the VM facts with an "Add host" action that opens the connect dialog
- * preselected on this VM.
- */
-function UnmanagedVmRow({
-  vm,
-  canAdd,
-  onAdd,
-}: {
-  vm: api.ProviderVm;
-  canAdd: boolean;
-  onAdd: () => void;
-}) {
-  const { t } = useTranslation("platform");
-  return (
-    <li className="flex items-center gap-3 rounded-lg border border-dashed border-border px-4 py-3">
-      <Cloud className="h-4 w-4 shrink-0 text-muted-foreground" />
-      <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-2">
-          <span className="truncate font-medium">{vm.hostname || vm.id}</span>
-          <Badge variant={vm.state === "running" ? "default" : "outline"} className="shrink-0">
-            {vm.state || t("common:unknown")}
-          </Badge>
-          <Badge variant="outline" className="shrink-0 text-muted-foreground">
-            {t("hosts.notAdded")}
-          </Badge>
-        </div>
-        <div className="mt-0.5 truncate text-xs text-muted-foreground">
-          {[vm.ipv4, vm.plan, vm.datacenter].filter(Boolean).join(" · ") || vm.id}
-        </div>
-      </div>
-      {canAdd && (
-        <Button variant="outline" size="sm" className="shrink-0" onClick={onAdd}>
-          <Plus className="h-3.5 w-3.5" />
-          {t("hosts.addHost")}
-        </Button>
-      )}
-    </li>
   );
 }
 
@@ -619,24 +512,14 @@ function AdminHostRow({
 
   return (
     <HostRow
-      host={host}
+      host={{ ...host, shared }}
       opsOrgId={host.organizationId}
       onChanged={onChanged}
       onRename={async (name) => {
         await api.updateAdminHost(host.id, { name });
       }}
       vm={vm}
-      summaryExtras={[
-        t("hosts.usersCount", { count: host.userCount ?? 0 }),
-        ...(host.orgName ? [host.orgName] : []),
-      ]}
-      extraBadges={
-        shared ? (
-          <Badge variant="outline" className="shrink-0 border-primary/30 text-primary">
-            {t("hosts.sharedBadge")}
-          </Badge>
-        ) : null
-      }
+      summaryExtras={host.orgName ? [host.orgName] : []}
       extraActions={
         <label
           className="ml-1 flex items-center gap-1.5 text-xs text-muted-foreground"
@@ -653,12 +536,8 @@ function AdminHostRow({
   );
 }
 
-/**
- * Expanded panel for an admin host row: segmented switch between the residents
- * breakdown (users + agents on the host) and the SSH op log. Operations is one
- * click away — no scrolling to the bottom — and its tab flags a live op so you
- * can jump straight to progress.
- */
+/** Admin residents panel wrapper: loads the cross-org host detail and hands
+ *  it to HostResidents inside the shared segmented HostPanels. */
 function AdminHostPanels({
   host,
   allHosts,
@@ -670,8 +549,6 @@ function AdminHostPanels({
   onChanged: () => Promise<void> | void;
   ctx: HostRowDetailContext;
 }) {
-  const { t } = useTranslation("platform");
-  const [panel, setPanel] = useState<"residents" | "operations">("residents");
   const [detail, setDetail] = useState<api.AdminHostDetail | null>(null);
   const [detailError, setDetailError] = useState<string | null>(null);
 
@@ -690,51 +567,11 @@ function AdminHostPanels({
     void loadDetail();
   }, [loadDetail]);
 
-  const users = host.userCount ?? 0;
-  const assigned = host.assignedAgentCount ?? host.agentCount ?? 0;
-
   return (
-    <div>
-      <div className="mb-3 inline-flex rounded-md border border-border p-0.5 text-sm">
-        <button
-          type="button"
-          onClick={() => setPanel("residents")}
-          className={cn(
-            "rounded-[5px] px-3 py-1 font-medium transition-colors",
-            panel === "residents"
-              ? "bg-muted text-foreground"
-              : "text-muted-foreground hover:text-foreground"
-          )}
-        >
-          {t("hosts.residents")}
-          <span className="ml-1.5 tabular-nums text-xs text-muted-foreground">
-            {t("hosts.residentsSummary", { users, agents: assigned })}
-          </span>
-        </button>
-        <button
-          type="button"
-          onClick={() => setPanel("operations")}
-          className={cn(
-            "flex items-center gap-1.5 rounded-[5px] px-3 py-1 font-medium transition-colors",
-            panel === "operations"
-              ? "bg-muted text-foreground"
-              : "text-muted-foreground hover:text-foreground"
-          )}
-        >
-          {t("hosts.operations")}
-          {ctx.opRunning ? (
-            <Loader2 className="h-3 w-3 animate-spin text-amber-500" />
-          ) : (
-            ctx.ops.length > 0 && (
-              <span className="tabular-nums text-xs text-muted-foreground">
-                {ctx.ops.length}
-              </span>
-            )
-          )}
-        </button>
-      </div>
-
-      {panel === "residents" ? (
+    <HostPanels
+      host={host}
+      ctx={ctx}
+      renderResidents={() => (
         <HostResidents
           host={host}
           detail={detail}
@@ -743,10 +580,8 @@ function AdminHostPanels({
           reload={loadDetail}
           onChanged={onChanged}
         />
-      ) : (
-        <HostOpLog ops={ctx.ops} onCancel={ctx.cancelOp} />
       )}
-    </div>
+    />
   );
 }
 
@@ -1154,6 +989,7 @@ function HostResidents({
 }
 
 function UsersTab() {
+  const { t } = useTranslation("platform");
   const [users, setUsers] = useState<api.AdminUser[]>([]);
   const [hosts, setHosts] = useState<api.OrganizationHost[]>([]);
   const [search, setSearch] = useState("");
@@ -1171,7 +1007,7 @@ function UsersTab() {
       setHosts(h);
       setError(null);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to load users");
+      setError(e instanceof Error ? e.message : t("errors.loadUsers"));
     } finally {
       setLoading(false);
     }
@@ -1193,32 +1029,32 @@ function UsersTab() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && void refresh(search)}
-            placeholder="Search name or email…"
+            placeholder={t("searchUsersPlaceholder")}
             className="pl-8"
           />
         </div>
         <Button variant="outline" size="sm" onClick={() => void refresh(search)}>
           <RefreshCw className="h-3.5 w-3.5" />
-          Refresh
+          {t("common:refresh")}
         </Button>
       </div>
 
       {loading ? (
         <div className="flex items-center gap-2 py-8 text-sm text-muted-foreground">
-          <Loader2 className="h-4 w-4 animate-spin" /> Loading…
+          <Loader2 className="h-4 w-4 animate-spin" /> {t("common:loading")}
         </div>
       ) : (
         <div className="overflow-x-auto rounded-lg border border-border">
           <table className="w-full text-sm">
             <thead className="bg-muted/50 text-left text-xs text-muted-foreground">
               <tr>
-                <th className="px-3 py-2 font-medium">User</th>
-                <th className="px-3 py-2 font-medium">Workspace</th>
-                <th className="px-3 py-2 font-medium">Member for</th>
-                <th className="px-3 py-2 font-medium">Agents</th>
-                <th className="px-3 py-2 font-medium">Tokens (30d)</th>
-                <th className="px-3 py-2 font-medium">Plan</th>
-                <th className="px-3 py-2 font-medium">Allocated</th>
+                <th className="px-3 py-2 font-medium">{t("columns.user")}</th>
+                <th className="px-3 py-2 font-medium">{t("columns.workspace")}</th>
+                <th className="px-3 py-2 font-medium">{t("columns.memberFor")}</th>
+                <th className="px-3 py-2 font-medium">{t("columns.agents")}</th>
+                <th className="px-3 py-2 font-medium">{t("columns.tokens30d")}</th>
+                <th className="px-3 py-2 font-medium">{t("columns.plan")}</th>
+                <th className="px-3 py-2 font-medium">{t("columns.allocated")}</th>
                 <th className="px-3 py-2" />
               </tr>
             </thead>
@@ -1268,13 +1104,13 @@ function UsersTab() {
                   </td>
                   <td className="px-3 py-2 text-right">
                     <Button variant="ghost" size="sm" onClick={() => setViewing(u)} disabled={u.agentCount === 0}>
-                      Agents
+                      {t("columns.agents")}
                     </Button>
                     <Button variant="ghost" size="sm" onClick={() => setPlanning(u)}>
-                      Plan
+                      {t("columns.plan")}
                     </Button>
                     <Button variant="ghost" size="sm" onClick={() => setAllocating(u)}>
-                      Allocate
+                      {t("allocate")}
                     </Button>
                   </td>
                 </tr>
@@ -1282,7 +1118,7 @@ function UsersTab() {
               {users.length === 0 && (
                 <tr>
                   <td colSpan={8} className="px-3 py-6 text-center text-muted-foreground">
-                    No users.
+                    {t("noUsers")}
                   </td>
                 </tr>
               )}
@@ -1325,6 +1161,7 @@ function UsersTab() {
  * enforces each gated route regardless of what the UI shows.
  */
 function FeatureFlagsTab() {
+  const { t } = useTranslation("platform");
   const [flags, setFlags] = useState<api.FeatureFlag[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -1335,7 +1172,7 @@ function FeatureFlagsTab() {
       setFlags(await api.listFeatureFlags());
       setError(null);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to load feature flags");
+      setError(e instanceof Error ? e.message : t("errors.loadFlags"));
     } finally {
       setLoading(false);
     }
@@ -1353,7 +1190,7 @@ function FeatureFlagsTab() {
   if (loading) {
     return (
       <div className="flex items-center gap-2 py-8 text-sm text-muted-foreground">
-        <Loader2 className="h-4 w-4 animate-spin" /> Loading…
+        <Loader2 className="h-4 w-4 animate-spin" /> {t("common:loading")}
       </div>
     );
   }
@@ -1361,17 +1198,13 @@ function FeatureFlagsTab() {
   return (
     <div>
       {error && <ErrorBox message={error} />}
-      <p className="mb-4 max-w-2xl text-sm text-muted-foreground">
-        Toggle a capability platform-wide, or enable it for a select few while it
-        stays off for everyone else. Changes take effect immediately — no
-        redeploy.
-      </p>
+      <p className="mb-4 max-w-2xl text-sm text-muted-foreground">{t("flagsIntro")}</p>
       <div className="divide-y divide-border rounded-lg border border-border">
         {flags.map((flag) => (
           <FeatureFlagRow key={flag.key} flag={flag} onChanged={onFlagChanged} setError={setError} />
         ))}
         {flags.length === 0 && (
-          <p className="px-4 py-8 text-sm text-muted-foreground">No feature flags defined.</p>
+          <p className="px-4 py-8 text-sm text-muted-foreground">{t("noFlags")}</p>
         )}
       </div>
     </div>
@@ -1387,6 +1220,7 @@ function FeatureFlagRow({
   onChanged: (flag: api.FeatureFlag) => void;
   setError: (msg: string | null) => void;
 }) {
+  const { t } = useTranslation("platform");
   const [busy, setBusy] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [search, setSearch] = useState("");
@@ -1407,7 +1241,7 @@ function FeatureFlagRow({
         // its profile cache on the same mutation, so this read is fresh.
         await useAuthStore.getState().fetchProfile();
       } catch (e) {
-        setError(e instanceof Error ? e.message : "Update failed");
+        setError(e instanceof Error ? e.message : t("errors.updateFailed"));
       } finally {
         setBusy(false);
       }
@@ -1450,7 +1284,7 @@ function FeatureFlagRow({
           type="button"
           onClick={() => setExpanded((e) => !e)}
           aria-expanded={expanded}
-          aria-label={`${flag.key} early access`}
+          aria-label={t("flagEarlyAccessAria", { key: flag.key })}
           className="flex min-w-0 flex-1 items-center gap-2 text-left"
         >
           <ChevronRight
@@ -1466,7 +1300,7 @@ function FeatureFlagRow({
         </button>
         {!flag.enabled && flag.allowed.length > 0 && (
           <Badge variant="outline" className="shrink-0">
-            On for {flag.allowed.length} {flag.allowed.length === 1 ? "person" : "people"}
+            {t("onForCount", { count: flag.allowed.length })}
           </Badge>
         )}
         {busy && <Loader2 className="h-4 w-4 shrink-0 animate-spin text-muted-foreground" />}
@@ -1482,7 +1316,7 @@ function FeatureFlagRow({
       {expanded && (
         <div className="px-3 pb-3 pl-9">
           <Label className="text-xs text-muted-foreground">
-            Early access {flag.enabled && "(superseded while On for everyone)"}
+            {t("earlyAccess")} {flag.enabled && t("earlyAccessSuperseded")}
           </Label>
 
           {flag.allowed.length > 0 ? (
@@ -1506,7 +1340,7 @@ function FeatureFlagRow({
                     disabled={busy}
                     onClick={() => void run(() => api.revokeFeatureFlag(flag.key, u.id))}
                     className="text-muted-foreground hover:text-destructive"
-                    aria-label={`Remove ${u.displayName}`}
+                    aria-label={t("removeUser", { name: u.displayName })}
                   >
                     <X className="h-3 w-3" />
                   </button>
@@ -1514,7 +1348,7 @@ function FeatureFlagRow({
               ))}
             </div>
           ) : (
-            <p className="mt-1 text-xs text-muted-foreground">No users in early access.</p>
+            <p className="mt-1 text-xs text-muted-foreground">{t("noEarlyAccess")}</p>
           )}
 
           <div className="relative mt-2 max-w-sm">
@@ -1524,14 +1358,14 @@ function FeatureFlagRow({
               onChange={(e) => setSearch(e.target.value)}
               disabled={flag.enabled}
               placeholder={
-                flag.enabled ? "Turn off to scope to specific users…" : "Add a user by name or email…"
+                flag.enabled ? t("turnOffToScope") : t("addUserPlaceholder")
               }
               className="pl-8"
             />
             {!flag.enabled && (searching || results.length > 0) && search.trim().length >= 2 && (
               <div className="absolute z-10 mt-1 w-full overflow-hidden rounded-md border border-border bg-popover shadow-md">
                 {searching ? (
-                  <div className="px-3 py-2 text-xs text-muted-foreground">Searching…</div>
+                  <div className="px-3 py-2 text-xs text-muted-foreground">{t("searching")}</div>
                 ) : (
                   results.slice(0, 6).map((u) => (
                     <button
@@ -1581,6 +1415,7 @@ function UserDetailDialog({
   onOpenChange: (open: boolean) => void;
   onChanged: () => Promise<void> | void;
 }) {
+  const { t } = useTranslation("platform");
   const [detail, setDetail] = useState<api.AdminUserDetail | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -1592,7 +1427,7 @@ function UserDetailDialog({
     try {
       setDetail(await api.getAdminUser(userId));
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to load agents");
+      setError(e instanceof Error ? e.message : t("errors.loadAgents"));
     } finally {
       setLoading(false);
     }
@@ -1615,16 +1450,14 @@ function UserDetailDialog({
     <Dialog open={!!user} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-4xl">
         <DialogHeader>
-          <DialogTitle>Agents — {user?.displayName}</DialogTitle>
-          <DialogDescription>
-            Adjust each agent's model and connection, or reset a stuck one. Token totals are last 30 days.
-          </DialogDescription>
+          <DialogTitle>{t("agentsFor", { name: user?.displayName ?? "" })}</DialogTitle>
+          <DialogDescription>{t("agentsForHint")}</DialogDescription>
         </DialogHeader>
 
         {error && <ErrorBox message={error} />}
         {loading || !detail ? (
           <div className="flex items-center gap-2 py-8 text-sm text-muted-foreground">
-            <Loader2 className="h-4 w-4 animate-spin" /> Loading…
+            <Loader2 className="h-4 w-4 animate-spin" /> {t("common:loading")}
           </div>
         ) : (
           <div className="max-h-[60vh] overflow-y-auto py-1">
@@ -1632,12 +1465,12 @@ function UserDetailDialog({
               <table className="w-full text-sm">
                 <thead className="bg-muted/50 text-left text-xs text-muted-foreground">
                   <tr>
-                    <th className="px-3 py-2 font-medium">Agent</th>
-                    <th className="px-3 py-2 font-medium">Model</th>
-                    <th className="px-3 py-2 font-medium">Connection</th>
-                    <th className="px-3 py-2 font-medium">Tokens (30d)</th>
-                    <th className="px-3 py-2 font-medium">Cost</th>
-                    <th className="px-3 py-2 font-medium">Trend</th>
+                    <th className="px-3 py-2 font-medium">{t("columns.agent")}</th>
+                    <th className="px-3 py-2 font-medium">{t("columns.model")}</th>
+                    <th className="px-3 py-2 font-medium">{t("columns.connection")}</th>
+                    <th className="px-3 py-2 font-medium">{t("columns.tokens30d")}</th>
+                    <th className="px-3 py-2 font-medium">{t("columns.cost")}</th>
+                    <th className="px-3 py-2 font-medium">{t("columns.trend")}</th>
                     <th className="px-3 py-2" />
                   </tr>
                 </thead>
@@ -1661,7 +1494,7 @@ function UserDetailDialog({
                       </td>
                       <td className="px-3 py-2 text-right">
                         <Button variant="ghost" size="sm" onClick={() => setManaging(a)}>
-                          Manage
+                          {t("manage")}
                         </Button>
                       </td>
                     </tr>
@@ -1669,7 +1502,7 @@ function UserDetailDialog({
                   {detail.agents.length === 0 && (
                     <tr>
                       <td colSpan={7} className="px-3 py-6 text-center text-muted-foreground">
-                        No agents.
+                        {t("noAgents")}
                       </td>
                     </tr>
                   )}
@@ -1705,6 +1538,7 @@ function AgentManageDialog({
   onOpenChange: (open: boolean) => void;
   onDone: () => void;
 }) {
+  const { t } = useTranslation("platform");
   const fetchGlobalCatalog = useModelCatalog((s) => s.fetchGlobalCatalog);
   const [providers, setProviders] = useState<CatalogProvider[]>([]);
 
@@ -1743,10 +1577,10 @@ function AgentManageDialog({
   const modelOptions = useMemo(() => {
     const opts = catalogModels.map((m) => ({ id: m.id, label: m.label }));
     if (model && !opts.some((o) => o.id === model)) {
-      return [{ id: model, label: `${model} (current)` }, ...opts];
+      return [{ id: model, label: t("currentModel", { model }) }, ...opts];
     }
     return opts;
-  }, [catalogModels, model]);
+  }, [catalogModels, model, t]);
 
   // Hosted targets: agent's own-org hosts + any shared host (matches the
   // backend's host-eligibility — admin reassign carries the shared bypass).
@@ -1778,7 +1612,7 @@ function AgentManageDialog({
 
       onDone();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not save");
+      setError(e instanceof Error ? e.message : t("errors.saveFailed"));
     } finally {
       setBusy(false);
     }
@@ -1793,14 +1627,14 @@ function AgentManageDialog({
       if (!r.reset) {
         setError(
           r.reason === "local_runtime"
-            ? "This agent runs on the owner's own device — reset it from there."
-            : `Reset unavailable: ${r.reason ?? "unknown"}`
+            ? t("errors.localRuntimeReset")
+            : t("errors.resetUnavailable", { reason: r.reason ?? t("errors.unavailable") })
         );
       } else {
         onDone();
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Reset failed");
+      setError(e instanceof Error ? e.message : t("errors.resetFailed"));
     } finally {
       setBusy(false);
     }
@@ -1812,15 +1646,12 @@ function AgentManageDialog({
     <Dialog open={!!agent} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Manage — {agent?.displayName}</DialogTitle>
-          <DialogDescription>
-            Change the model or where this agent runs, or reset it if it's stuck. Models come from
-            the platform catalog.
-          </DialogDescription>
+          <DialogTitle>{t("manageAgent", { name: agent?.displayName ?? "" })}</DialogTitle>
+          <DialogDescription>{t("manageAgentHint")}</DialogDescription>
         </DialogHeader>
         <div className="space-y-3 py-1">
           <div className="space-y-1">
-            <Label htmlFor="agent-backend">Backend</Label>
+            <Label htmlFor="agent-backend">{t("backend")}</Label>
             <select
               id="agent-backend"
               value={backend}
@@ -1837,7 +1668,7 @@ function AgentManageDialog({
               className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             >
               <option value="">
-                {mcBackend ? `Keep current (${mcBackend})` : "Keep current"}
+                {mcBackend ? t("keepCurrentWith", { value: mcBackend }) : t("keepCurrent")}
               </option>
               {providers.map((p) => (
                 <option key={p.id} value={p.id}>
@@ -1847,7 +1678,7 @@ function AgentManageDialog({
             </select>
           </div>
           <div className="space-y-1">
-            <Label htmlFor="agent-model">Model</Label>
+            <Label htmlFor="agent-model">{t("columns.model")}</Label>
             <select
               id="agent-model"
               value={model}
@@ -1855,7 +1686,7 @@ function AgentManageDialog({
               disabled={modelOptions.length === 0}
               className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:opacity-50"
             >
-              {modelOptions.length === 0 && <option value="">Pick a backend first…</option>}
+              {modelOptions.length === 0 && <option value="">{t("pickBackendFirst")}</option>}
               {modelOptions.map((m) => (
                 <option key={m.id} value={m.id}>
                   {m.label}
@@ -1866,7 +1697,7 @@ function AgentManageDialog({
           <div className="space-y-1">
             <Label htmlFor="agent-conn">
               <span className="inline-flex items-center gap-1.5">
-                <ArrowRightLeft className="h-3.5 w-3.5" /> Connection
+                <ArrowRightLeft className="h-3.5 w-3.5" /> {t("columns.connection")}
               </span>
             </Label>
             <select
@@ -1875,11 +1706,11 @@ function AgentManageDialog({
               onChange={(e) => setConnection(e.target.value)}
               className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             >
-              <option value="local">Local (owner's device)</option>
+              <option value="local">{t("localOwnersDevice")}</option>
               {hostOptions.map((h) => (
                 <option key={h.id} value={h.id}>
-                  Hosted · {h.name}
-                  {h.shared ? " (shared)" : ""}
+                  {t("hostedOn", { name: h.name })}
+                  {h.shared ? ` ${t("sharedSuffix")}` : ""}
                 </option>
               ))}
             </select>
@@ -1887,7 +1718,7 @@ function AgentManageDialog({
 
           {byModel.length > 0 && (
             <div className="space-y-1">
-              <Label className="text-xs text-muted-foreground">Usage by model (30d)</Label>
+              <Label className="text-xs text-muted-foreground">{t("usageByModel")}</Label>
               <ul className="rounded-md border border-border text-xs">
                 {byModel.map((m) => (
                   <li
@@ -1908,10 +1739,10 @@ function AgentManageDialog({
           <DialogFooter className="justify-between">
             <Button variant="ghost" onClick={() => void reset()} disabled={busy}>
               <RotateCcw className="h-3.5 w-3.5" />
-              Reset
+              {t("reset")}
             </Button>
             <Button onClick={() => void save()} disabled={busy}>
-              {busy ? "Saving…" : "Save"}
+              {busy ? t("common:saving") : t("common:save")}
             </Button>
           </DialogFooter>
         </div>
@@ -1929,6 +1760,7 @@ function SetPlanDialog({
   onOpenChange: (open: boolean) => void;
   onDone: () => void;
 }) {
+  const { t } = useTranslation("platform");
   const [plan, setPlan] = useState("comp");
   const [status, setStatus] = useState("active");
   const [busy, setBusy] = useState(false);
@@ -1951,7 +1783,7 @@ function SetPlanDialog({
       await api.setUserPlan(user.id, plan.trim() || "comp", status);
       onDone();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not set plan");
+      setError(e instanceof Error ? e.message : t("errors.setPlanFailed"));
     } finally {
       setBusy(false);
     }
@@ -1965,7 +1797,7 @@ function SetPlanDialog({
       await api.clearUserPlan(user.id);
       onDone();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not clear plan");
+      setError(e instanceof Error ? e.message : t("errors.clearPlanFailed"));
     } finally {
       setBusy(false);
     }
@@ -1975,15 +1807,12 @@ function SetPlanDialog({
     <Dialog open={!!user} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Plan — {user?.displayName}</DialogTitle>
-          <DialogDescription>
-            Manually set a plan (no Stripe needed). When Stripe billing is live,
-            its webhook updates this same record.
-          </DialogDescription>
+          <DialogTitle>{t("planFor", { name: user?.displayName ?? "" })}</DialogTitle>
+          <DialogDescription>{t("planForHint")}</DialogDescription>
         </DialogHeader>
         <div className="space-y-3 py-1">
           <div className="space-y-1">
-            <Label htmlFor="plan-name">Plan</Label>
+            <Label htmlFor="plan-name">{t("plan")}</Label>
             <Input
               id="plan-name"
               value={plan}
@@ -1992,26 +1821,26 @@ function SetPlanDialog({
             />
           </div>
           <div className="space-y-1">
-            <Label htmlFor="plan-status">Status</Label>
+            <Label htmlFor="plan-status">{t("statusLabel")}</Label>
             <select
               id="plan-status"
               value={status}
               onChange={(e) => setStatus(e.target.value)}
               className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             >
-              <option value="active">active (paying)</option>
-              <option value="trialing">trialing (paying)</option>
-              <option value="past_due">past_due</option>
-              <option value="canceled">canceled</option>
+              <option value="active">{t("planStatus.active")}</option>
+              <option value="trialing">{t("planStatus.trialing")}</option>
+              <option value="past_due">{t("planStatus.pastDue")}</option>
+              <option value="canceled">{t("planStatus.canceled")}</option>
             </select>
           </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
           <DialogFooter className="justify-between">
             <Button variant="ghost" onClick={() => void clear()} disabled={busy}>
-              Clear plan
+              {t("clearPlan")}
             </Button>
             <Button onClick={() => void save()} disabled={busy}>
-              {busy ? "Saving…" : "Save"}
+              {busy ? t("common:saving") : t("common:save")}
             </Button>
           </DialogFooter>
         </div>
@@ -2031,6 +1860,7 @@ function AllocateDialog({
   onOpenChange: (open: boolean) => void;
   onDone: () => void;
 }) {
+  const { t } = useTranslation("platform");
   const [hostId, setHostId] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -2048,27 +1878,32 @@ function AllocateDialog({
     try {
       const res = await api.allocateUserToHost(user.id, hostId);
       if (res.total === 0) {
-        setError("This user has no active agents to allocate.");
+        setError(t("errors.noAgentsToAllocate"));
         return;
       }
       if (res.allocated === 0) {
         const why = res.failed[0]?.reason;
         setError(
           why
-            ? `Couldn't allocate any agents: ${why}`
-            : "Couldn't allocate any agents."
+            ? t("errors.allocateNoneWithReason", { reason: why })
+            : t("errors.allocateNone")
         );
         return;
       }
       if (res.failed.length > 0) {
         setError(
-          `Allocated ${res.allocated} of ${res.total} — ${res.failed.length} failed (${res.failed[0].reason}).`
+          t("errors.allocatePartial", {
+            allocated: res.allocated,
+            total: res.total,
+            failed: res.failed.length,
+            reason: res.failed[0].reason,
+          })
         );
         return;
       }
       onDone();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Allocation failed");
+      setError(e instanceof Error ? e.message : t("errors.allocationFailed"));
     } finally {
       setBusy(false);
     }
@@ -2082,7 +1917,7 @@ function AllocateDialog({
       await api.deallocateUser(user.id);
       onDone();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Deallocation failed");
+      setError(e instanceof Error ? e.message : t("errors.deallocationFailed"));
     } finally {
       setBusy(false);
     }
@@ -2092,41 +1927,38 @@ function AllocateDialog({
     <Dialog open={!!user} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Allocate {user?.displayName}</DialogTitle>
-          <DialogDescription>
-            Pin this user's agents to a shared host. They stay in their own
-            workspace; agents come online on the host.
-          </DialogDescription>
+          <DialogTitle>{t("allocateUser", { name: user?.displayName ?? "" })}</DialogTitle>
+          <DialogDescription>{t("allocateHint")}</DialogDescription>
         </DialogHeader>
         <div className="space-y-3 py-1">
           <div className="space-y-1">
-            <Label htmlFor="alloc-host">Shared host</Label>
+            <Label htmlFor="alloc-host">{t("sharedHost")}</Label>
             <select
               id="alloc-host"
               value={hostId}
               onChange={(e) => setHostId(e.target.value)}
               className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             >
-              <option value="">Select a shared host…</option>
+              <option value="">{t("selectSharedHost")}</option>
               {eligible.map((h) => (
                 <option key={h.id} value={h.id}>
-                  {h.name} ({h.status})
+                  {h.name} ({t(`common:${h.status}`, { defaultValue: h.status })})
                 </option>
               ))}
             </select>
             {eligible.length === 0 && (
               <p className="text-xs text-muted-foreground">
-                No shared hosts yet — toggle a host to “Shared” in the Hosts tab.
+                {t("noSharedHosts")}
               </p>
             )}
           </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
           <DialogFooter className="justify-between">
             <Button variant="ghost" onClick={() => void deallocate()} disabled={busy}>
-              Deallocate all
+              {t("deallocateAll")}
             </Button>
             <Button onClick={() => void allocate()} disabled={busy || !hostId}>
-              {busy ? "Working…" : "Allocate"}
+              {busy ? t("working") : t("allocate")}
             </Button>
           </DialogFooter>
         </div>

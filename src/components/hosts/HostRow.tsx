@@ -301,6 +301,11 @@ export function HostRow({
                     {t("hosts.vmState", { state: vm.state })}
                   </Badge>
                 )}
+                {host.shared && (
+                  <Badge variant="outline" className="shrink-0 border-primary/30 text-primary">
+                    {t("hosts.sharedBadge")}
+                  </Badge>
+                )}
                 {extraBadges}
                 {!bootstrapped && (
                   <Badge variant="outline" className="shrink-0 border-amber-500/30 text-amber-600">
@@ -329,6 +334,9 @@ export function HostRow({
             <span className={cn("tabular-nums", online > 0 && "text-success")}>{online}</span>
             <span className="tabular-nums">/{assigned}</span>{" "}
             {t("hosts.agentsOnlineSuffix", { count: assigned })}
+            {host.userCount != null
+              ? ` · ${t("hosts.usersCount", { count: host.userCount })}`
+              : ""}
             {(summaryExtras ?? []).map((s) => ` · ${s}`).join("")}
             {host.sshHost
               ? ` · ${host.sshUser || "root"}@${host.sshHost}`

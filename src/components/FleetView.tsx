@@ -27,7 +27,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { HostRow } from "./hosts/HostRow";
-import { HostOpLog } from "./hosts/HostOpLog";
+import { HostList } from "./hosts/HostList";
+import { HostPanels } from "./hosts/HostPanels";
 import { CopyField } from "./hosts/util";
 
 /**
@@ -50,20 +51,33 @@ export function FleetView() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [vms, setVms] = useState<api.ProviderVm[]>([]);
   const [connectOpen, setConnectOpen] = useState(false);
+  // Which VM (if any) the "Add host" dialog should preselect.
+  const [connectVmId, setConnectVmId] = useState<string | undefined>(undefined);
   const [anthropicOpen, setAnthropicOpen] = useState(false);
   const [provisionOpen, setProvisionOpen] = useState(false);
 
   const refresh = useCallback(async () => {
     if (!orgId) return;
-    try {
-      const fleet = await api.listOrganizationHostFleet(orgId);
-      setHosts(fleet.hosts);
-      setAnthropicConnected(fleet.anthropicConnected);
+    // The VM inventory is best-effort (empty when provisioning isn't
+    // configured for the org) — same merged hosts+VMs view as the admin tab.
+    const [fleetRes, vmsRes] = await Promise.allSettled([
+      api.listOrganizationHostFleet(orgId),
+      api.listProviderVms(orgId),
+    ]);
+    if (fleetRes.status === "fulfilled") {
+      setHosts(fleetRes.value.hosts);
+      setAnthropicConnected(fleetRes.value.anthropicConnected);
       setError(null);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : t("fleet.errors.loadFailed"));
+    } else {
+      setError(
+        fleetRes.reason instanceof Error
+          ? fleetRes.reason.message
+          : t("fleet.errors.loadFailed")
+      );
     }
+    setVms(vmsRes.status === "fulfilled" ? vmsRes.value : []);
   }, [orgId, t]);
 
   useEffect(() => {
@@ -152,42 +166,55 @@ export function FleetView() {
           <div className="flex items-center justify-center py-12">
             <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
           </div>
-        ) : hosts.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-border py-12 text-center text-sm text-muted-foreground">
-            <Trans
-              i18nKey="fleet.empty"
-              ns="platform"
-              components={{ b: <span className="font-medium" /> }}
-            />
-          </div>
         ) : (
-          <ul className="space-y-3">
-            {hosts.map((h) => (
+          <HostList
+            hosts={hosts}
+            vms={vms}
+            canAdd
+            onAdd={(vmId) => {
+              setConnectVmId(vmId);
+              setConnectOpen(true);
+            }}
+            renderHost={(h, vm) => (
               <HostRow
-                key={h.id}
                 host={h}
                 opsOrgId={orgId}
+                vm={vm}
                 onChanged={() => void refresh()}
                 onRename={async (name) => {
                   await api.updateHostConnection(orgId, h.id, { name });
                 }}
-                renderDetail={({ ops, cancelOp }) => (
-                  <div className="space-y-4">
-                    <HostAgentList orgId={orgId} hostId={h.id} />
-                    <HostOpLog ops={ops} onCancel={cancelOp} />
-                  </div>
+                renderDetail={(ctx) => (
+                  <HostPanels
+                    host={h}
+                    ctx={ctx}
+                    renderResidents={() => <HostAgentList orgId={orgId} hostId={h.id} />}
+                  />
                 )}
               />
-            ))}
-          </ul>
+            )}
+            empty={
+              <div className="rounded-lg border border-dashed border-border py-12 text-center text-sm text-muted-foreground">
+                <Trans
+                  i18nKey="fleet.empty"
+                  ns="platform"
+                  components={{ b: <span className="font-medium" /> }}
+                />
+              </div>
+            }
+          />
         )}
       </div>
 
       <ConnectHostDialog
         orgId={orgId}
         open={connectOpen}
-        onOpenChange={setConnectOpen}
+        onOpenChange={(next) => {
+          if (!next) setConnectVmId(undefined);
+          setConnectOpen(next);
+        }}
         onChanged={() => void refresh()}
+        initialVmId={connectVmId}
       />
       <ConnectAnthropicDialog
         orgId={orgId}
