@@ -27,6 +27,7 @@ import { cn } from "../../lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import {
   Dialog,
   DialogContent,
@@ -55,10 +56,9 @@ export interface HostRowDetailContext {
  * the authorize-key dialog, the Claude login dialog, and the op-log state with
  * its live re-poll all live here so the two surfaces cannot drift.
  *
- * Surface differences are injected: the admin passes `vm`, extra badges
- * (Shared), extra actions (the Shared switch), extra summary segments
- * (user count, org name), and its own rename endpoint; each surface supplies
- * its own expanded panel via `renderDetail`.
+ * Surface differences are injected: each surface passes its own rename and
+ * shared-toggle endpoints, the admin adds an org-name summary segment, and
+ * each supplies its own expanded panel via `renderDetail`.
  */
 export function HostRow({
   host,
@@ -68,7 +68,7 @@ export function HostRow({
   vm,
   summaryExtras,
   extraBadges,
-  extraActions,
+  onToggleShared,
   renderDetail,
 }: {
   host: api.OrganizationHost;
@@ -84,10 +84,12 @@ export function HostRow({
   /** Extra ` · `-joined segments inserted into the summary line after the
    *  agent counts (e.g. the admin's user count and org name). */
   summaryExtras?: string[];
-  /** Extra badges rendered after the status/VM badges (e.g. Shared). */
+  /** Extra badges rendered after the status/VM/Shared badges. */
   extraBadges?: ReactNode;
-  /** Extra controls rendered before the delete button (e.g. the Shared switch). */
-  extraActions?: ReactNode;
+  /** Persist a shared-flag toggle — the admin uses the cross-org endpoint,
+   *  the Hosts view the org-scoped one (backend enforces who may flip it).
+   *  When given, the row renders the Shared switch next to its actions. */
+  onToggleShared?: (next: boolean) => Promise<void>;
   /** Expanded panel content. Receives the row's op-log state. */
   renderDetail: (ctx: HostRowDetailContext) => ReactNode;
 }) {
@@ -101,6 +103,9 @@ export function HostRow({
   const [editing, setEditing] = useState(false);
   const [nameInput, setNameInput] = useState(host.name);
   const [renameBusy, setRenameBusy] = useState(false);
+  // Optimistic shared flag; re-seeded whenever a refresh delivers the host.
+  const [shared, setShared] = useState(!!host.shared);
+  useEffect(() => setShared(!!host.shared), [host.shared]);
 
   const bootstrapped = !!host.bootstrappedAt;
   const assigned = host.assignedAgentCount ?? host.agentCount ?? 0;
@@ -192,6 +197,17 @@ export function HostRow({
       setPubKey(await api.getHostPublicKey(opsOrgId, host.id));
     } catch (e) {
       alert(e instanceof Error ? e.message : i18n.t("platform:errors.loadPublicKey"));
+    }
+  };
+
+  const toggleShared = async (next: boolean) => {
+    if (!onToggleShared) return;
+    setShared(next); // optimistic
+    try {
+      await onToggleShared(next);
+    } catch (e) {
+      setShared(!next);
+      alert(e instanceof Error ? e.message : i18n.t("platform:errors.updateHost"));
     }
   };
 
@@ -301,7 +317,7 @@ export function HostRow({
                     {t("hosts.vmState", { state: vm.state })}
                   </Badge>
                 )}
-                {host.shared && (
+                {shared && (
                   <Badge variant="outline" className="shrink-0 border-primary/30 text-primary">
                     {t("hosts.sharedBadge")}
                   </Badge>
@@ -450,7 +466,15 @@ export function HostRow({
               <Activity className="h-3.5 w-3.5" />
             )}
           </Button>
-          {extraActions}
+          {onToggleShared && (
+            <label
+              className="ml-1 flex items-center gap-1.5 text-xs text-muted-foreground"
+              title={t("hosts.sharedHint")}
+            >
+              {t("hosts.shared")}
+              <Switch checked={shared} onCheckedChange={(v) => void toggleShared(v)} />
+            </label>
+          )}
           <Button
             variant="ghost"
             size="sm"

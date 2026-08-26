@@ -184,6 +184,9 @@ export function FleetView() {
                 onRename={async (name) => {
                   await api.updateHostConnection(orgId, h.id, { name });
                 }}
+                onToggleShared={async (next) => {
+                  await api.updateHostConnection(orgId, h.id, { shared: next });
+                }}
                 renderDetail={(ctx) => (
                   <HostPanels
                     host={h}

@@ -497,22 +497,9 @@ function AdminHostRow({
    *  live power-state next to the host's AgentGram status. */
   vm?: api.ProviderVm;
 }) {
-  const { t } = useTranslation("platform");
-  const [shared, setShared] = useState(!!host.shared);
-
-  const toggleShared = async (next: boolean) => {
-    setShared(next); // optimistic
-    try {
-      await api.setHostShared(host.id, next);
-    } catch (e) {
-      setShared(!next);
-      alert(e instanceof Error ? e.message : i18n.t("platform:errors.updateHost"));
-    }
-  };
-
   return (
     <HostRow
-      host={{ ...host, shared }}
+      host={host}
       opsOrgId={host.organizationId}
       onChanged={onChanged}
       onRename={async (name) => {
@@ -520,15 +507,9 @@ function AdminHostRow({
       }}
       vm={vm}
       summaryExtras={host.orgName ? [host.orgName] : []}
-      extraActions={
-        <label
-          className="ml-1 flex items-center gap-1.5 text-xs text-muted-foreground"
-          title={t("hosts.sharedHint")}
-        >
-          {t("hosts.shared")}
-          <Switch checked={shared} onCheckedChange={(v) => void toggleShared(v)} />
-        </label>
-      }
+      onToggleShared={async (next) => {
+        await api.setHostShared(host.id, next);
+      }}
       renderDetail={(ctx) => (
         <AdminHostPanels host={host} allHosts={allHosts} onChanged={onChanged} ctx={ctx} />
       )}

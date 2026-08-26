@@ -932,7 +932,7 @@ export async function cancelHostOperation(
 export async function updateHostConnection(
   orgId: string,
   hostId: string,
-  params: { name?: string; sshHost?: string; sshPort?: number; sshUser?: string }
+  params: { name?: string; sshHost?: string; sshPort?: number; sshUser?: string; shared?: boolean }
 ): Promise<OrganizationHost> {
   const res = await request<{ host: OrganizationHost }>(
     `/api/organizations/${orgId}/hosts/${hostId}`,
