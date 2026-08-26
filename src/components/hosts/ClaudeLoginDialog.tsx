@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Check, Copy as CopyIcon, Loader2, Terminal } from "lucide-react";
+import { Trans, useTranslation } from "react-i18next";
+import i18n from "../../i18n";
 import { open as tauriOpen } from "@tauri-apps/plugin-shell";
 import * as api from "../../lib/api";
 import { Button } from "@/components/ui/button";
@@ -85,6 +87,7 @@ export function ClaudeLoginDialog({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
+  const { t } = useTranslation("platform");
   const [pane, setPane] = useState("");
   const [loginUrl, setLoginUrl] = useState<string | null>(null);
   const [code, setCode] = useState("");
@@ -107,7 +110,7 @@ export function ClaudeLoginDialog({
         const { output } = await api.sendClaudeLoginKey(orgId, hostId, key);
         setPane(output);
       } catch (e) {
-        setError(e instanceof Error ? e.message : "Could not send key to the host");
+        setError(e instanceof Error ? e.message : i18n.t("platform:hosts.login.errors.sendKeyFailed"));
       } finally {
         setKeyBusy(false);
       }
@@ -169,7 +172,7 @@ export function ClaudeLoginDialog({
       })
       .catch((e) => {
         if (cancelled) return;
-        setError(e instanceof Error ? e.message : "Could not start login on the host");
+        setError(e instanceof Error ? e.message : i18n.t("platform:hosts.login.errors.startFailed"));
         setPhase("error");
       });
 
@@ -195,7 +198,7 @@ export function ClaudeLoginDialog({
       else if (loginFailed(output)) setPhase("error");
       else setPhase("awaiting_code");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not submit code");
+      setError(e instanceof Error ? e.message : i18n.t("platform:hosts.login.errors.submitFailed"));
       setPhase("awaiting_code");
     }
   };
@@ -211,31 +214,27 @@ export function ClaudeLoginDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle>Sign in to Claude — {hostName}</DialogTitle>
+          <DialogTitle>{t("hosts.login.title", { name: hostName })}</DialogTitle>
           <DialogDescription>
-            Runs <code>claude /login</code> on the VM. Open the URL below in your
-            browser, authorize, then paste the code it gives you. Credentials are
-            stored on the host and shared by every agent running on it.
+            <Trans i18nKey="hosts.login.description" ns="platform" components={{ code: <code /> }} />
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-3 py-1">
           {phase === "starting" && (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Loader2 className="h-4 w-4 animate-spin" /> Starting login on the host…
+              <Loader2 className="h-4 w-4 animate-spin" /> {t("hosts.login.starting")}
             </div>
           )}
 
           {phase === "awaiting_url" && (
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Loader2 className="h-4 w-4 animate-spin" /> Waiting for the login URL…
+                <Loader2 className="h-4 w-4 animate-spin" /> {t("hosts.login.waitingUrl")}
               </div>
               {trustPromptVisible(pane) && (
                 <p className="text-xs text-muted-foreground">
-                  The host is asking whether to trust this folder — confirming
-                  automatically. If it's stuck, use the controls below to answer
-                  it manually.
+                  {t("hosts.login.trustPrompt")}
                 </p>
               )}
             </div>
@@ -246,7 +245,7 @@ export function ClaudeLoginDialog({
               auto-confirm didn't clear. Shown until the URL appears. */}
           {(phase === "awaiting_url" || phase === "starting") && (
             <div className="flex flex-wrap items-center gap-1.5">
-              <span className="mr-1 text-xs text-muted-foreground">Send key:</span>
+              <span className="mr-1 text-xs text-muted-foreground">{t("hosts.login.sendKeyLabel")}</span>
               {(["Up", "Down", "Enter"] as const).map((k) => (
                 <Button
                   key={k}
@@ -264,7 +263,7 @@ export function ClaudeLoginDialog({
 
           {loginUrl && phase !== "done" && (
             <div className="space-y-1">
-              <Label className="text-xs">Login URL</Label>
+              <Label className="text-xs">{t("hosts.login.loginUrl")}</Label>
               <div className="flex items-center gap-2 rounded-md border border-border bg-muted px-2.5 py-2 font-mono text-xs break-all">
                 <span className="flex-1 select-all">{loginUrl}</span>
                 <Button
@@ -272,7 +271,7 @@ export function ClaudeLoginDialog({
                   size="sm"
                   className="h-6 w-6 shrink-0 p-0"
                   onClick={copyUrl}
-                  title="Copy URL"
+                  title={t("hosts.login.copyUrl")}
                 >
                   {copied ? <Check className="h-3.5 w-3.5" /> : <CopyIcon className="h-3.5 w-3.5" />}
                 </Button>
@@ -283,18 +282,17 @@ export function ClaudeLoginDialog({
                 className="mt-1"
                 onClick={() => openExternal(loginUrl)}
               >
-                Open in browser
+                {t("hosts.login.openInBrowser")}
               </Button>
             </div>
           )}
 
           {(phase === "awaiting_code" || phase === "submitting") && (
             <div className="space-y-1">
-              <Label htmlFor="claude-auth-code">Authorization code</Label>
+              <Label htmlFor="claude-auth-code">{t("hosts.login.authCode")}</Label>
               {!loginUrl && (
                 <p className="text-xs text-muted-foreground">
-                  Couldn't auto-detect the login URL — copy it from the terminal
-                  output below, open it in your browser, then paste the code here.
+                  {t("hosts.login.noUrlHint")}
                 </p>
               )}
               <div className="flex items-center gap-2">
@@ -305,13 +303,13 @@ export function ClaudeLoginDialog({
                   onKeyDown={(e) => {
                     if (e.key === "Enter") void submit();
                   }}
-                  placeholder="Paste the code from the browser"
+                  placeholder={t("hosts.login.codePlaceholder")}
                   className="font-mono text-xs"
                   disabled={phase === "submitting"}
                   autoFocus
                 />
                 <Button onClick={() => void submit()} disabled={phase === "submitting" || !code.trim()}>
-                  {phase === "submitting" ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Submit"}
+                  {phase === "submitting" ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : t("common:submit")}
                 </Button>
               </div>
             </div>
@@ -319,7 +317,7 @@ export function ClaudeLoginDialog({
 
           {phase === "done" && (
             <div className="flex items-center gap-2 rounded-md border border-success/30 bg-success/10 px-2.5 py-2 text-sm text-success">
-              <Check className="h-4 w-4" /> Signed in. Agents on this host can now use Claude.
+              <Check className="h-4 w-4" /> {t("hosts.login.signedIn")}
             </div>
           )}
 
@@ -328,7 +326,7 @@ export function ClaudeLoginDialog({
           {pane && (
             <div>
               <div className="mb-1 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                <Terminal className="h-3 w-3" /> Terminal output
+                <Terminal className="h-3 w-3" /> {t("hosts.login.terminalOutput")}
               </div>
               <pre className="max-h-48 overflow-auto whitespace-pre-wrap break-all rounded-sm bg-muted/40 px-2.5 py-2 font-mono text-[11px] text-muted-foreground">
                 {pane}
@@ -339,7 +337,7 @@ export function ClaudeLoginDialog({
 
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
-            {phase === "done" ? "Done" : "Cancel"}
+            {phase === "done" ? t("common:done") : t("common:cancel")}
           </Button>
         </DialogFooter>
       </DialogContent>

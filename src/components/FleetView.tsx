@@ -581,6 +581,7 @@ export function ConnectAnthropicDialog({
   onOpenChange: (open: boolean) => void;
   onConnected: () => void;
 }) {
+  const { t } = useTranslation("platform");
   const [token, setToken] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -589,7 +590,7 @@ export function ConnectAnthropicDialog({
   const handleSave = async () => {
     const trimmed = token.trim();
     if (!trimmed) {
-      setError("Paste the token from `claude setup-token`.");
+      setError(t("errors.tokenRequired"));
       return;
     }
     setSubmitting(true);
@@ -600,7 +601,7 @@ export function ConnectAnthropicDialog({
       setToken("");
       onConnected();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not store token");
+      setError(e instanceof Error ? e.message : t("errors.storeTokenFailed"));
     } finally {
       setSubmitting(false);
     }
@@ -620,33 +621,27 @@ export function ConnectAnthropicDialog({
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Connect Anthropic</DialogTitle>
-          <DialogDescription>
-            Give your hosts a shared Claude subscription seat so{" "}
-            <code>claude_cli</code> agents run without logging in on each VM.
-          </DialogDescription>
+          <DialogTitle>{t("connectAnthropic")}</DialogTitle>
+          <DialogDescription>{t("connectAnthropicDescription")}</DialogDescription>
         </DialogHeader>
 
         {done ? (
           <div className="space-y-3 py-1">
-            <p className="text-sm">
-              Token stored. A `set_token` op was sent to each bootstrapped host;
-              new bridge runs use it automatically.
-            </p>
+            <p className="text-sm">{t("tokenStored")}</p>
             <DialogFooter>
-              <Button onClick={() => onOpenChange(false)}>Done</Button>
+              <Button onClick={() => onOpenChange(false)}>{t("common:done")}</Button>
             </DialogFooter>
           </div>
         ) : (
           <div className="space-y-3 py-1">
             <ol className="list-decimal space-y-1 pl-4 text-sm text-muted-foreground">
               <li>
-                On any machine with a browser, run{" "}
-                <code className="text-foreground">claude setup-token</code> and
-                authorize.
+                {t("anthropicStep1Pre")}{" "}
+                <code className="text-foreground">claude setup-token</code>{" "}
+                {t("anthropicStep1Post")}
               </li>
-              <li>Copy the long-lived token it prints (valid ~1 year).</li>
-              <li>Paste it below.</li>
+              <li>{t("anthropicStep2")}</li>
+              <li>{t("anthropicStep3")}</li>
             </ol>
             <div className="space-y-1">
               <Label htmlFor="anthropic-token">CLAUDE_CODE_OAUTH_TOKEN</Label>
@@ -662,10 +657,10 @@ export function ConnectAnthropicDialog({
             {error && <p className="text-sm text-destructive">{error}</p>}
             <DialogFooter>
               <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={submitting}>
-                Cancel
+                {t("common:cancel")}
               </Button>
               <Button onClick={() => void handleSave()} disabled={submitting}>
-                {submitting ? "Saving…" : "Save token"}
+                {submitting ? t("common:saving") : t("saveToken")}
               </Button>
             </DialogFooter>
           </div>
@@ -686,6 +681,7 @@ export function ProvisionDialog({
   onOpenChange: (open: boolean) => void;
   onProvisioned: () => void;
 }) {
+  const { t } = useTranslation("platform");
   const [catalog, setCatalog] = useState<api.ProvisioningCatalog | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -708,7 +704,7 @@ export function ProvisionDialog({
       })
       .catch((e) => {
         if (!cancelled)
-          setError(e instanceof Error ? e.message : "Could not load provisioning options");
+          setError(e instanceof Error ? e.message : t("errors.loadCatalog"));
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -722,7 +718,7 @@ export function ProvisionDialog({
 
   const handleProvision = async () => {
     if (!name.trim() || !dataCenterId || !templateId || !itemId) {
-      setError("Pick a name, data center, OS template, and plan.");
+      setError(t("errors.provisionFieldsRequired"));
       return;
     }
     setSubmitting(true);
@@ -732,7 +728,7 @@ export function ProvisionDialog({
       onProvisioned();
       onOpenChange(false);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Provisioning failed");
+      setError(e instanceof Error ? e.message : t("errors.provisionFailed"));
     } finally {
       setSubmitting(false);
     }
@@ -742,16 +738,13 @@ export function ProvisionDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Spin up a new VM</DialogTitle>
-          <DialogDescription>
-            Provisions a Hostinger VPS with our SSH key, then bootstraps it over
-            SSH — it shows up here and comes online on its own.
-          </DialogDescription>
+          <DialogTitle>{t("fleet.spinUpVm")}</DialogTitle>
+          <DialogDescription>{t("fleet.spinUpVmDescription")}</DialogDescription>
         </DialogHeader>
 
         {loading ? (
           <div className="flex items-center gap-2 py-6 text-sm text-muted-foreground">
-            <Loader2 className="h-4 w-4 animate-spin" /> Loading options…
+            <Loader2 className="h-4 w-4 animate-spin" /> {t("common:loading")}
           </div>
         ) : error && !catalog ? (
           <div className="space-y-3 py-1">
@@ -760,13 +753,13 @@ export function ProvisionDialog({
               <p>{error}</p>
             </div>
             <DialogFooter>
-              <Button onClick={() => onOpenChange(false)}>Close</Button>
+              <Button onClick={() => onOpenChange(false)}>{t("common:close")}</Button>
             </DialogFooter>
           </div>
         ) : (
           <div className="space-y-3 py-1">
             <div className="space-y-1">
-              <Label htmlFor="prov-name">Host name</Label>
+              <Label htmlFor="prov-name">{t("hostName")}</Label>
               <Input
                 id="prov-name"
                 value={name}
@@ -776,7 +769,7 @@ export function ProvisionDialog({
             </div>
             <ProvisionSelect
               id="prov-dc"
-              label="Data center"
+              label={t("dataCenter")}
               value={dataCenterId}
               onChange={setDataCenterId}
               options={catalog?.dataCenters ?? []}
@@ -784,7 +777,7 @@ export function ProvisionDialog({
             />
             <ProvisionSelect
               id="prov-tpl"
-              label="OS template"
+              label={t("osTemplate")}
               value={templateId}
               onChange={setTemplateId}
               options={catalog?.templates ?? []}
@@ -792,7 +785,7 @@ export function ProvisionDialog({
             />
             <ProvisionSelect
               id="prov-plan"
-              label="Plan"
+              label={t("plan")}
               value={itemId}
               onChange={setItemId}
               options={catalog?.plans ?? []}
@@ -801,10 +794,10 @@ export function ProvisionDialog({
             {error && <p className="text-sm text-destructive">{error}</p>}
             <DialogFooter>
               <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={submitting}>
-                Cancel
+                {t("common:cancel")}
               </Button>
               <Button onClick={() => void handleProvision()} disabled={submitting}>
-                {submitting ? "Provisioning…" : "Provision"}
+                {submitting ? t("provisioning") : t("provision")}
               </Button>
             </DialogFooter>
           </div>
@@ -829,6 +822,7 @@ function ProvisionSelect({
   options: api.ProvisioningOption[];
   optLabel: (o: api.ProvisioningOption) => string;
 }) {
+  const { t } = useTranslation("platform");
   return (
     <div className="space-y-1">
       <Label htmlFor={id}>{label}</Label>
@@ -838,7 +832,7 @@ function ProvisionSelect({
         onChange={(e) => onChange(e.target.value)}
         className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
       >
-        <option value="">Select…</option>
+        <option value="">{t("selectPlaceholder")}</option>
         {options.map((o) => (
           <option key={String(o.id)} value={String(o.id)}>
             {optLabel(o)}

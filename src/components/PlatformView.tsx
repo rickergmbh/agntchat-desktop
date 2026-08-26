@@ -2136,6 +2136,7 @@ function AllocateDialog({
 }
 
 function ProvisioningTab() {
+  const { t } = useTranslation("platform");
   const [catalog, setCatalog] = useState<{
     dataCenters: api.ProvisioningOption[];
     templates: api.ProvisioningOption[];
@@ -2155,23 +2156,23 @@ function ProvisioningTab() {
     api
       .getAdminProvisioningCatalog()
       .then(setCatalog)
-      .catch((e) => setError(e instanceof Error ? e.message : "Could not load catalog"))
+      .catch((e) => setError(e instanceof Error ? e.message : t("errors.loadCatalog")))
       .finally(() => setLoading(false));
   }, []);
 
   const provision = async () => {
     if (!name.trim() || !dataCenterId || !templateId || !itemId) {
-      setError("Pick a name, data center, template, and plan.");
+      setError(t("errors.provisionFieldsRequired"));
       return;
     }
     setSubmitting(true);
     setError(null);
     try {
       const res = await api.adminProvision({ name: name.trim(), itemId, dataCenterId, templateId });
-      setDone(`Provisioning ${res.host.name} — it will appear in Hosts when online.`);
+      setDone(t("provisioningStarted", { name: res.host.name }));
       setName("");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Provisioning failed");
+      setError(e instanceof Error ? e.message : t("errors.provisionFailed"));
     } finally {
       setSubmitting(false);
     }
@@ -2184,11 +2185,11 @@ function ProvisioningTab() {
   return (
     <div className="max-w-md space-y-3">
       <div className="flex items-center gap-2 text-sm font-medium">
-        <Plus className="h-4 w-4" /> Provision a new shared host (Hostinger)
+        <Plus className="h-4 w-4" /> {t("provisionTitle")}
       </div>
       {loading ? (
         <div className="flex items-center gap-2 py-4 text-sm text-muted-foreground">
-          <Loader2 className="h-4 w-4 animate-spin" /> Loading catalog…
+          <Loader2 className="h-4 w-4 animate-spin" /> {t("loadingCatalog")}
         </div>
       ) : error && !catalog ? (
         <ErrorBox message={error} />
@@ -2200,15 +2201,15 @@ function ProvisioningTab() {
             </div>
           )}
           <div className="space-y-1">
-            <Label htmlFor="p-name">Host name</Label>
+            <Label htmlFor="p-name">{t("hostName")}</Label>
             <Input id="p-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="agentgram-2" />
           </div>
-          <Sel id="p-dc" label="Data center" value={dataCenterId} set={setDataCenterId} opts={catalog?.dataCenters ?? []} fmt={opt} />
-          <Sel id="p-tpl" label="OS template" value={templateId} set={setTemplateId} opts={catalog?.templates ?? []} fmt={opt} />
-          <Sel id="p-plan" label="Plan" value={itemId} set={setItemId} opts={catalog?.plans ?? []} fmt={opt} />
+          <Sel id="p-dc" label={t("dataCenter")} value={dataCenterId} set={setDataCenterId} opts={catalog?.dataCenters ?? []} fmt={opt} />
+          <Sel id="p-tpl" label={t("osTemplate")} value={templateId} set={setTemplateId} opts={catalog?.templates ?? []} fmt={opt} />
+          <Sel id="p-plan" label={t("plan")} value={itemId} set={setItemId} opts={catalog?.plans ?? []} fmt={opt} />
           {error && <p className="text-sm text-destructive">{error}</p>}
           <Button onClick={() => void provision()} disabled={submitting}>
-            {submitting ? "Provisioning…" : "Provision"}
+            {submitting ? t("provisioning") : t("provision")}
           </Button>
         </>
       )}
@@ -2231,6 +2232,7 @@ function Sel({
   opts: api.ProvisioningOption[];
   fmt: (o: api.ProvisioningOption) => string;
 }) {
+  const { t } = useTranslation("platform");
   return (
     <div className="space-y-1">
       <Label htmlFor={id}>{label}</Label>
@@ -2240,7 +2242,7 @@ function Sel({
         onChange={(e) => set(e.target.value)}
         className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
       >
-        <option value="">Select…</option>
+        <option value="">{t("selectPlaceholder")}</option>
         {opts.map((o) => (
           <option key={String(o.id)} value={String(o.id)}>
             {fmt(o)}
