@@ -1,17 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  Activity,
   AlertCircle,
   ArrowRightLeft,
-  Check,
-  ChevronDown,
   ChevronRight,
   Cloud,
-  DownloadCloud,
-  KeyRound,
   Loader2,
-  Pencil,
   Plus,
   RefreshCw,
   RotateCcw,
@@ -20,7 +14,6 @@ import {
   Server as ServerIcon,
   ShieldCheck,
   ShieldHalf,
-  Trash2,
   Users as UsersIcon,
   X,
 } from "lucide-react";
@@ -30,13 +23,9 @@ import { cn } from "../lib/utils";
 import { useAuthStore } from "../stores/authStore";
 import { useModelCatalog, type CatalogProvider } from "../stores/modelCatalogStore";
 import { useWorkspaces } from "../stores/workspaceStore";
-import {
-  ClaudeLoginDialog,
-  ConnectAnthropicDialog,
-  ConnectHostDialog,
-  HostOpLog,
-  relativeAge,
-} from "./FleetView";
+import { ConnectAnthropicDialog, ConnectHostDialog } from "./FleetView";
+import { HostRow, type HostRowDetailContext } from "./hosts/HostRow";
+import { HostOpLog } from "./hosts/HostOpLog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -487,7 +476,7 @@ function HostsTab() {
               {vms.map((vm) => {
                 const host = hostForVm(vm);
                 return host ? (
-                  <MergedHostRow
+                  <AdminHostRow
                     key={vm.id}
                     host={host}
                     allHosts={hosts}
@@ -520,7 +509,7 @@ function HostsTab() {
               </div>
               <ul className="space-y-2">
                 {otherHosts.map((h) => (
-                  <MergedHostRow key={h.id} host={h} allHosts={hosts} onChanged={refresh} />
+                  <AdminHostRow key={h.id} host={h} allHosts={hosts} onChanged={refresh} />
                 ))}
               </ul>
             </div>
@@ -596,15 +585,13 @@ function UnmanagedVmRow({
 }
 
 /**
- * One host in the merged operator view: an enriched collapsed row (online /
- * total agents, user count, status) that expands inline to the residents
- * breakdown + SSH op log. Carries the host-lifecycle controls that used to
- * live in the separate Fleet tab. Rename + shared-toggle go through the admin
- * endpoints (cross-org); SSH ops + delete go through the org-scoped endpoints
- * keyed on the host's own organization id (works for operator-owned/shared
- * hosts — the common case).
+ * Admin flavor of the shared HostRow: cross-org rename + shared-host toggle,
+ * VM power-state badge, user/org summary segments, and a residents/operations
+ * panel. Rename + shared-toggle go through the admin endpoints (cross-org);
+ * SSH ops + delete go through the org-scoped endpoints keyed on the host's own
+ * organization id (works for operator-owned/shared hosts — the common case).
  */
-function MergedHostRow({
+function AdminHostRow({
   host,
   allHosts,
   onChanged,
@@ -618,100 +605,7 @@ function MergedHostRow({
   vm?: api.ProviderVm;
 }) {
   const { t } = useTranslation("platform");
-  const hostOrgId = host.organizationId;
-  const [expanded, setExpanded] = useState(false);
-  // Which inner panel shows once expanded — residents vs the SSH op log.
-  const [panel, setPanel] = useState<"residents" | "operations">("residents");
-  const [detail, setDetail] = useState<api.AdminHostDetail | null>(null);
-  const [detailError, setDetailError] = useState<string | null>(null);
-  const [ops, setOps] = useState<api.HostOperation[]>([]);
-  const [busy, setBusy] = useState<api.HostOpKind | "delete" | null>(null);
-  const [editing, setEditing] = useState(false);
-  const [name, setName] = useState(host.name);
-  const [renameBusy, setRenameBusy] = useState(false);
   const [shared, setShared] = useState(!!host.shared);
-  const [keyOpen, setKeyOpen] = useState(false);
-  const [loginOpen, setLoginOpen] = useState(false);
-  const [pubKey, setPubKey] = useState<string | null>(null);
-
-  const bootstrapped = !!host.bootstrappedAt;
-  const assigned = host.assignedAgentCount ?? host.agentCount ?? 0;
-  const online = host.onlineAgentCount ?? host.runningAgentIds?.length ?? 0;
-  const users = host.userCount ?? 0;
-
-  const loadDetail = useCallback(async () => {
-    try {
-      const [d, o] = await Promise.all([
-        api.getAdminHost(host.id),
-        api.listHostOperations(hostOrgId, host.id),
-      ]);
-      setDetail(d);
-      setOps(o);
-      setDetailError(null);
-    } catch (e) {
-      setDetailError(e instanceof Error ? e.message : i18n.t("platform:errors.loadHostDetail"));
-    }
-  }, [host.id, hostOrgId]);
-
-  useEffect(() => {
-    if (expanded) void loadDetail();
-  }, [expanded, loadDetail]);
-
-  // Is an SSH op in flight (kicked off here, or still finishing from a prior
-  // session)? Drives the header badge + the live re-poll below.
-  const opRunning = useMemo(
-    () => ops.some((o) => o.status === "pending" || o.status === "running"),
-    [ops]
-  );
-
-  // While an op is in flight, re-poll the op log so its status + output update
-  // in place — no collapse/reopen to see progress. Give up after ~5 min.
-  useEffect(() => {
-    if (!expanded || !opRunning) return;
-    const poll = setInterval(() => void loadDetail(), 4_000);
-    const giveUp = setTimeout(() => clearInterval(poll), 300_000);
-    return () => {
-      clearInterval(poll);
-      clearTimeout(giveUp);
-    };
-  }, [expanded, opRunning, loadDetail]);
-
-  const op = async (kind: api.HostOpKind, confirmMsg?: string) => {
-    if (confirmMsg && !confirm(confirmMsg)) return;
-    setBusy(kind);
-    try {
-      await api.runHostOp(hostOrgId, host.id, kind);
-      // Surface progress: expand the row and refresh so the running badge + op
-      // log appear. We don't force the Operations panel — the badge points the
-      // way; the live re-poll keeps it current once they switch to it.
-      setExpanded(true);
-      await loadDetail();
-    } catch (e) {
-      alert(e instanceof Error ? e.message : i18n.t("platform:errors.operationFailed"));
-    } finally {
-      setBusy(null);
-    }
-  };
-
-  const rename = async () => {
-    const trimmed = name.trim();
-    if (!trimmed || trimmed === host.name) {
-      setEditing(false);
-      setName(host.name);
-      return;
-    }
-    setRenameBusy(true);
-    try {
-      await api.updateAdminHost(host.id, { name: trimmed });
-      setEditing(false);
-      await onChanged();
-    } catch (e) {
-      alert(e instanceof Error ? e.message : i18n.t("platform:errors.renameHost"));
-      setName(host.name);
-    } finally {
-      setRenameBusy(false);
-    }
-  };
 
   const toggleShared = async (next: boolean) => {
     setShared(next); // optimistic
@@ -723,351 +617,136 @@ function MergedHostRow({
     }
   };
 
-  const showKey = async () => {
-    setKeyOpen(true);
-    if (pubKey) return;
-    try {
-      setPubKey(await api.getHostPublicKey(hostOrgId, host.id));
-    } catch (e) {
-      alert(e instanceof Error ? e.message : i18n.t("platform:errors.loadPublicKey"));
-    }
-  };
+  return (
+    <HostRow
+      host={host}
+      opsOrgId={host.organizationId}
+      onChanged={onChanged}
+      onRename={async (name) => {
+        await api.updateAdminHost(host.id, { name });
+      }}
+      vm={vm}
+      summaryExtras={[
+        t("hosts.usersCount", { count: host.userCount ?? 0 }),
+        ...(host.orgName ? [host.orgName] : []),
+      ]}
+      extraBadges={
+        shared ? (
+          <Badge variant="outline" className="shrink-0 border-primary/30 text-primary">
+            {t("hosts.sharedBadge")}
+          </Badge>
+        ) : null
+      }
+      extraActions={
+        <label
+          className="ml-1 flex items-center gap-1.5 text-xs text-muted-foreground"
+          title={t("hosts.sharedHint")}
+        >
+          {t("hosts.shared")}
+          <Switch checked={shared} onCheckedChange={(v) => void toggleShared(v)} />
+        </label>
+      }
+      renderDetail={(ctx) => (
+        <AdminHostPanels host={host} allHosts={allHosts} onChanged={onChanged} ctx={ctx} />
+      )}
+    />
+  );
+}
 
-  const handleDelete = async () => {
-    if (!confirm(t("hosts.deleteConfirm", { name: host.name }))) return;
-    setBusy("delete");
+/**
+ * Expanded panel for an admin host row: segmented switch between the residents
+ * breakdown (users + agents on the host) and the SSH op log. Operations is one
+ * click away — no scrolling to the bottom — and its tab flags a live op so you
+ * can jump straight to progress.
+ */
+function AdminHostPanels({
+  host,
+  allHosts,
+  onChanged,
+  ctx,
+}: {
+  host: api.OrganizationHost & { orgName?: string | null };
+  allHosts: Array<api.OrganizationHost & { orgName?: string | null }>;
+  onChanged: () => Promise<void> | void;
+  ctx: HostRowDetailContext;
+}) {
+  const { t } = useTranslation("platform");
+  const [panel, setPanel] = useState<"residents" | "operations">("residents");
+  const [detail, setDetail] = useState<api.AdminHostDetail | null>(null);
+  const [detailError, setDetailError] = useState<string | null>(null);
+
+  const loadDetail = useCallback(async () => {
     try {
-      await api.deleteOrganizationHost(hostOrgId, host.id);
-      await onChanged();
+      setDetail(await api.getAdminHost(host.id));
+      setDetailError(null);
     } catch (e) {
-      alert(e instanceof Error ? e.message : i18n.t("platform:errors.deleteHost"));
-    } finally {
-      setBusy(null);
+      setDetailError(
+        e instanceof Error ? e.message : i18n.t("platform:errors.loadHostDetail")
+      );
     }
-  };
+  }, [host.id]);
+
+  useEffect(() => {
+    void loadDetail();
+  }, [loadDetail]);
+
+  const users = host.userCount ?? 0;
+  const assigned = host.assignedAgentCount ?? host.agentCount ?? 0;
 
   return (
-    <li className="rounded-lg border border-border">
-      <div className="flex items-center gap-3 px-4 py-3">
+    <div>
+      <div className="mb-3 inline-flex rounded-md border border-border p-0.5 text-sm">
         <button
           type="button"
-          onClick={() => setExpanded((v) => !v)}
-          className="shrink-0 text-muted-foreground"
-          aria-label={expanded ? t("common:collapse") : t("common:expand")}
+          onClick={() => setPanel("residents")}
+          className={cn(
+            "rounded-[5px] px-3 py-1 font-medium transition-colors",
+            panel === "residents"
+              ? "bg-muted text-foreground"
+              : "text-muted-foreground hover:text-foreground"
+          )}
         >
-          {expanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+          {t("hosts.residents")}
+          <span className="ml-1.5 tabular-nums text-xs text-muted-foreground">
+            {t("hosts.residentsSummary", { users, agents: assigned })}
+          </span>
         </button>
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            {editing ? (
-              <>
-                <Input
-                  value={name}
-                  autoFocus
-                  disabled={renameBusy}
-                  onChange={(e) => setName(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") void rename();
-                    if (e.key === "Escape") {
-                      setName(host.name);
-                      setEditing(false);
-                    }
-                  }}
-                  className="h-7 max-w-[16rem]"
-                />
-                <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => void rename()} disabled={renameBusy}>
-                  <Check className="h-3.5 w-3.5" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-7 w-7 p-0"
-                  onClick={() => {
-                    setName(host.name);
-                    setEditing(false);
-                  }}
-                  disabled={renameBusy}
-                >
-                  <X className="h-3.5 w-3.5" />
-                </Button>
-              </>
-            ) : (
-              <>
-                <button
-                  type="button"
-                  onClick={() => setExpanded((v) => !v)}
-                  className="truncate text-left font-medium"
-                >
-                  {host.name}
-                </button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-6 w-6 shrink-0 p-0 text-muted-foreground"
-                  onClick={() => setEditing(true)}
-                  title={t("hosts.renameHost")}
-                >
-                  <Pencil className="h-3 w-3" />
-                </Button>
-                <Badge
-                  variant="outline"
-                  className={cn(
-                    "shrink-0",
-                    host.status === "online" && "border-success/30 bg-success/10 text-success",
-                    host.status === "offline" && "border-muted text-muted-foreground",
-                    host.status === "disabled" && "border-destructive/30 bg-destructive/10 text-destructive"
-                  )}
-                >
-                  {t(`status.${host.status}`, { defaultValue: host.status })}
-                </Badge>
-                {vm?.state && (
-                  <Badge
-                    variant="outline"
-                    className="shrink-0 text-muted-foreground"
-                    title={t("hosts.vmStateHint")}
-                  >
-                    {t("hosts.vmState", { state: vm.state })}
-                  </Badge>
-                )}
-                {shared && (
-                  <Badge variant="outline" className="shrink-0 border-primary/30 text-primary">
-                    {t("hosts.sharedBadge")}
-                  </Badge>
-                )}
-                {!bootstrapped && (
-                  <Badge variant="outline" className="shrink-0 border-amber-500/30 text-amber-600">
-                    {t("hosts.notBootstrapped")}
-                  </Badge>
-                )}
-                {opRunning && (
-                  <Badge
-                    variant="outline"
-                    className="shrink-0 gap-1 border-amber-500/30 text-amber-600"
-                    title={t("hosts.opRunningHint")}
-                  >
-                    <Loader2 className="h-3 w-3 animate-spin" />
-                    {ops.find((o) => o.status === "pending" || o.status === "running")?.kind ??
-                      t("status.running")}
-                  </Badge>
-                )}
-              </>
-            )}
-          </div>
-          <button
-            type="button"
-            onClick={() => setExpanded((v) => !v)}
-            className="mt-0.5 block w-full truncate text-left text-xs text-muted-foreground"
-          >
-            <span className={cn("tabular-nums", online > 0 && "text-success")}>{online}</span>
-            <span className="tabular-nums">/{assigned}</span>{" "}
-            {t("hosts.agentsOnlineSuffix", { count: assigned })}
-            {` · ${t("hosts.usersCount", { count: users })}`}
-            {host.orgName ? ` · ${host.orgName}` : ""}
-            {host.sshHost
-              ? ` · ${host.sshUser || "root"}@${host.sshHost}`
-              : ` · ${t("hosts.noSshTarget")}`}
-            {host.provider ? ` · ${host.provider}${host.providerVmId ? ` vm ${host.providerVmId}` : ""}` : ""}
-            {host.version ? ` · v${host.version}` : ""}
-            {` · ${t("hosts.seen", { age: relativeAge(host.lastSeenAt) })}`}
-          </button>
-        </div>
-
-        <div className="flex shrink-0 items-center gap-1">
-          {!bootstrapped && host.sshHost && (
-            <Button variant="outline" size="sm" onClick={() => void showKey()} disabled={busy !== null} title={t("hosts.keyHint")}>
-              <KeyRound className="h-3.5 w-3.5" />
-              {t("hosts.key")}
-            </Button>
+        <button
+          type="button"
+          onClick={() => setPanel("operations")}
+          className={cn(
+            "flex items-center gap-1.5 rounded-[5px] px-3 py-1 font-medium transition-colors",
+            panel === "operations"
+              ? "bg-muted text-foreground"
+              : "text-muted-foreground hover:text-foreground"
           )}
-          {!bootstrapped && host.sshHost && (
-            <Button variant="default" size="sm" onClick={() => void op("bootstrap")} disabled={busy !== null} title={t("hosts.bootstrapHint")}>
-              {busy === "bootstrap" ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <DownloadCloud className="h-3.5 w-3.5" />}
-              {t("hosts.bootstrap")}
-            </Button>
+        >
+          {t("hosts.operations")}
+          {ctx.opRunning ? (
+            <Loader2 className="h-3 w-3 animate-spin text-amber-500" />
+          ) : (
+            ctx.ops.length > 0 && (
+              <span className="tabular-nums text-xs text-muted-foreground">
+                {ctx.ops.length}
+              </span>
+            )
           )}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => void op("update", t("hosts.updateConfirm", { name: host.name }))}
-            disabled={busy !== null || !host.sshHost}
-            title={t("hosts.updateHint")}
-          >
-            {busy === "update" ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <DownloadCloud className="h-3.5 w-3.5" />}
-            {t("common:update")}
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => void op("restart", t("hosts.restartConfirm", { name: host.name }))}
-            disabled={busy !== null || !host.sshHost}
-            title={t("hosts.restartHint")}
-          >
-            {busy === "restart" ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RotateCw className="h-3.5 w-3.5" />}
-            {t("hosts.restart")}
-          </Button>
-          {bootstrapped && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setLoginOpen(true)}
-              disabled={busy !== null || !host.sshHost}
-              title={t("hosts.anthropicHint")}
-            >
-              <ShieldCheck className="h-3.5 w-3.5" />
-              Anthropic
-            </Button>
-          )}
-          {bootstrapped && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => void op("set_token")}
-              disabled={busy !== null || !host.sshHost}
-              title={t("hosts.seatHint")}
-            >
-              {busy === "set_token" ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              ) : (
-                <RefreshCw className="h-3.5 w-3.5" />
-              )}
-              {t("hosts.seat")}
-            </Button>
-          )}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => void op("probe")}
-            disabled={busy !== null || !host.sshHost}
-            title={t("hosts.probeHint")}
-          >
-            {busy === "probe" ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Activity className="h-3.5 w-3.5" />}
-          </Button>
-          <label className="ml-1 flex items-center gap-1.5 text-xs text-muted-foreground" title={t("hosts.sharedHint")}>
-            {t("hosts.shared")}
-            <Switch checked={shared} onCheckedChange={(v) => void toggleShared(v)} />
-          </label>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => void handleDelete()}
-            disabled={busy !== null}
-            className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-            title={t("hosts.deleteHost")}
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-          </Button>
-        </div>
+        </button>
       </div>
 
-      {expanded && (
-        <div className="border-t border-border px-4 py-3">
-          {/* Segmented switch: residents (users + agents) vs the SSH op log.
-              Operations is one click away — no scrolling to the bottom — and
-              its tab flags a live op so you can jump straight to progress. */}
-          <div className="mb-3 inline-flex rounded-md border border-border p-0.5 text-sm">
-            <button
-              type="button"
-              onClick={() => setPanel("residents")}
-              className={cn(
-                "rounded-[5px] px-3 py-1 font-medium transition-colors",
-                panel === "residents"
-                  ? "bg-muted text-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              {t("hosts.residents")}
-              <span className="ml-1.5 tabular-nums text-xs text-muted-foreground">
-                {t("hosts.residentsSummary", { users, agents: assigned })}
-              </span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setPanel("operations")}
-              className={cn(
-                "flex items-center gap-1.5 rounded-[5px] px-3 py-1 font-medium transition-colors",
-                panel === "operations"
-                  ? "bg-muted text-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              {t("hosts.operations")}
-              {opRunning ? (
-                <Loader2 className="h-3 w-3 animate-spin text-amber-500" />
-              ) : (
-                ops.length > 0 && (
-                  <span className="tabular-nums text-xs text-muted-foreground">{ops.length}</span>
-                )
-              )}
-            </button>
-          </div>
-
-          {panel === "residents" ? (
-            <HostResidents
-              host={host}
-              detail={detail}
-              error={detailError}
-              allHosts={allHosts}
-              reload={loadDetail}
-              onChanged={onChanged}
-            />
-          ) : (
-            <HostOpLog
-              ops={ops}
-              onCancel={async (opId) => {
-                await api.cancelHostOperation(hostOrgId, host.id, opId);
-                await loadDetail();
-              }}
-            />
-          )}
-        </div>
+      {panel === "residents" ? (
+        <HostResidents
+          host={host}
+          detail={detail}
+          error={detailError}
+          allHosts={allHosts}
+          reload={loadDetail}
+          onChanged={onChanged}
+        />
+      ) : (
+        <HostOpLog ops={ctx.ops} onCancel={ctx.cancelOp} />
       )}
-
-      <Dialog open={keyOpen} onOpenChange={setKeyOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t("hosts.authorizeTitle", { name: host.name })}</DialogTitle>
-            <DialogDescription>
-              {t("hosts.authorizeDescription", {
-                target: `${host.sshUser || "root"}@${host.sshHost}`,
-              })}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-3 py-1">
-            {pubKey ? (
-              <div className="space-y-1">
-                <Label className="text-xs">{t("hosts.publicKey")}</Label>
-                <div className="flex items-center gap-2 rounded-md border border-border bg-muted px-2.5 py-2 font-mono text-xs break-all">
-                  <span className="flex-1 select-all">{pubKey}</span>
-                </div>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Loader2 className="h-4 w-4 animate-spin" /> {t("hosts.loadingKey")}
-              </div>
-            )}
-          </div>
-          <DialogFooter>
-            <Button
-              onClick={() => {
-                setKeyOpen(false);
-                void op("bootstrap");
-              }}
-              disabled={busy !== null || !pubKey}
-            >
-              {t("hosts.bootstrapNow")}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <ClaudeLoginDialog
-        orgId={hostOrgId}
-        hostId={host.id}
-        hostName={host.name}
-        open={loginOpen}
-        onOpenChange={setLoginOpen}
-      />
-    </li>
+    </div>
   );
 }
 

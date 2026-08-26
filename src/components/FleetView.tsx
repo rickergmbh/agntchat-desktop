@@ -1,35 +1,20 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  Activity,
   AlertCircle,
-  Check,
-  ChevronDown,
-  ChevronRight,
   Cloud,
-  Copy as CopyIcon,
-  DownloadCloud,
-  KeyRound,
   Loader2,
-  Pencil,
   Plus,
   RefreshCw,
-  RotateCw,
   Server,
   ShieldCheck,
-  Terminal,
-  Trash2,
-  X,
 } from "lucide-react";
-import { open as tauriOpen } from "@tauri-apps/plugin-shell";
 import { Trans, useTranslation } from "react-i18next";
-import i18n from "../i18n";
 import * as api from "../lib/api";
 import { cn } from "../lib/utils";
 import { ws } from "../services/websocket";
 import { useAuthStore } from "../stores/authStore";
 import { useWorkspaces } from "../stores/workspaceStore";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -41,6 +26,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { HostRow } from "./hosts/HostRow";
+import { HostOpLog } from "./hosts/HostOpLog";
+import { CopyField } from "./hosts/util";
 
 /**
  * Fleet management for org hosts. Management flows over SSH (the backend
@@ -175,11 +163,20 @@ export function FleetView() {
         ) : (
           <ul className="space-y-3">
             {hosts.map((h) => (
-              <HostCard
+              <HostRow
                 key={h.id}
-                orgId={orgId}
                 host={h}
+                opsOrgId={orgId}
                 onChanged={() => void refresh()}
+                onRename={async (name) => {
+                  await api.updateHostConnection(orgId, h.id, { name });
+                }}
+                renderDetail={({ ops, cancelOp }) => (
+                  <div className="space-y-4">
+                    <HostAgentList orgId={orgId} hostId={h.id} />
+                    <HostOpLog ops={ops} onCancel={cancelOp} />
+                  </div>
+                )}
               />
             ))}
           </ul>
@@ -213,435 +210,33 @@ export function FleetView() {
   );
 }
 
-export function relativeAge(iso?: string | null): string {
-  if (!iso) return i18n.t("common:time.never");
-  const then = new Date(iso).getTime();
-  if (Number.isNaN(then)) return i18n.t("common:unknown");
-  const secs = Math.max(0, Math.round((Date.now() - then) / 1000));
-  if (secs < 60) return i18n.t("common:time.justNow");
-  const mins = Math.round(secs / 60);
-  if (mins < 60) return i18n.t("common:time.minutesAgo", { count: mins });
-  const hrs = Math.round(mins / 60);
-  if (hrs < 24) return i18n.t("common:time.hoursAgo", { count: hrs });
-  return i18n.t("common:time.daysAgo", { count: Math.round(hrs / 24) });
-}
-
-function HostCard({
+function HostAgentList({
   orgId,
-  host,
-  onChanged,
+  hostId,
 }: {
   orgId: string;
-  host: api.OrganizationHost;
-  onChanged: () => void;
+  hostId: string;
 }) {
   const { t } = useTranslation("platform");
-  const [expanded, setExpanded] = useState(false);
   const [agents, setAgents] = useState<api.HostAgent[] | null>(null);
-  const [agentsError, setAgentsError] = useState<string | null>(null);
-  const [ops, setOps] = useState<api.HostOperation[]>([]);
-  const [busy, setBusy] = useState<api.HostOpKind | "delete" | null>(null);
-  const [keyOpen, setKeyOpen] = useState(false);
-  const [loginOpen, setLoginOpen] = useState(false);
-  const [pubKey, setPubKey] = useState<string | null>(null);
-  const [editing, setEditing] = useState(false);
-  const [nameInput, setNameInput] = useState(host.name);
-  const [renameBusy, setRenameBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const loadDetail = useCallback(async () => {
-    try {
-      const [a, o] = await Promise.all([
-        api.listHostAgents(orgId, host.id),
-        api.listHostOperations(orgId, host.id),
-      ]);
-      setAgents(a);
-      setOps(o);
-      setAgentsError(null);
-    } catch (e) {
-      setAgentsError(e instanceof Error ? e.message : t("fleet.errors.detailFailed"));
-    }
-  }, [orgId, host.id, t]);
-
+  // Loads on mount — the shared HostRow only mounts this once expanded.
   useEffect(() => {
-    if (expanded) void loadDetail();
-  }, [expanded, loadDetail]);
-
-  // Canonical online signal from the backend (reachable now — same as the
-  // agent roster), with the assigned total. Falls back to the heartbeat
-  // self-report only if the enriched counts are somehow absent.
-  const onlineCount = host.onlineAgentCount ?? host.agentCount ?? host.runningAgentIds?.length ?? 0;
-  const assignedCount = host.assignedAgentCount ?? onlineCount;
-  const bootstrapped = !!host.bootstrappedAt;
-
-  const op = async (kind: api.HostOpKind, confirmMsg?: string) => {
-    if (confirmMsg && !confirm(confirmMsg)) return;
-    setBusy(kind);
-    try {
-      await api.runHostOp(orgId, host.id, kind);
-      if (!expanded) setExpanded(true);
-      await loadDetail();
-    } catch (e) {
-      alert(e instanceof Error ? e.message : t("fleet.errors.opFailed"));
-    } finally {
-      setBusy(null);
-    }
-  };
-
-  const rename = async () => {
-    const trimmed = nameInput.trim();
-    if (!trimmed || trimmed === host.name) {
-      setEditing(false);
-      setNameInput(host.name);
-      return;
-    }
-    setRenameBusy(true);
-    try {
-      await api.updateHostConnection(orgId, host.id, { name: trimmed });
-      setEditing(false);
-      onChanged();
-    } catch (e) {
-      alert(e instanceof Error ? e.message : t("fleet.errors.renameFailed"));
-      setNameInput(host.name);
-    } finally {
-      setRenameBusy(false);
-    }
-  };
-
-  const showKey = async () => {
-    setKeyOpen(true);
-    if (pubKey) return;
-    try {
-      setPubKey(await api.getHostPublicKey(orgId, host.id));
-    } catch (e) {
-      alert(e instanceof Error ? e.message : t("fleet.errors.keyLoadFailed"));
-    }
-  };
-
-  const handleDelete = async () => {
-    if (!confirm(t("fleet.confirmDelete", { name: host.name })))
-      return;
-    setBusy("delete");
-    try {
-      await api.deleteOrganizationHost(orgId, host.id);
-      onChanged();
-    } catch (e) {
-      alert(e instanceof Error ? e.message : t("fleet.errors.deleteFailed"));
-    } finally {
-      setBusy(null);
-    }
-  };
-
-  return (
-    <li className="rounded-lg border border-border">
-      <div className="flex items-center gap-3 px-4 py-3">
-        <button
-          type="button"
-          onClick={() => setExpanded((v) => !v)}
-          className="flex-shrink-0 text-muted-foreground"
-          aria-label={expanded ? t("common:collapse") : t("common:expand")}
-        >
-          {expanded ? (
-            <ChevronDown className="h-4 w-4" />
-          ) : (
-            <ChevronRight className="h-4 w-4" />
-          )}
-        </button>
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            {editing ? (
-              <>
-                <Input
-                  value={nameInput}
-                  autoFocus
-                  disabled={renameBusy}
-                  onChange={(e) => setNameInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") void rename();
-                    if (e.key === "Escape") {
-                      setNameInput(host.name);
-                      setEditing(false);
-                    }
-                  }}
-                  className="h-7 max-w-[16rem]"
-                />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-7 w-7 p-0"
-                  onClick={() => void rename()}
-                  disabled={renameBusy}
-                >
-                  <Check className="h-3.5 w-3.5" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-7 w-7 p-0"
-                  onClick={() => {
-                    setNameInput(host.name);
-                    setEditing(false);
-                  }}
-                  disabled={renameBusy}
-                >
-                  <X className="h-3.5 w-3.5" />
-                </Button>
-              </>
-            ) : (
-              <>
-                <button
-                  type="button"
-                  onClick={() => setExpanded((v) => !v)}
-                  className="truncate text-left font-medium"
-                >
-                  {host.name}
-                </button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-6 w-6 shrink-0 p-0 text-muted-foreground"
-                  onClick={() => {
-                    setNameInput(host.name);
-                    setEditing(true);
-                  }}
-                  title={t("fleet.renameHost")}
-                >
-                  <Pencil className="h-3 w-3" />
-                </Button>
-                <Badge
-                  variant="outline"
-                  className={cn(
-                    "shrink-0",
-                    host.status === "online" &&
-                      "border-success/30 bg-success/10 text-success",
-                    host.status === "offline" && "border-muted text-muted-foreground",
-                    host.status === "disabled" &&
-                      "border-destructive/30 bg-destructive/10 text-destructive"
-                  )}
-                >
-                  {["online", "offline", "disabled"].includes(host.status)
-                    ? t(`common:${host.status}`)
-                    : host.status}
-                </Badge>
-                {!bootstrapped && (
-                  <Badge variant="outline" className="shrink-0 border-amber-500/30 text-amber-600">
-                    {t("fleet.notBootstrapped")}
-                  </Badge>
-                )}
-              </>
-            )}
-          </div>
-          <button
-            type="button"
-            onClick={() => setExpanded((v) => !v)}
-            className="mt-0.5 block w-full truncate text-left text-xs text-muted-foreground"
-          >
-            <span className={cn("tabular-nums", onlineCount > 0 && "text-success")}>
-              {onlineCount}
-            </span>
-            <span className="tabular-nums">/{assignedCount}</span>{" "}
-            {t("fleet.agentsOnlineSuffix", { count: assignedCount })}
-            {host.sshHost
-              ? ` · ${host.sshUser || "root"}@${host.sshHost}`
-              : ` · ${t("fleet.noSshTarget")}`}
-            {host.provider
-              ? ` · ${host.provider}${host.providerVmId ? ` vm ${host.providerVmId}` : ""}${
-                  host.datacenter ? ` (${host.datacenter})` : ""
-                }`
-              : ""}
-            {host.version ? ` · v${host.version}` : ""}
-            {host.hostGitSha ? ` · ${host.hostGitSha}` : ""}
-            {` · ${t("fleet.seen", { age: relativeAge(host.lastSeenAt) })}`}
-          </button>
-        </div>
-
-        <div className="flex shrink-0 items-center gap-1">
-          {!bootstrapped && host.sshHost && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => void showKey()}
-              disabled={busy !== null}
-              title={t("fleet.keyTitle")}
-            >
-              <KeyRound className="h-3.5 w-3.5" />
-              {t("fleet.key")}
-            </Button>
-          )}
-          {!bootstrapped && host.sshHost && (
-            <Button
-              variant="default"
-              size="sm"
-              onClick={() => void op("bootstrap")}
-              disabled={busy !== null}
-              title={t("fleet.bootstrapTitle")}
-            >
-              {busy === "bootstrap" ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              ) : (
-                <DownloadCloud className="h-3.5 w-3.5" />
-              )}
-              {t("fleet.bootstrap")}
-            </Button>
-          )}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => void op("update", t("fleet.confirmUpdate", { name: host.name }))}
-            disabled={busy !== null || !host.sshHost}
-            title={t("fleet.updateTitle")}
-          >
-            {busy === "update" ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            ) : (
-              <DownloadCloud className="h-3.5 w-3.5" />
-            )}
-            {t("common:update")}
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => void op("restart", t("fleet.confirmRestart", { name: host.name }))}
-            disabled={busy !== null || !host.sshHost}
-            title={t("fleet.restartTitle")}
-          >
-            {busy === "restart" ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            ) : (
-              <RotateCw className="h-3.5 w-3.5" />
-            )}
-            {t("fleet.restart")}
-          </Button>
-          {bootstrapped && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setLoginOpen(true)}
-              disabled={busy !== null || !host.sshHost}
-              title={t("hosts.anthropicHint")}
-            >
-              <ShieldCheck className="h-3.5 w-3.5" />
-              Anthropic
-            </Button>
-          )}
-          {bootstrapped && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => void op("set_token")}
-              disabled={busy !== null || !host.sshHost}
-              title={t("hosts.seatHint")}
-            >
-              {busy === "set_token" ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              ) : (
-                <RefreshCw className="h-3.5 w-3.5" />
-              )}
-              {t("hosts.seat")}
-            </Button>
-          )}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => void op("probe")}
-            disabled={busy !== null || !host.sshHost}
-            title={t("fleet.probeTitle")}
-          >
-            {busy === "probe" ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            ) : (
-              <Activity className="h-3.5 w-3.5" />
-            )}
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => void handleDelete()}
-            disabled={busy !== null}
-            className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-            title={t("fleet.deleteHost")}
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-          </Button>
-        </div>
-      </div>
-
-      {expanded && (
-        <div className="space-y-4 border-t border-border px-4 py-3">
-          <HostAgentList agents={agents} error={agentsError} />
-          <HostOpLog
-            ops={ops}
-            onCancel={async (opId) => {
-              await api.cancelHostOperation(orgId, host.id, opId);
-              await loadDetail();
-            }}
-          />
-        </div>
-      )}
-
-      <Dialog open={keyOpen} onOpenChange={setKeyOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t("fleet.authorizeTitle", { name: host.name })}</DialogTitle>
-            <DialogDescription>
-              {t("fleet.authorizeDescription", {
-                target: `${host.sshUser || "root"}@${host.sshHost}`,
-              })}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-3 py-1">
-            {pubKey ? (
-              <>
-                <CopyField label={t("fleet.publicKey")} value={pubKey} mono />
-                <CopyField
-                  label={t("fleet.runOnHost", {
-                    target: `${host.sshUser || "root"}@${host.sshHost}`,
-                  })}
-                  value={`mkdir -p ~/.ssh && echo '${pubKey}' >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys`}
-                  mono
-                />
-                <p className="text-xs text-muted-foreground">
-                  {t("fleet.bootstrapRequirements")}
-                </p>
-              </>
-            ) : (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Loader2 className="h-4 w-4 animate-spin" /> {t("fleet.loadingKey")}
-              </div>
-            )}
-          </div>
-          <DialogFooter>
-            <Button
-              onClick={() => {
-                setKeyOpen(false);
-                void op("bootstrap");
-              }}
-              disabled={busy !== null || !pubKey}
-            >
-              {t("fleet.bootstrapNow")}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <ClaudeLoginDialog
-        orgId={orgId}
-        hostId={host.id}
-        hostName={host.name}
-        open={loginOpen}
-        onOpenChange={setLoginOpen}
-      />
-    </li>
-  );
-}
-
-function HostAgentList({
-  agents,
-  error,
-}: {
-  agents: api.HostAgent[] | null;
-  error: string | null;
-}) {
-  const { t } = useTranslation("platform");
+    let cancelled = false;
+    api
+      .listHostAgents(orgId, hostId)
+      .then((a) => {
+        if (!cancelled) setAgents(a);
+      })
+      .catch((e) => {
+        if (!cancelled)
+          setError(e instanceof Error ? e.message : t("fleet.errors.detailFailed"));
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [orgId, hostId, t]);
   const grouped = useMemo(() => {
     if (!agents) return [];
     const byOwner = new Map<string, { ownerName: string; agents: api.HostAgent[] }>();
@@ -699,132 +294,6 @@ function HostAgentList({
           </ul>
         </div>
       ))}
-    </div>
-  );
-}
-
-/** Wall-clock length of an op: finished ops show their total, running ops
- *  show elapsed-so-far (the caller re-polls, so this advances on each render). */
-function opDuration(o: api.HostOperation): string {
-  const start = new Date(o.insertedAt).getTime();
-  if (Number.isNaN(start)) return "";
-  const end = o.finishedAt ? new Date(o.finishedAt).getTime() : Date.now();
-  const secs = Math.max(0, Math.round((end - start) / 1000));
-  if (secs < 60) return `${secs}s`;
-  return `${Math.floor(secs / 60)}m ${secs % 60}s`;
-}
-
-export function HostOpLog({
-  ops,
-  onCancel,
-}: {
-  ops: api.HostOperation[];
-  /** Cancel a stuck pending/running op. When omitted, no cancel control shows
-   *  (e.g. for non-admins). Returns once the op is cleared so the row refreshes. */
-  onCancel?: (operationId: string) => Promise<void> | void;
-}) {
-  const { t } = useTranslation("platform");
-  // Auto-expand a running/pending op so its output streams without a click;
-  // otherwise honour whatever the user last toggled open.
-  const activeId =
-    ops.find((o) => o.status === "pending" || o.status === "running")?.id ?? null;
-  const [openId, setOpenId] = useState<string | null>(activeId);
-  const [cancelingId, setCancelingId] = useState<string | null>(null);
-
-  // Follow the active op as it changes (a freshly-kicked-off op becomes active).
-  useEffect(() => {
-    if (activeId) setOpenId(activeId);
-  }, [activeId]);
-
-  const cancel = async (id: string) => {
-    if (!onCancel) return;
-    if (!confirm(t("fleet.confirmCancelOp"))) return;
-    setCancelingId(id);
-    try {
-      await onCancel(id);
-    } finally {
-      setCancelingId(null);
-    }
-  };
-
-  if (ops.length === 0)
-    return <p className="text-sm text-muted-foreground">{t("fleet.noOperations")}</p>;
-
-  return (
-    <div>
-      <div className="mb-1 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-        <Terminal className="h-3 w-3" /> {t("fleet.recentOperations")}
-      </div>
-      <ul className="space-y-1">
-        {ops.map((o) => {
-          const running = o.status === "pending" || o.status === "running";
-          return (
-            <li key={o.id} className="rounded-sm bg-muted/40 text-sm">
-              <div className="flex w-full items-center gap-2 px-2.5 py-1.5">
-                <button
-                  type="button"
-                  onClick={() => setOpenId((id) => (id === o.id ? null : o.id))}
-                  className="flex flex-1 items-center justify-between gap-2 text-left"
-                >
-                  <span className="flex items-center gap-2">
-                    <span
-                      className={cn(
-                        "h-2 w-2 rounded-full",
-                        o.status === "ok" && "bg-success",
-                        o.status === "failed" && "bg-destructive",
-                        o.status === "canceled" && "bg-muted-foreground/50",
-                        running && "bg-amber-500 animate-pulse"
-                      )}
-                    />
-                    <span className="font-medium">
-                      {t(`fleet.opKind.${o.kind}`, { defaultValue: o.kind })}
-                    </span>
-                    <span
-                      className={cn(
-                        "text-xs",
-                        o.status === "failed" ? "text-destructive" : "text-muted-foreground"
-                      )}
-                    >
-                      {t(`status.${o.status}`, { defaultValue: o.status })}
-                    </span>
-                  </span>
-                  <span className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <span className="tabular-nums">{opDuration(o)}</span>
-                    <span>· {relativeAge(o.insertedAt)}</span>
-                  </span>
-                </button>
-                {running && onCancel && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-6 shrink-0 gap-1 px-1.5 text-xs text-muted-foreground hover:text-destructive"
-                    disabled={cancelingId === o.id}
-                    onClick={() => void cancel(o.id)}
-                    title={t("fleet.cancelOpTitle")}
-                  >
-                    {cancelingId === o.id ? (
-                      <Loader2 className="h-3 w-3 animate-spin" />
-                    ) : (
-                      <X className="h-3 w-3" />
-                    )}
-                    {t("common:cancel")}
-                  </Button>
-                )}
-              </div>
-              {openId === o.id &&
-                (o.output ? (
-                  <pre className="max-h-60 overflow-auto whitespace-pre-wrap break-all border-t border-border px-2.5 py-2 font-mono text-[11px] text-muted-foreground">
-                    {o.output}
-                  </pre>
-                ) : running ? (
-                  <div className="flex items-center gap-1.5 border-t border-border px-2.5 py-2 text-[11px] text-muted-foreground">
-                    <Loader2 className="h-3 w-3 animate-spin" /> {t("fleet.runningEllipsis")}
-                  </div>
-                ) : null)}
-            </li>
-          );
-        })}
-      </ul>
     </div>
   );
 }
@@ -1206,341 +675,6 @@ export function ConnectAnthropicDialog({
   );
 }
 
-/** Open a URL in the system browser — Tauri native with window.open fallback. */
-function openExternal(url: string) {
-  tauriOpen(url).catch(() => {
-    window.open(url, "_blank");
-  });
-}
-
-// Pull the OAuth authorize URL out of the captured login pane. claude /login
-// prints a `https://claude.com/cai/oauth/authorize?…` (or claude.ai / anthropic
-// console) URL when it can't open a browser. We match the *authorize* URL
-// specifically — not just any anthropic/claude link — so an unrelated marketing
-// URL in the banner (e.g. claude.com/news/…) is never mistaken for it.
-//
-// We anchor on the *authorize* URL specifically — not just any anthropic/claude
-// link — so an unrelated marketing URL in the login banner (e.g.
-// claude.com/news/…) is never mistaken for it. The backend runs the login in a
-// 1000-column tmux pane and captures with `-J`, so the ~400-char URL comes back
-// on a single line; from the anchor we take the contiguous run of non-whitespace.
-const AUTHORIZE_URL_RE =
-  /https?:\/\/(?:[a-z0-9.-]*\.)?(?:claude\.com|claude\.ai|anthropic\.com)\/[^\s]*oauth\/authorize[^\s]*/i;
-
-function extractLoginUrl(pane: string): string | null {
-  const m = pane.match(AUTHORIZE_URL_RE);
-  if (!m) return null;
-  return m[0].replace(/[).,]+$/, "") || null;
-}
-
-// Heuristic success / failure detection from the pane text.
-function loginSucceeded(pane: string): boolean {
-  return /login successful|logged in|successfully authenticated|you('| a)re now logged in/i.test(
-    pane
-  );
-}
-function loginFailed(pane: string): boolean {
-  return /invalid code|authentication failed|oauth error|error:|expired/i.test(pane);
-}
-
-// Before the login URL appears, `claude` can show a "Do you trust the files in
-// this folder?" prompt that must be answered (Enter = the default "Yes" option)
-// before it continues. We detect it from the pane text and auto-confirm once.
-function trustPromptVisible(pane: string): boolean {
-  return /do you trust the files in this folder|trust the files in this|yes, proceed/i.test(
-    pane
-  );
-}
-
-// After the URL, `claude /login` prints a "Paste code here if prompted" line and
-// blocks on stdin. Detecting it lets us reveal the code box even if URL
-// extraction failed — so the operator is never stuck unable to paste.
-function codePromptVisible(pane: string): boolean {
-  return /paste (the )?code|enter (the )?code|authorization code|code:\s*$/im.test(pane);
-}
-
-/**
- * Drives an interactive `claude /login` on one host VM, entirely from the
- * desktop. The backend runs the login inside a detached tmux session over SSH;
- * we poll its pane text for the OAuth URL, let the operator open it locally and
- * paste the code back, then submit it. Writes the per-host file seat at
- * /home/agentgram/.claude/.credentials.json (shared by every bridge on the box).
- */
-export function ClaudeLoginDialog({
-  orgId,
-  hostId,
-  hostName,
-  open,
-  onOpenChange,
-}: {
-  orgId: string;
-  hostId: string;
-  hostName: string;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}) {
-  const [pane, setPane] = useState("");
-  const [loginUrl, setLoginUrl] = useState<string | null>(null);
-  const [code, setCode] = useState("");
-  const [phase, setPhase] = useState<
-    "starting" | "awaiting_url" | "awaiting_code" | "submitting" | "done" | "error"
-  >("starting");
-  const [error, setError] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
-  const [keyBusy, setKeyBusy] = useState(false);
-  // Auto-confirm the trust-folder prompt at most once per session so we don't
-  // hammer Enter every 2s poll while the prompt is still painting.
-  const trustConfirmedRef = useRef(false);
-
-  // Fire-and-forget a navigation key into the remote session. Used both for the
-  // automatic trust-prompt confirmation and the manual controls below.
-  const sendKey = useCallback(
-    async (key: string) => {
-      setKeyBusy(true);
-      try {
-        const { output } = await api.sendClaudeLoginKey(orgId, hostId, key);
-        setPane(output);
-      } catch (e) {
-        setError(e instanceof Error ? e.message : "Could not send key to the host");
-      } finally {
-        setKeyBusy(false);
-      }
-    },
-    [orgId, hostId]
-  );
-
-  // Start the session when the dialog opens; cancel + reset when it closes.
-  useEffect(() => {
-    if (!open) return;
-    let cancelled = false;
-    let timer: ReturnType<typeof setTimeout> | undefined;
-
-    const applyPane = (text: string) => {
-      if (cancelled) return;
-      setPane(text);
-      // Auto-answer the trust-folder prompt (Enter = the highlighted "Yes")
-      // once, so the login can advance to printing the URL.
-      if (!trustConfirmedRef.current && !extractLoginUrl(text) && trustPromptVisible(text)) {
-        trustConfirmedRef.current = true;
-        void api.sendClaudeLoginKey(orgId, hostId, "Enter").catch(() => {});
-      }
-      const url = extractLoginUrl(text);
-      if (url) setLoginUrl(url);
-      // Don't override an in-flight code submission or a finished state. Move to
-      // the code step once the URL appears OR the host prints its "paste code"
-      // prompt — so a failed URL extraction never traps the operator.
-      setPhase((prev) => {
-        if (prev === "submitting" || prev === "done" || prev === "error") return prev;
-        if (loginSucceeded(text)) return "done";
-        if (url || codePromptVisible(text)) return "awaiting_code";
-        return "awaiting_url";
-      });
-    };
-
-    const poll = async () => {
-      try {
-        const { output } = await api.pollClaudeLoginOutput(orgId, hostId);
-        applyPane(output);
-      } catch {
-        // Transient SSH hiccup — keep polling.
-      }
-      if (!cancelled) timer = setTimeout(poll, 2000);
-    };
-
-    setPhase("starting");
-    setPane("");
-    setLoginUrl(null);
-    setCode("");
-    setError(null);
-    trustConfirmedRef.current = false;
-
-    api
-      .startClaudeLogin(orgId, hostId)
-      .then(() => {
-        if (cancelled) return;
-        setPhase("awaiting_url");
-        void poll();
-      })
-      .catch((e) => {
-        if (cancelled) return;
-        setError(e instanceof Error ? e.message : "Could not start login on the host");
-        setPhase("error");
-      });
-
-    return () => {
-      cancelled = true;
-      if (timer) clearTimeout(timer);
-      // Best-effort teardown of the remote tmux session.
-      void api.cancelClaudeLogin(orgId, hostId).catch(() => {});
-    };
-  }, [open, orgId, hostId]);
-
-  const submit = async () => {
-    const trimmed = code.trim();
-    if (!trimmed) return;
-    setPhase("submitting");
-    setError(null);
-    try {
-      const { output } = await api.submitClaudeLoginCode(orgId, hostId, trimmed);
-      setPane(output);
-      setCode("");
-      // Give claude a beat to process, then let the poller resolve success/failure.
-      if (loginSucceeded(output)) setPhase("done");
-      else if (loginFailed(output)) setPhase("error");
-      else setPhase("awaiting_code");
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not submit code");
-      setPhase("awaiting_code");
-    }
-  };
-
-  const copyUrl = () => {
-    if (!loginUrl) return;
-    void navigator.clipboard.writeText(loginUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
-  };
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg">
-        <DialogHeader>
-          <DialogTitle>Sign in to Claude — {hostName}</DialogTitle>
-          <DialogDescription>
-            Runs <code>claude /login</code> on the VM. Open the URL below in your
-            browser, authorize, then paste the code it gives you. Credentials are
-            stored on the host and shared by every agent running on it.
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="space-y-3 py-1">
-          {phase === "starting" && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Loader2 className="h-4 w-4 animate-spin" /> Starting login on the host…
-            </div>
-          )}
-
-          {phase === "awaiting_url" && (
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Loader2 className="h-4 w-4 animate-spin" /> Waiting for the login URL…
-              </div>
-              {trustPromptVisible(pane) && (
-                <p className="text-xs text-muted-foreground">
-                  The host is asking whether to trust this folder — confirming
-                  automatically. If it's stuck, use the controls below to answer
-                  it manually.
-                </p>
-              )}
-            </div>
-          )}
-
-          {/* Manual terminal controls — a fallback for any prompt that precedes
-              the login (trust-folder dialog, menu selection) that our
-              auto-confirm didn't clear. Shown until the URL appears. */}
-          {(phase === "awaiting_url" || phase === "starting") && (
-            <div className="flex flex-wrap items-center gap-1.5">
-              <span className="mr-1 text-xs text-muted-foreground">Send key:</span>
-              {(["Up", "Down", "Enter"] as const).map((k) => (
-                <Button
-                  key={k}
-                  variant="outline"
-                  size="sm"
-                  className="h-7"
-                  disabled={keyBusy}
-                  onClick={() => void sendKey(k)}
-                >
-                  {k === "Up" ? "↑" : k === "Down" ? "↓" : "Enter ⏎"}
-                </Button>
-              ))}
-            </div>
-          )}
-
-          {loginUrl && phase !== "done" && (
-            <div className="space-y-1">
-              <Label className="text-xs">Login URL</Label>
-              <div className="flex items-center gap-2 rounded-md border border-border bg-muted px-2.5 py-2 font-mono text-xs break-all">
-                <span className="flex-1 select-all">{loginUrl}</span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-6 w-6 shrink-0 p-0"
-                  onClick={copyUrl}
-                  title="Copy URL"
-                >
-                  {copied ? <Check className="h-3.5 w-3.5" /> : <CopyIcon className="h-3.5 w-3.5" />}
-                </Button>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="mt-1"
-                onClick={() => openExternal(loginUrl)}
-              >
-                Open in browser
-              </Button>
-            </div>
-          )}
-
-          {(phase === "awaiting_code" || phase === "submitting") && (
-            <div className="space-y-1">
-              <Label htmlFor="claude-auth-code">Authorization code</Label>
-              {!loginUrl && (
-                <p className="text-xs text-muted-foreground">
-                  Couldn't auto-detect the login URL — copy it from the terminal
-                  output below, open it in your browser, then paste the code here.
-                </p>
-              )}
-              <div className="flex items-center gap-2">
-                <Input
-                  id="claude-auth-code"
-                  value={code}
-                  onChange={(e) => setCode(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") void submit();
-                  }}
-                  placeholder="Paste the code from the browser"
-                  className="font-mono text-xs"
-                  disabled={phase === "submitting"}
-                  autoFocus
-                />
-                <Button onClick={() => void submit()} disabled={phase === "submitting" || !code.trim()}>
-                  {phase === "submitting" ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Submit"}
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {phase === "done" && (
-            <div className="flex items-center gap-2 rounded-md border border-success/30 bg-success/10 px-2.5 py-2 text-sm text-success">
-              <Check className="h-4 w-4" /> Signed in. Agents on this host can now use Claude.
-            </div>
-          )}
-
-          {error && <p className="text-sm text-destructive">{error}</p>}
-
-          {pane && (
-            <div>
-              <div className="mb-1 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                <Terminal className="h-3 w-3" /> Terminal output
-              </div>
-              <pre className="max-h-48 overflow-auto whitespace-pre-wrap break-all rounded-sm bg-muted/40 px-2.5 py-2 font-mono text-[11px] text-muted-foreground">
-                {pane}
-              </pre>
-            </div>
-          )}
-        </div>
-
-        <DialogFooter>
-          <Button variant="ghost" onClick={() => onOpenChange(false)}>
-            {phase === "done" ? "Done" : "Cancel"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-}
-
 export function ProvisionDialog({
   orgId,
   open,
@@ -1711,38 +845,6 @@ function ProvisionSelect({
           </option>
         ))}
       </select>
-    </div>
-  );
-}
-
-function CopyField({
-  label,
-  value,
-  mono,
-}: {
-  label: string;
-  value: string;
-  mono?: boolean;
-}) {
-  return (
-    <div className="space-y-1">
-      <Label className="text-xs">{label}</Label>
-      <div
-        className={cn(
-          "flex items-center gap-2 rounded-md border border-border bg-muted px-2.5 py-2 text-xs break-all",
-          mono && "font-mono"
-        )}
-      >
-        <span className="flex-1 select-all">{value}</span>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => void navigator.clipboard.writeText(value)}
-          aria-label={`Copy ${label}`}
-        >
-          <CopyIcon className="h-3.5 w-3.5" />
-        </Button>
-      </div>
     </div>
   );
 }
