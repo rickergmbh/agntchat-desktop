@@ -259,7 +259,7 @@ const ConversationItem = memo(function ConversationItem({
               <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground [animation-delay:300ms]" />
             </span>
           ) : streamPhase ? (
-            <span className="flex min-w-0 items-center gap-1 text-[11px] font-medium text-primary">
+            <span className="flex min-w-0 items-center gap-1 text-[11px] font-medium text-foreground">
               <PhaseOrb
                 phase={streamPhase}
                 active={PHASE_IS_ACTIVE[streamPhase] ?? true}

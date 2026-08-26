@@ -428,7 +428,7 @@ export function AgentRow({
                 <span className="truncate">{activity.detail}</span>
               </div>
             ) : (
-              <div className="mt-0.5 flex items-center gap-1.5 text-[11px] font-medium min-w-0 text-primary">
+              <div className="mt-0.5 flex items-center gap-1.5 text-[11px] font-medium min-w-0 text-foreground">
                 <PhaseOrb phase={LOCAL_ACTIVITY_PHASE[activity.type]} className="shrink-0" />
                 <span className="truncate">
                   {t(STREAM_PHASE_LABEL_KEYS[LOCAL_ACTIVITY_PHASE[activity.type]])}

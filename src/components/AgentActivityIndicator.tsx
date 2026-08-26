@@ -28,7 +28,7 @@ export function AgentActivityIndicator({
   return (
     <span
       className={cn(
-        "flex min-w-0 items-center gap-1 text-[11px] font-medium text-primary",
+        "flex min-w-0 items-center gap-1 text-[11px] font-medium text-foreground",
         className
       )}
     >
