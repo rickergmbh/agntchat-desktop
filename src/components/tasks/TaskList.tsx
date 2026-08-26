@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Loader2, Search, Square, Zap } from "lucide-react";
+import { ListTodo, Loader2, Search, Square } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -331,7 +331,7 @@ function EmptyState({ hasFilter }: { hasFilter: boolean }) {
   const { t } = useTranslation("tasks");
   return (
     <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-      <Zap className="w-10 h-10 text-muted-foreground/40 mb-3" />
+      <ListTodo className="w-10 h-10 text-muted-foreground/40 mb-3" />
       <p className="text-sm text-muted-foreground">
         {hasFilter ? t("emptyFiltered") : t("emptyLabel")}
       </p>

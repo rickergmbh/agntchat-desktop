@@ -3,7 +3,7 @@ import {
   MessageCircle,
   Bot,
   User,
-  Zap,
+  ListTodo,
   LayoutTemplate,
   Server,
   Shapes,
@@ -313,7 +313,7 @@ function LeftRail({
           badgeTierLabel={tChat("newMessages")}
         />
         <RailButton
-          icon={Zap}
+          icon={ListTodo}
           label={t("tasks")}
           active={view === "tasks"}
           onClick={() => onChange("tasks")}
