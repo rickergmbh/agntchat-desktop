@@ -5847,7 +5847,7 @@ export const resources = {
         "emptyHint": "Actions and to-dos will show up here.",
         "loadFailed": "Couldn't load your list. Check your connection and try again.",
         "noMatching": "No matches",
-        "onDeck": "Upcoming",
+        "remindersSection": "Reminders",
         "searchPlaceholder": "Search…"
       },
       "untitled": "Untitled task",
@@ -11817,7 +11817,7 @@ export const resources = {
         "emptyHint": "Las acciones y los pendientes aparecerán aquí.",
         "loadFailed": "No se pudo cargar tu lista. Comprueba tu conexión e inténtalo de nuevo.",
         "noMatching": "Sin coincidencias",
-        "onDeck": "Próximas",
+        "remindersSection": "Recordatorios",
         "searchPlaceholder": "Buscar…"
       },
       "untitled": "Tarea sin título",
@@ -17787,7 +17787,7 @@ export const resources = {
         "emptyHint": "Aktionen und To-dos werden hier angezeigt.",
         "loadFailed": "Liste konnte nicht geladen werden. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
         "noMatching": "Keine Treffer",
-        "onDeck": "Bevorstehend",
+        "remindersSection": "Erinnerungen",
         "searchPlaceholder": "Suchen…"
       },
       "untitled": "Unbenannte Aufgabe",
@@ -23757,7 +23757,7 @@ export const resources = {
         "emptyHint": "Les actions et les tâches apparaîtront ici.",
         "loadFailed": "Impossible de charger votre liste. Vérifiez votre connexion et réessayez.",
         "noMatching": "Aucun résultat",
-        "onDeck": "À venir",
+        "remindersSection": "Rappels",
         "searchPlaceholder": "Rechercher…"
       },
       "untitled": "Tâche sans titre",
@@ -29727,7 +29727,7 @@ export const resources = {
         "emptyHint": "Ações e afazeres vão aparecer aqui.",
         "loadFailed": "Não foi possível carregar sua lista. Verifique sua conexão e tente novamente.",
         "noMatching": "Nenhum resultado",
-        "onDeck": "Próximas",
+        "remindersSection": "Lembretes",
         "searchPlaceholder": "Buscar…"
       },
       "untitled": "Tarefa sem título",
@@ -35697,7 +35697,7 @@ export const resources = {
         "emptyHint": "アクションとTo-doがここに表示されます。",
         "loadFailed": "リストを読み込めませんでした。接続を確認して、もう一度お試しください。",
         "noMatching": "一致する項目がありません",
-        "onDeck": "今後の予定",
+        "remindersSection": "リマインダー",
         "searchPlaceholder": "検索…"
       },
       "untitled": "無題のタスク",
@@ -41667,7 +41667,7 @@ export const resources = {
         "emptyHint": "操作和待办事项会显示在这里。",
         "loadFailed": "无法加载您的列表。请检查网络连接后重试。",
         "noMatching": "没有匹配项",
-        "onDeck": "即将进行",
+        "remindersSection": "提醒",
         "searchPlaceholder": "搜索…"
       },
       "untitled": "未命名任务",
@@ -47637,7 +47637,7 @@ export const resources = {
         "emptyHint": "작업과 할 일이 여기에 표시됩니다.",
         "loadFailed": "목록을 불러오지 못했습니다. 연결을 확인하고 다시 시도해 주세요.",
         "noMatching": "일치하는 항목이 없습니다",
-        "onDeck": "예정된 작업",
+        "remindersSection": "리마인더",
         "searchPlaceholder": "검색…"
       },
       "untitled": "제목 없는 작업",
@@ -53607,7 +53607,7 @@ export const resources = {
         "emptyHint": "Azioni e cose da fare appariranno qui.",
         "loadFailed": "Impossibile caricare la tua lista. Controlla la connessione e riprova.",
         "noMatching": "Nessun risultato",
-        "onDeck": "Prossime",
+        "remindersSection": "Promemoria",
         "searchPlaceholder": "Cerca…"
       },
       "untitled": "Attività senza titolo",
@@ -59577,7 +59577,7 @@ export const resources = {
         "emptyHint": "कार्रवाइयाँ और टू-डू यहाँ दिखाई देंगे।",
         "loadFailed": "आपकी सूची लोड नहीं हो सकी। अपना कनेक्शन जाँचें और फिर से प्रयास करें।",
         "noMatching": "कोई मेल नहीं",
-        "onDeck": "आगामी",
+        "remindersSection": "रिमाइंडर",
         "searchPlaceholder": "खोजें…"
       },
       "untitled": "बिना शीर्षक वाला कार्य",
