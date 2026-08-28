@@ -3353,6 +3353,7 @@ export const resources = {
         "scopeAgent": "Agent memory",
         "scopeFamily": "Family memory",
         "title": "{{name}} saved a memory",
+        "titleFamily": "{{name}} saved a family memory",
         "titleUnknown": "Memory saved"
       },
       "scope": {
@@ -9338,6 +9339,7 @@ export const resources = {
         "scopeAgent": "Memoria del agente",
         "scopeFamily": "Memoria familiar",
         "title": "{{name}} guardó una memoria",
+        "titleFamily": "{{name}} guardó una memoria familiar",
         "titleUnknown": "Memoria guardada"
       },
       "scope": {
@@ -15323,6 +15325,7 @@ export const resources = {
         "scopeAgent": "Agenten-Erinnerung",
         "scopeFamily": "Familien-Erinnerung",
         "title": "{{name}} hat eine Erinnerung gespeichert",
+        "titleFamily": "{{name}} hat eine Familien-Erinnerung gespeichert",
         "titleUnknown": "Erinnerung gespeichert"
       },
       "scope": {
@@ -21308,6 +21311,7 @@ export const resources = {
         "scopeAgent": "Mémoire de l'agent",
         "scopeFamily": "Mémoire familiale",
         "title": "{{name}} a enregistré une mémoire",
+        "titleFamily": "{{name}} a enregistré une mémoire familiale",
         "titleUnknown": "Mémoire enregistrée"
       },
       "scope": {
@@ -27293,6 +27297,7 @@ export const resources = {
         "scopeAgent": "Memória do agente",
         "scopeFamily": "Memória da família",
         "title": "{{name}} salvou uma memória",
+        "titleFamily": "{{name}} salvou uma memória da família",
         "titleUnknown": "Memória salva"
       },
       "scope": {
@@ -33278,6 +33283,7 @@ export const resources = {
         "scopeAgent": "エージェントメモリー",
         "scopeFamily": "ファミリーメモリー",
         "title": "{{name}}がメモリーを保存しました",
+        "titleFamily": "{{name}}がファミリーメモリーを保存しました",
         "titleUnknown": "メモリーを保存しました"
       },
       "scope": {
@@ -39263,6 +39269,7 @@ export const resources = {
         "scopeAgent": "智能体记忆",
         "scopeFamily": "家庭记忆",
         "title": "{{name}}保存了一条记忆",
+        "titleFamily": "{{name}}保存了一条家庭记忆",
         "titleUnknown": "已保存记忆"
       },
       "scope": {
@@ -45248,6 +45255,7 @@ export const resources = {
         "scopeAgent": "에이전트 메모리",
         "scopeFamily": "패밀리 메모리",
         "title": "{{name}}이(가) 메모리를 저장했습니다",
+        "titleFamily": "{{name}}이(가) 패밀리 메모리를 저장했습니다",
         "titleUnknown": "메모리 저장됨"
       },
       "scope": {
@@ -51233,6 +51241,7 @@ export const resources = {
         "scopeAgent": "Memoria dell'agente",
         "scopeFamily": "Memoria di famiglia",
         "title": "{{name}} ha salvato una memoria",
+        "titleFamily": "{{name}} ha salvato una memoria di famiglia",
         "titleUnknown": "Memoria salvata"
       },
       "scope": {
@@ -57218,6 +57227,7 @@ export const resources = {
         "scopeAgent": "एजेंट मेमोरी",
         "scopeFamily": "परिवार मेमोरी",
         "title": "{{name}} ने एक मेमोरी सहेजी",
+        "titleFamily": "{{name}} ने एक परिवार मेमोरी सहेजी",
         "titleUnknown": "मेमोरी सहेजी गई"
       },
       "scope": {
