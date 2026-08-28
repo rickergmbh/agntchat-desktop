@@ -5856,6 +5856,12 @@ export const resources = {
       "updated": "Updated",
       "viewFullDetails": "View Full Details",
       "viewTask": "View Task",
+      "waitingOnSubtask": "is waiting on “{{title}}”",
+      "waitingOnSubtaskDetail": "Completion is on hold until the sub-task “{{title}}” finishes.",
+      "waitingOnSubtasksDetail_one": "Completion is on hold until {{count}} sub-task finishes: {{titles}}",
+      "waitingOnSubtasksDetail_other": "Completion is on hold until {{count}} sub-tasks finish: {{titles}}",
+      "waitingOnSubtasks_one": "is waiting on {{count}} sub-task",
+      "waitingOnSubtasks_other": "is waiting on {{count}} sub-tasks",
       "workRoom": "Work room"
     },
     "templates": {
@@ -11826,6 +11832,12 @@ export const resources = {
       "updated": "Actualizada",
       "viewFullDetails": "Ver todos los detalles",
       "viewTask": "Ver tarea",
+      "waitingOnSubtask": "está esperando a “{{title}}”",
+      "waitingOnSubtaskDetail": "La finalización está en espera hasta que termine la subtarea “{{title}}”.",
+      "waitingOnSubtasksDetail_one": "La finalización espera a {{count}} subtarea: {{titles}}",
+      "waitingOnSubtasksDetail_other": "La finalización espera a {{count}} subtareas: {{titles}}",
+      "waitingOnSubtasks_one": "está esperando {{count}} subtarea",
+      "waitingOnSubtasks_other": "está esperando {{count}} subtareas",
       "workRoom": "Sala de trabajo"
     },
     "templates": {
@@ -17796,6 +17808,12 @@ export const resources = {
       "updated": "Aktualisiert",
       "viewFullDetails": "Alle Details anzeigen",
       "viewTask": "Aufgabe anzeigen",
+      "waitingOnSubtask": "wartet auf „{{title}}“",
+      "waitingOnSubtaskDetail": "Der Abschluss wartet, bis die Teilaufgabe „{{title}}“ fertig ist.",
+      "waitingOnSubtasksDetail_one": "Der Abschluss wartet auf {{count}} Teilaufgabe: {{titles}}",
+      "waitingOnSubtasksDetail_other": "Der Abschluss wartet auf {{count}} Teilaufgaben: {{titles}}",
+      "waitingOnSubtasks_one": "wartet auf {{count}} Teilaufgabe",
+      "waitingOnSubtasks_other": "wartet auf {{count}} Teilaufgaben",
       "workRoom": "Arbeitsraum"
     },
     "templates": {
@@ -23766,6 +23784,12 @@ export const resources = {
       "updated": "Mise à jour",
       "viewFullDetails": "Voir tous les détails",
       "viewTask": "Voir la tâche",
+      "waitingOnSubtask": "attend « {{title}} »",
+      "waitingOnSubtaskDetail": "La finalisation attend la fin de la sous-tâche « {{title}} ».",
+      "waitingOnSubtasksDetail_one": "La finalisation attend {{count}} sous-tâche : {{titles}}",
+      "waitingOnSubtasksDetail_other": "La finalisation attend {{count}} sous-tâches : {{titles}}",
+      "waitingOnSubtasks_one": "attend {{count}} sous-tâche",
+      "waitingOnSubtasks_other": "attend {{count}} sous-tâches",
       "workRoom": "Salle de travail"
     },
     "templates": {
@@ -29736,6 +29760,12 @@ export const resources = {
       "updated": "Atualizada",
       "viewFullDetails": "Ver Detalhes Completos",
       "viewTask": "Ver Tarefa",
+      "waitingOnSubtask": "está aguardando “{{title}}”",
+      "waitingOnSubtaskDetail": "A conclusão está aguardando a subtarefa “{{title}}” terminar.",
+      "waitingOnSubtasksDetail_one": "A conclusão aguarda {{count}} subtarefa: {{titles}}",
+      "waitingOnSubtasksDetail_other": "A conclusão aguarda {{count}} subtarefas: {{titles}}",
+      "waitingOnSubtasks_one": "está aguardando {{count}} subtarefa",
+      "waitingOnSubtasks_other": "está aguardando {{count}} subtarefas",
       "workRoom": "Sala de trabalho"
     },
     "templates": {
@@ -35706,6 +35736,12 @@ export const resources = {
       "updated": "更新日時",
       "viewFullDetails": "詳細をすべて表示",
       "viewTask": "タスクを表示",
+      "waitingOnSubtask": "「{{title}}」を待っています",
+      "waitingOnSubtaskDetail": "サブタスク「{{title}}」の完了を待ってから完了します。",
+      "waitingOnSubtasksDetail_one": "{{count}}件のサブタスクの完了待ち: {{titles}}",
+      "waitingOnSubtasksDetail_other": "{{count}}件のサブタスクの完了待ち: {{titles}}",
+      "waitingOnSubtasks_one": "{{count}}件のサブタスクを待っています",
+      "waitingOnSubtasks_other": "{{count}}件のサブタスクを待っています",
       "workRoom": "作業ルーム"
     },
     "templates": {
@@ -41676,6 +41712,12 @@ export const resources = {
       "updated": "已更新",
       "viewFullDetails": "查看完整详情",
       "viewTask": "查看任务",
+      "waitingOnSubtask": "正在等待「{{title}}」",
+      "waitingOnSubtaskDetail": "需等待子任务「{{title}}」完成后才能结束。",
+      "waitingOnSubtasksDetail_one": "完成前需等待 {{count}} 个子任务：{{titles}}",
+      "waitingOnSubtasksDetail_other": "完成前需等待 {{count}} 个子任务：{{titles}}",
+      "waitingOnSubtasks_one": "正在等待 {{count}} 个子任务",
+      "waitingOnSubtasks_other": "正在等待 {{count}} 个子任务",
       "workRoom": "工作间"
     },
     "templates": {
@@ -47646,6 +47688,12 @@ export const resources = {
       "updated": "업데이트됨",
       "viewFullDetails": "전체 세부정보 보기",
       "viewTask": "작업 보기",
+      "waitingOnSubtask": "“{{title}}” 완료를 기다리는 중",
+      "waitingOnSubtaskDetail": "하위 작업 “{{title}}”이(가) 끝날 때까지 완료가 보류됩니다.",
+      "waitingOnSubtasksDetail_one": "하위 작업 {{count}}개의 완료 대기 중: {{titles}}",
+      "waitingOnSubtasksDetail_other": "하위 작업 {{count}}개의 완료 대기 중: {{titles}}",
+      "waitingOnSubtasks_one": "하위 작업 {{count}}개를 기다리는 중",
+      "waitingOnSubtasks_other": "하위 작업 {{count}}개를 기다리는 중",
       "workRoom": "작업방"
     },
     "templates": {
@@ -53616,6 +53664,12 @@ export const resources = {
       "updated": "Aggiornato",
       "viewFullDetails": "Visualizza tutti i dettagli",
       "viewTask": "Visualizza attività",
+      "waitingOnSubtask": "è in attesa di “{{title}}”",
+      "waitingOnSubtaskDetail": "Il completamento è in attesa della sotto-attività “{{title}}”.",
+      "waitingOnSubtasksDetail_one": "Il completamento attende {{count}} sotto-attività: {{titles}}",
+      "waitingOnSubtasksDetail_other": "Il completamento attende {{count}} sotto-attività: {{titles}}",
+      "waitingOnSubtasks_one": "è in attesa di {{count}} sotto-attività",
+      "waitingOnSubtasks_other": "è in attesa di {{count}} sotto-attività",
       "workRoom": "Stanza di lavoro"
     },
     "templates": {
@@ -59586,6 +59640,12 @@ export const resources = {
       "updated": "अपडेट किया गया",
       "viewFullDetails": "पूरा विवरण देखें",
       "viewTask": "कार्य देखें",
+      "waitingOnSubtask": "“{{title}}” की प्रतीक्षा कर रहा है",
+      "waitingOnSubtaskDetail": "उप-कार्य “{{title}}” पूरा होने तक समापन रुका हुआ है।",
+      "waitingOnSubtasksDetail_one": "समापन {{count}} उप-कार्य की प्रतीक्षा में है: {{titles}}",
+      "waitingOnSubtasksDetail_other": "समापन {{count}} उप-कार्यों की प्रतीक्षा में है: {{titles}}",
+      "waitingOnSubtasks_one": "{{count}} उप-कार्य की प्रतीक्षा कर रहा है",
+      "waitingOnSubtasks_other": "{{count}} उप-कार्यों की प्रतीक्षा कर रहा है",
       "workRoom": "वर्क रूम"
     },
     "templates": {

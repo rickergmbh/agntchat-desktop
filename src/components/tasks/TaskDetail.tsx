@@ -6,6 +6,7 @@ import {
   Clock,
   Copy,
   Check,
+  Hourglass,
   Loader2,
   XCircle,
   Ban,
@@ -94,6 +95,17 @@ export function TaskDetail({
     typeof workConversationId === "string" && workConversationId
       ? workConversationId
       : null;
+
+  // Open sub-tasks the parked completion is blocked on — stamped by the
+  // backend's [open_subtasks] guard (metadata.waiting_on), cleared on wake.
+  const waitingOnRaw = (task.metadata as Record<string, unknown> | undefined)
+    ?.waiting_on;
+  const waitingOn =
+    isActive && Array.isArray(waitingOnRaw)
+      ? (waitingOnRaw.filter(
+          (e) => !!e && typeof e === "object" && typeof (e as { title?: unknown }).title === "string"
+        ) as { task_id: string; title: string; status: string }[])
+      : [];
 
   const recentSteps = useMemo(
     () => progress?.recentSteps ?? [],
@@ -195,6 +207,21 @@ export function TaskDetail({
       </header>
 
       <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
+        {/* Waiting-on banner — completion parked on open sub-tasks */}
+        {waitingOn.length > 0 && (
+          <section className="flex items-start gap-2 rounded-xl border border-warning/30 bg-warning/10 p-4 text-sm">
+            <Hourglass className="mt-0.5 h-4 w-4 shrink-0 text-warning" />
+            <span>
+              {waitingOn.length === 1
+                ? t("waitingOnSubtaskDetail", { title: waitingOn[0].title })
+                : t("waitingOnSubtasksDetail", {
+                    count: waitingOn.length,
+                    titles: waitingOn.map((w) => w.title).join(", "),
+                  })}
+            </span>
+          </section>
+        )}
+
         {/* Live progress (active tasks only) */}
         {isActive && recentSteps.length > 0 && (
           <section className="rounded-xl border border-primary/20 border-l-4 border-l-primary bg-card p-4">
