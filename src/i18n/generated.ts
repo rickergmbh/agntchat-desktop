@@ -3348,6 +3348,13 @@ export const resources = {
       "participants": "Participants",
       "roles": "Roles",
       "saveFailed": "Failed to save memory.",
+      "savedToast": {
+        "review": "Review",
+        "scopeAgent": "Agent memory",
+        "scopeFamily": "Family memory",
+        "title": "{{name}} saved a memory",
+        "titleUnknown": "Memory saved"
+      },
       "scope": {
         "familyOption": "Family-wide (all workspaces)",
         "familyWide": "Family-wide",
@@ -9326,6 +9333,13 @@ export const resources = {
       "participants": "Participantes",
       "roles": "Roles",
       "saveFailed": "No se pudo guardar la memoria.",
+      "savedToast": {
+        "review": "Revisar",
+        "scopeAgent": "Memoria del agente",
+        "scopeFamily": "Memoria familiar",
+        "title": "{{name}} guardó una memoria",
+        "titleUnknown": "Memoria guardada"
+      },
       "scope": {
         "familyOption": "Toda la familia (todos los espacios de trabajo)",
         "familyWide": "Toda la familia",
@@ -15304,6 +15318,13 @@ export const resources = {
       "participants": "Teilnehmer",
       "roles": "Rollen",
       "saveFailed": "Erinnerung konnte nicht gespeichert werden.",
+      "savedToast": {
+        "review": "Prüfen",
+        "scopeAgent": "Agenten-Erinnerung",
+        "scopeFamily": "Familien-Erinnerung",
+        "title": "{{name}} hat eine Erinnerung gespeichert",
+        "titleUnknown": "Erinnerung gespeichert"
+      },
       "scope": {
         "familyOption": "Familienweit (alle Arbeitsbereiche)",
         "familyWide": "Familienweit",
@@ -21282,6 +21303,13 @@ export const resources = {
       "participants": "Participants",
       "roles": "Rôles",
       "saveFailed": "Échec de l'enregistrement de la mémoire.",
+      "savedToast": {
+        "review": "Vérifier",
+        "scopeAgent": "Mémoire de l'agent",
+        "scopeFamily": "Mémoire familiale",
+        "title": "{{name}} a enregistré une mémoire",
+        "titleUnknown": "Mémoire enregistrée"
+      },
       "scope": {
         "familyOption": "Toute la famille (tous les espaces de travail)",
         "familyWide": "Toute la famille",
@@ -27260,6 +27288,13 @@ export const resources = {
       "participants": "Participantes",
       "roles": "Funções",
       "saveFailed": "Falha ao salvar memória.",
+      "savedToast": {
+        "review": "Revisar",
+        "scopeAgent": "Memória do agente",
+        "scopeFamily": "Memória da família",
+        "title": "{{name}} salvou uma memória",
+        "titleUnknown": "Memória salva"
+      },
       "scope": {
         "familyOption": "Toda a família (todos os espaços de trabalho)",
         "familyWide": "Toda a família",
@@ -33238,6 +33273,13 @@ export const resources = {
       "participants": "参加者",
       "roles": "役割",
       "saveFailed": "メモリーの保存に失敗しました。",
+      "savedToast": {
+        "review": "確認",
+        "scopeAgent": "エージェントメモリー",
+        "scopeFamily": "ファミリーメモリー",
+        "title": "{{name}}がメモリーを保存しました",
+        "titleUnknown": "メモリーを保存しました"
+      },
       "scope": {
         "familyOption": "ファミリー全体（すべてのワークスペース）",
         "familyWide": "ファミリー全体",
@@ -39216,6 +39258,13 @@ export const resources = {
       "participants": "参与者",
       "roles": "角色",
       "saveFailed": "保存记忆失败。",
+      "savedToast": {
+        "review": "查看",
+        "scopeAgent": "智能体记忆",
+        "scopeFamily": "家庭记忆",
+        "title": "{{name}}保存了一条记忆",
+        "titleUnknown": "已保存记忆"
+      },
       "scope": {
         "familyOption": "全家庭（所有工作区）",
         "familyWide": "全家庭",
@@ -45194,6 +45243,13 @@ export const resources = {
       "participants": "참가자",
       "roles": "역할",
       "saveFailed": "메모리 저장에 실패했습니다.",
+      "savedToast": {
+        "review": "검토",
+        "scopeAgent": "에이전트 메모리",
+        "scopeFamily": "패밀리 메모리",
+        "title": "{{name}}이(가) 메모리를 저장했습니다",
+        "titleUnknown": "메모리 저장됨"
+      },
       "scope": {
         "familyOption": "가족 전체 (모든 워크스페이스)",
         "familyWide": "가족 전체",
@@ -51172,6 +51228,13 @@ export const resources = {
       "participants": "Partecipanti",
       "roles": "Ruoli",
       "saveFailed": "Impossibile salvare la memoria.",
+      "savedToast": {
+        "review": "Rivedi",
+        "scopeAgent": "Memoria dell'agente",
+        "scopeFamily": "Memoria di famiglia",
+        "title": "{{name}} ha salvato una memoria",
+        "titleUnknown": "Memoria salvata"
+      },
       "scope": {
         "familyOption": "Tutta la famiglia (tutti gli spazi di lavoro)",
         "familyWide": "Tutta la famiglia",
@@ -57150,6 +57213,13 @@ export const resources = {
       "participants": "प्रतिभागी",
       "roles": "भूमिकाएँ",
       "saveFailed": "मेमोरी सहेजना विफल।",
+      "savedToast": {
+        "review": "समीक्षा करें",
+        "scopeAgent": "एजेंट मेमोरी",
+        "scopeFamily": "परिवार मेमोरी",
+        "title": "{{name}} ने एक मेमोरी सहेजी",
+        "titleUnknown": "मेमोरी सहेजी गई"
+      },
       "scope": {
         "familyOption": "पूरे परिवार के लिए (सभी कार्यस्थान)",
         "familyWide": "पूरे परिवार के लिए",
