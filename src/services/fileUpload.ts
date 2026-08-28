@@ -29,7 +29,10 @@ const MAX_SIZE = 25 * 1024 * 1024;
 export async function uploadFile(
   conversationId: string,
   file: File,
-  caption?: string
+  caption?: string,
+  // Audio only: the recorder measured this exactly, so players never have to
+  // load the media just to show the clip length.
+  durationMs?: number
 ): Promise<void> {
   if (file.size > MAX_SIZE) {
     throw new Error(`File too large (max ${formatFileSize(MAX_SIZE)})`);
@@ -54,6 +57,7 @@ export async function uploadFile(
     contentType: file.type || "application/octet-stream",
     sizeBytes: file.size,
     caption,
+    durationMs: durationMs && durationMs > 0 ? Math.round(durationMs) : undefined,
   });
 }
 

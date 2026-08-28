@@ -3204,6 +3204,8 @@ export async function confirmUpload(
     contentType: string;
     sizeBytes: number;
     caption?: string;
+    /** Audio only — the recorder's own measurement of the clip length. */
+    durationMs?: number;
   }
 ): Promise<void> {
   await request(`/api/conversations/${conversationId}/files/confirm`, {

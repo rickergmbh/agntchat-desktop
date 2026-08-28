@@ -23,6 +23,10 @@ interface FileContent {
   /** Whisper transcript, folded into the content JSON by the backend once
    *  transcription of an audio upload completes. */
   transcript?: string;
+  /** Audio clip length, from the recorder's own measurement (or Whisper's,
+   *  for audio that wasn't recorded here). Lets the player show
+   *  "0:00 / 1:24" on paint instead of only once playback starts. */
+  durationMs?: number;
 }
 
 function safeParseJson<T>(str: string, fallback: T): T {
@@ -54,19 +58,33 @@ function AudioMessage({
   url,
   loading,
   transcript,
+  durationMs,
   caption,
 }: {
   url: string | null;
   loading: boolean;
   transcript?: string;
+  durationMs?: number;
   caption?: string;
 }) {
   const { t } = useTranslation("files");
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
   const [position, setPosition] = useState(0);
-  const [duration, setDuration] = useState(0);
+  // Seeded from the message content so the readout is right on paint; the
+  // media's own metadata still overrides it once loaded (and is the only
+  // source for notes recorded before the backend tracked duration).
+  const [duration, setDuration] = useState(durationMs ? durationMs / 1000 : 0);
   const [transcriptExpanded, setTranscriptExpanded] = useState(false);
+
+  // For audio that wasn't recorded here, the backend learns the length from
+  // Whisper and folds it in after first paint — adopt it if we still have
+  // nothing, without clobbering a value the media itself already reported.
+  useEffect(() => {
+    if (durationMs && durationMs > 0) {
+      setDuration((current) => (current > 0 ? current : durationMs / 1000));
+    }
+  }, [durationMs]);
 
   const handleToggle = useCallback(() => {
     const audio = audioRef.current;
@@ -329,6 +347,7 @@ export function FileMessage({ message }: { message: Message }) {
         url={url}
         loading={loading}
         transcript={file.transcript}
+        durationMs={file.durationMs}
         caption={file.caption}
       />
     );

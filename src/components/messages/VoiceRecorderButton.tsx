@@ -127,7 +127,7 @@ export function VoiceRecorderButton({
       });
       setUploading(true);
       try {
-        await uploadFile(conversationId, file);
+        await uploadFile(conversationId, file, undefined, durationMs);
       } catch (err) {
         onError(err instanceof Error ? err.message : t("files:uploadFailed"));
       } finally {
