@@ -350,7 +350,6 @@ export function FriendsView({ onNavigate }: { onNavigate?: () => void } = {}) {
     return (
       <MembersView
         workspaceId={activeWorkspace.id}
-        workspaceName={activeWorkspace.name}
         callerRole={activeWorkspace.role}
       />
     );
@@ -1386,11 +1385,9 @@ function ReportUserDialog({
  */
 function MembersView({
   workspaceId,
-  workspaceName,
   callerRole,
 }: {
   workspaceId: string;
-  workspaceName: string;
   callerRole: "owner" | "admin" | "member";
 }) {
   const { t } = useTranslation("friends");
@@ -1465,6 +1462,9 @@ function MembersView({
 
   const visibleMembers = members ?? [];
   const memberCount = visibleMembers.length;
+  const onlineCount = visibleMembers.filter((m) =>
+    onlineSet.has(m.participantId)
+  ).length;
 
   return (
     <div className="flex h-full flex-1 flex-col overflow-hidden bg-background">
@@ -1473,8 +1473,17 @@ function MembersView({
           <div className="flex items-center gap-2 min-w-0">
             <div className="min-w-0">
               <h1 className="truncate text-sm font-semibold leading-tight">{t("nav:members")}</h1>
-              <p className="text-[11px] text-muted-foreground">
-                {t("membersCount", { count: memberCount, workspace: workspaceName })}
+              {/* How many of the roster is reachable right now — the
+                  workspace name this line used to repeat is already on the
+                  rail's workspace tile. */}
+              <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                <span
+                  className={cn(
+                    "h-1.5 w-1.5 rounded-full",
+                    onlineCount > 0 ? "bg-success" : "bg-muted-foreground/40"
+                  )}
+                />
+                {t("membersOnlineCount", { online: onlineCount, total: memberCount })}
               </p>
             </div>
           </div>
