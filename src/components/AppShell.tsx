@@ -13,7 +13,6 @@ import {
   Sun,
   Moon,
   Monitor,
-  LogOut,
   PanelLeftClose,
   PanelLeftOpen,
 } from "lucide-react";
@@ -249,7 +248,6 @@ function LeftRail({
   const tasks = useTaskStore((s) => s.tasks);
   const activeTaskCount = countActiveTasks(tasks);
   const participant = useAuthStore((s) => s.participant);
-  const logout = useAuthStore((s) => s.logout);
   const connected = usePresenceStore((s) => s.connected);
   const pendingFriends = useFriendStore((s) => s.pendingCount);
   // Same nav slot, label flips: "Friends" in Personal, "Members" in
@@ -471,7 +469,7 @@ function LeftRail({
         )}
       </div>
 
-      {/* Bottom: connectivity + utilities + profile + logout */}
+      {/* Bottom: connectivity + utilities + profile */}
       <div
         style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
         className={cn(
@@ -537,25 +535,6 @@ function LeftRail({
             // The user's own name, not UI copy — never translated.
             <span className="min-w-0 flex-1 truncate text-left text-sm font-medium">
               {participant?.displayName ?? t("settings:title")}
-            </span>
-          )}
-        </button>
-
-        {/* Logout */}
-        <button
-          type="button"
-          onClick={logout}
-          title={t("signOut")}
-          aria-label={t("signOut")}
-          className={cn(
-            "flex h-10 items-center rounded-lg text-rail-foreground hover:bg-destructive/10 hover:text-destructive transition-colors",
-            expanded ? "w-full gap-3 px-2.5" : "w-10 justify-center"
-          )}
-        >
-          <LogOut className="w-4 h-4 shrink-0" />
-          {expanded && (
-            <span className="min-w-0 flex-1 truncate text-left text-sm font-medium">
-              {t("signOut")}
             </span>
           )}
         </button>
