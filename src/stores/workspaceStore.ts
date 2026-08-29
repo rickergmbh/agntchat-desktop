@@ -35,6 +35,13 @@ interface WorkspaceState {
   tasksByOrg: Record<string, number>;
   fetchWorkspaceAttention: () => Promise<void>;
 
+  /** Roster of a workspace, keyed by org id. Shared by the Members
+   *  view and by the rail chip that counts it, so the count and the
+   *  list it describes can never drift — the chip needs the roster on
+   *  every screen, long before the Members view mounts. */
+  membersByOrg: Record<string, api.OrganizationMembership[]>;
+  fetchMembers: (orgId: string) => Promise<api.OrganizationMembership[]>;
+
   // Stage 3 management actions — same shape as web.
   createWorkspace: (name: string) => Promise<api.Organization>;
   renameWorkspace: (orgId: string, name: string) => Promise<void>;
@@ -62,6 +69,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   pendingId: null,
   attentionByOrg: {},
   tasksByOrg: {},
+  membersByOrg: {},
   lastError: null,
 
   switch: async (orgId) => {
@@ -225,13 +233,21 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     await get().refresh();
   },
 
+  fetchMembers: async (orgId) => {
+    const memberships = await api.listOrganizationMembers(orgId);
+    set((s) => ({ membersByOrg: { ...s.membersByOrg, [orgId]: memberships } }));
+    return memberships;
+  },
+
   removeMember: async (orgId, participantId) => {
     await api.removeOrganizationMember(orgId, participantId);
+    await get().fetchMembers(orgId).catch(() => []);
     await get().refresh();
   },
 
   updateMemberRole: async (orgId, participantId, role) => {
     await api.updateOrganizationMemberRole(orgId, participantId, role);
+    await get().fetchMembers(orgId).catch(() => []);
     await get().refresh();
   },
 
@@ -349,6 +365,13 @@ export function useWorkspaces(): WorkspaceMembership[] {
  */
 export function useWorkspacesEnabled(): boolean {
   return useAuthStore((s) => s.participant?.features?.workspaces === true);
+}
+
+/** Cached roster for a workspace — `undefined` until it's been fetched. */
+export function useWorkspaceMembers(
+  orgId: string | null | undefined
+): api.OrganizationMembership[] | undefined {
+  return useWorkspaceStore((s) => (orgId ? s.membersByOrg[orgId] : undefined));
 }
 
 export function useActiveWorkspace(): WorkspaceMembership | null {

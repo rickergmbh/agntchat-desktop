@@ -40,7 +40,12 @@ import { useChatStore } from "../stores/chatStore";
 import { useFriendStore } from "../stores/friendStore";
 import { useNavStore } from "../stores/navStore";
 import { usePresenceStore } from "../stores/presenceStore";
-import { useActiveWorkspace, useWorkspacesEnabled } from "../stores/workspaceStore";
+import {
+  useActiveWorkspace,
+  useWorkspaceMembers,
+  useWorkspacesEnabled,
+  useWorkspaceStore,
+} from "../stores/workspaceStore";
 import { WorkspaceSettingsModal } from "./WorkspaceSettingsModal";
 import type { OrganizationMembership } from "../lib/api";
 
@@ -1400,27 +1405,26 @@ function MembersView({
 
   const isAdminOrOwner = callerRole === "owner" || callerRole === "admin";
 
-  const [members, setMembers] = useState<OrganizationMembership[] | null>(null);
+  // The roster lives in the workspace store — the rail's Members chip
+  // counts it from every other view, so a view-local copy would leave
+  // the chip and this list disagreeing.
+  const fetchMembers = useWorkspaceStore((s) => s.fetchMembers);
+  const members = useWorkspaceMembers(workspaceId) ?? null;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
 
-  // Re-fetch on workspace change. Cancellation guard so a stale
-  // result from one workspace can't overwrite another's during a
-  // switch.
+  // Re-fetch on workspace change. Store writes are keyed by org id, so
+  // a switch mid-flight can't cross-contaminate; the guard is only so
+  // an unmounted view doesn't set spinner/error state.
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
     setError(null);
-    api
-      .listOrganizationMembers(workspaceId)
-      .then((rows) => {
-        if (!cancelled) setMembers(rows);
-      })
+    fetchMembers(workspaceId)
       .catch((e) => {
         if (!cancelled) {
-          setMembers([]);
           setError(e instanceof Error ? e.message : t("errors.loadMembersFailed"));
         }
       })
@@ -1430,7 +1434,7 @@ function MembersView({
     return () => {
       cancelled = true;
     };
-  }, [workspaceId]);
+  }, [workspaceId, fetchMembers]);
 
   const handleMessage = async (member: OrganizationMembership) => {
     if (member.participantId === currentUserId) return;
