@@ -1,6 +1,15 @@
 import { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Building2, Check, ListChecks, Loader2, User, Settings, Plus } from "lucide-react";
+import {
+  Building2,
+  Check,
+  ChevronsUpDown,
+  ListChecks,
+  Loader2,
+  User,
+  Settings,
+  Plus,
+} from "lucide-react";
 import {
   useWorkspaceStore,
   useWorkspaces,
@@ -23,8 +32,13 @@ import { cn } from "../lib/utils";
  * workspace closes the dropdown immediately; the rail tile spins until
  * the switch lands (the dropdown reopens with the error banner if it
  * fails).
+ *
+ * `expanded` follows the rail: collapsed is the bare tile with the
+ * workspace name in the tooltip, expanded puts the name inline (the
+ * whole point of expanding) and drops the menu below instead of flying
+ * it out to the right.
  */
-export function WorkspaceSwitcher() {
+export function WorkspaceSwitcher({ expanded = false }: { expanded?: boolean }) {
   const { t } = useTranslation("settings");
   const workspaces = useWorkspaces();
   const active = useActiveWorkspace();
@@ -65,7 +79,10 @@ export function WorkspaceSwitcher() {
   if (workspaces.length === 0) {
     return (
       <div
-        className="flex h-9 w-9 items-center justify-center rounded-md bg-muted text-muted-foreground"
+        className={cn(
+          "flex h-9 items-center justify-center rounded-md bg-muted text-muted-foreground",
+          expanded ? "w-full" : "w-9"
+        )}
         title={t("workspace.loadingWorkspace")}
         style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
       >
@@ -95,14 +112,15 @@ export function WorkspaceSwitcher() {
   return (
     <div
       ref={containerRef}
-      className="relative"
+      className={cn("relative", expanded && "w-full")}
       style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
     >
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         className={cn(
-          "relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md border-2 transition-colors",
+          "relative flex shrink-0 items-center rounded-md border-2 transition-colors",
+          expanded ? "w-full gap-2.5 px-1 py-1" : "h-9 w-9 justify-center",
           open
             ? "border-primary"
             : "border-transparent hover:border-border focus-visible:border-primary"
@@ -111,14 +129,31 @@ export function WorkspaceSwitcher() {
         aria-expanded={open}
         title={switching ? (pendingWorkspace?.name ?? activeName) : activeName}
       >
-        {switching ? (
-          <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-        ) : (
-          <WorkspaceAvatar
-            name={activeName}
-            avatarUrl={active?.avatarUrl}
-            isPersonal={activeIsPersonal}
-          />
+        {/* Fixed tile so the avatar keeps its square clip in both
+            widths — the button itself stretches when expanded. */}
+        <span
+          className={cn(
+            "flex shrink-0 items-center justify-center overflow-hidden rounded-md",
+            expanded ? "h-7 w-7" : "h-full w-full"
+          )}
+        >
+          {switching ? (
+            <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+          ) : (
+            <WorkspaceAvatar
+              name={activeName}
+              avatarUrl={active?.avatarUrl}
+              isPersonal={activeIsPersonal}
+            />
+          )}
+        </span>
+        {expanded && (
+          <>
+            <span className="min-w-0 flex-1 truncate text-left text-sm font-semibold text-foreground">
+              {switching ? (pendingWorkspace?.name ?? activeName) : activeName}
+            </span>
+            <ChevronsUpDown className="h-3.5 w-3.5 shrink-0 text-rail-foreground" />
+          </>
         )}
       </button>
       {/* Outside the button — its overflow-hidden would clip the badge. */}
@@ -135,7 +170,15 @@ export function WorkspaceSwitcher() {
 
       {open && (
         <div
-          className="absolute left-full top-0 z-40 ml-2 max-h-[28rem] w-72 overflow-y-auto rounded-lg border border-border bg-popover py-1 shadow-lg"
+          className={cn(
+            "absolute z-40 max-h-[28rem] overflow-y-auto rounded-lg border border-border bg-popover py-1 shadow-lg",
+            // Expanded, the rail is wide enough to drop the menu straight
+            // down under the trigger; collapsed it has to fly out past the
+            // 56px rail.
+            expanded
+              ? "left-0 top-full mt-2 w-full min-w-72"
+              : "left-full top-0 ml-2 w-72"
+          )}
           role="listbox"
         >
           <ErrorBanner />

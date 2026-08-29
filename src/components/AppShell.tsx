@@ -14,22 +14,31 @@ import {
   Moon,
   Monitor,
   LogOut,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn, unreadTier, type UnreadTier } from "../lib/utils";
 import { useWebSocket } from "../hooks/useWebSocket";
 import { useWorkspaceHotkeys } from "../hooks/useWorkspaceHotkeys";
+import { useRailHotkey } from "../hooks/useRailHotkey";
 import { useChatStore } from "../stores/chatStore";
 import { useAuthStore } from "../stores/authStore";
 import { useAgentStore } from "../stores/agentStore";
 import { useTaskStore, countActiveTasks } from "../stores/taskStore";
 import { useNavStore } from "../stores/navStore";
+import { useRailStore, useRailExpanded } from "../stores/railStore";
 import { trackScreen } from "../lib/analytics";
 import { usePresenceStore } from "../stores/presenceStore";
 import { isAgentOnline } from "../lib/agentOnline";
 import { useThemeStore } from "../stores/themeStore";
 import { useFriendStore } from "../stores/friendStore";
-import { useActiveWorkspace, useWorkspacesEnabled } from "../stores/workspaceStore";
+import {
+  useActiveWorkspace,
+  useWorkspaceMembers,
+  useWorkspacesEnabled,
+  useWorkspaceStore,
+} from "../stores/workspaceStore";
 import { AgentBusyToast } from "./AgentBusyToast";
 import { ReminderToast } from "./ReminderToast";
 import { MemorySavedToast } from "./MemorySavedToast";
@@ -83,6 +92,9 @@ export function AppShell() {
 
   // Cmd/Ctrl+1..9 switches workspaces (Slack-style, switcher order).
   useWorkspaceHotkeys();
+
+  // Cmd/Ctrl+B expands/collapses the left rail.
+  useRailHotkey();
 
   // The default view is never set via setView, so emit its $screen here —
   // otherwise a session spent entirely in the initial view has no screen
@@ -255,6 +267,12 @@ function LeftRail({
   const friendsEnabled = participant?.features?.friends === true;
   const showFriendsRail = friendsEnabled || isWorkspaceMode;
 
+  // Icon-only (w-14) vs labelled (w-56). Persisted in railStore; also
+  // toggled by Cmd/Ctrl+B. Every rail child reads the flag from the store
+  // itself rather than taking it as a prop.
+  const expanded = useRailExpanded();
+  const toggleRail = useRailStore((s) => s.toggle);
+
   // Agent online/total — "running" is the only fully-up state; "starting"
   // and "stalled" keep a process alive but it's not actually serving, so
   // we exclude them from the "online" count. Shown on the Agents rail
@@ -272,6 +290,24 @@ function LeftRail({
     return { online, total: all.length };
   }, [agentsMap, presenceOnline]);
 
+  // Same N/M treatment under the Members button in a shared workspace.
+  // The rail loads the roster itself — the chip has to read right from
+  // every view, not just once MembersView has mounted — and MembersView
+  // renders the same store entry, so the two can't disagree.
+  const fetchMembers = useWorkspaceStore((s) => s.fetchMembers);
+  const workspaceMembers = useWorkspaceMembers(activeWorkspace?.id);
+  useEffect(() => {
+    if (!isWorkspaceMode || !activeWorkspace) return;
+    fetchMembers(activeWorkspace.id).catch(() => {});
+  }, [isWorkspaceMode, activeWorkspace?.id, fetchMembers]);
+  const memberStats = useMemo(() => {
+    const all = workspaceMembers ?? [];
+    return {
+      online: all.filter((m) => presenceOnline.has(m.participantId)).length,
+      total: all.length,
+    };
+  }, [workspaceMembers, presenceOnline]);
+
   // Theme quick-toggle. Cycles system → light → dark → system so the
   // rail matches web's three-state ThemeToggle.
   const themePreference = useThemeStore((s) => s.preference);
@@ -285,15 +321,27 @@ function LeftRail({
     else setPreference("system");
   };
 
+  const connectionLabel = connected ? t("common:connected") : t("common:disconnected");
+
   return (
     <nav
-      className="flex flex-col w-14 shrink-0 rounded-xl bg-rail shadow-md py-3 items-center justify-between"
+      className={cn(
+        "flex flex-col shrink-0 rounded-xl bg-rail shadow-md py-3 justify-between",
+        // Only the width animates. Labels are mounted/unmounted rather than
+        // faded so a mid-animation frame never shows text clipped against
+        // the rail edge.
+        "transition-[width] duration-200 ease-out",
+        expanded ? "w-56 px-2 items-stretch" : "w-14 items-center"
+      )}
       style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
     >
       {/* Top: workspace tile + main nav */}
       <div
         style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
-        className="flex flex-col gap-1 items-center"
+        className={cn(
+          "flex flex-col gap-1 min-w-0",
+          expanded ? "items-stretch" : "items-center"
+        )}
       >
         {/* Workspaces gated off: render nothing in the tile slot — the
             static branding just clutters the rail. The interactive switcher
@@ -301,8 +349,8 @@ function LeftRail({
             when the workspaces feature flag is enabled. */}
         {workspacesEnabled && (
           <>
-            <WorkspaceSwitcher />
-            <div className="my-1 h-px w-8 bg-rail-border" />
+            <WorkspaceSwitcher expanded={expanded} />
+            <RailDivider />
           </>
         )}
 
@@ -326,20 +374,43 @@ function LeftRail({
           <RailButton
             icon={Users}
             label={isWorkspaceMode ? t("members") : t("friends")}
+            // Like Agents: the expanded row shows the plain label with the
+            // N/M chip beside it, so the online count lives in the tooltip.
+            tooltip={
+              isWorkspaceMode && memberStats.total > 0
+                ? t("membersOnline", {
+                    online: memberStats.online,
+                    total: memberStats.total,
+                  })
+                : undefined
+            }
             active={view === "friends"}
             onClick={() => onChange("friends")}
             badge={!isWorkspaceMode && pendingFriends > 0 ? pendingFriends : undefined}
+            textBadge={
+              isWorkspaceMode && memberStats.total > 0 ? (
+                <>
+                  <span>{memberStats.online}</span>
+                  <span className="opacity-50">/</span>
+                  <span>{memberStats.total}</span>
+                </>
+              ) : undefined
+            }
           />
         )}
         <RailButton
           icon={Bot}
-          label={
+          label={t("agents")}
+          // Expanded shows the plain "Agents" label with the N/M chip beside
+          // it, so the online count lives in the tooltip only — spelling it
+          // out twice in one row reads as a glitch.
+          tooltip={
             agentStats.total > 0
               ? t("agentsOnline", {
                   online: agentStats.online,
                   total: agentStats.total,
                 })
-              : t("agents")
+              : undefined
           }
           active={view === "agents"}
           onClick={() => onChange("agents")}
@@ -373,9 +444,7 @@ function LeftRail({
         )}
         {/* Divider separating the everyone-buttons above from the admin-only
             buttons (Templates, Platform) below. */}
-        {participant?.platformAdmin && (
-          <div className="my-1 h-px w-8 bg-rail-border" />
-        )}
+        {participant?.platformAdmin && <RailDivider />}
         {participant?.platformAdmin && (
           <RailButton
             icon={LayoutTemplate}
@@ -405,21 +474,39 @@ function LeftRail({
       {/* Bottom: connectivity + utilities + profile + logout */}
       <div
         style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
-        className="flex flex-col gap-1 items-center"
+        className={cn(
+          "flex flex-col gap-1 min-w-0",
+          expanded ? "items-stretch" : "items-center"
+        )}
       >
-        {/* Online/offline dot */}
+        {/* Online/offline dot. Expanded it gets the word next to it —
+            the dot alone is only legible once you know the code. */}
         <div
           className={cn(
-            "h-2 w-2 rounded-full my-1",
-            connected ? "bg-success" : "bg-muted-foreground/50"
+            "flex items-center",
+            expanded ? "gap-2.5 px-3 py-1.5" : "justify-center"
           )}
-          title={connected ? t("common:connected") : t("common:disconnected")}
-          aria-label={connected ? t("common:connected") : t("common:disconnected")}
-        />
+          title={connectionLabel}
+          aria-label={connectionLabel}
+        >
+          <span
+            className={cn(
+              "h-2 w-2 shrink-0 rounded-full",
+              !expanded && "my-1",
+              connected ? "bg-success" : "bg-muted-foreground/50"
+            )}
+          />
+          {expanded && (
+            <span className="truncate text-xs text-rail-foreground">
+              {connectionLabel}
+            </span>
+          )}
+        </div>
 
         <RailButton
           icon={ThemeIcon}
-          label={t("settings:theme.railTooltip", {
+          label={t("settings:theme.label")}
+          tooltip={t("settings:theme.railTooltip", {
             preference: t(`settings:theme.${themePreference}`),
             resolved: t(`settings:theme.${resolvedTheme}`),
           })}
@@ -432,9 +519,13 @@ function LeftRail({
           type="button"
           onClick={onOpenProfile}
           title={t("settings:title")}
-          className="flex items-center justify-center w-10 h-10 rounded-lg text-rail-foreground hover:bg-rail-hover hover:text-foreground transition-colors"
+          aria-label={t("settings:title")}
+          className={cn(
+            "flex h-10 items-center rounded-lg text-rail-foreground hover:bg-rail-hover hover:text-foreground transition-colors",
+            expanded ? "w-full gap-3 px-2.5" : "w-10 justify-center"
+          )}
         >
-          <Avatar className="h-7 w-7">
+          <Avatar className="h-7 w-7 shrink-0">
             {participant?.avatarUrl ? (
               <AvatarImage src={participant.avatarUrl} alt={participant.displayName} displaySize={28} />
             ) : null}
@@ -442,6 +533,12 @@ function LeftRail({
               <User className="w-3.5 h-3.5" />
             </AvatarFallback>
           </Avatar>
+          {expanded && (
+            // The user's own name, not UI copy — never translated.
+            <span className="min-w-0 flex-1 truncate text-left text-sm font-medium">
+              {participant?.displayName ?? t("settings:title")}
+            </span>
+          )}
         </button>
 
         {/* Logout */}
@@ -450,18 +547,49 @@ function LeftRail({
           onClick={logout}
           title={t("signOut")}
           aria-label={t("signOut")}
-          className="flex items-center justify-center w-10 h-10 rounded-lg text-rail-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
+          className={cn(
+            "flex h-10 items-center rounded-lg text-rail-foreground hover:bg-destructive/10 hover:text-destructive transition-colors",
+            expanded ? "w-full gap-3 px-2.5" : "w-10 justify-center"
+          )}
         >
-          <LogOut className="w-4 h-4" />
+          <LogOut className="w-4 h-4 shrink-0" />
+          {expanded && (
+            <span className="min-w-0 flex-1 truncate text-left text-sm font-medium">
+              {t("signOut")}
+            </span>
+          )}
         </button>
+
+        <RailDivider />
+
+        {/* Expand / collapse. Last item in the rail so it reads as chrome
+            for the rail itself rather than one more destination. */}
+        <RailButton
+          icon={expanded ? PanelLeftClose : PanelLeftOpen}
+          label={expanded ? t("collapseSidebar") : t("expandSidebar")}
+          active={false}
+          onClick={toggleRail}
+        />
       </div>
     </nav>
+  );
+}
+
+/** Hairline between rail groups — full-bleed when expanded, a short
+ *  centred tick when the rail is icon-only. */
+function RailDivider() {
+  const expanded = useRailExpanded();
+  return (
+    <div
+      className={cn("my-1 h-px shrink-0 bg-rail-border", expanded ? "w-full" : "w-8 self-center")}
+    />
   );
 }
 
 function RailButton({
   icon: Icon,
   label,
+  tooltip,
   active,
   onClick,
   badge,
@@ -471,7 +599,11 @@ function RailButton({
   textBadge,
 }: {
   icon: React.ElementType;
+  /** Visible text when the rail is expanded; also the default tooltip. */
   label: string;
+  /** Overrides the tooltip/aria-label when it should say more than the
+   *  visible label does (e.g. the Agents button's online count). */
+  tooltip?: string;
   active: boolean;
   onClick: () => void;
   badge?: number;
@@ -484,54 +616,75 @@ function RailButton({
   /** Accessible label for `badgeTier`'s dot, since it renders no visible text. */
   badgeTierLabel?: string;
   /** Free-form badge content (e.g. coloured "3/10" for agent online count).
-   *  Ignored when `badge` is set. Rendered as a small chip pinned to the
-   *  bottom-center of the icon so vertical rhythm of the rail is preserved. */
+   *  Ignored when `badge` is set. Collapsed it's a small chip pinned to the
+   *  bottom-centre of the icon so the rail's vertical rhythm is preserved;
+   *  expanded it sits at the end of the row. */
   textBadge?: React.ReactNode;
 }) {
+  const expanded = useRailExpanded();
   const badgeClass =
     badgeColor === "destructive"
       ? "bg-destructive text-destructive-foreground"
       : "bg-primary text-primary-foreground";
+  const showBadge = badge !== undefined && badge > 0 && !badgeTier;
+  const showTextBadge = badge === undefined && !badgeTier && textBadge;
   return (
     <button
       type="button"
       onClick={onClick}
-      title={label}
-      aria-label={label}
+      title={tooltip ?? label}
+      aria-label={tooltip ?? label}
       aria-pressed={active}
       className={cn(
-        "relative flex items-center justify-center w-10 h-10 rounded-lg transition-all",
+        "relative flex h-10 items-center rounded-lg transition-all",
+        expanded ? "w-full gap-3 px-2.5" : "w-10 justify-center",
         active
           ? "bg-rail-accent text-rail-accent-foreground shadow-sm"
           : "text-rail-foreground hover:bg-rail-hover hover:text-foreground"
       )}
     >
-      <Icon className="w-5 h-5" />
+      <Icon className="w-5 h-5 shrink-0" />
+      {expanded && (
+        <span className="min-w-0 flex-1 truncate text-left text-sm font-medium">
+          {label}
+        </span>
+      )}
       {badgeTier ? (
         <span
           aria-label={badgeTierLabel}
           className={cn(
-            "absolute top-0.5 right-0.5 rounded-full bg-primary",
+            "rounded-full",
+            // On the active row `bg-primary` is primary-on-primary and
+            // vanishes — fall back to the row's own foreground.
+            active ? "bg-rail-accent-foreground" : "bg-primary",
+            expanded ? "shrink-0" : "absolute top-0.5 right-0.5",
             badgeTier === "few" && "h-2 w-2",
             badgeTier === "some" && "h-2.5 w-2.5",
             badgeTier === "many" && "h-3 w-3"
           )}
         />
       ) : (
-        badge !== undefined &&
-        badge > 0 && (
+        showBadge && (
           <span
             className={cn(
-              "absolute top-0.5 right-0.5 min-w-[16px] h-4 px-1 rounded-full text-[9px] font-semibold flex items-center justify-center",
+              "min-w-[16px] h-4 px-1 rounded-full text-[9px] font-semibold flex items-center justify-center",
+              expanded ? "shrink-0" : "absolute top-0.5 right-0.5",
               badgeClass
             )}
           >
-            {badge > 99 ? "99+" : badge}
+            {badge! > 99 ? "99+" : badge}
           </span>
         )
       )}
-      {badge === undefined && !badgeTier && textBadge && (
-        <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 px-1 text-[8px] font-semibold tabular-nums leading-none flex items-center justify-center h-3">
+      {showTextBadge && (
+        <span
+          className={cn(
+            "font-semibold tabular-nums leading-none flex items-center justify-center",
+            expanded
+              ? "shrink-0 text-[11px] opacity-80"
+              : "absolute bottom-0.5 left-1/2 -translate-x-1/2 px-1 text-[8px] h-3"
+          )}
+        >
           {textBadge}
         </span>
       )}
