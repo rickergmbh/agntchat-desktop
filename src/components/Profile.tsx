@@ -3,6 +3,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { useAuthStore } from "../stores/authStore";
 import { useThemeStore, type ThemePreference } from "../stores/themeStore";
 import { useLocaleStore } from "../stores/localeStore";
+import { useIntegrationStore } from "../stores/integrationStore";
 import type { LocalePreference } from "../i18n";
 import { LOCALE_LABELS, SUPPORTED_LOCALES } from "../i18n/generated";
 import { isDesignSystemDebugOn, setDesignSystemDebug } from "../lib/designSystemDebug";
@@ -2557,6 +2558,9 @@ function MemorySection({
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
       await onRefreshCredentials();
+      // The composer's mic gates on this — re-read it so voice notes light
+      // up without a reload.
+      await useIntegrationStore.getState().refresh({ force: true });
     } catch (e) {
       setError(e instanceof Error ? e.message : t("memory.saveError"));
     } finally {
@@ -2570,6 +2574,7 @@ function MemorySection({
       await api.disconnectProvider("openai");
       setConfirmDisconnect(false);
       await onRefreshCredentials();
+      await useIntegrationStore.getState().refresh({ force: true });
     } catch (e) {
       setError(e instanceof Error ? e.message : t("memory.disconnectError"));
     } finally {

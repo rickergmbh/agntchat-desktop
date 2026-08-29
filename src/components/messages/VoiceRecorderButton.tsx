@@ -2,7 +2,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { uploadFile } from "../../services/fileUpload";
-import { Loader2, Mic, SendHorizontal, X } from "lucide-react";
+import { useIntegrationStore, useProviderConnected } from "../../stores/integrationStore";
+import { Loader2, Mic, MicOff, SendHorizontal, X } from "lucide-react";
 
 /**
  * Container preference for MediaRecorder, most-compatible first. The
@@ -46,6 +47,11 @@ interface VoiceRecorderButtonProps {
  * recorder and ships the blob through the normal presigned upload flow
  * (the backend transcribes it); X discards. MediaRecorder-based — mirrors
  * web/src/components/VoiceRecorderButton.tsx.
+ *
+ * Transcription runs on the uploader's own OpenAI credential, so with no
+ * key on file the note would ship as audio nobody's agents can read. The
+ * mic is disabled in that state and explains itself on click rather than
+ * accepting a recording that lands mute.
  */
 export function VoiceRecorderButton({
   conversationId,
@@ -53,6 +59,8 @@ export function VoiceRecorderButton({
   onError,
 }: VoiceRecorderButtonProps) {
   const { t } = useTranslation("chat");
+  const refreshIntegrations = useIntegrationStore((s) => s.refresh);
+  const canTranscribe = useProviderConnected("openai");
   const [recording, setRecording] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [elapsedMs, setElapsedMs] = useState(0);
@@ -81,6 +89,12 @@ export function VoiceRecorderButton({
 
   // Unmount mid-recording — release the mic.
   useEffect(() => cleanup, [cleanup]);
+
+  // Cached in the store after the first call, so this is one request per
+  // session no matter how many conversations the user opens.
+  useEffect(() => {
+    void refreshIntegrations();
+  }, [refreshIntegrations]);
 
   const startRecording = useCallback(async () => {
     if (recording || uploading) return;
@@ -181,6 +195,25 @@ export function VoiceRecorderButton({
           <SendHorizontal className="h-4 w-4" />
         </Button>
       </>
+    );
+  }
+
+  // Kept clickable while visibly disabled: a dead button gives the user no
+  // way to find out that the missing piece is an API key in Settings.
+  if (!canTranscribe) {
+    return (
+      <Button
+        size="icon"
+        variant="secondary"
+        className="text-muted-foreground"
+        onClick={() => onError(t("voice.needsKey"))}
+        aria-disabled
+        aria-label={t("voice.needsKeyShort")}
+        title={t("voice.needsKey")}
+        type="button"
+      >
+        <MicOff className="h-4 w-4" />
+      </Button>
     );
   }
 

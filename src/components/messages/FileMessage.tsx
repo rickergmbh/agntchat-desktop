@@ -23,6 +23,11 @@ interface FileContent {
   /** Whisper transcript, folded into the content JSON by the backend once
    *  transcription of an audio upload completes. */
   transcript?: string;
+  /** Why there's no transcript — set by the backend on a terminal
+   *  transcription outcome that produced none. "no_key": the uploader has
+   *  no OpenAI credential; "failed": Whisper (or the fetch) errored.
+   *  Absent while transcription is still in flight. */
+  transcriptStatus?: "no_key" | "failed";
   /** Audio clip length, from the recorder's own measurement (or Whisper's,
    *  for audio that wasn't recorded here). Lets the player show
    *  "0:00 / 1:24" on paint instead of only once playback starts. */
@@ -58,12 +63,14 @@ function AudioMessage({
   url,
   loading,
   transcript,
+  transcriptStatus,
   durationMs,
   caption,
 }: {
   url: string | null;
   loading: boolean;
   transcript?: string;
+  transcriptStatus?: "no_key" | "failed";
   durationMs?: number;
   caption?: string;
 }) {
@@ -191,7 +198,7 @@ function AudioMessage({
         />
       )}
       {caption && <p className="text-sm">{caption}</p>}
-      {transcript && (
+      {transcript ? (
         <button
           onClick={() => setTranscriptExpanded((v) => !v)}
           className="block w-full text-left"
@@ -209,7 +216,13 @@ function AudioMessage({
             {transcript}
           </p>
         </button>
-      )}
+      ) : transcriptStatus ? (
+        // Without this the note renders as a plain audio bubble and the
+        // sender never learns that no agent in the thread can read it.
+        <p className="text-[11px] italic opacity-60">
+          {transcriptStatus === "no_key" ? t("transcriptNoKey") : t("transcriptFailed")}
+        </p>
+      ) : null}
     </div>
   );
 }
@@ -347,6 +360,7 @@ export function FileMessage({ message }: { message: Message }) {
         url={url}
         loading={loading}
         transcript={file.transcript}
+        transcriptStatus={file.transcriptStatus}
         durationMs={file.durationMs}
         caption={file.caption}
       />
