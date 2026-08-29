@@ -1657,6 +1657,7 @@ export const resources = {
         },
         "groups": {
           "calendar": "Google Calendar",
+          "drive": "Google Drive",
           "github": "GitHub",
           "gmail": "Gmail",
           "jobs": "Job search",
@@ -7653,6 +7654,7 @@ export const resources = {
         },
         "groups": {
           "calendar": "Google Calendar",
+          "drive": "Google Drive",
           "github": "GitHub",
           "gmail": "Gmail",
           "jobs": "Búsqueda de empleo",
@@ -13649,6 +13651,7 @@ export const resources = {
         },
         "groups": {
           "calendar": "Google Kalender",
+          "drive": "Google Drive",
           "github": "GitHub",
           "gmail": "Gmail",
           "jobs": "Jobsuche",
@@ -19645,6 +19648,7 @@ export const resources = {
         },
         "groups": {
           "calendar": "Google Agenda",
+          "drive": "Google Drive",
           "github": "GitHub",
           "gmail": "Gmail",
           "jobs": "Recherche d'emploi",
@@ -25641,6 +25645,7 @@ export const resources = {
         },
         "groups": {
           "calendar": "Google Agenda",
+          "drive": "Google Drive",
           "github": "GitHub",
           "gmail": "Gmail",
           "jobs": "Busca de vagas",
@@ -31637,6 +31642,7 @@ export const resources = {
         },
         "groups": {
           "calendar": "Googleカレンダー",
+          "drive": "Google ドライブ",
           "github": "GitHub",
           "gmail": "Gmail",
           "jobs": "求人検索",
@@ -37633,6 +37639,7 @@ export const resources = {
         },
         "groups": {
           "calendar": "Google 日历",
+          "drive": "Google 云端硬盘",
           "github": "GitHub",
           "gmail": "Gmail",
           "jobs": "职位搜索",
@@ -43629,6 +43636,7 @@ export const resources = {
         },
         "groups": {
           "calendar": "Google 캘린더",
+          "drive": "Google 드라이브",
           "github": "GitHub",
           "gmail": "Gmail",
           "jobs": "구직 검색",
@@ -49625,6 +49633,7 @@ export const resources = {
         },
         "groups": {
           "calendar": "Google Calendar",
+          "drive": "Google Drive",
           "github": "GitHub",
           "gmail": "Gmail",
           "jobs": "Ricerca di lavoro",
@@ -55621,6 +55630,7 @@ export const resources = {
         },
         "groups": {
           "calendar": "Google कैलेंडर",
+          "drive": "Google Drive",
           "github": "GitHub",
           "gmail": "Gmail",
           "jobs": "नौकरी खोज",

@@ -80,6 +80,7 @@ import {
   AtSign,
   Bot,
   Languages,
+  HardDrive,
 } from "lucide-react";
 import { deviceTimezone, filterTimezones, formatTimezoneLabel } from "../lib/timezones";
 import { getInitials } from "../lib/utils";
@@ -105,6 +106,7 @@ const PROVIDER_ICONS: Record<string, React.ElementType> = {
 const GOOGLE_SERVICES: { scope: string; label: string; icon: React.ElementType }[] = [
   { scope: "gmail.modify", label: "Gmail", icon: Mail },
   { scope: "calendar", label: "Calendar", icon: Calendar },
+  { scope: "drive.file", label: "Drive", icon: HardDrive },
 ];
 
 function getProviderIcon(name: string) {
