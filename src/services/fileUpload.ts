@@ -96,6 +96,29 @@ export function attachmentDisplayName(filename?: string): string {
 }
 
 /**
+ * Derives a filename for a pasted-text attachment from the pasted content's
+ * first line, so the attachment chip previews what was pasted instead of a
+ * generic label. Falls back to PASTED_TEXT_FILENAME (which renders as the
+ * generic "Pasted text" label via attachmentDisplayName) when the paste has
+ * no usable first line.
+ */
+export function pastedTextFilename(text: string): string {
+  const firstLine = text
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .find((line) => line.length > 0) ?? "";
+  const cleaned = firstLine.replace(/[\\/:*?"<>|]/g, " ").replace(/\s+/g, " ").trim();
+  if (!cleaned) return PASTED_TEXT_FILENAME;
+
+  const MAX_TITLE_LENGTH = 60;
+  const chars = Array.from(cleaned);
+  const title =
+    chars.length > MAX_TITLE_LENGTH ? `${chars.slice(0, MAX_TITLE_LENGTH).join("").trimEnd()}…` : cleaned;
+  const base = title.replace(/\.+$/, "");
+  return base ? `${base}.txt` : PASTED_TEXT_FILENAME;
+}
+
+/**
  * Uploads a pasted text blob through the presigned-upload flow and returns
  * its ride-along descriptor — WITHOUT confirming it as a standalone file
  * message. The caller includes the descriptor in the `attachments` array of

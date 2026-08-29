@@ -30,9 +30,9 @@ import {
   isImageFile,
   uploadFile,
   uploadPastedText,
+  attachmentDisplayName,
+  pastedTextFilename,
   PASTE_AS_FILE_THRESHOLD,
-  PASTED_TEXT_FILENAME,
-  PASTED_TEXT_LABEL,
   type PendingAttachment,
   type RideAlongAttachment,
 } from "../../services/fileUpload";
@@ -44,6 +44,7 @@ interface PastedText {
   id: string;
   text: string;
   charCount: number;
+  filename: string;
 }
 // Stable singleton for the `members` selector fallback. Inlining `?? []`
 // returns a fresh array each call, which trips Zustand v4's
@@ -175,7 +176,12 @@ export const MessageComposer = forwardRef<
       e.preventDefault();
       setPastedTexts((prev) => [
         ...prev,
-        { id: `paste:${Date.now()}:${prev.length}`, text: pasted, charCount: pasted.length },
+        {
+          id: `paste:${Date.now()}:${prev.length}`,
+          text: pasted,
+          charCount: pasted.length,
+          filename: pastedTextFilename(pasted),
+        },
       ]);
     }
   };
@@ -305,7 +311,7 @@ export const MessageComposer = forwardRef<
       setUploading(true);
       try {
         const uploaded: RideAlongAttachment[] = await Promise.all(
-          pastedTexts.map((p) => uploadPastedText(conversationId, p.text, PASTED_TEXT_FILENAME))
+          pastedTexts.map((p) => uploadPastedText(conversationId, p.text, p.filename))
         );
         await sendMessage(conversationId, text, {
           parentMessageId: replyingTo?.id,
@@ -424,7 +430,7 @@ export const MessageComposer = forwardRef<
                 <FileIcon />
               </AttachmentMedia>
               <AttachmentContent>
-                <AttachmentTitle>{PASTED_TEXT_LABEL}</AttachmentTitle>
+                <AttachmentTitle>{attachmentDisplayName(p.filename)}</AttachmentTitle>
                 <AttachmentDescription>
                   {p.charCount.toLocaleString()} chars
                 </AttachmentDescription>
