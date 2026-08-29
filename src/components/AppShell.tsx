@@ -41,6 +41,7 @@ import {
 import { AgentBusyToast } from "./AgentBusyToast";
 import { ReminderToast } from "./ReminderToast";
 import { MemorySavedToast } from "./MemorySavedToast";
+import { useUnseenMemoryCount } from "../stores/memoryFeedStore";
 import { PermissionToast } from "./PermissionToast";
 import { RenameToGroupModal } from "./RenameToGroupModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -231,6 +232,8 @@ function LeftRail({
 }) {
   const { t } = useTranslation("nav");
   const { t: tChat } = useTranslation("chat");
+  const { t: tMemory } = useTranslation("memory");
+  const unseenMemories = useUnseenMemoryCount();
   const unread = useChatStore((s) => s.unreadCounts);
   const personalConversations = useChatStore((s) => s.conversations);
   // Only count unread against conversations in the personal "Chats" list —
@@ -412,6 +415,10 @@ function LeftRail({
           }
           active={view === "agents"}
           onClick={() => onChange("agents")}
+          // Agents your agents have remembered something for since you last
+          // opened their memory list. A dot, not a count: the exact number of
+          // background extractions is not a number anyone acts on.
+          dot={unseenMemories > 0 ? tMemory("unseenSaves") : null}
           textBadge={
             agentStats.total > 0 ? (
               <>
@@ -591,6 +598,7 @@ function RailButton({
   badgeTier,
   badgeTierLabel,
   textBadge,
+  dot,
 }: {
   icon: React.ElementType;
   /** Visible text when the rail is expanded; also the default tooltip. */
@@ -614,6 +622,10 @@ function RailButton({
    *  bottom-centre of the icon so the rail's vertical rhythm is preserved;
    *  expanded it sits at the end of the row. */
   textBadge?: React.ReactNode;
+  /** Standalone "there's something new here" marker, independent of the
+   *  badge props — the Agents row needs it alongside its online-count chip,
+   *  which `badgeTier` would suppress. The string is its accessible label. */
+  dot?: string | null;
 }) {
   const expanded = useRailExpanded();
   const badgeClass =
@@ -669,6 +681,18 @@ function RailButton({
             {badge! > 99 ? "99+" : badge}
           </span>
         )
+      )}
+      {dot && (
+        <span
+          aria-label={dot}
+          className={cn(
+            "h-2 w-2 rounded-full",
+            // On the active row `bg-primary` is primary-on-primary and
+            // vanishes — fall back to the row's own foreground.
+            active ? "bg-rail-accent-foreground" : "bg-primary",
+            expanded ? "shrink-0" : "absolute top-0.5 right-0.5"
+          )}
+        />
       )}
       {showTextBadge && (
         <span

@@ -3,6 +3,11 @@ import { create } from "zustand";
 /** Payload pushed on the user channel when an agent saves a memory (camelCase). */
 export interface MemorySavedEvent {
   scope: "agent" | "family";
+  /** How the save came about — set by the backend's SavedNotifier.
+   *  "live" is an agent remembering something mid-turn and is worth an
+   *  island; "extraction" is the background worker deriving several at once
+   *  and only ever files into the unseen feed (see memoryFeedStore). */
+  source: "live" | "extraction";
   memoryId: string;
   category: string;
   key: string;
@@ -16,8 +21,11 @@ export interface MemorySavedEvent {
 
 /**
  * Queue of agent memory saves awaiting their moment as the memory island.
- * Saves can arrive in bursts (background extraction writes several at once),
- * so events queue and MemorySavedToast shows them one at a time.
+ *
+ * Only live saves reach this queue — background extraction (the burst-y
+ * writer) is filed straight into memoryFeedStore and never queued, because
+ * one island per extracted memory held the top of the app for the better
+ * part of a minute and none of it was readable.
  */
 interface MemoryToastState {
   queue: MemorySavedEvent[];

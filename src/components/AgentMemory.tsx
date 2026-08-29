@@ -18,6 +18,7 @@ import {
   useWorkspaces,
   useWorkspacesEnabled,
 } from "../stores/workspaceStore";
+import { useMemoryFeedStore, useUnseenMemoryIds } from "../stores/memoryFeedStore";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -44,6 +45,7 @@ import {
   Pencil,
   Trash2,
   AlertTriangle,
+  Sparkles,
 } from "lucide-react";
 
 interface AgentMemoryProps {
@@ -145,6 +147,20 @@ export function AgentMemory({
       );
     },
     [scopeSelectable, workspaces, t]
+  );
+
+  // Saves the user hasn't looked at yet, floated to the top of each list.
+  // This is the surface that lets the memory island stay brief — before it
+  // existed the toast was the only chance to see a save, so it had to hold.
+  const newAgentIds = useUnseenMemoryIds(agentId, "agent");
+  const newFamilyIds = useUnseenMemoryIds(agentId, "family");
+
+  // Reading the list IS the acknowledgement — clear this agent's marks on the
+  // way out rather than the moment they render, so the group survives being
+  // looked at.
+  useEffect(
+    () => () => useMemoryFeedStore.getState().markAgentSeen(agentId),
+    [agentId]
   );
 
   const [agentMemories, setAgentMemories] = useState<Memory[]>([]);
@@ -312,6 +328,7 @@ export function AgentMemory({
             title={t("agentMemories")}
             subtitle={t("agentSubtitle", { name: agentName || t("agents:thisAgent") })}
             memories={agentMemories}
+            newIds={newAgentIds}
             total={agentPage.total}
             hasMore={agentPage.hasMore}
             loadingMore={loadingMore === "agent"}
@@ -339,6 +356,7 @@ export function AgentMemory({
             shared
             scopeLabel={familyScopeLabel}
             memories={familyMemories}
+            newIds={newFamilyIds}
             total={familyPage.total}
             hasMore={familyPage.hasMore}
             loadingMore={loadingMore === "family"}
@@ -384,6 +402,7 @@ function MemorySection({
   shared = false,
   scopeLabel,
   memories,
+  newIds,
   total,
   hasMore,
   loadingMore,
@@ -401,6 +420,9 @@ function MemorySection({
   // Family list only: resolves a row to its workspace badge text.
   scopeLabel?: (m: AnyMemory) => string | null;
   memories: AnyMemory[];
+  /** Ids saved since the user last read this list — pulled out of their
+   *  category groups into a "recently remembered" group at the top. */
+  newIds?: Set<string>;
   // Full size of the set behind `memories`, which is only the pages loaded so
   // far. Before pagination this list silently stopped at the server's default
   // of 50, stranding every older memory beyond review or deletion.
@@ -415,10 +437,15 @@ function MemorySection({
   onDeleted: () => void;
 }) {
   const { t } = useTranslation("memory");
+  // Unseen rows lead, out of category order — "what did my agents just
+  // learn" is the question this list is opened to answer. They drop back
+  // into their categories once the list has been read.
+  const recent = newIds ? memories.filter((m) => newIds.has(m.id)) : [];
+  const settled = recent.length > 0 ? memories.filter((m) => !newIds!.has(m.id)) : memories;
   // Group by category, preserving the canonical category order.
   const byCategory = CATEGORIES.map((cat) => ({
     cat,
-    items: memories.filter((m) => m.category === cat),
+    items: settled.filter((m) => m.category === cat),
   })).filter((g) => g.items.length > 0);
 
   return (
@@ -453,6 +480,27 @@ function MemorySection({
         </div>
       ) : (
         <div className="space-y-4">
+          {recent.length > 0 && (
+            <div>
+              <div className="mb-1.5 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-primary">
+                <Sparkles className="h-3 w-3" />
+                {t("recentlyRemembered")} ({recent.length})
+              </div>
+              <div className="space-y-1.5">
+                {recent.map((m) => (
+                  <MemoryRow
+                    key={m.id}
+                    memory={m}
+                    shared={shared}
+                    scopeBadge={scopeLabel ? scopeLabel(m) : null}
+                    onEdit={() => onEdit(m)}
+                    onDelete={onDelete}
+                    onDeleted={onDeleted}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
           {byCategory.map((group) => (
             <div key={group.cat}>
               <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">

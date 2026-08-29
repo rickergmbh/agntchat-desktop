@@ -1662,7 +1662,8 @@ export const resources = {
           "gmail": "Gmail",
           "jobs": "Job search",
           "other": "Other",
-          "payments": "Payments & finance"
+          "payments": "Payments & finance",
+          "sheets": "Google Sheets"
         },
         "integrations": "Integrations",
         "loading": "Loading tools…",
@@ -3356,6 +3357,7 @@ export const resources = {
       "openQuestions": "Open Questions",
       "ownedOnly": "Memories are only available for agents you own.",
       "participants": "Participants",
+      "recentlyRemembered": "Recently remembered",
       "roles": "Roles",
       "saveFailed": "Failed to save memory.",
       "savedToast": {
@@ -3396,6 +3398,7 @@ export const resources = {
       "title": "Memory",
       "tools": "Tools",
       "trustLevel": "trust: {{level}}",
+      "unseenSaves": "New memories saved",
       "updatedAt": "Updated {{date}}",
       "updatedAtBy": "Updated {{date}} by {{name}}",
       "updatedBy": "{{name}} updated memory",
@@ -7661,7 +7664,8 @@ export const resources = {
           "gmail": "Gmail",
           "jobs": "Búsqueda de empleo",
           "other": "Otros",
-          "payments": "Pagos y finanzas"
+          "payments": "Pagos y finanzas",
+          "sheets": "Google Sheets"
         },
         "integrations": "Integraciones",
         "loading": "Cargando herramientas…",
@@ -9355,6 +9359,7 @@ export const resources = {
       "openQuestions": "Preguntas abiertas",
       "ownedOnly": "Las memorias solo están disponibles para los agentes que te pertenecen.",
       "participants": "Participantes",
+      "recentlyRemembered": "Recordado recientemente",
       "roles": "Roles",
       "saveFailed": "No se pudo guardar la memoria.",
       "savedToast": {
@@ -9395,6 +9400,7 @@ export const resources = {
       "title": "Memoria",
       "tools": "Herramientas",
       "trustLevel": "confianza: {{level}}",
+      "unseenSaves": "Nuevas memorias guardadas",
       "updatedAt": "Actualizado {{date}}",
       "updatedAtBy": "Actualizado {{date}} por {{name}}",
       "updatedBy": "{{name}} actualizó la memoria",
@@ -13660,7 +13666,8 @@ export const resources = {
           "gmail": "Gmail",
           "jobs": "Jobsuche",
           "other": "Sonstige",
-          "payments": "Zahlungen & Finanzen"
+          "payments": "Zahlungen & Finanzen",
+          "sheets": "Google Sheets"
         },
         "integrations": "Integrationen",
         "loading": "Werkzeuge werden geladen…",
@@ -15354,6 +15361,7 @@ export const resources = {
       "openQuestions": "Offene Fragen",
       "ownedOnly": "Erinnerungen sind nur für Agenten verfügbar, die Sie besitzen.",
       "participants": "Teilnehmer",
+      "recentlyRemembered": "Kürzlich gemerkt",
       "roles": "Rollen",
       "saveFailed": "Erinnerung konnte nicht gespeichert werden.",
       "savedToast": {
@@ -15394,6 +15402,7 @@ export const resources = {
       "title": "Erinnerung",
       "tools": "Werkzeuge",
       "trustLevel": "Vertrauen: {{level}}",
+      "unseenSaves": "Neue Erinnerungen gespeichert",
       "updatedAt": "Aktualisiert {{date}}",
       "updatedAtBy": "Aktualisiert {{date}} von {{name}}",
       "updatedBy": "{{name}} hat die Erinnerung aktualisiert",
@@ -19659,7 +19668,8 @@ export const resources = {
           "gmail": "Gmail",
           "jobs": "Recherche d'emploi",
           "other": "Autres",
-          "payments": "Paiements et finances"
+          "payments": "Paiements et finances",
+          "sheets": "Google Sheets"
         },
         "integrations": "Intégrations",
         "loading": "Chargement des outils…",
@@ -21353,6 +21363,7 @@ export const resources = {
       "openQuestions": "Questions ouvertes",
       "ownedOnly": "Les mémoires sont disponibles uniquement pour les agents que vous possédez.",
       "participants": "Participants",
+      "recentlyRemembered": "Retenu récemment",
       "roles": "Rôles",
       "saveFailed": "Échec de l'enregistrement de la mémoire.",
       "savedToast": {
@@ -21393,6 +21404,7 @@ export const resources = {
       "title": "Mémoire",
       "tools": "Outils",
       "trustLevel": "confiance : {{level}}",
+      "unseenSaves": "Nouvelles mémoires enregistrées",
       "updatedAt": "Mis à jour {{date}}",
       "updatedAtBy": "Mis à jour {{date}} par {{name}}",
       "updatedBy": "{{name}} a mis à jour la mémoire",
@@ -25658,7 +25670,8 @@ export const resources = {
           "gmail": "Gmail",
           "jobs": "Busca de vagas",
           "other": "Outros",
-          "payments": "Pagamentos e finanças"
+          "payments": "Pagamentos e finanças",
+          "sheets": "Google Sheets"
         },
         "integrations": "Integrações",
         "loading": "Carregando ferramentas…",
@@ -27352,6 +27365,7 @@ export const resources = {
       "openQuestions": "Perguntas em aberto",
       "ownedOnly": "Memórias estão disponíveis apenas para agentes que você possui.",
       "participants": "Participantes",
+      "recentlyRemembered": "Lembrado recentemente",
       "roles": "Funções",
       "saveFailed": "Falha ao salvar memória.",
       "savedToast": {
@@ -27392,6 +27406,7 @@ export const resources = {
       "title": "Memória",
       "tools": "Ferramentas",
       "trustLevel": "confiança: {{level}}",
+      "unseenSaves": "Novas memórias salvas",
       "updatedAt": "Atualizado {{date}}",
       "updatedAtBy": "Atualizado {{date}} por {{name}}",
       "updatedBy": "{{name}} atualizou a memória",
@@ -31657,7 +31672,8 @@ export const resources = {
           "gmail": "Gmail",
           "jobs": "求人検索",
           "other": "その他",
-          "payments": "決済・金融"
+          "payments": "決済・金融",
+          "sheets": "Google スプレッドシート"
         },
         "integrations": "連携",
         "loading": "ツールを読み込み中…",
@@ -33351,6 +33367,7 @@ export const resources = {
       "openQuestions": "未解決の質問",
       "ownedOnly": "メモリーはあなたが所有するエージェントでのみ利用できます。",
       "participants": "参加者",
+      "recentlyRemembered": "最近覚えたこと",
       "roles": "役割",
       "saveFailed": "メモリーの保存に失敗しました。",
       "savedToast": {
@@ -33391,6 +33408,7 @@ export const resources = {
       "title": "メモリー",
       "tools": "ツール",
       "trustLevel": "信頼度: {{level}}",
+      "unseenSaves": "新しいメモリーを保存しました",
       "updatedAt": "{{date}}に更新",
       "updatedAtBy": "{{date}}に{{name}}が更新",
       "updatedBy": "{{name}}がメモリーを更新しました",
@@ -37656,7 +37674,8 @@ export const resources = {
           "gmail": "Gmail",
           "jobs": "职位搜索",
           "other": "其他",
-          "payments": "支付与金融"
+          "payments": "支付与金融",
+          "sheets": "Google 表格"
         },
         "integrations": "集成",
         "loading": "正在加载工具…",
@@ -39350,6 +39369,7 @@ export const resources = {
       "openQuestions": "待解决问题",
       "ownedOnly": "记忆功能仅适用于你拥有的智能体。",
       "participants": "参与者",
+      "recentlyRemembered": "最近记住的",
       "roles": "角色",
       "saveFailed": "保存记忆失败。",
       "savedToast": {
@@ -39390,6 +39410,7 @@ export const resources = {
       "title": "记忆",
       "tools": "工具",
       "trustLevel": "信任度：{{level}}",
+      "unseenSaves": "已保存新记忆",
       "updatedAt": "更新于 {{date}}",
       "updatedAtBy": "{{date}} 由 {{name}} 更新",
       "updatedBy": "{{name}} 更新了记忆",
@@ -43655,7 +43676,8 @@ export const resources = {
           "gmail": "Gmail",
           "jobs": "구직 검색",
           "other": "기타",
-          "payments": "결제 및 금융"
+          "payments": "결제 및 금융",
+          "sheets": "Google 스프레드시트"
         },
         "integrations": "통합",
         "loading": "도구 불러오는 중…",
@@ -45349,6 +45371,7 @@ export const resources = {
       "openQuestions": "미해결 질문",
       "ownedOnly": "메모리는 소유한 에이전트에만 사용할 수 있습니다.",
       "participants": "참가자",
+      "recentlyRemembered": "최근에 기억한 내용",
       "roles": "역할",
       "saveFailed": "메모리 저장에 실패했습니다.",
       "savedToast": {
@@ -45389,6 +45412,7 @@ export const resources = {
       "title": "메모리",
       "tools": "도구",
       "trustLevel": "신뢰 수준: {{level}}",
+      "unseenSaves": "새 메모리가 저장됨",
       "updatedAt": "{{date}}에 업데이트됨",
       "updatedAtBy": "{{date}}에 {{name}}님이 업데이트함",
       "updatedBy": "{{name}}님이 메모리를 업데이트했습니다",
@@ -49654,7 +49678,8 @@ export const resources = {
           "gmail": "Gmail",
           "jobs": "Ricerca di lavoro",
           "other": "Altri",
-          "payments": "Pagamenti e finanza"
+          "payments": "Pagamenti e finanza",
+          "sheets": "Google Sheets"
         },
         "integrations": "Integrazioni",
         "loading": "Caricamento degli strumenti…",
@@ -51348,6 +51373,7 @@ export const resources = {
       "openQuestions": "Domande aperte",
       "ownedOnly": "Le memorie sono disponibili solo per gli agenti che possiedi.",
       "participants": "Partecipanti",
+      "recentlyRemembered": "Ricordato di recente",
       "roles": "Ruoli",
       "saveFailed": "Impossibile salvare la memoria.",
       "savedToast": {
@@ -51388,6 +51414,7 @@ export const resources = {
       "title": "Memoria",
       "tools": "Strumenti",
       "trustLevel": "fiducia: {{level}}",
+      "unseenSaves": "Nuovi ricordi salvati",
       "updatedAt": "Aggiornato {{date}}",
       "updatedAtBy": "Aggiornato {{date}} da {{name}}",
       "updatedBy": "{{name}} ha aggiornato la memoria",
@@ -55653,7 +55680,8 @@ export const resources = {
           "gmail": "Gmail",
           "jobs": "नौकरी खोज",
           "other": "अन्य",
-          "payments": "भुगतान और वित्त"
+          "payments": "भुगतान और वित्त",
+          "sheets": "Google Sheets"
         },
         "integrations": "इंटीग्रेशन",
         "loading": "टूल लोड हो रहे हैं…",
@@ -57347,6 +57375,7 @@ export const resources = {
       "openQuestions": "खुले प्रश्न",
       "ownedOnly": "मेमोरी केवल आपके स्वामित्व वाले एजेंटों के लिए उपलब्ध है।",
       "participants": "प्रतिभागी",
+      "recentlyRemembered": "हाल ही में याद किया गया",
       "roles": "भूमिकाएँ",
       "saveFailed": "मेमोरी सहेजना विफल।",
       "savedToast": {
@@ -57387,6 +57416,7 @@ export const resources = {
       "title": "मेमोरी",
       "tools": "टूल",
       "trustLevel": "विश्वास स्तर: {{level}}",
+      "unseenSaves": "नई यादें सहेजी गईं",
       "updatedAt": "{{date}} को अपडेट किया गया",
       "updatedAtBy": "{{date}} को {{name}} द्वारा अपडेट किया गया",
       "updatedBy": "{{name}} ने मेमोरी अपडेट की",

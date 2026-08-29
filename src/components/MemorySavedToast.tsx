@@ -6,6 +6,7 @@ import { ws } from "../services/websocket";
 import { useNavStore } from "../stores/navStore";
 import { useAgentStore } from "../stores/agentStore";
 import { useMemoryToastStore, type MemorySavedEvent } from "../stores/memoryToastStore";
+import { useMemoryFeedStore } from "../stores/memoryFeedStore";
 
 /**
  * "Memory island" — the transient surface for agent memory saves. A small
@@ -16,8 +17,14 @@ import { useMemoryToastStore, type MemorySavedEvent } from "../stores/memoryToas
  *
  * The pill paints in the FOREGROUND color (black on light, white on dark) —
  * the inversion is what keeps it from getting lost against app chrome.
+ *
+ * This is the LOUD half of the memory surface and it is deliberately picky:
+ * every save is recorded in memoryFeedStore (Agents rail dot + "recently
+ * remembered"), but only a live, unattended save gets an island. Background
+ * extraction writes several at a time and used to queue one full island each,
+ * which strobed the top of the app for the better part of a minute.
  */
-const HOLD_MS = 4000;
+const HOLD_MS = 2500;
 const COLLAPSE_MS = 240;
 
 export function MemorySavedToast() {
@@ -34,7 +41,23 @@ export function MemorySavedToast() {
 
   useEffect(() => {
     const unsub = ws.on("memory_saved", (payload) => {
-      push(payload as unknown as MemorySavedEvent);
+      const saved = payload as unknown as MemorySavedEvent;
+      // Everything lands in the feed — that's the surface that survives.
+      useMemoryFeedStore.getState().record(saved);
+
+      // Background extraction never blooms: it arrives in bursts, minutes
+      // after the conversation it came from, and the rail dot says it better.
+      if (saved.source === "extraction") return;
+      // Nor does a save for the agent whose memory list is already open —
+      // the row itself is about to appear right under the user's cursor.
+      if (
+        useNavStore.getState().view === "agents" &&
+        useAgentStore.getState().selectedAgentId === saved.agentId
+      ) {
+        return;
+      }
+
+      push(saved);
     });
     return unsub;
   }, [push]);
@@ -79,40 +102,34 @@ export function MemorySavedToast() {
 
   return (
     <div className="pointer-events-none fixed left-1/2 top-4 z-50 -translate-x-1/2">
-      <div className="relative">
-        {/* Entrance ring — catches peripheral vision on arrival. */}
-        {open && (
-          <span className="pointer-events-none absolute inset-0 animate-ping rounded-full border-2 border-primary opacity-60" />
-        )}
-        <button
-          type="button"
-          onClick={review}
-          title={`${title} — ${event.content}`}
+      <button
+        type="button"
+        onClick={review}
+        title={`${title} — ${event.content}`}
+        className={[
+          "pointer-events-auto relative flex h-11 items-center overflow-hidden rounded-full",
+          "bg-foreground text-background shadow-lg transition-[max-width] duration-300 ease-out",
+          open ? "max-w-md" : "max-w-11",
+        ].join(" ")}
+      >
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center">
+          <Brain className="h-5 w-5 text-primary" />
+        </span>
+        <span
           className={[
-            "pointer-events-auto relative flex h-11 items-center overflow-hidden rounded-full",
-            "bg-foreground text-background shadow-lg transition-[max-width] duration-300 ease-out",
-            open ? "max-w-md" : "max-w-11",
+            "min-w-0 pr-5 text-left transition-opacity duration-200",
+            open ? "opacity-100" : "opacity-0",
           ].join(" ")}
         >
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center">
-            <Brain className="h-5 w-5 text-primary" />
+          <span className="block truncate text-xs font-medium">
+            {title}
+            {queued > 1 ? `  ·  +${queued - 1}` : ""}
           </span>
-          <span
-            className={[
-              "min-w-0 pr-5 text-left transition-opacity duration-200",
-              open ? "opacity-100" : "opacity-0",
-            ].join(" ")}
-          >
-            <span className="block truncate text-xs font-medium">
-              {title}
-              {queued > 1 ? `  ·  +${queued - 1}` : ""}
-            </span>
-            <span className="block truncate text-[11px] opacity-70">
-              {event.content}
-            </span>
+          <span className="block truncate text-[11px] opacity-70">
+            {event.content}
           </span>
-        </button>
-      </div>
+        </span>
+      </button>
     </div>
   );
 }
