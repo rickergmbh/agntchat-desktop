@@ -81,6 +81,22 @@ export function formatRelativeShort(iso: string | undefined): string {
   return new Date(iso).toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
 
+/** Compact relative FUTURE timestamp — "in 5m", "in 2h", "in 3d", then
+ *  date. Used for to-do due badges, reminder fire times, and routine next
+ *  runs — the future-facing counterpart of formatRelativeShort. */
+export function formatFutureTime(iso: string | undefined): string {
+  if (!iso) return "";
+  const then = new Date(iso).getTime();
+  if (Number.isNaN(then)) return "";
+  const diffSec = (then - Date.now()) / 1000;
+  if (diffSec <= 0) return i18n.t("common:time.justNow");
+  if (diffSec < 60) return i18n.t("common:time.inUnderAMinute");
+  if (diffSec < 3600) return i18n.t("common:time.inMinutes", { count: Math.floor(diffSec / 60) });
+  if (diffSec < 86400) return i18n.t("common:time.inHours", { count: Math.floor(diffSec / 3600) });
+  if (diffSec < 86400 * 7) return i18n.t("common:time.inDays", { count: Math.floor(diffSec / 86400) });
+  return new Date(iso).toLocaleDateString(undefined, { month: "short", day: "numeric" });
+}
+
 /** Render a timestamp as a full clock time for message bubbles: "14:32". */
 export function formatClockTime(iso: string | undefined): string {
   if (!iso) return "";

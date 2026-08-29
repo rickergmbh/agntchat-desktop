@@ -396,6 +396,10 @@ export function Dashboard() {
   const onboarding = useOnboardingState();
   const setActiveConversation = useChatStore((s) => s.setActiveConversation);
   const setView = useNavStore((s) => s.setView);
+  const routineDeepLink = useNavStore((s) => s.routineDeepLink);
+  const clearRoutineDeepLink = useNavStore((s) => s.clearRoutineDeepLink);
+  const memoryDeepLink = useNavStore((s) => s.memoryDeepLink);
+  const clearMemoryDeepLink = useNavStore((s) => s.clearMemoryDeepLink);
   // Which agents have their sub-agent subtree expanded. Empty = all
   // collapsed, so sub-agents are hidden until a parent is opened.
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
@@ -656,6 +660,27 @@ export function Dashboard() {
     // enough to fire once agents load without re-selecting on every change.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, selectedAgentId, agentList[0]?.managed.agent.id]);
+
+  // Routine deep-link from the unified Actions list: select the owning
+  // agent and jump to its Routines tab. Cleared once consumed so it
+  // doesn't re-fire on unrelated re-renders.
+  useEffect(() => {
+    if (!routineDeepLink) return;
+    if (selectedAgentId !== routineDeepLink.agentId) {
+      void selectAgent(routineDeepLink.agentId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [routineDeepLink]);
+
+  // Memory deep-link from the memory island's Review click — same shape as
+  // the routine deep-link above.
+  useEffect(() => {
+    if (!memoryDeepLink) return;
+    if (selectedAgentId !== memoryDeepLink.agentId) {
+      void selectAgent(memoryDeepLink.agentId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [memoryDeepLink]);
 
   // The agent detail pane is always open in the two-pane layout, so Escape
   // only backs out of a directory-listing selection (returning that pane to
@@ -978,7 +1003,28 @@ export function Dashboard() {
       <section className="surface-panel relative z-10 -ml-2 basis-3/5 flex-1 flex flex-col min-w-0 overflow-hidden rounded-l-2xl bg-card">
         {activeTab === "agents" ? (
           selectedAgent ? (
-            <AgentConfig managed={selectedAgent} />
+            <AgentConfig
+              managed={selectedAgent}
+              initialSection={
+                routineDeepLink?.agentId === selectedAgent.agent.id
+                  ? "routines"
+                  : memoryDeepLink?.agentId === selectedAgent.agent.id
+                    ? "memory"
+                    : undefined
+              }
+              openRoutineId={
+                routineDeepLink?.agentId === selectedAgent.agent.id
+                  ? routineDeepLink.routineId
+                  : undefined
+              }
+              onRoutineDeepLinkConsumed={clearRoutineDeepLink}
+              initialMemoryTab={
+                memoryDeepLink?.agentId === selectedAgent.agent.id
+                  ? memoryDeepLink.tab
+                  : undefined
+              }
+              onMemoryDeepLinkConsumed={clearMemoryDeepLink}
+            />
           ) : onboarding.visible ? (
             <OnboardingCards
               onCreateAgent={() => setShowCreate(true)}

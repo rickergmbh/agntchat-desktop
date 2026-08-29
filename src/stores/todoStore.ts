@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import * as api from "../lib/api";
-import type { TodoItem } from "../lib/api";
+import type { TodoItem, AddTodoInput, UpdateTodoInput } from "../lib/api";
 import { ws } from "../services/websocket";
 import { useAuthStore } from "./authStore";
 
@@ -10,6 +10,7 @@ export type TodoErrorKey =
   | "loadFailed"
   | "addFailed"
   | "toggleFailed"
+  | "updateFailed"
   | "deleteFailed"
   | null;
 
@@ -19,19 +20,24 @@ interface TodoState {
   errorKey: TodoErrorKey;
 
   fetchTodos: () => Promise<void>;
-  addTodo: (title: string) => Promise<boolean>;
+  addTodo: (input: AddTodoInput) => Promise<boolean>;
+  updateTodo: (id: string, patch: UpdateTodoInput) => Promise<boolean>;
   toggleTodo: (id: string) => Promise<void>;
   deleteTodo: (id: string) => Promise<void>;
   initWsListeners: () => () => void;
 }
 
-/** Open items first (oldest-first running list), then completed by most
- *  recently done — same ordering the backend serves, reapplied locally
- *  after optimistic writes and WS upserts. */
+/** Open items first — due-dated ones soonest-first ahead of undated ones
+ *  (which keep the oldest-first running-list feel) — then completed by
+ *  most recently done. Reapplied locally after optimistic writes and WS
+ *  upserts. */
 function sortTodos(todos: TodoItem[]): TodoItem[] {
   return [...todos].sort((a, b) => {
     if (a.status !== b.status) return a.status === "open" ? -1 : 1;
     if (a.status === "open") {
+      const aDue = a.dueAt ? new Date(a.dueAt).getTime() : Infinity;
+      const bDue = b.dueAt ? new Date(b.dueAt).getTime() : Infinity;
+      if (aDue !== bDue) return aDue - bDue;
       return new Date(a.insertedAt).getTime() - new Date(b.insertedAt).getTime();
     }
     return (
@@ -60,9 +66,9 @@ export const useTodoStore = create<TodoState>((set, get) => ({
     }
   },
 
-  addTodo: async (title) => {
+  addTodo: async (input) => {
     try {
-      const data = await api.createTodoRest(title);
+      const data = await api.createTodoRest(input);
       set((s) => ({
         todos: sortTodos([data.todo, ...s.todos.filter((t) => t.id !== data.todo.id)]),
         errorKey: null,
@@ -70,6 +76,23 @@ export const useTodoStore = create<TodoState>((set, get) => ({
       return true;
     } catch {
       set({ errorKey: "addFailed" });
+      return false;
+    }
+  },
+
+  // Server-confirmed rather than optimistic: a patch can change the
+  // assignee (whose TodoAuthor shape only the server can resolve) and the
+  // reminder link, so the authoritative row comes back and replaces.
+  updateTodo: async (id, patch) => {
+    try {
+      const data = await api.updateTodoRest(id, patch);
+      set((s) => ({
+        todos: sortTodos(s.todos.map((t) => (t.id === id ? data.todo : t))),
+        errorKey: null,
+      }));
+      return true;
+    } catch {
+      set({ errorKey: "updateFailed" });
       return false;
     }
   },

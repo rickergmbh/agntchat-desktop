@@ -2838,18 +2838,54 @@ export interface TodoItem {
   createdBy: TodoAuthor;
   completedBy?: TodoAuthor | null;
   completedAt?: string | null;
+  /** Optional due date/time (UTC ISO; rendered in local time). */
+  dueAt?: string;
+  /** Optional free-form details beyond the title. */
+  description?: string;
+  /** Optional delegate — any family participant (human or agent). A pure
+   *  assignment label; no task is spawned. */
+  assignee?: TodoAuthor | null;
+  /** Present only while a "remind me at the due time" reminder is armed —
+   *  the server omits it once the reminder fires or is retired. */
+  reminder?: { id: string; remindAt: string };
   insertedAt: string;
   updatedAt: string;
+}
+
+export interface AddTodoInput {
+  title: string;
+  dueAt?: string;
+  assigneeId?: string;
+  remind?: boolean;
+  description?: string;
+}
+
+export interface UpdateTodoInput {
+  title?: string;
+  dueAt?: string | null;
+  assigneeId?: string | null;
+  remind?: boolean;
+  description?: string | null;
 }
 
 export async function fetchTodosRest(): Promise<{ todos: TodoItem[] }> {
   return request<{ todos: TodoItem[] }>("/api/todos?status=all");
 }
 
-export async function createTodoRest(title: string): Promise<{ todo: TodoItem }> {
+export async function createTodoRest(input: AddTodoInput): Promise<{ todo: TodoItem }> {
   return request("/api/todos", {
     method: "POST",
-    body: JSON.stringify({ title }),
+    body: JSON.stringify(input),
+  });
+}
+
+export async function updateTodoRest(
+  todoId: string,
+  patch: UpdateTodoInput
+): Promise<{ todo: TodoItem }> {
+  return request(`/api/todos/${todoId}`, {
+    method: "PATCH",
+    body: JSON.stringify(patch),
   });
 }
 
@@ -2863,6 +2899,76 @@ export async function reopenTodoRest(todoId: string): Promise<{ todo: TodoItem }
 
 export async function deleteTodoRest(todoId: string): Promise<{ deleted: boolean }> {
   return request(`/api/todos/${todoId}`, { method: "DELETE" });
+}
+
+// --- Reminders ---
+
+export type ReminderStatus = "active" | "fired" | "cancelled";
+
+export interface AgentReminder {
+  id: string;
+  /** The participant this reminder belongs to and fires for — an agent
+   *  (agent-set, possibly on the human's behalf) or the human themself
+   *  (self-created). Compare against your own participant id / an
+   *  agentsById map to tell which. */
+  agentId: string;
+  memoryId?: string;
+  eventDate: string;
+  eventLabel: string;
+  /** Present only on agent-owned reminders — instructs the agent to
+   *  perform an action rather than just notify. */
+  actionInstruction?: string;
+  recurring: boolean;
+  status: ReminderStatus;
+  remindAt: string;
+  remindType: "7_day" | "1_day" | "day_of" | "exact";
+  metadata: Record<string, unknown>;
+  insertedAt: string;
+  updatedAt: string;
+}
+
+export async function fetchRemindersRest(
+  agentId?: string
+): Promise<{ reminders: AgentReminder[] }> {
+  const qs = agentId ? `?agent_id=${agentId}` : "";
+  return request(`/api/agents/me/reminders${qs}`);
+}
+
+export async function createReminderRest(
+  eventLabel: string,
+  eventDate: string
+): Promise<{ reminders: AgentReminder[] }> {
+  return request("/api/agents/me/reminders", {
+    method: "POST",
+    body: JSON.stringify({ event_label: eventLabel, event_date: eventDate }),
+  });
+}
+
+export async function updateReminderRest(
+  reminderId: string,
+  eventLabel: string,
+  eventDate: string
+): Promise<{ reminder: AgentReminder }> {
+  return request(`/api/agents/me/reminders/${reminderId}`, {
+    method: "PATCH",
+    body: JSON.stringify({ event_label: eventLabel, event_date: eventDate }),
+  });
+}
+
+export async function deleteReminderRest(reminderId: string): Promise<void> {
+  await request(`/api/agents/me/reminders/${reminderId}`, { method: "DELETE" });
+}
+
+export async function deleteReminderGroupByMemoryRest(
+  memoryId: string
+): Promise<{ cancelled: number }> {
+  return request(`/api/agents/me/reminders/by-memory/${memoryId}`, { method: "DELETE" });
+}
+
+export async function deleteReminderGroupByEventGroupRest(
+  eventGroupId: string
+): Promise<{ cancelled: number }> {
+  return request(`/api/agents/me/reminders/by-group/${eventGroupId}`, { method: "DELETE" });
 }
 
 // --- Streaming ---

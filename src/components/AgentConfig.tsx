@@ -324,7 +324,32 @@ const cliConnectionHint = (id: string) =>
 // (Windows) reports "Windows NT".
 const IS_MACOS = navigator.userAgent.includes("Macintosh");
 
-export function AgentConfig({ managed }: { managed: ManagedAgent }) {
+export function AgentConfig({
+  managed,
+  initialSection,
+  openRoutineId,
+  onRoutineDeepLinkConsumed,
+  initialMemoryTab,
+  onMemoryDeepLinkConsumed,
+}: {
+  managed: ManagedAgent;
+  /** Deep-link from the unified Actions list: land directly on this
+   *  section instead of the default "config" tab. */
+  initialSection?: string;
+  /** Passed through to AgentRoutines — opens that routine's edit dialog
+   *  once it loads. Only meaningful when initialSection is "routines". */
+  openRoutineId?: string;
+  /** Passed through to AgentRoutines — called once openRoutineId is
+   *  actually consumed, so the caller can clear the pending deep-link. */
+  onRoutineDeepLinkConsumed?: () => void;
+  /** Passed through to AgentMemory — which scope tab to open on. Only
+   *  meaningful when initialSection is "memory" (the memory island's
+   *  Review deep-link). */
+  initialMemoryTab?: "agent" | "family";
+  /** Called once initialMemoryTab is consumed, so the caller can clear
+   *  the pending deep-link. */
+  onMemoryDeepLinkConsumed?: () => void;
+}) {
   const { t } = useTranslation("agents");
   const {
     updateConfig,
@@ -536,8 +561,22 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
     ? "__custom__"
     : config.llmApiKeyId || "__default__";
 
-  const [activeSection, setActiveSection] = useState("config");
+  const [activeSection, setActiveSection] = useState(initialSection ?? "config");
   const [showGallery, setShowGallery] = useState(false);
+
+  // AgentConfig is a single reused instance across agent selections (no
+  // remount), so a deep-link arriving while it's already mounted for a
+  // different agent needs an explicit jump rather than relying on the
+  // useState initial value above.
+  useEffect(() => {
+    if (openRoutineId) setActiveSection(initialSection ?? "routines");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openRoutineId]);
+
+  useEffect(() => {
+    if (initialMemoryTab) setActiveSection("memory");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialMemoryTab]);
 
   // Rail badges. Templates isn't fetched — the assigned set is already
   // on the agent record, so it stays live for free.
@@ -1683,6 +1722,8 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
               agentId={agent.id}
               agentName={agent.displayName}
               onCount={report.memory}
+              initialTab={initialMemoryTab}
+              onInitialTabConsumed={onMemoryDeepLinkConsumed}
             />
           </div>
         )}
@@ -1710,7 +1751,12 @@ export function AgentConfig({ managed }: { managed: ManagedAgent }) {
 
         {activeSection === "routines" && (
           <div className="flex-1 overflow-y-auto">
-            <AgentRoutines agentId={agent.id} onCount={report.routines} />
+            <AgentRoutines
+              agentId={agent.id}
+              onCount={report.routines}
+              openRoutineId={openRoutineId}
+              onDeepLinkConsumed={onRoutineDeepLinkConsumed}
+            />
           </div>
         )}
 

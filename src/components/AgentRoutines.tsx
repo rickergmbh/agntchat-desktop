@@ -236,6 +236,13 @@ interface AgentRoutinesProps {
   /** Reports this section's count up to the agent-detail rail badge, so the
    *  number moves with the list instead of waiting for a refetch. */
   onCount?: (n: number) => void;
+  /** Deep-link from the unified Actions list: once this routine shows up
+   *  in the fetched list, open its edit dialog automatically (once). */
+  openRoutineId?: string;
+  /** Called the moment openRoutineId is actually consumed (the routine
+   *  was found and its edit dialog opened) — the caller uses this to
+   *  clear the pending deep-link. */
+  onDeepLinkConsumed?: () => void;
 }
 
 function formatHourMinute12h(hour: number, minute: number): string {
@@ -568,7 +575,7 @@ function ReportToPicker({
   );
 }
 
-function formatSchedule(scheduleType: string, scheduleConfig: Record<string, unknown>): string {
+export function formatSchedule(scheduleType: string, scheduleConfig: Record<string, unknown>): string {
   if (scheduleType === "interval") {
     const minutes = Number(scheduleConfig.minutes || scheduleConfig.interval_minutes || scheduleConfig.every_minutes || 0);
     if (minutes === 60) return i18n.t("agents:routines.everyHour");
@@ -622,7 +629,7 @@ function statusColor(status: string): string {
   }
 }
 
-export function AgentRoutines({ agentId, onCount }: AgentRoutinesProps) {
+export function AgentRoutines({ agentId, onCount, openRoutineId, onDeepLinkConsumed }: AgentRoutinesProps) {
   const { t } = useTranslation("agents");
   const [routines, setRoutines] = useState<Routine[]>([]);
   const [loading, setLoading] = useState(true);
@@ -665,6 +672,21 @@ export function AgentRoutines({ agentId, onCount }: AgentRoutinesProps) {
   useEffect(() => {
     fetchRoutines();
   }, [fetchRoutines]);
+
+  // Deep-link from the unified Actions list: once the target routine shows
+  // up in the fetched list, open its edit dialog automatically. Keyed by
+  // id (not a one-shot boolean) so a later deep-link to a *different*
+  // routine on this same, persisted AgentRoutines instance still opens.
+  const [consumedRoutineId, setConsumedRoutineId] = useState<string | null>(null);
+  useEffect(() => {
+    if (!openRoutineId || openRoutineId === consumedRoutineId) return;
+    const target = routines.find((r) => r.id === openRoutineId);
+    if (!target) return;
+    setConsumedRoutineId(openRoutineId);
+    setEditingRoutine(target);
+    onDeepLinkConsumed?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openRoutineId, routines, consumedRoutineId]);
 
   const handlePauseResume = async (routine: Routine) => {
     try {
