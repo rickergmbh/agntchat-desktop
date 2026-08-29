@@ -119,6 +119,7 @@ import {
   Brain,
   MessageCircle,
   ListChecks,
+  Bell,
 } from "lucide-react";
 import {
   Dialog,
@@ -131,6 +132,7 @@ import { AgentTools } from "./AgentTools";
 import { AgentMemory } from "./AgentMemory";
 import { AgentTemplates } from "./AgentTemplates";
 import { AgentRoutines } from "./AgentRoutines";
+import { AgentReminders } from "./AgentReminders";
 import { ModelOverrideField } from "./ModelOverrideField";
 import { AgentLoops } from "./AgentLoops";
 import { AvatarCropDialog } from "./AvatarCropDialog";
@@ -589,6 +591,7 @@ export function AgentConfig({
       skills: (n: number) => setBadge("skills", n),
       tools: (n: number) => setBadge("tools", n),
       memory: (n: number) => setBadge("memory", n),
+      reminders: (n: number) => setBadge("reminders", n),
       routines: (n: number) => setBadge("routines", n),
       loops: (n: number) => setBadge("loops", n),
       pulse: (config: PulseConfig | null) => setBadge("pulse", pulseBadge(config)),
@@ -711,6 +714,7 @@ export function AgentConfig({
         { value: "skills", label: t("skills.title"), icon: Sparkles, badge: badges.skills },
         { value: "tools", label: t("toolsTab.title"), icon: Wrench, badge: badges.tools },
         { value: "memory", label: t("memory:title"), icon: Brain, badge: badges.memory },
+        { value: "reminders", label: t("sections.reminders"), icon: Bell, badge: badges.reminders },
         {
           value: "templates",
           // "Response Cards" — the shared feature name across all three
@@ -1725,6 +1729,12 @@ export function AgentConfig({
               initialTab={initialMemoryTab}
               onInitialTabConsumed={onMemoryDeepLinkConsumed}
             />
+          </div>
+        )}
+
+        {activeSection === "reminders" && (
+          <div className="flex-1 overflow-y-auto">
+            <AgentReminders agentId={agent.id} onCount={report.reminders} />
           </div>
         )}
 

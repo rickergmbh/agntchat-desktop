@@ -1195,6 +1195,11 @@ export const resources = {
         "message": "This will invalidate the current key. Any services using it will stop working.",
         "title": "Regenerate API Key"
       },
+      "remindersTab": {
+        "empty": "No reminders set for this agent.",
+        "loading": "Loading reminders…",
+        "title": "Reminders"
+      },
       "resizeList": "Resize agent list",
       "roles": {
         "observer": {
@@ -1403,6 +1408,7 @@ export const resources = {
         "model": "Model",
         "publish": "Publish",
         "pulse": "Pulse",
+        "reminders": "Reminders",
         "routines": "Routines",
         "runtime": "Runtime",
         "runtimeModel": "Runtime & Model",
@@ -7181,6 +7187,11 @@ export const resources = {
         "message": "Esto invalidará la clave actual. Cualquier servicio que la use dejará de funcionar.",
         "title": "Regenerar clave API"
       },
+      "remindersTab": {
+        "empty": "Este agente no tiene recordatorios configurados.",
+        "loading": "Cargando recordatorios…",
+        "title": "Recordatorios"
+      },
       "resizeList": "Redimensionar la lista de agentes",
       "roles": {
         "observer": {
@@ -7389,6 +7400,7 @@ export const resources = {
         "model": "Modelo",
         "publish": "Publicar",
         "pulse": "Pulso",
+        "reminders": "Recordatorios",
         "routines": "Rutinas",
         "runtime": "Tiempo de ejecución",
         "runtimeModel": "Ejecución y modelo",
@@ -13167,6 +13179,11 @@ export const resources = {
         "message": "Dadurch wird der aktuelle Schlüssel ungültig. Dienste, die ihn verwenden, funktionieren dann nicht mehr.",
         "title": "API-Schlüssel neu generieren"
       },
+      "remindersTab": {
+        "empty": "Für diesen Agenten sind keine Erinnerungen festgelegt.",
+        "loading": "Erinnerungen werden geladen…",
+        "title": "Erinnerungen"
+      },
       "resizeList": "Agentenliste in der Größe ändern",
       "roles": {
         "observer": {
@@ -13375,6 +13392,7 @@ export const resources = {
         "model": "Modell",
         "publish": "Veröffentlichen",
         "pulse": "Puls",
+        "reminders": "Erinnerungen",
         "routines": "Routinen",
         "runtime": "Laufzeitumgebung",
         "runtimeModel": "Laufzeitumgebung & Modell",
@@ -19153,6 +19171,11 @@ export const resources = {
         "message": "Cela invalidera la clé actuelle. Tous les services qui l'utilisent cesseront de fonctionner.",
         "title": "Régénérer la clé API"
       },
+      "remindersTab": {
+        "empty": "Aucun rappel défini pour cet agent.",
+        "loading": "Chargement des rappels…",
+        "title": "Rappels"
+      },
       "resizeList": "Redimensionner la liste des agents",
       "roles": {
         "observer": {
@@ -19361,6 +19384,7 @@ export const resources = {
         "model": "Modèle",
         "publish": "Publier",
         "pulse": "Pulsation",
+        "reminders": "Rappels",
         "routines": "Routines",
         "runtime": "Environnement d'exécution",
         "runtimeModel": "Environnement d'exécution et modèle",
@@ -25139,6 +25163,11 @@ export const resources = {
         "message": "Isso invalidará a chave atual. Quaisquer serviços que a utilizem deixarão de funcionar.",
         "title": "Regenerar Chave de API"
       },
+      "remindersTab": {
+        "empty": "Nenhum lembrete definido para este agente.",
+        "loading": "Carregando lembretes…",
+        "title": "Lembretes"
+      },
       "resizeList": "Redimensionar lista de agentes",
       "roles": {
         "observer": {
@@ -25347,6 +25376,7 @@ export const resources = {
         "model": "Modelo",
         "publish": "Publicar",
         "pulse": "Pulso",
+        "reminders": "Lembretes",
         "routines": "Rotinas",
         "runtime": "Ambiente de Execução",
         "runtimeModel": "Ambiente de Execução e Modelo",
@@ -31125,6 +31155,11 @@ export const resources = {
         "message": "現在のキーが無効になります。それを使用しているサービスは動作しなくなります。",
         "title": "APIキーを再生成"
       },
+      "remindersTab": {
+        "empty": "このエージェントに設定されたリマインダーはありません。",
+        "loading": "リマインダーを読み込み中…",
+        "title": "リマインダー"
+      },
       "resizeList": "エージェントリストのサイズを変更",
       "roles": {
         "observer": {
@@ -31333,6 +31368,7 @@ export const resources = {
         "model": "モデル",
         "publish": "公開",
         "pulse": "パルス",
+        "reminders": "リマインダー",
         "routines": "ルーティン",
         "runtime": "ランタイム",
         "runtimeModel": "ランタイムとモデル",
@@ -37111,6 +37147,11 @@ export const resources = {
         "message": "这将使当前密钥失效。使用该密钥的所有服务都将停止工作。",
         "title": "重新生成 API 密钥"
       },
+      "remindersTab": {
+        "empty": "此智能体尚未设置提醒。",
+        "loading": "正在加载提醒…",
+        "title": "提醒"
+      },
       "resizeList": "调整智能体列表大小",
       "roles": {
         "observer": {
@@ -37319,6 +37360,7 @@ export const resources = {
         "model": "模型",
         "publish": "发布",
         "pulse": "脉搏",
+        "reminders": "提醒",
         "routines": "例行任务",
         "runtime": "运行环境",
         "runtimeModel": "运行环境与模型",
@@ -43097,6 +43139,11 @@ export const resources = {
         "message": "현재 키가 무효화됩니다. 이 키를 사용하는 서비스는 작동을 멈춥니다.",
         "title": "API 키 재생성"
       },
+      "remindersTab": {
+        "empty": "이 에이전트에 설정된 리마인더가 없습니다.",
+        "loading": "리마인더 불러오는 중…",
+        "title": "리마인더"
+      },
       "resizeList": "에이전트 목록 크기 조절",
       "roles": {
         "observer": {
@@ -43305,6 +43352,7 @@ export const resources = {
         "model": "모델",
         "publish": "게시",
         "pulse": "펄스",
+        "reminders": "리마인더",
         "routines": "루틴",
         "runtime": "런타임",
         "runtimeModel": "런타임 및 모델",
@@ -49083,6 +49131,11 @@ export const resources = {
         "message": "Questo invaliderà la chiave attuale. Tutti i servizi che la utilizzano smetteranno di funzionare.",
         "title": "Rigenera Chiave API"
       },
+      "remindersTab": {
+        "empty": "Nessun promemoria impostato per questo agente.",
+        "loading": "Caricamento promemoria…",
+        "title": "Promemoria"
+      },
       "resizeList": "Ridimensiona elenco agenti",
       "roles": {
         "observer": {
@@ -49291,6 +49344,7 @@ export const resources = {
         "model": "Modello",
         "publish": "Pubblica",
         "pulse": "Pulse",
+        "reminders": "Promemoria",
         "routines": "Routine",
         "runtime": "Runtime",
         "runtimeModel": "Runtime e Modello",
@@ -55069,6 +55123,11 @@ export const resources = {
         "message": "इससे मौजूदा की अमान्य हो जाएगी। इसका उपयोग करने वाली सेवाएँ काम करना बंद कर देंगी।",
         "title": "API की पुनः जनरेट करें"
       },
+      "remindersTab": {
+        "empty": "इस एजेंट के लिए कोई रिमाइंडर सेट नहीं है।",
+        "loading": "रिमाइंडर लोड हो रहे हैं…",
+        "title": "रिमाइंडर"
+      },
       "resizeList": "एजेंट सूची का आकार बदलें",
       "roles": {
         "observer": {
@@ -55277,6 +55336,7 @@ export const resources = {
         "model": "मॉडल",
         "publish": "पब्लिश",
         "pulse": "पल्स",
+        "reminders": "रिमाइंडर",
         "routines": "रूटीन",
         "runtime": "रनटाइम",
         "runtimeModel": "रनटाइम और मॉडल",

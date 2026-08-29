@@ -5,6 +5,7 @@ import { useReminderStore } from "../stores/reminderStore";
 import { useAgentStore } from "../stores/agentStore";
 import { useAuthStore } from "../stores/authStore";
 import { listRoutines } from "../lib/api";
+import { reminderGroupKey, groupReminderRows } from "../lib/reminderGrouping";
 import type { Agent, AgentReminder, Routine, Task, TodoItem } from "../lib/api";
 
 // ---------------------------------------------------------------------------
@@ -65,38 +66,14 @@ function toMergedRoutine(routine: Routine): MergedItem {
   return { kind: "routine", id: routine.id, routine, isDone: false, sortTime: time };
 }
 
-// Grouping key, most-to-least reliable — see mobile's reminderGroupKey for
-// the full rationale (memoryId > event_group_id > same-agent/label heuristic
-// fallback for reminders predating event_group_id).
-function reminderGroupKey(r: AgentReminder): string {
-  if (r.memoryId) return `memory:${r.memoryId}`;
-  const eventGroupId = r.metadata?.event_group_id;
-  if (typeof eventGroupId === "string" && eventGroupId) return `group:${eventGroupId}`;
-  if (r.remindType !== "exact") {
-    return `heuristic:${r.agentId}:${r.eventLabel.trim().toLowerCase()}`;
-  }
-  return `single:${r.id}`;
-}
-
 function groupReminders(reminders: AgentReminder[]): MergedItem[] {
-  const byKey = new Map<string, AgentReminder[]>();
-  for (const r of reminders) {
-    const key = reminderGroupKey(r);
-    const list = byKey.get(key) ?? [];
-    list.push(r);
-    byKey.set(key, list);
-  }
-
-  return [...byKey.values()].map((group) => {
-    const sorted = [...group].sort(
-      (a, b) => new Date(a.remindAt).getTime() - new Date(b.remindAt).getTime()
-    );
-    const soonest = sorted[0];
+  return groupReminderRows(reminders).map((group) => {
+    const soonest = group[0];
     return {
       kind: "reminder",
       id: reminderGroupKey(soonest),
       reminder: soonest,
-      group: sorted,
+      group,
       isDone: false,
       sortTime: new Date(soonest.remindAt).getTime(),
     };
