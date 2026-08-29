@@ -19,6 +19,7 @@ import { AgentConversationCard } from "../messages/AgentConversationCard";
 import { StreamingBubble } from "../messages/StreamingBubble";
 import { AgentBusyToastCard } from "../AgentBusyToast";
 import { ReminderToastCard } from "../ReminderToast";
+import { MemorySavedToastCard } from "../MemorySavedToast";
 import { PermissionToastCard } from "../PermissionToast";
 import { cn } from "../../lib/utils";
 import type {
@@ -1377,6 +1378,17 @@ export function buildPreviewCategories(
                 summary="Renew the domain before it expires on Friday."
                 onSnooze={noop}
                 onDismiss={noop}
+              />
+            </ToastFrame>
+          ),
+        },
+        {
+          label: "Memory island — agent save",
+          node: (
+            <ToastFrame>
+              <MemorySavedToastCard
+                title="Atlas saved a memory"
+                content="You prefer window seats on long flights."
               />
             </ToastFrame>
           ),

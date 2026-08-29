@@ -136,6 +136,9 @@ class WebSocketService {
       // Date reminders — platform-elevated notification, not a chat message.
       // ReminderToast listens and raises a native OS notification.
       "reminder_fired",
+      // An agent saved a persistent memory (agent- or family-scoped).
+      // MemorySavedToast surfaces it as the transient memory island.
+      "memory_saved",
       // Permission prompts (#67) — a gated agent action awaits the owner's
       // approve/deny. PermissionToast renders the prompt; permission_resolved
       // dismisses it across devices (also fires on expiry).

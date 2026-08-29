@@ -52,6 +52,11 @@ interface AgentMemoryProps {
   /** Reports this section's count up to the agent-detail rail badge, so the
    *  number moves with the list instead of waiting for a refetch. */
   onCount?: (n: number) => void;
+  /** Which scope tab to open on — the memory island's Review deep-link. */
+  initialTab?: "agent" | "family";
+  /** Called once initialTab has been applied, so the caller can clear the
+   *  pending deep-link. */
+  onInitialTabConsumed?: () => void;
 }
 
 const CATEGORIES: MemoryCategory[] = [
@@ -95,8 +100,33 @@ type AnyMemory = Memory | FamilyMemory;
 // the loops' "__personal__" sentinel: family-wide means ALL workspaces.
 const FAMILY_WIDE_SCOPE = "__family__";
 
-export function AgentMemory({ agentId, agentName, onCount }: AgentMemoryProps) {
+// The shared Tabs default active state is a near-white pill on a muted strip
+// — on a light theme it reads as unselected. These two tabs carry a solid
+// primary fill instead, matching mobile's memory tabs.
+// The dark: variants have to be restated — the base trigger sets
+// dark:data-active:{bg,text,border} and those would otherwise win in dark mode.
+const TAB_TRIGGER_CLASS =
+  "gap-1.5 data-active:bg-primary data-active:text-primary-foreground " +
+  "dark:data-active:bg-primary dark:data-active:text-primary-foreground dark:data-active:border-primary";
+
+export function AgentMemory({
+  agentId,
+  agentName,
+  onCount,
+  initialTab,
+  onInitialTabConsumed,
+}: AgentMemoryProps) {
   const { t } = useTranslation("memory");
+
+  // Controlled so the memory island's Review deep-link can land on the tab
+  // matching the saved memory's scope.
+  const [tab, setTab] = useState<"agent" | "family">(initialTab ?? "agent");
+  useEffect(() => {
+    if (!initialTab) return;
+    setTab(initialTab);
+    onInitialTabConsumed?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialTab]);
 
   // Workspace context for the two-tier family scope badge. Hidden while
   // workspaces are off or there's only one — every row would carry the same
@@ -249,26 +279,26 @@ export function AgentMemory({ agentId, agentName, onCount }: AgentMemoryProps) {
 
       {/* Two distinct memory scopes, split into tabs so neither is missed.
           Agent memories lead since they're the per-agent ones being edited. */}
-      <Tabs defaultValue="agent" className="w-full">
+      <Tabs value={tab} onValueChange={(v) => setTab(v as "agent" | "family")} className="w-full">
         <TabsList>
           {/* Counts are the FULL set, not the loaded page. Showing
               `memories.length` here made a paged list look capped: an agent
               with 231 memories read "(50)" until you scrolled down and hit
               Load more. */}
-          <TabsTrigger value="agent" className="gap-1.5">
+          <TabsTrigger value="agent" className={TAB_TRIGGER_CLASS}>
             <Brain className="w-3.5 h-3.5" />
             {t("agentMemories")}
             {agentPage.total > 0 && (
-              <span className="text-[10px] text-muted-foreground">
+              <span className="text-[10px] opacity-70">
                 ({agentPage.total})
               </span>
             )}
           </TabsTrigger>
-          <TabsTrigger value="family" className="gap-1.5">
+          <TabsTrigger value="family" className={TAB_TRIGGER_CLASS}>
             <Users className="w-3.5 h-3.5" />
             {t("familyMemories")}
             {familyPage.total > 0 && (
-              <span className="text-[10px] text-muted-foreground">
+              <span className="text-[10px] opacity-70">
                 ({familyPage.total})
               </span>
             )}

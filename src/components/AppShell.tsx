@@ -32,6 +32,7 @@ import { useFriendStore } from "../stores/friendStore";
 import { useActiveWorkspace, useWorkspacesEnabled } from "../stores/workspaceStore";
 import { AgentBusyToast } from "./AgentBusyToast";
 import { ReminderToast } from "./ReminderToast";
+import { MemorySavedToast } from "./MemorySavedToast";
 import { PermissionToast } from "./PermissionToast";
 import { RenameToGroupModal } from "./RenameToGroupModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -201,6 +202,7 @@ export function AppShell() {
 
       <AgentBusyToast />
       <ReminderToast />
+      <MemorySavedToast />
       <PermissionToast />
       <RenameToGroupModal />
     </div>
