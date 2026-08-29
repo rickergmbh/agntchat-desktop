@@ -38,6 +38,7 @@ import {
   getAgentMemories,
   listRoutines,
   listLoops,
+  fetchRemindersRest,
   type Connection,
   type AgentHealthDetail,
   type PulseData,
@@ -183,6 +184,13 @@ const SECTION_BADGES: Record<string, (agentId: string) => Promise<SectionBadge>>
     getAgentMemories(id).then((p) => p.total ?? (p.memories ?? []).length),
   routines: (id) => listRoutines(id).then((r) => (r.routines ?? []).length),
   loops: (id) => listLoops(id).then((r) => (r.loops ?? []).length),
+  // No agent-scoped reminders endpoint exists server-side (agent_id is
+  // accepted but ignored) — fetch the caller's full visible set and filter
+  // client-side, same as the AgentReminders panel itself.
+  reminders: (id) =>
+    fetchRemindersRest().then(
+      (r) => (r.reminders ?? []).filter((rem) => rem.agentId === id && rem.status === "active").length
+    ),
   // Pulse has nothing to count — what matters is whether it's beating.
   pulse: (id) => getAgentPulse(id).then((d) => pulseBadge(d.pulseConfig)),
 };
