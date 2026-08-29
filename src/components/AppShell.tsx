@@ -482,18 +482,26 @@ function LeftRail({
         <div
           className={cn(
             "flex items-center",
-            expanded ? "gap-2.5 px-3 py-1.5" : "justify-center"
+            // Same px-2.5/gap-3 rhythm as the rail rows, with the dot centred
+            // in a 20px icon slot, so the label lines up with theirs.
+            expanded ? "gap-3 px-2.5 py-1.5" : "justify-center"
           )}
           title={connectionLabel}
           aria-label={connectionLabel}
         >
           <span
             className={cn(
-              "h-2 w-2 shrink-0 rounded-full",
-              !expanded && "my-1",
-              connected ? "bg-success" : "bg-muted-foreground/50"
+              "flex shrink-0 items-center justify-center",
+              expanded ? "h-5 w-5" : "my-1"
             )}
-          />
+          >
+            <span
+              className={cn(
+                "h-2 w-2 rounded-full",
+                connected ? "bg-success" : "bg-muted-foreground/50"
+              )}
+            />
+          </span>
           {expanded && (
             <span className="truncate text-xs text-rail-foreground">
               {connectionLabel}
@@ -523,12 +531,19 @@ function LeftRail({
             expanded ? "w-full gap-3 px-2.5" : "w-10 justify-center"
           )}
         >
-          <Avatar className="h-7 w-7 shrink-0">
+          {/* Expanded, the avatar drops to the rail's 20px icon slot so the
+              name starts on the same x as every other row's label. Collapsed
+              there is nothing to align to, so it keeps its fuller size. */}
+          <Avatar className={cn("shrink-0", expanded ? "h-5 w-5" : "h-7 w-7")}>
             {participant?.avatarUrl ? (
-              <AvatarImage src={participant.avatarUrl} alt={participant.displayName} displaySize={28} />
+              <AvatarImage
+                src={participant.avatarUrl}
+                alt={participant.displayName}
+                displaySize={expanded ? 20 : 28}
+              />
             ) : null}
             <AvatarFallback>
-              <User className="w-3.5 h-3.5" />
+              <User className={expanded ? "w-3 h-3" : "w-3.5 h-3.5"} />
             </AvatarFallback>
           </Avatar>
           {expanded && (
