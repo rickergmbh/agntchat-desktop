@@ -2,9 +2,7 @@ import { Fragment, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAgentStore, type ManagedAgent, type ActivityType } from "../stores/agentStore";
 import { usePresenceStore } from "../stores/presenceStore";
-import { useAgentHasUnseenMemory } from "../stores/memoryFeedStore";
 import { AgentActivityIndicator } from "./AgentActivityIndicator";
-import { AgentMemoryIndicator } from "./AgentMemoryIndicator";
 import { PhaseOrb } from "./PhaseOrb";
 import {
   STREAM_PHASE_LABEL_KEYS,
@@ -171,7 +169,6 @@ export function AgentRow({
   const globalActivity = usePresenceStore(
     (s) => s.agentActivity[managed.agent.id]
   );
-  const hasUnseenMemory = useAgentHasUnseenMemory(managed.agent.id);
   // Whether a "bring online" restart we requested for this agent is in flight
   // (shared across the row + the bulk button via the presence store).
   const waking = usePresenceStore((s) => s.wakingAgents.has(managed.agent.id));
@@ -420,11 +417,9 @@ export function AgentRow({
             )}
           </div>
 
-          {/* Second line: live activity (local bridge first, else global),
-              falling back to a "connecting" memory orb when nothing is
-              currently active but a memory was saved since this row was last
-              opened. All paths render orb + label so the row reads the same
-              as every other activity indicator; errors keep their own
+          {/* Second line: live activity (local bridge first, else global).
+              Both paths render orb + contract label so the row reads the
+              same as every other activity indicator; errors keep their own
               destructive dot. */}
           {isRunning && activity ? (
             activity.type === "error" ? (
@@ -443,8 +438,6 @@ export function AgentRow({
             )
           ) : globalActivity ? (
             <div className="mt-0.5"><AgentActivityIndicator activity={globalActivity} /></div>
-          ) : hasUnseenMemory ? (
-            <AgentMemoryIndicator className="mt-0.5" />
           ) : null}
 
           {/* Meta line: runtime chip · provider · model. */}

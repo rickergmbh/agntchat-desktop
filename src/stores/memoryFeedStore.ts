@@ -47,13 +47,15 @@ function persist(unseen: UnseenMemory[]) {
 /**
  * The persistent half of the memory-save surface.
  *
- * The memory island is transient by design, so it can't be the only place a
- * save shows up — that's what forced it to hold for seconds per event and
- * turned background extraction bursts into a strobe at the top of the app.
- * Every save (island-worthy or not) is recorded here instead, and surfaces as
- * a "connecting" orb on that agent's row in the Agents list plus a "recently
- * remembered" group at the top of that agent's memory list. Cleared per-agent
- * once the list has been read.
+ * The live, in-conversation notification is `MemorySavedToast` (the "memory
+ * island") — that's the actual "hey, this got remembered" moment, and it's
+ * enough on its own for live saves. Background extraction saves deliberately
+ * skip the island (a burst of them turned into a strobe of toasts), so they'd
+ * otherwise be invisible. This store is just where they wait: every save
+ * (island-worthy or not) is recorded here and surfaces only as a "recently
+ * remembered" group pinned above the category groups when that agent's memory
+ * list is opened — no rail/row-level notification. Cleared per-agent once the
+ * list has been read.
  */
 interface MemoryFeedState {
   /** Newest first. */
@@ -98,11 +100,6 @@ export const useMemoryFeedStore = create<MemoryFeedState>((set) => ({
       return { unseen: [] };
     }),
 }));
-
-/** Whether this agent has any unseen save — drives its row's memory orb. */
-export function useAgentHasUnseenMemory(agentId: string): boolean {
-  return useMemoryFeedStore((s) => s.unseen.some((u) => u.agentId === agentId));
-}
 
 /**
  * This agent's unseen memory ids, on the given scope tab. Memoized off the
