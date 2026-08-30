@@ -5,6 +5,7 @@ import { resetAvatarPolicyCache } from "../lib/imageProcessor";
 import { resetFieldLimitsCache } from "../lib/fieldLimits";
 import { resetAgentTypesCache } from "../lib/agentTypes";
 import { useLocaleStore } from "./localeStore";
+import { resetViewCaches } from "./viewCaches";
 
 // Push the device's IANA tz to the backend if it differs from what's stored.
 // Best-effort. Updates the in-memory participant on success so the profile
@@ -139,6 +140,10 @@ export const useAuthStore = create<AuthState>((set) => ({
     resetAvatarPolicyCache();
     resetFieldLimitsCache();
     resetAgentTypesCache();
+    // View caches (files, agents, tasks, to-dos, reminders, routines,
+    // connections) survive view unmounts by design — they must not survive
+    // the session, or the next account in sees the last one's lists.
+    resetViewCaches();
     localStorage.removeItem("authToken");
     localStorage.removeItem("participant");
     track(ANALYTICS_EVENTS.LOGOUT);

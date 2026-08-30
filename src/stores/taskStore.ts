@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import * as api from "../lib/api";
 import type { Task, TaskStatus } from "../lib/api";
+import { isFresh } from "../lib/cache";
 import { ws } from "../services/websocket";
 import { useAuthStore } from "./authStore";
 
@@ -45,11 +46,20 @@ const ACTIVE_STATUSES = new Set<TaskStatus>([
 interface TaskState {
   tasks: Task[];
   loading: boolean;
+  /** Last successful unscoped `fetchTasks`. `0` = never loaded. Gates the
+   *  re-fetch every remount of the Tasks view would otherwise trigger. */
+  loadedAt: number;
   selectedTaskId: string | null;
   taskProgress: Record<string, TaskProgressInfo>;
   taskLifecycleMeta: Record<string, TaskLifecycleMeta>;
 
+  /** @internal in-flight fetch, so concurrent callers share one request */
+  _inflight: Promise<void> | null;
+
   fetchTasks: (status?: TaskStatus) => Promise<void>;
+  /** Serve the cached list unless it's gone stale. WS upserts keep it live
+   *  in between, so the TTL only backstops events we missed. */
+  fetchTasksIfStale: () => Promise<void>;
   fetchTask: (taskId: string) => Promise<Task | null>;
   selectTask: (id: string | null) => void;
   updateTaskStatus: (taskId: string, status: TaskStatus) => Promise<void>;
@@ -91,15 +101,18 @@ function sortByUpdatedDesc(tasks: Task[]): Task[] {
   );
 }
 
-export const useTaskStore = create<TaskState>((set) => ({
+export const useTaskStore = create<TaskState>((set, get) => ({
   tasks: [],
   loading: false,
+  loadedAt: 0,
   selectedTaskId: null,
   taskProgress: {},
   taskLifecycleMeta: {},
+  _inflight: null,
 
   fetchTasks: async (status) => {
-    set({ loading: true });
+    // Never blank a list we can still render — a refresh happens underneath.
+    set({ loading: get().tasks.length === 0 });
     try {
       const { tasks } = await api.fetchTasksRest(status);
       const incomingIds = new Set(tasks.map((t) => t.id));
@@ -120,11 +133,24 @@ export const useTaskStore = create<TaskState>((set) => ({
         }
         return { taskLifecycleMeta: meta };
       });
+      // Only an unscoped fetch refreshes the whole list a cache stamp claims.
+      if (!status) set({ loadedAt: Date.now() });
     } catch (e) {
       console.warn("[tasks] fetchTasks failed", e);
     } finally {
       set({ loading: false });
     }
+  },
+
+  fetchTasksIfStale: async () => {
+    const inflight = get()._inflight;
+    if (inflight) return inflight;
+    if (isFresh(get().loadedAt)) return;
+    const p = get()
+      .fetchTasks()
+      .finally(() => set({ _inflight: null }));
+    set({ _inflight: p });
+    return p;
   },
 
   fetchTask: async (taskId) => {

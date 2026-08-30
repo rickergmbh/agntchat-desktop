@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import * as api from "../lib/api";
 import type { AgentReminder } from "../lib/api";
+import { isFresh } from "../lib/cache";
 
 /** i18n key (tasks:reminder.*) for the most recent failed operation; the
  *  reminder UI renders it as a transient inline error. */
@@ -9,9 +10,18 @@ export type ReminderErrorKey = "loadFailed" | "addFailed" | "updateFailed" | "de
 interface ReminderState {
   reminders: AgentReminder[];
   loading: boolean;
+  /** Last successful *unscoped* `fetchReminders`. `0` = never loaded. Gates
+   *  the re-fetch every remount of the Tasks view would otherwise trigger;
+   *  an agent-scoped fetch only fills one slice, so it never stamps this. */
+  loadedAt: number;
   errorKey: ReminderErrorKey;
 
+  /** @internal in-flight unscoped fetch, so concurrent callers share one request */
+  _inflight: Promise<void> | null;
+
   fetchReminders: (agentId?: string) => Promise<void>;
+  /** Serve the cached list unless it's gone stale. */
+  fetchRemindersIfStale: () => Promise<void>;
   addReminder: (eventLabel: string, eventDate: string) => Promise<boolean>;
   /** Only "exact" reminders are editable server-side — a date-derived
    *  (7_day/1_day/day_of) reminder returns false; the caller should show
@@ -39,10 +49,13 @@ function sortReminders(reminders: AgentReminder[]): AgentReminder[] {
 export const useReminderStore = create<ReminderState>((set, get) => ({
   reminders: [],
   loading: false,
+  loadedAt: 0,
   errorKey: null,
+  _inflight: null,
 
   fetchReminders: async (agentId) => {
-    set({ loading: true });
+    // Never blank a list we can still render — a refresh happens underneath.
+    set({ loading: get().reminders.length === 0 });
     try {
       const data = await api.fetchRemindersRest(agentId);
       const fetched = data.reminders ?? [];
@@ -58,12 +71,24 @@ export const useReminderStore = create<ReminderState>((set, get) => ({
             ])
           : sortReminders(fetched),
         errorKey: null,
+        loadedAt: agentId ? s.loadedAt : Date.now(),
       }));
     } catch {
       set({ errorKey: "loadFailed" });
     } finally {
       set({ loading: false });
     }
+  },
+
+  fetchRemindersIfStale: async () => {
+    const inflight = get()._inflight;
+    if (inflight) return inflight;
+    if (isFresh(get().loadedAt)) return;
+    const p = get()
+      .fetchReminders()
+      .finally(() => set({ _inflight: null }));
+    set({ _inflight: p });
+    return p;
   },
 
   addReminder: async (eventLabel, eventDate) => {

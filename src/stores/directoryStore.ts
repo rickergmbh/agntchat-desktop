@@ -7,6 +7,7 @@ import type {
   ConnectionMode,
   ListingConnectionMode,
 } from "../lib/api";
+import { isFresh } from "../lib/cache";
 
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -63,7 +64,14 @@ interface DirectoryState {
   revokeConnection: (id: string) => Promise<void>;
   rateAgent: (listingId: string, rating: number, review?: string) => Promise<void>;
   getListing: (id: string) => Promise<DirectoryListing | null>;
+  connectionsLoadedAt: number;
+  /** @internal in-flight fetch, so concurrent callers share one request */
+  _connectionsInflight: Promise<void> | null;
   fetchConnections: () => Promise<void>;
+  /** Serve the cached connections unless they've gone stale. The dashboard
+   *  asks for these on every mount and it is remounted on every sidebar
+   *  switch — the stamp is what stops that becoming a request each time. */
+  fetchConnectionsIfStale: () => Promise<void>;
   createListing: (data: {
     agentId: string;
     listingName: string;
@@ -97,6 +105,8 @@ export const useDirectoryStore = create<DirectoryState>((set, get) => ({
   searchQuery: "",
   connections: EMPTY_CONNECTIONS,
   connectionsLoading: false,
+  connectionsLoadedAt: 0,
+  _connectionsInflight: null,
 
   fetchDirectory: async (opts) => {
     set({ loading: true });
@@ -217,12 +227,24 @@ export const useDirectoryStore = create<DirectoryState>((set, get) => ({
         connections: response.connections?.length
           ? response.connections
           : EMPTY_CONNECTIONS,
+        connectionsLoadedAt: Date.now(),
       });
     } catch {
       // ignore
     } finally {
       set({ connectionsLoading: false });
     }
+  },
+
+  fetchConnectionsIfStale: async () => {
+    const inflight = get()._connectionsInflight;
+    if (inflight) return inflight;
+    if (isFresh(get().connectionsLoadedAt)) return;
+    const p = get()
+      .fetchConnections()
+      .finally(() => set({ _connectionsInflight: null }));
+    set({ _connectionsInflight: p });
+    return p;
   },
 
   createListing: async (data) => {

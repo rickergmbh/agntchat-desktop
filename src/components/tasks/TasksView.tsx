@@ -15,13 +15,15 @@ export function TasksView({
   const { t } = useTranslation("tasks");
   const tasks = useTaskStore((s) => s.tasks);
   const selectedId = useTaskStore((s) => s.selectedTaskId);
-  const fetchTasks = useTaskStore((s) => s.fetchTasks);
+  const fetchTasksIfStale = useTaskStore((s) => s.fetchTasksIfStale);
 
-  // Fetch tasks on mount. WS upserts keep the list live between fetches;
-  // no auto-refetch on status change needed.
+  // Serve the cached list on mount, refetching only once it's stale. WS
+  // upserts keep it live between fetches; no auto-refetch on status change
+  // needed. ActionsList asks for the same thing — the store's in-flight
+  // guard collapses both into one request.
   useEffect(() => {
-    fetchTasks();
-  }, [fetchTasks]);
+    void fetchTasksIfStale();
+  }, [fetchTasksIfStale]);
 
   const selected = tasks.find((t) => t.id === selectedId) ?? null;
 

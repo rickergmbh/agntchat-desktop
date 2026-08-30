@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { invoke } from "@tauri-apps/api/core";
 import * as api from "../lib/api";
+import { isFresh } from "../lib/cache";
 import { track, ANALYTICS_EVENTS } from "../lib/analytics";
 import { providerRequiresLlmKey } from "../lib/models";
 import { ws } from "../services/websocket";
@@ -237,6 +238,12 @@ interface AgentState {
    *  "user has no agents" from "agents not loaded yet" (onboarding cards must
    *  not flash at established users during boot). */
   loaded: boolean;
+  /** Last successful `fetchAgents` / `fetchHealth`. `0` = never loaded. The
+   *  dashboard is unmounted on every sidebar switch, so without these stamps
+   *  a trip to Files and back re-ran both round-trips (health is the slow
+   *  one, ~2-3s) with nothing having changed. */
+  loadedAt: number;
+  healthLoadedAt: number;
   error: string | null;
   /** Per-agent error from the last model_config sync to the backend, keyed by
    *  agentId. The connection/model lives in two places that must agree — the
@@ -248,7 +255,13 @@ interface AgentState {
   /** Machine-wide install status of pyobjc + Pillow. */
   computerUseDeps: ComputerUseDepsStatus;
 
+  /** @internal in-flight `fetchAgents`, so concurrent callers share one request */
+  _agentsInflight: Promise<void> | null;
+
   fetchAgents: () => Promise<void>;
+  /** Serve the cached roster unless it's gone stale — `agent_status_changed`
+   *  keeps it live in between. */
+  fetchAgentsIfStale: () => Promise<void>;
   /** Ask Rust to recheck whether pyobjc + Pillow are importable in the
    *  bridge venv, then refresh local state. Cheap (~50ms). */
   refreshComputerUseDepsStatus: () => Promise<void>;
@@ -256,6 +269,10 @@ interface AgentState {
    *  bridge venv. Returns immediately; the UI polls until done. */
   installComputerUseDeps: () => Promise<void>;
   fetchHealth: () => Promise<void>;
+  /** Health on view entry, throttled to HEALTH_TTL_MS. Liveness has to stay
+   *  fresh, but not once per sidebar click — the dashboard's own interval
+   *  keeps polling while it's open. */
+  fetchHealthIfStale: () => Promise<void>;
   /** Poll bridge logs for every running agent and update `activities`. */
   fetchActivities: () => Promise<void>;
   selectAgent: (id: string | null) => Promise<void>;
@@ -414,13 +431,21 @@ export async function getLocalDeviceName(): Promise<string | null> {
 let consecutiveHealthEndpointFailures = 0;
 let lastHealthEndpointRecoveryAt = 0;
 
+/** Health is liveness data, so it gets a much shorter lease than the other
+ *  view caches — long enough to survive rapid sidebar flipping, short enough
+ *  that the dashboard never opens on a stale picture. */
+const HEALTH_TTL_MS = 30_000;
+
 export const useAgentStore = create<AgentState>((set, get) => ({
   agents: {},
   activities: {},
   selectedAgentId: null,
   loading: false,
   loaded: false,
+  loadedAt: 0,
+  healthLoadedAt: 0,
   error: null,
+  _agentsInflight: null,
   configSyncError: {},
   computerUseDeps: { state: "unknown" },
 
@@ -470,7 +495,8 @@ export const useAgentStore = create<AgentState>((set, get) => ({
   },
 
   fetchAgents: async () => {
-    set({ loading: true, error: null });
+    // Never blank a roster we can still render — a refresh happens underneath.
+    set({ loading: Object.keys(get().agents).length === 0, error: null });
     try {
       const result = await api.listAgents();
       const current = get().agents;
@@ -501,7 +527,7 @@ export const useAgentStore = create<AgentState>((set, get) => ({
         };
       }
 
-      set({ agents: updated, loading: false, loaded: true });
+      set({ agents: updated, loading: false, loaded: true, loadedAt: Date.now() });
 
       // Don't seed presenceStore from `agent.online` here — that flag comes
       // from the backend's ExecutorRegistry, which can carry stale state
@@ -517,6 +543,22 @@ export const useAgentStore = create<AgentState>((set, get) => ({
         error: e instanceof Error ? e.message : "Failed to fetch agents",
       });
     }
+  },
+
+  fetchAgentsIfStale: async () => {
+    const inflight = get()._agentsInflight;
+    if (inflight) return inflight;
+    if (isFresh(get().loadedAt)) return;
+    const p = get()
+      .fetchAgents()
+      .finally(() => set({ _agentsInflight: null }));
+    set({ _agentsInflight: p });
+    return p;
+  },
+
+  fetchHealthIfStale: async () => {
+    if (isFresh(get().healthLoadedAt, HEALTH_TTL_MS)) return;
+    await get().fetchHealth();
   },
 
   fetchHealth: async () => {
@@ -688,6 +730,7 @@ export const useAgentStore = create<AgentState>((set, get) => ({
         lastHealthEndpointRecoveryAt = Date.now();
         consecutiveHealthEndpointFailures = 0;
       }
+      set({ healthLoadedAt: Date.now() });
     } catch {
       // Health endpoint unreachable — likely a backend deploy in progress.
       // Track failures so we can suppress stall detection after recovery.

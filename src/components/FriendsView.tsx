@@ -152,7 +152,7 @@ export function FriendsView({ onNavigate }: { onNavigate?: () => void } = {}) {
     loading,
     pendingCount,
     fetchConnections,
-    fetchPendingCount,
+    fetchConnectionsIfStale,
     requestFriend,
     respondFriend,
     revokeFriend,
@@ -178,10 +178,12 @@ export function FriendsView({ onNavigate }: { onNavigate?: () => void } = {}) {
     return () => clearTimeout(id);
   }, [notice]);
 
+  // One request, stale-gated: `fetchConnections` already derives pendingCount
+  // from the roster it just fetched, so the separate count call on mount was
+  // a second round-trip for a number we were about to compute anyway.
   useEffect(() => {
-    fetchConnections();
-    fetchPendingCount();
-  }, [fetchConnections, fetchPendingCount]);
+    void fetchConnectionsIfStale();
+  }, [fetchConnectionsIfStale]);
 
   useEffect(() => {
     if (timerRef.current) clearTimeout(timerRef.current);
@@ -427,7 +429,7 @@ export function FriendsView({ onNavigate }: { onNavigate?: () => void } = {}) {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => { fetchConnections(); fetchPendingCount(); }}
+            onClick={() => void fetchConnections()}
           >
             {t("common:refresh")}
           </Button>

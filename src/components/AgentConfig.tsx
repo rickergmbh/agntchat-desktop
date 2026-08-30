@@ -46,6 +46,7 @@ import {
   type Agent,
   type DirectoryListing,
 } from "../lib/api";
+import { isFresh } from "../lib/cache";
 import { uploadProcessedBlob } from "../lib/imageProcessor";
 import { useFieldLimits } from "../lib/fieldLimits";
 import { LogViewer } from "./LogViewer";
@@ -263,6 +264,26 @@ function RailBadge({ badge, active }: { badge?: SectionBadge; active: boolean })
 }
 
 /**
+ * Badge cache, keyed by agent id, surviving unmounts of this component. The
+ * whole config pane is torn down every time you leave the Agents view, and
+ * re-firing all of SECTION_BADGES on return was one REST call per section —
+ * for numbers that had not moved. Cached badges paint immediately and the
+ * fetches only re-run once the entry is stale.
+ */
+const BADGE_CACHE = new Map<
+  string,
+  { badges: Record<string, SectionBadge>; loadedAt: number }
+>();
+
+function cacheBadge(agentId: string, key: string, badge: SectionBadge) {
+  const entry = BADGE_CACHE.get(agentId);
+  BADGE_CACHE.set(agentId, {
+    badges: { ...(entry?.badges ?? {}), [key]: badge },
+    loadedAt: entry?.loadedAt ?? Date.now(),
+  });
+}
+
+/**
  * Badges for the rail rows, mirroring the mobile agent-detail rows.
  *
  * Loaded once per agent so a section shows its size (or its pulse) before you
@@ -274,7 +295,9 @@ function RailBadge({ badge, active }: { badge?: SectionBadge; active: boolean })
  * Badges are cosmetic — a failed fetch just leaves the row bare.
  */
 function useSectionBadges(agentId: string, activeSection: string) {
-  const [badges, setBadges] = useState<Record<string, SectionBadge>>({});
+  const [badges, setBadges] = useState<Record<string, SectionBadge>>(
+    () => BADGE_CACHE.get(agentId)?.badges ?? {}
+  );
   // Guards against a slow response for the previous agent landing after a
   // switch and badging the new agent with the old one's numbers.
   const loadedFor = useRef(agentId);
@@ -286,6 +309,7 @@ function useSectionBadges(agentId: string, activeSection: string) {
       const forAgent = agentId;
       fetcher(forAgent)
         .then((badge) => {
+          cacheBadge(forAgent, key, badge);
           if (loadedFor.current !== forAgent) return;
           setBadges((prev) =>
             sameBadge(prev[key], badge) ? prev : { ...prev, [key]: badge }
@@ -298,7 +322,13 @@ function useSectionBadges(agentId: string, activeSection: string) {
 
   useEffect(() => {
     loadedFor.current = agentId;
-    setBadges({});
+    const cached = BADGE_CACHE.get(agentId);
+    // Show whatever we already know about this agent rather than clearing to
+    // bare rows while a full refetch lands.
+    setBadges(cached?.badges ?? {});
+    if (isFresh(cached?.loadedAt ?? 0)) return;
+    // Stamp at kickoff so a remount mid-flight doesn't re-fire the same set.
+    BADGE_CACHE.set(agentId, { badges: cached?.badges ?? {}, loadedAt: Date.now() });
     Object.keys(SECTION_BADGES).forEach(load);
   }, [agentId, load]);
 
@@ -312,6 +342,7 @@ function useSectionBadges(agentId: string, activeSection: string) {
   // Stable identity — panels take this as a prop and call it from inside their
   // own fetch callbacks, so a changing identity would re-trigger their effects.
   const setBadge = useCallback((key: string, badge: SectionBadge) => {
+    cacheBadge(loadedFor.current, key, badge);
     setBadges((prev) => (sameBadge(prev[key], badge) ? prev : { ...prev, [key]: badge }));
   }, []);
 

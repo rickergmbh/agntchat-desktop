@@ -1,14 +1,23 @@
 import { create } from "zustand";
 import * as api from "../lib/api";
+import { isFresh } from "../lib/cache";
 import { ws } from "../services/websocket";
 import { useAuthStore } from "./authStore";
 
 interface FriendState {
   connections: api.UserConnection[];
   loading: boolean;
+  /** Last successful `fetchConnections`. `0` = never loaded. The Members view
+   *  is unmounted on every sidebar switch; the stamp keeps a revisit from
+   *  re-fetching a roster that `friend_*` events already keep current. */
+  loadedAt: number;
   pendingCount: number;
   fetchConnections: () => Promise<void>;
+  /** Serve the cached roster unless it's gone stale. */
+  fetchConnectionsIfStale: () => Promise<void>;
   fetchPendingCount: () => Promise<void>;
+  /** @internal in-flight fetch, so concurrent callers share one request */
+  _inflight: Promise<void> | null;
   requestFriend: (participantId: string, message?: string) => Promise<api.UserConnection | undefined>;
   respondFriend: (id: string, decision: "accepted" | "rejected") => Promise<api.UserConnection | undefined>;
   revokeFriend: (id: string) => Promise<api.UserConnection | undefined>;
@@ -40,14 +49,21 @@ function incomingPendingCount(connections: api.UserConnection[]) {
 export const useFriendStore = create<FriendState>((set, get) => ({
   connections: [],
   loading: false,
+  loadedAt: 0,
   pendingCount: 0,
+  _inflight: null,
 
   fetchConnections: async () => {
-    set({ loading: true });
+    // Never blank a roster we can still render — a refresh happens underneath.
+    set({ loading: get().connections.length === 0 });
     try {
       const response = await api.listFriends();
       const connections = response.connections ?? [];
-      set({ connections, pendingCount: incomingPendingCount(connections) });
+      set({
+        connections,
+        pendingCount: incomingPendingCount(connections),
+        loadedAt: Date.now(),
+      });
     } catch (e) {
       if (isNotFoundError(e)) {
         set({ connections: [], pendingCount: 0 });
@@ -57,6 +73,17 @@ export const useFriendStore = create<FriendState>((set, get) => ({
     } finally {
       set({ loading: false });
     }
+  },
+
+  fetchConnectionsIfStale: async () => {
+    const inflight = get()._inflight;
+    if (inflight) return inflight;
+    if (isFresh(get().loadedAt)) return;
+    const p = get()
+      .fetchConnections()
+      .finally(() => set({ _inflight: null }));
+    set({ _inflight: p });
+    return p;
   },
 
   fetchPendingCount: async () => {

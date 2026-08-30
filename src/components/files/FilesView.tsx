@@ -22,8 +22,6 @@ import {
   deleteOwnerFile,
   forwardFile,
   getFileDownloadUrl,
-  listOwnerArtifacts,
-  listOwnerFiles,
   type Conversation,
   type OwnerArtifact,
   type OwnerFile,
@@ -33,11 +31,10 @@ import { formatFileSize } from "../../services/fileUpload";
 import { useChatStore } from "../../stores/chatStore";
 import { useAuthStore } from "../../stores/authStore";
 import { useArtifactStore } from "../../stores/artifactStore";
+import { useFileStore } from "../../stores/fileStore";
 import { useNavStore } from "../../stores/navStore";
 import { ArtifactKindIcon } from "../messages/ArtifactCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-const PAGE_SIZE = 100;
 
 type Category = "all" | "documents" | "images" | "media" | "artifacts";
 
@@ -93,11 +90,25 @@ interface Props {
  */
 export function FilesView({ onOpenConversation }: Props) {
   const { t } = useTranslation("files");
-  const [files, setFiles] = useState<OwnerFile[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [reachedEnd, setReachedEnd] = useState(false);
+  // Both feeds live in fileStore, not here: this view is unmounted on every
+  // sidebar switch, and local state meant re-fetching the whole page (behind
+  // a spinner) each time you came back. The store serves its cache instantly
+  // and only re-fetches once it's stale.
+  const files = useFileStore((s) => s.files);
+  const filesLoadedAt = useFileStore((s) => s.filesLoadedAt);
+  const filesLoading = useFileStore((s) => s.filesLoading);
+  const loadingMore = useFileStore((s) => s.loadingMore);
+  const errorKey = useFileStore((s) => s.filesErrorKey);
+  const reachedEnd = useFileStore((s) => s.reachedEnd);
+  const fetchFiles = useFileStore((s) => s.fetchFiles);
+  const fetchFilesIfStale = useFileStore((s) => s.fetchFilesIfStale);
+  const loadMoreFiles = useFileStore((s) => s.loadMoreFiles);
+  const removeFromCache = useFileStore((s) => s.removeFile);
+
+  // Spinner covers the gap before the first fetch resolves too, so a cold
+  // open never flashes the "no files" empty state on its way to the list.
+  const loading = filesLoading || (filesLoadedAt === 0 && !errorKey);
+
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<Category>("all");
   const [opening, setOpening] = useState<string | null>(null);
@@ -106,10 +117,11 @@ export function FilesView({ onOpenConversation }: Props) {
 
   // Artifacts (#59) are a separate primitive from files — their own owner feed,
   // loaded lazily the first time the "Artifacts" filter is opened.
-  const [artifacts, setArtifacts] = useState<OwnerArtifact[]>([]);
-  const [artifactsLoaded, setArtifactsLoaded] = useState(false);
-  const [artifactsLoading, setArtifactsLoading] = useState(false);
-  const [artifactsError, setArtifactsError] = useState<string | null>(null);
+  const artifacts = useFileStore((s) => s.artifacts);
+  const artifactsLoadedAt = useFileStore((s) => s.artifactsLoadedAt);
+  const artifactsLoading = useFileStore((s) => s.artifactsLoading);
+  const artifactsErrorKey = useFileStore((s) => s.artifactsErrorKey);
+  const fetchArtifactsIfStale = useFileStore((s) => s.fetchArtifactsIfStale);
 
   const setActiveConversation = useChatStore((s) => s.setActiveConversation);
   const setView = useNavStore((s) => s.setView);
@@ -119,44 +131,15 @@ export function FilesView({ onOpenConversation }: Props) {
     window.setTimeout(() => setToast(null), 2600);
   }, []);
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const page = await listOwnerFiles({ limit: PAGE_SIZE });
-      setFiles(page);
-      setReachedEnd(page.length < PAGE_SIZE);
-    } catch {
-      setError(t("errors.loadFailed"));
-    } finally {
-      setLoading(false);
-    }
-  }, [t]);
-
   useEffect(() => {
-    load();
-  }, [load]);
+    void fetchFilesIfStale();
+  }, [fetchFilesIfStale]);
 
-  const loadArtifacts = useCallback(async () => {
-    setArtifactsLoading(true);
-    setArtifactsError(null);
-    try {
-      const page = await listOwnerArtifacts({ limit: PAGE_SIZE });
-      setArtifacts(page);
-      setArtifactsLoaded(true);
-    } catch {
-      setArtifactsError(t("errors.loadFailed"));
-    } finally {
-      setArtifactsLoading(false);
-    }
-  }, [t]);
-
-  // Lazy-load artifacts the first time the Artifacts filter is selected.
+  // Lazy-load artifacts the first time the Artifacts filter is selected —
+  // and refresh them on later visits only once the cache has gone stale.
   useEffect(() => {
-    if (category === "artifacts" && !artifactsLoaded && !artifactsLoading) {
-      loadArtifacts();
-    }
-  }, [category, artifactsLoaded, artifactsLoading, loadArtifacts]);
+    if (category === "artifacts") void fetchArtifactsIfStale();
+  }, [category, fetchArtifactsIfStale]);
 
   // Open an artifact by navigating to its conversation and popping the viewer
   // (the viewer docks inside the conversation and resolves author names from
@@ -172,33 +155,17 @@ export function FilesView({ onOpenConversation }: Props) {
   );
 
   const loadMore = useCallback(async () => {
-    const last = files[files.length - 1];
-    if (!last || loadingMore) return;
-    setLoadingMore(true);
-    try {
-      const page = await listOwnerFiles({
-        limit: PAGE_SIZE,
-        before: last.insertedAt,
-      });
-      setFiles((prev) => {
-        const seen = new Set(prev.map((f) => f.id));
-        return [...prev, ...page.filter((f) => !seen.has(f.id))];
-      });
-      setReachedEnd(page.length < PAGE_SIZE);
-    } catch {
-      flash({ kind: "error", message: t("errors.loadMoreFailed") });
-    } finally {
-      setLoadingMore(false);
-    }
-  }, [files, loadingMore, flash, t]);
+    const ok = await loadMoreFiles();
+    if (!ok) flash({ kind: "error", message: t("errors.loadMoreFailed") });
+  }, [loadMoreFiles, flash, t]);
 
   const counts = useMemo(() => {
     const c = { all: files.length, documents: 0, images: 0, media: 0, artifacts: 0 };
     for (const f of files) c[categoryOf(f.contentType)] += 1;
     // Artifacts are a separate feed; show a count once loaded, else blank.
-    c.artifacts = artifactsLoaded ? artifacts.length : 0;
+    c.artifacts = artifactsLoadedAt > 0 ? artifacts.length : 0;
     return c;
-  }, [files, artifacts, artifactsLoaded]);
+  }, [files, artifacts, artifactsLoadedAt]);
 
   const visible = useMemo(() => {
     if (category === "artifacts") return [];
@@ -262,13 +229,13 @@ export function FilesView({ onOpenConversation }: Props) {
       if (!confirm(t("deleteConfirm", { filename: file.filename }))) return;
       try {
         await deleteOwnerFile(file.id);
-        setFiles((prev) => prev.filter((f) => f.id !== file.id));
+        removeFromCache(file.id);
         flash({ kind: "success", message: t("deleted") });
       } catch {
         flash({ kind: "error", message: t("errors.deleteFailed") });
       }
     },
-    [flash, t]
+    [flash, t, removeFromCache]
   );
 
   const openSource = useCallback(
@@ -325,7 +292,7 @@ export function FilesView({ onOpenConversation }: Props) {
       </div>
 
       {/* Column header (files only — artifacts have their own row layout) */}
-      {category !== "artifacts" && !loading && !error && files.length > 0 && (
+      {category !== "artifacts" && !loading && !errorKey && files.length > 0 && (
         <div className="flex shrink-0 items-center gap-3 border-b border-border px-6 py-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
           <span className="min-w-0 flex-1">{t("columns.name")}</span>
           <span className="hidden w-56 shrink-0 md:block">{t("columns.location")}</span>
@@ -338,16 +305,17 @@ export function FilesView({ onOpenConversation }: Props) {
       {/* Body */}
       <div className="flex-1 overflow-y-auto">
         {category === "artifacts" ? (
-          artifactsLoading && !artifactsLoaded ? (
+          artifactsLoading || (artifactsLoadedAt === 0 && !artifactsErrorKey) ? (
             <div className="flex h-full items-center justify-center">
               <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
             </div>
-          ) : artifactsError ? (
+          ) : /* A failed *refresh* never blanks rows we already have. */
+          artifactsErrorKey && artifacts.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center gap-3 px-6 text-center">
-              <p className="text-sm text-muted-foreground">{artifactsError}</p>
+              <p className="text-sm text-muted-foreground">{t("errors.loadFailed")}</p>
               <button
                 type="button"
-                onClick={loadArtifacts}
+                onClick={() => void fetchArtifactsIfStale()}
                 className="rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:opacity-90"
               >
                 {t("common:retry")}
@@ -378,12 +346,12 @@ export function FilesView({ onOpenConversation }: Props) {
           <div className="flex h-full items-center justify-center">
             <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
           </div>
-        ) : error ? (
+        ) : errorKey && files.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center gap-3 px-6 text-center">
-            <p className="text-sm text-muted-foreground">{error}</p>
+            <p className="text-sm text-muted-foreground">{t("errors.loadFailed")}</p>
             <button
               type="button"
-              onClick={load}
+              onClick={() => void fetchFiles()}
               className="rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:opacity-90"
             >
               {t("common:retry")}

@@ -380,7 +380,9 @@ export function Dashboard() {
     loading,
     error,
     fetchAgents,
+    fetchAgentsIfStale,
     fetchHealth,
+    fetchHealthIfStale,
     fetchActivities,
     refreshProcessStatuses,
     selectAgent,
@@ -417,7 +419,7 @@ export function Dashboard() {
   const setDirSearch = useDirectoryStore((s) => s.setSearchQuery);
   const requestConnection = useDirectoryStore((s) => s.requestConnection);
   const connections = useDirectoryStore((s) => s.connections);
-  const fetchConnections = useDirectoryStore((s) => s.fetchConnections);
+  const fetchConnectionsIfStale = useDirectoryStore((s) => s.fetchConnectionsIfStale);
   const revokeConnection = useDirectoryStore((s) => s.revokeConnection);
 
   // Load the backend model catalog so AgentRow can resolve model labels from
@@ -441,15 +443,21 @@ export function Dashboard() {
   const healthIntervalRef = useRef<ReturnType<typeof setInterval>>(null);
   const activityIntervalRef = useRef<ReturnType<typeof setInterval>>(null);
 
+  // Mount fetches are stale-gated: this view is unmounted on every sidebar
+  // switch, and re-running the whole set on each visit meant ~5 round-trips
+  // (health being the slow one) to redraw a dashboard that WebSocket events
+  // had already kept current. Cached data renders immediately; only what has
+  // aged out is re-fetched. `fetchActivities` stays unconditional — it's a
+  // local Tauri log read, not a backend call.
   useEffect(() => {
-    fetchAgents();
-    fetchHealth();
+    void fetchAgentsIfStale();
+    void fetchHealthIfStale();
     fetchActivities();
     void ensureCatalog();
     // Connections drive the connected/pending pills in directory rows
     // and the proxy/direct badge on owned agents. Both tabs render
     // them, so fetch up-front rather than gating on activeTab.
-    fetchConnections();
+    void fetchConnectionsIfStale();
 
     // Health + process status: slow (backend REST, ~2-3s on shared-1x).
     // 60s cadence keeps dashboard responsive without burning Fly compute —
@@ -470,7 +478,15 @@ export function Dashboard() {
       if (healthIntervalRef.current) clearInterval(healthIntervalRef.current);
       if (activityIntervalRef.current) clearInterval(activityIntervalRef.current);
     };
-  }, [fetchAgents, fetchHealth, fetchActivities, refreshProcessStatuses, fetchConnections, ensureCatalog]);
+  }, [
+    fetchAgentsIfStale,
+    fetchHealthIfStale,
+    fetchHealth,
+    fetchActivities,
+    refreshProcessStatuses,
+    fetchConnectionsIfStale,
+    ensureCatalog,
+  ]);
 
   // The agent directory is behind the `directory` feature flag. When off, the
   // tab still shows (with a "Soon" badge) but its body is a coming-soon notice.

@@ -2,9 +2,9 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTaskStore } from "../stores/taskStore";
 import { useTodoStore } from "../stores/todoStore";
 import { useReminderStore } from "../stores/reminderStore";
+import { useRoutineStore } from "../stores/routineStore";
 import { useAgentStore } from "../stores/agentStore";
 import { useAuthStore } from "../stores/authStore";
-import { listRoutines } from "../lib/api";
 import { reminderGroupKey, groupReminderRows } from "../lib/reminderGrouping";
 import type { Agent, AgentReminder, Routine, Task, TodoItem } from "../lib/api";
 
@@ -106,55 +106,62 @@ function personForItem(item: MergedItem, agentsById: Map<string, Agent>, myId?: 
 
 export function useUnifiedActions() {
   const tasks = useTaskStore((s) => s.tasks);
+  const tasksLoadedAt = useTaskStore((s) => s.loadedAt);
   const fetchTasks = useTaskStore((s) => s.fetchTasks);
+  const fetchTasksIfStale = useTaskStore((s) => s.fetchTasksIfStale);
   const todos = useTodoStore((s) => s.todos);
+  const todosLoadedAt = useTodoStore((s) => s.loadedAt);
   const fetchTodos = useTodoStore((s) => s.fetchTodos);
+  const fetchTodosIfStale = useTodoStore((s) => s.fetchTodosIfStale);
   const reminders = useReminderStore((s) => s.reminders);
+  const remindersLoadedAt = useReminderStore((s) => s.loadedAt);
   const fetchReminders = useReminderStore((s) => s.fetchReminders);
+  const fetchRemindersIfStale = useReminderStore((s) => s.fetchRemindersIfStale);
+  const routines = useRoutineStore((s) => s.routines);
+  const routinesLoadedAt = useRoutineStore((s) => s.loadedAt);
+  const fetchRoutines = useRoutineStore((s) => s.fetchRoutines);
+  const fetchRoutinesIfStale = useRoutineStore((s) => s.fetchRoutinesIfStale);
   const agents = useAgentStore((s) => s.agents);
   const fetchAgents = useAgentStore((s) => s.fetchAgents);
   const myId = useAuthStore((s) => s.participant?.id);
   const activeOrgId = useAuthStore((s) => s.participant?.activeOrganizationId);
 
-  const [routines, setRoutines] = useState<Routine[]>([]);
-  const [tasksReady, setTasksReady] = useState(false);
-  const [todosReady, setTodosReady] = useState(false);
-  const [remindersReady, setRemindersReady] = useState(false);
-  const [routinesReady, setRoutinesReady] = useState(false);
-
   const [personFilter, setPersonFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [showCompleted, setShowCompleted] = useState(true);
 
-  const loadRoutines = useCallback(async () => {
-    const { routines: data } = await listRoutines();
-    setRoutines(data ?? []);
-  }, []);
+  // Every feed here is store-backed and stale-gated, so re-entering the Tasks
+  // view renders the cached list immediately and only re-fetches what has
+  // aged out. `activeOrgId` is a dependency because a workspace switch resets
+  // the stamps — that's what makes the new workspace's lists load.
+  useEffect(() => {
+    void fetchTasksIfStale();
+  }, [fetchTasksIfStale, activeOrgId]);
 
   useEffect(() => {
-    fetchTasks().finally(() => setTasksReady(true));
-  }, [fetchTasks]);
+    void fetchTodosIfStale();
+  }, [fetchTodosIfStale, activeOrgId]);
 
   useEffect(() => {
-    fetchTodos().finally(() => setTodosReady(true));
-  }, [fetchTodos, activeOrgId]);
+    void fetchRemindersIfStale();
+  }, [fetchRemindersIfStale, activeOrgId]);
 
   useEffect(() => {
-    fetchReminders().finally(() => setRemindersReady(true));
-  }, [fetchReminders]);
-
-  useEffect(() => {
-    Promise.all([loadRoutines(), Object.keys(agents).length === 0 ? fetchAgents() : Promise.resolve()]).finally(
-      () => setRoutinesReady(true)
-    );
+    void fetchRoutinesIfStale();
+    // Routine cards name their owning agent; the agents store is normally
+    // already populated by the dashboard, so only fill it when it's empty.
+    if (Object.keys(agents).length === 0) void fetchAgents();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loadRoutines]);
+  }, [fetchRoutinesIfStale, activeOrgId]);
 
-  const firstLoadDone = tasksReady && todosReady && remindersReady && routinesReady;
+  // "Loaded" is a property of the cache, not of this mount — once each feed
+  // has landed once, coming back to the view never shows a spinner again.
+  const firstLoadDone =
+    tasksLoadedAt > 0 && todosLoadedAt > 0 && remindersLoadedAt > 0 && routinesLoadedAt > 0;
 
   const refresh = useCallback(async () => {
-    await Promise.all([fetchTasks(), fetchTodos(), fetchReminders(), loadRoutines()]);
-  }, [fetchTasks, fetchTodos, fetchReminders, loadRoutines]);
+    await Promise.all([fetchTasks(), fetchTodos(), fetchReminders(), fetchRoutines()]);
+  }, [fetchTasks, fetchTodos, fetchReminders, fetchRoutines]);
 
   const activeRoutines = useMemo(() => routines.filter((r) => r.status === "active"), [routines]);
   // A reminder armed from a to-do's "remind me" toggle is already

@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import * as api from "../lib/api";
 import type { TodoItem, AddTodoInput, UpdateTodoInput } from "../lib/api";
+import { isFresh } from "../lib/cache";
 import { ws } from "../services/websocket";
 import { useAuthStore } from "./authStore";
 
@@ -17,9 +18,18 @@ export type TodoErrorKey =
 interface TodoState {
   todos: TodoItem[];
   loading: boolean;
+  /** Last successful `fetchTodos`. `0` = never loaded. Gates the re-fetch
+   *  every remount of the Tasks view would otherwise trigger. */
+  loadedAt: number;
   errorKey: TodoErrorKey;
 
+  /** @internal in-flight fetch, so concurrent callers share one request */
+  _inflight: Promise<void> | null;
+
   fetchTodos: () => Promise<void>;
+  /** Serve the cached list unless it's gone stale — WS upserts keep it
+   *  live in between. */
+  fetchTodosIfStale: () => Promise<void>;
   addTodo: (input: AddTodoInput) => Promise<boolean>;
   updateTodo: (id: string, patch: UpdateTodoInput) => Promise<boolean>;
   toggleTodo: (id: string) => Promise<void>;
@@ -50,20 +60,34 @@ function sortTodos(todos: TodoItem[]): TodoItem[] {
 export const useTodoStore = create<TodoState>((set, get) => ({
   todos: [],
   loading: false,
+  loadedAt: 0,
   errorKey: null,
+  _inflight: null,
 
   fetchTodos: async () => {
-    set({ loading: true });
+    // Never blank a list we can still render — a refresh happens underneath.
+    set({ loading: get().todos.length === 0 });
     try {
       const data = await api.fetchTodosRest();
       // Hard replace: the list is small and workspace-scoped, so there's
       // no pagination-merge subtlety like the tasks index.
-      set({ todos: sortTodos(data.todos), errorKey: null });
+      set({ todos: sortTodos(data.todos), errorKey: null, loadedAt: Date.now() });
     } catch {
       set({ errorKey: "loadFailed" });
     } finally {
       set({ loading: false });
     }
+  },
+
+  fetchTodosIfStale: async () => {
+    const inflight = get()._inflight;
+    if (inflight) return inflight;
+    if (isFresh(get().loadedAt)) return;
+    const p = get()
+      .fetchTodos()
+      .finally(() => set({ _inflight: null }));
+    set({ _inflight: p });
+    return p;
   },
 
   addTodo: async (input) => {

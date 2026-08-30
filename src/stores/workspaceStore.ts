@@ -6,6 +6,10 @@ import { useAuthStore } from "./authStore";
 import { useChatStore } from "./chatStore";
 import { useAgentStore } from "./agentStore";
 import { useTaskStore } from "./taskStore";
+import { useTodoStore } from "./todoStore";
+import { useReminderStore } from "./reminderStore";
+import { useRoutineStore } from "./routineStore";
+import { useFileStore } from "./fileStore";
 import { useStreamingStore } from "./streamingStore";
 import type { Participant, WorkspaceMembership } from "../lib/api";
 
@@ -319,9 +323,17 @@ async function doRefetchOrgScoped() {
     unreadCounts: {},
   });
 
-  useAgentStore.setState({ agents: {} });
+  useAgentStore.setState({ agents: {}, loadedAt: 0, healthLoadedAt: 0 });
 
-  useTaskStore.setState({ tasks: [] });
+  useTaskStore.setState({ tasks: [], loadedAt: 0 });
+
+  // The view caches are stale-gated on a `loadedAt` stamp, so wiping the rows
+  // without clearing the stamp would leave the new workspace looking empty
+  // until the TTL expired. These four load lazily on their first visit.
+  useTodoStore.setState({ todos: [], loadedAt: 0 });
+  useReminderStore.setState({ reminders: [], loadedAt: 0 });
+  useRoutineStore.setState({ routines: [], loadedAt: 0 });
+  useFileStore.getState().reset();
 
   // Streaming is conversation-keyed and those conversations are gone —
   // clear it. Presence is deliberately NOT wiped: it's participant-keyed,
