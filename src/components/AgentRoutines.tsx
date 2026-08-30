@@ -51,6 +51,10 @@ import {
 
 const HOURS = Array.from({ length: 24 }, (_, i) => ({ value: String(i) }));
 
+// Select-safe stand-in for "no workspace pin" — the owner's Personal
+// workspace, which the backend resolves when organization_id is omitted.
+const PERSONAL_WORKSPACE = "__personal__";
+
 // AM/PM label for hour `i` (0-23), resolved via the i18n singleton at call
 // time so language switches stay live (never t() at module scope, since
 // HOURS/hourLabel are module-level).
@@ -552,11 +556,15 @@ function conversationDisplayLabel(
 function ReportToPicker({
   agentId,
   agentName,
+  organizationId,
   value,
   onChange,
 }: {
   agentId: string;
   agentName?: string;
+  /** The routine's workspace — destinations outside it are rejected by the
+   *  backend, so they aren't offered. */
+  organizationId?: string | null;
   value: string;
   onChange: (id: string) => void;
 }) {
@@ -573,16 +581,31 @@ function ReportToPicker({
       )?.id,
     [conversations, currentParticipantId, agentId],
   );
+  // Anything else the routine may post into: a DM, group or channel that
+  // BOTH this agent and I belong to, inside the routine's workspace. That
+  // membership rule is what stops one agent's routine reaching another
+  // agent's DM — it simply isn't in it. Mirrors Routines.validate_report_to.
   const options = useMemo(
     () =>
       conversations
-        .filter((c) => c.type === "direct" && c.id !== ownerDmId)
+        .filter((c) => {
+          if (c.id === ownerDmId || c.parentConversationId) return false;
+          if (c.type !== "direct" && c.type !== "group" && c.type !== "channel") return false;
+          if (organizationId && c.organizationId && c.organizationId !== organizationId) {
+            return false;
+          }
+          const members = c.members || [];
+          return (
+            members.some((m) => m.participantId === agentId) &&
+            members.some((m) => m.participantId === currentParticipantId)
+          );
+        })
         .slice(0, 30)
         .map((c) => ({
           id: c.id,
           label: conversationDisplayLabel(c, currentParticipantId),
         })),
-    [conversations, currentParticipantId, ownerDmId],
+    [conversations, currentParticipantId, ownerDmId, organizationId, agentId],
   );
   const defaultLabel = t("routines.reportDefaultOption", {
     name: agentName || t("routines.thisAgent"),
@@ -679,23 +702,6 @@ export function AgentRoutines({ agentId, onCount }: AgentRoutinesProps) {
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Routines are workspace-scoped; label the ones pinned to a workspace other
-  // than the one the user is currently looking at.
-  const activeOrgId = useAuthStore((s) => s.participant?.activeOrganizationId);
-  const workspaces = useWorkspaces();
-  const workspacesEnabled = useWorkspacesEnabled();
-  const workspaceLabel = useCallback(
-    (routine: Routine): string | null => {
-      if (!workspacesEnabled || !routine.organizationId) return null;
-      if (routine.organizationId === activeOrgId) return null;
-      return (
-        workspaces.find((w) => w.id === routine.organizationId)?.name ??
-        i18n.t("agents:routines.otherWorkspace")
-      );
-    },
-    [workspacesEnabled, activeOrgId, workspaces],
-  );
-
   const fetchRoutines = useCallback(async () => {
     try {
       setError(null);
@@ -772,7 +778,6 @@ export function AgentRoutines({ agentId, onCount }: AgentRoutinesProps) {
         <>
           <div className="space-y-2">
             {routines.map((routine) => {
-              const wsLabel = workspaceLabel(routine);
               return (
               <div
                 key={routine.id}
@@ -787,15 +792,6 @@ export function AgentRoutines({ agentId, onCount }: AgentRoutinesProps) {
                     >
                       {t(`status.${routine.status}`, { defaultValue: routine.status })}
                     </Badge>
-                    {wsLabel && (
-                      <Badge
-                        variant="outline"
-                        className="text-[10px] px-1.5 py-0 max-w-32 truncate"
-                        title={t("routines.inWorkspace", { name: wsLabel })}
-                      >
-                        {wsLabel}
-                      </Badge>
-                    )}
                     {routine.consecutiveFailures > 0 && (
                       <Badge variant="destructive" className="text-[10px] px-1.5 py-0">
                         <AlertTriangle className="w-2.5 h-2.5 mr-0.5" />
@@ -935,7 +931,7 @@ function CreateRoutineDialog({
   const workspaces = useWorkspaces();
   const activeWorkspace = useActiveWorkspace();
   const [organizationId, setOrganizationId] = useState(
-    workspacesEnabled && activeWorkspace ? activeWorkspace.id : "__personal__",
+    workspacesEnabled && activeWorkspace ? activeWorkspace.id : PERSONAL_WORKSPACE,
   );
 
   // Get available templates from the agent's structured_capabilities
@@ -963,7 +959,7 @@ function CreateRoutineDialog({
     setResponseTemplate("");
     setModel("");
     setOrganizationId(
-      workspacesEnabled && activeWorkspace ? activeWorkspace.id : "__personal__",
+      workspacesEnabled && activeWorkspace ? activeWorkspace.id : PERSONAL_WORKSPACE,
     );
     setError(null);
   };
@@ -985,7 +981,7 @@ function CreateRoutineDialog({
         ...(maxRuns ? { max_runs: parseInt(maxRuns) } : {}),
         ...(responseTemplate ? { response_template: responseTemplate } : {}),
         ...(model ? { model } : {}),
-        ...(organizationId !== "__personal__"
+        ...(organizationId !== PERSONAL_WORKSPACE
           ? { organization_id: organizationId }
           : {}),
       });
@@ -1050,6 +1046,7 @@ function CreateRoutineDialog({
             <ReportToPicker
               agentId={agentId}
               agentName={agentName}
+              organizationId={organizationId === PERSONAL_WORKSPACE ? undefined : organizationId}
               value={reportTo}
               onChange={setReportTo}
             />
@@ -1094,7 +1091,7 @@ function CreateRoutineDialog({
               <div className="space-y-1.5">
                 <Label className="text-xs">{t("workspacePin.label")}</Label>
                 <Select
-                  value={organizationId || "__personal__"}
+                  value={organizationId || PERSONAL_WORKSPACE}
                   onValueChange={(v) => {
                     if (!v) return;
                     setOrganizationId(v);
@@ -1103,7 +1100,7 @@ function CreateRoutineDialog({
                   <SelectTrigger>
                     <SelectValue>
                       {(val: unknown) =>
-                        String(val) === "__personal__"
+                        String(val) === PERSONAL_WORKSPACE
                           ? t("pulse.defaultWorkspace")
                           : workspaces.find((w) => w.id === String(val))?.name ??
                             String(val ?? "")
@@ -1111,7 +1108,7 @@ function CreateRoutineDialog({
                     </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="__personal__">{t("pulse.defaultWorkspace")}</SelectItem>
+                    <SelectItem value={PERSONAL_WORKSPACE}>{t("pulse.defaultWorkspace")}</SelectItem>
                     {workspaces.map((w) => (
                       <SelectItem key={w.id} value={w.id}>{w.name}</SelectItem>
                     ))}
@@ -1169,12 +1166,26 @@ export function RoutineForm({ routine, variant, onDone, onSaved }: RoutineFormPr
   const [instructions, setInstructions] = useState(routine.instructions);
   const [schedule, setSchedule] = useState<ScheduleState>(() => parseRoutineSchedule(routine));
   const [responseTemplate, setResponseTemplate] = useState(routine.responseTemplate || "");
+  const [reportTo, setReportTo] = useState(routine.reportTo || "");
   // "" = the agent's default model; a model id runs this routine on that model.
   const [model, setModel] = useState(routine.model || "");
+  // The workspace a routine lives in: it only appears in that workspace's
+  // lists, and it delivers into that workspace's rooms. Moving one takes it
+  // out of this workspace's list on save and resets the destination to the
+  // DM in the new one (the backend clears report_to).
+  const [organizationId, setOrganizationId] = useState(
+    routine.organizationId || PERSONAL_WORKSPACE,
+  );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const workspaces = useWorkspaces();
+  const workspacesEnabled = useWorkspacesEnabled();
+  const movingWorkspace = organizationId !== (routine.organizationId || PERSONAL_WORKSPACE);
+
   const { agents } = useAgentStore();
+  const agentName = Object.values(agents).find((m) => m.agent.id === routine.participantId)
+    ?.agent.displayName;
   const templateNames = useMemo(() => {
     const managed = Object.values(agents).find((m) => m.agent.id === routine.participantId);
     const templates = managed?.agent.structuredCapabilities?.detail_templates;
@@ -1188,7 +1199,9 @@ export function RoutineForm({ routine, variant, onDone, onSaved }: RoutineFormPr
     setDescription(routine.description || "");
     setInstructions(routine.instructions);
     setResponseTemplate(routine.responseTemplate || "");
+    setReportTo(routine.reportTo || "");
     setModel(routine.model || "");
+    setOrganizationId(routine.organizationId || PERSONAL_WORKSPACE);
     setSchedule(parseRoutineSchedule(routine));
     setError(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1202,7 +1215,9 @@ export function RoutineForm({ routine, variant, onDone, onSaved }: RoutineFormPr
     if (instructions !== routine.instructions) return true;
     if ((description || "") !== (routine.description || "")) return true;
     if ((responseTemplate || "") !== (routine.responseTemplate || "")) return true;
+    if ((reportTo || "") !== (routine.reportTo || "")) return true;
     if ((model || "") !== (routine.model || "")) return true;
+    if (movingWorkspace) return true;
     const built = buildScheduleConfig(schedule);
     if (built.scheduleType !== routine.scheduleType) return true;
     const cfg = routine.scheduleConfig as {
@@ -1218,7 +1233,17 @@ export function RoutineForm({ routine, variant, onDone, onSaved }: RoutineFormPr
     const newExpr = (built.scheduleConfig as { expression?: string }).expression ?? null;
     if (origEvery !== newEvery || origExpr !== newExpr) return true;
     return false;
-  }, [routine, name, instructions, description, responseTemplate, model, schedule]);
+  }, [
+    routine,
+    name,
+    instructions,
+    description,
+    responseTemplate,
+    reportTo,
+    model,
+    movingWorkspace,
+    schedule,
+  ]);
 
   const handleSave = async () => {
     setSaving(true);
@@ -1226,16 +1251,27 @@ export function RoutineForm({ routine, variant, onDone, onSaved }: RoutineFormPr
     try {
       const { scheduleType, scheduleConfig } = buildScheduleConfig(schedule);
 
-      const { routine: updated } = await updateRoutine(routine.id, {
+      const body: Record<string, unknown> = {
         name,
         description: description || null,
         instructions,
         schedule_type: scheduleType,
         schedule_config: scheduleConfig,
         response_template: responseTemplate || null,
+        report_to: reportTo || null,
         // "" clears the override (→ agent's default model).
         model,
-      });
+      };
+
+      // Only send the workspace when it actually changed — the backend
+      // treats its presence as a move and clears report_to.
+      if (movingWorkspace) {
+        body.organization_id =
+          organizationId === PERSONAL_WORKSPACE ? undefined : organizationId;
+        delete body.report_to;
+      }
+
+      const { routine: updated } = await updateRoutine(routine.id, body);
       onSaved?.(updated);
       if (variant === "dialog") onDone?.();
     } catch (e) {
@@ -1280,6 +1316,14 @@ export function RoutineForm({ routine, variant, onDone, onSaved }: RoutineFormPr
       </div>
 
       <div className="grid gap-3 pt-4 sm:grid-cols-2">
+        <ReportToPicker
+          agentId={routine.participantId}
+          agentName={agentName}
+          organizationId={routine.organizationId}
+          value={reportTo}
+          onChange={setReportTo}
+        />
+
         {templateNames.length > 0 && (
           <div className="space-y-1.5">
             <Label className="text-xs">{t("routines.responseTemplate")}</Label>
@@ -1300,6 +1344,35 @@ export function RoutineForm({ routine, variant, onDone, onSaved }: RoutineFormPr
           value={model}
           onChange={setModel}
         />
+
+        {workspacesEnabled && workspaces.length > 1 && (
+          <div className="space-y-1.5">
+            <Label className="text-xs">{t("workspacePin.label")}</Label>
+            <Select
+              value={organizationId}
+              onValueChange={(v) => v && setOrganizationId(v)}
+            >
+              <SelectTrigger>
+                <SelectValue>
+                  {(val: unknown) =>
+                    String(val) === PERSONAL_WORKSPACE
+                      ? t("pulse.defaultWorkspace")
+                      : workspaces.find((w) => w.id === String(val))?.name ?? String(val ?? "")
+                  }
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={PERSONAL_WORKSPACE}>{t("pulse.defaultWorkspace")}</SelectItem>
+                {workspaces.map((w) => (
+                  <SelectItem key={w.id} value={w.id}>{w.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-[11px] text-muted-foreground">
+              {movingWorkspace ? t("routines.movingWorkspaceHint") : t("workspacePin.hint")}
+            </p>
+          </div>
+        )}
 
         {error && <p className="text-xs text-destructive sm:col-span-2">{error}</p>}
       </div>

@@ -1273,7 +1273,6 @@ export const resources = {
         "everyMinutes_other": "Every {{count}} minutes",
         "failCount_one": "{{count}} failure",
         "failCount_other": "{{count}} failures",
-        "inWorkspace": "In the {{name}} workspace",
         "instructions": "Instructions",
         "instructionsPlaceholder": "What should the agent do each time this runs?",
         "loading": "Loading routines…",
@@ -1285,6 +1284,7 @@ export const resources = {
           "hourly": "Hourly",
           "interval": "Interval"
         },
+        "movingWorkspaceHint": "Saving moves this routine to the new workspace — it leaves this list, and its destination resets to the DM with this agent.",
         "namePlaceholder": "e.g., Email Checker",
         "newRoutine": "New Routine",
         "nextRun": "Next: {{time}}",
@@ -1293,7 +1293,6 @@ export const resources = {
         "noTemplatePlainText": "No card — plain text output",
         "notScheduled": "Not scheduled",
         "orSendToAnother": "Or send to another conversation:",
-        "otherWorkspace": "Other workspace",
         "pickAtLeastOneDay": "Pick at least one day for this routine to run.",
         "pm": "PM",
         "preset": {
@@ -7274,7 +7273,6 @@ export const resources = {
         "everyMinutes_other": "Cada {{count}} minutos",
         "failCount_one": "{{count}} fallo",
         "failCount_other": "{{count}} fallos",
-        "inWorkspace": "En el espacio de trabajo {{name}}",
         "instructions": "Instrucciones",
         "instructionsPlaceholder": "¿Qué debe hacer el agente cada vez que se ejecute?",
         "loading": "Cargando rutinas…",
@@ -7286,6 +7284,7 @@ export const resources = {
           "hourly": "Cada hora",
           "interval": "Intervalo"
         },
+        "movingWorkspaceHint": "Al guardar, esta rutina pasa al nuevo espacio de trabajo: desaparece de esta lista y su destino vuelve al mensaje directo con este agente.",
         "namePlaceholder": "p. ej., Revisor de correo",
         "newRoutine": "Nueva rutina",
         "nextRun": "Próxima: {{time}}",
@@ -7294,7 +7293,6 @@ export const resources = {
         "noTemplatePlainText": "Sin tarjeta — salida de texto sin formato",
         "notScheduled": "Sin programar",
         "orSendToAnother": "O envíalo a otra conversación:",
-        "otherWorkspace": "Otro espacio de trabajo",
         "pickAtLeastOneDay": "Elige al menos un día para que esta rutina se ejecute.",
         "pm": "p.m.",
         "preset": {
@@ -13275,7 +13273,6 @@ export const resources = {
         "everyMinutes_other": "Alle {{count}} Minuten",
         "failCount_one": "{{count}} Fehler",
         "failCount_other": "{{count}} Fehler",
-        "inWorkspace": "Im Arbeitsbereich {{name}}",
         "instructions": "Anweisungen",
         "instructionsPlaceholder": "Was soll der Agent bei jeder Ausführung tun?",
         "loading": "Routinen werden geladen…",
@@ -13287,6 +13284,7 @@ export const resources = {
           "hourly": "Stündlich",
           "interval": "Intervall"
         },
+        "movingWorkspaceHint": "Beim Speichern wechselt diese Routine in den neuen Workspace – sie verschwindet aus dieser Liste und ihr Ziel wird auf den Direktchat mit diesem Agenten zurückgesetzt.",
         "namePlaceholder": "z. B. E-Mail-Prüfer",
         "newRoutine": "Neue Routine",
         "nextRun": "Nächste: {{time}}",
@@ -13295,7 +13293,6 @@ export const resources = {
         "noTemplatePlainText": "Keine Karte — reine Textausgabe",
         "notScheduled": "Nicht geplant",
         "orSendToAnother": "Oder an eine andere Unterhaltung senden:",
-        "otherWorkspace": "Anderer Arbeitsbereich",
         "pickAtLeastOneDay": "Wählen Sie mindestens einen Tag aus, an dem diese Routine laufen soll.",
         "pm": "PM",
         "preset": {
@@ -19276,7 +19273,6 @@ export const resources = {
         "everyMinutes_other": "Toutes les {{count}} minutes",
         "failCount_one": "{{count}} échec",
         "failCount_other": "{{count}} échecs",
-        "inWorkspace": "Dans l'espace de travail {{name}}",
         "instructions": "Instructions",
         "instructionsPlaceholder": "Que doit faire l'agent à chaque exécution ?",
         "loading": "Chargement des routines…",
@@ -19288,6 +19284,7 @@ export const resources = {
           "hourly": "Toutes les heures",
           "interval": "Intervalle"
         },
+        "movingWorkspaceHint": "L'enregistrement déplace cette routine vers le nouvel espace de travail : elle quitte cette liste et sa destination redevient la conversation privée avec cet agent.",
         "namePlaceholder": "ex. Vérificateur d'e-mails",
         "newRoutine": "Nouvelle routine",
         "nextRun": "Prochaine : {{time}}",
@@ -19296,7 +19293,6 @@ export const resources = {
         "noTemplatePlainText": "Aucune carte — sortie en texte brut",
         "notScheduled": "Non planifié",
         "orSendToAnother": "Ou envoyer à une autre conversation :",
-        "otherWorkspace": "Autre espace de travail",
         "pickAtLeastOneDay": "Choisissez au moins un jour pour l'exécution de cette routine.",
         "pm": "PM",
         "preset": {
@@ -25277,7 +25273,6 @@ export const resources = {
         "everyMinutes_other": "A cada {{count}} minutos",
         "failCount_one": "{{count}} falha",
         "failCount_other": "{{count}} falhas",
-        "inWorkspace": "No espaço de trabalho {{name}}",
         "instructions": "Instruções",
         "instructionsPlaceholder": "O que o agente deve fazer cada vez que isso executar?",
         "loading": "Carregando rotinas…",
@@ -25289,6 +25284,7 @@ export const resources = {
           "hourly": "A cada hora",
           "interval": "Intervalo"
         },
+        "movingWorkspaceHint": "Ao salvar, esta rotina passa para o novo espaço de trabalho: sai desta lista e o destino volta a ser a conversa direta com este agente.",
         "namePlaceholder": "ex.: Verificador de E-mail",
         "newRoutine": "Nova Rotina",
         "nextRun": "Próxima: {{time}}",
@@ -25297,7 +25293,6 @@ export const resources = {
         "noTemplatePlainText": "Sem cartão — saída em texto simples",
         "notScheduled": "Não agendado",
         "orSendToAnother": "Ou enviar para outra conversa:",
-        "otherWorkspace": "Outro espaço de trabalho",
         "pickAtLeastOneDay": "Escolha pelo menos um dia para esta rotina executar.",
         "pm": "PM",
         "preset": {
@@ -31278,7 +31273,6 @@ export const resources = {
         "everyMinutes_other": "{{count}}分ごと",
         "failCount_one": "{{count}}回失敗",
         "failCount_other": "{{count}}回失敗",
-        "inWorkspace": "ワークスペース「{{name}}」内",
         "instructions": "指示",
         "instructionsPlaceholder": "実行のたびにエージェントは何をすべきですか？",
         "loading": "ルーティンを読み込んでいます…",
@@ -31290,6 +31284,7 @@ export const resources = {
           "hourly": "毎時",
           "interval": "間隔"
         },
+        "movingWorkspaceHint": "保存すると、このルーティンは新しいワークスペースに移動します。このリストからは消え、送信先はこのエージェントとのDMにリセットされます。",
         "namePlaceholder": "例：メールチェッカー",
         "newRoutine": "新しいルーティン",
         "nextRun": "次回：{{time}}",
@@ -31298,7 +31293,6 @@ export const resources = {
         "noTemplatePlainText": "カードなし — プレーンテキスト出力",
         "notScheduled": "未スケジュール",
         "orSendToAnother": "または別の会話に送信：",
-        "otherWorkspace": "別のワークスペース",
         "pickAtLeastOneDay": "このルーティンを実行する曜日を少なくとも1つ選んでください。",
         "pm": "PM",
         "preset": {
@@ -37279,7 +37273,6 @@ export const resources = {
         "everyMinutes_other": "每 {{count}} 分钟",
         "failCount_one": "{{count}} 次失败",
         "failCount_other": "{{count}} 次失败",
-        "inWorkspace": "位于 {{name}} 工作区",
         "instructions": "指令",
         "instructionsPlaceholder": "每次运行时，智能体应该做什么？",
         "loading": "正在加载例程……",
@@ -37291,6 +37284,7 @@ export const resources = {
           "hourly": "每小时",
           "interval": "间隔"
         },
+        "movingWorkspaceHint": "保存后，此例程将移至新的工作区：它会从此列表中消失，发送目标也会重置为与该智能体的私聊。",
         "namePlaceholder": "例如：邮件检查器",
         "newRoutine": "新建例程",
         "nextRun": "下次：{{time}}",
@@ -37299,7 +37293,6 @@ export const resources = {
         "noTemplatePlainText": "无卡片 — 纯文本输出",
         "notScheduled": "未安排计划",
         "orSendToAnother": "或发送到其他对话：",
-        "otherWorkspace": "其他工作区",
         "pickAtLeastOneDay": "请为此例程至少选择一天以运行。",
         "pm": "PM",
         "preset": {
@@ -43280,7 +43273,6 @@ export const resources = {
         "everyMinutes_other": "{{count}}분마다",
         "failCount_one": "실패 {{count}}회",
         "failCount_other": "실패 {{count}}회",
-        "inWorkspace": "{{name}} 워크스페이스에 있음",
         "instructions": "지침",
         "instructionsPlaceholder": "이 루틴이 실행될 때마다 에이전트가 무엇을 해야 하나요?",
         "loading": "루틴 불러오는 중…",
@@ -43292,6 +43284,7 @@ export const resources = {
           "hourly": "매시간",
           "interval": "간격"
         },
+        "movingWorkspaceHint": "저장하면 이 루틴이 새 워크스페이스로 이동합니다. 이 목록에서 사라지고 전송 위치는 이 에이전트와의 DM으로 초기화됩니다.",
         "namePlaceholder": "예: 이메일 확인기",
         "newRoutine": "새 루틴",
         "nextRun": "다음: {{time}}",
@@ -43300,7 +43293,6 @@ export const resources = {
         "noTemplatePlainText": "카드 없음 — 일반 텍스트 출력",
         "notScheduled": "예약되지 않음",
         "orSendToAnother": "또는 다른 대화로 보내기:",
-        "otherWorkspace": "다른 워크스페이스",
         "pickAtLeastOneDay": "이 루틴이 실행될 요일을 하나 이상 선택하세요.",
         "pm": "PM",
         "preset": {
@@ -49281,7 +49273,6 @@ export const resources = {
         "everyMinutes_other": "Ogni {{count}} minuti",
         "failCount_one": "{{count}} errore",
         "failCount_other": "{{count}} errori",
-        "inWorkspace": "Nello spazio di lavoro {{name}}",
         "instructions": "Istruzioni",
         "instructionsPlaceholder": "Cosa dovrebbe fare l'agente ogni volta che viene eseguita?",
         "loading": "Caricamento routine…",
@@ -49293,6 +49284,7 @@ export const resources = {
           "hourly": "Ogni ora",
           "interval": "Intervallo"
         },
+        "movingWorkspaceHint": "Salvando, questa routine passa al nuovo spazio di lavoro: sparisce da questo elenco e la sua destinazione torna al messaggio diretto con questo agente.",
         "namePlaceholder": "es. Controllo Email",
         "newRoutine": "Nuova routine",
         "nextRun": "Prossima: {{time}}",
@@ -49301,7 +49293,6 @@ export const resources = {
         "noTemplatePlainText": "Nessuna scheda — output in testo semplice",
         "notScheduled": "Non pianificato",
         "orSendToAnother": "Oppure invia a un'altra conversazione:",
-        "otherWorkspace": "Altro spazio di lavoro",
         "pickAtLeastOneDay": "Scegli almeno un giorno per l'esecuzione di questa routine.",
         "pm": "PM",
         "preset": {
@@ -55282,7 +55273,6 @@ export const resources = {
         "everyMinutes_other": "हर {{count}} मिनट",
         "failCount_one": "{{count}} विफलता",
         "failCount_other": "{{count}} विफलताएँ",
-        "inWorkspace": "{{name}} वर्कस्पेस में",
         "instructions": "निर्देश",
         "instructionsPlaceholder": "हर बार चलने पर एजेंट को क्या करना चाहिए?",
         "loading": "रूटीन लोड हो रहे हैं…",
@@ -55294,6 +55284,7 @@ export const resources = {
           "hourly": "प्रति घंटा",
           "interval": "अंतराल"
         },
+        "movingWorkspaceHint": "सहेजने पर यह रूटीन नए वर्कस्पेस में चला जाएगा — यह इस सूची से हट जाएगा और इसका गंतव्य इस एजेंट के साथ डीएम पर रीसेट हो जाएगा।",
         "namePlaceholder": "जैसे, Email Checker",
         "newRoutine": "नया रूटीन",
         "nextRun": "अगला: {{time}}",
@@ -55302,7 +55293,6 @@ export const resources = {
         "noTemplatePlainText": "कोई कार्ड नहीं — सादा टेक्स्ट आउटपुट",
         "notScheduled": "शेड्यूल नहीं किया गया",
         "orSendToAnother": "या किसी अन्य वार्तालाप में भेजें:",
-        "otherWorkspace": "अन्य वर्कस्पेस",
         "pickAtLeastOneDay": "इस रूटीन को चलाने के लिए कम से कम एक दिन चुनें।",
         "pm": "PM",
         "preset": {
