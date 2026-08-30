@@ -6,7 +6,7 @@ import { ws } from "../services/websocket";
 import { useAuthStore } from "./authStore";
 
 /** i18n key (tasks:todo.*) for the most recent failed operation; the
- *  TodoList renders it as a transient inline error. */
+ *  Actions list renders it as a transient inline error. */
 export type TodoErrorKey =
   | "loadFailed"
   | "addFailed"
@@ -30,7 +30,8 @@ interface TodoState {
   /** Serve the cached list unless it's gone stale — WS upserts keep it
    *  live in between. */
   fetchTodosIfStale: () => Promise<void>;
-  addTodo: (input: AddTodoInput) => Promise<boolean>;
+  /** Resolves to the created item (so a caller can select it) or null. */
+  addTodo: (input: AddTodoInput) => Promise<TodoItem | null>;
   updateTodo: (id: string, patch: UpdateTodoInput) => Promise<boolean>;
   toggleTodo: (id: string) => Promise<void>;
   deleteTodo: (id: string) => Promise<void>;
@@ -97,10 +98,10 @@ export const useTodoStore = create<TodoState>((set, get) => ({
         todos: sortTodos([data.todo, ...s.todos.filter((t) => t.id !== data.todo.id)]),
         errorKey: null,
       }));
-      return true;
+      return data.todo;
     } catch {
       set({ errorKey: "addFailed" });
-      return false;
+      return null;
     }
   },
 

@@ -19,7 +19,8 @@ interface AgentRemindersProps {
  * the unified Actions list, this doesn't exclude to-do-linked reminders —
  * that exclusion exists there to avoid a redundant card next to the to-do's
  * own bell icon, which doesn't apply on a page that isn't showing to-dos.
- * Tapping a row opens the same edit/delete dialog the unified list uses.
+ * Tapping a row opens the shared reminder form as a dialog — the unified
+ * Actions list renders that same form in its detail column instead.
  */
 export function AgentReminders({ agentId, onCount }: AgentRemindersProps) {
   const { t } = useTranslation("agents");

@@ -2,17 +2,13 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Bell, ChevronDown, ChevronRight, ListTodo, Loader2, Plus, Search, SlidersHorizontal, X } from "lucide-react";
 import { Input } from "../ui/input";
-import { useUnifiedActions, type MergedItem, type Person } from "../../hooks/useUnifiedActions";
+import { useUnifiedActions, type Person } from "../../hooks/useUnifiedActions";
 import { useTodoStore } from "../../stores/todoStore";
+import { useTaskStore } from "../../stores/taskStore";
 import { useAuthStore } from "../../stores/authStore";
 import ActionRow from "./ActionRow";
-import TodoDialog from "./TodoDialog";
-import ReminderDialog from "./ReminderDialog";
 import { cn } from "../../lib/utils";
-import type { TodoItem } from "../../lib/api";
-
-type TodoDialogTarget = "new" | TodoItem | null;
-type ReminderDialogTarget = "new" | (MergedItem & { kind: "reminder" }) | null;
+import type { ActionSelection } from "./selection";
 
 /**
  * The unified Actions list — merges to-dos, agent tasks, reminders, and
@@ -20,16 +16,24 @@ type ReminderDialogTarget = "new" | (MergedItem & { kind: "reminder" }) | null;
  * Routines, then a collapsible Completed section). Direct port of
  * mobile's app/(main)/(tabs)/(tasks)/index.tsx, replacing the old
  * Tasks/To-dos tab split — everything lives in this one list now.
+ *
+ * Rows never open a modal: picking one hands the selection up to
+ * `TasksView`, which renders it in the detail column.
  */
 export function ActionsList({
   width,
   innerRef,
+  selection,
+  onSelect,
 }: {
   /** Resizable width in px (from useResizableWidth). */
   width?: number;
   /** Ref to the aside — its left edge is the resize drag origin. */
   innerRef?: React.RefObject<HTMLElement | null>;
-} = {}) {
+  /** What the detail column is showing (null → a task, or nothing). */
+  selection: ActionSelection;
+  onSelect: (next: ActionSelection) => void;
+}) {
   const { t } = useTranslation("tasks");
   const {
     sections,
@@ -48,18 +52,17 @@ export function ActionsList({
 
   const addTodo = useTodoStore((s) => s.addTodo);
   const myParticipantId = useAuthStore((s) => s.participant?.id);
+  const selectedTaskId = useTaskStore((s) => s.selectedTaskId);
 
   const [draft, setDraft] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
-  const [todoDialogTarget, setTodoDialogTarget] = useState<TodoDialogTarget>(null);
-  const [reminderDialogTarget, setReminderDialogTarget] = useState<ReminderDialogTarget>(null);
 
   const submitDraft = async () => {
     const title = draft.trim();
     if (!title) return;
     setDraft("");
-    const ok = await addTodo({ title });
-    if (!ok) setDraft(title);
+    const created = await addTodo({ title });
+    if (!created) setDraft(title);
   };
 
   const hasAnyFilter = personFilter !== "all" || searchQuery.length > 0;
@@ -86,7 +89,8 @@ export function ActionsList({
 
       <div className="flex min-h-0 flex-1 flex-col px-3" style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>
       {/* Pinned add-to-do row — enter for a quick title-only item, the
-          sliders icon for the full dialog (due/delegate/remind/details). */}
+          sliders icon for the full editor in the detail column
+          (due/delegate/remind/details). */}
       <div className="flex items-center gap-2 pt-3 pb-2">
         <Plus className="h-4 w-4 shrink-0 text-muted-foreground" />
         <Input
@@ -100,7 +104,7 @@ export function ActionsList({
         />
         <button
           type="button"
-          onClick={() => setTodoDialogTarget("new")}
+          onClick={() => onSelect({ kind: "todo", id: null, draftTitle: draft })}
           className="shrink-0 rounded p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
         >
           <SlidersHorizontal className="h-4 w-4" />
@@ -155,7 +159,7 @@ export function ActionsList({
           </div>
           <button
             type="button"
-            onClick={() => setReminderDialogTarget("new")}
+            onClick={() => onSelect({ kind: "reminder", id: null })}
             className="shrink-0 rounded-full p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
             title={t("reminder.addTitle")}
           >
@@ -170,20 +174,6 @@ export function ActionsList({
           </button>
         </div>
       )}
-
-      <TodoDialog
-        open={todoDialogTarget !== null}
-        todo={todoDialogTarget === "new" || todoDialogTarget === null ? undefined : todoDialogTarget}
-        initialTitle={todoDialogTarget === "new" ? draft : undefined}
-        onCreated={() => setDraft("")}
-        onClose={() => setTodoDialogTarget(null)}
-      />
-
-      <ReminderDialog
-        open={reminderDialogTarget !== null}
-        group={reminderDialogTarget === "new" || reminderDialogTarget === null ? undefined : reminderDialogTarget.group}
-        onClose={() => setReminderDialogTarget(null)}
-      />
 
       <div className="min-h-0 flex-1 overflow-y-auto pb-6">
         {loading ? (
@@ -215,8 +205,12 @@ export function ActionsList({
                   item={item}
                   agentsById={agentsById}
                   myId={myId}
-                  onOpenTodo={(todo) => setTodoDialogTarget(todo)}
-                  onOpenReminder={(group) => setReminderDialogTarget(group)}
+                  isSelected={
+                    item.kind === "task"
+                      ? !selection && selectedTaskId === item.id
+                      : selection?.kind === item.kind && selection.id === item.id
+                  }
+                  onSelect={onSelect}
                 />
               ))}
             </div>

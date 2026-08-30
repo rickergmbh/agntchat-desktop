@@ -8,6 +8,7 @@ import { useNavStore } from "../../stores/navStore";
 import { cn, formatConversationTime, formatFutureTime, getInitials } from "../../lib/utils";
 import type { Agent, Routine, Task, TodoItem } from "../../lib/api";
 import type { MergedItem } from "../../hooks/useUnifiedActions";
+import type { ActionSelection } from "./selection";
 
 const STATUS_COLORS: Record<string, string> = {
   pending: "bg-warning/10 text-warning border-warning/30",
@@ -37,13 +38,28 @@ interface ActionRowProps {
   item: MergedItem;
   agentsById: Map<string, Agent>;
   myId?: string;
-  onOpenTodo: (todo: TodoItem) => void;
-  onOpenReminder: (group: MergedItem & { kind: "reminder" }) => void;
+  /** Row is what the detail column is currently showing. */
+  isSelected: boolean;
+  /** Hand a to-do/reminder to the detail column. Tasks select through
+   *  `taskStore` instead — chat cards deep-link into the same state. */
+  onSelect: (next: ActionSelection) => void;
 }
 
-export default function ActionRow({ item, agentsById, myId, onOpenTodo, onOpenReminder }: ActionRowProps) {
-  if (item.kind === "task") return <TaskCard task={item.task} />;
-  if (item.kind === "todo") return <TodoCard todo={item.todo} onOpen={() => onOpenTodo(item.todo)} />;
+/** Selected rows read as the list half of a list/detail pair, so the
+ *  detail column always has a visible origin. */
+const SELECTED_ROW_CLASS = "bg-accent";
+
+export default function ActionRow({ item, agentsById, myId, isSelected, onSelect }: ActionRowProps) {
+  if (item.kind === "task") return <TaskCard task={item.task} isSelected={isSelected} onSelect={onSelect} />;
+  if (item.kind === "todo") {
+    return (
+      <TodoCard
+        todo={item.todo}
+        isSelected={isSelected}
+        onOpen={() => onSelect({ kind: "todo", id: item.id })}
+      />
+    );
+  }
   if (item.kind === "reminder") {
     const agent = agentsById.get(item.reminder.agentId);
     return (
@@ -51,7 +67,8 @@ export default function ActionRow({ item, agentsById, myId, onOpenTodo, onOpenRe
         item={item}
         agent={agent}
         isSelf={item.reminder.agentId === myId}
-        onOpen={() => onOpenReminder(item)}
+        isSelected={isSelected}
+        onOpen={() => onSelect({ kind: "reminder", id: item.id })}
       />
     );
   }
@@ -59,7 +76,15 @@ export default function ActionRow({ item, agentsById, myId, onOpenTodo, onOpenRe
   return <RoutineCard routine={item.routine} agent={agent} />;
 }
 
-function TaskCard({ task }: { task: Task }) {
+function TaskCard({
+  task,
+  isSelected,
+  onSelect,
+}: {
+  task: Task;
+  isSelected: boolean;
+  onSelect: (next: ActionSelection) => void;
+}) {
   const { t } = useTranslation("tasks");
   const selectTask = useTaskStore((s) => s.selectTask);
   const assignee = task.assignees?.[0];
@@ -69,8 +94,14 @@ function TaskCard({ task }: { task: Task }) {
   return (
     <button
       type="button"
-      onClick={() => selectTask(task.id)}
-      className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-accent"
+      onClick={() => {
+        onSelect(null);
+        selectTask(task.id);
+      }}
+      className={cn(
+        "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-accent",
+        isSelected && SELECTED_ROW_CLASS
+      )}
     >
       <Avatar className="h-7 w-7 shrink-0">
         {assignee?.avatarUrl && <AvatarImage src={assignee.avatarUrl} />}
@@ -92,7 +123,7 @@ function TaskCard({ task }: { task: Task }) {
   );
 }
 
-function TodoCard({ todo, onOpen }: { todo: TodoItem; onOpen: () => void }) {
+function TodoCard({ todo, isSelected, onOpen }: { todo: TodoItem; isSelected: boolean; onOpen: () => void }) {
   const { t } = useTranslation("tasks");
   const toggleTodo = useTodoStore((s) => s.toggleTodo);
   const done = todo.status === "done";
@@ -104,7 +135,12 @@ function TodoCard({ todo, onOpen }: { todo: TodoItem; onOpen: () => void }) {
   const dueClass = dueOverdue ? "text-destructive" : dueSoon ? "text-warning" : "text-muted-foreground";
 
   return (
-    <div className="group flex items-start gap-2.5 rounded-lg px-3 py-2 transition-colors hover:bg-accent">
+    <div
+      className={cn(
+        "group flex items-start gap-2.5 rounded-lg px-3 py-2 transition-colors hover:bg-accent",
+        isSelected && SELECTED_ROW_CLASS
+      )}
+    >
       <button
         type="button"
         onClick={() => toggleTodo(todo.id)}
@@ -162,11 +198,13 @@ function ReminderCard({
   item,
   agent,
   isSelf,
+  isSelected,
   onOpen,
 }: {
   item: MergedItem & { kind: "reminder" };
   agent?: Agent;
   isSelf: boolean;
+  isSelected: boolean;
   onOpen: () => void;
 }) {
   const { t } = useTranslation("tasks");
@@ -178,7 +216,10 @@ function ReminderCard({
     <button
       type="button"
       onClick={onOpen}
-      className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left transition-colors hover:bg-accent"
+      className={cn(
+        "flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left transition-colors hover:bg-accent",
+        isSelected && SELECTED_ROW_CLASS
+      )}
     >
       <Bell className="h-5 w-5 shrink-0 text-warning" />
       <div className="min-w-0 flex-1">
