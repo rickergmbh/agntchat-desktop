@@ -24,6 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ModelOverrideField } from "./ModelOverrideField";
+import { cn } from "../lib/utils";
 import {
   Select,
   SelectContent,
@@ -278,6 +279,41 @@ function humanizeCron(expr: string): string {
   return expr;
 }
 
+// One chip style for every "pick one of these" control in the schedule
+// builder — the same treatment to-do delegate chips and reminder quick-picks
+// use, so the routine editor reads as part of the app rather than its own
+// thing.
+const chipBase = "rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors";
+const chipActive = "border-primary bg-primary/10 text-primary";
+const chipIdle =
+  "border-input bg-background text-muted-foreground hover:bg-muted hover:text-foreground";
+
+/** Interval presets, in minutes. Labels come from the compact plural keys
+ *  so a chip reads the same as the summary line ("Every 30 min"). */
+const INTERVAL_PRESETS = [15, 30, 60, 360, 1440];
+
+function intervalPresetLabel(minutes: number): string {
+  if (minutes % 1440 === 0)
+    return i18n.t("agents:routines.everyDaysCompact", { count: minutes / 1440 });
+  if (minutes % 60 === 0)
+    return i18n.t("agents:routines.everyHoursCompact", { count: minutes / 60 });
+  return i18n.t("agents:routines.everyMinutesCompact", { count: minutes });
+}
+
+/** :00 … :55 — values, not copy. A routine authored elsewhere (an agent's
+ *  own cron, say) can sit on an off-step minute, so that value is folded in
+ *  rather than silently dropped by the picker. */
+const MINUTE_STEPS = Array.from({ length: 12 }, (_, i) => String(i * 5));
+
+function minuteOptions(current: string): string[] {
+  if (MINUTE_STEPS.includes(current)) return MINUTE_STEPS;
+  return [...MINUTE_STEPS, current].sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+}
+
+function minuteLabel(value: string): string {
+  return `:${value.padStart(2, "0")}`;
+}
+
 function ScheduleFields({
   state,
   setState,
@@ -300,183 +336,195 @@ function ScheduleFields({
   const matchesPreset = (days: number[]) =>
     days.length === state.selectedDays.length &&
     days.every((d) => state.selectedDays.includes(d));
-  const clampMinute = (v: string) =>
-    String(Math.min(59, Math.max(0, parseInt(v, 10) || 0)));
 
   return (
-    <div className="space-y-3">
-      <div className="space-y-1.5">
-        <Label className="text-xs">{t("routines.schedule")}</Label>
-        <div className="grid grid-cols-4 gap-1.5">
-          {SCHEDULE_MODES.map((opt) => {
-            const active = state.mode === opt.key;
-            return (
-              <button
-                key={opt.key}
-                type="button"
-                onClick={() => setMode(opt.key)}
-                className={[
-                  "rounded-md border px-2 py-2 text-xs font-medium transition-colors",
-                  active
-                    ? "border-primary bg-primary/10 text-primary"
-                    : "border-border bg-background text-foreground hover:bg-accent/40",
-                ].join(" ")}
-              >
-                {t(opt.labelKey)}
-              </button>
-            );
-          })}
-        </div>
+    <div className="space-y-2">
+      {/* Mode — a segmented control on a muted track, the same idiom the
+          rest of the app uses for "pick one of a few". */}
+      <div className="flex rounded-lg bg-muted p-0.5">
+        {SCHEDULE_MODES.map((opt) => {
+          const active = state.mode === opt.key;
+          return (
+            <button
+              key={opt.key}
+              type="button"
+              onClick={() => setMode(opt.key)}
+              className={cn(
+                "flex-1 rounded-md px-2 py-1.5 text-xs font-medium transition-colors",
+                active
+                  ? "bg-card text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {t(opt.labelKey)}
+            </button>
+          );
+        })}
       </div>
 
-      {state.mode === "interval" && (
-        <div className="space-y-1.5">
-          <Label className="text-xs">{t("routines.runEvery")}</Label>
-          <div className="flex items-center gap-2">
-            <Input
-              type="number"
-              min={1}
-              value={state.intervalMinutes}
-              onChange={(e) =>
-                setState({ ...state, intervalMinutes: parseInt(e.target.value) || 1 })
-              }
-              className="w-24"
-            />
-            <span className="text-xs text-muted-foreground">{t("routines.minutes")}</span>
-          </div>
-        </div>
-      )}
-
-      {state.mode === "hourly" && (
-        <div className="space-y-1.5">
-          <Label className="text-xs">{t("routines.atMinute")}</Label>
-          <div className="flex items-center gap-1.5">
-            <span className="text-xs text-muted-foreground">:</span>
-            <Input
-              type="number"
-              min={0}
-              max={59}
-              value={state.cronMinute}
-              onChange={(e) =>
-                setState({ ...state, cronMinute: clampMinute(e.target.value) })
-              }
-              className="w-16 text-center"
-            />
-          </div>
-        </div>
-      )}
-
-      {state.mode === "datetime" && (
-        <>
-          <div className="space-y-1.5">
-            <Label className="text-xs">{t("routines.days")}</Label>
+      {/* The chosen mode's controls and the plain-English summary read as one
+          block, so the schedule doesn't look like loose inputs. */}
+      <div className="space-y-3 rounded-xl border border-border bg-muted/30 p-3">
+        {state.mode === "interval" && (
+          <div className="space-y-2">
             <div className="flex flex-wrap gap-1.5">
-              {DAY_PRESETS.map((p) => {
-                const active = matchesPreset(p.days);
-                return (
-                  <button
-                    key={p.key}
-                    type="button"
-                    onClick={() => setState({ ...state, selectedDays: p.days })}
-                    className={[
-                      "rounded-full border px-3 py-1 text-xs",
-                      active
-                        ? "border-primary bg-primary/10 text-primary"
-                        : "border-border bg-background text-foreground hover:bg-accent/40",
-                    ].join(" ")}
-                  >
-                    {t(p.labelKey)}
-                  </button>
-                );
-              })}
+              {INTERVAL_PRESETS.map((minutes) => (
+                <button
+                  key={minutes}
+                  type="button"
+                  onClick={() => setState({ ...state, intervalMinutes: minutes })}
+                  className={cn(
+                    chipBase,
+                    state.intervalMinutes === minutes ? chipActive : chipIdle,
+                  )}
+                >
+                  {intervalPresetLabel(minutes)}
+                </button>
+              ))}
             </div>
-            <div className="flex gap-1.5">
-              {DOW_KEYS.map((_, idx) => {
-                const label = dowShort(idx);
-                const active = state.selectedDays.includes(idx);
-                return (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => toggleDay(idx)}
-                    className={[
-                      "flex-1 aspect-square rounded-full border text-xs font-semibold transition-colors",
-                      active
-                        ? "border-primary bg-primary text-primary-foreground"
-                        : "border-border bg-background text-foreground hover:bg-accent/40",
-                    ].join(" ")}
-                    aria-pressed={active}
-                    aria-label={label}
-                  >
-                    {label[0]}
-                  </button>
-                );
-              })}
-            </div>
-            {state.selectedDays.length === 0 && (
-              <p className="text-[11px] text-warning">
-                {t("routines.pickAtLeastOneDay")}
-              </p>
-            )}
-          </div>
-
-          <div className="space-y-1.5">
-            <Label className="text-xs">{t("routines.timeOfDayUtc")}</Label>
             <div className="flex items-center gap-2">
+              <span className="text-xs text-muted-foreground">{t("routines.runEvery")}</span>
+              <Input
+                type="number"
+                min={1}
+                value={state.intervalMinutes}
+                onChange={(e) =>
+                  setState({ ...state, intervalMinutes: parseInt(e.target.value) || 1 })
+                }
+                className="h-8 w-20 text-center"
+              />
+              <span className="text-xs text-muted-foreground">{t("routines.minutes")}</span>
+            </div>
+          </div>
+        )}
+
+        {state.mode === "hourly" && (
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground">{t("routines.atMinute")}</span>
+            <Select
+              value={state.cronMinute}
+              onValueChange={(v) => setState({ ...state, cronMinute: v ?? "0" })}
+            >
+              <SelectTrigger className="h-8 w-24">
+                <SelectValue>{(val: unknown) => minuteLabel(String(val))}</SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {minuteOptions(state.cronMinute).map((m) => (
+                  <SelectItem key={m} value={m}>
+                    {minuteLabel(m)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+
+        {state.mode === "datetime" && (
+          <>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs text-muted-foreground">{t("routines.days")}</span>
+                <div className="flex items-center gap-1">
+                  {DAY_PRESETS.map((p) => (
+                    <button
+                      key={p.key}
+                      type="button"
+                      onClick={() => setState({ ...state, selectedDays: p.days })}
+                      className={cn(
+                        "rounded-md px-1.5 py-0.5 text-[11px] transition-colors",
+                        matchesPreset(p.days)
+                          ? "text-primary"
+                          : "text-muted-foreground hover:text-foreground",
+                      )}
+                    >
+                      {t(p.labelKey)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {DOW_KEYS.map((_, idx) => {
+                  const active = state.selectedDays.includes(idx);
+                  return (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => toggleDay(idx)}
+                      className={cn(
+                        "h-8 min-w-11 rounded-lg border px-2 text-xs font-medium transition-colors",
+                        active ? chipActive : chipIdle,
+                      )}
+                      aria-pressed={active}
+                    >
+                      {dowShort(idx)}
+                    </button>
+                  );
+                })}
+              </div>
+              {state.selectedDays.length === 0 && (
+                <p className="text-[11px] text-warning">{t("routines.pickAtLeastOneDay")}</p>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-muted-foreground">{t("routines.timeOfDayUtc")}</span>
               <Select
                 value={state.cronHour}
                 onValueChange={(v) => setState({ ...state, cronHour: v ?? "9" })}
               >
-                <SelectTrigger className="w-32">
+                <SelectTrigger className="h-8 w-28">
                   <SelectValue>
-                    {(val: unknown) => hourLabel(parseInt(String(val), 10))}
+                    {(val: unknown) => hourLabel(parseInt(String(val), 10)).replace(":00", "")}
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {HOURS.map((h) => (
                     <SelectItem key={h.value} value={h.value}>
-                      {hourLabel(parseInt(h.value, 10))}
+                      {hourLabel(parseInt(h.value, 10)).replace(":00", "")}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs text-muted-foreground">:</span>
-                <Input
-                  type="number"
-                  min={0}
-                  max={59}
-                  value={state.cronMinute}
-                  onChange={(e) =>
-                    setState({ ...state, cronMinute: clampMinute(e.target.value) })
-                  }
-                  className="w-16 text-center"
-                />
-              </div>
+              <Select
+                value={state.cronMinute}
+                onValueChange={(v) => setState({ ...state, cronMinute: v ?? "0" })}
+              >
+                <SelectTrigger className="h-8 w-24">
+                  <SelectValue>{(val: unknown) => minuteLabel(String(val))}</SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  {minuteOptions(state.cronMinute).map((m) => (
+                    <SelectItem key={m} value={m}>
+                      {minuteLabel(m)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
+          </>
+        )}
+
+        {state.mode === "custom" && (
+          <div className="space-y-1.5">
+            <Input
+              value={state.customCron}
+              onChange={(e) => setState({ ...state, customCron: e.target.value })}
+              placeholder="0 8 * * 1-5"
+              className="h-8 font-mono text-xs"
+            />
+            <p className="text-[11px] text-muted-foreground">{t("routines.cronHint")}</p>
           </div>
-        </>
-      )}
+        )}
 
-      {state.mode === "custom" && (
-        <div className="space-y-1.5">
-          <Label className="text-xs">{t("routines.cronExpression")}</Label>
-          <Input
-            value={state.customCron}
-            onChange={(e) => setState({ ...state, customCron: e.target.value })}
-            placeholder="0 8 * * 1-5"
-            className="font-mono text-xs"
-          />
-          <p className="text-[11px] text-muted-foreground">
-            {t("routines.cronHint")}
-          </p>
+        <div className="flex items-center gap-2 border-t border-border/60 pt-2.5 text-xs text-foreground">
+          <Clock className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+          <span>{describeSchedule(state)}</span>
         </div>
-      )}
-
-      <p className="text-[11px] text-muted-foreground">{describeSchedule(state)}</p>
+      </div>
     </div>
   );
 }
+
 
 // Friendly label for a conversation in the "Report to" picker. For direct
 // conversations, this is the name of the other participant.
@@ -961,38 +1009,44 @@ function CreateRoutineDialog({
         <DialogHeader className="px-6 pt-6 pb-4 border-b shrink-0">
           <DialogTitle>{t("routines.create")}</DialogTitle>
         </DialogHeader>
-        <div className="flex-1 min-h-0 overflow-y-auto px-6 py-4 space-y-4">
-          <div className="space-y-1.5">
-            <Label className="text-xs">{t("common:name")}</Label>
-            <Input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder={t("routines.namePlaceholder")}
-            />
+        {/* Same grouping as the edit form: identity, what it does, when it
+            runs, then the optional delivery settings. */}
+        <div className="flex-1 min-h-0 divide-y divide-border overflow-y-auto px-6 py-4">
+          <div className="grid gap-3 pb-4 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <Label className="text-xs">{t("common:name")}</Label>
+              <Input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder={t("routines.namePlaceholder")}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">{t("routines.descriptionOptional")}</Label>
+              <Input
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder={t("routines.descriptionPlaceholder")}
+              />
+            </div>
           </div>
 
-          <div className="space-y-1.5">
-            <Label className="text-xs">{t("routines.descriptionOptional")}</Label>
-            <Input
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder={t("routines.descriptionPlaceholder")}
-            />
-          </div>
-
-          <div className="space-y-1.5">
+          <div className="space-y-1.5 py-4">
             <Label className="text-xs">{t("routines.instructions")}</Label>
             <Textarea
-              className="min-h-[220px] font-mono text-sm leading-relaxed resize-y"
+              className="min-h-[180px] font-mono text-sm leading-relaxed resize-y"
               value={instructions}
               onChange={(e) => setInstructions(e.target.value)}
               placeholder={t("routines.instructionsPlaceholder")}
             />
           </div>
 
-          <ScheduleFields state={schedule} setState={setSchedule} />
+          <div className="space-y-1.5 py-4">
+            <Label className="text-xs">{t("routines.schedule")}</Label>
+            <ScheduleFields state={schedule} setState={setSchedule} />
+          </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid gap-3 pt-4 sm:grid-cols-2">
             <ReportToPicker
               agentId={agentId}
               agentName={agentName}
@@ -1009,70 +1063,66 @@ function CreateRoutineDialog({
                 placeholder={t("routines.unlimited")}
               />
             </div>
+
+            {templateNames.length > 0 && (
+              <div className="space-y-1.5">
+                <Label className="text-xs">{t("routines.responseTemplateOptional")}</Label>
+                <Select value={responseTemplate} onValueChange={(v) => setResponseTemplate(v ?? "")}>
+                  <SelectTrigger>
+                    <SelectValue placeholder={t("routines.noTemplatePlainText")} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">{t("common:none")}</SelectItem>
+                    {templateNames.map((tpl) => (
+                      <SelectItem key={tpl} value={tpl}>
+                        {tpl.replace(/_/g, " ")}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-[11px] text-muted-foreground">{t("routines.templateHint")}</p>
+              </div>
+            )}
+
+            <ModelOverrideField agentId={agentId} value={model} onChange={setModel} />
+
+            {/* Workspace pin — only meaningful when the owner belongs to more
+                than one workspace. "__personal__" is the Select-safe stand-in
+                for "unpinned" (owner's Personal workspace). Org is immutable
+                after creation, so this appears only on the create form. */}
+            {workspacesEnabled && workspaces.length > 1 && (
+              <div className="space-y-1.5">
+                <Label className="text-xs">{t("workspacePin.label")}</Label>
+                <Select
+                  value={organizationId || "__personal__"}
+                  onValueChange={(v) => {
+                    if (!v) return;
+                    setOrganizationId(v);
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue>
+                      {(val: unknown) =>
+                        String(val) === "__personal__"
+                          ? t("pulse.defaultWorkspace")
+                          : workspaces.find((w) => w.id === String(val))?.name ??
+                            String(val ?? "")
+                      }
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__personal__">{t("pulse.defaultWorkspace")}</SelectItem>
+                    {workspaces.map((w) => (
+                      <SelectItem key={w.id} value={w.id}>{w.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-[11px] text-muted-foreground">{t("workspacePin.hint")}</p>
+              </div>
+            )}
+
+            {error && <p className="text-xs text-destructive sm:col-span-2">{error}</p>}
           </div>
-
-          {templateNames.length > 0 && (
-            <div className="space-y-1.5">
-              <Label className="text-xs">{t("routines.responseTemplateOptional")}</Label>
-              <Select value={responseTemplate} onValueChange={(v) => setResponseTemplate(v ?? "")}>
-                <SelectTrigger>
-                  <SelectValue placeholder={t("routines.noTemplatePlainText")} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="">{t("common:none")}</SelectItem>
-                  {templateNames.map((tpl) => (
-                    <SelectItem key={tpl} value={tpl}>
-                      {tpl.replace(/_/g, " ")}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <p className="text-xs text-muted-foreground">
-                {t("routines.templateHint")}
-              </p>
-            </div>
-          )}
-
-          <ModelOverrideField agentId={agentId} value={model} onChange={setModel} />
-
-          {/* Workspace pin — only meaningful when the owner belongs to more
-              than one workspace. "__personal__" is the Select-safe stand-in
-              for "unpinned" (owner's Personal workspace). Org is immutable
-              after creation, so this appears only on the create form. */}
-          {workspacesEnabled && workspaces.length > 1 && (
-            <div className="space-y-1.5">
-              <Label className="text-xs">{t("workspacePin.label")}</Label>
-              <Select
-                value={organizationId || "__personal__"}
-                onValueChange={(v) => {
-                  if (!v) return;
-                  setOrganizationId(v);
-                }}
-              >
-                <SelectTrigger>
-                  <SelectValue>
-                    {(val: unknown) =>
-                      String(val) === "__personal__"
-                        ? t("pulse.defaultWorkspace")
-                        : workspaces.find((w) => w.id === String(val))?.name ??
-                          String(val ?? "")
-                    }
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="__personal__">{t("pulse.defaultWorkspace")}</SelectItem>
-                  {workspaces.map((w) => (
-                    <SelectItem key={w.id} value={w.id}>{w.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <p className="text-[11px] text-muted-foreground">
-                {t("workspacePin.hint")}
-              </p>
-            </div>
-          )}
-
-          {error && <p className="text-xs text-destructive">{error}</p>}
         </div>
 
         <div className="px-6 py-4 border-t shrink-0 flex gap-2 justify-end">
@@ -1195,59 +1245,65 @@ export function RoutineForm({ routine, variant, onDone, onSaved }: RoutineFormPr
     }
   };
 
+  // Grouped with hairline rules rather than one long stack of inputs:
+  // identity, what it does, when it runs, then the optional delivery
+  // settings.
   const fields = (
-    <>
-      <div className="space-y-1.5">
-        <Label className="text-xs">{t("common:name")}</Label>
-        <Input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+    <div className="divide-y divide-border">
+      <div className="grid gap-3 pb-4 sm:grid-cols-2">
+        <div className="space-y-1.5">
+          <Label className="text-xs">{t("common:name")}</Label>
+          <Input value={name} onChange={(e) => setName(e.target.value)} />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs">{t("common:description")}</Label>
+          <Input
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder={t("routines.descriptionPlaceholder")}
+          />
+        </div>
       </div>
 
-      <div className="space-y-1.5">
-        <Label className="text-xs">{t("common:description")}</Label>
-        <Input
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder={t("routines.descriptionPlaceholder")}
-        />
-      </div>
-
-      <div className="space-y-1.5">
+      <div className="space-y-1.5 py-4">
         <Label className="text-xs">{t("routines.instructions")}</Label>
         <Textarea
-          className="min-h-[220px] font-mono text-sm leading-relaxed resize-y"
+          className="min-h-[180px] font-mono text-sm leading-relaxed resize-y"
           value={instructions}
           onChange={(e) => setInstructions(e.target.value)}
         />
       </div>
 
-      <ScheduleFields state={schedule} setState={setSchedule} />
+      <div className="space-y-1.5 py-4">
+        <Label className="text-xs">{t("routines.schedule")}</Label>
+        <ScheduleFields state={schedule} setState={setSchedule} />
+      </div>
 
-      {templateNames.length > 0 && (
-        <div className="space-y-1.5">
-          <Label className="text-xs">{t("routines.responseTemplate")}</Label>
-          <Select value={responseTemplate} onValueChange={(v) => setResponseTemplate(v ?? "")}>
-            <SelectTrigger><SelectValue placeholder={t("routines.noTemplate")} /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">{t("common:none")}</SelectItem>
-              {templateNames.map((tpl) => (
-                <SelectItem key={tpl} value={tpl}>{tpl.replace(/_/g, " ")}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      )}
+      <div className="grid gap-3 pt-4 sm:grid-cols-2">
+        {templateNames.length > 0 && (
+          <div className="space-y-1.5">
+            <Label className="text-xs">{t("routines.responseTemplate")}</Label>
+            <Select value={responseTemplate} onValueChange={(v) => setResponseTemplate(v ?? "")}>
+              <SelectTrigger><SelectValue placeholder={t("routines.noTemplate")} /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">{t("common:none")}</SelectItem>
+                {templateNames.map((tpl) => (
+                  <SelectItem key={tpl} value={tpl}>{tpl.replace(/_/g, " ")}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
 
-      <ModelOverrideField
-        agentId={routine.participantId}
-        value={model}
-        onChange={setModel}
-      />
+        <ModelOverrideField
+          agentId={routine.participantId}
+          value={model}
+          onChange={setModel}
+        />
 
-      {error && <p className="text-xs text-destructive">{error}</p>}
-    </>
+        {error && <p className="text-xs text-destructive sm:col-span-2">{error}</p>}
+      </div>
+    </div>
   );
 
   const saveButton = (
@@ -1262,7 +1318,7 @@ export function RoutineForm({ routine, variant, onDone, onSaved }: RoutineFormPr
   if (variant === "dialog") {
     return (
       <>
-        <div className="flex-1 min-h-0 overflow-y-auto px-6 py-4 space-y-4">{fields}</div>
+        <div className="flex-1 min-h-0 overflow-y-auto px-6 py-4">{fields}</div>
         <div className="px-6 py-4 border-t shrink-0 flex gap-2 justify-end">
           <Button variant="outline" onClick={onDone}>
             {t("common:cancel")}
@@ -1275,7 +1331,7 @@ export function RoutineForm({ routine, variant, onDone, onSaved }: RoutineFormPr
 
   return (
     <>
-      <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5 space-y-4">{fields}</div>
+      <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5">{fields}</div>
       <div className="px-6 py-4 border-t border-border shrink-0 flex justify-end">
         {saveButton}
       </div>
