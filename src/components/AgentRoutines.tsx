@@ -236,13 +236,6 @@ interface AgentRoutinesProps {
   /** Reports this section's count up to the agent-detail rail badge, so the
    *  number moves with the list instead of waiting for a refetch. */
   onCount?: (n: number) => void;
-  /** Deep-link from the unified Actions list: once this routine shows up
-   *  in the fetched list, open its edit dialog automatically (once). */
-  openRoutineId?: string;
-  /** Called the moment openRoutineId is actually consumed (the routine
-   *  was found and its edit dialog opened) — the caller uses this to
-   *  clear the pending deep-link. */
-  onDeepLinkConsumed?: () => void;
 }
 
 function formatHourMinute12h(hour: number, minute: number): string {
@@ -629,7 +622,7 @@ function statusColor(status: string): string {
   }
 }
 
-export function AgentRoutines({ agentId, onCount, openRoutineId, onDeepLinkConsumed }: AgentRoutinesProps) {
+export function AgentRoutines({ agentId, onCount }: AgentRoutinesProps) {
   const { t } = useTranslation("agents");
   const [routines, setRoutines] = useState<Routine[]>([]);
   const [loading, setLoading] = useState(true);
@@ -672,21 +665,6 @@ export function AgentRoutines({ agentId, onCount, openRoutineId, onDeepLinkConsu
   useEffect(() => {
     fetchRoutines();
   }, [fetchRoutines]);
-
-  // Deep-link from the unified Actions list: once the target routine shows
-  // up in the fetched list, open its edit dialog automatically. Keyed by
-  // id (not a one-shot boolean) so a later deep-link to a *different*
-  // routine on this same, persisted AgentRoutines instance still opens.
-  const [consumedRoutineId, setConsumedRoutineId] = useState<string | null>(null);
-  useEffect(() => {
-    if (!openRoutineId || openRoutineId === consumedRoutineId) return;
-    const target = routines.find((r) => r.id === openRoutineId);
-    if (!target) return;
-    setConsumedRoutineId(openRoutineId);
-    setEditingRoutine(target);
-    onDeepLinkConsumed?.();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [openRoutineId, routines, consumedRoutineId]);
 
   const handlePauseResume = async (routine: Routine) => {
     try {
@@ -1115,49 +1093,61 @@ function CreateRoutineDialog({
 
 // --- Edit Routine Dialog ---
 
-function EditRoutineDialog({
-  routine,
-  onClose,
-}: {
-  routine: Routine | null;
-  onClose: () => void;
-}) {
+export interface RoutineFormProps {
+  routine: Routine;
+  /** Chrome around the fields: the modal footer used on an agent's own
+   *  Routines section, or the panel footer used in the Actions detail
+   *  column. */
+  variant: "dialog" | "panel";
+  /** Closes the dialog — on cancel, and after a successful save. The panel
+   *  variant stays open on the item it just saved, so it doesn't use this. */
+  onDone?: () => void;
+  /** The saved row, so a caller holding its own copy can refresh it. */
+  onSaved?: (routine: Routine) => void;
+}
+
+/**
+ * Edit form for a routine, shared by the modal on an agent's Routines
+ * section (`EditRoutineDialog`) and the Actions detail pane
+ * (`tasks/RoutineDetail`). Save is gated on `isDirty` so an untouched form
+ * can't PATCH a no-op.
+ */
+export function RoutineForm({ routine, variant, onDone, onSaved }: RoutineFormProps) {
   const { t } = useTranslation("agents");
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [instructions, setInstructions] = useState("");
-  const [schedule, setSchedule] = useState<ScheduleState>(() => defaultScheduleState());
-  const [responseTemplate, setResponseTemplate] = useState("");
+  const [name, setName] = useState(routine.name);
+  const [description, setDescription] = useState(routine.description || "");
+  const [instructions, setInstructions] = useState(routine.instructions);
+  const [schedule, setSchedule] = useState<ScheduleState>(() => parseRoutineSchedule(routine));
+  const [responseTemplate, setResponseTemplate] = useState(routine.responseTemplate || "");
   // "" = the agent's default model; a model id runs this routine on that model.
-  const [model, setModel] = useState("");
+  const [model, setModel] = useState(routine.model || "");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const { agents } = useAgentStore();
   const templateNames = useMemo(() => {
-    if (!routine) return [];
     const managed = Object.values(agents).find((m) => m.agent.id === routine.participantId);
     const templates = managed?.agent.structuredCapabilities?.detail_templates;
     return templates ? Object.keys(templates).sort() : [];
-  }, [agents, routine?.participantId]);
+  }, [agents, routine.participantId]);
 
+  // Re-seed when the pane switches to a different routine. Keyed on the id
+  // rather than the object so a store refresh doesn't wipe in-progress edits.
   useEffect(() => {
-    if (routine) {
-      setName(routine.name);
-      setDescription(routine.description || "");
-      setInstructions(routine.instructions);
-      setResponseTemplate(routine.responseTemplate || "");
-      setModel(routine.model || "");
-      setSchedule(parseRoutineSchedule(routine));
-      setError(null);
-    }
-  }, [routine]);
+    setName(routine.name);
+    setDescription(routine.description || "");
+    setInstructions(routine.instructions);
+    setResponseTemplate(routine.responseTemplate || "");
+    setModel(routine.model || "");
+    setSchedule(parseRoutineSchedule(routine));
+    setError(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [routine.id]);
 
   const scheduleValid =
     schedule.mode !== "datetime" || schedule.selectedDays.length > 0;
 
   const isDirty = useMemo(() => {
-    if (!routine) return false;
     if (name !== routine.name) return true;
     if (instructions !== routine.instructions) return true;
     if ((description || "") !== (routine.description || "")) return true;
@@ -1181,13 +1171,12 @@ function EditRoutineDialog({
   }, [routine, name, instructions, description, responseTemplate, model, schedule]);
 
   const handleSave = async () => {
-    if (!routine) return;
     setSaving(true);
     setError(null);
     try {
       const { scheduleType, scheduleConfig } = buildScheduleConfig(schedule);
 
-      await updateRoutine(routine.id, {
+      const { routine: updated } = await updateRoutine(routine.id, {
         name,
         description: description || null,
         instructions,
@@ -1197,7 +1186,8 @@ function EditRoutineDialog({
         // "" clears the override (→ agent's default model).
         model,
       });
-      onClose();
+      onSaved?.(updated);
+      if (variant === "dialog") onDone?.();
     } catch (e) {
       setError(e instanceof Error ? e.message : t("routines.errors.saveFailed"));
     } finally {
@@ -1205,76 +1195,113 @@ function EditRoutineDialog({
     }
   };
 
+  const fields = (
+    <>
+      <div className="space-y-1.5">
+        <Label className="text-xs">{t("common:name")}</Label>
+        <Input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+      </div>
+
+      <div className="space-y-1.5">
+        <Label className="text-xs">{t("common:description")}</Label>
+        <Input
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder={t("routines.descriptionPlaceholder")}
+        />
+      </div>
+
+      <div className="space-y-1.5">
+        <Label className="text-xs">{t("routines.instructions")}</Label>
+        <Textarea
+          className="min-h-[220px] font-mono text-sm leading-relaxed resize-y"
+          value={instructions}
+          onChange={(e) => setInstructions(e.target.value)}
+        />
+      </div>
+
+      <ScheduleFields state={schedule} setState={setSchedule} />
+
+      {templateNames.length > 0 && (
+        <div className="space-y-1.5">
+          <Label className="text-xs">{t("routines.responseTemplate")}</Label>
+          <Select value={responseTemplate} onValueChange={(v) => setResponseTemplate(v ?? "")}>
+            <SelectTrigger><SelectValue placeholder={t("routines.noTemplate")} /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">{t("common:none")}</SelectItem>
+              {templateNames.map((tpl) => (
+                <SelectItem key={tpl} value={tpl}>{tpl.replace(/_/g, " ")}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+
+      <ModelOverrideField
+        agentId={routine.participantId}
+        value={model}
+        onChange={setModel}
+      />
+
+      {error && <p className="text-xs text-destructive">{error}</p>}
+    </>
+  );
+
+  const saveButton = (
+    <Button
+      onClick={handleSave}
+      disabled={saving || !name || !instructions || !scheduleValid || !isDirty}
+    >
+      {saving ? t("common:saving") : t("common:saveChanges")}
+    </Button>
+  );
+
+  if (variant === "dialog") {
+    return (
+      <>
+        <div className="flex-1 min-h-0 overflow-y-auto px-6 py-4 space-y-4">{fields}</div>
+        <div className="px-6 py-4 border-t shrink-0 flex gap-2 justify-end">
+          <Button variant="outline" onClick={onDone}>
+            {t("common:cancel")}
+          </Button>
+          {saveButton}
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5 space-y-4">{fields}</div>
+      <div className="px-6 py-4 border-t border-border shrink-0 flex justify-end">
+        {saveButton}
+      </div>
+    </>
+  );
+}
+
+function EditRoutineDialog({
+  routine,
+  onClose,
+}: {
+  routine: Routine | null;
+  onClose: () => void;
+}) {
+  const { t } = useTranslation("agents");
+
   return (
     <Dialog open={!!routine} onOpenChange={() => onClose()}>
       <DialogContent className="w-[90vw] sm:max-w-3xl max-h-[85vh] flex flex-col gap-0 p-0">
         <DialogHeader className="px-6 pt-6 pb-4 border-b shrink-0">
           <DialogTitle>{t("routines.edit")}</DialogTitle>
         </DialogHeader>
-        <div className="flex-1 min-h-0 overflow-y-auto px-6 py-4 space-y-4">
-          <div className="space-y-1.5">
-            <Label className="text-xs">{t("common:name")}</Label>
-            <Input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <Label className="text-xs">{t("common:description")}</Label>
-            <Input
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder={t("routines.descriptionPlaceholder")}
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <Label className="text-xs">{t("routines.instructions")}</Label>
-            <Textarea
-              className="min-h-[220px] font-mono text-sm leading-relaxed resize-y"
-              value={instructions}
-              onChange={(e) => setInstructions(e.target.value)}
-            />
-          </div>
-
-          <ScheduleFields state={schedule} setState={setSchedule} />
-
-          {templateNames.length > 0 && (
-            <div className="space-y-1.5">
-              <Label className="text-xs">{t("routines.responseTemplate")}</Label>
-              <Select value={responseTemplate} onValueChange={(v) => setResponseTemplate(v ?? "")}>
-                <SelectTrigger><SelectValue placeholder={t("routines.noTemplate")} /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="">{t("common:none")}</SelectItem>
-                  {templateNames.map((tpl) => (
-                    <SelectItem key={tpl} value={tpl}>{tpl.replace(/_/g, " ")}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
-
-          <ModelOverrideField
-            agentId={routine?.participantId ?? ""}
-            value={model}
-            onChange={setModel}
-          />
-
-          {error && <p className="text-xs text-destructive">{error}</p>}
-        </div>
-
-        <div className="px-6 py-4 border-t shrink-0 flex gap-2 justify-end">
-          <Button variant="outline" onClick={onClose}>
-            {t("common:cancel")}
-          </Button>
-          <Button
-            onClick={handleSave}
-            disabled={saving || !name || !instructions || !scheduleValid || !isDirty}
-          >
-            {saving ? t("common:saving") : t("common:saveChanges")}
-          </Button>
-        </div>
+        {/* Remount per target so the form re-seeds from the new routine. */}
+        {routine && (
+          <RoutineForm key={routine.id} routine={routine} variant="dialog" onDone={onClose} />
+        )}
       </DialogContent>
     </Dialog>
   );

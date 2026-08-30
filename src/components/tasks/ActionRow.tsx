@@ -4,7 +4,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { formatSchedule } from "../AgentRoutines";
 import { useTodoStore } from "../../stores/todoStore";
 import { useTaskStore } from "../../stores/taskStore";
-import { useNavStore } from "../../stores/navStore";
 import { cn, formatConversationTime, formatFutureTime, getInitials } from "../../lib/utils";
 import type { Agent, Routine, Task, TodoItem } from "../../lib/api";
 import type { MergedItem } from "../../hooks/useUnifiedActions";
@@ -73,7 +72,14 @@ export default function ActionRow({ item, agentsById, myId, isSelected, onSelect
     );
   }
   const agent = agentsById.get(item.routine.participantId);
-  return <RoutineCard routine={item.routine} agent={agent} />;
+  return (
+    <RoutineCard
+      routine={item.routine}
+      agent={agent}
+      isSelected={isSelected}
+      onOpen={() => onSelect({ kind: "routine", id: item.id })}
+    />
+  );
 }
 
 function TaskCard({
@@ -245,10 +251,18 @@ function ReminderCard({
   );
 }
 
-function RoutineCard({ routine, agent }: { routine: Routine; agent?: Agent }) {
+function RoutineCard({
+  routine,
+  agent,
+  isSelected,
+  onOpen,
+}: {
+  routine: Routine;
+  agent?: Agent;
+  isSelected: boolean;
+  onOpen: () => void;
+}) {
   const { t } = useTranslation("tasks");
-  const openRoutineDeepLink = useNavStore((s) => s.openRoutineDeepLink);
-  const setView = useNavStore((s) => s.setView);
   const agentName = agent?.displayName ?? t("agents:thisAgent");
   const nextRun = routine.nextRunAt
     ? t("agents:routines.nextRun", { time: formatFutureTime(routine.nextRunAt) })
@@ -257,11 +271,11 @@ function RoutineCard({ routine, agent }: { routine: Routine; agent?: Agent }) {
   return (
     <button
       type="button"
-      onClick={() => {
-        openRoutineDeepLink(routine.participantId, routine.id);
-        setView("agents");
-      }}
-      className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left transition-colors hover:bg-accent"
+      onClick={onOpen}
+      className={cn(
+        "flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left transition-colors hover:bg-accent",
+        isSelected && SELECTED_ROW_CLASS
+      )}
     >
       <Repeat className="h-5 w-5 shrink-0 text-info" />
       <div className="min-w-0 flex-1">

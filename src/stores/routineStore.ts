@@ -22,6 +22,9 @@ interface RoutineState {
 
   fetchRoutines: () => Promise<void>;
   fetchRoutinesIfStale: () => Promise<void>;
+  /** Fold a server-confirmed row back into the list — the Actions detail
+   *  pane edits routines without going through a refetch. */
+  upsertRoutine: (routine: Routine) => void;
 }
 
 export const useRoutineStore = create<RoutineState>((set, get) => ({
@@ -41,6 +44,13 @@ export const useRoutineStore = create<RoutineState>((set, get) => ({
       set({ loading: false });
     }
   },
+
+  upsertRoutine: (routine) =>
+    set((s) => ({
+      routines: s.routines.some((r) => r.id === routine.id)
+        ? s.routines.map((r) => (r.id === routine.id ? routine : r))
+        : [routine, ...s.routines],
+    })),
 
   fetchRoutinesIfStale: async () => {
     const inflight = get()._inflight;

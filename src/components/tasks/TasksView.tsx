@@ -4,6 +4,7 @@ import { ListTodo } from "lucide-react";
 import { useTaskStore } from "../../stores/taskStore";
 import { useTodoStore } from "../../stores/todoStore";
 import { useReminderStore } from "../../stores/reminderStore";
+import { useRoutineStore } from "../../stores/routineStore";
 import { useResizableWidth } from "../../hooks/useResizableWidth";
 import { reminderGroupKey, groupReminderRows } from "../../lib/reminderGrouping";
 import { ResizeHandle } from "../ResizeHandle";
@@ -11,6 +12,7 @@ import { TaskDetail, useOpenConversationFromTask } from "./TaskDetail";
 import { ActionsList } from "./ActionsList";
 import TodoDetail from "./TodoDetail";
 import ReminderDetail from "./ReminderDetail";
+import RoutineDetail from "./RoutineDetail";
 import type { ActionSelection } from "./selection";
 
 export function TasksView({
@@ -25,6 +27,7 @@ export function TasksView({
   const fetchTasksIfStale = useTaskStore((s) => s.fetchTasksIfStale);
   const todos = useTodoStore((s) => s.todos);
   const reminders = useReminderStore((s) => s.reminders);
+  const routines = useRoutineStore((s) => s.routines);
 
   // Serve the cached list on mount, refetching only once it's stale. WS
   // upserts keep it live between fetches; no auto-refetch on status change
@@ -36,8 +39,8 @@ export function TasksView({
 
   const selected = tasks.find((t) => t.id === selectedId) ?? null;
 
-  // To-dos and reminders share the detail column with tasks, so exactly one
-  // of the two selections is live at a time.
+  // To-dos, reminders and routines share the detail column with tasks, so
+  // exactly one of the two selections is live at a time.
   const [selection, setSelection] = useState<ActionSelection>(null);
 
   const select = useCallback(
@@ -67,12 +70,18 @@ export function TasksView({
     return groupReminderRows(active).find((g) => reminderGroupKey(g[0]) === selection.id);
   }, [selection, reminders]);
 
+  const selectedRoutine = useMemo(
+    () => (selection?.kind === "routine" ? routines.find((r) => r.id === selection.id) : undefined),
+    [selection, routines]
+  );
+
   // An item deleted underneath us (or by another client) drops the column
   // back to the empty state rather than stranding a form on a dead row.
   useEffect(() => {
     if (selection?.kind === "todo" && selection.id && !selectedTodo) setSelection(null);
     if (selection?.kind === "reminder" && selection.id && !selectedReminderGroup) setSelection(null);
-  }, [selection, selectedTodo, selectedReminderGroup]);
+    if (selection?.kind === "routine" && !selectedRoutine) setSelection(null);
+  }, [selection, selectedTodo, selectedReminderGroup, selectedRoutine]);
 
   const { width, ref, resizing, onResizeStart, onResizeReset } =
     useResizableWidth({
@@ -112,6 +121,8 @@ export function TasksView({
             group={selectedReminderGroup}
             onClose={() => setSelection(null)}
           />
+        ) : selection?.kind === "routine" && selectedRoutine ? (
+          <RoutineDetail routine={selectedRoutine} onClose={() => setSelection(null)} />
         ) : selected ? (
           <TaskDetail task={selected} onOpenConversation={onOpenConversation} />
         ) : (

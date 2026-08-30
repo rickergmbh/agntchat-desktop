@@ -368,21 +368,13 @@ const IS_MACOS = navigator.userAgent.includes("Macintosh");
 export function AgentConfig({
   managed,
   initialSection,
-  openRoutineId,
-  onRoutineDeepLinkConsumed,
   initialMemoryTab,
   onMemoryDeepLinkConsumed,
 }: {
   managed: ManagedAgent;
-  /** Deep-link from the unified Actions list: land directly on this
-   *  section instead of the default "config" tab. */
+  /** Deep-link (currently the memory island's Review): land directly on
+   *  this section instead of the default "config" tab. */
   initialSection?: string;
-  /** Passed through to AgentRoutines — opens that routine's edit dialog
-   *  once it loads. Only meaningful when initialSection is "routines". */
-  openRoutineId?: string;
-  /** Passed through to AgentRoutines — called once openRoutineId is
-   *  actually consumed, so the caller can clear the pending deep-link. */
-  onRoutineDeepLinkConsumed?: () => void;
   /** Passed through to AgentMemory — which scope tab to open on. Only
    *  meaningful when initialSection is "memory" (the memory island's
    *  Review deep-link). */
@@ -609,11 +601,6 @@ export function AgentConfig({
   // remount), so a deep-link arriving while it's already mounted for a
   // different agent needs an explicit jump rather than relying on the
   // useState initial value above.
-  useEffect(() => {
-    if (openRoutineId) setActiveSection(initialSection ?? "routines");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [openRoutineId]);
-
   useEffect(() => {
     if (initialMemoryTab) setActiveSection("memory");
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1800,12 +1787,7 @@ export function AgentConfig({
 
         {activeSection === "routines" && (
           <div className="flex-1 overflow-y-auto">
-            <AgentRoutines
-              agentId={agent.id}
-              onCount={report.routines}
-              openRoutineId={openRoutineId}
-              onDeepLinkConsumed={onRoutineDeepLinkConsumed}
-            />
+            <AgentRoutines agentId={agent.id} onCount={report.routines} />
           </div>
         )}
 
