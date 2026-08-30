@@ -1008,6 +1008,9 @@ function CreateRoutineDialog({
         {/* Same grouping as the edit form: identity, what it does, when it
             runs, then the optional delivery settings. */}
         <div className="flex-1 min-h-0 divide-y divide-border overflow-y-auto px-6 py-4">
+          {/* Workspace sits up top with the name: it decides where the
+              routine lives, which list it shows up in, and which rooms the
+              destination picker below can even offer. */}
           <div className="grid gap-3 pb-4 sm:grid-cols-2">
             <div className="space-y-1.5">
               <Label className="text-xs">{t("common:name")}</Label>
@@ -1017,7 +1020,39 @@ function CreateRoutineDialog({
                 placeholder={t("routines.namePlaceholder")}
               />
             </div>
-            <div className="space-y-1.5">
+
+            {workspacesEnabled && workspaces.length > 1 && (
+              <div className="space-y-1.5">
+                <Label className="text-xs">{t("workspacePin.label")}</Label>
+                <Select
+                  value={organizationId || PERSONAL_WORKSPACE}
+                  onValueChange={(v) => {
+                    if (!v) return;
+                    setOrganizationId(v);
+                  }}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue>
+                      {(val: unknown) =>
+                        String(val) === PERSONAL_WORKSPACE
+                          ? t("pulse.defaultWorkspace")
+                          : workspaces.find((w) => w.id === String(val))?.name ??
+                            String(val ?? "")
+                      }
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={PERSONAL_WORKSPACE}>{t("pulse.defaultWorkspace")}</SelectItem>
+                    {workspaces.map((w) => (
+                      <SelectItem key={w.id} value={w.id}>{w.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-[11px] text-muted-foreground">{t("workspacePin.hint")}</p>
+              </div>
+            )}
+
+            <div className="space-y-1.5 sm:col-span-2">
               <Label className="text-xs">{t("routines.descriptionOptional")}</Label>
               <Input
                 value={description}
@@ -1082,41 +1117,6 @@ function CreateRoutineDialog({
             )}
 
             <ModelOverrideField agentId={agentId} value={model} onChange={setModel} />
-
-            {/* Workspace pin — only meaningful when the owner belongs to more
-                than one workspace. "__personal__" is the Select-safe stand-in
-                for "unpinned" (owner's Personal workspace). Org is immutable
-                after creation, so this appears only on the create form. */}
-            {workspacesEnabled && workspaces.length > 1 && (
-              <div className="space-y-1.5">
-                <Label className="text-xs">{t("workspacePin.label")}</Label>
-                <Select
-                  value={organizationId || PERSONAL_WORKSPACE}
-                  onValueChange={(v) => {
-                    if (!v) return;
-                    setOrganizationId(v);
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue>
-                      {(val: unknown) =>
-                        String(val) === PERSONAL_WORKSPACE
-                          ? t("pulse.defaultWorkspace")
-                          : workspaces.find((w) => w.id === String(val))?.name ??
-                            String(val ?? "")
-                      }
-                    </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value={PERSONAL_WORKSPACE}>{t("pulse.defaultWorkspace")}</SelectItem>
-                    {workspaces.map((w) => (
-                      <SelectItem key={w.id} value={w.id}>{w.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <p className="text-[11px] text-muted-foreground">{t("workspacePin.hint")}</p>
-              </div>
-            )}
 
             {error && <p className="text-xs text-destructive sm:col-span-2">{error}</p>}
           </div>
@@ -1286,12 +1286,45 @@ export function RoutineForm({ routine, variant, onDone, onSaved }: RoutineFormPr
   // settings.
   const fields = (
     <div className="divide-y divide-border">
+      {/* Workspace sits up top with the name: it decides where the routine
+          lives, which list it shows up in, and which rooms the destination
+          picker below can even offer. */}
       <div className="grid gap-3 pb-4 sm:grid-cols-2">
         <div className="space-y-1.5">
           <Label className="text-xs">{t("common:name")}</Label>
           <Input value={name} onChange={(e) => setName(e.target.value)} />
         </div>
+
+        {workspacesEnabled && workspaces.length > 1 && (
         <div className="space-y-1.5">
+          <Label className="text-xs">{t("workspacePin.label")}</Label>
+          <Select
+            value={organizationId}
+            onValueChange={(v) => v && setOrganizationId(v)}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue>
+                {(val: unknown) =>
+                  String(val) === PERSONAL_WORKSPACE
+                    ? t("pulse.defaultWorkspace")
+                    : workspaces.find((w) => w.id === String(val))?.name ?? String(val ?? "")
+                }
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={PERSONAL_WORKSPACE}>{t("pulse.defaultWorkspace")}</SelectItem>
+              {workspaces.map((w) => (
+                <SelectItem key={w.id} value={w.id}>{w.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <p className="text-[11px] text-muted-foreground">
+            {movingWorkspace ? t("routines.movingWorkspaceHint") : t("workspacePin.hint")}
+          </p>
+        </div>
+        )}
+
+        <div className="space-y-1.5 sm:col-span-2">
           <Label className="text-xs">{t("common:description")}</Label>
           <Input
             value={description}
@@ -1319,7 +1352,7 @@ export function RoutineForm({ routine, variant, onDone, onSaved }: RoutineFormPr
         <ReportToPicker
           agentId={routine.participantId}
           agentName={agentName}
-          organizationId={routine.organizationId}
+          organizationId={organizationId === PERSONAL_WORKSPACE ? undefined : organizationId}
           value={reportTo}
           onChange={setReportTo}
         />
@@ -1344,35 +1377,6 @@ export function RoutineForm({ routine, variant, onDone, onSaved }: RoutineFormPr
           value={model}
           onChange={setModel}
         />
-
-        {workspacesEnabled && workspaces.length > 1 && (
-          <div className="space-y-1.5">
-            <Label className="text-xs">{t("workspacePin.label")}</Label>
-            <Select
-              value={organizationId}
-              onValueChange={(v) => v && setOrganizationId(v)}
-            >
-              <SelectTrigger>
-                <SelectValue>
-                  {(val: unknown) =>
-                    String(val) === PERSONAL_WORKSPACE
-                      ? t("pulse.defaultWorkspace")
-                      : workspaces.find((w) => w.id === String(val))?.name ?? String(val ?? "")
-                  }
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={PERSONAL_WORKSPACE}>{t("pulse.defaultWorkspace")}</SelectItem>
-                {workspaces.map((w) => (
-                  <SelectItem key={w.id} value={w.id}>{w.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <p className="text-[11px] text-muted-foreground">
-              {movingWorkspace ? t("routines.movingWorkspaceHint") : t("workspacePin.hint")}
-            </p>
-          </div>
-        )}
 
         {error && <p className="text-xs text-destructive sm:col-span-2">{error}</p>}
       </div>
