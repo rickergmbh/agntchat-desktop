@@ -1401,6 +1401,8 @@ export function buildPreviewCategories(
               <PermissionToastCard
                 description="Atlas wants to send an email to team@acme.com."
                 toolName="send_email"
+                scopeKind="domain"
+                scopeFacet="acme.com"
                 onDeny={noop}
                 onAlways={noop}
                 onApprove={noop}
@@ -1410,12 +1412,13 @@ export function buildPreviewCategories(
         },
         {
           label: "Permission — tool fallback",
-          caption: "no description → tool name subtitle",
+          caption: "no description → tool name subtitle; exact-input scope",
           interactive: true,
           node: (
             <ToastFrame>
               <PermissionToastCard
                 toolName="run_shell_command"
+                scopeKind="exact"
                 onDeny={noop}
                 onAlways={noop}
                 onApprove={noop}
