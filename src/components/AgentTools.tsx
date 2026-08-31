@@ -257,7 +257,7 @@ export function AgentTools({ agentId, onCount }: AgentToolsProps) {
                 (connected === true ? (
                   <Badge variant="secondary" className="gap-1 text-[10px]">
                     <Check className="w-3 h-3 text-success" />
-                    {t("toolsTab.connected")}
+                    {t("toolsTab.available")}
                   </Badge>
                 ) : connected === false ? (
                   <div className="flex items-center gap-2">

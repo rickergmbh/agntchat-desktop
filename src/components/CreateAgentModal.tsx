@@ -1394,7 +1394,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                               true ? (
                                 <span className="inline-flex items-center gap-1 rounded-full bg-muted px-1.5 py-px text-[9px] uppercase tracking-wide text-muted-foreground">
                                   <Check className="w-2.5 h-2.5 text-success" />
-                                  {t("toolsTab.connected")}
+                                  {t("toolsTab.available")}
                                 </span>
                               ) : wizardConnections[group.credentialProvider] ===
                                 false ? (

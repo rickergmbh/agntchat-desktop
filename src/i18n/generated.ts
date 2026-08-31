@@ -1648,8 +1648,8 @@ export const resources = {
       },
       "tools": "Tools",
       "toolsTab": {
+        "available": "Available",
         "connect": "Connect",
-        "connected": "Connected",
         "empty": "No integration tools available.",
         "errors": {
           "toggleFailed": "Couldn't update the tool. Try again."
@@ -7680,8 +7680,8 @@ export const resources = {
       },
       "tools": "Herramientas",
       "toolsTab": {
+        "available": "Disponible",
         "connect": "Conectar",
-        "connected": "Conectado",
         "empty": "No hay herramientas de integración disponibles.",
         "errors": {
           "toggleFailed": "No se pudo actualizar la herramienta. Inténtalo de nuevo."
@@ -13712,8 +13712,8 @@ export const resources = {
       },
       "tools": "Tools",
       "toolsTab": {
+        "available": "Verfügbar",
         "connect": "Verbinden",
-        "connected": "Verbunden",
         "empty": "Keine Integrations-Werkzeuge verfügbar.",
         "errors": {
           "toggleFailed": "Werkzeug konnte nicht aktualisiert werden. Versuchen Sie es erneut."
@@ -19744,8 +19744,8 @@ export const resources = {
       },
       "tools": "Outils",
       "toolsTab": {
+        "available": "Disponible",
         "connect": "Connecter",
-        "connected": "Connecté",
         "empty": "Aucun outil d'intégration disponible.",
         "errors": {
           "toggleFailed": "Impossible de mettre à jour l'outil. Réessayez."
@@ -25776,8 +25776,8 @@ export const resources = {
       },
       "tools": "Ferramentas",
       "toolsTab": {
+        "available": "Disponível",
         "connect": "Conectar",
-        "connected": "Conectado",
         "empty": "Nenhuma ferramenta de integração disponível.",
         "errors": {
           "toggleFailed": "Não foi possível atualizar a ferramenta. Tente novamente."
@@ -31808,8 +31808,8 @@ export const resources = {
       },
       "tools": "ツール",
       "toolsTab": {
+        "available": "利用可能",
         "connect": "連携する",
-        "connected": "連携済み",
         "empty": "利用できる連携ツールがありません。",
         "errors": {
           "toggleFailed": "ツールを更新できませんでした。もう一度お試しください。"
@@ -37840,8 +37840,8 @@ export const resources = {
       },
       "tools": "工具",
       "toolsTab": {
+        "available": "可用",
         "connect": "连接",
-        "connected": "已连接",
         "empty": "没有可用的集成工具。",
         "errors": {
           "toggleFailed": "无法更新工具，请重试。"
@@ -43872,8 +43872,8 @@ export const resources = {
       },
       "tools": "도구",
       "toolsTab": {
+        "available": "사용 가능",
         "connect": "연결",
-        "connected": "연결됨",
         "empty": "사용 가능한 통합 도구가 없습니다.",
         "errors": {
           "toggleFailed": "도구를 업데이트하지 못했습니다. 다시 시도하세요."
@@ -49904,8 +49904,8 @@ export const resources = {
       },
       "tools": "Strumenti",
       "toolsTab": {
+        "available": "Disponibile",
         "connect": "Collega",
-        "connected": "Collegato",
         "empty": "Nessuno strumento di integrazione disponibile.",
         "errors": {
           "toggleFailed": "Impossibile aggiornare lo strumento. Riprova."
@@ -55936,8 +55936,8 @@ export const resources = {
       },
       "tools": "टूल्स",
       "toolsTab": {
+        "available": "उपलब्ध",
         "connect": "कनेक्ट करें",
-        "connected": "कनेक्टेड",
         "empty": "कोई इंटीग्रेशन टूल उपलब्ध नहीं है।",
         "errors": {
           "toggleFailed": "टूल अपडेट नहीं हो सका। फिर से प्रयास करें।"
