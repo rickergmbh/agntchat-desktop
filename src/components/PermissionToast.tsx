@@ -81,6 +81,8 @@ export function PermissionToast() {
           key={req.id}
           description={req.description}
           toolName={req.toolName}
+          scopeKind={req.scopeKind}
+          scopeFacet={req.scopeFacet}
           disabled={resolving.has(req.id)}
           onDeny={() => decide(req.id, "deny")}
           onAlways={() => decide(req.id, "approve", true)}
@@ -91,11 +93,44 @@ export function PermissionToast() {
   );
 }
 
+/**
+ * Label the "Always allow" button with the operation it actually grants.
+ *
+ * The server sends `{scopeKind, facet}` rather than a finished sentence so the
+ * copy stays localized. A generic "always allow this tool" would be a false
+ * claim: grants are scoped to the operation, not the tool.
+ */
+function alwaysLabel(
+  scopeKind: PermissionRequest["scopeKind"],
+  scopeFacet: string | null | undefined,
+  toolName: string,
+  t: (key: string, opts?: Record<string, unknown>) => string
+): string {
+  const facet = scopeFacet ?? "";
+  switch (scopeKind) {
+    case "exec":
+      return t("permissionToast.alwaysExec", { facet });
+    case "dir":
+      return t("permissionToast.alwaysDir", { facet });
+    case "host":
+      return t("permissionToast.alwaysHost", { facet });
+    case "domain":
+      return t("permissionToast.alwaysDomain", { facet });
+    case "any":
+      return t("permissionToast.alwaysAny", { tool: toolName });
+    default:
+      // `exact`, and anything a newer backend adds: promise the least.
+      return t("permissionToast.alwaysExact");
+  }
+}
+
 /** Presentational card for a single {@link PermissionToast} prompt — split out
  *  so the component preview gallery can render it with sample data. */
 export function PermissionToastCard({
   description,
   toolName,
+  scopeKind,
+  scopeFacet,
   disabled,
   onDeny,
   onAlways,
@@ -103,6 +138,8 @@ export function PermissionToastCard({
 }: {
   description?: string | null;
   toolName: string;
+  scopeKind?: PermissionRequest["scopeKind"];
+  scopeFacet?: string | null;
   disabled?: boolean;
   onDeny: () => void;
   onAlways: () => void;
@@ -138,7 +175,7 @@ export function PermissionToastCard({
           disabled={disabled}
           className="rounded-md px-3 py-1 text-xs font-medium text-muted-foreground hover:bg-accent disabled:opacity-50"
         >
-          {t("permissionToast.always")}
+          {alwaysLabel(scopeKind, scopeFacet, toolName, t)}
         </button>
         <button
           onClick={onApprove}

@@ -102,6 +102,9 @@ export interface PermissionRequest {
   description?: string | null;
   status: "pending" | "approved" | "denied" | "expired";
   decisionScope?: string | null;
+  /** What "Always allow" would actually grant — see Permissions.Scope. */
+  scopeKind?: "exec" | "dir" | "host" | "domain" | "exact" | "any";
+  scopeFacet?: string | null;
   expiresAt: string;
   insertedAt: string;
 }
@@ -116,8 +119,8 @@ export async function listPendingPermissions(): Promise<PermissionRequest[]> {
 
 /**
  * Approve or deny a gated agent action. When `always` is true on approve, the
- * backend persists a standing grant for this (agent, tool) so future requests
- * auto-approve without prompting.
+ * backend persists a standing grant for the OPERATION this request represents
+ * (`Bash:exec:git`, not "all shell") so equivalent requests auto-approve.
  */
 export async function resolvePermission(
   requestId: string,
@@ -128,6 +131,54 @@ export async function resolvePermission(
     method: "POST",
     body: JSON.stringify({ decision, always }),
   });
+}
+
+/** An agent's ask for a secret, awaiting the owner's masked input. */
+export interface CredentialRequest {
+  id: string;
+  agentId: string;
+  ownerId: string;
+  conversationId?: string | null;
+  label: string;
+  reason?: string | null;
+  endpoint?: string | null;
+  authMode?: string | null;
+  status: "pending" | "fulfilled" | "denied" | "expired";
+  credentialId?: string | null;
+  expiresAt: string;
+  insertedAt: string;
+}
+
+/** Pending credential asks for the current human. */
+export async function listPendingCredentialRequests(): Promise<CredentialRequest[]> {
+  const { requests } = await request<{ requests: CredentialRequest[] }>(
+    `/api/credential-requests`
+  );
+  return requests;
+}
+
+/**
+ * Supply the secret for a credential request.
+ *
+ * `value` travels once, to the backend, which encrypts it at rest. It is never
+ * returned by this endpoint, never broadcast, and must not be retained by the
+ * caller after this resolves.
+ */
+export async function fulfillCredentialRequest(
+  requestId: string,
+  value: string
+): Promise<CredentialRequest> {
+  return request(`/api/credential-requests/${requestId}/fulfill`, {
+    method: "POST",
+    body: JSON.stringify({ value }),
+  });
+}
+
+/** Decline a credential ask — no credential is created. */
+export async function denyCredentialRequest(
+  requestId: string
+): Promise<CredentialRequest> {
+  return request(`/api/credential-requests/${requestId}`, { method: "DELETE" });
 }
 
 // Agents

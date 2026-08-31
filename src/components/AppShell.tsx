@@ -42,6 +42,7 @@ import { AgentBusyToast } from "./AgentBusyToast";
 import { ReminderToast } from "./ReminderToast";
 import { MemorySavedToast } from "./MemorySavedToast";
 import { PermissionToast } from "./PermissionToast";
+import { CredentialPrompt } from "./CredentialPrompt";
 import { RenameToGroupModal } from "./RenameToGroupModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dashboard } from "./Dashboard";
@@ -215,6 +216,7 @@ export function AppShell() {
       <ReminderToast />
       <MemorySavedToast />
       <PermissionToast />
+      <CredentialPrompt />
       <RenameToGroupModal />
     </div>
   );
