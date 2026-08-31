@@ -19,6 +19,7 @@ import { Bot, LogIn, Reply as ReplyIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useModelCatalog } from "../../stores/modelCatalogStore";
 import { MarkdownContent } from "./MarkdownContent";
+import { CollapsibleText } from "./CollapsibleText";
 import { AddReactionButton, ReactionChips } from "./MessageReactions";
 import { isTaskMessage, TaskMessage } from "./TaskMessages";
 import { isToolMessage, ToolMessage } from "./ToolMessages";
@@ -319,12 +320,14 @@ export const MessageBubble = memo(function MessageBubble({
             ) : (
               <>
                 {message.content?.trim() ? (
-                  <MarkdownContent
-                    content={boldMentions(
-                      message.content,
-                      message.metadata?.mentions as { displayName?: string }[] | undefined
-                    )}
-                  />
+                  <CollapsibleText>
+                    <MarkdownContent
+                      content={boldMentions(
+                        message.content,
+                        message.metadata?.mentions as { displayName?: string }[] | undefined
+                      )}
+                    />
+                  </CollapsibleText>
                 ) : null}
                 <RideAlongAttachments message={message} />
               </>

@@ -253,6 +253,24 @@ export function buildPreviewCategories(
             />
           ),
         },
+        {
+          label: "Long message (collapsed)",
+          caption: "clamped behind Read more — CollapsibleText",
+          interactive: true,
+          node: (
+            <Bubble
+              message={mkMsg({
+                content:
+                  "Right — I dug through the whole booking corridor and here is the full picture, end to end.\n\n" +
+                  "The outbound leg is the constraint. Tuesday morning departures clear the connection window with about ninety minutes to spare, while every Wednesday option either routes through a second hub or lands after the venue check-in desk closes for the evening.\n\n" +
+                  "On accommodation, the three properties inside walking distance all price between €120 and €165 a night. The cheapest has no late check-in, which matters if we take an evening flight back on the Friday.\n\n" +
+                  "Weather is settled all week — no meaningful rain risk, highs in the low twenties, so nothing there forces an itinerary change.\n\n" +
+                  "Costs land roughly €80 under the budget you gave me once the return leg is fixed, and that is before any corporate rate on the hotel side.\n\n" +
+                  "My recommendation: take the Tuesday 07:40 outbound, book the mid-priced hotel for its late check-in, and leave the return open until the agenda is confirmed. Say the word and I will hold all three.",
+              })}
+            />
+          ),
+        },
       ],
     },
 

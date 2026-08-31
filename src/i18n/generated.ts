@@ -2478,6 +2478,10 @@ export const resources = {
         "shared": "Location Shared",
         "typeIt": "I'll Type It"
       },
+      "longMessage": {
+        "readMore": "Read more",
+        "showLess": "Show less"
+      },
       "members_one": "{{count}} member",
       "members_other": "{{count}} members",
       "menu": {
@@ -8505,6 +8509,10 @@ export const resources = {
         "share": "Compartir mi ubicación",
         "shared": "Ubicación compartida",
         "typeIt": "La escribiré"
+      },
+      "longMessage": {
+        "readMore": "Leer más",
+        "showLess": "Mostrar menos"
       },
       "members_one": "{{count}} miembro",
       "members_other": "{{count}} miembros",
@@ -14534,6 +14542,10 @@ export const resources = {
         "shared": "Standort geteilt",
         "typeIt": "Ich gebe ihn manuell ein"
       },
+      "longMessage": {
+        "readMore": "Mehr lesen",
+        "showLess": "Weniger anzeigen"
+      },
       "members_one": "{{count}} Mitglied",
       "members_other": "{{count}} Mitglieder",
       "menu": {
@@ -20561,6 +20573,10 @@ export const resources = {
         "share": "Partager ma position",
         "shared": "Position partagée",
         "typeIt": "Je vais la saisir"
+      },
+      "longMessage": {
+        "readMore": "Lire la suite",
+        "showLess": "Afficher moins"
       },
       "members_one": "{{count}} membre",
       "members_other": "{{count}} membres",
@@ -26590,6 +26606,10 @@ export const resources = {
         "shared": "Localização compartilhada",
         "typeIt": "Vou digitar"
       },
+      "longMessage": {
+        "readMore": "Ler mais",
+        "showLess": "Mostrar menos"
+      },
       "members_one": "{{count}} membro",
       "members_other": "{{count}} membros",
       "menu": {
@@ -32617,6 +32637,10 @@ export const resources = {
         "share": "自分の位置情報を共有",
         "shared": "位置情報を共有しました",
         "typeIt": "自分で入力する"
+      },
+      "longMessage": {
+        "readMore": "続きを読む",
+        "showLess": "折りたたむ"
       },
       "members_one": "{{count}}人のメンバー",
       "members_other": "{{count}}人のメンバー",
@@ -38646,6 +38670,10 @@ export const resources = {
         "shared": "位置已分享",
         "typeIt": "我来手动输入"
       },
+      "longMessage": {
+        "readMore": "查看更多",
+        "showLess": "收起"
+      },
       "members_one": "{{count}} 位成员",
       "members_other": "{{count}} 位成员",
       "menu": {
@@ -44673,6 +44701,10 @@ export const resources = {
         "share": "내 위치 공유",
         "shared": "위치 공유됨",
         "typeIt": "직접 입력할게요"
+      },
+      "longMessage": {
+        "readMore": "더 보기",
+        "showLess": "간략히 보기"
       },
       "members_one": "멤버 {{count}}명",
       "members_other": "멤버 {{count}}명",
@@ -50702,6 +50734,10 @@ export const resources = {
         "shared": "Posizione condivisa",
         "typeIt": "La scriverò io"
       },
+      "longMessage": {
+        "readMore": "Leggi tutto",
+        "showLess": "Mostra meno"
+      },
       "members_one": "{{count}} membro",
       "members_other": "{{count}} membri",
       "menu": {
@@ -56729,6 +56765,10 @@ export const resources = {
         "share": "मेरा स्थान साझा करें",
         "shared": "स्थान साझा किया गया",
         "typeIt": "मैं इसे टाइप करूँगा"
+      },
+      "longMessage": {
+        "readMore": "और पढ़ें",
+        "showLess": "कम दिखाएँ"
       },
       "members_one": "{{count}} सदस्य",
       "members_other": "{{count}} सदस्य",
