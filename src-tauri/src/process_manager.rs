@@ -823,7 +823,7 @@ fn ensure_venv(bridge_dir: &std::path::Path) -> Result<String, String> {
             .map_err(|e| {
                 if e.kind() == std::io::ErrorKind::NotFound {
                     format!(
-                        "Python not found. Install Python 3.11+ from https://python.org and ensure '{}' is on your PATH.",
+                        "Python not found. Install Python 3.9+ from https://python.org and ensure '{}' is on your PATH.",
                         system_python
                     )
                 } else {
