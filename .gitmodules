@@ -1,3 +1,4 @@
 [submodule "bridge"]
 	path = bridge
-	url = https://github.com/rickergmbh/agntchat-bridge.git
+	url = git@github.com:rickergmbh/agntchat-bridge.git
+	branch = main
