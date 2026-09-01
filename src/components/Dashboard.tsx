@@ -530,6 +530,33 @@ export function Dashboard() {
     [revokeConnection, t]
   );
 
+  // Map agent IDs to connection type — the proxy/direct badge on owned
+  // agent rows. Mirrors web AgentsPage's connectionTypeMap: proxy clones
+  // carry metadata.cloned_from; accepted connections without a clone are
+  // direct.
+  const connectionTypeMap = useMemo(() => {
+    const map = new Map<string, "proxy" | "direct">();
+
+    const proxyCloneSourceIds = new Set<string>();
+    for (const managed of Object.values(agents)) {
+      const clonedFrom = (
+        managed.agent.metadata as Record<string, unknown> | undefined
+      )?.cloned_from;
+      if (typeof clonedFrom === "string") {
+        map.set(managed.agent.id, "proxy");
+        proxyCloneSourceIds.add(clonedFrom);
+      }
+    }
+
+    for (const conn of connections) {
+      if (conn.status === "accepted" && !proxyCloneSourceIds.has(conn.agentId)) {
+        map.set(conn.agentId, "direct");
+      }
+    }
+
+    return map;
+  }, [agents, connections]);
+
   // Map agent IDs to connection status — pills shown on directory rows.
   const dirConnectionStatusMap = useMemo(() => {
     const map = new Map<string, "accepted" | "pending">();
@@ -947,6 +974,7 @@ export function Dashboard() {
                   onToggleExpand={() => toggleExpand(row.managed.agent.id)}
                   selected={row.managed.agent.id === selectedAgentId}
                   onSelect={() => selectAgent(row.managed.agent.id)}
+                  connectionType={connectionTypeMap.get(row.managed.agent.id)}
                 />
               ))
             )

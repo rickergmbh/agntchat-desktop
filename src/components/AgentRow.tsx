@@ -138,6 +138,7 @@ export function AgentRow({
   expanded = false,
   childCount = 0,
   onToggleExpand,
+  connectionType,
 }: {
   managed: ManagedAgent;
   selected: boolean;
@@ -156,6 +157,10 @@ export function AgentRow({
   /** Number of direct sub-agents (for the chevron tooltip). */
   childCount?: number;
   onToggleExpand?: () => void;
+  /** How this agent relates to a directory connection — "proxy" for owned
+   *  clones of a connected agent, "direct" for directly connected agents.
+   *  Mirrors web AgentsPage's ConnectionBadge. */
+  connectionType?: "proxy" | "direct";
 }) {
   const { t } = useTranslation("agents");
   const { startAgent, stopAgent } = useAgentStore();
@@ -404,6 +409,21 @@ export function AgentRow({
                 title={managed.agent.spawn?.purpose || "Spawned sub-agent"}
               >
                 Sub-agent
+              </Badge>
+            )}
+            {connectionType && (
+              <Badge
+                variant="secondary"
+                className={cn(
+                  "text-[10px] px-1.5 py-0 flex-shrink-0",
+                  connectionType === "proxy"
+                    ? "bg-warning/15 text-warning border-warning/20"
+                    : "bg-primary/15 text-primary border-primary/20"
+                )}
+              >
+                {connectionType === "proxy"
+                  ? t("connection.proxy")
+                  : t("connection.direct")}
               </Badge>
             )}
             {hasChildren && !expanded && (
