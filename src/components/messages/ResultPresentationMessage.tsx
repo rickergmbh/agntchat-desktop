@@ -32,6 +32,7 @@ import {
   TrendingDown,
   ArrowUpRight,
   ArrowDownRight,
+  Minus,
   Phone,
   Globe,
   Briefcase,
@@ -650,22 +651,28 @@ function DetailSection({
         />,
       );
     } else if (field.display === "change") {
-      const num = Number(val);
-      const positive = num >= 0;
+      // Agents send change values as strings ("+.10%", "-1.5") as often as
+      // numbers — parse like mobile's ChangeIndicator and show the raw value.
+      const raw = String(val);
+      const num = parseFloat(raw.replace(/[%$,\s]/g, ""));
+      const flat = Number.isNaN(num) || num === 0;
+      const text =
+        field.format === "percent" && !raw.endsWith("%") ? `${raw}%` : raw;
       elements.push(
         <div key={field.key} className="flex items-center gap-1.5 text-xs">
           {field.label && (
             <span className="text-muted-foreground">{field.label}:</span>
           )}
           <span className="inline-flex items-center gap-1">
-            {positive ? (
+            {flat ? (
+              <Minus className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+            ) : num > 0 ? (
               <ArrowUpRight className="h-3.5 w-3.5 shrink-0 text-success" />
             ) : (
               <ArrowDownRight className="h-3.5 w-3.5 shrink-0 text-destructive" />
             )}
             <span className="font-medium tabular-nums text-foreground">
-              {Math.abs(num)}
-              {field.format === "percent" ? "%" : ""}
+              {text}
             </span>
           </span>
         </div>,
