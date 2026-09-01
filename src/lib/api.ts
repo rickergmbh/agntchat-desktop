@@ -137,6 +137,7 @@ export async function resolvePermission(
 export interface CredentialRequest {
   id: string;
   agentId: string;
+  agentName?: string | null;
   ownerId: string;
   conversationId?: string | null;
   label: string;

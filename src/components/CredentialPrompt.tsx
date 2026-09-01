@@ -37,6 +37,7 @@ export function CredentialPrompt() {
   const [values, setValues] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState<Set<string>>(new Set());
   const [failed, setFailed] = useState<Set<string>>(new Set());
+  const [declineFailed, setDeclineFailed] = useState<Set<string>>(new Set());
 
   /** Drop the request and, critically, the typed secret along with it. */
   const dismiss = useCallback((id: string) => {
@@ -103,10 +104,29 @@ export function CredentialPrompt() {
     [values, dismiss]
   );
 
+  // Dismiss only AFTER the server confirms: an optimistic dismiss on a
+  // failed DELETE left the ask pending server-side (and on other devices)
+  // for its whole TTL while the owner believed they had declined — and the
+  // agent kept polling "still waiting on your owner".
   const decline = useCallback(
-    (id: string) => {
-      dismiss(id);
-      void denyCredentialRequest(id).catch(() => {});
+    async (id: string) => {
+      setBusy((b) => new Set(b).add(id));
+      setDeclineFailed((f) => {
+        const next = new Set(f);
+        next.delete(id);
+        return next;
+      });
+      try {
+        await denyCredentialRequest(id);
+        dismiss(id);
+      } catch {
+        setDeclineFailed((f) => new Set(f).add(id));
+        setBusy((b) => {
+          const next = new Set(b);
+          next.delete(id);
+          return next;
+        });
+      }
     },
     [dismiss]
   );
@@ -129,6 +149,11 @@ export function CredentialPrompt() {
               </div>
               <div className="min-w-0">
                 <p className="text-sm font-medium">{t("credentialPrompt.title")}</p>
+                {req.agentName && (
+                  <p className="mt-0.5 break-words text-xs text-muted-foreground">
+                    {t("credentialPrompt.askedBy", { agent: req.agentName })}
+                  </p>
+                )}
                 <p className="mt-1 break-words text-xs">{req.label}</p>
                 {req.reason && (
                   <p className="mt-1 break-words text-xs text-muted-foreground">
@@ -168,10 +193,16 @@ export function CredentialPrompt() {
               </p>
             )}
 
+            {declineFailed.has(req.id) && (
+              <p className="mt-1.5 text-[11px] text-destructive" role="alert">
+                {t("credentialPrompt.declineFailed")}
+              </p>
+            )}
+
             <div className="mt-3 flex flex-wrap justify-end gap-2">
               <button
                 disabled={busy.has(req.id)}
-                onClick={() => decline(req.id)}
+                onClick={() => void decline(req.id)}
                 className="rounded-md px-3 py-1 text-xs font-medium text-muted-foreground hover:bg-accent disabled:opacity-50"
               >
                 {t("credentialPrompt.decline")}

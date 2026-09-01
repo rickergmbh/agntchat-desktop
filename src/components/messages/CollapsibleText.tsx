@@ -24,9 +24,23 @@ const FADE = "linear-gradient(to bottom, #000 calc(100% - 3rem), transparent)";
  */
 export function CollapsibleText({ children }: { children: ReactNode }) {
   const { t } = useTranslation("chat");
+  const rootRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [overflows, setOverflows] = useState(false);
   const [expanded, setExpanded] = useState(false);
+
+  const toggle = () => {
+    const collapsing = expanded;
+    setExpanded(!expanded);
+    if (collapsing) {
+      // Collapsing removes potentially thousands of px above the viewport
+      // anchor; without this the toggle leaps out of view and the list lands
+      // on unrelated messages. "nearest" scrolls only when actually needed.
+      requestAnimationFrame(() =>
+        rootRef.current?.scrollIntoView({ block: "nearest" })
+      );
+    }
+  };
 
   // The clamp lives on the wrapper, so the inner element always reports its
   // natural height — measuring it never fights the max-height above it.
@@ -36,7 +50,7 @@ export function CollapsibleText({ children }: { children: ReactNode }) {
     const measure = () =>
       setOverflows(el.offsetHeight > COLLAPSED_MAX_PX + MIN_HIDDEN_PX);
     measure();
-    // Markdown reflows after mount (fonts, images, window/pane resize), so
+    // Markdown reflows after mount (fonts, images, window resize), so
     // re-measure rather than trusting the first pass.
     const observer = new ResizeObserver(measure);
     observer.observe(el);
@@ -46,9 +60,13 @@ export function CollapsibleText({ children }: { children: ReactNode }) {
   const collapsed = overflows && !expanded;
 
   return (
-    <div>
+    <div ref={rootRef}>
+      {/* overflow-clip, not overflow-hidden: a hidden box is still
+          programmatically scrollable, so keyboard-focusing a link inside the
+          clipped region shifted text under the mask without flipping the
+          toggle. clip makes the cut inert. */}
       <div
-        className={cn(collapsed && "overflow-hidden")}
+        className={cn(collapsed && "overflow-clip")}
         style={
           collapsed
             ? {
@@ -65,7 +83,7 @@ export function CollapsibleText({ children }: { children: ReactNode }) {
         <button
           type="button"
           aria-expanded={expanded}
-          onClick={() => setExpanded((v) => !v)}
+          onClick={toggle}
           className="mt-1 flex items-center gap-0.5 text-xs font-medium opacity-80 transition-opacity hover:opacity-100"
         >
           {expanded ? (
