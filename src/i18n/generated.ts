@@ -2332,7 +2332,9 @@ export const resources = {
       "createChannelHint": "Open a shared channel for your agents",
       "createGroup": "Create Group",
       "credentialPrompt": {
+        "askedBy": "Asked by {{agent}}",
         "decline": "Decline",
+        "declineFailed": "Couldn't decline. Try again.",
         "expired": "This request expired.",
         "failed": "Couldn't save that. Try again.",
         "forHost": "Usable only for {{host}}",
@@ -8364,7 +8366,9 @@ export const resources = {
       "createChannelHint": "Abre un canal compartido para tus agentes",
       "createGroup": "Crear grupo",
       "credentialPrompt": {
+        "askedBy": "Solicitado por {{agent}}",
         "decline": "Rechazar",
+        "declineFailed": "No se pudo rechazar. Inténtalo de nuevo.",
         "expired": "Esta solicitud ha caducado.",
         "failed": "No se pudo guardar. Inténtalo de nuevo.",
         "forHost": "Solo utilizable para {{host}}",
@@ -14396,7 +14400,9 @@ export const resources = {
       "createChannelHint": "Einen gemeinsamen Kanal für Ihre Agenten öffnen",
       "createGroup": "Gruppe erstellen",
       "credentialPrompt": {
+        "askedBy": "Angefragt von {{agent}}",
         "decline": "Ablehnen",
+        "declineFailed": "Ablehnen fehlgeschlagen. Bitte erneut versuchen.",
         "expired": "Diese Anfrage ist abgelaufen.",
         "failed": "Speichern fehlgeschlagen. Bitte erneut versuchen.",
         "forHost": "Nur verwendbar für {{host}}",
@@ -20428,7 +20434,9 @@ export const resources = {
       "createChannelHint": "Ouvrez un canal partagé pour vos agents",
       "createGroup": "Créer un groupe",
       "credentialPrompt": {
+        "askedBy": "Demandé par {{agent}}",
         "decline": "Refuser",
+        "declineFailed": "Refus impossible. Réessayez.",
         "expired": "Cette demande a expiré.",
         "failed": "Enregistrement impossible. Réessayez.",
         "forHost": "Utilisable uniquement pour {{host}}",
@@ -26460,7 +26468,9 @@ export const resources = {
       "createChannelHint": "Abra um canal compartilhado para seus agentes",
       "createGroup": "Criar grupo",
       "credentialPrompt": {
+        "askedBy": "Pedido por {{agent}}",
         "decline": "Recusar",
+        "declineFailed": "Não foi possível recusar. Tenta novamente.",
         "expired": "Este pedido expirou.",
         "failed": "Não foi possível guardar. Tenta novamente.",
         "forHost": "Utilizável apenas para {{host}}",
@@ -32492,7 +32502,9 @@ export const resources = {
       "createChannelHint": "エージェント用の共有チャンネルを開きます",
       "createGroup": "グループを作成",
       "credentialPrompt": {
+        "askedBy": "{{agent}} からのリクエスト",
         "decline": "拒否",
+        "declineFailed": "拒否できませんでした。もう一度お試しください。",
         "expired": "このリクエストは期限切れです。",
         "failed": "保存できませんでした。もう一度お試しください。",
         "forHost": "{{host}} でのみ使用可能",
@@ -38524,7 +38536,9 @@ export const resources = {
       "createChannelHint": "为你的智能体开一个共享频道",
       "createGroup": "创建群组",
       "credentialPrompt": {
+        "askedBy": "{{agent}} 请求",
         "decline": "拒绝",
+        "declineFailed": "拒绝失败，请重试。",
         "expired": "此请求已过期。",
         "failed": "保存失败，请重试。",
         "forHost": "仅可用于 {{host}}",
@@ -44556,7 +44570,9 @@ export const resources = {
       "createChannelHint": "에이전트를 위한 공유 채널을 엽니다",
       "createGroup": "그룹 만들기",
       "credentialPrompt": {
+        "askedBy": "{{agent}}의 요청",
         "decline": "거절",
+        "declineFailed": "거절하지 못했습니다. 다시 시도하세요.",
         "expired": "이 요청은 만료되었습니다.",
         "failed": "저장하지 못했습니다. 다시 시도하세요.",
         "forHost": "{{host}}에서만 사용 가능",
@@ -50588,7 +50604,9 @@ export const resources = {
       "createChannelHint": "Apri un canale condiviso per i tuoi agenti",
       "createGroup": "Crea gruppo",
       "credentialPrompt": {
+        "askedBy": "Richiesto da {{agent}}",
         "decline": "Rifiuta",
+        "declineFailed": "Impossibile rifiutare. Riprova.",
         "expired": "Questa richiesta è scaduta.",
         "failed": "Impossibile salvare. Riprova.",
         "forHost": "Utilizzabile solo per {{host}}",
@@ -56620,7 +56638,9 @@ export const resources = {
       "createChannelHint": "अपने एजेंटों के लिए एक साझा चैनल खोलें",
       "createGroup": "समूह बनाएँ",
       "credentialPrompt": {
+        "askedBy": "{{agent}} द्वारा अनुरोधित",
         "decline": "अस्वीकार करें",
+        "declineFailed": "अस्वीकार नहीं किया जा सका। फिर से प्रयास करें।",
         "expired": "यह अनुरोध समाप्त हो गया।",
         "failed": "सहेजा नहीं जा सका। फिर से प्रयास करें।",
         "forHost": "केवल {{host}} के लिए उपयोग योग्य",
