@@ -1656,6 +1656,7 @@ export const resources = {
         },
         "groups": {
           "calendar": "Google Calendar",
+          "docs": "Google Docs",
           "drive": "Google Drive",
           "github": "GitHub",
           "gmail": "Gmail",
@@ -7690,6 +7691,7 @@ export const resources = {
         },
         "groups": {
           "calendar": "Google Calendar",
+          "docs": "Google Docs",
           "drive": "Google Drive",
           "github": "GitHub",
           "gmail": "Gmail",
@@ -13724,6 +13726,7 @@ export const resources = {
         },
         "groups": {
           "calendar": "Google Kalender",
+          "docs": "Google Docs",
           "drive": "Google Drive",
           "github": "GitHub",
           "gmail": "Gmail",
@@ -19758,6 +19761,7 @@ export const resources = {
         },
         "groups": {
           "calendar": "Google Agenda",
+          "docs": "Google Docs",
           "drive": "Google Drive",
           "github": "GitHub",
           "gmail": "Gmail",
@@ -25792,6 +25796,7 @@ export const resources = {
         },
         "groups": {
           "calendar": "Google Agenda",
+          "docs": "Google Docs",
           "drive": "Google Drive",
           "github": "GitHub",
           "gmail": "Gmail",
@@ -31826,6 +31831,7 @@ export const resources = {
         },
         "groups": {
           "calendar": "Googleカレンダー",
+          "docs": "Google Docs",
           "drive": "Google ドライブ",
           "github": "GitHub",
           "gmail": "Gmail",
@@ -37860,6 +37866,7 @@ export const resources = {
         },
         "groups": {
           "calendar": "Google 日历",
+          "docs": "Google Docs",
           "drive": "Google 云端硬盘",
           "github": "GitHub",
           "gmail": "Gmail",
@@ -43894,6 +43901,7 @@ export const resources = {
         },
         "groups": {
           "calendar": "Google 캘린더",
+          "docs": "Google Docs",
           "drive": "Google 드라이브",
           "github": "GitHub",
           "gmail": "Gmail",
@@ -49928,6 +49936,7 @@ export const resources = {
         },
         "groups": {
           "calendar": "Google Calendar",
+          "docs": "Google Docs",
           "drive": "Google Drive",
           "github": "GitHub",
           "gmail": "Gmail",
@@ -55962,6 +55971,7 @@ export const resources = {
         },
         "groups": {
           "calendar": "Google कैलेंडर",
+          "docs": "Google Docs",
           "drive": "Google Drive",
           "github": "GitHub",
           "gmail": "Gmail",

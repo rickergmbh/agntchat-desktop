@@ -10,7 +10,7 @@ import type { PlatformToolSummary } from "./api";
  * connection needed, or no in-app connect flow exists).
  */
 export interface ToolGroup {
-  key: "gmail" | "calendar" | "drive" | "sheets" | "github" | "jobs" | "payments" | "other";
+  key: "gmail" | "calendar" | "drive" | "docs" | "sheets" | "github" | "jobs" | "payments" | "other";
   /** i18n key under the agents namespace */
   labelKey: string;
   credentialProvider: "google" | "github" | null;
@@ -40,6 +40,12 @@ const GROUP_DEFS: Array<{
     labelKey: "toolsTab.groups.drive",
     credentialProvider: "google",
     matches: (tags) => tags.includes("drive"),
+  },
+  {
+    key: "docs",
+    labelKey: "toolsTab.groups.docs",
+    credentialProvider: "google",
+    matches: (tags) => tags.includes("docs"),
   },
   {
     key: "sheets",
