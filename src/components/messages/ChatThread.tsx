@@ -8,6 +8,7 @@ import { usePresenceStore } from "../../stores/presenceStore";
 import { useStreamingStore } from "../../stores/streamingStore";
 import { useTaskStore } from "../../stores/taskStore";
 import { MessageBubble } from "./MessageBubble";
+import { LONG_MESSAGE_EXPAND_EVENT } from "./CollapsibleText";
 import { isStatusUpdateMessage } from "./StatusUpdateMessage";
 import { isTaskMessage } from "./TaskMessages";
 import { MessageContextMenu } from "./MessageContextMenu";
@@ -813,6 +814,22 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
     observer.observe(node);
     resizeObserverRef.current = observer;
   }, [isSelectingInThread, maintainTurnSpacer]);
+
+  // "Read more" on a long message grows it by potentially thousands of px.
+  // For a bottom-pinned reader the content ResizeObserver above would snap
+  // the view to the END of the expanded text — stranding them at its bottom.
+  // Expanding is an explicit "I'm reading THIS" gesture, so release the pin;
+  // with overflow-anchor:none an untouched scrollTop then keeps the top of
+  // the message (the text they were on) exactly in place.
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const release = () => {
+      pinnedRef.current = false;
+    };
+    el.addEventListener(LONG_MESSAGE_EXPAND_EVENT, release);
+    return () => el.removeEventListener(LONG_MESSAGE_EXPAND_EVENT, release);
+  }, []);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const el = e.currentTarget;

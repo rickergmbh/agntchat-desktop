@@ -16,6 +16,14 @@ const MIN_HIDDEN_PX = 120;
  *  own/agent/other variants and both themes all fade correctly. */
 const FADE = "linear-gradient(to bottom, #000 calc(100% - 3rem), transparent)";
 
+/** Bubbled from the message on "Read more" so the thread releases its
+ *  bottom pin BEFORE the growth lays out. Without that, the pinned-reader
+ *  ResizeObserver snaps the view to the END of the expanded text; with the
+ *  pin released, the scroller's overflow-anchor:none means an untouched
+ *  scrollTop keeps the top of the message — the text the reader was already
+ *  on — exactly in place while the rest unrolls below. */
+export const LONG_MESSAGE_EXPAND_EVENT = "agntchat:longmessage-expand";
+
 /**
  * Clamps very long message bodies behind a "Read more" toggle so one
  * essay-length message can't swallow the thread (WhatsApp-style).
@@ -31,6 +39,12 @@ export function CollapsibleText({ children }: { children: ReactNode }) {
 
   const toggle = () => {
     const collapsing = expanded;
+    if (!collapsing) {
+      // Synchronous, so the thread unpins before React commits the growth.
+      rootRef.current?.dispatchEvent(
+        new CustomEvent(LONG_MESSAGE_EXPAND_EVENT, { bubbles: true })
+      );
+    }
     setExpanded(!expanded);
     if (collapsing) {
       // Collapsing removes potentially thousands of px above the viewport
