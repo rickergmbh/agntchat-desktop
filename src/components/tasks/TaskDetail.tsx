@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import { PhaseOrb } from "../PhaseOrb";
 import { useTranslation } from "react-i18next";
 import {
   CheckCircle2,
@@ -21,6 +20,7 @@ import { cn, formatRelativeShort } from "../../lib/utils";
 import { useTaskStore } from "../../stores/taskStore";
 import { useChatStore } from "../../stores/chatStore";
 import { MarkdownContent } from "../messages/MarkdownContent";
+import { TaskActivity } from "./TaskActivity";
 import type { Task, TaskStatus } from "../../lib/api";
 
 const ACTIVE_STATUSES = new Set<TaskStatus>([
@@ -223,28 +223,7 @@ export function TaskDetail({
         )}
 
         {/* Live progress (active tasks only) */}
-        {isActive && recentSteps.length > 0 && (
-          <section className="rounded-xl border border-primary/20 border-l-4 border-l-primary bg-card p-4">
-            <div className="flex items-center gap-2 mb-3 text-xs font-medium text-muted-foreground">
-              <PhaseOrb state="working" className="shrink-0" />
-              <span>{t("liveActivity")}</span>
-            </div>
-            <div className="space-y-1.5">
-              {recentSteps.slice(0, -1).slice(-4).map((step, i) => (
-                <div key={i} className="flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-muted-foreground/30" />
-                  <span className="text-xs text-muted-foreground/60">{step}</span>
-                </div>
-              ))}
-              <div className="flex items-center gap-2">
-                <span className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-primary" />
-                <span className="text-xs font-medium">
-                  {recentSteps[recentSteps.length - 1]}
-                </span>
-              </div>
-            </div>
-          </section>
-        )}
+        {isActive && <TaskActivity steps={recentSteps} />}
 
         {/* Description */}
         {task.description && (
@@ -260,7 +239,7 @@ export function TaskDetail({
 
         {/* Completion summary */}
         {isComplete && summary && (
-          <section className="rounded-xl border border-success/20 border-l-4 border-l-success bg-success/5 p-4">
+          <section className="rounded-xl border border-success/25 bg-success/5 p-4">
             <div className="flex items-center gap-2 mb-2 text-xs font-medium text-success dark:text-success">
               <CheckCircle2 className="w-3.5 h-3.5" />
               <span>{t("summary")}</span>
@@ -289,7 +268,7 @@ export function TaskDetail({
 
         {/* Failure error */}
         {effectiveStatus === "rejected" && liveMeta?.error && (
-          <section className="rounded-xl border border-destructive/20 border-l-4 border-l-destructive bg-destructive/5 p-4">
+          <section className="rounded-xl border border-destructive/25 bg-destructive/5 p-4">
             <div className="flex items-center gap-2 mb-2 text-xs font-medium text-destructive dark:text-destructive">
               <XCircle className="w-3.5 h-3.5" />
               <span>{t("failure")}</span>

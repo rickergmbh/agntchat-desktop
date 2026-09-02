@@ -10,12 +10,14 @@ import {
   MessageSquare,
   Paperclip,
   Radio,
+  Waypoints,
   Wrench,
 } from "lucide-react";
 import { MessageBubble } from "../messages/MessageBubble";
 import { TaskRequestCard } from "../messages/TaskMessages";
 import { ArtifactCard } from "../messages/ArtifactCard";
 import { AgentConversationCard } from "../messages/AgentConversationCard";
+import { TaskActivity } from "../tasks/TaskActivity";
 import { StreamingBubble } from "../messages/StreamingBubble";
 import { AgentBusyToastCard } from "../AgentBusyToast";
 import { ReminderToastCard } from "../ReminderToast";
@@ -1312,6 +1314,57 @@ export function buildPreviewCategories(
                 phase: "tool_call",
                 recentSteps: ["web_search(hotels near venue)"],
               })}
+            />
+          ),
+        },
+      ],
+    },
+
+    // ------------------------------------------------------- task activity
+    {
+      id: "task-activity",
+      name: "Live activity rail",
+      description: "Step trail on an in-flight action (Actions → detail pane)",
+      icon: Waypoints,
+      items: [
+        {
+          label: "First step",
+          caption: "no history yet — head only, no rail",
+          node: <TaskActivity steps={["Reading the trip brief"]} />,
+        },
+        {
+          label: "Short trail",
+          node: (
+            <TaskActivity
+              steps={["Reading the trip brief", "Checking calendar availability", "Searching flights BER → LHR"]}
+            />
+          ),
+        },
+        {
+          label: "Full trail",
+          caption: "history caps at four; older steps recede",
+          node: (
+            <TaskActivity
+              steps={[
+                "Reading the trip brief",
+                "Checking calendar availability",
+                "Searching flights BER → LHR",
+                "Comparing fares across carriers",
+                "Checking hotels near the venue",
+                "Drafting the itinerary",
+              ]}
+            />
+          ),
+        },
+        {
+          label: "Long step text",
+          caption: "wrapping — text must clear the rail on every line",
+          node: (
+            <TaskActivity
+              steps={[
+                "Opened the shared Berlin planning sheet and read the constraints tab",
+                "Cross-referencing the venue address against hotels within a 500m walk, filtering out anything without free cancellation before Friday",
+              ]}
             />
           ),
         },
