@@ -15,7 +15,7 @@ import {
   MessageFooter,
   MessageHeader,
 } from "@/components/ui/message";
-import { Bot, LogIn, Reply as ReplyIcon } from "lucide-react";
+import { Bot, LogIn, Reply as ReplyIcon, Terminal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useModelCatalog } from "../../stores/modelCatalogStore";
 import { MarkdownContent } from "./MarkdownContent";
@@ -63,17 +63,21 @@ function isResultPresentationMessage(message: Message): boolean {
   return false;
 }
 
-/** Sender name + Agent pill + model label shown above the first bubble of a run. */
+/** Sender name + Agent pill + model label shown above the first bubble of a run.
+ *  `viaTerminal` tags a message mirrored from an external CLI session (#148):
+ *  the owner's terminal prompt or the session's reply, not something typed here. */
 function SenderHeader({
   senderName,
   isAgent,
   modelLabel,
+  viaTerminal,
 }: {
   senderName: string;
   isAgent: boolean;
   modelLabel: string | null;
+  viaTerminal?: boolean;
 }) {
-  const { t } = useTranslation("common");
+  const { t } = useTranslation(["common", "chat"]);
   return (
     <MessageHeader className="mb-0.5 flex-col items-start gap-0 px-1">
       <span className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
@@ -81,7 +85,13 @@ function SenderHeader({
         {isAgent && (
           <span className="inline-flex items-center gap-1 rounded-sm border border-border px-1 py-px text-[11px] font-medium text-muted-foreground">
             <Bot className="h-3 w-3" />
-            {t("agent")}
+            {t("common:agent")}
+          </span>
+        )}
+        {viaTerminal && (
+          <span className="inline-flex items-center gap-1 rounded-sm border border-border px-1 py-px text-[11px] font-medium text-muted-foreground">
+            <Terminal className="h-3 w-3" />
+            {t("chat:viaTerminal")}
           </span>
         )}
       </span>
@@ -155,6 +165,7 @@ export const MessageBubble = memo(function MessageBubble({
       | undefined;
   const rawBackend =
     (message.metadata?.backend as string | undefined) || undefined;
+  const viaTerminal = message.metadata?.source === "terminal";
   // Resolve from the backend catalog (single source of truth) rather than a
   // static client table, so labels never drift from the model dropdown.
   const catalogModelLabel = useModelCatalog((s) => s.modelLabel);
@@ -249,6 +260,7 @@ export const MessageBubble = memo(function MessageBubble({
               senderName={senderName}
               isAgent={isAgent}
               modelLabel={modelLabel}
+              viaTerminal={viaTerminal}
             />
           )}
           {isTask ? (
@@ -280,6 +292,7 @@ export const MessageBubble = memo(function MessageBubble({
             senderName={senderName}
             isAgent={isAgent}
             modelLabel={modelLabel}
+            viaTerminal={viaTerminal}
           />
         )}
 

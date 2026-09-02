@@ -326,7 +326,7 @@ export const resources = {
         "expires": "The invite works once and expires in 24 hours.",
         "intro": "Track a session you're already running as an agent. It gets agntchat tools through MCP and shows up here while it runs — nothing is started or stopped from this app.",
         "nameLabel": "Agent name",
-        "next": "Then start a new session in the CLI — it appears in this list as External while it runs.",
+        "next": "Then start a new session in the CLI — the connect command prints a channel flag that pushes your messages into it live. It appears in this list as External while it runs, and its transcript is mirrored into your DM with it.",
         "runThis": "Run this in a terminal:",
         "title": "Connect a Claude Code or Codex session",
         "toolLabel": "CLI"
@@ -2831,6 +2831,7 @@ export const resources = {
         "tapped": "You tapped “{{label}}”",
         "tappedSkipped": "You tapped “{{label}}” — skipped"
       },
+      "viaTerminal": "via terminal",
       "viewOnlyBadge": "View only",
       "voice": {
         "cancelRecording": "Cancel recording",
@@ -6396,7 +6397,7 @@ export const resources = {
         "expires": "La invitación sirve una vez y caduca en 24 horas.",
         "intro": "Sigue como agente una sesión que ya estás ejecutando. Recibe las herramientas de agntchat por MCP y aparece aquí mientras se ejecuta; esta app no inicia ni detiene nada.",
         "nameLabel": "Nombre del agente",
-        "next": "Luego inicia una sesión nueva en la CLI: aparecerá en esta lista como Externo mientras se ejecute.",
+        "next": "Luego inicia una nueva sesión en la CLI — el comando de conexión muestra un indicador de canal que envía tus mensajes a la sesión en vivo. Aparece en esta lista como Externo mientras se ejecuta, y su transcripción se refleja en tu DM con ella.",
         "runThis": "Ejecuta esto en una terminal:",
         "title": "Conectar una sesión de Claude Code o Codex",
         "toolLabel": "CLI"
@@ -8901,6 +8902,7 @@ export const resources = {
         "tapped": "Tocaste “{{label}}”",
         "tappedSkipped": "Tocaste “{{label}}” — omitido"
       },
+      "viaTerminal": "vía terminal",
       "viewOnlyBadge": "Solo lectura",
       "voice": {
         "cancelRecording": "Cancelar grabación",
@@ -12466,7 +12468,7 @@ export const resources = {
         "expires": "Die Einladung gilt einmal und läuft nach 24 Stunden ab.",
         "intro": "Verfolge eine Sitzung, die du bereits ausführst, als Agent. Sie erhält agntchat-Tools über MCP und erscheint hier, solange sie läuft — diese App startet oder stoppt nichts.",
         "nameLabel": "Agentenname",
-        "next": "Starte dann eine neue Sitzung in der CLI — sie erscheint in dieser Liste als Extern, solange sie läuft.",
+        "next": "Starte dann eine neue Sitzung in der CLI — der Connect-Befehl gibt ein Channel-Flag aus, mit dem deine Nachrichten live in die Sitzung gelangen. Sie erscheint hier als Extern, solange sie läuft, und ihr Verlauf wird in deine DM mit ihr gespiegelt.",
         "runThis": "Führe das in einem Terminal aus:",
         "title": "Claude-Code- oder Codex-Sitzung verbinden",
         "toolLabel": "CLI"
@@ -14971,6 +14973,7 @@ export const resources = {
         "tapped": "Sie haben auf „{{label}}“ getippt",
         "tappedSkipped": "Sie haben auf „{{label}}“ getippt — übersprungen"
       },
+      "viaTerminal": "über Terminal",
       "viewOnlyBadge": "Nur ansehen",
       "voice": {
         "cancelRecording": "Aufnahme abbrechen",
@@ -18536,7 +18539,7 @@ export const resources = {
         "expires": "L'invitation est à usage unique et expire dans 24 heures.",
         "intro": "Suivez une session déjà en cours comme un agent. Elle reçoit les outils agntchat via MCP et apparaît ici tant qu'elle tourne — cette app ne démarre ni n'arrête rien.",
         "nameLabel": "Nom de l'agent",
-        "next": "Démarrez ensuite une nouvelle session dans la CLI : elle apparaît dans cette liste comme Externe tant qu'elle tourne.",
+        "next": "Démarrez ensuite une nouvelle session dans la CLI — la commande de connexion affiche un indicateur de canal qui transmet vos messages en direct à la session. Elle apparaît dans cette liste comme Externe tant qu'elle tourne, et sa transcription est reflétée dans votre DM avec elle.",
         "runThis": "Exécutez ceci dans un terminal :",
         "title": "Connecter une session Claude Code ou Codex",
         "toolLabel": "CLI"
@@ -21041,6 +21044,7 @@ export const resources = {
         "tapped": "Vous avez appuyé sur «{{label}}»",
         "tappedSkipped": "Vous avez appuyé sur «{{label}}» — ignoré"
       },
+      "viaTerminal": "via le terminal",
       "viewOnlyBadge": "Lecture seule",
       "voice": {
         "cancelRecording": "Annuler l'enregistrement",
@@ -24606,7 +24610,7 @@ export const resources = {
         "expires": "O convite vale uma vez e expira em 24 horas.",
         "intro": "Acompanhe como agente uma sessão que você já está executando. Ela recebe as ferramentas do agntchat via MCP e aparece aqui enquanto roda — este app não inicia nem para nada.",
         "nameLabel": "Nome do agente",
-        "next": "Depois inicie uma nova sessão na CLI — ela aparece nesta lista como Externo enquanto roda.",
+        "next": "Depois inicie uma nova sessão na CLI — o comando connect mostra uma flag de canal que envia suas mensagens para a sessão ao vivo. Ela aparece nesta lista como Externo enquanto roda, e sua transcrição é espelhada na sua DM com ela.",
         "runThis": "Execute isto em um terminal:",
         "title": "Conectar uma sessão do Claude Code ou Codex",
         "toolLabel": "CLI"
@@ -27111,6 +27115,7 @@ export const resources = {
         "tapped": "Você tocou em “{{label}}”",
         "tappedSkipped": "Você tocou em “{{label}}” — ignorado"
       },
+      "viaTerminal": "via terminal",
       "viewOnlyBadge": "Somente visualização",
       "voice": {
         "cancelRecording": "Cancelar gravação",
@@ -30676,7 +30681,7 @@ export const resources = {
         "expires": "招待は 1 回のみ有効で、24 時間で期限切れになります。",
         "intro": "すでに実行中のセッションをエージェントとして追跡します。MCP 経由で agntchat のツールを利用でき、実行中はここに表示されます。このアプリからは起動も停止もしません。",
         "nameLabel": "エージェント名",
-        "next": "その後 CLI で新しいセッションを開始してください。実行中はこの一覧に「外部」として表示されます。",
+        "next": "次に CLI で新しいセッションを開始します。connect コマンドが表示するチャンネルフラグを付けると、メッセージがセッションにリアルタイムで届きます。実行中はこの一覧に外部として表示され、そのやり取りは DM にミラーされます。",
         "runThis": "ターミナルで次を実行してください:",
         "title": "Claude Code または Codex のセッションを接続",
         "toolLabel": "CLI"
@@ -33181,6 +33186,7 @@ export const resources = {
         "tapped": "「{{label}}」をタップしました",
         "tappedSkipped": "「{{label}}」をタップしました — スキップ"
       },
+      "viaTerminal": "ターミナル経由",
       "viewOnlyBadge": "閲覧のみ",
       "voice": {
         "cancelRecording": "録音をキャンセル",
@@ -36746,7 +36752,7 @@ export const resources = {
         "expires": "邀请仅可使用一次，24 小时后失效。",
         "intro": "将你已在运行的会话作为代理进行跟踪。它通过 MCP 获得 agntchat 工具，运行期间显示在这里——此应用不会启动或停止任何东西。",
         "nameLabel": "代理名称",
-        "next": "然后在 CLI 中开始新会话——运行期间它会以“外部”身份出现在此列表中。",
+        "next": "然后在 CLI 中启动新会话——connect 命令会打印一个频道参数，可将你的消息实时推送到该会话。运行期间它会在此列表中显示为外部，其对话记录会镜像到你与它的私信中。",
         "runThis": "在终端中运行：",
         "title": "连接 Claude Code 或 Codex 会话",
         "toolLabel": "CLI"
@@ -39251,6 +39257,7 @@ export const resources = {
         "tapped": "你点击了「{{label}}」",
         "tappedSkipped": "你点击了「{{label}}」——已跳过"
       },
+      "viaTerminal": "来自终端",
       "viewOnlyBadge": "仅查看",
       "voice": {
         "cancelRecording": "取消录音",
@@ -42816,7 +42823,7 @@ export const resources = {
         "expires": "초대는 한 번만 사용할 수 있으며 24시간 후 만료됩니다.",
         "intro": "이미 실행 중인 세션을 에이전트로 추적합니다. MCP를 통해 agntchat 도구를 사용하고 실행 중일 때 여기에 표시됩니다. 이 앱에서는 아무것도 시작하거나 중지하지 않습니다.",
         "nameLabel": "에이전트 이름",
-        "next": "그런 다음 CLI에서 새 세션을 시작하세요. 실행 중에는 이 목록에 외부로 표시됩니다.",
+        "next": "그런 다음 CLI에서 새 세션을 시작하세요. connect 명령이 출력하는 채널 플래그를 사용하면 메시지가 세션에 실시간으로 전달됩니다. 실행 중에는 이 목록에 외부로 표시되며, 대화 내용은 해당 에이전트와의 DM에 미러링됩니다.",
         "runThis": "터미널에서 다음을 실행하세요:",
         "title": "Claude Code 또는 Codex 세션 연결",
         "toolLabel": "CLI"
@@ -45321,6 +45328,7 @@ export const resources = {
         "tapped": "“{{label}}”을(를) 탭했습니다",
         "tappedSkipped": "“{{label}}”을(를) 탭했습니다 — 건너뜀"
       },
+      "viaTerminal": "터미널 경유",
       "viewOnlyBadge": "보기 전용",
       "voice": {
         "cancelRecording": "녹음 취소",
@@ -48886,7 +48894,7 @@ export const resources = {
         "expires": "L'invito vale una volta e scade tra 24 ore.",
         "intro": "Traccia come agente una sessione già in esecuzione. Riceve gli strumenti agntchat via MCP e compare qui mentre è attiva: questa app non avvia né ferma nulla.",
         "nameLabel": "Nome dell'agente",
-        "next": "Poi avvia una nuova sessione nella CLI: comparirà in questo elenco come Esterno mentre è attiva.",
+        "next": "Poi avvia una nuova sessione nella CLI — il comando connect mostra un flag di canale che inoltra i tuoi messaggi alla sessione in tempo reale. Appare in questo elenco come Esterno mentre è in esecuzione, e la sua trascrizione viene riportata nel tuo DM con lei.",
         "runThis": "Esegui questo in un terminale:",
         "title": "Collega una sessione Claude Code o Codex",
         "toolLabel": "CLI"
@@ -51391,6 +51399,7 @@ export const resources = {
         "tapped": "Hai toccato “{{label}}”",
         "tappedSkipped": "Hai toccato “{{label}}” — saltato"
       },
+      "viaTerminal": "via terminale",
       "viewOnlyBadge": "Sola visualizzazione",
       "voice": {
         "cancelRecording": "Annulla registrazione",
@@ -54956,7 +54965,7 @@ export const resources = {
         "expires": "आमंत्रण एक बार काम करता है और 24 घंटे में समाप्त हो जाता है।",
         "intro": "पहले से चल रहे सत्र को एजेंट के रूप में ट्रैक करें। इसे MCP के ज़रिए agntchat टूल मिलते हैं और चलते समय यह यहाँ दिखता है — यह ऐप कुछ भी शुरू या बंद नहीं करता।",
         "nameLabel": "एजेंट का नाम",
-        "next": "फिर CLI में नया सत्र शुरू करें — चलते समय यह इस सूची में बाहरी के रूप में दिखेगा।",
+        "next": "फिर CLI में एक नया सत्र शुरू करें — connect कमांड एक चैनल फ़्लैग दिखाता है जो आपके संदेश सीधे सत्र में पहुँचाता है। चलते समय यह इस सूची में बाहरी के रूप में दिखता है, और इसका ट्रांसक्रिप्ट उसके साथ आपके DM में दिखाया जाता है।",
         "runThis": "इसे टर्मिनल में चलाएँ:",
         "title": "Claude Code या Codex सत्र जोड़ें",
         "toolLabel": "CLI"
@@ -57461,6 +57470,7 @@ export const resources = {
         "tapped": "आपने “{{label}}” टैप किया",
         "tappedSkipped": "आपने “{{label}}” टैप किया — छोड़ दिया गया"
       },
+      "viaTerminal": "टर्मिनल से",
       "viewOnlyBadge": "केवल देखने योग्य",
       "voice": {
         "cancelRecording": "रिकॉर्डिंग रद्द करें",
