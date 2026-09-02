@@ -25,7 +25,7 @@ export type AgentActivity = (typeof AGENT_ACTIVITIES)[number];
 export const PRESENCES = ["online_local","offline"] as const;
 export type AgentPresence = (typeof PRESENCES)[number];
 
-export const RUNTIMES = ["local","org_host"] as const;
+export const RUNTIMES = ["local","org_host","external"] as const;
 export type AgentRuntime = (typeof RUNTIMES)[number];
 
 export const PRESENCE_MODES = ["always_on","wake_on_demand","manual"] as const;

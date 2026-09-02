@@ -11,6 +11,7 @@ import {
   Forward,
   Zap,
   MessageSquarePlus,
+  Terminal,
 } from "lucide-react";
 import { cn, formatClockTime } from "../../lib/utils";
 import i18n from "../../i18n";
@@ -73,6 +74,15 @@ interface StatusPayload {
     replacement_display_name?: string;
     missing_tools: string[];
   }>;
+  /** Present on `external_session_started` / `external_session_ended`
+   *  payloads (#148) — the user's own CLI session. */
+  tool?: string;
+  cwd?: string;
+  repo?: string;
+  branch?: string;
+  hostname?: string;
+  reason?: string;
+  stats?: { prompts?: number; tool_calls?: number; tools?: Record<string, number> };
   /** Present on `thread_completed` payloads — the side conversation that
    *  was just resolved (or auto-abandoned). Distinct from task lifecycle
    *  cards; carries thread_id + topic + goal + outcome instead of task_id. */
@@ -737,6 +747,56 @@ function WorkRoomLink({ workConversationId }: { workConversationId: string }) {
   );
 }
 
+
+/** External agent session cards (#148): the user's own Claude Code / Codex
+ *  session reported starting or ending. No task behind it — the context line
+ *  says which CLI, which repo/branch, which machine; the ended card adds
+ *  duration and tool-call count from the server-accumulated stats. */
+function ExternalSessionCard({ payload }: { payload: StatusPayload }) {
+  const { t } = useTranslation("tasks");
+  const ended = payload.type === "external_session_ended";
+  const label = !ended
+    ? t("card.externalSessionStarted")
+    : payload.reason === "lost"
+      ? t("card.externalSessionLost")
+      : t("card.externalSessionEnded");
+  const tool =
+    payload.tool === "codex"
+      ? t("agents:hosting.externalTool.codex")
+      : payload.tool === "claude_code"
+        ? t("agents:hosting.externalTool.claude_code")
+        : t("agents:hosting.externalTool.other");
+  const where = payload.repo
+    ? `${payload.repo}${payload.branch ? ` (${payload.branch})` : ""}`
+    : payload.cwd?.split("/").filter(Boolean).slice(-1)[0];
+  const context = [tool, where, payload.hostname].filter(Boolean).join(" · ");
+  const toolCalls = payload.stats?.tool_calls ?? 0;
+  const detail = ended
+    ? [
+        typeof payload.duration_seconds === "number"
+          ? t("card.sessionLasted", { duration: formatDuration(payload.duration_seconds) })
+          : null,
+        toolCalls > 0 ? t("card.sessionToolCalls", { count: toolCalls }) : null,
+      ]
+        .filter(Boolean)
+        .join(" · ")
+    : null;
+  return (
+    <Card>
+      <div className="px-3 py-2.5">
+        <StatusLine
+          glyph={<Terminal className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />}
+          label={label}
+          context={context}
+        />
+        {detail && (
+          <p className="mt-1.5 text-xs text-muted-foreground">{detail}</p>
+        )}
+      </div>
+    </Card>
+  );
+}
+
 export function StatusUpdateMessage({ message }: { message: Message }) {
   const { t } = useTranslation("tasks");
   const payload = safeParseJson<StatusPayload>(message.content, {
@@ -778,6 +838,15 @@ export function StatusUpdateMessage({ message }: { message: Message }) {
   // as the resolution artifact in recent_messages.
   if (payload.type === "thread_completed") {
     return null;
+  }
+
+  // external_session_*: an external agent's own CLI session started or
+  // ended (#148). No task, no thread — its own compact card.
+  if (
+    payload.type === "external_session_started" ||
+    payload.type === "external_session_ended"
+  ) {
+    return <ExternalSessionCard payload={payload} />;
   }
 
   // task_request_failed: backend rejected the agent's create_task call.

@@ -10,9 +10,9 @@ import {
 } from "../lib/status-contract.generated";
 import { useModelCatalog } from "../stores/modelCatalogStore";
 import { formatBackendLabel } from "../lib/models";
-import { cn } from "../lib/utils";
+import { cn, formatRelativeShort } from "../lib/utils";
 import { hasKeyProblem } from "../lib/agentKeyProblem";
-import { Crown, Cloud, Laptop, Link2, ChevronRight, ChevronDown, Loader2 } from "lucide-react";
+import { Crown, Cloud, Laptop, Link2, ChevronRight, ChevronDown, Loader2, Terminal } from "lucide-react";
 import {
   restartHostedAgents,
   forceResetAgent,
@@ -345,6 +345,25 @@ export function AgentRow({
   // generate. The Actions cell shows a passive "managed on org host" hint
   // instead of a play button or the (always-missing) API-key warning.
   const isOrgHost = managed.agent.runtime === "org_host";
+  // External agent (#148): a Claude Code / Codex session the user drives
+  // themselves. No bridge here, no power control; the meta line shows the
+  // CLI and what its latest session is working on.
+  const isExternal = managed.agent.runtime === "external";
+  const externalSession = managed.agent.externalSession;
+  const externalToolLabel = isExternal
+    ? externalSession?.tool === "codex"
+      ? t("hosting.externalTool.codex")
+      : externalSession?.tool === "claude_code"
+        ? t("hosting.externalTool.claude_code")
+        : t("hosting.externalTool.other")
+    : null;
+  const externalWhere = isExternal
+    ? externalSession?.repo
+      ? `${externalSession.repo}${externalSession.branch ? ` (${externalSession.branch})` : ""}`
+      : externalSession?.cwd
+        ? externalSession.cwd.split("/").filter(Boolean).slice(-1)[0] ?? null
+        : null
+    : null;
   // A missing local `ak_` key is NOT a start blocker: startAgent mints an
   // owner delegation token for agents created elsewhere (phone/web/another
   // desktop), so an owned local agent runs fine here without a "generate a
@@ -530,10 +549,17 @@ export function AgentRow({
             <div className="mt-0.5"><AgentActivityIndicator activity={globalActivity} /></div>
           ) : null}
 
-          {/* Meta line: runtime chip · provider · model. */}
+          {/* Meta line: runtime chip · provider · model. External agents
+              (#148) have no provider/model of ours — show the CLI and what
+              its session is working on instead. */}
           <div className="mt-0.5 flex items-center gap-1.5 text-[10px] text-muted-foreground min-w-0">
             <span className="inline-flex shrink-0 items-center gap-1">
-              {managed.agent.runtime === "org_host" ? (
+              {isExternal ? (
+                <>
+                  <Terminal className="h-3 w-3 text-warning" />
+                  {t("hosting.external")}
+                </>
+              ) : managed.agent.runtime === "org_host" ? (
                 <>
                   <Cloud className="h-3 w-3 text-info" />
                   Hosted
@@ -545,13 +571,33 @@ export function AgentRow({
                 </>
               )}
             </span>
-            {backendLabel && (
+            {isExternal && externalToolLabel && (
+              <>
+                <span className="text-muted-foreground/40">·</span>
+                <span className="shrink-0">{externalToolLabel}</span>
+              </>
+            )}
+            {isExternal && externalWhere && (
+              <>
+                <span className="text-muted-foreground/40">·</span>
+                <span className="truncate font-mono text-[9px]">{externalWhere}</span>
+              </>
+            )}
+            {isExternal && !remoteOnline && managed.agent.lastActiveAt && (
+              <>
+                <span className="text-muted-foreground/40">·</span>
+                <span className="shrink-0">
+                  {t("row.lastActive", { when: formatRelativeShort(managed.agent.lastActiveAt) })}
+                </span>
+              </>
+            )}
+            {!isExternal && backendLabel && (
               <>
                 <span className="text-muted-foreground/40">·</span>
                 <span className="shrink-0">{backendLabel}</span>
               </>
             )}
-            {modelLabel && (
+            {!isExternal && modelLabel && (
               <>
                 <span className="text-muted-foreground/40">·</span>
                 <span className="truncate font-mono text-[9px]">{modelLabel}</span>
@@ -575,6 +621,23 @@ export function AgentRow({
                 />
                 <TooltipContent side="left" className="text-xs">
                   {t("row.subAgentHint")}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          ) : isExternal ? (
+            // External agent (#148): nothing here can start or stop it — the
+            // user's own CLI session is the process. No power control.
+            <TooltipProvider delay={150}>
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <span className="flex h-7 w-7 items-center justify-center text-muted-foreground/50">
+                      <Terminal className="w-4 h-4" />
+                    </span>
+                  }
+                />
+                <TooltipContent side="left" className="text-xs">
+                  {t("row.externalHint")}
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>

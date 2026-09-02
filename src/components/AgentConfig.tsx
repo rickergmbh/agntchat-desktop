@@ -946,7 +946,9 @@ export function AgentConfig({
                 Always shown: when the `org_hosts` feature is off the Hosted
                 card renders disabled with a "coming soon" tag (mirroring the
                 creation flow), so users learn hosting exists. */}
-            <RuntimePanel agent={agent} orgHostsEnabled={orgHostsEnabled} />
+            {/* External agents (#148) are neither Local nor Hosted — the panel
+                would offer a runtime flip that makes no sense for a CLI session. */}
+            {agent.runtime !== "external" && <RuntimePanel agent={agent} orgHostsEnabled={orgHostsEnabled} />}
 
             {/* Model group — provider, mode, and effort are one decision
                 ("how does this agent think?"), so they're clustered tightly
@@ -4388,7 +4390,11 @@ function RuntimePanel({
     };
   }, [organization?.id]);
 
-  const currentRuntime = agent.runtime ?? "local";
+  // The Local↔Hosted panel only models those two placements; an external
+  // agent (#148) is neither and never reaches this panel (see the guard at
+  // the render site), but the state type still has to narrow it away.
+  const currentRuntime: "local" | "org_host" =
+    agent.runtime === "org_host" ? "org_host" : "local";
   const currentPresence = agent.presenceMode ?? "wake_on_demand";
   const currentIdle = agent.idleTimeoutSeconds ?? 600;
   const currentHostId = agent.assignedHostId ?? null;

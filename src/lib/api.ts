@@ -3504,6 +3504,23 @@ export interface SubAgentPolicy {
   default_ttl_minutes?: number;
 }
 
+/** An external agent's CLI session (#148). */
+export interface ExternalSession {
+  id: string;
+  sessionKey: string;
+  tool: "claude_code" | "codex" | "other";
+  state: "running" | "waiting" | "ended";
+  cwd?: string;
+  repo?: string;
+  branch?: string;
+  hostname?: string;
+  stats?: { prompts?: number; tool_calls?: number; tools?: Record<string, number> };
+  startedAt: string;
+  lastEventAt: string;
+  endedAt?: string;
+  dmConversationId?: string;
+}
+
 export interface Agent {
   id: string;
   displayName: string;
@@ -3542,6 +3559,12 @@ export interface Agent {
   runtime?: AgentRuntime;
   presenceMode?: PresenceMode;
   idleTimeoutSeconds?: number | null;
+  /** Coarse "last seen" from authenticated agent traffic. Display only —
+   *  never a liveness input; presence comes from presenceStore. */
+  lastActiveAt?: string | null;
+  /** External agents (#148) only: the most recent CLI session (Claude
+   *  Code / Codex driven by the user), open or ended. */
+  externalSession?: ExternalSession;
   /** Org-host RUNTIME org (which org's VM runs the bridge) — set via
    *  PATCH /api/agents/:id/runtime. NOT the visibility pin. */
   organizationId?: string | null;
