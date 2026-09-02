@@ -255,6 +255,7 @@ function ConversationPane({
   const online = usePresenceStore((s) => s.online);
   const agentActivity = usePresenceStore((s) => s.agentActivity);
   const agentActivityConvs = usePresenceStore((s) => s.agentActivityConvs);
+  const agentDevices = usePresenceStore((s) => s.agentDevices);
 
   // Match web's ChatView header — show a stacked GroupAvatar for group
   // conversations or whenever there's more than one other participant.
@@ -295,11 +296,23 @@ function ConversationPane({
     return null;
   }, [conversation, online, myId]);
 
+  // In a 1:1 DM with an agent, say WHERE its bridge is running when known
+  // ("Online · on James's MacBook") instead of a bare "Online" — mirrors
+  // web's ChatView. presenceStore only ever populates agentDevices for
+  // local-runtime agents (org-host agents report no single "machine"), so
+  // no separate runtime check is needed here.
+  const otherAgentDeviceLabel =
+    presenceInfo?.kind === "online" && otherParticipant?.type === "agent"
+      ? agentDevices[otherMembers[0]?.participantId ?? ""] ?? null
+      : null;
+
   const presenceLine =
     presenceInfo == null
       ? null
       : presenceInfo.kind === "online"
-      ? t("common:online")
+      ? otherAgentDeviceLabel
+        ? t("onlineOnDevice", { device: otherAgentDeviceLabel })
+        : t("common:online")
       : presenceInfo.kind === "offline"
       ? t("common:offline")
       : presenceInfo.onlineCount > 0

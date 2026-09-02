@@ -56,15 +56,29 @@ const LOCAL_ACTIVITY_PHASE: Record<Exclude<ActivityType, "error">, StreamPhase> 
 function PresenceDot({
   processStatus,
   presence,
+  elsewhereDevice,
 }: {
   processStatus: ManagedAgent["processStatus"];
   presence: "online_local" | "offline";
+  /** Device label when the bridge is online on another machine (see
+   *  runningElsewhereOn) — null/undefined when running here or offline.
+   *  Surfaced as the dot's tooltip so hovering answers "online where?"
+   *  without needing the row badge. */
+  elsewhereDevice?: string | null;
 }) {
   const { t } = useTranslation("agents");
   const locallyRunning = processStatus === "running";
   const effective: "online_local" | "offline" = locallyRunning
     ? "online_local"
     : presence;
+  const label =
+    effective !== "online_local"
+      ? t("common:offline")
+      : elsewhereDevice != null
+        ? elsewhereDevice
+          ? t("row.runningOnDeviceHint", { device: elsewhereDevice })
+          : t("row.runningOnOtherDevice")
+        : t("common:online");
 
   return (
     <span
@@ -72,7 +86,8 @@ function PresenceDot({
         "absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-card",
         effective === "online_local" ? "bg-success" : "bg-muted-foreground"
       )}
-      aria-label={effective === "online_local" ? t("common:online") : t("common:offline")}
+      title={label}
+      aria-label={label}
     />
   );
 }
@@ -203,6 +218,22 @@ export function AgentRow({
 
   const isRunning = managed.processStatus === "running";
 
+  // Where the agent's bridge is actually alive, when that's NOT this
+  // machine — null if there's nothing to take over (offline, hosted,
+  // already running here). "" means online elsewhere but the bridge
+  // predates device reporting, so we don't know its name. Drives both the
+  // take-over dialog below and the visible "On <device>" badge in the row,
+  // so a row that reads offline-here-but-online (e.g. James's PC showing
+  // Codie's green dot while its own switch is off) says WHERE instead of
+  // just leaving the mismatch unexplained.
+  const elsewhereDevice = runningElsewhereOn(
+    managed,
+    liveOnline,
+    presenceHostname,
+    myDevice,
+    presenceDevice
+  );
+
   const handleToggle = async (e?: React.MouseEvent) => {
     e?.stopPropagation();
     try {
@@ -211,7 +242,7 @@ export function AgentRow({
       } else {
         // The bridge is alive on another of the user's machines — starting
         // here takes the agent over and stops it there. Confirm first.
-        const elsewhere = runningElsewhereOn(managed, liveOnline, presenceHostname, myDevice, presenceDevice);
+        const elsewhere = elsewhereDevice;
         if (elsewhere !== null) {
           setMoveError(null);
           setConfirmMoveFrom(elsewhere);
@@ -395,6 +426,7 @@ export function AgentRow({
           <PresenceDot
             processStatus={managed.processStatus}
             presence={livePresence}
+            elsewhereDevice={elsewhereDevice}
           />
         </div>
 
@@ -450,6 +482,26 @@ export function AgentRow({
                 title={`${childCount} sub-agent${childCount === 1 ? "" : "s"} — expand to view`}
               >
                 {childCount}
+              </Badge>
+            )}
+            {/* Where "local" actually is — the machine whose bridge is
+                running this agent right now, when that's not this one.
+                Matches web AgentDetail's "On <device>" badge so the answer
+                to "is it running here?" doesn't require a hover or a click
+                into the detail pane. */}
+            {elsewhereDevice !== null && (
+              <Badge
+                variant="secondary"
+                className="text-[10px] px-1.5 py-0 flex-shrink-0 bg-info/15 text-info border-info/20"
+                title={
+                  elsewhereDevice
+                    ? t("row.runningOnDeviceHint", { device: elsewhereDevice })
+                    : t("row.runningOnOtherDevice")
+                }
+              >
+                {elsewhereDevice
+                  ? t("row.onDevice", { device: elsewhereDevice })
+                  : t("row.onAnotherDevice")}
               </Badge>
             )}
           </div>
