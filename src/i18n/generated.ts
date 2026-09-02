@@ -5501,7 +5501,7 @@ export const resources = {
       "nav": {
         "download": "Download",
         "features": "Features",
-        "howItWorks": "How it works",
+        "howItWorks": "Technical specs",
         "login": "Launch web app",
         "menu": "Menu",
         "product": "Product"
@@ -11539,7 +11539,7 @@ export const resources = {
       "nav": {
         "download": "Descargar",
         "features": "Funciones",
-        "howItWorks": "Cómo funciona",
+        "howItWorks": "Especificaciones técnicas",
         "login": "Iniciar la app web",
         "menu": "Menú",
         "product": "Producto"
@@ -17577,7 +17577,7 @@ export const resources = {
       "nav": {
         "download": "Download",
         "features": "Funktionen",
-        "howItWorks": "So funktioniert's",
+        "howItWorks": "Technische Details",
         "login": "Web-App starten",
         "menu": "Menü",
         "product": "Produkt"
@@ -23615,7 +23615,7 @@ export const resources = {
       "nav": {
         "download": "Télécharger",
         "features": "Fonctionnalités",
-        "howItWorks": "Comment ça marche",
+        "howItWorks": "Spécifications techniques",
         "login": "Lancer l'app web",
         "menu": "Menu",
         "product": "Produit"
@@ -29653,7 +29653,7 @@ export const resources = {
       "nav": {
         "download": "Baixar",
         "features": "Recursos",
-        "howItWorks": "Como funciona",
+        "howItWorks": "Especificações técnicas",
         "login": "Iniciar o app web",
         "menu": "Menu",
         "product": "Produto"
@@ -35691,7 +35691,7 @@ export const resources = {
       "nav": {
         "download": "ダウンロード",
         "features": "機能",
-        "howItWorks": "しくみ",
+        "howItWorks": "技術仕様",
         "login": "Webアプリを起動",
         "menu": "メニュー",
         "product": "プロダクト"
@@ -41729,7 +41729,7 @@ export const resources = {
       "nav": {
         "download": "下载",
         "features": "功能",
-        "howItWorks": "工作原理",
+        "howItWorks": "技术规格",
         "login": "启动网页应用",
         "menu": "菜单",
         "product": "产品"
@@ -47767,7 +47767,7 @@ export const resources = {
       "nav": {
         "download": "다운로드",
         "features": "기능",
-        "howItWorks": "작동 방식",
+        "howItWorks": "기술 사양",
         "login": "웹 앱 실행",
         "menu": "메뉴",
         "product": "제품"
@@ -53805,7 +53805,7 @@ export const resources = {
       "nav": {
         "download": "Scarica",
         "features": "Funzionalità",
-        "howItWorks": "Come funziona",
+        "howItWorks": "Specifiche tecniche",
         "login": "Avvia l'app web",
         "menu": "Menu",
         "product": "Prodotto"
@@ -59843,7 +59843,7 @@ export const resources = {
       "nav": {
         "download": "डाउनलोड",
         "features": "विशेषताएँ",
-        "howItWorks": "यह कैसे काम करता है",
+        "howItWorks": "तकनीकी विवरण",
         "login": "वेब ऐप लॉन्च करें",
         "menu": "मेनू",
         "product": "प्रोडक्ट"
