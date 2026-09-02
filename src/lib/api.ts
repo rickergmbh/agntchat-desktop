@@ -2017,6 +2017,7 @@ export async function createRoutine(data: {
   instructions: string;
   schedule_type: string;
   schedule_config: Record<string, unknown>;
+  timezone?: string;
   description?: string;
   report_to?: string;
   max_runs?: number;
@@ -3716,6 +3717,9 @@ export interface Routine {
   status: "active" | "paused" | "disabled" | "expired";
   scheduleType: "interval" | "cron";
   scheduleConfig: Record<string, unknown>;
+  /** IANA zone the cron hour/minute are wall-clock in (owner's profile
+   *  timezone by default). nextRunAt is still a UTC instant. */
+  timezone?: string;
   reportTo?: string;
   state: Record<string, unknown>;
   lastRunAt?: string;

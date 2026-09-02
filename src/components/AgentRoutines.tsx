@@ -67,6 +67,18 @@ function hourLabel(i: number): string {
 // Key suffixes only — resolved via i18n.t at call time so language
 // switches stay live (never t() at module scope).
 const DOW_KEYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+
+// The zone a routine's cron hour/minute are authored in: the profile
+// timezone (kept in sync with the device by authStore), then the machine's,
+// then UTC. Sent with every create/edit so the backend never has to guess,
+// and shown next to the hour picker so "9 AM" is unambiguous.
+function deviceTimezone(): string {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || "Etc/UTC";
+  } catch {
+    return "Etc/UTC";
+  }
+}
 const dowShort = (i: number) => i18n.t(`common:daysShort.${DOW_KEYS[i]}`);
 
 // Parse a cron day-of-week field ("*", "1-5", "0,6", "1,3,5") into a sorted
@@ -197,7 +209,7 @@ const DAY_PRESETS: Array<{ key: string; labelKey: string; days: number[] }> = [
   { key: "weekends", labelKey: "routines.weekends", days: [0, 6] },
 ];
 
-function describeSchedule(state: ScheduleState): string {
+function describeSchedule(state: ScheduleState, timezone: string): string {
   switch (state.mode) {
     case "interval": {
       const m = state.intervalMinutes;
@@ -231,7 +243,11 @@ function describeSchedule(state: ScheduleState): string {
         dayLabel = i18n.t("agents:routines.weekends");
       else if (days.length === 0) dayLabel = i18n.t("agents:routines.noDaysSelected");
       else dayLabel = days.map((d) => dowShort(d)).join(", ");
-      return i18n.t("agents:routines.daysAtTimeUtc", { days: dayLabel, time: formattedHourLabel });
+      return i18n.t("agents:routines.daysAtTimeInZone", {
+        days: dayLabel,
+        time: formattedHourLabel,
+        timezone,
+      });
     }
   }
 }
@@ -321,9 +337,12 @@ function minuteLabel(value: string): string {
 function ScheduleFields({
   state,
   setState,
+  timezone,
 }: {
   state: ScheduleState;
   setState: (next: ScheduleState) => void;
+  /** Zone the cron hour/minute are read in — labels the picker and summary. */
+  timezone: string;
 }) {
   const { t } = useTranslation("agents");
   const setMode = (mode: ScheduleMode) => setState({ ...state, mode });
@@ -471,7 +490,9 @@ function ScheduleFields({
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground">{t("routines.timeOfDayUtc")}</span>
+              <span className="text-xs text-muted-foreground">
+                {t("routines.timeOfDayInZone", { timezone })}
+              </span>
               <Select
                 value={state.cronHour}
                 onValueChange={(v) => setState({ ...state, cronHour: v ?? "9" })}
@@ -522,7 +543,7 @@ function ScheduleFields({
 
         <div className="flex items-center gap-2 border-t border-border/60 pt-2.5 text-xs text-foreground">
           <Clock className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-          <span>{describeSchedule(state)}</span>
+          <span>{describeSchedule(state, timezone)}</span>
         </div>
       </div>
     </div>
@@ -920,6 +941,8 @@ function CreateRoutineDialog({
   const [responseTemplate, setResponseTemplate] = useState("");
   // "" = the agent's default model; a model id runs this routine on that model.
   const [model, setModel] = useState("");
+  // Cron hour/minute are wall-clock in the profile timezone.
+  const userTz = useAuthStore((s) => s.participant?.timezone) || deviceTimezone();
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -976,6 +999,7 @@ function CreateRoutineDialog({
         instructions,
         schedule_type: scheduleType,
         schedule_config: scheduleConfig,
+        timezone: userTz,
         ...(description ? { description } : {}),
         ...(reportTo ? { report_to: reportTo } : {}),
         ...(maxRuns ? { max_runs: parseInt(maxRuns) } : {}),
@@ -1074,7 +1098,7 @@ function CreateRoutineDialog({
 
           <div className="space-y-1.5 py-4">
             <Label className="text-xs">{t("routines.schedule")}</Label>
-            <ScheduleFields state={schedule} setState={setSchedule} />
+            <ScheduleFields state={schedule} setState={setSchedule} timezone={userTz} />
           </div>
 
           <div className="grid gap-3 pt-4 sm:grid-cols-2">
@@ -1169,6 +1193,11 @@ export function RoutineForm({ routine, variant, onDone, onSaved }: RoutineFormPr
   const [reportTo, setReportTo] = useState(routine.reportTo || "");
   // "" = the agent's default model; a model id runs this routine on that model.
   const [model, setModel] = useState(routine.model || "");
+  // Cron hour/minute are wall-clock in this zone. The routine keeps the zone
+  // it was authored in (possibly from another device) until the user
+  // switches it to their own.
+  const userTz = useAuthStore((s) => s.participant?.timezone) || deviceTimezone();
+  const [routineTz, setRoutineTz] = useState(routine.timezone || userTz);
   // The workspace a routine lives in: it only appears in that workspace's
   // lists, and it delivers into that workspace's rooms. Moving one takes it
   // out of this workspace's list on save and resets the destination to the
@@ -1202,6 +1231,7 @@ export function RoutineForm({ routine, variant, onDone, onSaved }: RoutineFormPr
     setReportTo(routine.reportTo || "");
     setModel(routine.model || "");
     setOrganizationId(routine.organizationId || PERSONAL_WORKSPACE);
+    setRoutineTz(routine.timezone || userTz);
     setSchedule(parseRoutineSchedule(routine));
     setError(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1217,6 +1247,7 @@ export function RoutineForm({ routine, variant, onDone, onSaved }: RoutineFormPr
     if ((responseTemplate || "") !== (routine.responseTemplate || "")) return true;
     if ((reportTo || "") !== (routine.reportTo || "")) return true;
     if ((model || "") !== (routine.model || "")) return true;
+    if (routineTz !== (routine.timezone || userTz)) return true;
     if (movingWorkspace) return true;
     const built = buildScheduleConfig(schedule);
     if (built.scheduleType !== routine.scheduleType) return true;
@@ -1241,6 +1272,8 @@ export function RoutineForm({ routine, variant, onDone, onSaved }: RoutineFormPr
     responseTemplate,
     reportTo,
     model,
+    routineTz,
+    userTz,
     movingWorkspace,
     schedule,
   ]);
@@ -1257,6 +1290,7 @@ export function RoutineForm({ routine, variant, onDone, onSaved }: RoutineFormPr
         instructions,
         schedule_type: scheduleType,
         schedule_config: scheduleConfig,
+        timezone: routineTz,
         response_template: responseTemplate || null,
         report_to: reportTo || null,
         // "" clears the override (→ agent's default model).
@@ -1345,7 +1379,16 @@ export function RoutineForm({ routine, variant, onDone, onSaved }: RoutineFormPr
 
       <div className="space-y-1.5 py-4">
         <Label className="text-xs">{t("routines.schedule")}</Label>
-        <ScheduleFields state={schedule} setState={setSchedule} />
+        <ScheduleFields state={schedule} setState={setSchedule} timezone={routineTz} />
+        {routineTz !== userTz && schedule.mode === "datetime" && (
+          <button
+            type="button"
+            onClick={() => setRoutineTz(userTz)}
+            className="text-[11px] text-primary hover:underline"
+          >
+            {t("routines.switchToMyTimezone", { timezone: userTz })}
+          </button>
+        )}
       </div>
 
       <div className="grid gap-3 pt-4 sm:grid-cols-2">
