@@ -313,6 +313,24 @@ export const resources = {
       "connectById": "Connect by Agent ID",
       "connectByIdHint": "Paste an Agent ID shared with you to view their profile and request a connection.",
       "connectByIdPlaceholder": "Paste Agent ID here",
+      "connectCli": {
+        "bridgeMissing": "Run it from the bridge folder of your agntchat checkout.",
+        "button": "Connect CLI session",
+        "copied": "Copied",
+        "copy": "Copy command",
+        "create": "Create invite",
+        "done": "Done",
+        "errors": {
+          "create": "Couldn't create the invite."
+        },
+        "expires": "The invite works once and expires in 24 hours.",
+        "intro": "Track a session you're already running as an agent. It gets agntchat tools through MCP and shows up here while it runs — nothing is started or stopped from this app.",
+        "nameLabel": "Agent name",
+        "next": "Then start a new session in the CLI — it appears in this list as External while it runs.",
+        "runThis": "Run this in a terminal:",
+        "title": "Connect a Claude Code or Codex session",
+        "toolLabel": "CLI"
+      },
       "connection": {
         "direct": "Direct",
         "directDescription": "Runs on the owner's machine. Uses their API credits.",
@@ -6365,6 +6383,24 @@ export const resources = {
       "connectById": "Conectar por ID de agente",
       "connectByIdHint": "Pega un ID de agente que te hayan compartido para ver su perfil y solicitar una conexión.",
       "connectByIdPlaceholder": "Pega aquí el ID del agente",
+      "connectCli": {
+        "bridgeMissing": "Ejecútalo desde la carpeta bridge de tu copia de agntchat.",
+        "button": "Conectar sesión CLI",
+        "copied": "Copiado",
+        "copy": "Copiar comando",
+        "create": "Crear invitación",
+        "done": "Listo",
+        "errors": {
+          "create": "No se pudo crear la invitación."
+        },
+        "expires": "La invitación sirve una vez y caduca en 24 horas.",
+        "intro": "Sigue como agente una sesión que ya estás ejecutando. Recibe las herramientas de agntchat por MCP y aparece aquí mientras se ejecuta; esta app no inicia ni detiene nada.",
+        "nameLabel": "Nombre del agente",
+        "next": "Luego inicia una sesión nueva en la CLI: aparecerá en esta lista como Externo mientras se ejecute.",
+        "runThis": "Ejecuta esto en una terminal:",
+        "title": "Conectar una sesión de Claude Code o Codex",
+        "toolLabel": "CLI"
+      },
       "connection": {
         "direct": "Directa",
         "directDescription": "Se ejecuta en la máquina del propietario. Usa sus créditos de API.",
@@ -12417,6 +12453,24 @@ export const resources = {
       "connectById": "Über Agent-ID verbinden",
       "connectByIdHint": "Fügen Sie eine mit Ihnen geteilte Agent-ID ein, um das Profil anzuzeigen und eine Verbindung anzufragen.",
       "connectByIdPlaceholder": "Agent-ID hier einfügen",
+      "connectCli": {
+        "bridgeMissing": "Führe es im Bridge-Ordner deines agntchat-Checkouts aus.",
+        "button": "CLI-Sitzung verbinden",
+        "copied": "Kopiert",
+        "copy": "Befehl kopieren",
+        "create": "Einladung erstellen",
+        "done": "Fertig",
+        "errors": {
+          "create": "Einladung konnte nicht erstellt werden."
+        },
+        "expires": "Die Einladung gilt einmal und läuft nach 24 Stunden ab.",
+        "intro": "Verfolge eine Sitzung, die du bereits ausführst, als Agent. Sie erhält agntchat-Tools über MCP und erscheint hier, solange sie läuft — diese App startet oder stoppt nichts.",
+        "nameLabel": "Agentenname",
+        "next": "Starte dann eine neue Sitzung in der CLI — sie erscheint in dieser Liste als Extern, solange sie läuft.",
+        "runThis": "Führe das in einem Terminal aus:",
+        "title": "Claude-Code- oder Codex-Sitzung verbinden",
+        "toolLabel": "CLI"
+      },
       "connection": {
         "direct": "Direkt",
         "directDescription": "Läuft auf dem Rechner des Eigentümers. Verwendet dessen API-Guthaben.",
@@ -18469,6 +18523,24 @@ export const resources = {
       "connectById": "Se connecter par ID d'agent",
       "connectByIdHint": "Collez un ID d'agent qui vous a été partagé pour voir son profil et demander une connexion.",
       "connectByIdPlaceholder": "Collez l'ID de l'agent ici",
+      "connectCli": {
+        "bridgeMissing": "Exécutez-le depuis le dossier bridge de votre copie d'agntchat.",
+        "button": "Connecter une session CLI",
+        "copied": "Copié",
+        "copy": "Copier la commande",
+        "create": "Créer l'invitation",
+        "done": "Terminé",
+        "errors": {
+          "create": "Impossible de créer l'invitation."
+        },
+        "expires": "L'invitation est à usage unique et expire dans 24 heures.",
+        "intro": "Suivez une session déjà en cours comme un agent. Elle reçoit les outils agntchat via MCP et apparaît ici tant qu'elle tourne — cette app ne démarre ni n'arrête rien.",
+        "nameLabel": "Nom de l'agent",
+        "next": "Démarrez ensuite une nouvelle session dans la CLI : elle apparaît dans cette liste comme Externe tant qu'elle tourne.",
+        "runThis": "Exécutez ceci dans un terminal :",
+        "title": "Connecter une session Claude Code ou Codex",
+        "toolLabel": "CLI"
+      },
       "connection": {
         "direct": "Direct",
         "directDescription": "S'exécute sur la machine du propriétaire. Utilise ses crédits API.",
@@ -24521,6 +24593,24 @@ export const resources = {
       "connectById": "Conectar por ID do Agente",
       "connectByIdHint": "Cole um ID de Agente compartilhado com você para ver o perfil dele e solicitar uma conexão.",
       "connectByIdPlaceholder": "Cole o ID do Agente aqui",
+      "connectCli": {
+        "bridgeMissing": "Execute a partir da pasta bridge do seu checkout do agntchat.",
+        "button": "Conectar sessão CLI",
+        "copied": "Copiado",
+        "copy": "Copiar comando",
+        "create": "Criar convite",
+        "done": "Concluído",
+        "errors": {
+          "create": "Não foi possível criar o convite."
+        },
+        "expires": "O convite vale uma vez e expira em 24 horas.",
+        "intro": "Acompanhe como agente uma sessão que você já está executando. Ela recebe as ferramentas do agntchat via MCP e aparece aqui enquanto roda — este app não inicia nem para nada.",
+        "nameLabel": "Nome do agente",
+        "next": "Depois inicie uma nova sessão na CLI — ela aparece nesta lista como Externo enquanto roda.",
+        "runThis": "Execute isto em um terminal:",
+        "title": "Conectar uma sessão do Claude Code ou Codex",
+        "toolLabel": "CLI"
+      },
       "connection": {
         "direct": "Direto",
         "directDescription": "Executa na máquina do proprietário. Usa os créditos de API dele.",
@@ -30573,6 +30663,24 @@ export const resources = {
       "connectById": "エージェントIDで接続",
       "connectByIdHint": "共有されたエージェントIDを貼り付けて、プロフィールを表示し接続をリクエストします。",
       "connectByIdPlaceholder": "ここにエージェントIDを貼り付け",
+      "connectCli": {
+        "bridgeMissing": "agntchat チェックアウトの bridge フォルダーから実行してください。",
+        "button": "CLI セッションを接続",
+        "copied": "コピーしました",
+        "copy": "コマンドをコピー",
+        "create": "招待を作成",
+        "done": "完了",
+        "errors": {
+          "create": "招待を作成できませんでした。"
+        },
+        "expires": "招待は 1 回のみ有効で、24 時間で期限切れになります。",
+        "intro": "すでに実行中のセッションをエージェントとして追跡します。MCP 経由で agntchat のツールを利用でき、実行中はここに表示されます。このアプリからは起動も停止もしません。",
+        "nameLabel": "エージェント名",
+        "next": "その後 CLI で新しいセッションを開始してください。実行中はこの一覧に「外部」として表示されます。",
+        "runThis": "ターミナルで次を実行してください:",
+        "title": "Claude Code または Codex のセッションを接続",
+        "toolLabel": "CLI"
+      },
       "connection": {
         "direct": "ダイレクト",
         "directDescription": "オーナーのマシンで実行されます。オーナーのAPIクレジットを使用します。",
@@ -36625,6 +36733,24 @@ export const resources = {
       "connectById": "通过智能体 ID 连接",
       "connectByIdHint": "粘贴与你分享的智能体 ID，以查看其个人资料并请求连接。",
       "connectByIdPlaceholder": "在此粘贴智能体 ID",
+      "connectCli": {
+        "bridgeMissing": "请在你的 agntchat 检出目录的 bridge 文件夹中运行。",
+        "button": "连接 CLI 会话",
+        "copied": "已复制",
+        "copy": "复制命令",
+        "create": "创建邀请",
+        "done": "完成",
+        "errors": {
+          "create": "无法创建邀请。"
+        },
+        "expires": "邀请仅可使用一次，24 小时后失效。",
+        "intro": "将你已在运行的会话作为代理进行跟踪。它通过 MCP 获得 agntchat 工具，运行期间显示在这里——此应用不会启动或停止任何东西。",
+        "nameLabel": "代理名称",
+        "next": "然后在 CLI 中开始新会话——运行期间它会以“外部”身份出现在此列表中。",
+        "runThis": "在终端中运行：",
+        "title": "连接 Claude Code 或 Codex 会话",
+        "toolLabel": "CLI"
+      },
       "connection": {
         "direct": "直连",
         "directDescription": "运行在所有者的设备上，使用其 API 额度。",
@@ -42677,6 +42803,24 @@ export const resources = {
       "connectById": "에이전트 ID로 연결",
       "connectByIdHint": "공유받은 에이전트 ID를 붙여넣어 프로필을 보고 연결을 요청하세요.",
       "connectByIdPlaceholder": "여기에 에이전트 ID를 붙여넣으세요",
+      "connectCli": {
+        "bridgeMissing": "agntchat 체크아웃의 bridge 폴더에서 실행하세요.",
+        "button": "CLI 세션 연결",
+        "copied": "복사됨",
+        "copy": "명령 복사",
+        "create": "초대 만들기",
+        "done": "완료",
+        "errors": {
+          "create": "초대를 만들 수 없습니다."
+        },
+        "expires": "초대는 한 번만 사용할 수 있으며 24시간 후 만료됩니다.",
+        "intro": "이미 실행 중인 세션을 에이전트로 추적합니다. MCP를 통해 agntchat 도구를 사용하고 실행 중일 때 여기에 표시됩니다. 이 앱에서는 아무것도 시작하거나 중지하지 않습니다.",
+        "nameLabel": "에이전트 이름",
+        "next": "그런 다음 CLI에서 새 세션을 시작하세요. 실행 중에는 이 목록에 외부로 표시됩니다.",
+        "runThis": "터미널에서 다음을 실행하세요:",
+        "title": "Claude Code 또는 Codex 세션 연결",
+        "toolLabel": "CLI"
+      },
       "connection": {
         "direct": "직접",
         "directDescription": "소유자의 기기에서 실행됩니다. 소유자의 API 크레딧을 사용합니다.",
@@ -48729,6 +48873,24 @@ export const resources = {
       "connectById": "Connetti tramite ID Agente",
       "connectByIdHint": "Incolla un ID Agente condiviso con te per visualizzare il suo profilo e richiedere una connessione.",
       "connectByIdPlaceholder": "Incolla qui l'ID Agente",
+      "connectCli": {
+        "bridgeMissing": "Eseguilo dalla cartella bridge della tua copia di agntchat.",
+        "button": "Collega sessione CLI",
+        "copied": "Copiato",
+        "copy": "Copia comando",
+        "create": "Crea invito",
+        "done": "Fatto",
+        "errors": {
+          "create": "Impossibile creare l'invito."
+        },
+        "expires": "L'invito vale una volta e scade tra 24 ore.",
+        "intro": "Traccia come agente una sessione già in esecuzione. Riceve gli strumenti agntchat via MCP e compare qui mentre è attiva: questa app non avvia né ferma nulla.",
+        "nameLabel": "Nome dell'agente",
+        "next": "Poi avvia una nuova sessione nella CLI: comparirà in questo elenco come Esterno mentre è attiva.",
+        "runThis": "Esegui questo in un terminale:",
+        "title": "Collega una sessione Claude Code o Codex",
+        "toolLabel": "CLI"
+      },
       "connection": {
         "direct": "Diretta",
         "directDescription": "Viene eseguito sul computer del proprietario. Utilizza i suoi crediti API.",
@@ -54781,6 +54943,24 @@ export const resources = {
       "connectById": "एजेंट आईडी से कनेक्ट करें",
       "connectByIdHint": "अपने साथ शेयर की गई एजेंट आईडी पेस्ट करें ताकि उनकी प्रोफ़ाइल देख सकें और कनेक्शन का अनुरोध कर सकें।",
       "connectByIdPlaceholder": "एजेंट आईडी यहाँ पेस्ट करें",
+      "connectCli": {
+        "bridgeMissing": "इसे अपने agntchat चेकआउट के bridge फ़ोल्डर से चलाएँ।",
+        "button": "CLI सत्र जोड़ें",
+        "copied": "कॉपी हो गया",
+        "copy": "कमांड कॉपी करें",
+        "create": "आमंत्रण बनाएँ",
+        "done": "हो गया",
+        "errors": {
+          "create": "आमंत्रण नहीं बन सका।"
+        },
+        "expires": "आमंत्रण एक बार काम करता है और 24 घंटे में समाप्त हो जाता है।",
+        "intro": "पहले से चल रहे सत्र को एजेंट के रूप में ट्रैक करें। इसे MCP के ज़रिए agntchat टूल मिलते हैं और चलते समय यह यहाँ दिखता है — यह ऐप कुछ भी शुरू या बंद नहीं करता।",
+        "nameLabel": "एजेंट का नाम",
+        "next": "फिर CLI में नया सत्र शुरू करें — चलते समय यह इस सूची में बाहरी के रूप में दिखेगा।",
+        "runThis": "इसे टर्मिनल में चलाएँ:",
+        "title": "Claude Code या Codex सत्र जोड़ें",
+        "toolLabel": "CLI"
+      },
       "connection": {
         "direct": "डायरेक्ट",
         "directDescription": "स्वामी की मशीन पर चलता है। उनके API क्रेडिट का उपयोग करता है।",

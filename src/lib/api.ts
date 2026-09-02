@@ -493,6 +493,17 @@ export async function getAgent(id: string): Promise<Agent> {
   return request(`/api/agents/${id}`);
 }
 
+/** Agent invite: a one-shot code another process claims to become an
+ *  agent owned by the caller (`POST /api/invites`). Used by the "Connect
+ *  CLI session" dialog (#148) — the claimer is `python -m agentchat connect`. */
+export async function createAgentInvite(data: {
+  displayName: string;
+  description?: string;
+  ttlHours?: number;
+}): Promise<{ id: string; code: string; displayName: string; expiresAt: string }> {
+  return request("/api/invites", { method: "POST", body: JSON.stringify(data) });
+}
+
 export async function createAgent(data: {
   displayName: string;
   description?: string;

@@ -5,6 +5,7 @@ import { useDirectoryStore } from "../stores/directoryStore";
 import { AgentRow } from "./AgentRow";
 import { AgentConfig } from "./AgentConfig";
 import { CreateAgentModal } from "./CreateAgentModal";
+import { ConnectCliSessionDialog } from "./ConnectCliSessionDialog";
 import { cn } from "../lib/utils";
 import {
   Bot,
@@ -19,6 +20,7 @@ import {
   Unlink,
   Loader2,
   Compass,
+  Terminal,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -390,6 +392,12 @@ export function Dashboard() {
     stopAgent,
   } = useAgentStore();
   const [showCreate, setShowCreate] = useState(false);
+  // "Connect CLI session" (#148) — only once the external_agents flag is on
+  // for this user; the invite claim would 404 otherwise.
+  const [showConnectCli, setShowConnectCli] = useState(false);
+  const externalAgentsEnabled = useAuthStore(
+    (s) => s.participant?.features?.external_agents === true
+  );
   const [search, setSearch] = useState("");
   // The Directory tab was dropped from the header (7beadbb); the state stays
   // pinned to "agents" until the directory rendering paths are removed too.
@@ -855,6 +863,19 @@ export function Dashboard() {
           {/* Hide the header add button until the user has their first agent —
               the zero-agents empty state (onboarding cards) owns "create your
               first agent", so a second button here is redundant. */}
+          {activeTab === "agents" && externalAgentsEnabled && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setShowConnectCli(true)}
+              title={t("connectCli.button")}
+              aria-label={t("connectCli.button")}
+              className="shrink-0"
+              style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
+            >
+              <Terminal className="w-3.5 h-3.5" />
+            </Button>
+          )}
           {activeTab === "agents" && totalCount > 0 && (
             <Button
               size="sm"
@@ -1118,6 +1139,9 @@ export function Dashboard() {
 
       {showCreate && (
         <CreateAgentModal onClose={() => setShowCreate(false)} />
+      )}
+      {showConnectCli && (
+        <ConnectCliSessionDialog onClose={() => setShowConnectCli(false)} />
       )}
     </div>
   );

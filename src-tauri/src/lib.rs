@@ -21,6 +21,7 @@ pub fn run() {
             process_manager::get_all_statuses,
             process_manager::get_agent_logs,
             process_manager::get_device_name,
+            process_manager::get_bridge_paths,
             process_manager::check_computer_use_deps,
             process_manager::install_computer_use_deps,
             process_manager::get_computer_use_deps_status,

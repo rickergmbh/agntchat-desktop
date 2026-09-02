@@ -210,6 +210,30 @@ pub fn get_device_name() -> String {
     compute_device_name()
 }
 
+/// Where the bundled bridge lives and which Python runs it — so the
+/// "Connect CLI session" dialog can print an exact `python -m agentchat
+/// connect …` command (#148). Falls back to `python3` when the venv has
+/// not been created yet (no agent has ever been started on this machine).
+#[derive(serde::Serialize)]
+pub struct BridgePaths {
+    #[serde(rename = "bridgeDir")]
+    pub bridge_dir: String,
+    pub python: String,
+}
+
+#[tauri::command]
+pub fn get_bridge_paths(app: tauri::AppHandle) -> Result<BridgePaths, String> {
+    let bridge_dir = bridge_dir_for(&app)?;
+    let python = match bridge_venv_python(&app) {
+        Ok(p) if p.exists() => p.to_string_lossy().to_string(),
+        _ => "python3".to_string(),
+    };
+    Ok(BridgePaths {
+        bridge_dir: bridge_dir.to_string_lossy().to_string(),
+        python,
+    })
+}
+
 /// Extract crash reason from collected log lines, providing user-friendly
 /// messages with actionable fix instructions for common failure modes.
 /// Returns `(reason, kind)` — `kind` is a machine-readable category the UI
