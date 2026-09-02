@@ -1,0 +1,10 @@
+# These files are generated with LF by the monorepo's generators
+# (i18n/sync.mjs, status-contract/sync.mjs, design-tokens/build.mjs), whose
+# --check gates byte-compare the committed copies against a fresh run.
+# Without an explicit eol, Windows checkouts with autocrlf rewrite them as
+# CRLF and those gates fail locally even when the content is correct.
+# Attributes don't cross submodule boundaries, so the monorepo's own
+# .gitattributes can't cover these — this file is its counterpart.
+src/i18n/generated.ts                text eol=lf
+src/lib/status-contract.generated.ts text eol=lf
+src/design-tokens/tokens.css         text eol=lf
