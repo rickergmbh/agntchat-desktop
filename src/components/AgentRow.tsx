@@ -11,6 +11,7 @@ import {
 import { useModelCatalog } from "../stores/modelCatalogStore";
 import { formatBackendLabel } from "../lib/models";
 import { cn } from "../lib/utils";
+import { hasKeyProblem } from "../lib/agentKeyProblem";
 import { Crown, Cloud, Laptop, Link2, ChevronRight, ChevronDown, Loader2 } from "lucide-react";
 import {
   restartHostedAgents,
@@ -611,8 +612,7 @@ export function AgentRow({
                 label={t("row.bringOnline")}
               />
             )
-          ) : managed.processStatus === "crashed" &&
-            (managed.crashKind === "auth" || managed.crashKind === "no_key") ? (
+          ) : hasKeyProblem(managed) ? (
             // Restarting would just crash again on the same bad key — the
             // warning state routes to the fix (the key panel in the agent's
             // settings) rather than retrying.

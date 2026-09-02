@@ -3433,6 +3433,8 @@ export const resources = {
     },
     "nav": {
       "agents": "Agents",
+      "agentsKeyProblem_one": "Agents — 1 agent needs a new API key on this computer",
+      "agentsKeyProblem_other": "Agents — {{count}} agents need a new API key on this computer",
       "agentsOnline": "Agents ({{online}}/{{total}} online)",
       "canvas": "Canvas",
       "canvases": "Canvases",
@@ -9469,6 +9471,8 @@ export const resources = {
     },
     "nav": {
       "agents": "Agentes",
+      "agentsKeyProblem_one": "Agentes: 1 agente necesita una nueva clave de API en este ordenador",
+      "agentsKeyProblem_other": "Agentes: {{count}} agentes necesitan una nueva clave de API en este ordenador",
       "agentsOnline": "Agentes ({{online}}/{{total}} en línea)",
       "canvas": "Lienzo",
       "canvases": "Lienzos",
@@ -15505,6 +15509,8 @@ export const resources = {
     },
     "nav": {
       "agents": "Agenten",
+      "agentsKeyProblem_one": "Agenten – 1 Agent benötigt einen neuen API-Schlüssel auf diesem Computer",
+      "agentsKeyProblem_other": "Agenten – {{count}} Agenten benötigen einen neuen API-Schlüssel auf diesem Computer",
       "agentsOnline": "Agenten ({{online}}/{{total}} online)",
       "canvas": "Canvas",
       "canvases": "Canvases",
@@ -21541,6 +21547,8 @@ export const resources = {
     },
     "nav": {
       "agents": "Agents",
+      "agentsKeyProblem_one": "Agents — 1 agent a besoin d'une nouvelle clé API sur cet ordinateur",
+      "agentsKeyProblem_other": "Agents — {{count}} agents ont besoin d'une nouvelle clé API sur cet ordinateur",
       "agentsOnline": "Agents ({{online}}/{{total}} en ligne)",
       "canvas": "Canvas",
       "canvases": "Canvas",
@@ -27577,6 +27585,8 @@ export const resources = {
     },
     "nav": {
       "agents": "Agentes",
+      "agentsKeyProblem_one": "Agentes — 1 agente precisa de uma nova chave de API neste computador",
+      "agentsKeyProblem_other": "Agentes — {{count}} agentes precisam de uma nova chave de API neste computador",
       "agentsOnline": "Agentes ({{online}}/{{total}} online)",
       "canvas": "Canvas",
       "canvases": "Canvases",
@@ -33613,6 +33623,8 @@ export const resources = {
     },
     "nav": {
       "agents": "エージェント",
+      "agentsKeyProblem_one": "エージェント — 1件のエージェントにこのパソコン用の新しいAPIキーが必要です",
+      "agentsKeyProblem_other": "エージェント — {{count}}件のエージェントにこのパソコン用の新しいAPIキーが必要です",
       "agentsOnline": "エージェント（{{online}}/{{total}} オンライン）",
       "canvas": "キャンバス",
       "canvases": "キャンバス",
@@ -39649,6 +39661,8 @@ export const resources = {
     },
     "nav": {
       "agents": "智能体",
+      "agentsKeyProblem_one": "智能体 — 有 1 个智能体需要为这台电脑生成新的 API 密钥",
+      "agentsKeyProblem_other": "智能体 — 有 {{count}} 个智能体需要为这台电脑生成新的 API 密钥",
       "agentsOnline": "智能体（{{online}}/{{total}} 在线）",
       "canvas": "画布",
       "canvases": "画布",
@@ -45685,6 +45699,8 @@ export const resources = {
     },
     "nav": {
       "agents": "에이전트",
+      "agentsKeyProblem_one": "에이전트 — 에이전트 1개에 이 컴퓨터용 새 API 키가 필요합니다",
+      "agentsKeyProblem_other": "에이전트 — 에이전트 {{count}}개에 이 컴퓨터용 새 API 키가 필요합니다",
       "agentsOnline": "에이전트 ({{online}}/{{total}} 온라인)",
       "canvas": "캔버스",
       "canvases": "캔버스",
@@ -51721,6 +51737,8 @@ export const resources = {
     },
     "nav": {
       "agents": "Agenti",
+      "agentsKeyProblem_one": "Agenti — 1 agente ha bisogno di una nuova chiave API su questo computer",
+      "agentsKeyProblem_other": "Agenti — {{count}} agenti hanno bisogno di una nuova chiave API su questo computer",
       "agentsOnline": "Agenti ({{online}}/{{total}} online)",
       "canvas": "Canvas",
       "canvases": "Canvas",
@@ -57757,6 +57775,8 @@ export const resources = {
     },
     "nav": {
       "agents": "एजेंट",
+      "agentsKeyProblem_one": "एजेंट — 1 एजेंट को इस कंप्यूटर के लिए नई API कुंजी चाहिए",
+      "agentsKeyProblem_other": "एजेंट — {{count}} एजेंट को इस कंप्यूटर के लिए नई API कुंजी चाहिए",
       "agentsOnline": "एजेंट ({{online}}/{{total}} ऑनलाइन)",
       "canvas": "कैनवास",
       "canvases": "कैनवास",

@@ -47,6 +47,7 @@ import {
   type DirectoryListing,
 } from "../lib/api";
 import { isFresh } from "../lib/cache";
+import { hasKeyProblem } from "../lib/agentKeyProblem";
 import { uploadProcessedBlob } from "../lib/imageProcessor";
 import { useFieldLimits } from "../lib/fieldLimits";
 import { LogViewer } from "./LogViewer";
@@ -168,8 +169,13 @@ const TOUR_STEPS: Array<{
 const TOUR_SEEN_KEY = FTUE_KEYS.agentConfigTour;
 
 /** What a rail row can show on its right edge: a count, a status dot, or
- *  nothing at all. */
-type SectionBadge = number | { dot: "success" | "warning" | "destructive" } | null;
+ *  nothing at all. `label` names what the dot means for screen readers and
+ *  on hover; without one it falls back to the pulse wording the dot was
+ *  introduced for. */
+type SectionBadge =
+  | number
+  | { dot: "success" | "warning" | "destructive"; label?: string }
+  | null;
 
 // Rail badges, keyed by section value. Each entry owns the notion of "badge"
 // its own panel shows: tools counts only agent-scoped assignments (globals are
@@ -211,7 +217,12 @@ function pulseBadge(config: PulseConfig | null | undefined): SectionBadge {
 
 const sameBadge = (a: SectionBadge | undefined, b: SectionBadge) =>
   a === b ||
-  (typeof a === "object" && a !== null && typeof b === "object" && b !== null && a.dot === b.dot);
+  (typeof a === "object" &&
+    a !== null &&
+    typeof b === "object" &&
+    b !== null &&
+    a.dot === b.dot &&
+    a.label === b.label);
 
 /**
  * Right edge of a rail row: a count pill, or a status dot for sections whose
@@ -240,11 +251,12 @@ function RailBadge({ badge, active }: { badge?: SectionBadge; active: boolean })
   // The dot carries meaning by color alone, so it also carries a label for
   // screen readers and on hover.
   const label =
-    badge.dot === "destructive"
+    badge.label ??
+    (badge.dot === "destructive"
       ? t("pulse.pausedAuto")
       : badge.dot === "warning"
         ? t("pulse.consecutiveFailures")
-        : t("common:on");
+        : t("common:on"));
 
   return (
     <span
@@ -597,6 +609,11 @@ export function AgentConfig({
   const [activeSection, setActiveSection] = useState(initialSection ?? "config");
   const [showGallery, setShowGallery] = useState(false);
 
+  // Rejected or missing agent API key. Drives both the crash banner's
+  // one-click fix below and the warning dot on the Model rail row — the key
+  // itself lives in that section, so the dot points at the fix.
+  const keyProblem = hasKeyProblem(managed);
+
   // AgentConfig is a single reused instance across agent selections (no
   // remount), so a deep-link arriving while it's already mounted for a
   // different agent needs an explicit jump rather than relying on the
@@ -731,7 +748,18 @@ export function AgentConfig({
     {
       key: "model",
       name: t("common:model"),
-      sections: [{ value: "config", label: t("common:model"), icon: Settings2 }],
+      sections: [
+        {
+          value: "config",
+          label: t("common:model"),
+          icon: Settings2,
+          // The banner above says *what* is wrong on every section; this dot
+          // says *where to go* — the agent's API key is a Model-section field.
+          badge: keyProblem
+            ? { dot: "warning" as const, label: t("config.crash.apiKeyProblem") }
+            : undefined,
+        },
+      ],
     },
     {
       key: "capabilities",
@@ -883,14 +911,12 @@ export function AgentConfig({
         {managed.processStatus === "crashed" && managed.crashReason && (
           <div className="mx-4 mt-3 px-3 py-2.5 bg-destructive/10 border border-destructive/20 rounded-lg flex-shrink-0">
             <div className="text-xs font-medium text-destructive mb-0.5">
-              {managed.crashKind === "auth" || managed.crashKind === "no_key"
-                ? t("config.crash.apiKeyProblem")
-                : t("config.crash.agentCrashed")}
+              {keyProblem ? t("config.crash.apiKeyProblem") : t("config.crash.agentCrashed")}
             </div>
             <div className="text-xs text-destructive/80 whitespace-pre-wrap break-words">
               {managed.crashReason}
             </div>
-            {(managed.crashKind === "auth" || managed.crashKind === "no_key") && (
+            {keyProblem && (
               <div className="mt-2 space-y-1.5">
                 <Button
                   size="sm"

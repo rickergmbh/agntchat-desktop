@@ -15,6 +15,7 @@ import {
   Monitor,
   PanelLeftClose,
   PanelLeftOpen,
+  AlertTriangle,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn, unreadTier, type UnreadTier } from "../lib/utils";
@@ -30,6 +31,7 @@ import { useRailStore, useRailExpanded } from "../stores/railStore";
 import { trackScreen } from "../lib/analytics";
 import { usePresenceStore } from "../stores/presenceStore";
 import { isAgentOnline } from "../lib/agentOnline";
+import { hasKeyProblem } from "../lib/agentKeyProblem";
 import { useThemeStore } from "../stores/themeStore";
 import { useFriendStore } from "../stores/friendStore";
 import {
@@ -290,6 +292,25 @@ function LeftRail({
     return { online, total: all.length };
   }, [agentsMap, presenceOnline]);
 
+  // Agents whose stored API key was rejected (or never made it to this
+  // computer). They can't be restarted — only a fresh key fixes them — so the
+  // rail carries a warning marker, letting the user see something is wrong
+  // from any view instead of only after opening the Agents tab.
+  const keyProblemCount = useMemo(
+    () => Object.values(agentsMap).filter(hasKeyProblem).length,
+    [agentsMap]
+  );
+
+  // Crash kind lives in the local Rust ProcessManager, and Dashboard's poll
+  // for it dies with the Agents view. The rail outlives every view, so it
+  // keeps its own beat — `get_all_statuses` is a local Tauri invoke with no
+  // backend cost, unlike the health fetch Dashboard bundles it with.
+  const refreshProcessStatuses = useAgentStore((s) => s.refreshProcessStatuses);
+  useEffect(() => {
+    const id = setInterval(() => void refreshProcessStatuses(), 60000);
+    return () => clearInterval(id);
+  }, [refreshProcessStatuses]);
+
   // Same N/M treatment under the Members button in a shared workspace.
   // The rail loads the roster itself — the chip has to read right from
   // every view, not just once MembersView has mounted — and MembersView
@@ -403,15 +424,20 @@ function LeftRail({
           label={t("agents")}
           // Expanded shows the plain "Agents" label with the N/M chip beside
           // it, so the online count lives in the tooltip only — spelling it
-          // out twice in one row reads as a glitch.
+          // out twice in one row reads as a glitch. A key problem outranks
+          // the ratio there: it's the one state the user has to act on, and
+          // the ratio is already on screen as the chip.
           tooltip={
-            agentStats.total > 0
-              ? t("agentsOnline", {
-                  online: agentStats.online,
-                  total: agentStats.total,
-                })
-              : undefined
+            keyProblemCount > 0
+              ? t("agentsKeyProblem", { count: keyProblemCount })
+              : agentStats.total > 0
+                ? t("agentsOnline", {
+                    online: agentStats.online,
+                    total: agentStats.total,
+                  })
+                : undefined
           }
+          alert={keyProblemCount > 0}
           active={view === "agents"}
           onClick={() => onChange("agents")}
           textBadge={
@@ -593,6 +619,7 @@ function RailButton({
   badgeTier,
   badgeTierLabel,
   textBadge,
+  alert,
 }: {
   icon: React.ElementType;
   /** Visible text when the rail is expanded; also the default tooltip. */
@@ -616,6 +643,11 @@ function RailButton({
    *  bottom-centre of the icon so the rail's vertical rhythm is preserved;
    *  expanded it sits at the end of the row. */
   textBadge?: React.ReactNode;
+  /** Something behind this button needs the user's attention (e.g. an agent
+   *  whose API key was rejected). Renders a warning triangle over the icon,
+   *  independent of `badge`/`textBadge` so a count and a warning can coexist.
+   *  `tooltip` carries the words — the triangle is never the only signal. */
+  alert?: boolean;
 }) {
   const expanded = useRailExpanded();
   const badgeClass =
@@ -683,6 +715,24 @@ function RailButton({
         >
           {textBadge}
         </span>
+      )}
+      {/* Last child so the expanded row reads icon · label · count · warning.
+          Collapsed it's absolute, so DOM order doesn't matter — it sits in
+          the icon's top-right corner, the slot `badge` would use (the Agents
+          button passes a textBadge, which lives bottom-centre, so the two
+          never collide). */}
+      {alert && (
+        <AlertTriangle
+          aria-hidden
+          className={cn(
+            // Solid fill with the glyph knocked out — at 12px lucide's outline
+            // triangle is a smudge. `destructive` (not `warning`) because the
+            // rail sits on white in light theme, where amber all but
+            // disappears; it also matches the crash banner this leads to.
+            "h-3 w-3 shrink-0 fill-destructive text-destructive-foreground",
+            expanded ? "ml-1" : "absolute top-0.5 right-0.5"
+          )}
+        />
       )}
     </button>
   );
