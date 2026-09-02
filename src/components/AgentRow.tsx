@@ -199,6 +199,7 @@ export function AgentRow({
   // "" = running elsewhere but the device name is unknown.
   const [confirmMoveFrom, setConfirmMoveFrom] = useState<string | null>(null);
   const [moving, setMoving] = useState(false);
+  const [moveError, setMoveError] = useState<string | null>(null);
 
   const isRunning = managed.processStatus === "running";
 
@@ -212,6 +213,7 @@ export function AgentRow({
         // here takes the agent over and stops it there. Confirm first.
         const elsewhere = runningElsewhereOn(managed, liveOnline, presenceHostname, myDevice, presenceDevice);
         if (elsewhere !== null) {
+          setMoveError(null);
           setConfirmMoveFrom(elsewhere);
           return;
         }
@@ -226,15 +228,30 @@ export function AgentRow({
   // Confirmed take-over: shut the other machine's bridge down first (the
   // backend pushes a shutdown command to it over WS and re-queues its
   // in-flight work), then start locally — so the agent never runs on two
-  // computers at once.
+  // computers at once. startAgent already tries an owner-delegation token
+  // when there's no local key (the common case), so most moves need no key
+  // change at all. But delegation can fail to mint (offline, not signed in
+  // as the owner, feature off) — startAgent then parks the agent in the
+  // actionable "no_key" crash state and throws. Rather than leave the user
+  // on a silently-closed dialog to notice the crash banner and click "Fix"
+  // separately, generate a fresh key for this machine right here and retry
+  // once, so the move completes in the one click James asked for.
   const handleConfirmMove = async () => {
     setMoving(true);
+    setMoveError(null);
     try {
       await forceResetAgent(managed.agent.id);
-      await startAgent(managed.agent.id);
+      try {
+        await startAgent(managed.agent.id);
+      } catch (err) {
+        const crashKind = useAgentStore.getState().agents[managed.agent.id]?.crashKind;
+        if (crashKind !== "no_key") throw err;
+        await useAgentStore.getState().regenerateKey(managed.agent.id);
+        await startAgent(managed.agent.id);
+      }
       setConfirmMoveFrom(null);
-    } catch {
-      setConfirmMoveFrom(null);
+    } catch (e) {
+      setMoveError(e instanceof Error ? e.message : t("errors.moveFailed"));
     } finally {
       setMoving(false);
     }
@@ -591,7 +608,10 @@ export function AgentRow({
       <Dialog
         open={confirmMoveFrom !== null}
         onOpenChange={(open) => {
-          if (!open && !moving) setConfirmMoveFrom(null);
+          if (!open && !moving) {
+            setConfirmMoveFrom(null);
+            setMoveError(null);
+          }
         }}
       >
         <DialogContent
@@ -620,12 +640,22 @@ export function AgentRow({
                 up once it's running here. You can move it back anytime by
                 starting it from the other computer.
               </span>
+              <span className="block">
+                If this computer doesn't have a valid API key for it yet,
+                one is generated automatically as part of the move.
+              </span>
             </DialogDescription>
           </DialogHeader>
+          {moveError && (
+            <p className="text-xs text-destructive px-1">{moveError}</p>
+          )}
           <DialogFooter>
             <Button
               variant="outline"
-              onClick={() => setConfirmMoveFrom(null)}
+              onClick={() => {
+                setConfirmMoveFrom(null);
+                setMoveError(null);
+              }}
               disabled={moving}
             >
               Cancel
