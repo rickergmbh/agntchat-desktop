@@ -24,6 +24,7 @@ import { NewConversationDialog } from "./NewConversationDialog";
 import { ChatHeaderMenu } from "./ChatHeaderMenu";
 import { GroupAvatar } from "./GroupAvatar";
 import { AgentActivityIndicator } from "../AgentActivityIndicator";
+import { ExternalAgentBadge, isExternalAgent } from "../ExternalAgentBadge";
 import { OnboardingCards } from "../OnboardingCards";
 import { useOnboardingState } from "../../hooks/useOnboardingState";
 import { ThreadsBar } from "./ThreadsBar";
@@ -433,7 +434,10 @@ function ConversationPane({
             </Avatar>
           )}
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-semibold truncate">{headerTitle}</p>
+            <p className="flex items-center gap-1.5 text-sm font-semibold">
+              <span className="truncate">{headerTitle}</span>
+              {otherMembers.length === 1 && isExternalAgent(otherParticipant) && <ExternalAgentBadge />}
+            </p>
             {headerActivity ? (
               <AgentActivityIndicator activity={headerActivity} />
             ) : presenceLine ? (

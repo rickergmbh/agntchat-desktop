@@ -4,6 +4,7 @@ import { useChatStore } from "../../stores/chatStore";
 import { useAgentStore } from "../../stores/agentStore";
 import { useAuthStore } from "../../stores/authStore";
 import { usePresenceStore } from "../../stores/presenceStore";
+import { ExternalAgentBadge, isExternalAgent } from "../ExternalAgentBadge";
 import {
   cn,
   getConversationTitle,
@@ -235,6 +236,7 @@ const ConversationItem = memo(function ConversationItem({
           >
             {title}
           </span>
+          {!isGroup && isExternalAgent(otherMember) && <ExternalAgentBadge />}
           {tier && (
             <span
               aria-label={t("newMessages")}
