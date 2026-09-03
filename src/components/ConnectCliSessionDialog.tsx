@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { invoke } from "@tauri-apps/api/core";
-import { X, Loader2, Copy, Check, Terminal, Circle } from "lucide-react";
+import { X, Loader2, Copy, Check, Terminal, Circle, FolderOpen, Plus } from "lucide-react";
 import {
   createAgentInvite,
   createExternalAgent,
@@ -129,11 +129,16 @@ function PickerFlow({
   const [sessions, setSessions] = useState<ClaudeSession[] | null>(null);
   const [listError, setListError] = useState<string | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
+  // "Start a new session": the picker generates the session id, binds it,
+  // then opens a terminal running claude there — bound before its first
+  // hook fires.
+  const [startNew, setStartNew] = useState(false);
+  const [folder, setFolder] = useState("");
   const [choice, setChoice] = useState<string>(agent?.id ?? externalAgents[0]?.id ?? "new");
   const [newName, setNewName] = useState(t("hosting.externalTool.claude_code"));
   const [binding, setBinding] = useState(false);
   const [bindError, setBindError] = useState<string | null>(null);
-  const [done, setDone] = useState<{ session: string; name: string } | null>(null);
+  const [done, setDone] = useState<{ session: string; name: string; started?: boolean } | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -156,37 +161,81 @@ function PickerFlow({
     };
   }, []);
 
-  const session = sessions?.find((s) => s.sessionId === selected) ?? null;
+  const session = !startNew ? (sessions?.find((s) => s.sessionId === selected) ?? null) : null;
   const existing = choice !== "new" ? externalAgents.find((a) => a.id === choice) : null;
+  const folderDir = folder.trim();
+  // Folders of listed sessions double as quick picks for a new session.
+  const knownFolders = Array.from(
+    new Set((sessions ?? []).map((s) => s.cwd).filter((c): c is string => !!c))
+  ).slice(0, 4);
+
+  async function chooseFolder() {
+    try {
+      const { open } = await import("@tauri-apps/plugin-dialog");
+      const picked = await open({ directory: true, multiple: false, defaultPath: folderDir || undefined });
+      if (typeof picked === "string") setFolder(picked);
+    } catch {
+      // Native chooser unavailable — the path field is editable.
+    }
+  }
+
+  async function resolveTarget(): Promise<{ id: string; displayName: string; apiKey: string } | null> {
+    if (choice === "new") {
+      const name = newName.trim();
+      if (!name) return null;
+      const created = await createExternalAgent({ displayName: name, externalTool: "claude_code" });
+      return { id: created.agent.id, displayName: created.agent.displayName, apiKey: created.apiKey };
+    }
+    const re = await regenerateApiKey(choice);
+    return { id: re.agent.id, displayName: re.agent.displayName, apiKey: re.apiKey };
+  }
+
+  async function bindSession(sessionId: string, cwd: string | null, target: { id: string; displayName: string; apiKey: string }) {
+    await invoke("bind_claude_session", {
+      args: {
+        sessionId,
+        cwd,
+        agentId: target.id,
+        apiKey: target.apiKey,
+        displayName: target.displayName,
+        gatewayUrl: getApiUrl(),
+      },
+    });
+  }
 
   async function handleBind(e: React.FormEvent) {
     e.preventDefault();
-    if (!session) return;
+    if (startNew) {
+      if (!folderDir) {
+        setBindError(t("connectCli.errors.folder"));
+        return;
+      }
+    } else if (!session) {
+      return;
+    }
     setBinding(true);
     setBindError(null);
     try {
-      let target: { id: string; displayName: string; apiKey: string };
-      if (choice === "new") {
-        const name = newName.trim();
-        if (!name) return;
-        const created = await createExternalAgent({ displayName: name, externalTool: "claude_code" });
-        target = { id: created.agent.id, displayName: created.agent.displayName, apiKey: created.apiKey };
-      } else {
-        const re = await regenerateApiKey(choice);
-        target = { id: re.agent.id, displayName: re.agent.displayName, apiKey: re.apiKey };
+      const target = await resolveTarget();
+      if (!target) return;
+      if (startNew) {
+        const sessionId = crypto.randomUUID();
+        await bindSession(sessionId, folderDir, target);
+        try {
+          await invoke("launch_claude_session", { folder: folderDir, sessionId });
+        } catch (err) {
+          throw new Error(
+            `${t("connectCli.errors.launch")} ${err instanceof Error ? err.message : String(err)}`
+          );
+        }
+        void fetchAgents();
+        const seg = folderDir.split(/[\\/]/).filter(Boolean).slice(-1)[0] ?? folderDir;
+        setDone({ session: seg, name: target.displayName, started: true });
+      } else if (session) {
+        await bindSession(session.sessionId, session.cwd, target);
+        void fetchAgents();
+        setDone({ session: sessionLabel(session), name: target.displayName });
       }
-      await invoke("bind_claude_session", {
-        args: {
-          sessionId: session.sessionId,
-          cwd: session.cwd,
-          agentId: target.id,
-          apiKey: target.apiKey,
-          displayName: target.displayName,
-          gatewayUrl: getApiUrl(),
-        },
-      });
-      void fetchAgents();
-      setDone({ session: sessionLabel(session), name: target.displayName });
     } catch (err) {
       setBindError(err instanceof Error ? err.message : t("connectCli.errors.bind"));
     } finally {
@@ -202,7 +251,11 @@ function PickerFlow({
     <Shell title={title} onClose={onClose}>
       {done ? (
         <div className="space-y-3">
-          <p className="text-sm">{t("connectCli.bound", done)}</p>
+          <p className="text-sm">
+            {done.started
+              ? t("connectCli.started", { folder: done.session, name: done.name })
+              : t("connectCli.bound", done)}
+          </p>
           <div className="flex justify-end">
             <Button size="sm" onClick={onClose}>
               {t("connectCli.done")}
@@ -212,6 +265,55 @@ function PickerFlow({
       ) : (
         <form onSubmit={handleBind} className="space-y-3">
           <p className="text-sm text-muted-foreground">{t("connectCli.pickerIntro")}</p>
+
+          <button
+            type="button"
+            onClick={() => setStartNew(true)}
+            className={
+              "flex w-full items-center gap-2 rounded-md border px-3 py-2 text-left text-sm " +
+              (startNew ? "border-primary bg-primary/10" : "border-border hover:bg-accent")
+            }
+          >
+            <Plus className="h-3.5 w-3.5 shrink-0" />
+            <span className="font-medium">{t("connectCli.startNew")}</span>
+          </button>
+          {startNew && (
+            <div className="space-y-1.5 rounded-md border border-border p-3">
+              <label className="text-xs font-medium text-muted-foreground" htmlFor="connect-cli-folder">
+                {t("connectCli.folderLabel")}
+              </label>
+              <div className="flex gap-2">
+                <input
+                  id="connect-cli-folder"
+                  value={folder}
+                  onChange={(e) => setFolder(e.target.value)}
+                  placeholder="/path/to/repo"
+                  className="min-w-0 flex-1 rounded-md border border-border bg-background px-3 py-2 font-mono text-xs"
+                  autoFocus
+                />
+                <Button type="button" size="sm" variant="outline" onClick={chooseFolder}>
+                  <FolderOpen className="h-3.5 w-3.5" />
+                  {t("connectCli.chooseFolder")}
+                </Button>
+              </div>
+              {knownFolders.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {knownFolders.map((f) => (
+                    <button
+                      key={f}
+                      type="button"
+                      onClick={() => setFolder(f)}
+                      className="max-w-full truncate rounded border border-border px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground hover:bg-accent"
+                      title={f}
+                    >
+                      {f.split(/[\\/]/).filter(Boolean).slice(-1)[0] ?? f}
+                    </button>
+                  ))}
+                </div>
+              )}
+              <p className="text-[11px] text-muted-foreground">{t("connectCli.folderHint")}</p>
+            </div>
+          )}
 
           {sessions === null ? (
             <div className="flex items-center gap-2 py-4 text-sm text-muted-foreground">
@@ -230,10 +332,13 @@ function PickerFlow({
                   <button
                     key={s.sessionId}
                     type="button"
-                    onClick={() => setSelected(s.sessionId)}
+                    onClick={() => {
+                      setStartNew(false);
+                      setSelected(s.sessionId);
+                    }}
                     className={
                       "flex w-full items-start gap-2 border-b border-border px-3 py-2 text-left last:border-b-0 " +
-                      (isSel ? "bg-primary/10" : "hover:bg-accent")
+                      (isSel && !startNew ? "bg-primary/10" : "hover:bg-accent")
                     }
                   >
                     <Circle
@@ -336,10 +441,20 @@ function PickerFlow({
               <Button
                 type="submit"
                 size="sm"
-                disabled={binding || !session || (choice === "new" && !newName.trim())}
+                disabled={
+                  binding ||
+                  (startNew ? !folderDir : !session) ||
+                  (choice === "new" && !newName.trim())
+                }
               >
                 {binding && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-                {binding ? t("connectCli.binding") : t("connectCli.bind")}
+                {startNew
+                  ? binding
+                    ? t("connectCli.starting")
+                    : t("connectCli.start")
+                  : binding
+                    ? t("connectCli.binding")
+                    : t("connectCli.bind")}
               </Button>
             </div>
           </div>

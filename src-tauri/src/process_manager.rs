@@ -324,6 +324,72 @@ pub fn bind_claude_session(
     serde_json::from_str(json_line).map_err(|e| format!("bad bind result: {e}"))
 }
 
+/// Start a NEW Claude Code session in a terminal, pre-bound (#148): the
+/// picker generated the session id and already ran `bind` for it, so the
+/// session reports as the chosen agent from its first hook, and the channel
+/// flag makes agntchat messages reach it live. macOS opens Terminal via
+/// AppleScript; Windows opens a new console. Nothing is captured — the
+/// user's terminal owns the process.
+#[tauri::command]
+pub fn launch_claude_session(folder: String, session_id: String) -> Result<(), String> {
+    if !session_id
+        .chars()
+        .all(|c| c.is_ascii_hexdigit() || c == '-')
+    {
+        return Err("invalid session id".to_string());
+    }
+    let dir = std::path::Path::new(&folder);
+    if !dir.is_dir() {
+        return Err(format!("not a folder: {folder}"));
+    }
+    let claude_args = format!(
+        "--session-id {session_id} --dangerously-load-development-channels server:agntchat"
+    );
+
+    #[cfg(target_os = "macos")]
+    {
+        // POSIX single-quote the folder for the shell, then escape for the
+        // AppleScript string literal.
+        let sh_folder = format!("'{}'", folder.replace('\'', "'\\''"));
+        let shell_cmd = format!("cd {sh_folder} && claude {claude_args}");
+        let applescript_cmd = shell_cmd.replace('\\', "\\\\").replace('"', "\\\"");
+        let status = hidden_command("osascript")
+            .arg("-e")
+            .arg(format!("tell application \"Terminal\" to do script \"{applescript_cmd}\""))
+            .arg("-e")
+            .arg("tell application \"Terminal\" to activate")
+            .status()
+            .map_err(|e| format!("could not open Terminal: {e}"))?;
+        if !status.success() {
+            return Err(format!("Terminal refused to open the session ({status})"));
+        }
+        return Ok(());
+    }
+
+    #[cfg(target_os = "windows")]
+    {
+        // `start` opens a new console; `cmd /k` keeps it open when claude exits.
+        let status = std::process::Command::new("cmd")
+            .args([
+                "/c",
+                "start",
+                "",
+                "cmd",
+                "/k",
+                &format!("cd /d \"{folder}\" && claude {claude_args}"),
+            ])
+            .status()
+            .map_err(|e| format!("could not open a console: {e}"))?;
+        if !status.success() {
+            return Err(format!("console launch failed ({status})"));
+        }
+        return Ok(());
+    }
+
+    #[allow(unreachable_code)]
+    Err("launching a terminal is supported on macOS and Windows only".to_string())
+}
+
 /// Extract crash reason from collected log lines, providing user-friendly
 /// messages with actionable fix instructions for common failure modes.
 /// Returns `(reason, kind)` — `kind` is a machine-readable category the UI
