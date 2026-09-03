@@ -214,16 +214,14 @@ function PickerFlow({
   }
 
   async function bindSession(
-    sessionId: string | null,
+    sessionId: string,
     cwd: string | null,
     target: { id: string; displayName: string; apiKey: string },
-    pending = false,
     title: string | null = null
   ) {
     await invoke("bind_claude_session", {
       args: {
         sessionId,
-        pending,
         cwd,
         agentId: target.id,
         apiKey: target.apiKey,
@@ -255,11 +253,19 @@ function PickerFlow({
         // name is the sensible default so the session list reads well.
         const title = sessionName.trim() || target.displayName;
         if (where === "app") {
-          // No session id up front: bind the NEXT session started in the
-          // folder, then open the Claude app there; the start hook claims it.
-          await bindSession(null, folderDir, target, true, title);
+          // The session is created headlessly with OUR id in the folder,
+          // bound, then imported into the Claude app (claude://resume) —
+          // the folder deep link kept opening scratch workspaces.
+          const sessionId = crypto.randomUUID();
+          await bindSession(sessionId, folderDir, target, title);
           try {
-            await invoke("open_claude_desktop_session", { folder: folderDir });
+            await invoke("open_claude_desktop_session", {
+              args: {
+                folder: folderDir,
+                sessionId,
+                seedPrompt: `This session is connected to agntchat as "${target.displayName}". Reply with exactly: ready`,
+              },
+            });
           } catch (err) {
             throw new Error(
               `${t("connectCli.errors.open")} ${err instanceof Error ? err.message : String(err)}`
@@ -269,7 +275,7 @@ function PickerFlow({
           setDone({ session: seg, name: target.displayName, started: true, inApp: true });
         } else {
           const sessionId = crypto.randomUUID();
-          await bindSession(sessionId, folderDir, target, false, title);
+          await bindSession(sessionId, folderDir, target, title);
           try {
             await invoke("launch_claude_session", { folder: folderDir, sessionId });
           } catch (err) {

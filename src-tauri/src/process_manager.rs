@@ -280,10 +280,7 @@ pub fn list_claude_sessions(app: tauri::AppHandle) -> Result<serde_json::Value, 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct BindClaudeSessionArgs {
-    /// None with `pending: true`: bind the NEXT session started in `cwd`
-    /// (the Claude app is about to be opened there).
-    pub session_id: Option<String>,
-    pub pending: Option<bool>,
+    pub session_id: String,
     pub cwd: Option<String>,
     pub agent_id: String,
     pub api_key: String,
@@ -302,14 +299,7 @@ pub fn bind_claude_session(
     app: tauri::AppHandle,
     args: BindClaudeSessionArgs,
 ) -> Result<serde_json::Value, String> {
-    let mut cli: Vec<&str> = vec!["bind"];
-    if let Some(sid) = args.session_id.as_deref() {
-        cli.push("--session");
-        cli.push(sid);
-    }
-    if args.pending == Some(true) {
-        cli.push("--pending");
-    }
+    let mut cli: Vec<&str> = vec!["bind", "--session", &args.session_id];
     cli.extend_from_slice(&[
         "--agent-id",
         &args.agent_id,
@@ -366,26 +356,78 @@ fn dirs_home() -> Option<std::path::PathBuf> {
     std::env::var_os("HOME").map(std::path::PathBuf::from)
 }
 
-/// Open a NEW Claude Code session in the Claude desktop app on `folder`
-/// (`claude://code/new?folder=…`). The picker has already written a pending
-/// binding for the folder, which the session-start hook claims.
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct OpenClaudeDesktopSessionArgs {
+    pub folder: String,
+    pub session_id: String,
+    /// The one-line first prompt of the seed turn (shows in the transcript).
+    pub seed_prompt: String,
+}
+
+/// Start a NEW Claude Code session INSIDE the Claude desktop app, in
+/// `folder`, with a session id we chose (#148).
+///
+/// `claude://code/new?folder=…` was unreliable — sessions kept landing in a
+/// scratch workspace — and gives no session id up front. What works: create
+/// the session ourselves headlessly (`claude -p` with `--session-id`, cwd =
+/// folder) and hand it to the app with `claude://resume?session=<id>`, which
+/// imports the transcript, keeps its cwd, and continues it in the app under
+/// the same id (`local_<id>`). The picker has already bound the id, and the
+/// seed turn runs with an empty AGNTCHAT_HOME so its hooks stay silent
+/// (no session card, no mirrored seed); the app-run session's first prompt
+/// then reports as the agent and applies the picker's title.
 #[tauri::command]
-pub fn open_claude_desktop_session(folder: String) -> Result<(), String> {
-    if !std::path::Path::new(&folder).is_dir() {
-        return Err(format!("not a folder: {folder}"));
+pub fn open_claude_desktop_session(args: OpenClaudeDesktopSessionArgs) -> Result<(), String> {
+    if !args
+        .session_id
+        .chars()
+        .all(|c| c.is_ascii_hexdigit() || c == '-')
+    {
+        return Err("invalid session id".to_string());
     }
-    let encoded: String = folder
-        .bytes()
-        .map(|b| match b {
-            // encodeURIComponent, as the app's own Finder action does —
-            // slashes included; a bare path was opened as "no folder".
-            b'A'..=b'Z' | b'a'..=b'z' | b'0'..=b'9' | b'-' | b'_' | b'.' | b'~' => {
-                (b as char).to_string()
-            }
-            _ => format!("%{b:02X}"),
-        })
-        .collect();
-    let url = format!("claude://code/new?folder={encoded}&source=agntchat");
+    let dir = std::path::Path::new(&args.folder);
+    if !dir.is_dir() {
+        return Err(format!("not a folder: {}", args.folder));
+    }
+    let silent_home = std::env::temp_dir().join(format!("agntchat-seed-{}", args.session_id));
+    std::fs::create_dir_all(&silent_home).map_err(|e| format!("temp dir: {e}"))?;
+    // Through the login shell so `claude` resolves on the user's PATH — a
+    // GUI app's own PATH is minimal. No MCP servers for the seed turn: it
+    // only has to write the transcript.
+    let script = "cd \"$0\" && claude --session-id \"$1\" --model haiku --max-turns 1 \
+        --mcp-config '{\"mcpServers\":{}}' --strict-mcp-config -p \"$2\"";
+    #[cfg(target_os = "windows")]
+    let output = hidden_command("cmd")
+        .args([
+            "/c",
+            &format!(
+                "cd /d \"{}\" && claude --session-id {} --model haiku --max-turns 1 --mcp-config \"{{\\\"mcpServers\\\":{{}}}}\" --strict-mcp-config -p \"{}\"",
+                args.folder,
+                args.session_id,
+                args.seed_prompt.replace('"', "'")
+            ),
+        ])
+        .env("AGNTCHAT_HOME", &silent_home)
+        .stdin(Stdio::null())
+        .output();
+    #[cfg(not(target_os = "windows"))]
+    let output = hidden_command("/bin/zsh")
+        .args(["-lc", script, &args.folder, &args.session_id, &args.seed_prompt])
+        .env("AGNTCHAT_HOME", &silent_home)
+        .stdin(Stdio::null())
+        .output();
+    let output = output.map_err(|e| format!("could not run claude to create the session: {e}"))?;
+    let _ = std::fs::remove_dir_all(&silent_home);
+    if !output.status.success() {
+        let err = String::from_utf8_lossy(&output.stderr);
+        return Err(format!(
+            "claude could not create the session ({}): {}",
+            output.status,
+            err.lines().last().unwrap_or("").trim()
+        ));
+    }
+    let url = format!("claude://resume?session={}", args.session_id);
     #[cfg(target_os = "macos")]
     let status = hidden_command("open").arg(&url).status();
     #[cfg(target_os = "windows")]
