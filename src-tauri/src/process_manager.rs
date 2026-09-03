@@ -234,6 +234,96 @@ pub fn get_bridge_paths(app: tauri::AppHandle) -> Result<BridgePaths, String> {
     })
 }
 
+/// Run one `python -m agentchat <args>` in the bundled bridge with its venv
+/// Python and return stdout. Shared by the external-agent (#148) session
+/// picker commands: the logic lives in the bridge (testable Python), Rust
+/// only shells out.
+fn run_agentchat_cli(app: &tauri::AppHandle, args: &[&str]) -> Result<String, String> {
+    let bridge_dir = bridge_dir_for(app)?;
+    let python = match bridge_venv_python(app) {
+        Ok(p) if p.exists() => p.to_string_lossy().to_string(),
+        _ => "python3".to_string(),
+    };
+    let output = hidden_command(&python)
+        .arg("-m")
+        .arg("agentchat")
+        .args(args)
+        .current_dir(&bridge_dir)
+        .stdin(Stdio::null())
+        .output()
+        .map_err(|e| format!("Failed to run the bridge CLI: {e}"))?;
+    if !output.status.success() {
+        let err = String::from_utf8_lossy(&output.stderr);
+        return Err(format!(
+            "bridge CLI exited with {}: {}",
+            output.status,
+            err.lines().last().unwrap_or("").trim()
+        ));
+    }
+    Ok(String::from_utf8_lossy(&output.stdout).to_string())
+}
+
+/// Claude Code sessions on this machine (external agents #148): the desktop
+/// session picker. JSON straight from `python -m agentchat sessions`.
+#[tauri::command]
+pub fn list_claude_sessions(app: tauri::AppHandle) -> Result<serde_json::Value, String> {
+    let out = run_agentchat_cli(&app, &["sessions"])?;
+    // The CLI prints one JSON line; tolerate log noise before it.
+    let json_line = out
+        .lines()
+        .rev()
+        .find(|l| l.trim_start().starts_with('['))
+        .ok_or_else(|| "bridge CLI returned no session list".to_string())?;
+    serde_json::from_str(json_line).map_err(|e| format!("bad session list: {e}"))
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct BindClaudeSessionArgs {
+    pub session_id: String,
+    pub cwd: Option<String>,
+    pub agent_id: String,
+    pub api_key: String,
+    pub display_name: String,
+    pub gateway_url: String,
+}
+
+/// Bind one Claude Code session to one external agent: writes the agent's
+/// credentials + the session map under ~/.agentchat and makes sure the
+/// user-scope hooks/MCP server are installed. Local files only — the
+/// desktop already fetched the key from the backend.
+#[tauri::command]
+pub fn bind_claude_session(
+    app: tauri::AppHandle,
+    args: BindClaudeSessionArgs,
+) -> Result<serde_json::Value, String> {
+    let mut cli: Vec<&str> = vec![
+        "bind",
+        "--session",
+        &args.session_id,
+        "--agent-id",
+        &args.agent_id,
+        "--api-key",
+        &args.api_key,
+        "--display-name",
+        &args.display_name,
+        "--gateway-url",
+        &args.gateway_url,
+        "--install",
+    ];
+    if let Some(cwd) = args.cwd.as_deref() {
+        cli.push("--cwd");
+        cli.push(cwd);
+    }
+    let out = run_agentchat_cli(&app, &cli)?;
+    let json_line = out
+        .lines()
+        .rev()
+        .find(|l| l.trim_start().starts_with('{'))
+        .ok_or_else(|| "bridge CLI returned no result".to_string())?;
+    serde_json::from_str(json_line).map_err(|e| format!("bad bind result: {e}"))
+}
+
 /// Extract crash reason from collected log lines, providing user-friendly
 /// messages with actionable fix instructions for common failure modes.
 /// Returns `(reason, kind)` — `kind` is a machine-readable category the UI

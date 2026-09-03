@@ -507,6 +507,25 @@ export async function createAgentInvite(data: {
   return request("/api/invites", { method: "POST", body: JSON.stringify(data) });
 }
 
+/** External agent (#148) created directly for the desktop session picker:
+ *  a Claude Code / Codex session the user drives themselves. Returns the API
+ *  key the picker hands to the bridge's `bind`. */
+export async function createExternalAgent(data: {
+  displayName: string;
+  externalTool: "claude_code" | "codex";
+}): Promise<{ agent: Agent; apiKey: string }> {
+  const res = await request<Agent & { apiKey: string }>("/api/agents", {
+    method: "POST",
+    body: JSON.stringify({
+      displayName: data.displayName,
+      runtime: "external",
+      externalTool: data.externalTool,
+    }),
+  });
+  const { apiKey, ...agent } = res;
+  return { agent: agent as Agent, apiKey };
+}
+
 export async function createAgent(data: {
   displayName: string;
   description?: string;
