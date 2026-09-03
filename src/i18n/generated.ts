@@ -333,7 +333,8 @@ export const resources = {
           "create": "Couldn't create the invite.",
           "folder": "Choose a folder first.",
           "launch": "Couldn't open a terminal for the session.",
-          "list": "Couldn't list Claude Code sessions."
+          "list": "Couldn't list Claude Code sessions.",
+          "open": "Couldn't open the Claude app."
         },
         "expires": "The invite works once and expires in 24 hours.",
         "folderHint": "A terminal opens there running claude, already connected as the chosen agent.",
@@ -357,11 +358,17 @@ export const resources = {
         "start": "Start session",
         "startNew": "Start a new session",
         "started": "A new session is starting in {{folder}} as {{name}}. Its messages appear in your DM with {{name}}.",
+        "startedApp": "The Claude app is opening a new session in {{folder}} as {{name}}. Its messages appear in your DM with {{name}}.",
         "starting": "Starting…",
         "title": "Connect a Claude Code or Codex session",
         "toolLabel": "CLI",
         "unbound": "not connected",
-        "useCodeInstead": "Connect another machine with a code instead"
+        "useCodeInstead": "Connect another machine with a code instead",
+        "whereApp": "Claude app",
+        "whereAppHint": "The session lives in the Claude app, so it survives closing a terminal. Messages from agntchat reach it before each prompt and at the end of each turn.",
+        "whereLabel": "Open in",
+        "whereTerminal": "Terminal",
+        "whereTerminalHint": "A terminal window runs claude with live push: messages from agntchat arrive even while it idles. Closing the terminal ends the session."
       },
       "connection": {
         "direct": "Direct",
@@ -6437,7 +6444,8 @@ export const resources = {
           "create": "No se pudo crear la invitación.",
           "folder": "Elige una carpeta primero.",
           "launch": "No se pudo abrir una terminal para la sesión.",
-          "list": "No se pudieron listar las sesiones de Claude Code."
+          "list": "No se pudieron listar las sesiones de Claude Code.",
+          "open": "No se pudo abrir la app de Claude."
         },
         "expires": "La invitación sirve una vez y caduca en 24 horas.",
         "folderHint": "Allí se abre una terminal ejecutando claude, ya conectada como el agente elegido.",
@@ -6461,11 +6469,17 @@ export const resources = {
         "start": "Iniciar sesión",
         "startNew": "Iniciar una sesión nueva",
         "started": "Se está iniciando una sesión nueva en {{folder}} como {{name}}. Sus mensajes aparecen en tu DM con {{name}}.",
+        "startedApp": "La app de Claude está abriendo una sesión nueva en {{folder}} como {{name}}. Sus mensajes aparecen en tu DM con {{name}}.",
         "starting": "Iniciando…",
         "title": "Conectar una sesión de Claude Code o Codex",
         "toolLabel": "CLI",
         "unbound": "sin conectar",
-        "useCodeInstead": "Conectar otra máquina con un código"
+        "useCodeInstead": "Conectar otra máquina con un código",
+        "whereApp": "App de Claude",
+        "whereAppHint": "La sesión vive en la app de Claude, así que sobrevive al cierre de una terminal. Los mensajes de agntchat le llegan antes de cada prompt y al final de cada turno.",
+        "whereLabel": "Abrir en",
+        "whereTerminal": "Terminal",
+        "whereTerminalHint": "Una ventana de terminal ejecuta claude con envío en vivo: los mensajes de agntchat llegan incluso en reposo. Cerrar la terminal termina la sesión."
       },
       "connection": {
         "direct": "Directa",
@@ -12541,7 +12555,8 @@ export const resources = {
           "create": "Einladung konnte nicht erstellt werden.",
           "folder": "Wähle zuerst einen Ordner.",
           "launch": "Es konnte kein Terminal für die Sitzung geöffnet werden.",
-          "list": "Claude-Code-Sitzungen konnten nicht aufgelistet werden."
+          "list": "Claude-Code-Sitzungen konnten nicht aufgelistet werden.",
+          "open": "Die Claude-App konnte nicht geöffnet werden."
         },
         "expires": "Die Einladung gilt einmal und läuft nach 24 Stunden ab.",
         "folderHint": "Dort öffnet sich ein Terminal mit claude, bereits als der gewählte Agent verbunden.",
@@ -12565,11 +12580,17 @@ export const resources = {
         "start": "Sitzung starten",
         "startNew": "Neue Sitzung starten",
         "started": "In {{folder}} startet eine neue Sitzung als {{name}}. Ihre Nachrichten erscheinen in deiner DM mit {{name}}.",
+        "startedApp": "Die Claude-App öffnet eine neue Sitzung in {{folder}} als {{name}}. Ihre Nachrichten erscheinen in deiner DM mit {{name}}.",
         "starting": "Starte…",
         "title": "Claude-Code- oder Codex-Sitzung verbinden",
         "toolLabel": "CLI",
         "unbound": "nicht verbunden",
-        "useCodeInstead": "Stattdessen einen anderen Rechner per Code verbinden"
+        "useCodeInstead": "Stattdessen einen anderen Rechner per Code verbinden",
+        "whereApp": "Claude-App",
+        "whereAppHint": "Die Sitzung lebt in der Claude-App und überlebt das Schließen eines Terminals. Nachrichten aus agntchat erreichen sie vor jedem Prompt und am Ende jedes Zuges.",
+        "whereLabel": "Öffnen in",
+        "whereTerminal": "Terminal",
+        "whereTerminalHint": "Ein Terminalfenster führt claude mit Live-Push aus: Nachrichten aus agntchat kommen auch im Leerlauf an. Das Terminal zu schließen beendet die Sitzung."
       },
       "connection": {
         "direct": "Direkt",
@@ -18645,7 +18666,8 @@ export const resources = {
           "create": "Impossible de créer l'invitation.",
           "folder": "Choisissez d'abord un dossier.",
           "launch": "Impossible d'ouvrir un terminal pour la session.",
-          "list": "Impossible de lister les sessions Claude Code."
+          "list": "Impossible de lister les sessions Claude Code.",
+          "open": "Impossible d'ouvrir l'app Claude."
         },
         "expires": "L'invitation est à usage unique et expire dans 24 heures.",
         "folderHint": "Un terminal s'y ouvre en exécutant claude, déjà connecté en tant que l'agent choisi.",
@@ -18669,11 +18691,17 @@ export const resources = {
         "start": "Démarrer la session",
         "startNew": "Démarrer une nouvelle session",
         "started": "Une nouvelle session démarre dans {{folder}} en tant que {{name}}. Ses messages apparaissent dans votre DM avec {{name}}.",
+        "startedApp": "L'app Claude ouvre une nouvelle session dans {{folder}} en tant que {{name}}. Ses messages apparaissent dans votre DM avec {{name}}.",
         "starting": "Démarrage…",
         "title": "Connecter une session Claude Code ou Codex",
         "toolLabel": "CLI",
         "unbound": "non connectée",
-        "useCodeInstead": "Connecter une autre machine avec un code"
+        "useCodeInstead": "Connecter une autre machine avec un code",
+        "whereApp": "App Claude",
+        "whereAppHint": "La session vit dans l'app Claude et survit à la fermeture d'un terminal. Les messages d'agntchat lui parviennent avant chaque prompt et à la fin de chaque tour.",
+        "whereLabel": "Ouvrir dans",
+        "whereTerminal": "Terminal",
+        "whereTerminalHint": "Une fenêtre de terminal exécute claude avec envoi en direct : les messages d'agntchat arrivent même au repos. Fermer le terminal met fin à la session."
       },
       "connection": {
         "direct": "Direct",
@@ -24749,7 +24777,8 @@ export const resources = {
           "create": "Não foi possível criar o convite.",
           "folder": "Escolha uma pasta primeiro.",
           "launch": "Não foi possível abrir um terminal para a sessão.",
-          "list": "Não foi possível listar as sessões do Claude Code."
+          "list": "Não foi possível listar as sessões do Claude Code.",
+          "open": "Não foi possível abrir o app Claude."
         },
         "expires": "O convite vale uma vez e expira em 24 horas.",
         "folderHint": "Um terminal abre lá rodando claude, já conectado como o agente escolhido.",
@@ -24773,11 +24802,17 @@ export const resources = {
         "start": "Iniciar sessão",
         "startNew": "Iniciar uma nova sessão",
         "started": "Uma nova sessão está iniciando em {{folder}} como {{name}}. Suas mensagens aparecem na sua DM com {{name}}.",
+        "startedApp": "O app Claude está abrindo uma nova sessão em {{folder}} como {{name}}. Suas mensagens aparecem na sua DM com {{name}}.",
         "starting": "Iniciando…",
         "title": "Conectar uma sessão do Claude Code ou Codex",
         "toolLabel": "CLI",
         "unbound": "não conectada",
-        "useCodeInstead": "Conectar outra máquina com um código"
+        "useCodeInstead": "Conectar outra máquina com um código",
+        "whereApp": "App Claude",
+        "whereAppHint": "A sessão vive no app Claude, então sobrevive ao fechamento de um terminal. Mensagens do agntchat chegam a ela antes de cada prompt e ao final de cada turno.",
+        "whereLabel": "Abrir em",
+        "whereTerminal": "Terminal",
+        "whereTerminalHint": "Uma janela de terminal roda claude com envio ao vivo: mensagens do agntchat chegam mesmo em repouso. Fechar o terminal encerra a sessão."
       },
       "connection": {
         "direct": "Direto",
@@ -30853,7 +30888,8 @@ export const resources = {
           "create": "招待を作成できませんでした。",
           "folder": "先にフォルダーを選んでください。",
           "launch": "セッション用のターミナルを開けませんでした。",
-          "list": "Claude Code セッションを一覧できませんでした。"
+          "list": "Claude Code セッションを一覧できませんでした。",
+          "open": "Claude アプリを開けませんでした。"
         },
         "expires": "招待は 1 回のみ有効で、24 時間で期限切れになります。",
         "folderHint": "そこでターミナルが開き、選んだエージェントとして接続済みの claude が起動します。",
@@ -30877,11 +30913,17 @@ export const resources = {
         "start": "セッションを開始",
         "startNew": "新しいセッションを開始",
         "started": "{{folder}} で {{name}} として新しいセッションが開始します。メッセージは {{name}} との DM に表示されます。",
+        "startedApp": "Claude アプリが {{folder}} で {{name}} として新しいセッションを開いています。メッセージは {{name}} との DM に表示されます。",
         "starting": "開始中…",
         "title": "Claude Code または Codex のセッションを接続",
         "toolLabel": "CLI",
         "unbound": "未接続",
-        "useCodeInstead": "代わりに別のマシンをコードで接続"
+        "useCodeInstead": "代わりに別のマシンをコードで接続",
+        "whereApp": "Claude アプリ",
+        "whereAppHint": "セッションは Claude アプリ内で動くため、ターミナルを閉じても残ります。agntchat からのメッセージは、各プロンプトの前と各ターンの終わりに届きます。",
+        "whereLabel": "開く場所",
+        "whereTerminal": "ターミナル",
+        "whereTerminalHint": "ターミナルウィンドウがライブプッシュ付きで claude を実行します。待機中でも agntchat からのメッセージが届きます。ターミナルを閉じるとセッションは終了します。"
       },
       "connection": {
         "direct": "ダイレクト",
@@ -36957,7 +36999,8 @@ export const resources = {
           "create": "无法创建邀请。",
           "folder": "请先选择一个文件夹。",
           "launch": "无法为该会话打开终端。",
-          "list": "无法列出 Claude Code 会话。"
+          "list": "无法列出 Claude Code 会话。",
+          "open": "无法打开 Claude 应用。"
         },
         "expires": "邀请仅可使用一次，24 小时后失效。",
         "folderHint": "将在该文件夹打开一个运行 claude 的终端，并已以所选代理身份连接。",
@@ -36981,11 +37024,17 @@ export const resources = {
         "start": "启动会话",
         "startNew": "启动新会话",
         "started": "正在 {{folder}} 中以 {{name}} 身份启动新会话。它的消息会出现在你与 {{name}} 的私信中。",
+        "startedApp": "Claude 应用正在 {{folder}} 中以 {{name}} 身份打开新会话。它的消息会出现在你与 {{name}} 的私信中。",
         "starting": "正在启动…",
         "title": "连接 Claude Code 或 Codex 会话",
         "toolLabel": "CLI",
         "unbound": "未连接",
-        "useCodeInstead": "改用连接码连接另一台机器"
+        "useCodeInstead": "改用连接码连接另一台机器",
+        "whereApp": "Claude 应用",
+        "whereAppHint": "会话运行在 Claude 应用内，关闭终端也不会消失。来自 agntchat 的消息会在每次提示前和每轮结束时送达。",
+        "whereLabel": "打开方式",
+        "whereTerminal": "终端",
+        "whereTerminalHint": "终端窗口以实时推送方式运行 claude：即使空闲也能收到 agntchat 的消息。关闭终端会结束会话。"
       },
       "connection": {
         "direct": "直连",
@@ -43061,7 +43110,8 @@ export const resources = {
           "create": "초대를 만들 수 없습니다.",
           "folder": "먼저 폴더를 선택하세요.",
           "launch": "세션용 터미널을 열 수 없습니다.",
-          "list": "Claude Code 세션을 나열할 수 없습니다."
+          "list": "Claude Code 세션을 나열할 수 없습니다.",
+          "open": "Claude 앱을 열 수 없습니다."
         },
         "expires": "초대는 한 번만 사용할 수 있으며 24시간 후 만료됩니다.",
         "folderHint": "그곳에서 선택한 에이전트로 이미 연결된 claude를 실행하는 터미널이 열립니다.",
@@ -43085,11 +43135,17 @@ export const resources = {
         "start": "세션 시작",
         "startNew": "새 세션 시작",
         "started": "{{folder}}에서 {{name}}(으)로 새 세션이 시작됩니다. 메시지는 {{name}}과(와)의 DM에 표시됩니다.",
+        "startedApp": "Claude 앱이 {{folder}}에서 {{name}}(으)로 새 세션을 열고 있습니다. 메시지는 {{name}}과(와)의 DM에 표시됩니다.",
         "starting": "시작 중…",
         "title": "Claude Code 또는 Codex 세션 연결",
         "toolLabel": "CLI",
         "unbound": "연결되지 않음",
-        "useCodeInstead": "대신 다른 머신을 코드로 연결"
+        "useCodeInstead": "대신 다른 머신을 코드로 연결",
+        "whereApp": "Claude 앱",
+        "whereAppHint": "세션이 Claude 앱 안에서 실행되므로 터미널을 닫아도 유지됩니다. agntchat 메시지는 각 프롬프트 전과 각 턴 종료 시 전달됩니다.",
+        "whereLabel": "열 위치",
+        "whereTerminal": "터미널",
+        "whereTerminalHint": "터미널 창이 실시간 푸시와 함께 claude를 실행합니다. 대기 중에도 agntchat 메시지가 도착합니다. 터미널을 닫으면 세션이 종료됩니다."
       },
       "connection": {
         "direct": "직접",
@@ -49165,7 +49221,8 @@ export const resources = {
           "create": "Impossibile creare l'invito.",
           "folder": "Scegli prima una cartella.",
           "launch": "Impossibile aprire un terminale per la sessione.",
-          "list": "Impossibile elencare le sessioni Claude Code."
+          "list": "Impossibile elencare le sessioni Claude Code.",
+          "open": "Impossibile aprire l'app Claude."
         },
         "expires": "L'invito vale una volta e scade tra 24 ore.",
         "folderHint": "Lì si apre un terminale che esegue claude, già collegato come l'agente scelto.",
@@ -49189,11 +49246,17 @@ export const resources = {
         "start": "Avvia sessione",
         "startNew": "Avvia una nuova sessione",
         "started": "Una nuova sessione sta partendo in {{folder}} come {{name}}. I suoi messaggi compaiono nel tuo DM con {{name}}.",
+        "startedApp": "L'app Claude sta aprendo una nuova sessione in {{folder}} come {{name}}. I suoi messaggi compaiono nel tuo DM con {{name}}.",
         "starting": "Avvio…",
         "title": "Collega una sessione Claude Code o Codex",
         "toolLabel": "CLI",
         "unbound": "non collegata",
-        "useCodeInstead": "Collega invece un'altra macchina con un codice"
+        "useCodeInstead": "Collega invece un'altra macchina con un codice",
+        "whereApp": "App Claude",
+        "whereAppHint": "La sessione vive nell'app Claude e sopravvive alla chiusura di un terminale. I messaggi da agntchat le arrivano prima di ogni prompt e alla fine di ogni turno.",
+        "whereLabel": "Apri in",
+        "whereTerminal": "Terminale",
+        "whereTerminalHint": "Una finestra di terminale esegue claude con invio in tempo reale: i messaggi da agntchat arrivano anche quando è inattiva. Chiudere il terminale termina la sessione."
       },
       "connection": {
         "direct": "Diretta",
@@ -55269,7 +55332,8 @@ export const resources = {
           "create": "आमंत्रण नहीं बन सका।",
           "folder": "पहले एक फ़ोल्डर चुनें।",
           "launch": "सत्र के लिए टर्मिनल नहीं खोला जा सका।",
-          "list": "Claude Code सत्र सूचीबद्ध नहीं किए जा सके।"
+          "list": "Claude Code सत्र सूचीबद्ध नहीं किए जा सके।",
+          "open": "Claude ऐप नहीं खोला जा सका।"
         },
         "expires": "आमंत्रण एक बार काम करता है और 24 घंटे में समाप्त हो जाता है।",
         "folderHint": "वहाँ claude चलाता हुआ एक टर्मिनल खुलता है, जो पहले से चुने गए एजेंट के रूप में जुड़ा होता है।",
@@ -55293,11 +55357,17 @@ export const resources = {
         "start": "सत्र शुरू करें",
         "startNew": "नया सत्र शुरू करें",
         "started": "{{folder}} में {{name}} के रूप में एक नया सत्र शुरू हो रहा है। इसके संदेश {{name}} के साथ आपके DM में दिखेंगे।",
+        "startedApp": "Claude ऐप {{folder}} में {{name}} के रूप में एक नया सत्र खोल रहा है। इसके संदेश {{name}} के साथ आपके DM में दिखेंगे।",
         "starting": "शुरू हो रहा है…",
         "title": "Claude Code या Codex सत्र जोड़ें",
         "toolLabel": "CLI",
         "unbound": "जुड़ा नहीं",
-        "useCodeInstead": "इसके बजाय किसी दूसरी मशीन को कोड से जोड़ें"
+        "useCodeInstead": "इसके बजाय किसी दूसरी मशीन को कोड से जोड़ें",
+        "whereApp": "Claude ऐप",
+        "whereAppHint": "सत्र Claude ऐप में रहता है, इसलिए टर्मिनल बंद करने पर भी बना रहता है। agntchat के संदेश उसे हर प्रॉम्प्ट से पहले और हर टर्न के अंत में मिलते हैं।",
+        "whereLabel": "यहाँ खोलें",
+        "whereTerminal": "टर्मिनल",
+        "whereTerminalHint": "एक टर्मिनल विंडो लाइव पुश के साथ claude चलाती है: agntchat के संदेश निष्क्रिय रहने पर भी आते हैं। टर्मिनल बंद करने से सत्र समाप्त हो जाता है।"
       },
       "connection": {
         "direct": "डायरेक्ट",

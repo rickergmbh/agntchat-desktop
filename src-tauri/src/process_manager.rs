@@ -280,7 +280,10 @@ pub fn list_claude_sessions(app: tauri::AppHandle) -> Result<serde_json::Value, 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct BindClaudeSessionArgs {
-    pub session_id: String,
+    /// None with `pending: true`: bind the NEXT session started in `cwd`
+    /// (the Claude app is about to be opened there).
+    pub session_id: Option<String>,
+    pub pending: Option<bool>,
     pub cwd: Option<String>,
     pub agent_id: String,
     pub api_key: String,
@@ -297,10 +300,15 @@ pub fn bind_claude_session(
     app: tauri::AppHandle,
     args: BindClaudeSessionArgs,
 ) -> Result<serde_json::Value, String> {
-    let mut cli: Vec<&str> = vec![
-        "bind",
-        "--session",
-        &args.session_id,
+    let mut cli: Vec<&str> = vec!["bind"];
+    if let Some(sid) = args.session_id.as_deref() {
+        cli.push("--session");
+        cli.push(sid);
+    }
+    if args.pending == Some(true) {
+        cli.push("--pending");
+    }
+    cli.extend_from_slice(&[
         "--agent-id",
         &args.agent_id,
         "--api-key",
@@ -310,7 +318,7 @@ pub fn bind_claude_session(
         "--gateway-url",
         &args.gateway_url,
         "--install",
-    ];
+    ]);
     if let Some(cwd) = args.cwd.as_deref() {
         cli.push("--cwd");
         cli.push(cwd);
@@ -322,6 +330,65 @@ pub fn bind_claude_session(
         .find(|l| l.trim_start().starts_with('{'))
         .ok_or_else(|| "bridge CLI returned no result".to_string())?;
     serde_json::from_str(json_line).map_err(|e| format!("bad bind result: {e}"))
+}
+
+/// Is the Claude desktop app installed here? Its `claude://` deep links are
+/// how the picker starts a session INSIDE the app (survives a closed
+/// terminal). macOS: the bundle exists; Windows: the scheme is registered.
+#[tauri::command]
+pub fn claude_desktop_available() -> bool {
+    #[cfg(target_os = "macos")]
+    {
+        return std::path::Path::new("/Applications/Claude.app").is_dir()
+            || dirs_home()
+                .map(|h| h.join("Applications").join("Claude.app").is_dir())
+                .unwrap_or(false);
+    }
+    #[cfg(target_os = "windows")]
+    {
+        return hidden_command("reg")
+            .args(["query", "HKCU\\Software\\Classes\\claude"])
+            .output()
+            .map(|o| o.status.success())
+            .unwrap_or(false);
+    }
+    #[allow(unreachable_code)]
+    false
+}
+
+fn dirs_home() -> Option<std::path::PathBuf> {
+    std::env::var_os("HOME").map(std::path::PathBuf::from)
+}
+
+/// Open a NEW Claude Code session in the Claude desktop app on `folder`
+/// (`claude://code/new?folder=…`). The picker has already written a pending
+/// binding for the folder, which the session-start hook claims.
+#[tauri::command]
+pub fn open_claude_desktop_session(folder: String) -> Result<(), String> {
+    if !std::path::Path::new(&folder).is_dir() {
+        return Err(format!("not a folder: {folder}"));
+    }
+    let encoded: String = folder
+        .bytes()
+        .map(|b| match b {
+            b'A'..=b'Z' | b'a'..=b'z' | b'0'..=b'9' | b'-' | b'_' | b'.' | b'~' | b'/' => {
+                (b as char).to_string()
+            }
+            _ => format!("%{b:02X}"),
+        })
+        .collect();
+    let url = format!("claude://code/new?folder={encoded}&source=agntchat");
+    #[cfg(target_os = "macos")]
+    let status = hidden_command("open").arg(&url).status();
+    #[cfg(target_os = "windows")]
+    let status = hidden_command("cmd").args(["/c", "start", "", &url]).status();
+    #[cfg(not(any(target_os = "macos", target_os = "windows")))]
+    let status = hidden_command("xdg-open").arg(&url).status();
+    match status {
+        Ok(s) if s.success() => Ok(()),
+        Ok(s) => Err(format!("could not open the Claude app ({s})")),
+        Err(e) => Err(format!("could not open the Claude app: {e}")),
+    }
 }
 
 #[derive(Debug, Deserialize)]

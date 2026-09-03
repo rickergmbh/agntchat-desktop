@@ -135,11 +135,29 @@ function PickerFlow({
   // hook fires.
   const [startNew, setStartNew] = useState(false);
   const [folder, setFolder] = useState("");
+  // Where the new session runs: inside the Claude desktop app (survives a
+  // closed terminal; inbound via hooks) or a terminal (live channel push).
+  const [where, setWhere] = useState<"app" | "terminal">("terminal");
+  const [appAvailable, setAppAvailable] = useState(false);
+  useEffect(() => {
+    let cancelled = false;
+    invoke<boolean>("claude_desktop_available")
+      .then((ok) => {
+        if (!cancelled && ok) {
+          setAppAvailable(true);
+          setWhere("app");
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
   const [choice, setChoice] = useState<string>(agent?.id ?? externalAgents[0]?.id ?? "new");
   const [newName, setNewName] = useState(t("hosting.externalTool.claude_code"));
   const [binding, setBinding] = useState(false);
   const [bindError, setBindError] = useState<string | null>(null);
-  const [done, setDone] = useState<{ session: string; name: string; started?: boolean } | null>(null);
+  const [done, setDone] = useState<{ session: string; name: string; started?: boolean; inApp?: boolean } | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -194,10 +212,16 @@ function PickerFlow({
     return { id: re.agent.id, displayName: re.agent.displayName, apiKey: re.apiKey };
   }
 
-  async function bindSession(sessionId: string, cwd: string | null, target: { id: string; displayName: string; apiKey: string }) {
+  async function bindSession(
+    sessionId: string | null,
+    cwd: string | null,
+    target: { id: string; displayName: string; apiKey: string },
+    pending = false
+  ) {
     await invoke("bind_claude_session", {
       args: {
         sessionId,
+        pending,
         cwd,
         agentId: target.id,
         apiKey: target.apiKey,
@@ -223,18 +247,33 @@ function PickerFlow({
       const target = await resolveTarget();
       if (!target) return;
       if (startNew) {
-        const sessionId = crypto.randomUUID();
-        await bindSession(sessionId, folderDir, target);
-        try {
-          await invoke("launch_claude_session", { folder: folderDir, sessionId });
-        } catch (err) {
-          throw new Error(
-            `${t("connectCli.errors.launch")} ${err instanceof Error ? err.message : String(err)}`
-          );
-        }
-        void fetchAgents();
         const seg = folderDir.split(/[\\/]/).filter(Boolean).slice(-1)[0] ?? folderDir;
-        setDone({ session: seg, name: target.displayName, started: true });
+        if (where === "app") {
+          // No session id up front: bind the NEXT session started in the
+          // folder, then open the Claude app there; the start hook claims it.
+          await bindSession(null, folderDir, target, true);
+          try {
+            await invoke("open_claude_desktop_session", { folder: folderDir });
+          } catch (err) {
+            throw new Error(
+              `${t("connectCli.errors.open")} ${err instanceof Error ? err.message : String(err)}`
+            );
+          }
+          void fetchAgents();
+          setDone({ session: seg, name: target.displayName, started: true, inApp: true });
+        } else {
+          const sessionId = crypto.randomUUID();
+          await bindSession(sessionId, folderDir, target);
+          try {
+            await invoke("launch_claude_session", { folder: folderDir, sessionId });
+          } catch (err) {
+            throw new Error(
+              `${t("connectCli.errors.launch")} ${err instanceof Error ? err.message : String(err)}`
+            );
+          }
+          void fetchAgents();
+          setDone({ session: seg, name: target.displayName, started: true });
+        }
       } else if (session) {
         await bindSession(session.sessionId, session.cwd, target);
         void fetchAgents();
@@ -257,7 +296,10 @@ function PickerFlow({
         <div className="space-y-3">
           <p className="text-sm">
             {done.started
-              ? t("connectCli.started", { folder: done.session, name: done.name })
+              ? t(done.inApp ? "connectCli.startedApp" : "connectCli.started", {
+                  folder: done.session,
+                  name: done.name,
+                })
               : t("connectCli.bound", done)}
           </p>
           <div className="flex justify-end">
@@ -315,7 +357,31 @@ function PickerFlow({
                   ))}
                 </div>
               )}
-              <p className="text-[11px] text-muted-foreground">{t("connectCli.folderHint")}</p>
+              {appAvailable && (
+                <div className="space-y-1 pt-1">
+                  <span className="text-xs font-medium text-muted-foreground">{t("connectCli.whereLabel")}</span>
+                  <div className="flex gap-2">
+                    {(["app", "terminal"] as const).map((w) => (
+                      <button
+                        key={w}
+                        type="button"
+                        onClick={() => setWhere(w)}
+                        className={
+                          "rounded-md border px-3 py-1.5 text-sm " +
+                          (where === w
+                            ? "border-primary bg-primary/10 text-foreground"
+                            : "border-border text-muted-foreground hover:bg-accent")
+                        }
+                      >
+                        {w === "app" ? t("connectCli.whereApp") : t("connectCli.whereTerminal")}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <p className="text-[11px] text-muted-foreground">
+                {where === "app" ? t("connectCli.whereAppHint") : t("connectCli.whereTerminalHint")}
+              </p>
             </div>
           )}
 
