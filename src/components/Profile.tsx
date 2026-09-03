@@ -4,6 +4,7 @@ import { useAuthStore } from "../stores/authStore";
 import { useThemeStore, type ThemePreference } from "../stores/themeStore";
 import { useLocaleStore } from "../stores/localeStore";
 import { useIntegrationStore } from "../stores/integrationStore";
+import { useDeviceNicknameStore } from "../stores/deviceNicknameStore";
 import type { LocalePreference } from "../i18n";
 import { LOCALE_LABELS, SUPPORTED_LOCALES } from "../i18n/generated";
 import { isDesignSystemDebugOn, setDesignSystemDebug } from "../lib/designSystemDebug";
@@ -1838,6 +1839,8 @@ function DeviceSection() {
     try {
       const res = await api.setDeviceNickname(myDevice, nickname.trim() || null);
       setSavedNickname(res.nickname ?? "");
+      // Session lines and other nickname readers pick the rename up at once.
+      useDeviceNicknameStore.getState().setNickname(myDevice, res.nickname ?? null);
       setNickname(res.nickname ?? "");
       setJustSaved(true);
       setTimeout(() => setJustSaved(false), 2000);

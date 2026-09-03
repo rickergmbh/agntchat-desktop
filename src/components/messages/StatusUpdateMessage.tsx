@@ -20,6 +20,7 @@ import { useTaskStore } from "../../stores/taskStore";
 import { useNavStore } from "../../stores/navStore";
 import { useChatStore } from "../../stores/chatStore";
 import { useAgentStore } from "../../stores/agentStore";
+import { useDeviceNicknameStore } from "../../stores/deviceNicknameStore";
 import { MarkdownContent } from "./MarkdownContent";
 import { StopTaskButton } from "./StopTaskButton";
 import { StatusGlyph, StatusLine, type TaskTone } from "./TaskMessages";
@@ -766,6 +767,13 @@ export function isExternalSessionMessage(message: Message): boolean {
 /** One quiet centred line: "Session started · Claude Code · repo (main) · host · 09:20". */
 function ExternalSessionCard({ payload, insertedAt }: { payload: StatusPayload; insertedAt?: string }) {
   const { t } = useTranslation("tasks");
+  // The machine shows under the owner's nickname when they set one in
+  // Profile ("macbook" instead of "DE-34002938").
+  const loadNicknames = useDeviceNicknameStore((s) => s.load);
+  const hostLabel = useDeviceNicknameStore((s) => s.label(payload.hostname));
+  useEffect(() => {
+    void loadNicknames();
+  }, [loadNicknames]);
   const ended = payload.type === "external_session_ended";
   const label = !ended
     ? t("card.externalSessionStarted")
@@ -781,7 +789,7 @@ function ExternalSessionCard({ payload, insertedAt }: { payload: StatusPayload; 
   const where = payload.repo
     ? `${payload.repo}${payload.branch ? ` (${payload.branch})` : ""}`
     : payload.cwd?.split("/").filter(Boolean).slice(-1)[0];
-  const context = [tool, where, payload.hostname].filter(Boolean).join(" · ");
+  const context = [tool, where, hostLabel].filter(Boolean).join(" · ");
   const toolCalls = payload.stats?.tool_calls ?? 0;
   const detail = ended
     ? [
