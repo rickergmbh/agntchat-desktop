@@ -121,6 +121,7 @@ function PickerFlow({
   const { t } = useTranslation("agents");
   const agents = useAgentStore((s) => s.agents);
   const fetchAgents = useAgentStore((s) => s.fetchAgents);
+  const recordApiKey = useAgentStore((s) => s.recordApiKey);
   const externalAgents = Object.values(agents)
     .map((m) => m.agent)
     .filter((a) => a.runtime === "external")
@@ -184,9 +185,12 @@ function PickerFlow({
       const name = newName.trim();
       if (!name) return null;
       const created = await createExternalAgent({ displayName: name, externalTool: "claude_code" });
+      await fetchAgents();
+      recordApiKey(created.agent.id, created.apiKey);
       return { id: created.agent.id, displayName: created.agent.displayName, apiKey: created.apiKey };
     }
     const re = await regenerateApiKey(choice);
+    recordApiKey(re.agent.id, re.apiKey);
     return { id: re.agent.id, displayName: re.agent.displayName, apiKey: re.apiKey };
   }
 

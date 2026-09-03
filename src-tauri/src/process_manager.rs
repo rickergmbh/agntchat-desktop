@@ -324,6 +324,45 @@ pub fn bind_claude_session(
     serde_json::from_str(json_line).map_err(|e| format!("bad bind result: {e}"))
 }
 
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RekeyExternalAgentArgs {
+    pub agent_id: String,
+    pub api_key: String,
+    pub display_name: String,
+    pub gateway_url: String,
+}
+
+/// After the owner regenerates an external agent's API key, rewrite the
+/// credentials this machine saved for it (session bindings, project
+/// bindings, machine default) so its sessions don't go stale and offline.
+#[tauri::command]
+pub fn rekey_external_agent(
+    app: tauri::AppHandle,
+    args: RekeyExternalAgentArgs,
+) -> Result<serde_json::Value, String> {
+    let out = run_agentchat_cli(
+        &app,
+        &[
+            "rekey",
+            "--agent-id",
+            &args.agent_id,
+            "--api-key",
+            &args.api_key,
+            "--display-name",
+            &args.display_name,
+            "--gateway-url",
+            &args.gateway_url,
+        ],
+    )?;
+    let json_line = out
+        .lines()
+        .rev()
+        .find(|l| l.trim_start().starts_with('{'))
+        .ok_or_else(|| "bridge CLI returned no result".to_string())?;
+    serde_json::from_str(json_line).map_err(|e| format!("bad rekey result: {e}"))
+}
+
 /// Start a NEW Claude Code session in a terminal, pre-bound (#148): the
 /// picker generated the session id and already ran `bind` for it, so the
 /// session reports as the chosen agent from its first hook, and the channel

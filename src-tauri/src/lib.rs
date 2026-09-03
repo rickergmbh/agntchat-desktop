@@ -25,6 +25,7 @@ pub fn run() {
             process_manager::list_claude_sessions,
             process_manager::bind_claude_session,
             process_manager::launch_claude_session,
+            process_manager::rekey_external_agent,
             process_manager::check_computer_use_deps,
             process_manager::install_computer_use_deps,
             process_manager::get_computer_use_deps_status,

@@ -311,6 +311,9 @@ interface AgentState {
     runtime?: "local" | "org_host";
   }) => Promise<string>;
   regenerateKey: (id: string) => Promise<string>;
+  /** Remember a key the app already holds (the session picker created or
+   *  regenerated it) so the config panel shows one without another round trip. */
+  recordApiKey: (id: string, apiKey: string) => void;
   refreshProcessStatuses: () => Promise<boolean>;
   /** Subscribe to WS events that mutate agent state (online toggle,
    *  health updates). Returns an unsub. */
@@ -1134,7 +1137,33 @@ export const useAgentStore = create<AgentState>((set, get) => ({
       });
       saveApiKey(id, result.apiKey);
     }
+    // External agent (#148): the picker saved this key on disk for its
+    // bound sessions; a regenerated key must land there too or every
+    // session goes 401 and offline. Best effort — the key is returned
+    // either way.
+    if (result.agent.runtime === "external") {
+      try {
+        await invoke("rekey_external_agent", {
+          args: {
+            agentId: id,
+            apiKey: result.apiKey,
+            displayName: result.agent.displayName,
+            gatewayUrl: api.getApiUrl(),
+          },
+        });
+      } catch (e) {
+        console.warn("[agentStore] rekey_external_agent failed", e);
+      }
+    }
     return result.apiKey;
+  },
+
+  recordApiKey: (id, apiKey) => {
+    const managed = get().agents[id];
+    if (managed) {
+      set({ agents: { ...get().agents, [id]: { ...managed, apiKey } } });
+    }
+    saveApiKey(id, apiKey);
   },
 
   initWsListeners: () => {
