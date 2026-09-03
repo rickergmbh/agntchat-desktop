@@ -25,6 +25,7 @@ import { isTaskMessage, TaskMessage } from "./TaskMessages";
 import { isToolMessage, ToolMessage } from "./ToolMessages";
 import { isFileMessage, FileMessage, RideAlongAttachments } from "./FileMessage";
 import {
+  isExternalSessionMessage,
   isStatusUpdateMessage,
   StatusUpdateMessage,
 } from "./StatusUpdateMessage";
@@ -244,6 +245,16 @@ export const MessageBubble = memo(function MessageBubble({
   // bubble background — the card supplies its own coloured border and
   // background. Width-capped at 60% so these don't bleed edge-to-edge
   // (matches web/src/components/MessageBubble.tsx).
+  // External session lifecycle (#148): a one-line system notice, no avatar,
+  // sender header or footer — those made a two-word event fill a card.
+  if (isStatusUpdate && isExternalSessionMessage(message)) {
+    return (
+      <div className="mt-0.5" onContextMenu={handleContextMenu}>
+        <StatusUpdateMessage message={message} />
+      </div>
+    );
+  }
+
   if (isTask || isStatusUpdate) {
     return (
       <MessageRow

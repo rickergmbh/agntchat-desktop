@@ -23,6 +23,7 @@ import { useAgentStore } from "../../stores/agentStore";
 import { MarkdownContent } from "./MarkdownContent";
 import { StopTaskButton } from "./StopTaskButton";
 import { StatusGlyph, StatusLine, type TaskTone } from "./TaskMessages";
+import { Marker, MarkerContent } from "@/components/ui/marker";
 
 /**
  * Renders task-lifecycle status messages that the backend emits as
@@ -752,7 +753,18 @@ function WorkRoomLink({ workConversationId }: { workConversationId: string }) {
  *  session reported starting or ending. No task behind it — the context line
  *  says which CLI, which repo/branch, which machine; the ended card adds
  *  duration and tool-call count from the server-accumulated stats. */
-function ExternalSessionCard({ payload }: { payload: StatusPayload }) {
+/** External-agent session events (#148) are system-level lifecycle
+ *  notices, not agent speech — MessageBubble renders them without the
+ *  avatar / sender / footer scaffold (see `isExternalSessionMessage`). */
+export function isExternalSessionMessage(message: Message): boolean {
+  return (
+    isStatusUpdateMessage(message) &&
+    String(message.metadata?.kind ?? "").startsWith("external_session_")
+  );
+}
+
+/** One quiet centred line: "Session started · Claude Code · repo (main) · host · 09:20". */
+function ExternalSessionCard({ payload, insertedAt }: { payload: StatusPayload; insertedAt?: string }) {
   const { t } = useTranslation("tasks");
   const ended = payload.type === "external_session_ended";
   const label = !ended
@@ -781,19 +793,19 @@ function ExternalSessionCard({ payload }: { payload: StatusPayload }) {
         .filter(Boolean)
         .join(" · ")
     : null;
+  const line = [label, context, detail, insertedAt ? formatClockTime(insertedAt) : null]
+    .filter(Boolean)
+    .join(" · ");
   return (
-    <Card>
-      <div className="px-3 py-2.5">
-        <StatusLine
-          glyph={<Terminal className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />}
-          label={label}
-          context={context}
-        />
-        {detail && (
-          <p className="mt-1.5 text-xs text-muted-foreground">{detail}</p>
-        )}
-      </div>
-    </Card>
+    <Marker variant="separator" className="px-4 py-1">
+      <MarkerContent
+        className="flex min-w-0 items-center justify-center gap-1.5 text-[10px] text-muted-foreground"
+        title={line}
+      >
+        <Terminal className="h-3 w-3 shrink-0" />
+        <span className="truncate">{line}</span>
+      </MarkerContent>
+    </Marker>
   );
 }
 
@@ -846,7 +858,7 @@ export function StatusUpdateMessage({ message }: { message: Message }) {
     payload.type === "external_session_started" ||
     payload.type === "external_session_ended"
   ) {
-    return <ExternalSessionCard payload={payload} />;
+    return <ExternalSessionCard payload={payload} insertedAt={message.insertedAt} />;
   }
 
   // task_request_failed: backend rejected the agent's create_task call.
