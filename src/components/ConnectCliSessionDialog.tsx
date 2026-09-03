@@ -138,6 +138,7 @@ function PickerFlow({
   // Where the new session runs: inside the Claude desktop app (survives a
   // closed terminal; inbound via hooks) or a terminal (live channel push).
   const [where, setWhere] = useState<"app" | "terminal">("terminal");
+  const [sessionName, setSessionName] = useState("");
   const [appAvailable, setAppAvailable] = useState(false);
   useEffect(() => {
     let cancelled = false;
@@ -216,7 +217,8 @@ function PickerFlow({
     sessionId: string | null,
     cwd: string | null,
     target: { id: string; displayName: string; apiKey: string },
-    pending = false
+    pending = false,
+    title: string | null = null
   ) {
     await invoke("bind_claude_session", {
       args: {
@@ -227,6 +229,7 @@ function PickerFlow({
         apiKey: target.apiKey,
         displayName: target.displayName,
         gatewayUrl: getApiUrl(),
+        title,
       },
     });
   }
@@ -248,10 +251,13 @@ function PickerFlow({
       if (!target) return;
       if (startNew) {
         const seg = folderDir.split(/[\\/]/).filter(Boolean).slice(-1)[0] ?? folderDir;
+        // Applied by the hook on the session's first prompt; the agent's
+        // name is the sensible default so the session list reads well.
+        const title = sessionName.trim() || target.displayName;
         if (where === "app") {
           // No session id up front: bind the NEXT session started in the
           // folder, then open the Claude app there; the start hook claims it.
-          await bindSession(null, folderDir, target, true);
+          await bindSession(null, folderDir, target, true, title);
           try {
             await invoke("open_claude_desktop_session", { folder: folderDir });
           } catch (err) {
@@ -263,7 +269,7 @@ function PickerFlow({
           setDone({ session: seg, name: target.displayName, started: true, inApp: true });
         } else {
           const sessionId = crypto.randomUUID();
-          await bindSession(sessionId, folderDir, target);
+          await bindSession(sessionId, folderDir, target, false, title);
           try {
             await invoke("launch_claude_session", { folder: folderDir, sessionId });
           } catch (err) {
@@ -357,6 +363,20 @@ function PickerFlow({
                   ))}
                 </div>
               )}
+              <div className="space-y-1 pt-1">
+                <label className="text-xs font-medium text-muted-foreground" htmlFor="connect-cli-session-name">
+                  {t("connectCli.sessionNameLabel")}
+                </label>
+                <input
+                  id="connect-cli-session-name"
+                  value={sessionName}
+                  onChange={(e) => setSessionName(e.target.value)}
+                  maxLength={100}
+                  placeholder={existing?.displayName ?? newName}
+                  className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+                />
+                <p className="text-[11px] text-muted-foreground">{t("connectCli.sessionNameHint")}</p>
+              </div>
               {appAvailable && (
                 <div className="space-y-1 pt-1">
                   <span className="text-xs font-medium text-muted-foreground">{t("connectCli.whereLabel")}</span>

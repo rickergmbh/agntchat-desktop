@@ -289,6 +289,8 @@ pub struct BindClaudeSessionArgs {
     pub api_key: String,
     pub display_name: String,
     pub gateway_url: String,
+    /// Name for the session, applied by the hook on its first prompt.
+    pub title: Option<String>,
 }
 
 /// Bind one Claude Code session to one external agent: writes the agent's
@@ -322,6 +324,10 @@ pub fn bind_claude_session(
     if let Some(cwd) = args.cwd.as_deref() {
         cli.push("--cwd");
         cli.push(cwd);
+    }
+    if let Some(title) = args.title.as_deref().filter(|t| !t.trim().is_empty()) {
+        cli.push("--title");
+        cli.push(title);
     }
     let out = run_agentchat_cli(&app, &cli)?;
     let json_line = out
@@ -371,7 +377,9 @@ pub fn open_claude_desktop_session(folder: String) -> Result<(), String> {
     let encoded: String = folder
         .bytes()
         .map(|b| match b {
-            b'A'..=b'Z' | b'a'..=b'z' | b'0'..=b'9' | b'-' | b'_' | b'.' | b'~' | b'/' => {
+            // encodeURIComponent, as the app's own Finder action does —
+            // slashes included; a bare path was opened as "no folder".
+            b'A'..=b'Z' | b'a'..=b'z' | b'0'..=b'9' | b'-' | b'_' | b'.' | b'~' => {
                 (b as char).to_string()
             }
             _ => format!("%{b:02X}"),
