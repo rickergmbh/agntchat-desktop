@@ -319,6 +319,7 @@ export const resources = {
         "copied": "Copied",
         "copy": "Copy command",
         "create": "Create invite",
+        "createCode": "Create connect code",
         "done": "Done",
         "errors": {
           "create": "Couldn't create the invite."
@@ -327,6 +328,10 @@ export const resources = {
         "intro": "Track a session you're already running as an agent. It gets agntchat tools through MCP and shows up here while it runs — nothing is started or stopped from this app.",
         "nameLabel": "Agent name",
         "next": "Then start a new session in the CLI — the connect command prints a channel flag that pushes your messages into it live. It appears in this list as External while it runs, and its transcript is mirrored into your DM with it.",
+        "projectHint": "Optional. Sessions started in this folder run as this agent; leave empty to make it this machine's default agent for every folder.",
+        "projectLabel": "Bind to a project folder",
+        "reconnectIntro": "Get a connect code for this agent so a new machine or project runs as it. Claiming the code re-issues the agent's API key: any other machine or repo connected as this agent has to reconnect.",
+        "reconnectTitle": "Connect a session to {{name}}",
         "runThis": "Run this in a terminal:",
         "title": "Connect a Claude Code or Codex session",
         "toolLabel": "CLI"
@@ -1354,6 +1359,7 @@ export const resources = {
       "row": {
         "bringOnline": "Bring online",
         "bringingOnline": "Bringing online…",
+        "connectSession": "Connect a session to this agent",
         "crashKeyHint": "API key problem — open the agent to generate a new key for this computer",
         "crashed": "Crashed",
         "externalHint": "Runs in your own CLI session — start and stop it there.",
@@ -6390,6 +6396,7 @@ export const resources = {
         "copied": "Copiado",
         "copy": "Copiar comando",
         "create": "Crear invitación",
+        "createCode": "Crear código de conexión",
         "done": "Listo",
         "errors": {
           "create": "No se pudo crear la invitación."
@@ -6398,6 +6405,10 @@ export const resources = {
         "intro": "Sigue como agente una sesión que ya estás ejecutando. Recibe las herramientas de agntchat por MCP y aparece aquí mientras se ejecuta; esta app no inicia ni detiene nada.",
         "nameLabel": "Nombre del agente",
         "next": "Luego inicia una nueva sesión en la CLI — el comando de conexión muestra un indicador de canal que envía tus mensajes a la sesión en vivo. Aparece en esta lista como Externo mientras se ejecuta, y su transcripción se refleja en tu DM con ella.",
+        "projectHint": "Opcional. Las sesiones iniciadas en esta carpeta funcionan como este agente; déjalo vacío para que sea el agente predeterminado de esta máquina en todas las carpetas.",
+        "projectLabel": "Vincular a una carpeta de proyecto",
+        "reconnectIntro": "Obtén un código de conexión para este agente para que una nueva máquina o proyecto funcione como él. Canjear el código vuelve a emitir la clave API del agente: cualquier otra máquina o repo conectado como este agente tendrá que reconectarse.",
+        "reconnectTitle": "Conectar una sesión a {{name}}",
         "runThis": "Ejecuta esto en una terminal:",
         "title": "Conectar una sesión de Claude Code o Codex",
         "toolLabel": "CLI"
@@ -7425,6 +7436,7 @@ export const resources = {
       "row": {
         "bringOnline": "Poner en línea",
         "bringingOnline": "Conectando…",
+        "connectSession": "Conectar una sesión a este agente",
         "crashKeyHint": "Problema con la clave de API: abre el agente para generar una nueva clave para este ordenador",
         "crashed": "Falló",
         "externalHint": "Se ejecuta en tu propia sesión de CLI: inícialo y deténlo allí.",
@@ -12461,6 +12473,7 @@ export const resources = {
         "copied": "Kopiert",
         "copy": "Befehl kopieren",
         "create": "Einladung erstellen",
+        "createCode": "Connect-Code erstellen",
         "done": "Fertig",
         "errors": {
           "create": "Einladung konnte nicht erstellt werden."
@@ -12469,6 +12482,10 @@ export const resources = {
         "intro": "Verfolge eine Sitzung, die du bereits ausführst, als Agent. Sie erhält agntchat-Tools über MCP und erscheint hier, solange sie läuft — diese App startet oder stoppt nichts.",
         "nameLabel": "Agentenname",
         "next": "Starte dann eine neue Sitzung in der CLI — der Connect-Befehl gibt ein Channel-Flag aus, mit dem deine Nachrichten live in die Sitzung gelangen. Sie erscheint hier als Extern, solange sie läuft, und ihr Verlauf wird in deine DM mit ihr gespiegelt.",
+        "projectHint": "Optional. In diesem Ordner gestartete Sitzungen laufen als dieser Agent; leer lassen, um ihn zum Standard-Agenten dieses Rechners für alle Ordner zu machen.",
+        "projectLabel": "An einen Projektordner binden",
+        "reconnectIntro": "Erzeuge einen Connect-Code für diesen Agenten, damit ein neuer Rechner oder ein neues Projekt als dieser Agent läuft. Beim Einlösen wird der API-Schlüssel des Agenten neu ausgestellt: Jeder andere Rechner oder jedes andere Repo, das als dieser Agent verbunden ist, muss sich neu verbinden.",
+        "reconnectTitle": "Sitzung mit {{name}} verbinden",
         "runThis": "Führe das in einem Terminal aus:",
         "title": "Claude-Code- oder Codex-Sitzung verbinden",
         "toolLabel": "CLI"
@@ -13496,6 +13513,7 @@ export const resources = {
       "row": {
         "bringOnline": "Online bringen",
         "bringingOnline": "Wird online gebracht …",
+        "connectSession": "Sitzung mit diesem Agenten verbinden",
         "crashKeyHint": "API-Schlüsselproblem – öffne den Agenten, um einen neuen Schlüssel für diesen Computer zu erzeugen",
         "crashed": "Abgestürzt",
         "externalHint": "Läuft in deiner eigenen CLI-Sitzung — dort starten und beenden.",
@@ -18532,6 +18550,7 @@ export const resources = {
         "copied": "Copié",
         "copy": "Copier la commande",
         "create": "Créer l'invitation",
+        "createCode": "Créer un code de connexion",
         "done": "Terminé",
         "errors": {
           "create": "Impossible de créer l'invitation."
@@ -18540,6 +18559,10 @@ export const resources = {
         "intro": "Suivez une session déjà en cours comme un agent. Elle reçoit les outils agntchat via MCP et apparaît ici tant qu'elle tourne — cette app ne démarre ni n'arrête rien.",
         "nameLabel": "Nom de l'agent",
         "next": "Démarrez ensuite une nouvelle session dans la CLI — la commande de connexion affiche un indicateur de canal qui transmet vos messages en direct à la session. Elle apparaît dans cette liste comme Externe tant qu'elle tourne, et sa transcription est reflétée dans votre DM avec elle.",
+        "projectHint": "Facultatif. Les sessions démarrées dans ce dossier s'exécutent en tant que cet agent ; laissez vide pour en faire l'agent par défaut de cette machine pour tous les dossiers.",
+        "projectLabel": "Lier à un dossier de projet",
+        "reconnectIntro": "Obtenez un code de connexion pour cet agent afin qu'une nouvelle machine ou un nouveau projet s'exécute en tant que lui. L'utilisation du code réémet la clé API de l'agent : toute autre machine ou dépôt connecté en tant que cet agent devra se reconnecter.",
+        "reconnectTitle": "Connecter une session à {{name}}",
         "runThis": "Exécutez ceci dans un terminal :",
         "title": "Connecter une session Claude Code ou Codex",
         "toolLabel": "CLI"
@@ -19567,6 +19590,7 @@ export const resources = {
       "row": {
         "bringOnline": "Mettre en ligne",
         "bringingOnline": "Mise en ligne…",
+        "connectSession": "Connecter une session à cet agent",
         "crashKeyHint": "Problème de clé API — ouvrez l'agent pour générer une nouvelle clé pour cet ordinateur",
         "crashed": "Planté",
         "externalHint": "S'exécute dans votre propre session CLI — démarrez-le et arrêtez-le là-bas.",
@@ -24603,6 +24627,7 @@ export const resources = {
         "copied": "Copiado",
         "copy": "Copiar comando",
         "create": "Criar convite",
+        "createCode": "Criar código de conexão",
         "done": "Concluído",
         "errors": {
           "create": "Não foi possível criar o convite."
@@ -24611,6 +24636,10 @@ export const resources = {
         "intro": "Acompanhe como agente uma sessão que você já está executando. Ela recebe as ferramentas do agntchat via MCP e aparece aqui enquanto roda — este app não inicia nem para nada.",
         "nameLabel": "Nome do agente",
         "next": "Depois inicie uma nova sessão na CLI — o comando connect mostra uma flag de canal que envia suas mensagens para a sessão ao vivo. Ela aparece nesta lista como Externo enquanto roda, e sua transcrição é espelhada na sua DM com ela.",
+        "projectHint": "Opcional. Sessões iniciadas nesta pasta rodam como este agente; deixe vazio para torná-lo o agente padrão desta máquina em todas as pastas.",
+        "projectLabel": "Vincular a uma pasta de projeto",
+        "reconnectIntro": "Obtenha um código de conexão para este agente para que uma nova máquina ou projeto rode como ele. Usar o código reemite a chave de API do agente: qualquer outra máquina ou repositório conectado como este agente precisará reconectar.",
+        "reconnectTitle": "Conectar uma sessão a {{name}}",
         "runThis": "Execute isto em um terminal:",
         "title": "Conectar uma sessão do Claude Code ou Codex",
         "toolLabel": "CLI"
@@ -25638,6 +25667,7 @@ export const resources = {
       "row": {
         "bringOnline": "Colocar online",
         "bringingOnline": "Colocando online…",
+        "connectSession": "Conectar uma sessão a este agente",
         "crashKeyHint": "Problema com a chave de API — abra o agente para gerar uma nova chave para este computador",
         "crashed": "Falhou",
         "externalHint": "Executa na sua própria sessão de CLI — inicie e pare por lá.",
@@ -30674,6 +30704,7 @@ export const resources = {
         "copied": "コピーしました",
         "copy": "コマンドをコピー",
         "create": "招待を作成",
+        "createCode": "接続コードを作成",
         "done": "完了",
         "errors": {
           "create": "招待を作成できませんでした。"
@@ -30682,6 +30713,10 @@ export const resources = {
         "intro": "すでに実行中のセッションをエージェントとして追跡します。MCP 経由で agntchat のツールを利用でき、実行中はここに表示されます。このアプリからは起動も停止もしません。",
         "nameLabel": "エージェント名",
         "next": "次に CLI で新しいセッションを開始します。connect コマンドが表示するチャンネルフラグを付けると、メッセージがセッションにリアルタイムで届きます。実行中はこの一覧に外部として表示され、そのやり取りは DM にミラーされます。",
+        "projectHint": "任意。このフォルダーで開始したセッションはこのエージェントとして動作します。空欄にすると、すべてのフォルダーでこのマシンの既定エージェントになります。",
+        "projectLabel": "プロジェクトフォルダーに紐づける",
+        "reconnectIntro": "このエージェントの接続コードを取得すると、新しいマシンやプロジェクトをこのエージェントとして動かせます。コードを使うとエージェントの API キーが再発行されるため、このエージェントとして接続している他のマシンやリポジトリは再接続が必要です。",
+        "reconnectTitle": "{{name}} にセッションを接続",
         "runThis": "ターミナルで次を実行してください:",
         "title": "Claude Code または Codex のセッションを接続",
         "toolLabel": "CLI"
@@ -31709,6 +31744,7 @@ export const resources = {
       "row": {
         "bringOnline": "オンラインにする",
         "bringingOnline": "オンラインにしています…",
+        "connectSession": "このエージェントにセッションを接続",
         "crashKeyHint": "APIキーの問題 — エージェントを開いて、このパソコン用の新しいキーを生成してください",
         "crashed": "クラッシュ",
         "externalHint": "自分の CLI セッションで動作します。開始と停止はそちらで行ってください。",
@@ -36745,6 +36781,7 @@ export const resources = {
         "copied": "已复制",
         "copy": "复制命令",
         "create": "创建邀请",
+        "createCode": "创建连接码",
         "done": "完成",
         "errors": {
           "create": "无法创建邀请。"
@@ -36753,6 +36790,10 @@ export const resources = {
         "intro": "将你已在运行的会话作为代理进行跟踪。它通过 MCP 获得 agntchat 工具，运行期间显示在这里——此应用不会启动或停止任何东西。",
         "nameLabel": "代理名称",
         "next": "然后在 CLI 中启动新会话——connect 命令会打印一个频道参数，可将你的消息实时推送到该会话。运行期间它会在此列表中显示为外部，其对话记录会镜像到你与它的私信中。",
+        "projectHint": "可选。在此文件夹中启动的会话将以此代理身份运行；留空则使其成为本机所有文件夹的默认代理。",
+        "projectLabel": "绑定到项目文件夹",
+        "reconnectIntro": "为此代理获取一个连接码，让新的机器或项目以它的身份运行。使用连接码会重新签发该代理的 API 密钥：以此代理身份连接的其他机器或仓库都需要重新连接。",
+        "reconnectTitle": "将会话连接到 {{name}}",
         "runThis": "在终端中运行：",
         "title": "连接 Claude Code 或 Codex 会话",
         "toolLabel": "CLI"
@@ -37780,6 +37821,7 @@ export const resources = {
       "row": {
         "bringOnline": "上线",
         "bringingOnline": "正在上线…",
+        "connectSession": "将会话连接到此代理",
         "crashKeyHint": "API 密钥有问题 — 打开该智能体，为这台电脑生成新的密钥",
         "crashed": "已崩溃",
         "externalHint": "在你自己的 CLI 会话中运行——请在那里启动和停止。",
@@ -42816,6 +42858,7 @@ export const resources = {
         "copied": "복사됨",
         "copy": "명령 복사",
         "create": "초대 만들기",
+        "createCode": "연결 코드 만들기",
         "done": "완료",
         "errors": {
           "create": "초대를 만들 수 없습니다."
@@ -42824,6 +42867,10 @@ export const resources = {
         "intro": "이미 실행 중인 세션을 에이전트로 추적합니다. MCP를 통해 agntchat 도구를 사용하고 실행 중일 때 여기에 표시됩니다. 이 앱에서는 아무것도 시작하거나 중지하지 않습니다.",
         "nameLabel": "에이전트 이름",
         "next": "그런 다음 CLI에서 새 세션을 시작하세요. connect 명령이 출력하는 채널 플래그를 사용하면 메시지가 세션에 실시간으로 전달됩니다. 실행 중에는 이 목록에 외부로 표시되며, 대화 내용은 해당 에이전트와의 DM에 미러링됩니다.",
+        "projectHint": "선택 사항. 이 폴더에서 시작한 세션은 이 에이전트로 실행됩니다. 비워 두면 모든 폴더에서 이 머신의 기본 에이전트가 됩니다.",
+        "projectLabel": "프로젝트 폴더에 바인딩",
+        "reconnectIntro": "이 에이전트의 연결 코드를 받아 새 머신이나 프로젝트를 이 에이전트로 실행하세요. 코드를 사용하면 에이전트의 API 키가 재발급되므로, 이 에이전트로 연결된 다른 머신이나 저장소는 다시 연결해야 합니다.",
+        "reconnectTitle": "{{name}}에 세션 연결",
         "runThis": "터미널에서 다음을 실행하세요:",
         "title": "Claude Code 또는 Codex 세션 연결",
         "toolLabel": "CLI"
@@ -43851,6 +43898,7 @@ export const resources = {
       "row": {
         "bringOnline": "온라인으로 전환",
         "bringingOnline": "온라인으로 전환 중…",
+        "connectSession": "이 에이전트에 세션 연결",
         "crashKeyHint": "API 키 문제 — 에이전트를 열어 이 컴퓨터용 새 키를 생성하세요",
         "crashed": "충돌함",
         "externalHint": "사용자의 CLI 세션에서 실행됩니다. 시작과 종료는 그곳에서 하세요.",
@@ -48887,6 +48935,7 @@ export const resources = {
         "copied": "Copiato",
         "copy": "Copia comando",
         "create": "Crea invito",
+        "createCode": "Crea codice di connessione",
         "done": "Fatto",
         "errors": {
           "create": "Impossibile creare l'invito."
@@ -48895,6 +48944,10 @@ export const resources = {
         "intro": "Traccia come agente una sessione già in esecuzione. Riceve gli strumenti agntchat via MCP e compare qui mentre è attiva: questa app non avvia né ferma nulla.",
         "nameLabel": "Nome dell'agente",
         "next": "Poi avvia una nuova sessione nella CLI — il comando connect mostra un flag di canale che inoltra i tuoi messaggi alla sessione in tempo reale. Appare in questo elenco come Esterno mentre è in esecuzione, e la sua trascrizione viene riportata nel tuo DM con lei.",
+        "projectHint": "Facoltativo. Le sessioni avviate in questa cartella girano come questo agente; lascia vuoto per renderlo l'agente predefinito di questa macchina per tutte le cartelle.",
+        "projectLabel": "Associa a una cartella di progetto",
+        "reconnectIntro": "Ottieni un codice di connessione per questo agente così che una nuova macchina o un nuovo progetto giri come lui. Riscattare il codice riemette la chiave API dell'agente: qualsiasi altra macchina o repo collegato come questo agente dovrà ricollegarsi.",
+        "reconnectTitle": "Collega una sessione a {{name}}",
         "runThis": "Esegui questo in un terminale:",
         "title": "Collega una sessione Claude Code o Codex",
         "toolLabel": "CLI"
@@ -49922,6 +49975,7 @@ export const resources = {
       "row": {
         "bringOnline": "Porta online",
         "bringingOnline": "Messa online in corso…",
+        "connectSession": "Collega una sessione a questo agente",
         "crashKeyHint": "Problema con la chiave API — apri l'agente per generare una nuova chiave per questo computer",
         "crashed": "Interrotto",
         "externalHint": "Viene eseguito nella tua sessione CLI: avvialo e fermalo lì.",
@@ -54958,6 +55012,7 @@ export const resources = {
         "copied": "कॉपी हो गया",
         "copy": "कमांड कॉपी करें",
         "create": "आमंत्रण बनाएँ",
+        "createCode": "कनेक्ट कोड बनाएँ",
         "done": "हो गया",
         "errors": {
           "create": "आमंत्रण नहीं बन सका।"
@@ -54966,6 +55021,10 @@ export const resources = {
         "intro": "पहले से चल रहे सत्र को एजेंट के रूप में ट्रैक करें। इसे MCP के ज़रिए agntchat टूल मिलते हैं और चलते समय यह यहाँ दिखता है — यह ऐप कुछ भी शुरू या बंद नहीं करता।",
         "nameLabel": "एजेंट का नाम",
         "next": "फिर CLI में एक नया सत्र शुरू करें — connect कमांड एक चैनल फ़्लैग दिखाता है जो आपके संदेश सीधे सत्र में पहुँचाता है। चलते समय यह इस सूची में बाहरी के रूप में दिखता है, और इसका ट्रांसक्रिप्ट उसके साथ आपके DM में दिखाया जाता है।",
+        "projectHint": "वैकल्पिक। इस फ़ोल्डर में शुरू किए गए सत्र इसी एजेंट के रूप में चलते हैं; इसे सभी फ़ोल्डरों के लिए इस मशीन का डिफ़ॉल्ट एजेंट बनाने के लिए खाली छोड़ें।",
+        "projectLabel": "किसी प्रोजेक्ट फ़ोल्डर से बाँधें",
+        "reconnectIntro": "इस एजेंट के लिए एक कनेक्ट कोड प्राप्त करें ताकि कोई नई मशीन या प्रोजेक्ट इसी एजेंट के रूप में चले। कोड का उपयोग करने पर एजेंट की API कुंजी फिर से जारी होती है: इस एजेंट के रूप में जुड़ी कोई भी अन्य मशीन या रिपो को फिर से जोड़ना होगा।",
+        "reconnectTitle": "{{name}} से एक सत्र जोड़ें",
         "runThis": "इसे टर्मिनल में चलाएँ:",
         "title": "Claude Code या Codex सत्र जोड़ें",
         "toolLabel": "CLI"
@@ -55993,6 +56052,7 @@ export const resources = {
       "row": {
         "bringOnline": "ऑनलाइन लाएँ",
         "bringingOnline": "ऑनलाइन लाया जा रहा है…",
+        "connectSession": "इस एजेंट से एक सत्र जोड़ें",
         "crashKeyHint": "API कुंजी समस्या — इस कंप्यूटर के लिए नई कुंजी बनाने हेतु एजेंट खोलें",
         "crashed": "क्रैश हो गया",
         "externalHint": "आपके अपने CLI सत्र में चलता है — इसे वहीं शुरू और बंद करें।",

@@ -155,10 +155,14 @@ export function AgentRow({
   childCount = 0,
   onToggleExpand,
   connectionType,
+  onConnectSession,
 }: {
   managed: ManagedAgent;
   selected: boolean;
   onSelect: () => void;
+  /** External agents (#148): open the "connect a session to this agent"
+   *  dialog — a reconnect invite, optionally bound to one project folder. */
+  onConnectSession?: () => void;
   /** Nesting depth in the ownership tree — 0 for top-level agents, 1+ for
    *  sub-agents. Drives the connector indent. */
   depth?: number;
@@ -626,18 +630,24 @@ export function AgentRow({
             </TooltipProvider>
           ) : isExternal ? (
             // External agent (#148): nothing here can start or stop it — the
-            // user's own CLI session is the process. No power control.
+            // user's own CLI session is the process. The slot instead opens
+            // "connect a session to this agent" (a reconnect invite).
             <TooltipProvider delay={150}>
               <Tooltip>
                 <TooltipTrigger
                   render={
-                    <span className="flex h-7 w-7 items-center justify-center text-muted-foreground/50">
+                    <button
+                      type="button"
+                      onClick={onConnectSession}
+                      aria-label={t("row.connectSession")}
+                      className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground/70 hover:bg-accent hover:text-foreground"
+                    >
                       <Terminal className="w-4 h-4" />
-                    </span>
+                    </button>
                   }
                 />
                 <TooltipContent side="left" className="text-xs">
-                  {t("row.externalHint")}
+                  {onConnectSession ? t("row.connectSession") : t("row.externalHint")}
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>

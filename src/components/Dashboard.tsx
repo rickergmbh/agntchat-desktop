@@ -395,6 +395,12 @@ export function Dashboard() {
   // "Connect CLI session" (#148) — only once the external_agents flag is on
   // for this user; the invite claim would 404 otherwise.
   const [showConnectCli, setShowConnectCli] = useState(false);
+  // Reconnect (#148): connect a session to an EXISTING external agent.
+  const [connectCliAgent, setConnectCliAgent] = useState<{
+    id: string;
+    displayName: string;
+    tool?: string | null;
+  } | null>(null);
   const externalAgentsEnabled = useAuthStore(
     (s) => s.participant?.features?.external_agents === true
   );
@@ -996,6 +1002,16 @@ export function Dashboard() {
                   selected={row.managed.agent.id === selectedAgentId}
                   onSelect={() => selectAgent(row.managed.agent.id)}
                   connectionType={connectionTypeMap.get(row.managed.agent.id)}
+                  onConnectSession={
+                    row.managed.agent.runtime === "external" && externalAgentsEnabled
+                      ? () =>
+                          setConnectCliAgent({
+                            id: row.managed.agent.id,
+                            displayName: row.managed.agent.displayName,
+                            tool: row.managed.agent.externalSession?.tool ?? null,
+                          })
+                      : undefined
+                  }
                 />
               ))
             )
@@ -1142,6 +1158,9 @@ export function Dashboard() {
       )}
       {showConnectCli && (
         <ConnectCliSessionDialog onClose={() => setShowConnectCli(false)} />
+      )}
+      {connectCliAgent && (
+        <ConnectCliSessionDialog agent={connectCliAgent} onClose={() => setConnectCliAgent(null)} />
       )}
     </div>
   );

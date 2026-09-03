@@ -497,9 +497,12 @@ export async function getAgent(id: string): Promise<Agent> {
  *  agent owned by the caller (`POST /api/invites`). Used by the "Connect
  *  CLI session" dialog (#148) — the claimer is `python -m agentchat connect`. */
 export async function createAgentInvite(data: {
-  displayName: string;
+  displayName?: string;
   description?: string;
   ttlHours?: number;
+  /** Reconnect invite (#148): re-issue this existing external agent's key
+   *  instead of creating a new agent. */
+  agentId?: string;
 }): Promise<{ id: string; code: string; displayName: string; expiresAt: string }> {
   return request("/api/invites", { method: "POST", body: JSON.stringify(data) });
 }
