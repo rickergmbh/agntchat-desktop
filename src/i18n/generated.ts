@@ -2620,6 +2620,7 @@ export const resources = {
         "searchPlaceholder": "Search people or agents...",
         "searchingPeople": "Searching people...",
         "selectPrompt": "Select a person or agent",
+        "session": "Claude Code session",
         "startChat": "Start Chat",
         "startDm": "Start DM"
       },
@@ -2743,6 +2744,24 @@ export const resources = {
       "sendWithEnter": "Send (Enter)",
       "sending": "sending",
       "sentAMessage": "sent a message",
+      "session": {
+        "connectFailed": "Couldn't create the session conversation.",
+        "connecting": "Connecting…",
+        "identity": "Runs as {{name}}",
+        "intro": "A conversation that is a Claude Code session: its transcript shows here, and what you type here reaches the session. Link one that is running on this Mac, or start a new one.",
+        "kind": "Claude Code session",
+        "linkExisting": "Link a session on this Mac",
+        "relink": "Link a different session",
+        "resume": "Resume in Claude app",
+        "state": {
+          "ended": "Ended",
+          "idle": "Idle",
+          "lost": "Lost",
+          "running": "Running",
+          "unlinked": "Not linked",
+          "waiting": "Waiting"
+        }
+      },
       "showDetails": "Show conversation details",
       "someone": "Someone",
       "spend": {
@@ -8733,6 +8752,7 @@ export const resources = {
         "searchPlaceholder": "Buscar personas o agentes...",
         "searchingPeople": "Buscando personas...",
         "selectPrompt": "Selecciona una persona o un agente",
+        "session": "Sesión de Claude Code",
         "startChat": "Iniciar chat",
         "startDm": "Iniciar mensaje directo"
       },
@@ -8856,6 +8876,24 @@ export const resources = {
       "sendWithEnter": "Enviar (Intro)",
       "sending": "enviando",
       "sentAMessage": "envió un mensaje",
+      "session": {
+        "connectFailed": "No se pudo crear la conversación de sesión.",
+        "connecting": "Conectando…",
+        "identity": "Se ejecuta como {{name}}",
+        "intro": "Una conversación que es una sesión de Claude Code: su transcripción aparece aquí y lo que escribas aquí llega a la sesión. Vincula una que esté en ejecución en este Mac o inicia una nueva.",
+        "kind": "Sesión de Claude Code",
+        "linkExisting": "Vincular una sesión de este Mac",
+        "relink": "Vincular otra sesión",
+        "resume": "Reanudar en la app de Claude",
+        "state": {
+          "ended": "Finalizada",
+          "idle": "Inactiva",
+          "lost": "Perdida",
+          "running": "En ejecución",
+          "unlinked": "Sin vincular",
+          "waiting": "En espera"
+        }
+      },
       "showDetails": "Mostrar detalles de la conversación",
       "someone": "Alguien",
       "spend": {
@@ -14846,6 +14884,7 @@ export const resources = {
         "searchPlaceholder": "Personen oder Agenten suchen...",
         "searchingPeople": "Personen werden gesucht...",
         "selectPrompt": "Wählen Sie eine Person oder einen Agenten aus",
+        "session": "Claude-Code-Sitzung",
         "startChat": "Chat starten",
         "startDm": "Direktnachricht starten"
       },
@@ -14969,6 +15008,24 @@ export const resources = {
       "sendWithEnter": "Senden (Eingabetaste)",
       "sending": "sendet",
       "sentAMessage": "hat eine Nachricht gesendet",
+      "session": {
+        "connectFailed": "Die Sitzungsunterhaltung konnte nicht erstellt werden.",
+        "connecting": "Verbinde…",
+        "identity": "Läuft als {{name}}",
+        "intro": "Eine Unterhaltung, die eine Claude-Code-Sitzung ist: Ihr Verlauf erscheint hier, und was du hier schreibst, erreicht die Sitzung. Verknüpfe eine laufende Sitzung auf diesem Mac oder starte eine neue.",
+        "kind": "Claude-Code-Sitzung",
+        "linkExisting": "Sitzung auf diesem Mac verknüpfen",
+        "relink": "Andere Sitzung verknüpfen",
+        "resume": "In der Claude-App fortsetzen",
+        "state": {
+          "ended": "Beendet",
+          "idle": "Inaktiv",
+          "lost": "Verloren",
+          "running": "Läuft",
+          "unlinked": "Nicht verknüpft",
+          "waiting": "Wartet"
+        }
+      },
       "showDetails": "Unterhaltungsdetails anzeigen",
       "someone": "Jemand",
       "spend": {
@@ -20959,6 +21016,7 @@ export const resources = {
         "searchPlaceholder": "Rechercher des personnes ou des agents...",
         "searchingPeople": "Recherche de personnes...",
         "selectPrompt": "Sélectionnez une personne ou un agent",
+        "session": "Session Claude Code",
         "startChat": "Démarrer la conversation",
         "startDm": "Démarrer un message direct"
       },
@@ -21082,6 +21140,24 @@ export const resources = {
       "sendWithEnter": "Envoyer (Entrée)",
       "sending": "envoi en cours",
       "sentAMessage": "a envoyé un message",
+      "session": {
+        "connectFailed": "Impossible de créer la conversation de session.",
+        "connecting": "Connexion…",
+        "identity": "S'exécute en tant que {{name}}",
+        "intro": "Une conversation qui est une session Claude Code : sa transcription s'affiche ici, et ce que vous tapez ici atteint la session. Liez une session en cours sur ce Mac ou démarrez-en une nouvelle.",
+        "kind": "Session Claude Code",
+        "linkExisting": "Lier une session de ce Mac",
+        "relink": "Lier une autre session",
+        "resume": "Reprendre dans l'app Claude",
+        "state": {
+          "ended": "Terminée",
+          "idle": "Inactive",
+          "lost": "Perdue",
+          "running": "En cours",
+          "unlinked": "Non liée",
+          "waiting": "En attente"
+        }
+      },
       "showDetails": "Afficher les détails de la conversation",
       "someone": "Quelqu'un",
       "spend": {
@@ -27072,6 +27148,7 @@ export const resources = {
         "searchPlaceholder": "Buscar pessoas ou agentes...",
         "searchingPeople": "Buscando pessoas...",
         "selectPrompt": "Selecione uma pessoa ou agente",
+        "session": "Sessão do Claude Code",
         "startChat": "Iniciar conversa",
         "startDm": "Iniciar mensagem direta"
       },
@@ -27195,6 +27272,24 @@ export const resources = {
       "sendWithEnter": "Enviar (Enter)",
       "sending": "enviando",
       "sentAMessage": "enviou uma mensagem",
+      "session": {
+        "connectFailed": "Não foi possível criar a conversa de sessão.",
+        "connecting": "Conectando…",
+        "identity": "Roda como {{name}}",
+        "intro": "Uma conversa que é uma sessão do Claude Code: a transcrição aparece aqui e o que você digita aqui chega à sessão. Vincule uma que esteja rodando neste Mac ou inicie uma nova.",
+        "kind": "Sessão do Claude Code",
+        "linkExisting": "Vincular uma sessão deste Mac",
+        "relink": "Vincular outra sessão",
+        "resume": "Retomar no app Claude",
+        "state": {
+          "ended": "Encerrada",
+          "idle": "Ociosa",
+          "lost": "Perdida",
+          "running": "Em execução",
+          "unlinked": "Não vinculada",
+          "waiting": "Aguardando"
+        }
+      },
       "showDetails": "Mostrar detalhes da conversa",
       "someone": "Alguém",
       "spend": {
@@ -33185,6 +33280,7 @@ export const resources = {
         "searchPlaceholder": "ユーザーまたはエージェントを検索…",
         "searchingPeople": "ユーザーを検索中…",
         "selectPrompt": "ユーザーまたはエージェントを選択",
+        "session": "Claude Code セッション",
         "startChat": "チャットを開始",
         "startDm": "DMを開始"
       },
@@ -33308,6 +33404,24 @@ export const resources = {
       "sendWithEnter": "送信 (Enter)",
       "sending": "送信中",
       "sentAMessage": "メッセージを送信しました",
+      "session": {
+        "connectFailed": "セッション会話を作成できませんでした。",
+        "connecting": "接続中…",
+        "identity": "{{name}} として実行",
+        "intro": "Claude Code セッションそのものである会話です。やり取りはここに表示され、ここに書いた内容はセッションに届きます。この Mac で実行中のセッションをリンクするか、新しく開始します。",
+        "kind": "Claude Code セッション",
+        "linkExisting": "この Mac のセッションをリンク",
+        "relink": "別のセッションをリンク",
+        "resume": "Claude アプリで再開",
+        "state": {
+          "ended": "終了",
+          "idle": "アイドル",
+          "lost": "切断",
+          "running": "実行中",
+          "unlinked": "未リンク",
+          "waiting": "待機中"
+        }
+      },
       "showDetails": "会話の詳細を表示",
       "someone": "誰か",
       "spend": {
@@ -39298,6 +39412,7 @@ export const resources = {
         "searchPlaceholder": "搜索联系人或智能体…",
         "searchingPeople": "正在搜索联系人…",
         "selectPrompt": "选择一位联系人或智能体",
+        "session": "Claude Code 会话",
         "startChat": "开始聊天",
         "startDm": "发起私信"
       },
@@ -39421,6 +39536,24 @@ export const resources = {
       "sendWithEnter": "发送（Enter）",
       "sending": "发送中",
       "sentAMessage": "发送了一条消息",
+      "session": {
+        "connectFailed": "无法创建会话对话。",
+        "connecting": "连接中…",
+        "identity": "以 {{name}} 身份运行",
+        "intro": "这是一个本身就是 Claude Code 会话的对话：对话记录显示在这里，你在这里输入的内容会传到会话。链接这台 Mac 上正在运行的会话，或启动一个新会话。",
+        "kind": "Claude Code 会话",
+        "linkExisting": "链接这台 Mac 上的会话",
+        "relink": "链接另一个会话",
+        "resume": "在 Claude 应用中恢复",
+        "state": {
+          "ended": "已结束",
+          "idle": "空闲",
+          "lost": "已丢失",
+          "running": "运行中",
+          "unlinked": "未链接",
+          "waiting": "等待中"
+        }
+      },
       "showDetails": "显示对话详情",
       "someone": "某人",
       "spend": {
@@ -45411,6 +45544,7 @@ export const resources = {
         "searchPlaceholder": "사람 또는 에이전트 검색...",
         "searchingPeople": "사람 검색 중...",
         "selectPrompt": "사람 또는 에이전트 선택",
+        "session": "Claude Code 세션",
         "startChat": "채팅 시작",
         "startDm": "DM 시작"
       },
@@ -45534,6 +45668,24 @@ export const resources = {
       "sendWithEnter": "보내기 (Enter)",
       "sending": "전송 중",
       "sentAMessage": "메시지를 보냈습니다",
+      "session": {
+        "connectFailed": "세션 대화를 만들 수 없습니다.",
+        "connecting": "연결 중…",
+        "identity": "{{name}}(으)로 실행",
+        "intro": "Claude Code 세션 그 자체인 대화입니다. 대화 내용이 여기에 표시되고, 여기에 입력한 내용은 세션에 전달됩니다. 이 Mac에서 실행 중인 세션을 연결하거나 새로 시작하세요.",
+        "kind": "Claude Code 세션",
+        "linkExisting": "이 Mac의 세션 연결",
+        "relink": "다른 세션 연결",
+        "resume": "Claude 앱에서 재개",
+        "state": {
+          "ended": "종료됨",
+          "idle": "유휴",
+          "lost": "끊김",
+          "running": "실행 중",
+          "unlinked": "연결 안 됨",
+          "waiting": "대기 중"
+        }
+      },
       "showDetails": "대화 상세 정보 표시",
       "someone": "누군가",
       "spend": {
@@ -51524,6 +51676,7 @@ export const resources = {
         "searchPlaceholder": "Cerca persone o agenti...",
         "searchingPeople": "Ricerca persone in corso...",
         "selectPrompt": "Seleziona una persona o un agente",
+        "session": "Sessione Claude Code",
         "startChat": "Avvia chat",
         "startDm": "Avvia messaggio diretto"
       },
@@ -51647,6 +51800,24 @@ export const resources = {
       "sendWithEnter": "Invia (Invio)",
       "sending": "invio in corso",
       "sentAMessage": "ha inviato un messaggio",
+      "session": {
+        "connectFailed": "Impossibile creare la conversazione di sessione.",
+        "connecting": "Collegamento…",
+        "identity": "Gira come {{name}}",
+        "intro": "Una conversazione che è una sessione Claude Code: la sua trascrizione compare qui e ciò che scrivi qui raggiunge la sessione. Collega una sessione in esecuzione su questo Mac o avviane una nuova.",
+        "kind": "Sessione Claude Code",
+        "linkExisting": "Collega una sessione di questo Mac",
+        "relink": "Collega un'altra sessione",
+        "resume": "Riprendi nell'app Claude",
+        "state": {
+          "ended": "Terminata",
+          "idle": "Inattiva",
+          "lost": "Persa",
+          "running": "In esecuzione",
+          "unlinked": "Non collegata",
+          "waiting": "In attesa"
+        }
+      },
       "showDetails": "Mostra dettagli conversazione",
       "someone": "Qualcuno",
       "spend": {
@@ -57637,6 +57808,7 @@ export const resources = {
         "searchPlaceholder": "लोगों या एजेंटों को खोजें...",
         "searchingPeople": "लोगों को खोजा जा रहा है...",
         "selectPrompt": "एक व्यक्ति या एजेंट चुनें",
+        "session": "Claude Code सत्र",
         "startChat": "चैट शुरू करें",
         "startDm": "DM शुरू करें"
       },
@@ -57760,6 +57932,24 @@ export const resources = {
       "sendWithEnter": "भेजें (Enter)",
       "sending": "भेजा जा रहा है",
       "sentAMessage": "ने एक संदेश भेजा",
+      "session": {
+        "connectFailed": "सत्र बातचीत नहीं बनाई जा सकी।",
+        "connecting": "जोड़ा जा रहा है…",
+        "identity": "{{name}} के रूप में चलता है",
+        "intro": "एक बातचीत जो स्वयं एक Claude Code सत्र है: उसका ट्रांसक्रिप्ट यहाँ दिखता है, और यहाँ लिखा हुआ सत्र तक पहुँचता है। इस Mac पर चल रहे किसी सत्र को जोड़ें या नया शुरू करें।",
+        "kind": "Claude Code सत्र",
+        "linkExisting": "इस Mac का कोई सत्र जोड़ें",
+        "relink": "कोई दूसरा सत्र जोड़ें",
+        "resume": "Claude ऐप में फिर से शुरू करें",
+        "state": {
+          "ended": "समाप्त",
+          "idle": "निष्क्रिय",
+          "lost": "खो गया",
+          "running": "चल रहा है",
+          "unlinked": "जुड़ा नहीं",
+          "waiting": "प्रतीक्षा में"
+        }
+      },
       "showDetails": "बातचीत का विवरण दिखाएँ",
       "someone": "कोई",
       "spend": {

@@ -25,6 +25,9 @@ import { ChatHeaderMenu } from "./ChatHeaderMenu";
 import { GroupAvatar } from "./GroupAvatar";
 import { AgentActivityIndicator } from "../AgentActivityIndicator";
 import { ExternalAgentBadge, isExternalAgent } from "../ExternalAgentBadge";
+import { SessionStateLine } from "./SessionStateLine";
+import { sessionMeta } from "../../lib/api";
+import { invoke } from "@tauri-apps/api/core";
 import { OnboardingCards } from "../OnboardingCards";
 import { useOnboardingState } from "../../hooks/useOnboardingState";
 import { ThreadsBar } from "./ThreadsBar";
@@ -273,6 +276,10 @@ function ConversationPane({
     conversation?.title ||
     otherParticipant?.displayName ||
     (conversation?.type === "group" ? t("type.group") : t("conversationFallback"));
+  // Session conversation (#148): folder/branch/state from metadata.session.
+  const sessionInfo = conversation?.type === "session" ? sessionMeta(conversation) : null;
+  const sessionResumable =
+    !!sessionInfo?.session_key && ["ended", "lost", "unlinked"].includes(sessionInfo.state ?? "");
 
   // Presence as structured data (kind + counts) so the label AND the status
   // dot both derive from it — the label itself is localized at render.
@@ -440,6 +447,8 @@ function ConversationPane({
             </p>
             {headerActivity ? (
               <AgentActivityIndicator activity={headerActivity} />
+            ) : sessionInfo ? (
+              <SessionStateLine session={sessionInfo} />
             ) : presenceLine ? (
               <p className="text-[11px] text-muted-foreground flex items-center gap-1">
                 {presenceInfo!.kind === "online" ||
@@ -452,6 +461,18 @@ function ConversationPane({
               </p>
             ) : null}
           </div>
+          {sessionResumable && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                void invoke("resume_claude_desktop_session", { sessionId: sessionInfo!.session_key });
+              }}
+              className="shrink-0 rounded-md border border-border px-2 py-1 text-xs text-muted-foreground hover:bg-accent hover:text-foreground"
+            >
+              {t("session.resume")}
+            </button>
+          )}
         </div>
 
         {/* Bring online sits right beside the agent's name/details so the

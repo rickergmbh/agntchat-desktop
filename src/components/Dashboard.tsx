@@ -6,6 +6,7 @@ import { AgentRow } from "./AgentRow";
 import { AgentConfig } from "./AgentConfig";
 import { CreateAgentModal } from "./CreateAgentModal";
 import { ConnectCliSessionDialog } from "./ConnectCliSessionDialog";
+import { SessionConversationDialog } from "./messages/SessionConversationDialog";
 import { cn } from "../lib/utils";
 import {
   Bot,
@@ -1002,16 +1003,6 @@ export function Dashboard() {
                   selected={row.managed.agent.id === selectedAgentId}
                   onSelect={() => selectAgent(row.managed.agent.id)}
                   connectionType={connectionTypeMap.get(row.managed.agent.id)}
-                  onConnectSession={
-                    row.managed.agent.runtime === "external" && externalAgentsEnabled
-                      ? () =>
-                          setConnectCliAgent({
-                            id: row.managed.agent.id,
-                            displayName: row.managed.agent.displayName,
-                            tool: row.managed.agent.externalSession?.tool ?? null,
-                          })
-                      : undefined
-                  }
                 />
               ))
             )
@@ -1156,11 +1147,9 @@ export function Dashboard() {
       {showCreate && (
         <CreateAgentModal onClose={() => setShowCreate(false)} />
       )}
-      {showConnectCli && (
-        <ConnectCliSessionDialog onClose={() => setShowConnectCli(false)} />
-      )}
+      {showConnectCli && <SessionConversationDialog onClose={() => setShowConnectCli(false)} />}
       {connectCliAgent && (
-        <ConnectCliSessionDialog agent={connectCliAgent} onClose={() => setConnectCliAgent(null)} />
+        <ConnectCliSessionDialog agent={connectCliAgent} onClose={() => setConnectCliAgent(null)} initialMode="code" />
       )}
     </div>
   );

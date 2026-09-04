@@ -507,6 +507,52 @@ export async function createAgentInvite(data: {
   return request("/api/invites", { method: "POST", body: JSON.stringify(data) });
 }
 
+/** Session conversations (#148): a conversation that IS a Claude Code
+ *  session. `metadata.session` on the conversation carries this. */
+export interface SessionConversationMeta {
+  agent_id?: string;
+  session_key?: string;
+  tool?: string;
+  cwd?: string;
+  repo?: string;
+  branch?: string;
+  hostname?: string;
+  state?: "running" | "waiting" | "ended" | "unlinked" | string;
+  last_event_at?: string;
+}
+
+export function sessionMeta(c: { metadata?: Record<string, unknown> } | null | undefined): SessionConversationMeta | null {
+  const m = c?.metadata?.session;
+  return m && typeof m === "object" ? (m as SessionConversationMeta) : null;
+}
+
+export async function createSessionConversation(data: {
+  agentId: string;
+  title?: string;
+  sessionKey?: string;
+  cwd?: string;
+  repo?: string;
+  branch?: string;
+  hostname?: string;
+  tool?: string;
+}): Promise<Conversation> {
+  return request("/api/conversations/session", { method: "POST", body: JSON.stringify(data) });
+}
+
+export async function linkSessionConversation(
+  conversationId: string,
+  data: { agentId: string; sessionKey: string; cwd?: string }
+): Promise<Conversation> {
+  return request(`/api/conversations/${conversationId}/session/link`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function unlinkSessionConversation(conversationId: string): Promise<{ unlinked: number }> {
+  return request(`/api/conversations/${conversationId}/session/link`, { method: "DELETE" });
+}
+
 /** External agent (#148) created directly for the desktop session picker:
  *  a Claude Code / Codex session the user drives themselves. Returns the API
  *  key the picker hands to the bridge's `bind`. */
@@ -3134,7 +3180,7 @@ export interface Conversation {
   /** Custom group photo URL; when set, overrides GroupAvatar in list +
    *  header. `null` / missing falls back to the composed avatar. */
   avatarUrl?: string | null;
-  type: "direct" | "group" | "task" | "channel";
+  type: "direct" | "group" | "task" | "channel" | "session";
   createdBy?: string;
   metadata?: Record<string, unknown>;
   insertedAt: string;

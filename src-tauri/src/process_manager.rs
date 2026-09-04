@@ -480,6 +480,43 @@ pub fn rekey_external_agent(
     serde_json::from_str(json_line).map_err(|e| format!("bad rekey result: {e}"))
 }
 
+/// External agents this machine holds credentials for (#148) — the
+/// desktop picks its "machine identity" from these instead of minting one.
+#[tauri::command]
+pub fn list_external_identities(app: tauri::AppHandle) -> Result<serde_json::Value, String> {
+    let out = run_agentchat_cli(&app, &["identities"])?;
+    let json_line = out
+        .lines()
+        .rev()
+        .find(|l| l.trim_start().starts_with('['))
+        .ok_or_else(|| "bridge CLI returned no identities".to_string())?;
+    serde_json::from_str(json_line).map_err(|e| format!("bad identities: {e}"))
+}
+
+/// Pull an existing CLI session back into the Claude desktop app
+/// (`claude://resume?session=<id>`): a session conversation's Resume.
+#[tauri::command]
+pub fn resume_claude_desktop_session(session_id: String) -> Result<(), String> {
+    if !session_id
+        .chars()
+        .all(|c| c.is_ascii_hexdigit() || c == '-')
+    {
+        return Err("invalid session id".to_string());
+    }
+    let url = format!("claude://resume?session={session_id}");
+    #[cfg(target_os = "macos")]
+    let status = hidden_command("open").arg(&url).status();
+    #[cfg(target_os = "windows")]
+    let status = hidden_command("cmd").args(["/c", "start", "", &url]).status();
+    #[cfg(not(any(target_os = "macos", target_os = "windows")))]
+    let status = hidden_command("xdg-open").arg(&url).status();
+    match status {
+        Ok(s) if s.success() => Ok(()),
+        Ok(s) => Err(format!("could not open the Claude app ({s})")),
+        Err(e) => Err(format!("could not open the Claude app: {e}")),
+    }
+}
+
 /// Start a NEW Claude Code session in a terminal, pre-bound (#148): the
 /// picker generated the session id and already ran `bind` for it, so the
 /// session reports as the chosen agent from its first hook, and the channel

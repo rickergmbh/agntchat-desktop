@@ -1206,6 +1206,22 @@ export const useChatStore = create<ChatState>((set, get) => ({
       })
     );
 
+    // Session conversations (#148): folder/branch/state ride on
+    // conversation.metadata.session and change on session edges.
+    unsubs.push(
+      ws.on("conversation_metadata_changed", (payload) => {
+        const convId = payload.conversationId as string;
+        const metadata = payload.metadata as Record<string, unknown> | undefined;
+        if (!convId || !metadata) return;
+        const update = (list: Conversation[]) =>
+          list.map((c) => (c.id === convId ? { ...c, metadata } : c));
+        set((s) => ({
+          conversations: update(s.conversations),
+          agentConversations: update(s.agentConversations),
+        }));
+      })
+    );
+
     // DM→group produced an auto-name the user should confirm. Stash the
     // suggestion; RenameToGroupModal renders off `pendingRename`.
     unsubs.push(

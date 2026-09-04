@@ -23,6 +23,8 @@ import {
   UserPlus,
 } from "lucide-react";
 import { cn } from "../../lib/utils";
+import { SessionConversationDialog } from "./SessionConversationDialog";
+import { Terminal } from "lucide-react";
 
 interface Props {
   onClose: () => void;
@@ -57,6 +59,11 @@ export function NewConversationDialog({ onClose }: Props) {
   const [peopleResults, setPeopleResults] = useState<Participant[]>([]);
   const [searchingPeople, setSearchingPeople] = useState(false);
   const [mode, setMode] = useState<Mode>("select");
+  // Session conversations (#148): a separate flow, gated by the flag.
+  const [showSession, setShowSession] = useState(false);
+  const externalAgentsEnabled = useAuthStore(
+    (s) => s.participant?.features?.external_agents === true
+  );
   const searchTimerRef = useRef<ReturnType<typeof setTimeout>>(null);
 
   useEffect(() => {
@@ -254,6 +261,10 @@ export function NewConversationDialog({ onClose }: Props) {
       ? Boolean(groupTitle.trim()) && !creating
       : selected.size > 0 && !creating;
 
+  if (showSession) {
+    return <SessionConversationDialog onClose={onClose} />;
+  }
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
@@ -298,6 +309,15 @@ export function NewConversationDialog({ onClose }: Props) {
             <Users className="mr-1 inline h-3 w-3" />
             {t("newDialog.channel")}
           </button>
+          {externalAgentsEnabled && (
+            <button
+              onClick={() => setShowSession(true)}
+              className="rounded-md px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            >
+              <Terminal className="mr-1 inline h-3 w-3" />
+              {t("newDialog.session")}
+            </button>
+          )}
         </div>
 
         {mode === "select" && (

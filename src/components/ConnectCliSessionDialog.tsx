@@ -15,6 +15,8 @@ interface Props {
   onClose: () => void;
   /** Preselect this EXISTING external agent (opened from its row). */
   agent?: { id: string; displayName: string; tool?: string | null };
+  /** Open straight on the code flow (another machine). */
+  initialMode?: "picker" | "code";
 }
 
 type CliTool = "claude-code" | "codex";
@@ -44,8 +46,8 @@ interface ClaudeSession {
  * (one-shot invite + `python -m agentchat connect`) stays for other
  * machines.
  */
-export function ConnectCliSessionDialog({ onClose, agent }: Props) {
-  const [mode, setMode] = useState<"picker" | "code">("picker");
+export function ConnectCliSessionDialog({ onClose, agent, initialMode = "picker" }: Props) {
+  const [mode, setMode] = useState<"picker" | "code">(initialMode);
   return mode === "picker" ? (
     <PickerFlow onClose={onClose} agent={agent} onUseCode={() => setMode("code")} />
   ) : (

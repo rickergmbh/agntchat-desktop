@@ -5,6 +5,8 @@ import { useAgentStore } from "../../stores/agentStore";
 import { useAuthStore } from "../../stores/authStore";
 import { usePresenceStore } from "../../stores/presenceStore";
 import { ExternalAgentBadge, isExternalAgent } from "../ExternalAgentBadge";
+import { SessionStateLine } from "./SessionStateLine";
+import { sessionMeta } from "../../lib/api";
 import {
   cn,
   getConversationTitle,
@@ -161,6 +163,7 @@ const ConversationItem = memo(function ConversationItem({
   const title = getConversationTitle(conversation, currentUserId);
   const isGroup = conversation.type === "group";
   const isChannel = conversation.type === "channel";
+  const session = conversation.type === "session" ? sessionMeta(conversation) : null;
   const otherMembers = (conversation.members ?? []).filter(
     (m) => m.participantId !== currentUserId
   );
@@ -273,6 +276,8 @@ const ConversationItem = memo(function ConversationItem({
             </span>
           ) : activity ? (
             <AgentActivityIndicator activity={activity} />
+          ) : session ? (
+            <SessionStateLine session={session} compact />
           ) : (isChannel || isGroup) && (
             <>
               <span className="flex items-center gap-1 rounded bg-muted px-1.5 py-px text-[10px] font-semibold text-muted-foreground">

@@ -28,6 +28,8 @@ pub fn run() {
             process_manager::rekey_external_agent,
             process_manager::claude_desktop_available,
             process_manager::open_claude_desktop_session,
+            process_manager::list_external_identities,
+            process_manager::resume_claude_desktop_session,
             process_manager::check_computer_use_deps,
             process_manager::install_computer_use_deps,
             process_manager::get_computer_use_deps_status,
