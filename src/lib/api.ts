@@ -518,6 +518,10 @@ export interface SessionConversationMeta {
   branch?: string;
   hostname?: string;
   state?: "running" | "waiting" | "ended" | "unlinked" | string;
+  /** "live": the session is a channel — agntchat messages arrive as they
+   *  are sent. "next_turn": they arrive when the session next runs a turn
+   *  (app-hosted sessions). Unknown until the session reports. */
+  delivery?: "live" | "next_turn" | string;
   last_event_at?: string;
 }
 

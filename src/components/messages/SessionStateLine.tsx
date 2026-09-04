@@ -45,6 +45,14 @@ export function SessionStateLine({
           <span className={cn("truncate font-mono", compact ? "text-[10px]" : "text-[11px]")}>{where}</span>
         </>
       )}
+      {!compact && session.delivery && state !== "ended" && state !== "unlinked" && (
+        <>
+          <span className="text-muted-foreground/40">·</span>
+          <span className={cn("shrink-0", session.delivery === "live" ? "text-success" : "")}>
+            {session.delivery === "live" ? t("session.delivery.live") : t("session.delivery.nextTurn")}
+          </span>
+        </>
+      )}
       {!compact && <Terminal className="h-3 w-3 shrink-0 text-muted-foreground/60" />}
     </span>
   );

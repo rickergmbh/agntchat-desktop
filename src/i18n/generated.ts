@@ -2748,6 +2748,10 @@ export const resources = {
         "alreadyLinked": "Already linked to a conversation — linking here moves it.",
         "connectFailed": "Couldn't create the session conversation.",
         "connecting": "Connecting…",
+        "delivery": {
+          "live": "Live",
+          "nextTurn": "Delivered on its next turn"
+        },
         "identity": "Runs as {{name}}",
         "intro": "A conversation that is a Claude Code session: its transcript shows here, and what you type here reaches the session. Link one that is running on this Mac, or start a new one.",
         "kind": "Claude Code session",
@@ -8881,6 +8885,10 @@ export const resources = {
         "alreadyLinked": "Ya vinculada a una conversación: vincularla aquí la mueve.",
         "connectFailed": "No se pudo crear la conversación de sesión.",
         "connecting": "Conectando…",
+        "delivery": {
+          "live": "En vivo",
+          "nextTurn": "Se entrega en su próximo turno"
+        },
         "identity": "Se ejecuta como {{name}}",
         "intro": "Una conversación que es una sesión de Claude Code: su transcripción aparece aquí y lo que escribas aquí llega a la sesión. Vincula una que esté en ejecución en este Mac o inicia una nueva.",
         "kind": "Sesión de Claude Code",
@@ -15014,6 +15022,10 @@ export const resources = {
         "alreadyLinked": "Bereits mit einer Unterhaltung verknüpft — hier verknüpfen verschiebt sie.",
         "connectFailed": "Die Sitzungsunterhaltung konnte nicht erstellt werden.",
         "connecting": "Verbinde…",
+        "delivery": {
+          "live": "Live",
+          "nextTurn": "Zustellung beim nächsten Zug"
+        },
         "identity": "Läuft als {{name}}",
         "intro": "Eine Unterhaltung, die eine Claude-Code-Sitzung ist: Ihr Verlauf erscheint hier, und was du hier schreibst, erreicht die Sitzung. Verknüpfe eine laufende Sitzung auf diesem Mac oder starte eine neue.",
         "kind": "Claude-Code-Sitzung",
@@ -21147,6 +21159,10 @@ export const resources = {
         "alreadyLinked": "Déjà liée à une conversation — la lier ici la déplace.",
         "connectFailed": "Impossible de créer la conversation de session.",
         "connecting": "Connexion…",
+        "delivery": {
+          "live": "En direct",
+          "nextTurn": "Livré à son prochain tour"
+        },
         "identity": "S'exécute en tant que {{name}}",
         "intro": "Une conversation qui est une session Claude Code : sa transcription s'affiche ici, et ce que vous tapez ici atteint la session. Liez une session en cours sur ce Mac ou démarrez-en une nouvelle.",
         "kind": "Session Claude Code",
@@ -27280,6 +27296,10 @@ export const resources = {
         "alreadyLinked": "Já vinculada a uma conversa — vincular aqui a move.",
         "connectFailed": "Não foi possível criar a conversa de sessão.",
         "connecting": "Conectando…",
+        "delivery": {
+          "live": "Ao vivo",
+          "nextTurn": "Entregue no próximo turno"
+        },
         "identity": "Roda como {{name}}",
         "intro": "Uma conversa que é uma sessão do Claude Code: a transcrição aparece aqui e o que você digita aqui chega à sessão. Vincule uma que esteja rodando neste Mac ou inicie uma nova.",
         "kind": "Sessão do Claude Code",
@@ -33413,6 +33433,10 @@ export const resources = {
         "alreadyLinked": "すでに別の会話にリンクされています。ここにリンクすると移動します。",
         "connectFailed": "セッション会話を作成できませんでした。",
         "connecting": "接続中…",
+        "delivery": {
+          "live": "ライブ",
+          "nextTurn": "次のターンで届きます"
+        },
         "identity": "{{name}} として実行",
         "intro": "Claude Code セッションそのものである会話です。やり取りはここに表示され、ここに書いた内容はセッションに届きます。この Mac で実行中のセッションをリンクするか、新しく開始します。",
         "kind": "Claude Code セッション",
@@ -39546,6 +39570,10 @@ export const resources = {
         "alreadyLinked": "已链接到另一个对话——在此链接会将其移过来。",
         "connectFailed": "无法创建会话对话。",
         "connecting": "连接中…",
+        "delivery": {
+          "live": "实时",
+          "nextTurn": "下一轮时送达"
+        },
         "identity": "以 {{name}} 身份运行",
         "intro": "这是一个本身就是 Claude Code 会话的对话：对话记录显示在这里，你在这里输入的内容会传到会话。链接这台 Mac 上正在运行的会话，或启动一个新会话。",
         "kind": "Claude Code 会话",
@@ -45679,6 +45707,10 @@ export const resources = {
         "alreadyLinked": "이미 다른 대화에 연결되어 있습니다. 여기에 연결하면 이동합니다.",
         "connectFailed": "세션 대화를 만들 수 없습니다.",
         "connecting": "연결 중…",
+        "delivery": {
+          "live": "실시간",
+          "nextTurn": "다음 턴에 전달됨"
+        },
         "identity": "{{name}}(으)로 실행",
         "intro": "Claude Code 세션 그 자체인 대화입니다. 대화 내용이 여기에 표시되고, 여기에 입력한 내용은 세션에 전달됩니다. 이 Mac에서 실행 중인 세션을 연결하거나 새로 시작하세요.",
         "kind": "Claude Code 세션",
@@ -51812,6 +51844,10 @@ export const resources = {
         "alreadyLinked": "Già collegata a una conversazione: collegarla qui la sposta.",
         "connectFailed": "Impossibile creare la conversazione di sessione.",
         "connecting": "Collegamento…",
+        "delivery": {
+          "live": "In tempo reale",
+          "nextTurn": "Consegnato al prossimo turno"
+        },
         "identity": "Gira come {{name}}",
         "intro": "Una conversazione che è una sessione Claude Code: la sua trascrizione compare qui e ciò che scrivi qui raggiunge la sessione. Collega una sessione in esecuzione su questo Mac o avviane una nuova.",
         "kind": "Sessione Claude Code",
@@ -57945,6 +57981,10 @@ export const resources = {
         "alreadyLinked": "पहले से किसी बातचीत से जुड़ा है — यहाँ जोड़ने पर वह यहाँ आ जाएगा।",
         "connectFailed": "सत्र बातचीत नहीं बनाई जा सकी।",
         "connecting": "जोड़ा जा रहा है…",
+        "delivery": {
+          "live": "लाइव",
+          "nextTurn": "अगले टर्न पर पहुँचेगा"
+        },
         "identity": "{{name}} के रूप में चलता है",
         "intro": "एक बातचीत जो स्वयं एक Claude Code सत्र है: उसका ट्रांसक्रिप्ट यहाँ दिखता है, और यहाँ लिखा हुआ सत्र तक पहुँचता है। इस Mac पर चल रहे किसी सत्र को जोड़ें या नया शुरू करें।",
         "kind": "Claude Code सत्र",
