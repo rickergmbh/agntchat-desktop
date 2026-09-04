@@ -498,6 +498,16 @@ export function SessionConversationDialog({
                 />
                 <p className="text-[11px] text-muted-foreground">{t("agents:connectCli.linkNameHint")}</p>
               </div>
+
+              <button
+                type="button"
+                onClick={() => setShowCode(true)}
+                className="flex w-full items-center gap-2 rounded-lg border border-border px-3 py-2 text-left text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+              >
+                <MonitorSmartphone className="h-3.5 w-3.5 shrink-0" />
+                <span className="min-w-0 flex-1 truncate">{t("agents:connectCli.useCodeInstead")}</span>
+                <ChevronRight className="h-3.5 w-3.5 shrink-0" />
+              </button>
             </>
           )}
 
@@ -506,16 +516,9 @@ export function SessionConversationDialog({
 
         {/* Footer */}
         <div className="flex shrink-0 items-center justify-between gap-3 border-t border-border px-4 py-3">
-          <div className="min-w-0">
-            <p className="truncate text-[11px] text-muted-foreground">{t("session.identity", { name: identityName })}</p>
-            <button
-              type="button"
-              onClick={() => setShowCode(true)}
-              className="text-[11px] text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
-            >
-              {t("agents:connectCli.useCodeInstead")}
-            </button>
-          </div>
+          <p className="min-w-0 truncate text-[11px] text-muted-foreground">
+            {t("session.identity", { name: identityName })}
+          </p>
           <div className="flex shrink-0 gap-2">
             <Button type="button" variant="ghost" size="sm" onClick={onClose}>
               {t("common:cancel")}
