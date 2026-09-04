@@ -149,6 +149,10 @@ export function SessionConversationDialog({ onClose }: { onClose: () => void }) 
     return { id: created.agent.id, displayName: created.agent.displayName, apiKey: created.apiKey };
   }
 
+  /** Bind the session to the identity. `apiKey` null means "reuse the
+   *  credentials this Mac already holds for the agent" — the bridge copies
+   *  them; it never regenerates. Rotating the key here invalidated every
+   *  other session's copy and silenced the identity (2026-09-04). */
   async function bind(
     sessionId: string,
     cwd: string | null,
@@ -156,7 +160,6 @@ export function SessionConversationDialog({ onClose }: { onClose: () => void }) 
     conversationId: string,
     title: string | null
   ) {
-    if (!target.apiKey) return; // already bound on this Mac with saved credentials
     await invoke("bind_claude_session", {
       args: {
         sessionId,
@@ -164,26 +167,6 @@ export function SessionConversationDialog({ onClose }: { onClose: () => void }) 
         agentId: target.id,
         apiKey: target.apiKey,
         displayName: target.displayName,
-        gatewayUrl: getApiUrl(),
-        title,
-        conversationId,
-      },
-    });
-  }
-
-  async function bindWithSavedKey(sessionId: string, cwd: string | null, target: { id: string; displayName: string }, conversationId: string, title: string | null) {
-    // The bridge already holds this agent's key: rebind by re-reading it
-    // from disk is not exposed, so ask the server for a fresh key only when
-    // this session has no binding yet.
-    const re = await regenerateApiKey(target.id);
-    recordApiKey(re.agent.id, re.apiKey);
-    await invoke("bind_claude_session", {
-      args: {
-        sessionId,
-        cwd,
-        agentId: re.agent.id,
-        apiKey: re.apiKey,
-        displayName: re.agent.displayName,
         gatewayUrl: getApiUrl(),
         title,
         conversationId,
@@ -211,11 +194,7 @@ export function SessionConversationDialog({ onClose }: { onClose: () => void }) 
       // Bind locally so the session's hooks run as the identity and know
       // their conversation. A session already bound to this identity keeps
       // its credentials; anything else gets them now.
-      const alreadyBound = !startNew && session!.agentId === target.id && session!.boundBy === "session";
-      if (!alreadyBound) {
-        if (target.apiKey) await bind(sessionKey, cwd, target, conv.id, title);
-        else await bindWithSavedKey(sessionKey, cwd, target, conv.id, title);
-      }
+      await bind(sessionKey, cwd, target, conv.id, title);
       if (startNew) {
         if (where === "app") {
           await invoke("open_claude_desktop_session", {

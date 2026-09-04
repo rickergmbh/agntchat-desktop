@@ -283,7 +283,8 @@ pub struct BindClaudeSessionArgs {
     pub session_id: String,
     pub cwd: Option<String>,
     pub agent_id: String,
-    pub api_key: String,
+    /// None: reuse the credentials this machine already holds for the agent.
+    pub api_key: Option<String>,
     pub display_name: String,
     pub gateway_url: String,
     /// Name for the session, applied by the hook on its first prompt.
@@ -302,11 +303,12 @@ pub fn bind_claude_session(
     args: BindClaudeSessionArgs,
 ) -> Result<serde_json::Value, String> {
     let mut cli: Vec<&str> = vec!["bind", "--session", &args.session_id];
+    cli.extend_from_slice(&["--agent-id", &args.agent_id]);
+    if let Some(key) = args.api_key.as_deref().filter(|k| !k.is_empty()) {
+        cli.push("--api-key");
+        cli.push(key);
+    }
     cli.extend_from_slice(&[
-        "--agent-id",
-        &args.agent_id,
-        "--api-key",
-        &args.api_key,
         "--display-name",
         &args.display_name,
         "--gateway-url",
