@@ -2437,9 +2437,11 @@ interface NotificationPrefs {
   task_assigned: boolean;
   task_completed: boolean;
   task_reminders: boolean;
+  reminders: boolean;
   agent_activity: boolean;
   mentions: boolean;
   invites: boolean;
+  pulse: boolean;
 }
 
 const DEFAULT_NOTIFICATION_PREFS: NotificationPrefs = {
@@ -2447,9 +2449,11 @@ const DEFAULT_NOTIFICATION_PREFS: NotificationPrefs = {
   task_assigned: true,
   task_completed: true,
   task_reminders: true,
+  reminders: true,
   agent_activity: true,
   mentions: true,
   invites: true,
+  pulse: true,
 };
 
 // `i18nKey` resolves under settings:notificationPrefs.* (label) and
@@ -2463,9 +2467,11 @@ const NOTIFICATION_ITEMS: {
   { key: "task_assigned", icon: ListTodo, i18nKey: "taskAssigned" },
   { key: "task_completed", icon: CheckCircle, i18nKey: "taskCompleted" },
   { key: "task_reminders", icon: Clock, i18nKey: "taskReminders" },
+  { key: "reminders", icon: Calendar, i18nKey: "reminders" },
   { key: "agent_activity", icon: Bot, i18nKey: "agentActivity" },
   { key: "mentions", icon: AtSign, i18nKey: "mentions" },
   { key: "invites", icon: Mail, i18nKey: "invites" },
+  { key: "pulse", icon: Sparkles, i18nKey: "pulse" },
 ];
 
 function NotificationsSection() {

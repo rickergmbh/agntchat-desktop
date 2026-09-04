@@ -10,6 +10,7 @@ import {
 import { ws } from "../services/websocket";
 import { useChatStore } from "../stores/chatStore";
 import { snoozeReminder } from "../lib/api";
+import * as api from "../lib/api";
 
 /** Payload pushed on the user channel when a date reminder fires (camelCase). */
 interface ReminderFired {
@@ -25,10 +26,21 @@ interface ReminderFired {
   dmConversationId?: string;
 }
 
-/** Raise a native OS notification when the app window isn't focused. */
+/** Raise a native OS notification when the app window isn't focused.
+ *  Respects the user's "reminders" notification preference — the setting
+ *  had no client-side effect on desktop/web since Expo push (what the
+ *  preference otherwise gates, server-side) only reaches mobile devices. */
 async function maybeNativeNotify(reminder: ReminderFired) {
   try {
     if (await getCurrentWindow().isFocused()) return;
+
+    const remindersEnabled = await api
+      .request<{ notificationPreferences: { reminders?: boolean } }>(
+        "/api/me/notification-preferences"
+      )
+      .then((data) => data.notificationPreferences.reminders !== false)
+      .catch(() => true);
+    if (!remindersEnabled) return;
 
     let granted = await isPermissionGranted();
     if (!granted) {
