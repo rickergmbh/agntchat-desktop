@@ -66,8 +66,10 @@ export function SessionConversationDialog({
   const [startNew, setStartNew] = useState(false);
   const [folder, setFolder] = useState("");
   const [name, setName] = useState("");
-  const [where, setWhere] = useState<"app" | "terminal">("terminal");
-  const [appAvailable, setAppAvailable] = useState(false);
+  // Where a new session runs: detached in the background (screen; live
+  // channel push, survives closed windows) or a terminal window.
+  const [where, setWhere] = useState<"background" | "terminal">("terminal");
+  const [backgroundAvailable, setBackgroundAvailable] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showCode, setShowCode] = useState(false);
@@ -89,11 +91,11 @@ export function SessionConversationDialog({
         if (!cancelled) setIdentities(ids);
       })
       .catch(() => {});
-    invoke<boolean>("claude_desktop_available")
+    invoke<boolean>("background_session_available")
       .then((ok) => {
         if (!cancelled && ok) {
-          setAppAvailable(true);
-          setWhere("app");
+          setBackgroundAvailable(true);
+          setWhere("background");
         }
       })
       .catch(() => {});
@@ -211,17 +213,10 @@ export function SessionConversationDialog({
       // its credentials; anything else gets them now.
       await bind(sessionKey, cwd, target, conv.id, title);
       if (startNew) {
-        if (where === "app") {
-          await invoke("open_claude_desktop_session", {
-            args: {
-              folder: folderDir,
-              sessionId: sessionKey,
-              seedPrompt: `This session is connected to agntchat as "${target.displayName}". Reply with exactly: ready`,
-            },
-          });
-        } else {
-          await invoke("launch_claude_session", { folder: folderDir, sessionId: sessionKey });
-        }
+        await invoke(where === "background" ? "launch_claude_session_background" : "launch_claude_session", {
+          folder: folderDir,
+          sessionId: sessionKey,
+        });
       }
       setActiveConversation(conv.id);
       onClose();
@@ -233,7 +228,7 @@ export function SessionConversationDialog({
   }
 
   if (showCode) {
-    return <ConnectCliSessionDialog onClose={onClose} initialMode="code" />;
+    return <ConnectCliSessionDialog onClose={onClose} />;
   }
 
   return (
@@ -308,11 +303,11 @@ export function SessionConversationDialog({
                   ))}
                 </div>
               )}
-              {appAvailable && (
+              {backgroundAvailable && (
                 <div className="space-y-1 pt-1">
                   <span className="text-xs font-medium text-muted-foreground">{t("agents:connectCli.whereLabel")}</span>
                   <div className="flex gap-2">
-                    {(["app", "terminal"] as const).map((w) => (
+                    {(["background", "terminal"] as const).map((w) => (
                       <button
                         key={w}
                         type="button"
@@ -324,14 +319,16 @@ export function SessionConversationDialog({
                             : "border-border text-muted-foreground hover:bg-accent")
                         }
                       >
-                        {w === "app" ? t("agents:connectCli.whereApp") : t("agents:connectCli.whereTerminal")}
+                        {w === "background" ? t("agents:connectCli.whereBackground") : t("agents:connectCli.whereTerminal")}
                       </button>
                     ))}
                   </div>
                 </div>
               )}
               <p className="text-[11px] text-muted-foreground">
-                {where === "app" ? t("agents:connectCli.whereAppHint") : t("agents:connectCli.whereTerminalHint")}
+                {where === "background"
+                  ? t("agents:connectCli.whereBackgroundHint")
+                  : t("agents:connectCli.whereTerminalHint")}
               </p>
             </div>
           )}

@@ -280,7 +280,9 @@ function ConversationPane({
   // Session conversation (#148): folder/branch/state from metadata.session.
   const sessionInfo = conversation?.type === "session" ? sessionMeta(conversation) : null;
   const sessionResumable =
-    !!sessionInfo?.session_key && ["ended", "lost"].includes(sessionInfo.state ?? "");
+    !!sessionInfo?.session_key && !!sessionInfo.cwd && ["ended", "lost"].includes(sessionInfo.state ?? "");
+  const sessionLive = !!sessionInfo?.session_key && ["running", "waiting", "idle"].includes(sessionInfo.state ?? "");
+  const [attachError, setAttachError] = useState<string | null>(null);
   // "Not linked" (the session was moved elsewhere, deleted, or never
   // attached): offer to link a session into this conversation.
   const sessionRelinkable = !!sessionInfo && (sessionInfo.state ?? "unlinked") === "unlinked";
@@ -471,11 +473,37 @@ function ConversationPane({
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
-                void invoke("resume_claude_desktop_session", { sessionId: sessionInfo!.session_key });
+                void invoke("resume_claude_session_background", {
+                  folder: sessionInfo!.cwd,
+                  sessionId: sessionInfo!.session_key,
+                });
               }}
               className="shrink-0 rounded-md border border-border px-2 py-1 text-xs text-muted-foreground hover:bg-accent hover:text-foreground"
             >
               {t("session.resume")}
+            </button>
+          )}
+          {sessionLive && (
+            <button
+              type="button"
+              title={attachError ?? undefined}
+              onClick={(e) => {
+                e.stopPropagation();
+                setAttachError(null);
+                invoke("attach_claude_session_terminal", { sessionId: sessionInfo!.session_key }).catch((err) => {
+                  setAttachError(
+                    String(err).includes("not_background")
+                      ? t("agents:connectCli.errors.attach")
+                      : String(err)
+                  );
+                });
+              }}
+              className={cn(
+                "shrink-0 rounded-md border border-border px-2 py-1 text-xs text-muted-foreground hover:bg-accent hover:text-foreground",
+                attachError && "border-destructive/50 text-destructive"
+              )}
+            >
+              {t("session.openTerminal")}
             </button>
           )}
           {sessionRelinkable && conversation && (

@@ -336,119 +336,6 @@ pub fn bind_claude_session(
     serde_json::from_str(json_line).map_err(|e| format!("bad bind result: {e}"))
 }
 
-/// Is the Claude desktop app installed here? Its `claude://` deep links are
-/// how the picker starts a session INSIDE the app (survives a closed
-/// terminal). macOS: the bundle exists; Windows: the scheme is registered.
-#[tauri::command]
-pub fn claude_desktop_available() -> bool {
-    #[cfg(target_os = "macos")]
-    {
-        return std::path::Path::new("/Applications/Claude.app").is_dir()
-            || dirs_home()
-                .map(|h| h.join("Applications").join("Claude.app").is_dir())
-                .unwrap_or(false);
-    }
-    #[cfg(target_os = "windows")]
-    {
-        return hidden_command("reg")
-            .args(["query", "HKCU\\Software\\Classes\\claude"])
-            .output()
-            .map(|o| o.status.success())
-            .unwrap_or(false);
-    }
-    #[allow(unreachable_code)]
-    false
-}
-
-fn dirs_home() -> Option<std::path::PathBuf> {
-    std::env::var_os("HOME").map(std::path::PathBuf::from)
-}
-
-#[derive(Debug, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct OpenClaudeDesktopSessionArgs {
-    pub folder: String,
-    pub session_id: String,
-    /// The one-line first prompt of the seed turn (shows in the transcript).
-    pub seed_prompt: String,
-}
-
-/// Start a NEW Claude Code session INSIDE the Claude desktop app, in
-/// `folder`, with a session id we chose (#148).
-///
-/// `claude://code/new?folder=…` was unreliable — sessions kept landing in a
-/// scratch workspace — and gives no session id up front. What works: create
-/// the session ourselves headlessly (`claude -p` with `--session-id`, cwd =
-/// folder) and hand it to the app with `claude://resume?session=<id>`, which
-/// imports the transcript, keeps its cwd, and continues it in the app under
-/// the same id (`local_<id>`). The picker has already bound the id, and the
-/// seed turn runs with an empty AGNTCHAT_HOME so its hooks stay silent
-/// (no session card, no mirrored seed); the app-run session's first prompt
-/// then reports as the agent and applies the picker's title.
-#[tauri::command]
-pub fn open_claude_desktop_session(args: OpenClaudeDesktopSessionArgs) -> Result<(), String> {
-    if !args
-        .session_id
-        .chars()
-        .all(|c| c.is_ascii_hexdigit() || c == '-')
-    {
-        return Err("invalid session id".to_string());
-    }
-    let dir = std::path::Path::new(&args.folder);
-    if !dir.is_dir() {
-        return Err(format!("not a folder: {}", args.folder));
-    }
-    let silent_home = std::env::temp_dir().join(format!("agntchat-seed-{}", args.session_id));
-    std::fs::create_dir_all(&silent_home).map_err(|e| format!("temp dir: {e}"))?;
-    // Through the login shell so `claude` resolves on the user's PATH — a
-    // GUI app's own PATH is minimal. No MCP servers for the seed turn: it
-    // only has to write the transcript.
-    let script = "cd \"$0\" && claude --session-id \"$1\" --model haiku --max-turns 1 \
-        --mcp-config '{\"mcpServers\":{}}' --strict-mcp-config -p \"$2\"";
-    #[cfg(target_os = "windows")]
-    let output = hidden_command("cmd")
-        .args([
-            "/c",
-            &format!(
-                "cd /d \"{}\" && claude --session-id {} --model haiku --max-turns 1 --mcp-config \"{{\\\"mcpServers\\\":{{}}}}\" --strict-mcp-config -p \"{}\"",
-                args.folder,
-                args.session_id,
-                args.seed_prompt.replace('"', "'")
-            ),
-        ])
-        .env("AGNTCHAT_HOME", &silent_home)
-        .stdin(Stdio::null())
-        .output();
-    #[cfg(not(target_os = "windows"))]
-    let output = hidden_command("/bin/zsh")
-        .args(["-lc", script, &args.folder, &args.session_id, &args.seed_prompt])
-        .env("AGNTCHAT_HOME", &silent_home)
-        .stdin(Stdio::null())
-        .output();
-    let output = output.map_err(|e| format!("could not run claude to create the session: {e}"))?;
-    let _ = std::fs::remove_dir_all(&silent_home);
-    if !output.status.success() {
-        let err = String::from_utf8_lossy(&output.stderr);
-        return Err(format!(
-            "claude could not create the session ({}): {}",
-            output.status,
-            err.lines().last().unwrap_or("").trim()
-        ));
-    }
-    let url = format!("claude://resume?session={}", args.session_id);
-    #[cfg(target_os = "macos")]
-    let status = hidden_command("open").arg(&url).status();
-    #[cfg(target_os = "windows")]
-    let status = hidden_command("cmd").args(["/c", "start", "", &url]).status();
-    #[cfg(not(any(target_os = "macos", target_os = "windows")))]
-    let status = hidden_command("xdg-open").arg(&url).status();
-    match status {
-        Ok(s) if s.success() => Ok(()),
-        Ok(s) => Err(format!("could not open the Claude app ({s})")),
-        Err(e) => Err(format!("could not open the Claude app: {e}")),
-    }
-}
-
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct RekeyExternalAgentArgs {
@@ -501,28 +388,137 @@ pub fn list_external_identities(app: tauri::AppHandle) -> Result<serde_json::Val
     serde_json::from_str(json_line).map_err(|e| format!("bad identities: {e}"))
 }
 
-/// Pull an existing CLI session back into the Claude desktop app
-/// (`claude://resume?session=<id>`): a session conversation's Resume.
+/// `screen` session name for a Claude Code session id (the id's first 8
+/// chars — screen names are matched by prefix, so keep them distinct).
+fn screen_name(session_id: &str) -> String {
+    format!("agntchat-{}", &session_id[..session_id.len().min(8)])
+}
+
+fn valid_session_id(session_id: &str) -> bool {
+    session_id.len() >= 8 && session_id.chars().all(|c| c.is_ascii_hexdigit() || c == '-')
+}
+
+/// Can sessions run detached here? Needs `screen` (ships with macOS).
 #[tauri::command]
-pub fn resume_claude_desktop_session(session_id: String) -> Result<(), String> {
-    if !session_id
-        .chars()
-        .all(|c| c.is_ascii_hexdigit() || c == '-')
-    {
+pub fn background_session_available() -> bool {
+    if cfg!(target_os = "windows") {
+        return false;
+    }
+    hidden_command("/bin/zsh")
+        .args(["-lc", "command -v screen"])
+        .output()
+        .map(|o| o.status.success())
+        .unwrap_or(false)
+}
+
+fn screen_session_exists(name: &str) -> bool {
+    hidden_command("screen")
+        .arg("-ls")
+        .output()
+        .map(|o| String::from_utf8_lossy(&o.stdout).contains(&format!(".{name}\t")))
+        .unwrap_or(false)
+}
+
+/// Run `claude <args>` detached in a `screen` session (#148 background
+/// option): live channel push like the terminal route, but closing windows
+/// never ends it, and `attach_claude_session_terminal` opens it any time.
+/// Claude runs under the bridge's pty wrapper (`agntchat_session.py
+/// --auto-confirm`), which answers the development-channels confirmation
+/// itself — `screen -X stuff` delivers nothing on macOS's screen, so
+/// keystroke injection is not an option.
+fn launch_in_screen(
+    app: &tauri::AppHandle,
+    folder: &str,
+    session_id: &str,
+    claude_args: &str,
+) -> Result<(), String> {
+    if !valid_session_id(session_id) {
         return Err("invalid session id".to_string());
     }
-    let url = format!("claude://resume?session={session_id}");
-    #[cfg(target_os = "macos")]
-    let status = hidden_command("open").arg(&url).status();
-    #[cfg(target_os = "windows")]
-    let status = hidden_command("cmd").args(["/c", "start", "", &url]).status();
-    #[cfg(not(any(target_os = "macos", target_os = "windows")))]
-    let status = hidden_command("xdg-open").arg(&url).status();
-    match status {
-        Ok(s) if s.success() => Ok(()),
-        Ok(s) => Err(format!("could not open the Claude app ({s})")),
-        Err(e) => Err(format!("could not open the Claude app: {e}")),
+    if !std::path::Path::new(folder).is_dir() {
+        return Err(format!("not a folder: {folder}"));
     }
+    let name = screen_name(session_id);
+    if screen_session_exists(&name) {
+        return Ok(()); // already running
+    }
+    let bridge_dir = bridge_dir_for(app)?;
+    let python = match bridge_venv_python(app) {
+        Ok(p) if p.exists() => p.to_string_lossy().to_string(),
+        _ => "python3".to_string(),
+    };
+    let wrapper = bridge_dir.join("agntchat_session.py");
+    let q = |v: &str| format!("'{}'", v.replace('\'', "'\\''"));
+    let script = format!(
+        "cd {} && {} {} --auto-confirm -- claude {claude_args}",
+        q(folder),
+        q(&python),
+        q(&wrapper.to_string_lossy())
+    );
+    let status = hidden_command("screen")
+        .args(["-dmS", &name, "/bin/zsh", "-lc", &script])
+        .status()
+        .map_err(|e| format!("could not start screen: {e}"))?;
+    if !status.success() {
+        return Err(format!("screen refused to start the session ({status})"));
+    }
+    Ok(())
+}
+
+/// Start a NEW session detached, pre-bound and as a channel.
+#[tauri::command]
+pub fn launch_claude_session_background(
+    app: tauri::AppHandle,
+    folder: String,
+    session_id: String,
+) -> Result<(), String> {
+    let args = format!(
+        "--session-id {session_id} --dangerously-load-development-channels server:agntchat"
+    );
+    launch_in_screen(&app, &folder, &session_id, &args)
+}
+
+/// Resume an ended session detached, as a channel (a session
+/// conversation's Resume).
+#[tauri::command]
+pub fn resume_claude_session_background(
+    app: tauri::AppHandle,
+    folder: String,
+    session_id: String,
+) -> Result<(), String> {
+    let args = format!(
+        "--resume {session_id} --dangerously-load-development-channels server:agntchat"
+    );
+    launch_in_screen(&app, &folder, &session_id, &args)
+}
+
+/// Open a Terminal window attached to a background session ("Open
+/// terminal" in the conversation header).
+#[tauri::command]
+pub fn attach_claude_session_terminal(session_id: String) -> Result<(), String> {
+    if !valid_session_id(&session_id) {
+        return Err("invalid session id".to_string());
+    }
+    let name = screen_name(&session_id);
+    if !screen_session_exists(&name) {
+        return Err("not_background".to_string());
+    }
+    #[cfg(target_os = "macos")]
+    {
+        let status = hidden_command("osascript")
+            .arg("-e")
+            .arg(format!("tell application \"Terminal\" to do script \"screen -r {name}\""))
+            .arg("-e")
+            .arg("tell application \"Terminal\" to activate")
+            .status()
+            .map_err(|e| format!("could not open Terminal: {e}"))?;
+        if !status.success() {
+            return Err(format!("Terminal refused to attach ({status})"));
+        }
+        return Ok(());
+    }
+    #[allow(unreachable_code)]
+    Err("attaching is supported on macOS only".to_string())
 }
 
 /// Start a NEW Claude Code session in a terminal, pre-bound (#148): the

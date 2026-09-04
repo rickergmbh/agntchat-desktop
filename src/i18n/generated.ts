@@ -329,12 +329,12 @@ export const resources = {
         "createCode": "Create connect code",
         "done": "Done",
         "errors": {
+          "attach": "Couldn't open a terminal on the session — it isn't running in the background.",
           "bind": "Couldn't connect the session.",
           "create": "Couldn't create the invite.",
           "folder": "Choose a folder first.",
-          "launch": "Couldn't open a terminal for the session.",
-          "list": "Couldn't list Claude Code sessions.",
-          "open": "Couldn't open the Claude app."
+          "launch": "Couldn't start the session.",
+          "list": "Couldn't list Claude Code sessions."
         },
         "expires": "The invite works once and expires in 24 hours.",
         "folderHint": "A terminal opens there running claude, already connected as the chosen agent.",
@@ -360,17 +360,17 @@ export const resources = {
         "start": "Start session",
         "startNew": "Start a new session",
         "started": "A new session is starting in {{folder}} as {{name}}. Its messages appear in your DM with {{name}}.",
-        "startedApp": "The Claude app is opening a new session in {{folder}} as {{name}}. Its messages appear in your DM with {{name}}.",
+        "startedBackground": "A new session is running in the background in {{folder}} as {{name}}. Its messages appear in this conversation; use “Open terminal” to see it.",
         "starting": "Starting…",
         "title": "Connect a Claude Code or Codex session",
         "toolLabel": "CLI",
         "unbound": "not connected",
         "useCodeInstead": "Connect another machine with a code instead",
-        "whereApp": "Claude app",
-        "whereAppHint": "The session lives in the Claude app, so it survives closing a terminal. Messages from agntchat reach it before each prompt and at the end of each turn.",
+        "whereBackground": "Background",
+        "whereBackgroundHint": "Runs detached in the background with live push: messages from agntchat arrive even while it idles, and closing windows doesn't end it. Open a terminal on it any time from the conversation header.",
         "whereLabel": "Open in",
         "whereTerminal": "Terminal",
-        "whereTerminalHint": "A terminal window runs claude with live push: messages from agntchat arrive even while it idles. When the terminal asks, choose “I am using this for local development” — without that the channel is not connected. Closing the terminal ends the session."
+        "whereTerminalHint": "A terminal window runs claude with live push: messages from agntchat arrive even while it idles. When the terminal asks, choose “I am using this for local development”. Closing the terminal ends the session."
       },
       "connection": {
         "direct": "Direct",
@@ -2756,8 +2756,9 @@ export const resources = {
         "intro": "A conversation that is a Claude Code session: its transcript shows here, and what you type here reaches the session. Link one that is running on this Mac, or start a new one.",
         "kind": "Claude Code session",
         "linkExisting": "Link a session on this Mac",
+        "openTerminal": "Open terminal",
         "relink": "Link a different session",
-        "resume": "Resume in Claude app",
+        "resume": "Resume in background",
         "state": {
           "ended": "Ended",
           "idle": "Idle",
@@ -6466,12 +6467,12 @@ export const resources = {
         "createCode": "Crear código de conexión",
         "done": "Listo",
         "errors": {
+          "attach": "No se pudo abrir una terminal sobre la sesión: no se ejecuta en segundo plano.",
           "bind": "No se pudo conectar la sesión.",
           "create": "No se pudo crear la invitación.",
           "folder": "Elige una carpeta primero.",
-          "launch": "No se pudo abrir una terminal para la sesión.",
-          "list": "No se pudieron listar las sesiones de Claude Code.",
-          "open": "No se pudo abrir la app de Claude."
+          "launch": "No se pudo iniciar la sesión.",
+          "list": "No se pudieron listar las sesiones de Claude Code."
         },
         "expires": "La invitación sirve una vez y caduca en 24 horas.",
         "folderHint": "Allí se abre una terminal ejecutando claude, ya conectada como el agente elegido.",
@@ -6497,17 +6498,17 @@ export const resources = {
         "start": "Iniciar sesión",
         "startNew": "Iniciar una sesión nueva",
         "started": "Se está iniciando una sesión nueva en {{folder}} como {{name}}. Sus mensajes aparecen en tu DM con {{name}}.",
-        "startedApp": "La app de Claude está abriendo una sesión nueva en {{folder}} como {{name}}. Sus mensajes aparecen en tu DM con {{name}}.",
+        "startedBackground": "Una sesión nueva se ejecuta en segundo plano en {{folder}} como {{name}}. Sus mensajes aparecen en esta conversación; usa “Abrir terminal” para verla.",
         "starting": "Iniciando…",
         "title": "Conectar una sesión de Claude Code o Codex",
         "toolLabel": "CLI",
         "unbound": "sin conectar",
         "useCodeInstead": "Conectar otra máquina con un código",
-        "whereApp": "App de Claude",
-        "whereAppHint": "La sesión vive en la app de Claude, así que sobrevive al cierre de una terminal. Los mensajes de agntchat le llegan antes de cada prompt y al final de cada turno.",
+        "whereBackground": "Segundo plano",
+        "whereBackgroundHint": "Se ejecuta desacoplada en segundo plano con envío en vivo: los mensajes de agntchat llegan incluso en reposo y cerrar ventanas no la termina. Abre una terminal sobre ella cuando quieras desde la cabecera de la conversación.",
         "whereLabel": "Abrir en",
         "whereTerminal": "Terminal",
-        "whereTerminalHint": "Una ventana de terminal ejecuta claude con envío en vivo: los mensajes de agntchat llegan incluso en reposo. Cuando la terminal pregunte, elige “I am using this for local development”; sin eso el canal no se conecta. Cerrar la terminal termina la sesión."
+        "whereTerminalHint": "Una ventana de terminal ejecuta claude con envío en vivo: los mensajes de agntchat llegan incluso en reposo. Cuando la terminal pregunte, elige “I am using this for local development”. Cerrar la terminal termina la sesión."
       },
       "connection": {
         "direct": "Directa",
@@ -8893,8 +8894,9 @@ export const resources = {
         "intro": "Una conversación que es una sesión de Claude Code: su transcripción aparece aquí y lo que escribas aquí llega a la sesión. Vincula una que esté en ejecución en este Mac o inicia una nueva.",
         "kind": "Sesión de Claude Code",
         "linkExisting": "Vincular una sesión de este Mac",
+        "openTerminal": "Abrir terminal",
         "relink": "Vincular otra sesión",
-        "resume": "Reanudar en la app de Claude",
+        "resume": "Reanudar en segundo plano",
         "state": {
           "ended": "Finalizada",
           "idle": "Inactiva",
@@ -12603,12 +12605,12 @@ export const resources = {
         "createCode": "Connect-Code erstellen",
         "done": "Fertig",
         "errors": {
+          "attach": "Es konnte kein Terminal für die Sitzung geöffnet werden — sie läuft nicht im Hintergrund.",
           "bind": "Die Sitzung konnte nicht verbunden werden.",
           "create": "Einladung konnte nicht erstellt werden.",
           "folder": "Wähle zuerst einen Ordner.",
-          "launch": "Es konnte kein Terminal für die Sitzung geöffnet werden.",
-          "list": "Claude-Code-Sitzungen konnten nicht aufgelistet werden.",
-          "open": "Die Claude-App konnte nicht geöffnet werden."
+          "launch": "Die Sitzung konnte nicht gestartet werden.",
+          "list": "Claude-Code-Sitzungen konnten nicht aufgelistet werden."
         },
         "expires": "Die Einladung gilt einmal und läuft nach 24 Stunden ab.",
         "folderHint": "Dort öffnet sich ein Terminal mit claude, bereits als der gewählte Agent verbunden.",
@@ -12634,17 +12636,17 @@ export const resources = {
         "start": "Sitzung starten",
         "startNew": "Neue Sitzung starten",
         "started": "In {{folder}} startet eine neue Sitzung als {{name}}. Ihre Nachrichten erscheinen in deiner DM mit {{name}}.",
-        "startedApp": "Die Claude-App öffnet eine neue Sitzung in {{folder}} als {{name}}. Ihre Nachrichten erscheinen in deiner DM mit {{name}}.",
+        "startedBackground": "Eine neue Sitzung läuft im Hintergrund in {{folder}} als {{name}}. Ihre Nachrichten erscheinen in dieser Unterhaltung; mit „Terminal öffnen“ siehst du sie.",
         "starting": "Starte…",
         "title": "Claude-Code- oder Codex-Sitzung verbinden",
         "toolLabel": "CLI",
         "unbound": "nicht verbunden",
         "useCodeInstead": "Stattdessen einen anderen Rechner per Code verbinden",
-        "whereApp": "Claude-App",
-        "whereAppHint": "Die Sitzung lebt in der Claude-App und überlebt das Schließen eines Terminals. Nachrichten aus agntchat erreichen sie vor jedem Prompt und am Ende jedes Zuges.",
+        "whereBackground": "Hintergrund",
+        "whereBackgroundHint": "Läuft abgekoppelt im Hintergrund mit Live-Push: Nachrichten aus agntchat kommen auch im Leerlauf an, und Fenster zu schließen beendet die Sitzung nicht. Öffne jederzeit ein Terminal darauf über die Kopfzeile der Unterhaltung.",
         "whereLabel": "Öffnen in",
         "whereTerminal": "Terminal",
-        "whereTerminalHint": "Ein Terminalfenster führt claude mit Live-Push aus: Nachrichten aus agntchat kommen auch im Leerlauf an. Wenn das Terminal fragt, wähle „I am using this for local development“ — sonst wird der Kanal nicht verbunden. Das Terminal zu schließen beendet die Sitzung."
+        "whereTerminalHint": "Ein Terminalfenster führt claude mit Live-Push aus: Nachrichten aus agntchat kommen auch im Leerlauf an. Wenn das Terminal fragt, wähle „I am using this for local development“. Das Terminal zu schließen beendet die Sitzung."
       },
       "connection": {
         "direct": "Direkt",
@@ -15030,8 +15032,9 @@ export const resources = {
         "intro": "Eine Unterhaltung, die eine Claude-Code-Sitzung ist: Ihr Verlauf erscheint hier, und was du hier schreibst, erreicht die Sitzung. Verknüpfe eine laufende Sitzung auf diesem Mac oder starte eine neue.",
         "kind": "Claude-Code-Sitzung",
         "linkExisting": "Sitzung auf diesem Mac verknüpfen",
+        "openTerminal": "Terminal öffnen",
         "relink": "Andere Sitzung verknüpfen",
-        "resume": "In der Claude-App fortsetzen",
+        "resume": "Im Hintergrund fortsetzen",
         "state": {
           "ended": "Beendet",
           "idle": "Inaktiv",
@@ -18740,12 +18743,12 @@ export const resources = {
         "createCode": "Créer un code de connexion",
         "done": "Terminé",
         "errors": {
+          "attach": "Impossible d'ouvrir un terminal sur la session — elle ne tourne pas en arrière-plan.",
           "bind": "Impossible de connecter la session.",
           "create": "Impossible de créer l'invitation.",
           "folder": "Choisissez d'abord un dossier.",
-          "launch": "Impossible d'ouvrir un terminal pour la session.",
-          "list": "Impossible de lister les sessions Claude Code.",
-          "open": "Impossible d'ouvrir l'app Claude."
+          "launch": "Impossible de démarrer la session.",
+          "list": "Impossible de lister les sessions Claude Code."
         },
         "expires": "L'invitation est à usage unique et expire dans 24 heures.",
         "folderHint": "Un terminal s'y ouvre en exécutant claude, déjà connecté en tant que l'agent choisi.",
@@ -18771,17 +18774,17 @@ export const resources = {
         "start": "Démarrer la session",
         "startNew": "Démarrer une nouvelle session",
         "started": "Une nouvelle session démarre dans {{folder}} en tant que {{name}}. Ses messages apparaissent dans votre DM avec {{name}}.",
-        "startedApp": "L'app Claude ouvre une nouvelle session dans {{folder}} en tant que {{name}}. Ses messages apparaissent dans votre DM avec {{name}}.",
+        "startedBackground": "Une nouvelle session tourne en arrière-plan dans {{folder}} en tant que {{name}}. Ses messages apparaissent dans cette conversation ; « Ouvrir un terminal » permet de la voir.",
         "starting": "Démarrage…",
         "title": "Connecter une session Claude Code ou Codex",
         "toolLabel": "CLI",
         "unbound": "non connectée",
         "useCodeInstead": "Connecter une autre machine avec un code",
-        "whereApp": "App Claude",
-        "whereAppHint": "La session vit dans l'app Claude et survit à la fermeture d'un terminal. Les messages d'agntchat lui parviennent avant chaque prompt et à la fin de chaque tour.",
+        "whereBackground": "Arrière-plan",
+        "whereBackgroundHint": "S'exécute détachée en arrière-plan avec envoi en direct : les messages d'agntchat arrivent même au repos, et fermer des fenêtres ne l'arrête pas. Ouvrez un terminal dessus à tout moment depuis l'en-tête de la conversation.",
         "whereLabel": "Ouvrir dans",
         "whereTerminal": "Terminal",
-        "whereTerminalHint": "Une fenêtre de terminal exécute claude avec envoi en direct : les messages d'agntchat arrivent même au repos. Quand le terminal le demande, choisissez « I am using this for local development » — sinon le canal n'est pas connecté. Fermer le terminal met fin à la session."
+        "whereTerminalHint": "Une fenêtre de terminal exécute claude avec envoi en direct : les messages d'agntchat arrivent même au repos. Quand le terminal le demande, choisissez « I am using this for local development ». Fermer le terminal met fin à la session."
       },
       "connection": {
         "direct": "Direct",
@@ -21167,8 +21170,9 @@ export const resources = {
         "intro": "Une conversation qui est une session Claude Code : sa transcription s'affiche ici, et ce que vous tapez ici atteint la session. Liez une session en cours sur ce Mac ou démarrez-en une nouvelle.",
         "kind": "Session Claude Code",
         "linkExisting": "Lier une session de ce Mac",
+        "openTerminal": "Ouvrir un terminal",
         "relink": "Lier une autre session",
-        "resume": "Reprendre dans l'app Claude",
+        "resume": "Reprendre en arrière-plan",
         "state": {
           "ended": "Terminée",
           "idle": "Inactive",
@@ -24877,12 +24881,12 @@ export const resources = {
         "createCode": "Criar código de conexão",
         "done": "Concluído",
         "errors": {
+          "attach": "Não foi possível abrir um terminal na sessão — ela não está rodando em segundo plano.",
           "bind": "Não foi possível conectar a sessão.",
           "create": "Não foi possível criar o convite.",
           "folder": "Escolha uma pasta primeiro.",
-          "launch": "Não foi possível abrir um terminal para a sessão.",
-          "list": "Não foi possível listar as sessões do Claude Code.",
-          "open": "Não foi possível abrir o app Claude."
+          "launch": "Não foi possível iniciar a sessão.",
+          "list": "Não foi possível listar as sessões do Claude Code."
         },
         "expires": "O convite vale uma vez e expira em 24 horas.",
         "folderHint": "Um terminal abre lá rodando claude, já conectado como o agente escolhido.",
@@ -24908,17 +24912,17 @@ export const resources = {
         "start": "Iniciar sessão",
         "startNew": "Iniciar uma nova sessão",
         "started": "Uma nova sessão está iniciando em {{folder}} como {{name}}. Suas mensagens aparecem na sua DM com {{name}}.",
-        "startedApp": "O app Claude está abrindo uma nova sessão em {{folder}} como {{name}}. Suas mensagens aparecem na sua DM com {{name}}.",
+        "startedBackground": "Uma nova sessão está rodando em segundo plano em {{folder}} como {{name}}. Suas mensagens aparecem nesta conversa; use “Abrir terminal” para vê-la.",
         "starting": "Iniciando…",
         "title": "Conectar uma sessão do Claude Code ou Codex",
         "toolLabel": "CLI",
         "unbound": "não conectada",
         "useCodeInstead": "Conectar outra máquina com um código",
-        "whereApp": "App Claude",
-        "whereAppHint": "A sessão vive no app Claude, então sobrevive ao fechamento de um terminal. Mensagens do agntchat chegam a ela antes de cada prompt e ao final de cada turno.",
+        "whereBackground": "Segundo plano",
+        "whereBackgroundHint": "Roda desacoplada em segundo plano com envio ao vivo: mensagens do agntchat chegam mesmo em repouso, e fechar janelas não a encerra. Abra um terminal nela a qualquer momento pelo cabeçalho da conversa.",
         "whereLabel": "Abrir em",
         "whereTerminal": "Terminal",
-        "whereTerminalHint": "Uma janela de terminal roda claude com envio ao vivo: mensagens do agntchat chegam mesmo em repouso. Quando o terminal perguntar, escolha “I am using this for local development” — sem isso o canal não conecta. Fechar o terminal encerra a sessão."
+        "whereTerminalHint": "Uma janela de terminal roda claude com envio ao vivo: mensagens do agntchat chegam mesmo em repouso. Quando o terminal perguntar, escolha “I am using this for local development”. Fechar o terminal encerra a sessão."
       },
       "connection": {
         "direct": "Direto",
@@ -27304,8 +27308,9 @@ export const resources = {
         "intro": "Uma conversa que é uma sessão do Claude Code: a transcrição aparece aqui e o que você digita aqui chega à sessão. Vincule uma que esteja rodando neste Mac ou inicie uma nova.",
         "kind": "Sessão do Claude Code",
         "linkExisting": "Vincular uma sessão deste Mac",
+        "openTerminal": "Abrir terminal",
         "relink": "Vincular outra sessão",
-        "resume": "Retomar no app Claude",
+        "resume": "Retomar em segundo plano",
         "state": {
           "ended": "Encerrada",
           "idle": "Ociosa",
@@ -31014,12 +31019,12 @@ export const resources = {
         "createCode": "接続コードを作成",
         "done": "完了",
         "errors": {
+          "attach": "セッションのターミナルを開けませんでした。バックグラウンドで実行されていません。",
           "bind": "セッションを接続できませんでした。",
           "create": "招待を作成できませんでした。",
           "folder": "先にフォルダーを選んでください。",
-          "launch": "セッション用のターミナルを開けませんでした。",
-          "list": "Claude Code セッションを一覧できませんでした。",
-          "open": "Claude アプリを開けませんでした。"
+          "launch": "セッションを開始できませんでした。",
+          "list": "Claude Code セッションを一覧できませんでした。"
         },
         "expires": "招待は 1 回のみ有効で、24 時間で期限切れになります。",
         "folderHint": "そこでターミナルが開き、選んだエージェントとして接続済みの claude が起動します。",
@@ -31045,17 +31050,17 @@ export const resources = {
         "start": "セッションを開始",
         "startNew": "新しいセッションを開始",
         "started": "{{folder}} で {{name}} として新しいセッションが開始します。メッセージは {{name}} との DM に表示されます。",
-        "startedApp": "Claude アプリが {{folder}} で {{name}} として新しいセッションを開いています。メッセージは {{name}} との DM に表示されます。",
+        "startedBackground": "{{folder}} で {{name}} として新しいセッションがバックグラウンドで実行中です。メッセージはこの会話に表示されます。「ターミナルを開く」で確認できます。",
         "starting": "開始中…",
         "title": "Claude Code または Codex のセッションを接続",
         "toolLabel": "CLI",
         "unbound": "未接続",
         "useCodeInstead": "代わりに別のマシンをコードで接続",
-        "whereApp": "Claude アプリ",
-        "whereAppHint": "セッションは Claude アプリ内で動くため、ターミナルを閉じても残ります。agntchat からのメッセージは、各プロンプトの前と各ターンの終わりに届きます。",
+        "whereBackground": "バックグラウンド",
+        "whereBackgroundHint": "バックグラウンドで切り離して実行し、ライブプッシュを維持します。待機中でも agntchat からのメッセージが届き、ウィンドウを閉じても終了しません。会話のヘッダーからいつでもターミナルを開けます。",
         "whereLabel": "開く場所",
         "whereTerminal": "ターミナル",
-        "whereTerminalHint": "ターミナルウィンドウがライブプッシュ付きで claude を実行します。待機中でも agntchat からのメッセージが届きます。ターミナルで確認されたら「I am using this for local development」を選んでください。選ばないとチャンネルは接続されません。ターミナルを閉じるとセッションは終了します。"
+        "whereTerminalHint": "ターミナルウィンドウがライブプッシュ付きで claude を実行します。待機中でも agntchat からのメッセージが届きます。ターミナルで確認されたら「I am using this for local development」を選んでください。ターミナルを閉じるとセッションは終了します。"
       },
       "connection": {
         "direct": "ダイレクト",
@@ -33441,8 +33446,9 @@ export const resources = {
         "intro": "Claude Code セッションそのものである会話です。やり取りはここに表示され、ここに書いた内容はセッションに届きます。この Mac で実行中のセッションをリンクするか、新しく開始します。",
         "kind": "Claude Code セッション",
         "linkExisting": "この Mac のセッションをリンク",
+        "openTerminal": "ターミナルを開く",
         "relink": "別のセッションをリンク",
-        "resume": "Claude アプリで再開",
+        "resume": "バックグラウンドで再開",
         "state": {
           "ended": "終了",
           "idle": "アイドル",
@@ -37151,12 +37157,12 @@ export const resources = {
         "createCode": "创建连接码",
         "done": "完成",
         "errors": {
+          "attach": "无法为该会话打开终端——它没有在后台运行。",
           "bind": "无法连接该会话。",
           "create": "无法创建邀请。",
           "folder": "请先选择一个文件夹。",
-          "launch": "无法为该会话打开终端。",
-          "list": "无法列出 Claude Code 会话。",
-          "open": "无法打开 Claude 应用。"
+          "launch": "无法启动会话。",
+          "list": "无法列出 Claude Code 会话。"
         },
         "expires": "邀请仅可使用一次，24 小时后失效。",
         "folderHint": "将在该文件夹打开一个运行 claude 的终端，并已以所选代理身份连接。",
@@ -37182,17 +37188,17 @@ export const resources = {
         "start": "启动会话",
         "startNew": "启动新会话",
         "started": "正在 {{folder}} 中以 {{name}} 身份启动新会话。它的消息会出现在你与 {{name}} 的私信中。",
-        "startedApp": "Claude 应用正在 {{folder}} 中以 {{name}} 身份打开新会话。它的消息会出现在你与 {{name}} 的私信中。",
+        "startedBackground": "正在 {{folder}} 中以 {{name}} 身份在后台运行新会话。它的消息会出现在此对话中；使用“打开终端”查看。",
         "starting": "正在启动…",
         "title": "连接 Claude Code 或 Codex 会话",
         "toolLabel": "CLI",
         "unbound": "未连接",
         "useCodeInstead": "改用连接码连接另一台机器",
-        "whereApp": "Claude 应用",
-        "whereAppHint": "会话运行在 Claude 应用内，关闭终端也不会消失。来自 agntchat 的消息会在每次提示前和每轮结束时送达。",
+        "whereBackground": "后台",
+        "whereBackgroundHint": "以分离方式在后台运行并保持实时推送：即使空闲也能收到 agntchat 的消息，关闭窗口也不会结束会话。随时可从对话标题栏打开它的终端。",
         "whereLabel": "打开方式",
         "whereTerminal": "终端",
-        "whereTerminalHint": "终端窗口以实时推送方式运行 claude：即使空闲也能收到 agntchat 的消息。终端询问时请选择“I am using this for local development”，否则频道不会连接。关闭终端会结束会话。"
+        "whereTerminalHint": "终端窗口以实时推送方式运行 claude：即使空闲也能收到 agntchat 的消息。终端询问时请选择“I am using this for local development”。关闭终端会结束会话。"
       },
       "connection": {
         "direct": "直连",
@@ -39578,8 +39584,9 @@ export const resources = {
         "intro": "这是一个本身就是 Claude Code 会话的对话：对话记录显示在这里，你在这里输入的内容会传到会话。链接这台 Mac 上正在运行的会话，或启动一个新会话。",
         "kind": "Claude Code 会话",
         "linkExisting": "链接这台 Mac 上的会话",
+        "openTerminal": "打开终端",
         "relink": "链接另一个会话",
-        "resume": "在 Claude 应用中恢复",
+        "resume": "在后台恢复",
         "state": {
           "ended": "已结束",
           "idle": "空闲",
@@ -43288,12 +43295,12 @@ export const resources = {
         "createCode": "연결 코드 만들기",
         "done": "완료",
         "errors": {
+          "attach": "세션의 터미널을 열 수 없습니다. 백그라운드에서 실행 중이 아닙니다.",
           "bind": "세션을 연결할 수 없습니다.",
           "create": "초대를 만들 수 없습니다.",
           "folder": "먼저 폴더를 선택하세요.",
-          "launch": "세션용 터미널을 열 수 없습니다.",
-          "list": "Claude Code 세션을 나열할 수 없습니다.",
-          "open": "Claude 앱을 열 수 없습니다."
+          "launch": "세션을 시작할 수 없습니다.",
+          "list": "Claude Code 세션을 나열할 수 없습니다."
         },
         "expires": "초대는 한 번만 사용할 수 있으며 24시간 후 만료됩니다.",
         "folderHint": "그곳에서 선택한 에이전트로 이미 연결된 claude를 실행하는 터미널이 열립니다.",
@@ -43319,17 +43326,17 @@ export const resources = {
         "start": "세션 시작",
         "startNew": "새 세션 시작",
         "started": "{{folder}}에서 {{name}}(으)로 새 세션이 시작됩니다. 메시지는 {{name}}과(와)의 DM에 표시됩니다.",
-        "startedApp": "Claude 앱이 {{folder}}에서 {{name}}(으)로 새 세션을 열고 있습니다. 메시지는 {{name}}과(와)의 DM에 표시됩니다.",
+        "startedBackground": "{{folder}}에서 {{name}}(으)로 새 세션이 백그라운드에서 실행 중입니다. 메시지는 이 대화에 표시되며, “터미널 열기”로 확인할 수 있습니다.",
         "starting": "시작 중…",
         "title": "Claude Code 또는 Codex 세션 연결",
         "toolLabel": "CLI",
         "unbound": "연결되지 않음",
         "useCodeInstead": "대신 다른 머신을 코드로 연결",
-        "whereApp": "Claude 앱",
-        "whereAppHint": "세션이 Claude 앱 안에서 실행되므로 터미널을 닫아도 유지됩니다. agntchat 메시지는 각 프롬프트 전과 각 턴 종료 시 전달됩니다.",
+        "whereBackground": "백그라운드",
+        "whereBackgroundHint": "백그라운드에서 분리되어 실행되며 실시간 푸시를 유지합니다. 대기 중에도 agntchat 메시지가 도착하고, 창을 닫아도 종료되지 않습니다. 대화 헤더에서 언제든 터미널을 열 수 있습니다.",
         "whereLabel": "열 위치",
         "whereTerminal": "터미널",
-        "whereTerminalHint": "터미널 창이 실시간 푸시와 함께 claude를 실행합니다. 대기 중에도 agntchat 메시지가 도착합니다. 터미널에서 물으면 “I am using this for local development”를 선택하세요. 선택하지 않으면 채널이 연결되지 않습니다. 터미널을 닫으면 세션이 종료됩니다."
+        "whereTerminalHint": "터미널 창이 실시간 푸시와 함께 claude를 실행합니다. 대기 중에도 agntchat 메시지가 도착합니다. 터미널에서 물으면 “I am using this for local development”를 선택하세요. 터미널을 닫으면 세션이 종료됩니다."
       },
       "connection": {
         "direct": "직접",
@@ -45715,8 +45722,9 @@ export const resources = {
         "intro": "Claude Code 세션 그 자체인 대화입니다. 대화 내용이 여기에 표시되고, 여기에 입력한 내용은 세션에 전달됩니다. 이 Mac에서 실행 중인 세션을 연결하거나 새로 시작하세요.",
         "kind": "Claude Code 세션",
         "linkExisting": "이 Mac의 세션 연결",
+        "openTerminal": "터미널 열기",
         "relink": "다른 세션 연결",
-        "resume": "Claude 앱에서 재개",
+        "resume": "백그라운드에서 재개",
         "state": {
           "ended": "종료됨",
           "idle": "유휴",
@@ -49425,12 +49433,12 @@ export const resources = {
         "createCode": "Crea codice di connessione",
         "done": "Fatto",
         "errors": {
+          "attach": "Impossibile aprire un terminale sulla sessione: non gira in background.",
           "bind": "Impossibile collegare la sessione.",
           "create": "Impossibile creare l'invito.",
           "folder": "Scegli prima una cartella.",
-          "launch": "Impossibile aprire un terminale per la sessione.",
-          "list": "Impossibile elencare le sessioni Claude Code.",
-          "open": "Impossibile aprire l'app Claude."
+          "launch": "Impossibile avviare la sessione.",
+          "list": "Impossibile elencare le sessioni Claude Code."
         },
         "expires": "L'invito vale una volta e scade tra 24 ore.",
         "folderHint": "Lì si apre un terminale che esegue claude, già collegato come l'agente scelto.",
@@ -49456,17 +49464,17 @@ export const resources = {
         "start": "Avvia sessione",
         "startNew": "Avvia una nuova sessione",
         "started": "Una nuova sessione sta partendo in {{folder}} come {{name}}. I suoi messaggi compaiono nel tuo DM con {{name}}.",
-        "startedApp": "L'app Claude sta aprendo una nuova sessione in {{folder}} come {{name}}. I suoi messaggi compaiono nel tuo DM con {{name}}.",
+        "startedBackground": "Una nuova sessione gira in background in {{folder}} come {{name}}. I suoi messaggi compaiono in questa conversazione; usa “Apri terminale” per vederla.",
         "starting": "Avvio…",
         "title": "Collega una sessione Claude Code o Codex",
         "toolLabel": "CLI",
         "unbound": "non collegata",
         "useCodeInstead": "Collega invece un'altra macchina con un codice",
-        "whereApp": "App Claude",
-        "whereAppHint": "La sessione vive nell'app Claude e sopravvive alla chiusura di un terminale. I messaggi da agntchat le arrivano prima di ogni prompt e alla fine di ogni turno.",
+        "whereBackground": "In background",
+        "whereBackgroundHint": "Gira scollegata in background con invio in tempo reale: i messaggi da agntchat arrivano anche quando è inattiva, e chiudere le finestre non la termina. Apri un terminale su di essa in qualsiasi momento dall'intestazione della conversazione.",
         "whereLabel": "Apri in",
         "whereTerminal": "Terminale",
-        "whereTerminalHint": "Una finestra di terminale esegue claude con invio in tempo reale: i messaggi da agntchat arrivano anche quando è inattiva. Quando il terminale lo chiede, scegli “I am using this for local development”: senza, il canale non si collega. Chiudere il terminale termina la sessione."
+        "whereTerminalHint": "Una finestra di terminale esegue claude con invio in tempo reale: i messaggi da agntchat arrivano anche quando è inattiva. Quando il terminale lo chiede, scegli “I am using this for local development”. Chiudere il terminale termina la sessione."
       },
       "connection": {
         "direct": "Diretta",
@@ -51852,8 +51860,9 @@ export const resources = {
         "intro": "Una conversazione che è una sessione Claude Code: la sua trascrizione compare qui e ciò che scrivi qui raggiunge la sessione. Collega una sessione in esecuzione su questo Mac o avviane una nuova.",
         "kind": "Sessione Claude Code",
         "linkExisting": "Collega una sessione di questo Mac",
+        "openTerminal": "Apri terminale",
         "relink": "Collega un'altra sessione",
-        "resume": "Riprendi nell'app Claude",
+        "resume": "Riprendi in background",
         "state": {
           "ended": "Terminata",
           "idle": "Inattiva",
@@ -55562,12 +55571,12 @@ export const resources = {
         "createCode": "कनेक्ट कोड बनाएँ",
         "done": "हो गया",
         "errors": {
+          "attach": "सत्र पर टर्मिनल नहीं खोला जा सका — यह बैकग्राउंड में नहीं चल रहा है।",
           "bind": "सत्र जोड़ा नहीं जा सका।",
           "create": "आमंत्रण नहीं बन सका।",
           "folder": "पहले एक फ़ोल्डर चुनें।",
-          "launch": "सत्र के लिए टर्मिनल नहीं खोला जा सका।",
-          "list": "Claude Code सत्र सूचीबद्ध नहीं किए जा सके।",
-          "open": "Claude ऐप नहीं खोला जा सका।"
+          "launch": "सत्र शुरू नहीं किया जा सका।",
+          "list": "Claude Code सत्र सूचीबद्ध नहीं किए जा सके।"
         },
         "expires": "आमंत्रण एक बार काम करता है और 24 घंटे में समाप्त हो जाता है।",
         "folderHint": "वहाँ claude चलाता हुआ एक टर्मिनल खुलता है, जो पहले से चुने गए एजेंट के रूप में जुड़ा होता है।",
@@ -55593,17 +55602,17 @@ export const resources = {
         "start": "सत्र शुरू करें",
         "startNew": "नया सत्र शुरू करें",
         "started": "{{folder}} में {{name}} के रूप में एक नया सत्र शुरू हो रहा है। इसके संदेश {{name}} के साथ आपके DM में दिखेंगे।",
-        "startedApp": "Claude ऐप {{folder}} में {{name}} के रूप में एक नया सत्र खोल रहा है। इसके संदेश {{name}} के साथ आपके DM में दिखेंगे।",
+        "startedBackground": "{{folder}} में {{name}} के रूप में एक नया सत्र बैकग्राउंड में चल रहा है। इसके संदेश इस बातचीत में दिखेंगे; देखने के लिए “टर्मिनल खोलें” का उपयोग करें।",
         "starting": "शुरू हो रहा है…",
         "title": "Claude Code या Codex सत्र जोड़ें",
         "toolLabel": "CLI",
         "unbound": "जुड़ा नहीं",
         "useCodeInstead": "इसके बजाय किसी दूसरी मशीन को कोड से जोड़ें",
-        "whereApp": "Claude ऐप",
-        "whereAppHint": "सत्र Claude ऐप में रहता है, इसलिए टर्मिनल बंद करने पर भी बना रहता है। agntchat के संदेश उसे हर प्रॉम्प्ट से पहले और हर टर्न के अंत में मिलते हैं।",
+        "whereBackground": "बैकग्राउंड",
+        "whereBackgroundHint": "लाइव पुश के साथ बैकग्राउंड में अलग चलता है: agntchat के संदेश निष्क्रिय रहने पर भी आते हैं, और विंडो बंद करने से सत्र समाप्त नहीं होता। बातचीत के हेडर से कभी भी इस पर टर्मिनल खोलें।",
         "whereLabel": "यहाँ खोलें",
         "whereTerminal": "टर्मिनल",
-        "whereTerminalHint": "एक टर्मिनल विंडो लाइव पुश के साथ claude चलाती है: agntchat के संदेश निष्क्रिय रहने पर भी आते हैं। टर्मिनल पूछे तो “I am using this for local development” चुनें — इसके बिना चैनल नहीं जुड़ता। टर्मिनल बंद करने से सत्र समाप्त हो जाता है।"
+        "whereTerminalHint": "एक टर्मिनल विंडो लाइव पुश के साथ claude चलाती है: agntchat के संदेश निष्क्रिय रहने पर भी आते हैं। टर्मिनल पूछे तो “I am using this for local development” चुनें। टर्मिनल बंद करने से सत्र समाप्त हो जाता है।"
       },
       "connection": {
         "direct": "डायरेक्ट",
@@ -57989,8 +57998,9 @@ export const resources = {
         "intro": "एक बातचीत जो स्वयं एक Claude Code सत्र है: उसका ट्रांसक्रिप्ट यहाँ दिखता है, और यहाँ लिखा हुआ सत्र तक पहुँचता है। इस Mac पर चल रहे किसी सत्र को जोड़ें या नया शुरू करें।",
         "kind": "Claude Code सत्र",
         "linkExisting": "इस Mac का कोई सत्र जोड़ें",
+        "openTerminal": "टर्मिनल खोलें",
         "relink": "कोई दूसरा सत्र जोड़ें",
-        "resume": "Claude ऐप में फिर से शुरू करें",
+        "resume": "बैकग्राउंड में फिर से शुरू करें",
         "state": {
           "ended": "समाप्त",
           "idle": "निष्क्रिय",

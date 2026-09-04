@@ -1149,7 +1149,7 @@ export function Dashboard() {
       )}
       {showConnectCli && <SessionConversationDialog onClose={() => setShowConnectCli(false)} />}
       {connectCliAgent && (
-        <ConnectCliSessionDialog agent={connectCliAgent} onClose={() => setConnectCliAgent(null)} initialMode="code" />
+        <ConnectCliSessionDialog agent={connectCliAgent} onClose={() => setConnectCliAgent(null)} />
       )}
     </div>
   );
