@@ -526,6 +526,9 @@ export interface SessionConversationMeta {
    *  PostModelSwitch); absent until the session reports one. */
   model?: string;
   effort?: string;
+  /** While `waiting`: the Claude Code notification the session is blocked
+   *  on (permission_prompt, idle_prompt, elicitation_dialog). */
+  blocked_on?: string;
   /** Slash commands the conversation can send to the session (typed into
    *  its pty by the bridge); absent when the session has no pty wrapper. */
   commands?: string[];

@@ -13,7 +13,9 @@ export function ExternalAgentBadge({ tool, className }: { tool?: string | null; 
   return (
     <span
       className={cn(
-        "inline-flex shrink-0 items-center gap-0.5 rounded-sm border border-warning/40 bg-warning/10 px-1 py-px text-[9px] font-semibold uppercase tracking-wide text-warning",
+        // Same quiet chip as the member-count badge on group rows: it names
+        // the CLI without shouting, and sits right after the name.
+        "inline-flex shrink-0 items-center gap-1 rounded bg-muted px-1.5 py-px text-[10px] font-medium text-muted-foreground",
         className
       )}
       title={t("row.externalHint")}

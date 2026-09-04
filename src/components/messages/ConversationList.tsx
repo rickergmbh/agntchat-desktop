@@ -233,7 +233,7 @@ const ConversationItem = memo(function ConversationItem({
           )}
           <span
             className={cn(
-              "min-w-0 flex-1 truncate text-[13px]",
+              "min-w-0 truncate text-[13px]",
               hasUnread ? "font-semibold" : "font-medium"
             )}
           >
@@ -242,6 +242,7 @@ const ConversationItem = memo(function ConversationItem({
           {!isGroup && isExternalAgent(otherMember) && (
             <ExternalAgentBadge tool={externalToolOf(conversation, otherMember)} />
           )}
+          <span className="min-w-0 flex-1" />
           {tier && (
             <span
               aria-label={t("newMessages")}
