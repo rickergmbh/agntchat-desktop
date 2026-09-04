@@ -426,6 +426,74 @@ fn screen_session_exists(name: &str) -> bool {
 /// --auto-confirm`), which answers the development-channels confirmation
 /// itself — `screen -X stuff` delivers nothing on macOS's screen, so
 /// keystroke injection is not an option.
+/// Shell command running `claude <args>` in `folder` under the bridge's
+/// pty wrapper (`agntchat_session.py --auto-confirm`): it answers the
+/// development-channels confirmation and strips COLORTERM, so every route
+/// starts the same way whether the window is visible or not.
+fn wrapped_claude_command(
+    app: &tauri::AppHandle,
+    folder: &str,
+    claude_args: &str,
+) -> Result<String, String> {
+    let bridge_dir = bridge_dir_for(app)?;
+    let python = match bridge_venv_python(app) {
+        Ok(p) if p.exists() => p.to_string_lossy().to_string(),
+        _ => "python3".to_string(),
+    };
+    let wrapper = bridge_dir.join("agntchat_session.py");
+    let q = |v: &str| format!("'{}'", v.replace('\'', "'\\''"));
+    Ok(format!(
+        "cd {} && {} {} --auto-confirm -- claude {claude_args}",
+        q(folder),
+        q(&python),
+        q(&wrapper.to_string_lossy())
+    ))
+}
+
+/// Terminal.app profile for windows we open. Apple's default profile is
+/// "Basic" (white), unreadable under Claude Code's default dark theme; the
+/// built-in "Pro" profile is dark. A light Claude theme keeps "Basic".
+#[cfg(target_os = "macos")]
+fn terminal_profile() -> &'static str {
+    let theme = std::env::var_os("HOME")
+        .map(|h| std::path::PathBuf::from(h).join(".claude.json"))
+        .and_then(|p| std::fs::read_to_string(p).ok())
+        .and_then(|raw| serde_json::from_str::<serde_json::Value>(&raw).ok())
+        .and_then(|v| v.get("theme").and_then(|t| t.as_str().map(String::from)))
+        .unwrap_or_default();
+    if theme.starts_with("light") {
+        "Basic"
+    } else {
+        "Pro"
+    }
+}
+
+/// Open a Terminal window running `shell_cmd` (already shell-quoted) with
+/// the profile matching Claude's theme, and bring Terminal forward.
+#[cfg(target_os = "macos")]
+fn open_terminal_window(shell_cmd: &str) -> Result<(), String> {
+    let applescript_cmd = shell_cmd.replace('\\', "\\\\").replace('"', "\\\"");
+    let script = format!(
+        "tell application \"Terminal\"\n\
+         set t to do script \"{applescript_cmd}\"\n\
+         try\n\
+         set current settings of t to settings set \"{}\"\n\
+         end try\n\
+         activate\n\
+         end tell",
+        terminal_profile()
+    );
+    let status = hidden_command("osascript")
+        .arg("-e")
+        .arg(&script)
+        .status()
+        .map_err(|e| format!("could not open Terminal: {e}"))?;
+    if !status.success() {
+        return Err(format!("Terminal refused the command ({status})"));
+    }
+    Ok(())
+}
+
 fn launch_in_screen(
     app: &tauri::AppHandle,
     folder: &str,
@@ -442,19 +510,7 @@ fn launch_in_screen(
     if screen_session_exists(&name) {
         return Ok(()); // already running
     }
-    let bridge_dir = bridge_dir_for(app)?;
-    let python = match bridge_venv_python(app) {
-        Ok(p) if p.exists() => p.to_string_lossy().to_string(),
-        _ => "python3".to_string(),
-    };
-    let wrapper = bridge_dir.join("agntchat_session.py");
-    let q = |v: &str| format!("'{}'", v.replace('\'', "'\\''"));
-    let script = format!(
-        "cd {} && {} {} --auto-confirm -- claude {claude_args}",
-        q(folder),
-        q(&python),
-        q(&wrapper.to_string_lossy())
-    );
+    let script = wrapped_claude_command(app, folder, claude_args)?;
     let status = hidden_command("screen")
         .args(["-dmS", &name, "/bin/zsh", "-lc", &script])
         .status()
@@ -505,17 +561,7 @@ pub fn attach_claude_session_terminal(session_id: String) -> Result<(), String> 
     }
     #[cfg(target_os = "macos")]
     {
-        let status = hidden_command("osascript")
-            .arg("-e")
-            .arg(format!("tell application \"Terminal\" to do script \"screen -r {name}\""))
-            .arg("-e")
-            .arg("tell application \"Terminal\" to activate")
-            .status()
-            .map_err(|e| format!("could not open Terminal: {e}"))?;
-        if !status.success() {
-            return Err(format!("Terminal refused to attach ({status})"));
-        }
-        return Ok(());
+        return open_terminal_window(&format!("screen -r {name}"));
     }
     #[allow(unreachable_code)]
     Err("attaching is supported on macOS only".to_string())
@@ -525,10 +571,16 @@ pub fn attach_claude_session_terminal(session_id: String) -> Result<(), String> 
 /// picker generated the session id and already ran `bind` for it, so the
 /// session reports as the chosen agent from its first hook, and the channel
 /// flag makes agntchat messages reach it live. macOS opens Terminal via
-/// AppleScript; Windows opens a new console. Nothing is captured — the
-/// user's terminal owns the process.
+/// AppleScript, running claude under the pty wrapper so the
+/// development-channels confirmation is answered for the user; Windows
+/// opens a new console. Nothing is captured — the user's terminal owns
+/// the process.
 #[tauri::command]
-pub fn launch_claude_session(folder: String, session_id: String) -> Result<(), String> {
+pub fn launch_claude_session(
+    app: tauri::AppHandle,
+    folder: String,
+    session_id: String,
+) -> Result<(), String> {
     if !session_id
         .chars()
         .all(|c| c.is_ascii_hexdigit() || c == '-')
@@ -545,23 +597,11 @@ pub fn launch_claude_session(folder: String, session_id: String) -> Result<(), S
 
     #[cfg(target_os = "macos")]
     {
-        // POSIX single-quote the folder for the shell, then escape for the
-        // AppleScript string literal.
-        let sh_folder = format!("'{}'", folder.replace('\'', "'\\''"));
-        let shell_cmd = format!("cd {sh_folder} && claude {claude_args}");
-        let applescript_cmd = shell_cmd.replace('\\', "\\\\").replace('"', "\\\"");
-        let status = hidden_command("osascript")
-            .arg("-e")
-            .arg(format!("tell application \"Terminal\" to do script \"{applescript_cmd}\""))
-            .arg("-e")
-            .arg("tell application \"Terminal\" to activate")
-            .status()
-            .map_err(|e| format!("could not open Terminal: {e}"))?;
-        if !status.success() {
-            return Err(format!("Terminal refused to open the session ({status})"));
-        }
-        return Ok(());
+        let shell_cmd = wrapped_claude_command(&app, &folder, &claude_args)?;
+        return open_terminal_window(&shell_cmd);
     }
+    #[cfg(not(target_os = "macos"))]
+    let _ = &app;
 
     #[cfg(target_os = "windows")]
     {

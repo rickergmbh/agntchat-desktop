@@ -370,7 +370,7 @@ export const resources = {
         "whereBackgroundHint": "Runs detached in the background with live push: messages from agntchat arrive even while it idles, and closing windows doesn't end it. Open a terminal on it any time from the conversation header.",
         "whereLabel": "Open in",
         "whereTerminal": "Terminal",
-        "whereTerminalHint": "A terminal window runs claude with live push: messages from agntchat arrive even while it idles. When the terminal asks, choose “I am using this for local development”. Closing the terminal ends the session."
+        "whereTerminalHint": "A terminal window runs claude with live push: messages from agntchat arrive even while it idles. Closing the terminal ends the session."
       },
       "connection": {
         "direct": "Direct",
@@ -6508,7 +6508,7 @@ export const resources = {
         "whereBackgroundHint": "Se ejecuta desacoplada en segundo plano con envío en vivo: los mensajes de agntchat llegan incluso en reposo y cerrar ventanas no la termina. Abre una terminal sobre ella cuando quieras desde la cabecera de la conversación.",
         "whereLabel": "Abrir en",
         "whereTerminal": "Terminal",
-        "whereTerminalHint": "Una ventana de terminal ejecuta claude con envío en vivo: los mensajes de agntchat llegan incluso en reposo. Cuando la terminal pregunte, elige “I am using this for local development”. Cerrar la terminal termina la sesión."
+        "whereTerminalHint": "Una ventana de terminal ejecuta claude con envío en vivo: los mensajes de agntchat llegan incluso en reposo. Cerrar la terminal termina la sesión."
       },
       "connection": {
         "direct": "Directa",
@@ -12646,7 +12646,7 @@ export const resources = {
         "whereBackgroundHint": "Läuft abgekoppelt im Hintergrund mit Live-Push: Nachrichten aus agntchat kommen auch im Leerlauf an, und Fenster zu schließen beendet die Sitzung nicht. Öffne jederzeit ein Terminal darauf über die Kopfzeile der Unterhaltung.",
         "whereLabel": "Öffnen in",
         "whereTerminal": "Terminal",
-        "whereTerminalHint": "Ein Terminalfenster führt claude mit Live-Push aus: Nachrichten aus agntchat kommen auch im Leerlauf an. Wenn das Terminal fragt, wähle „I am using this for local development“. Das Terminal zu schließen beendet die Sitzung."
+        "whereTerminalHint": "Ein Terminalfenster führt claude mit Live-Push aus: Nachrichten aus agntchat kommen auch im Leerlauf an. Das Terminal zu schließen beendet die Sitzung."
       },
       "connection": {
         "direct": "Direkt",
@@ -18784,7 +18784,7 @@ export const resources = {
         "whereBackgroundHint": "S'exécute détachée en arrière-plan avec envoi en direct : les messages d'agntchat arrivent même au repos, et fermer des fenêtres ne l'arrête pas. Ouvrez un terminal dessus à tout moment depuis l'en-tête de la conversation.",
         "whereLabel": "Ouvrir dans",
         "whereTerminal": "Terminal",
-        "whereTerminalHint": "Une fenêtre de terminal exécute claude avec envoi en direct : les messages d'agntchat arrivent même au repos. Quand le terminal le demande, choisissez « I am using this for local development ». Fermer le terminal met fin à la session."
+        "whereTerminalHint": "Une fenêtre de terminal exécute claude avec envoi en direct : les messages d'agntchat arrivent même au repos. Fermer le terminal met fin à la session."
       },
       "connection": {
         "direct": "Direct",
@@ -24922,7 +24922,7 @@ export const resources = {
         "whereBackgroundHint": "Roda desacoplada em segundo plano com envio ao vivo: mensagens do agntchat chegam mesmo em repouso, e fechar janelas não a encerra. Abra um terminal nela a qualquer momento pelo cabeçalho da conversa.",
         "whereLabel": "Abrir em",
         "whereTerminal": "Terminal",
-        "whereTerminalHint": "Uma janela de terminal roda claude com envio ao vivo: mensagens do agntchat chegam mesmo em repouso. Quando o terminal perguntar, escolha “I am using this for local development”. Fechar o terminal encerra a sessão."
+        "whereTerminalHint": "Uma janela de terminal roda claude com envio ao vivo: mensagens do agntchat chegam mesmo em repouso. Fechar o terminal encerra a sessão."
       },
       "connection": {
         "direct": "Direto",
@@ -31060,7 +31060,7 @@ export const resources = {
         "whereBackgroundHint": "バックグラウンドで切り離して実行し、ライブプッシュを維持します。待機中でも agntchat からのメッセージが届き、ウィンドウを閉じても終了しません。会話のヘッダーからいつでもターミナルを開けます。",
         "whereLabel": "開く場所",
         "whereTerminal": "ターミナル",
-        "whereTerminalHint": "ターミナルウィンドウがライブプッシュ付きで claude を実行します。待機中でも agntchat からのメッセージが届きます。ターミナルで確認されたら「I am using this for local development」を選んでください。ターミナルを閉じるとセッションは終了します。"
+        "whereTerminalHint": "ターミナルウィンドウがライブプッシュ付きで claude を実行します。待機中でも agntchat からのメッセージが届きます。ターミナルを閉じるとセッションは終了します。"
       },
       "connection": {
         "direct": "ダイレクト",
@@ -37198,7 +37198,7 @@ export const resources = {
         "whereBackgroundHint": "以分离方式在后台运行并保持实时推送：即使空闲也能收到 agntchat 的消息，关闭窗口也不会结束会话。随时可从对话标题栏打开它的终端。",
         "whereLabel": "打开方式",
         "whereTerminal": "终端",
-        "whereTerminalHint": "终端窗口以实时推送方式运行 claude：即使空闲也能收到 agntchat 的消息。终端询问时请选择“I am using this for local development”。关闭终端会结束会话。"
+        "whereTerminalHint": "终端窗口以实时推送方式运行 claude：即使空闲也能收到 agntchat 的消息。关闭终端会结束会话。"
       },
       "connection": {
         "direct": "直连",
@@ -43336,7 +43336,7 @@ export const resources = {
         "whereBackgroundHint": "백그라운드에서 분리되어 실행되며 실시간 푸시를 유지합니다. 대기 중에도 agntchat 메시지가 도착하고, 창을 닫아도 종료되지 않습니다. 대화 헤더에서 언제든 터미널을 열 수 있습니다.",
         "whereLabel": "열 위치",
         "whereTerminal": "터미널",
-        "whereTerminalHint": "터미널 창이 실시간 푸시와 함께 claude를 실행합니다. 대기 중에도 agntchat 메시지가 도착합니다. 터미널에서 물으면 “I am using this for local development”를 선택하세요. 터미널을 닫으면 세션이 종료됩니다."
+        "whereTerminalHint": "터미널 창이 실시간 푸시와 함께 claude를 실행합니다. 대기 중에도 agntchat 메시지가 도착합니다. 터미널을 닫으면 세션이 종료됩니다."
       },
       "connection": {
         "direct": "직접",
@@ -49474,7 +49474,7 @@ export const resources = {
         "whereBackgroundHint": "Gira scollegata in background con invio in tempo reale: i messaggi da agntchat arrivano anche quando è inattiva, e chiudere le finestre non la termina. Apri un terminale su di essa in qualsiasi momento dall'intestazione della conversazione.",
         "whereLabel": "Apri in",
         "whereTerminal": "Terminale",
-        "whereTerminalHint": "Una finestra di terminale esegue claude con invio in tempo reale: i messaggi da agntchat arrivano anche quando è inattiva. Quando il terminale lo chiede, scegli “I am using this for local development”. Chiudere il terminale termina la sessione."
+        "whereTerminalHint": "Una finestra di terminale esegue claude con invio in tempo reale: i messaggi da agntchat arrivano anche quando è inattiva. Chiudere il terminale termina la sessione."
       },
       "connection": {
         "direct": "Diretta",
@@ -55612,7 +55612,7 @@ export const resources = {
         "whereBackgroundHint": "लाइव पुश के साथ बैकग्राउंड में अलग चलता है: agntchat के संदेश निष्क्रिय रहने पर भी आते हैं, और विंडो बंद करने से सत्र समाप्त नहीं होता। बातचीत के हेडर से कभी भी इस पर टर्मिनल खोलें।",
         "whereLabel": "यहाँ खोलें",
         "whereTerminal": "टर्मिनल",
-        "whereTerminalHint": "एक टर्मिनल विंडो लाइव पुश के साथ claude चलाती है: agntchat के संदेश निष्क्रिय रहने पर भी आते हैं। टर्मिनल पूछे तो “I am using this for local development” चुनें। टर्मिनल बंद करने से सत्र समाप्त हो जाता है।"
+        "whereTerminalHint": "एक टर्मिनल विंडो लाइव पुश के साथ claude चलाती है: agntchat के संदेश निष्क्रिय रहने पर भी आते हैं। टर्मिनल बंद करने से सत्र समाप्त हो जाता है।"
       },
       "connection": {
         "direct": "डायरेक्ट",
