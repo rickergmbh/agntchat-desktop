@@ -398,6 +398,21 @@ fn valid_session_id(session_id: &str) -> bool {
     session_id.len() >= 8 && session_id.chars().all(|c| c.is_ascii_hexdigit() || c == '-')
 }
 
+/// `--model <alias-or-id>` for a new session, or nothing for Claude Code's
+/// own default. Aliases (`opus`, `sonnet`, `haiku`) and full ids
+/// (`claude-opus-5`, `claude-opus-4-1[1m]`) share this character set.
+fn model_arg(model: Option<String>) -> Result<String, String> {
+    match model.as_deref().map(str::trim) {
+        None | Some("") | Some("default") => Ok(String::new()),
+        Some(m) if m.len() <= 64
+            && m.chars().all(|c| c.is_ascii_alphanumeric() || "._-[]".contains(c)) =>
+        {
+            Ok(format!(" --model {m}"))
+        }
+        Some(_) => Err("invalid model".to_string()),
+    }
+}
+
 /// Can sessions run detached here? Needs `screen` (ships with macOS).
 #[tauri::command]
 pub fn background_session_available() -> bool {
@@ -527,9 +542,11 @@ pub fn launch_claude_session_background(
     app: tauri::AppHandle,
     folder: String,
     session_id: String,
+    model: Option<String>,
 ) -> Result<(), String> {
     let args = format!(
-        "--session-id {session_id} --dangerously-load-development-channels server:agntchat"
+        "--session-id {session_id}{} --dangerously-load-development-channels server:agntchat",
+        model_arg(model)?
     );
     launch_in_screen(&app, &folder, &session_id, &args)
 }
@@ -580,6 +597,7 @@ pub fn launch_claude_session(
     app: tauri::AppHandle,
     folder: String,
     session_id: String,
+    model: Option<String>,
 ) -> Result<(), String> {
     if !session_id
         .chars()
@@ -592,7 +610,8 @@ pub fn launch_claude_session(
         return Err(format!("not a folder: {folder}"));
     }
     let claude_args = format!(
-        "--session-id {session_id} --dangerously-load-development-channels server:agntchat"
+        "--session-id {session_id}{} --dangerously-load-development-channels server:agntchat",
+        model_arg(model)?
     );
 
     #[cfg(target_os = "macos")]

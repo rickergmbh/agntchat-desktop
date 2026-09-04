@@ -12,6 +12,11 @@ const STATE_KEYS: Record<string, string> = {
   unlinked: "session.state.unlinked",
 };
 
+/** "claude-opus-5" → "opus-5": the canonical name minus the vendor prefix. */
+function shortModel(model: string): string {
+  return model.replace(/^claude-/, "");
+}
+
 /** "● Running · agntchat (main)" for a session conversation (#148): the
  *  list row's second line and the chat header's status line. */
 export function SessionStateLine({
@@ -50,6 +55,15 @@ export function SessionStateLine({
           <span className="text-muted-foreground/40">·</span>
           <span className={cn("shrink-0", session.delivery === "live" ? "text-success" : "")}>
             {session.delivery === "live" ? t("session.delivery.live") : t("session.delivery.nextTurn")}
+          </span>
+        </>
+      )}
+      {!compact && session.model && (
+        <>
+          <span className="text-muted-foreground/40">·</span>
+          <span className="shrink-0 font-mono text-[10px]">
+            {shortModel(session.model)}
+            {session.effort ? ` · ${session.effort}` : ""}
           </span>
         </>
       )}

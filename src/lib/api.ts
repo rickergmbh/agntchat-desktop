@@ -522,6 +522,13 @@ export interface SessionConversationMeta {
    *  are sent. "next_turn": they arrive when the session next runs a turn
    *  (app-hosted sessions). Unknown until the session reports. */
   delivery?: "live" | "next_turn" | string;
+  /** Canonical model name reported by the session's hooks (SessionStart /
+   *  PostModelSwitch); absent until the session reports one. */
+  model?: string;
+  effort?: string;
+  /** Slash commands the conversation can send to the session (typed into
+   *  its pty by the bridge); absent when the session has no pty wrapper. */
+  commands?: string[];
   last_event_at?: string;
 }
 

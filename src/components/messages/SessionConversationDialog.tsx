@@ -44,6 +44,9 @@ interface Identity {
  * machine. The backend links session ↔ conversation; the transcript
  * mirrors there and what is typed there reaches only that session.
  */
+/** Claude Code's model aliases (`claude --model <alias>`), newest first. */
+const MODEL_ALIASES = ["opus", "sonnet", "haiku"] as const;
+
 export function SessionConversationDialog({
   onClose,
   linkInto,
@@ -69,6 +72,9 @@ export function SessionConversationDialog({
   // Where a new session runs: detached in the background (screen; live
   // channel push, survives closed windows) or a terminal window.
   const [where, setWhere] = useState<"background" | "terminal">("terminal");
+  // Claude Code model for a NEW session: an alias passed as `--model`, or
+  // "default" for whatever Claude Code itself is set to.
+  const [model, setModel] = useState<string>("default");
   const [backgroundAvailable, setBackgroundAvailable] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -216,6 +222,7 @@ export function SessionConversationDialog({
         await invoke(where === "background" ? "launch_claude_session_background" : "launch_claude_session", {
           folder: folderDir,
           sessionId: sessionKey,
+          model: model === "default" ? null : model,
         });
       }
       setActiveConversation(conv.id);
@@ -330,6 +337,25 @@ export function SessionConversationDialog({
                   ? t("agents:connectCli.whereBackgroundHint")
                   : t("agents:connectCli.whereTerminalHint")}
               </p>
+              <div className="space-y-1 pt-1">
+                <label className="text-xs font-medium text-muted-foreground" htmlFor="session-conv-model">
+                  {t("agents:connectCli.modelLabel")}
+                </label>
+                <select
+                  id="session-conv-model"
+                  value={model}
+                  onChange={(e) => setModel(e.target.value)}
+                  className="w-full rounded-md border border-border bg-background px-2 py-1.5 text-sm"
+                >
+                  <option value="default">{t("agents:connectCli.modelDefault")}</option>
+                  {MODEL_ALIASES.map((m) => (
+                    <option key={m} value={m}>
+                      {m}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-[11px] text-muted-foreground">{t("agents:connectCli.modelHint")}</p>
+              </div>
             </div>
           )}
 
