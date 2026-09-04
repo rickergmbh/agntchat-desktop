@@ -4,7 +4,7 @@ import { useChatStore } from "../../stores/chatStore";
 import { useAgentStore } from "../../stores/agentStore";
 import { useAuthStore } from "../../stores/authStore";
 import { usePresenceStore } from "../../stores/presenceStore";
-import { ExternalAgentBadge, isExternalAgent } from "../ExternalAgentBadge";
+import { ExternalAgentBadge, externalToolOf, isExternalAgent } from "../ExternalAgentBadge";
 import { SessionStateLine } from "./SessionStateLine";
 import { sessionMeta } from "../../lib/api";
 import {
@@ -239,7 +239,9 @@ const ConversationItem = memo(function ConversationItem({
           >
             {title}
           </span>
-          {!isGroup && isExternalAgent(otherMember) && <ExternalAgentBadge />}
+          {!isGroup && isExternalAgent(otherMember) && (
+            <ExternalAgentBadge tool={externalToolOf(conversation, otherMember)} />
+          )}
           {tier && (
             <span
               aria-label={t("newMessages")}

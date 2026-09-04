@@ -24,7 +24,7 @@ import { NewConversationDialog } from "./NewConversationDialog";
 import { ChatHeaderMenu } from "./ChatHeaderMenu";
 import { GroupAvatar } from "./GroupAvatar";
 import { AgentActivityIndicator } from "../AgentActivityIndicator";
-import { ExternalAgentBadge, isExternalAgent } from "../ExternalAgentBadge";
+import { ExternalAgentBadge, externalToolOf, isExternalAgent } from "../ExternalAgentBadge";
 import { SessionStateLine } from "./SessionStateLine";
 import { SessionConversationDialog } from "./SessionConversationDialog";
 import { sessionMeta } from "../../lib/api";
@@ -450,7 +450,9 @@ function ConversationPane({
           <div className="min-w-0 flex-1">
             <p className="flex items-center gap-1.5 text-sm font-semibold">
               <span className="truncate">{headerTitle}</span>
-              {otherMembers.length === 1 && isExternalAgent(otherParticipant) && <ExternalAgentBadge />}
+              {otherMembers.length === 1 && isExternalAgent(otherParticipant) && (
+                <ExternalAgentBadge tool={externalToolOf(conversation, otherParticipant)} />
+              )}
             </p>
             {headerActivity ? (
               <AgentActivityIndicator activity={headerActivity} />

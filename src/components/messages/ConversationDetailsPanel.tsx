@@ -613,7 +613,7 @@ function MemberRow({
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-1.5">
           <span className="truncate text-sm font-medium">{name}</span>
-            {isExternalAgent(p) && <ExternalAgentBadge />}
+            {isExternalAgent(p) && <ExternalAgentBadge tool={p?.externalTool} />}
           {isSelf && <span className="text-[10px] text-muted-foreground">({t("common:you")})</span>}
           {isConversationCreator && (
             <Crown className="h-3 w-3 text-warning shrink-0" />

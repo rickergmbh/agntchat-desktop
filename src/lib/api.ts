@@ -2740,6 +2740,9 @@ export interface Participant {
   location?: unknown;
   insertedAt?: string;
   metadata?: Record<string, unknown>;
+  /** External agents only (#148): the CLI behind the identity —
+   *  "claude_code" | "codex" | "other". Refreshed by every session start. */
+  externalTool?: string | null;
   /** Agent-only: list of capability tags. Backend serializer always
    *  includes the field for agents — humans get nothing. */
   capabilities?: string[];
