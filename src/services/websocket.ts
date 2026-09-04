@@ -149,6 +149,10 @@ class WebSocketService {
       // Cross-device read sync: another of the user's devices marked a
       // conversation read. chatStore zeroes the local unread badge.
       "conversation_read",
+      // Session conversations (#148): state / delivery / model edges ride on
+      // conversation.metadata.session. chatStore patches the row; without
+      // this the header only caught up on a full refetch (details panel).
+      "conversation_metadata_changed",
       // Org-host fleet: a bridge changed state on a VM (running/stopped/
       // crashed/idled). FleetView listens to live-update agent counts.
       "host_agent_status",
@@ -200,6 +204,7 @@ class WebSocketService {
       "member_added",
       "member_removed",
       "conversation_title_changed",
+      "conversation_metadata_changed",
       "conversation_avatar_changed",
       "message_deleted",
       "reaction_added",
