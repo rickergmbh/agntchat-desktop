@@ -6,6 +6,7 @@ import {
   createExternalAgent,
   createSessionConversation,
   getApiUrl,
+  linkSessionConversation,
   regenerateApiKey,
   type Agent,
 } from "../../lib/api";
@@ -43,7 +44,15 @@ interface Identity {
  * machine. The backend links session ↔ conversation; the transcript
  * mirrors there and what is typed there reaches only that session.
  */
-export function SessionConversationDialog({ onClose }: { onClose: () => void }) {
+export function SessionConversationDialog({
+  onClose,
+  linkInto,
+}: {
+  onClose: () => void;
+  /** Re-link mode: attach the chosen/new session to THIS existing session
+   *  conversation (its history stays) instead of creating a new one. */
+  linkInto?: { id: string; title?: string | null };
+}) {
   const { t } = useTranslation("chat");
   const agents = useAgentStore((s) => s.agents);
   const fetchAgents = useAgentStore((s) => s.fetchAgents);
@@ -184,13 +193,19 @@ export function SessionConversationDialog({ onClose }: { onClose: () => void }) 
       const cwd = startNew ? folderDir : session!.cwd;
       const sessionKey = startNew ? crypto.randomUUID() : session!.sessionId;
       const title = name.trim() || (startNew ? folderDir.split(/[\\/]/).filter(Boolean).slice(-1)[0] : label(session!)) || null;
-      const conv = await createSessionConversation({
-        agentId: target.id,
-        title: title ?? undefined,
-        sessionKey,
-        cwd: cwd ?? undefined,
-        tool: "claude_code",
-      });
+      const conv = linkInto
+        ? await linkSessionConversation(linkInto.id, {
+            agentId: target.id,
+            sessionKey,
+            cwd: cwd ?? undefined,
+          })
+        : await createSessionConversation({
+            agentId: target.id,
+            title: title ?? undefined,
+            sessionKey,
+            cwd: cwd ?? undefined,
+            tool: "claude_code",
+          });
       // Bind locally so the session's hooks run as the identity and know
       // their conversation. A session already bound to this identity keeps
       // its credentials; anything else gets them now.
@@ -234,7 +249,7 @@ export function SessionConversationDialog({ onClose }: { onClose: () => void }) 
         <div className="mb-3 flex items-center justify-between">
           <h2 className="flex items-center gap-2 text-base font-semibold">
             <Terminal className="h-4 w-4 text-warning" />
-            {t("session.kind")}
+            {linkInto ? t("session.relink") : t("session.kind")}
           </h2>
           <button
             type="button"

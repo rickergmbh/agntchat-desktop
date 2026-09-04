@@ -26,6 +26,7 @@ import { GroupAvatar } from "./GroupAvatar";
 import { AgentActivityIndicator } from "../AgentActivityIndicator";
 import { ExternalAgentBadge, isExternalAgent } from "../ExternalAgentBadge";
 import { SessionStateLine } from "./SessionStateLine";
+import { SessionConversationDialog } from "./SessionConversationDialog";
 import { sessionMeta } from "../../lib/api";
 import { invoke } from "@tauri-apps/api/core";
 import { OnboardingCards } from "../OnboardingCards";
@@ -279,7 +280,11 @@ function ConversationPane({
   // Session conversation (#148): folder/branch/state from metadata.session.
   const sessionInfo = conversation?.type === "session" ? sessionMeta(conversation) : null;
   const sessionResumable =
-    !!sessionInfo?.session_key && ["ended", "lost", "unlinked"].includes(sessionInfo.state ?? "");
+    !!sessionInfo?.session_key && ["ended", "lost"].includes(sessionInfo.state ?? "");
+  // "Not linked" (the session was moved elsewhere, deleted, or never
+  // attached): offer to link a session into this conversation.
+  const sessionRelinkable = !!sessionInfo && (sessionInfo.state ?? "unlinked") === "unlinked";
+  const [showRelink, setShowRelink] = useState(false);
 
   // Presence as structured data (kind + counts) so the label AND the status
   // dot both derive from it — the label itself is localized at render.
@@ -472,6 +477,24 @@ function ConversationPane({
             >
               {t("session.resume")}
             </button>
+          )}
+          {sessionRelinkable && conversation && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowRelink(true);
+              }}
+              className="shrink-0 rounded-md border border-border px-2 py-1 text-xs text-muted-foreground hover:bg-accent hover:text-foreground"
+            >
+              {t("session.relink")}
+            </button>
+          )}
+          {showRelink && conversation && (
+            <SessionConversationDialog
+              linkInto={{ id: conversation.id, title: conversation.title }}
+              onClose={() => setShowRelink(false)}
+            />
           )}
         </div>
 
