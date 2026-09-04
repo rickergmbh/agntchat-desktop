@@ -389,6 +389,9 @@ export function SessionConversationDialog({ onClose }: { onClose: () => void }) 
                         </span>
                       </span>
                       {s.cwd && <span className="block truncate font-mono text-[10px] text-muted-foreground">{s.cwd}</span>}
+                      {s.conversationId && (
+                        <span className="block text-[10px] text-warning">{t("session.alreadyLinked")}</span>
+                      )}
                       {s.lastPrompt && (
                         <span className="block truncate text-[11px] text-muted-foreground/80">{s.lastPrompt}</span>
                       )}

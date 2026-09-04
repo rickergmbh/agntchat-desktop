@@ -2745,6 +2745,7 @@ export const resources = {
       "sending": "sending",
       "sentAMessage": "sent a message",
       "session": {
+        "alreadyLinked": "Already linked to a conversation — linking here moves it.",
         "connectFailed": "Couldn't create the session conversation.",
         "connecting": "Connecting…",
         "identity": "Runs as {{name}}",
@@ -8877,6 +8878,7 @@ export const resources = {
       "sending": "enviando",
       "sentAMessage": "envió un mensaje",
       "session": {
+        "alreadyLinked": "Ya vinculada a una conversación: vincularla aquí la mueve.",
         "connectFailed": "No se pudo crear la conversación de sesión.",
         "connecting": "Conectando…",
         "identity": "Se ejecuta como {{name}}",
@@ -15009,6 +15011,7 @@ export const resources = {
       "sending": "sendet",
       "sentAMessage": "hat eine Nachricht gesendet",
       "session": {
+        "alreadyLinked": "Bereits mit einer Unterhaltung verknüpft — hier verknüpfen verschiebt sie.",
         "connectFailed": "Die Sitzungsunterhaltung konnte nicht erstellt werden.",
         "connecting": "Verbinde…",
         "identity": "Läuft als {{name}}",
@@ -21141,6 +21144,7 @@ export const resources = {
       "sending": "envoi en cours",
       "sentAMessage": "a envoyé un message",
       "session": {
+        "alreadyLinked": "Déjà liée à une conversation — la lier ici la déplace.",
         "connectFailed": "Impossible de créer la conversation de session.",
         "connecting": "Connexion…",
         "identity": "S'exécute en tant que {{name}}",
@@ -27273,6 +27277,7 @@ export const resources = {
       "sending": "enviando",
       "sentAMessage": "enviou uma mensagem",
       "session": {
+        "alreadyLinked": "Já vinculada a uma conversa — vincular aqui a move.",
         "connectFailed": "Não foi possível criar a conversa de sessão.",
         "connecting": "Conectando…",
         "identity": "Roda como {{name}}",
@@ -33405,6 +33410,7 @@ export const resources = {
       "sending": "送信中",
       "sentAMessage": "メッセージを送信しました",
       "session": {
+        "alreadyLinked": "すでに別の会話にリンクされています。ここにリンクすると移動します。",
         "connectFailed": "セッション会話を作成できませんでした。",
         "connecting": "接続中…",
         "identity": "{{name}} として実行",
@@ -39537,6 +39543,7 @@ export const resources = {
       "sending": "发送中",
       "sentAMessage": "发送了一条消息",
       "session": {
+        "alreadyLinked": "已链接到另一个对话——在此链接会将其移过来。",
         "connectFailed": "无法创建会话对话。",
         "connecting": "连接中…",
         "identity": "以 {{name}} 身份运行",
@@ -45669,6 +45676,7 @@ export const resources = {
       "sending": "전송 중",
       "sentAMessage": "메시지를 보냈습니다",
       "session": {
+        "alreadyLinked": "이미 다른 대화에 연결되어 있습니다. 여기에 연결하면 이동합니다.",
         "connectFailed": "세션 대화를 만들 수 없습니다.",
         "connecting": "연결 중…",
         "identity": "{{name}}(으)로 실행",
@@ -51801,6 +51809,7 @@ export const resources = {
       "sending": "invio in corso",
       "sentAMessage": "ha inviato un messaggio",
       "session": {
+        "alreadyLinked": "Già collegata a una conversazione: collegarla qui la sposta.",
         "connectFailed": "Impossibile creare la conversazione di sessione.",
         "connecting": "Collegamento…",
         "identity": "Gira come {{name}}",
@@ -57933,6 +57942,7 @@ export const resources = {
       "sending": "भेजा जा रहा है",
       "sentAMessage": "ने एक संदेश भेजा",
       "session": {
+        "alreadyLinked": "पहले से किसी बातचीत से जुड़ा है — यहाँ जोड़ने पर वह यहाँ आ जाएगा।",
         "connectFailed": "सत्र बातचीत नहीं बनाई जा सकी।",
         "connecting": "जोड़ा जा रहा है…",
         "identity": "{{name}} के रूप में चलता है",

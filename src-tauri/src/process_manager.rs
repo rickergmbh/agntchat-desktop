@@ -288,6 +288,8 @@ pub struct BindClaudeSessionArgs {
     pub gateway_url: String,
     /// Name for the session, applied by the hook on its first prompt.
     pub title: Option<String>,
+    /// The session conversation the server linked (#148), recorded locally.
+    pub conversation_id: Option<String>,
 }
 
 /// Bind one Claude Code session to one external agent: writes the agent's
@@ -318,6 +320,10 @@ pub fn bind_claude_session(
     if let Some(title) = args.title.as_deref().filter(|t| !t.trim().is_empty()) {
         cli.push("--title");
         cli.push(title);
+    }
+    if let Some(conv) = args.conversation_id.as_deref().filter(|c| !c.is_empty()) {
+        cli.push("--conversation");
+        cli.push(conv);
     }
     let out = run_agentchat_cli(&app, &cli)?;
     let json_line = out
