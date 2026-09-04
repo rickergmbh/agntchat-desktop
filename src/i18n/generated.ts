@@ -370,7 +370,7 @@ export const resources = {
         "whereAppHint": "The session lives in the Claude app, so it survives closing a terminal. Messages from agntchat reach it before each prompt and at the end of each turn.",
         "whereLabel": "Open in",
         "whereTerminal": "Terminal",
-        "whereTerminalHint": "A terminal window runs claude with live push: messages from agntchat arrive even while it idles. Closing the terminal ends the session."
+        "whereTerminalHint": "A terminal window runs claude with live push: messages from agntchat arrive even while it idles. When the terminal asks, choose “I am using this for local development” — without that the channel is not connected. Closing the terminal ends the session."
       },
       "connection": {
         "direct": "Direct",
@@ -6503,7 +6503,7 @@ export const resources = {
         "whereAppHint": "La sesión vive en la app de Claude, así que sobrevive al cierre de una terminal. Los mensajes de agntchat le llegan antes de cada prompt y al final de cada turno.",
         "whereLabel": "Abrir en",
         "whereTerminal": "Terminal",
-        "whereTerminalHint": "Una ventana de terminal ejecuta claude con envío en vivo: los mensajes de agntchat llegan incluso en reposo. Cerrar la terminal termina la sesión."
+        "whereTerminalHint": "Una ventana de terminal ejecuta claude con envío en vivo: los mensajes de agntchat llegan incluso en reposo. Cuando la terminal pregunte, elige “I am using this for local development”; sin eso el canal no se conecta. Cerrar la terminal termina la sesión."
       },
       "connection": {
         "direct": "Directa",
@@ -12636,7 +12636,7 @@ export const resources = {
         "whereAppHint": "Die Sitzung lebt in der Claude-App und überlebt das Schließen eines Terminals. Nachrichten aus agntchat erreichen sie vor jedem Prompt und am Ende jedes Zuges.",
         "whereLabel": "Öffnen in",
         "whereTerminal": "Terminal",
-        "whereTerminalHint": "Ein Terminalfenster führt claude mit Live-Push aus: Nachrichten aus agntchat kommen auch im Leerlauf an. Das Terminal zu schließen beendet die Sitzung."
+        "whereTerminalHint": "Ein Terminalfenster führt claude mit Live-Push aus: Nachrichten aus agntchat kommen auch im Leerlauf an. Wenn das Terminal fragt, wähle „I am using this for local development“ — sonst wird der Kanal nicht verbunden. Das Terminal zu schließen beendet die Sitzung."
       },
       "connection": {
         "direct": "Direkt",
@@ -18769,7 +18769,7 @@ export const resources = {
         "whereAppHint": "La session vit dans l'app Claude et survit à la fermeture d'un terminal. Les messages d'agntchat lui parviennent avant chaque prompt et à la fin de chaque tour.",
         "whereLabel": "Ouvrir dans",
         "whereTerminal": "Terminal",
-        "whereTerminalHint": "Une fenêtre de terminal exécute claude avec envoi en direct : les messages d'agntchat arrivent même au repos. Fermer le terminal met fin à la session."
+        "whereTerminalHint": "Une fenêtre de terminal exécute claude avec envoi en direct : les messages d'agntchat arrivent même au repos. Quand le terminal le demande, choisissez « I am using this for local development » — sinon le canal n'est pas connecté. Fermer le terminal met fin à la session."
       },
       "connection": {
         "direct": "Direct",
@@ -24902,7 +24902,7 @@ export const resources = {
         "whereAppHint": "A sessão vive no app Claude, então sobrevive ao fechamento de um terminal. Mensagens do agntchat chegam a ela antes de cada prompt e ao final de cada turno.",
         "whereLabel": "Abrir em",
         "whereTerminal": "Terminal",
-        "whereTerminalHint": "Uma janela de terminal roda claude com envio ao vivo: mensagens do agntchat chegam mesmo em repouso. Fechar o terminal encerra a sessão."
+        "whereTerminalHint": "Uma janela de terminal roda claude com envio ao vivo: mensagens do agntchat chegam mesmo em repouso. Quando o terminal perguntar, escolha “I am using this for local development” — sem isso o canal não conecta. Fechar o terminal encerra a sessão."
       },
       "connection": {
         "direct": "Direto",
@@ -31035,7 +31035,7 @@ export const resources = {
         "whereAppHint": "セッションは Claude アプリ内で動くため、ターミナルを閉じても残ります。agntchat からのメッセージは、各プロンプトの前と各ターンの終わりに届きます。",
         "whereLabel": "開く場所",
         "whereTerminal": "ターミナル",
-        "whereTerminalHint": "ターミナルウィンドウがライブプッシュ付きで claude を実行します。待機中でも agntchat からのメッセージが届きます。ターミナルを閉じるとセッションは終了します。"
+        "whereTerminalHint": "ターミナルウィンドウがライブプッシュ付きで claude を実行します。待機中でも agntchat からのメッセージが届きます。ターミナルで確認されたら「I am using this for local development」を選んでください。選ばないとチャンネルは接続されません。ターミナルを閉じるとセッションは終了します。"
       },
       "connection": {
         "direct": "ダイレクト",
@@ -37168,7 +37168,7 @@ export const resources = {
         "whereAppHint": "会话运行在 Claude 应用内，关闭终端也不会消失。来自 agntchat 的消息会在每次提示前和每轮结束时送达。",
         "whereLabel": "打开方式",
         "whereTerminal": "终端",
-        "whereTerminalHint": "终端窗口以实时推送方式运行 claude：即使空闲也能收到 agntchat 的消息。关闭终端会结束会话。"
+        "whereTerminalHint": "终端窗口以实时推送方式运行 claude：即使空闲也能收到 agntchat 的消息。终端询问时请选择“I am using this for local development”，否则频道不会连接。关闭终端会结束会话。"
       },
       "connection": {
         "direct": "直连",
@@ -43301,7 +43301,7 @@ export const resources = {
         "whereAppHint": "세션이 Claude 앱 안에서 실행되므로 터미널을 닫아도 유지됩니다. agntchat 메시지는 각 프롬프트 전과 각 턴 종료 시 전달됩니다.",
         "whereLabel": "열 위치",
         "whereTerminal": "터미널",
-        "whereTerminalHint": "터미널 창이 실시간 푸시와 함께 claude를 실행합니다. 대기 중에도 agntchat 메시지가 도착합니다. 터미널을 닫으면 세션이 종료됩니다."
+        "whereTerminalHint": "터미널 창이 실시간 푸시와 함께 claude를 실행합니다. 대기 중에도 agntchat 메시지가 도착합니다. 터미널에서 물으면 “I am using this for local development”를 선택하세요. 선택하지 않으면 채널이 연결되지 않습니다. 터미널을 닫으면 세션이 종료됩니다."
       },
       "connection": {
         "direct": "직접",
@@ -49434,7 +49434,7 @@ export const resources = {
         "whereAppHint": "La sessione vive nell'app Claude e sopravvive alla chiusura di un terminale. I messaggi da agntchat le arrivano prima di ogni prompt e alla fine di ogni turno.",
         "whereLabel": "Apri in",
         "whereTerminal": "Terminale",
-        "whereTerminalHint": "Una finestra di terminale esegue claude con invio in tempo reale: i messaggi da agntchat arrivano anche quando è inattiva. Chiudere il terminale termina la sessione."
+        "whereTerminalHint": "Una finestra di terminale esegue claude con invio in tempo reale: i messaggi da agntchat arrivano anche quando è inattiva. Quando il terminale lo chiede, scegli “I am using this for local development”: senza, il canale non si collega. Chiudere il terminale termina la sessione."
       },
       "connection": {
         "direct": "Diretta",
@@ -55567,7 +55567,7 @@ export const resources = {
         "whereAppHint": "सत्र Claude ऐप में रहता है, इसलिए टर्मिनल बंद करने पर भी बना रहता है। agntchat के संदेश उसे हर प्रॉम्प्ट से पहले और हर टर्न के अंत में मिलते हैं।",
         "whereLabel": "यहाँ खोलें",
         "whereTerminal": "टर्मिनल",
-        "whereTerminalHint": "एक टर्मिनल विंडो लाइव पुश के साथ claude चलाती है: agntchat के संदेश निष्क्रिय रहने पर भी आते हैं। टर्मिनल बंद करने से सत्र समाप्त हो जाता है।"
+        "whereTerminalHint": "एक टर्मिनल विंडो लाइव पुश के साथ claude चलाती है: agntchat के संदेश निष्क्रिय रहने पर भी आते हैं। टर्मिनल पूछे तो “I am using this for local development” चुनें — इसके बिना चैनल नहीं जुड़ता। टर्मिनल बंद करने से सत्र समाप्त हो जाता है।"
       },
       "connection": {
         "direct": "डायरेक्ट",
