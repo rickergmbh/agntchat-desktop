@@ -2587,6 +2587,9 @@ export const resources = {
       "messageFallback": "Message",
       "messageLabel": "Message",
       "messageNotSent": "Message not sent",
+      "messageNotification": {
+        "fallbackTitle": "New message"
+      },
       "messages": {
         "approvalRequired": "Approval Required",
         "bugReport": "Bug Report",
@@ -8735,6 +8738,9 @@ export const resources = {
       "messageFallback": "Mensaje",
       "messageLabel": "Mensaje",
       "messageNotSent": "No se envió el mensaje",
+      "messageNotification": {
+        "fallbackTitle": "Nuevo mensaje"
+      },
       "messages": {
         "approvalRequired": "Se requiere aprobación",
         "bugReport": "Informe de error",
@@ -14883,6 +14889,9 @@ export const resources = {
       "messageFallback": "Nachricht",
       "messageLabel": "Nachricht",
       "messageNotSent": "Nachricht nicht gesendet",
+      "messageNotification": {
+        "fallbackTitle": "Neue Nachricht"
+      },
       "messages": {
         "approvalRequired": "Genehmigung erforderlich",
         "bugReport": "Fehlerbericht",
@@ -21031,6 +21040,9 @@ export const resources = {
       "messageFallback": "Message",
       "messageLabel": "Message",
       "messageNotSent": "Message non envoyé",
+      "messageNotification": {
+        "fallbackTitle": "Nouveau message"
+      },
       "messages": {
         "approvalRequired": "Approbation requise",
         "bugReport": "Rapport de bug",
@@ -27179,6 +27191,9 @@ export const resources = {
       "messageFallback": "Mensagem",
       "messageLabel": "Mensagem",
       "messageNotSent": "Mensagem não enviada",
+      "messageNotification": {
+        "fallbackTitle": "Nova mensagem"
+      },
       "messages": {
         "approvalRequired": "Aprovação necessária",
         "bugReport": "Relatório de bug",
@@ -33327,6 +33342,9 @@ export const resources = {
       "messageFallback": "メッセージ",
       "messageLabel": "メッセージ",
       "messageNotSent": "メッセージが送信されませんでした",
+      "messageNotification": {
+        "fallbackTitle": "新着メッセージ"
+      },
       "messages": {
         "approvalRequired": "承認が必要です",
         "bugReport": "バグ報告",
@@ -39475,6 +39493,9 @@ export const resources = {
       "messageFallback": "消息",
       "messageLabel": "消息",
       "messageNotSent": "消息未发送",
+      "messageNotification": {
+        "fallbackTitle": "新消息"
+      },
       "messages": {
         "approvalRequired": "需要批准",
         "bugReport": "错误报告",
@@ -45623,6 +45644,9 @@ export const resources = {
       "messageFallback": "메시지",
       "messageLabel": "메시지",
       "messageNotSent": "메시지가 전송되지 않았습니다",
+      "messageNotification": {
+        "fallbackTitle": "새 메시지"
+      },
       "messages": {
         "approvalRequired": "승인 필요",
         "bugReport": "버그 리포트",
@@ -51771,6 +51795,9 @@ export const resources = {
       "messageFallback": "Messaggio",
       "messageLabel": "Messaggio",
       "messageNotSent": "Messaggio non inviato",
+      "messageNotification": {
+        "fallbackTitle": "Nuovo messaggio"
+      },
       "messages": {
         "approvalRequired": "Approvazione richiesta",
         "bugReport": "Segnalazione bug",
@@ -57919,6 +57946,9 @@ export const resources = {
       "messageFallback": "संदेश",
       "messageLabel": "संदेश",
       "messageNotSent": "संदेश नहीं भेजा गया",
+      "messageNotification": {
+        "fallbackTitle": "नया संदेश"
+      },
       "messages": {
         "approvalRequired": "स्वीकृति आवश्यक",
         "bugReport": "बग रिपोर्ट",

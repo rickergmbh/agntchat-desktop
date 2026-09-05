@@ -42,6 +42,7 @@ import {
 } from "../stores/workspaceStore";
 import { AgentBusyToast } from "./AgentBusyToast";
 import { ReminderToast } from "./ReminderToast";
+import { MessageNotifier } from "./MessageNotifier";
 import { MemorySavedToast } from "./MemorySavedToast";
 import { PermissionToast } from "./PermissionToast";
 import { CredentialPrompt } from "./CredentialPrompt";
@@ -216,6 +217,7 @@ export function AppShell() {
 
       <AgentBusyToast />
       <ReminderToast />
+      <MessageNotifier />
       <MemorySavedToast />
       <PermissionToast />
       <CredentialPrompt />

@@ -1,16 +1,10 @@
 import { useEffect, useState } from "react";
 import { Bell } from "lucide-react";
-import { getCurrentWindow } from "@tauri-apps/api/window";
-import {
-  isPermissionGranted,
-  requestPermission,
-  sendNotification,
-} from "@tauri-apps/plugin-notification";
 
 import { ws } from "../services/websocket";
 import { useChatStore } from "../stores/chatStore";
 import { snoozeReminder } from "../lib/api";
-import * as api from "../lib/api";
+import { notifyIfEnabled } from "../lib/nativeNotify";
 
 /** Payload pushed on the user channel when a date reminder fires (camelCase). */
 interface ReminderFired {
@@ -26,36 +20,11 @@ interface ReminderFired {
   dmConversationId?: string;
 }
 
-/** Raise a native OS notification when the app window isn't focused.
- *  Respects the user's "reminders" notification preference — the setting
- *  had no client-side effect on desktop/web since Expo push (what the
- *  preference otherwise gates, server-side) only reaches mobile devices. */
 async function maybeNativeNotify(reminder: ReminderFired) {
-  try {
-    if (await getCurrentWindow().isFocused()) return;
-
-    const remindersEnabled = await api
-      .request<{ notificationPreferences: { reminders?: boolean } }>(
-        "/api/me/notification-preferences"
-      )
-      .then((data) => data.notificationPreferences.reminders !== false)
-      .catch(() => true);
-    if (!remindersEnabled) return;
-
-    let granted = await isPermissionGranted();
-    if (!granted) {
-      granted = (await requestPermission()) === "granted";
-    }
-    if (!granted) return;
-
-    sendNotification({
-      title: reminder.agentName ?? "Reminder",
-      body: reminder.summary,
-    });
-  } catch {
-    // Notification plugin unavailable (e.g. running in a plain browser dev
-    // server) — the in-app toast still covers it.
-  }
+  await notifyIfEnabled("reminders", {
+    title: reminder.agentName ?? "Reminder",
+    body: reminder.summary,
+  });
 }
 
 /**
