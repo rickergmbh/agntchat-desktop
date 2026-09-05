@@ -174,6 +174,12 @@ export const usePresenceStore = create<PresenceState>((set) => {
     initWsListeners: () => {
       const unsubs: (() => void)[] = [];
 
+      // Seed from the socket's actual state rather than assuming false: the
+      // flag is otherwise only ever moved by open/close edges, so a listener
+      // (re)attached after the socket already opened would sit on a stale
+      // "disconnected" until the next edge.
+      set({ connected: ws.isConnected() });
+
       unsubs.push(
         ws.on("connection_change", (payload) => {
           set({ connected: Boolean(payload.connected) });

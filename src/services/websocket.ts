@@ -32,24 +32,35 @@ class WebSocketService {
     const wsUrl = apiUrl.replace(/^http/, "ws") + "/socket";
     log("connect() →", wsUrl);
 
-    this.socket = new Socket(wsUrl, {
+    const socket = new Socket(wsUrl, {
       params: { token },
     });
+    this.socket = socket;
 
-    this.socket.onOpen(() => {
-      log("socket open");
-      this.emit("connection_change", { connected: true });
+    // Only the CURRENT socket may report connection state. disconnect()
+    // nulls `this.socket`, but Phoenix still fires the old socket's close
+    // callback afterwards (onConnClose runs the close callbacks even on a
+    // deliberate teardown), and the deferred mid-CONNECTING teardown fires
+    // onOpen → disconnect → onClose later still. If a replacement socket
+    // has already opened by then, that stale `connected: false` flipped the
+    // sidebar to "Disconnected" and it stayed there until the next real
+    // reconnect — while every channel worked fine.
+    const current = () => this.socket === socket;
+
+    socket.onOpen(() => {
+      log("socket open", current() ? "" : "(stale socket, ignored)");
+      if (current()) this.emit("connection_change", { connected: true });
     });
-    this.socket.onClose(() => {
-      log("socket close");
-      this.emit("connection_change", { connected: false });
+    socket.onClose(() => {
+      log("socket close", current() ? "" : "(stale socket, ignored)");
+      if (current()) this.emit("connection_change", { connected: false });
     });
-    this.socket.onError((e) => {
-      log("socket error", e);
-      this.emit("connection_change", { connected: false });
+    socket.onError((e) => {
+      log("socket error", e, current() ? "" : "(stale socket, ignored)");
+      if (current()) this.emit("connection_change", { connected: false });
     });
 
-    this.socket.connect();
+    socket.connect();
   }
 
   disconnect() {
